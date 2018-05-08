@@ -34,7 +34,6 @@ import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.SingularityAPI;
-import com.illusionaryone.StreamTipAPI;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.DataRenderServiceAPIv1;
@@ -82,7 +81,6 @@ import java.util.concurrent.TimeUnit;
 import tv.phantombot.cache.DonationsCache;
 import tv.phantombot.cache.EmotesCache;
 import tv.phantombot.cache.FollowersCache;
-import tv.phantombot.cache.StreamTipCache;
 import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.StreamElementsCache;
 import tv.phantombot.cache.TwitchCache;
@@ -187,11 +185,6 @@ public final class PhantomBot implements Listener {
     private String twitchAlertsKey = "";
     private int twitchAlertsLimit = 0;
 
-    /* StreamTip Information */
-    private String streamTipOAuth = "";
-    private String streamTipClientId = "";
-    private int streamTipLimit = 0;
-
     /* TipeeeStream Information */
     private String tipeeeStreamOAuth = "";
     private int tipeeeStreamLimit = 5;
@@ -218,7 +211,6 @@ public final class PhantomBot implements Listener {
     /* Caches */
     private FollowersCache followersCache;
     private DonationsCache twitchAlertsCache;
-    private StreamTipCache streamTipCache;
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
@@ -450,11 +442,6 @@ public final class PhantomBot implements Listener {
         this.twitchAlertsKey = this.pbProperties.getProperty("twitchalertskey", "");
         this.twitchAlertsLimit = Integer.parseInt(this.pbProperties.getProperty("twitchalertslimit", "5"));
 
-        /* Set the StreamTip variables */
-        this.streamTipOAuth = this.pbProperties.getProperty("streamtipkey", "");
-        this.streamTipClientId = this.pbProperties.getProperty("streamtipid", "");
-        this.streamTipLimit = Integer.parseInt(this.pbProperties.getProperty("streamtiplimit", "5"));
-
         /* Set the TipeeeStream variables */
         this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
         this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
@@ -616,13 +603,6 @@ public final class PhantomBot implements Listener {
         /* Set the YouTube API Key if provided. */
         if (!this.youtubeKey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
-        }
-
-        /* Set the StreamTip OAuth key, Client ID and limiter. */
-        if (!streamTipOAuth.isEmpty() && !streamTipClientId.isEmpty()) {
-            StreamTipAPI.instance().SetAccessToken(streamTipOAuth);
-            StreamTipAPI.instance().SetDonationPullLimit(streamTipLimit);
-            StreamTipAPI.instance().SetClientId(streamTipClientId);
         }
 
         /* Set the TipeeeStream oauth key. */
@@ -1150,11 +1130,6 @@ public final class PhantomBot implements Listener {
             DonationsCache.killall();
         }
 
-        if (streamTipCache != null) {
-            print("Terminating the StreamTip cache...");
-            StreamTipCache.killall();
-        }
-
         if (tipeeeStreamCache != null) {
             print("Terminating the TipeeeStream cache...");
             TipeeeStreamCache.killall();
@@ -1232,11 +1207,6 @@ public final class PhantomBot implements Listener {
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
             this.twitchAlertsCache = DonationsCache.instance(this.channelName);
-        }
-
-        /* Start the streamtip cache if the keys are not null and the module is enabled */
-        if (this.streamTipOAuth != null && !this.streamTipOAuth.isEmpty() && checkModuleEnabled("./handlers/streamTipHandler.js")) {
-            this.streamTipCache = StreamTipCache.instance(this.channelName);
         }
 
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
@@ -1745,28 +1715,6 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        /* Setup for StreamTip */
-        if (message.equalsIgnoreCase("streamtipsetup")) {
-            try {
-                print("");
-                print("PhantomBot StreamTip setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your StreamTip Api OAuth: ");
-                streamTipOAuth = System.console().readLine().trim();
-                pbProperties.setProperty("streamtipkey", streamTipOAuth);
-
-                com.gmt2001.Console.out.print("Please enter your StreamTip Client Id: ");
-                streamTipClientId = System.console().readLine().trim();
-                pbProperties.setProperty("streamtipid", streamTipClientId);
-
-                print("PhantomBot StreamTip setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
         /* Setup for TipeeeStream */
         if (message.equalsIgnoreCase("tipeeestreamsetup")) {
             try {
@@ -2144,12 +2092,29 @@ public final class PhantomBot implements Listener {
 
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-                com.gmt2001.Console.out.print("If you have any issues please report them on our forum or Tweet at us!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
+                com.gmt2001.Console.out.print("PhantomBot Discord: https://discord.gg/rkPqDuK/\r\n");
                 com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("\r\n");
+
+                final String os = System.getProperty("os.name").toLowerCase();
+
+                // Detect Windows, MacOS, or any other Unix OS or other OS.
+                if (os.startsWith("win")) {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on Windows.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://community.phantombot.tv/t/windows-setup-guide/");
+                } else if (os.startsWith("mac")) {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on macOS.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://community.phantombot.tv/t/macos-setup-guide/");
+                } else {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on a Unix OS.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for Centos: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                }
+
+                com.gmt2001.Console.out.print("\r\n\r\n\r\n");
 
                 // Bot name.
                 do {
@@ -2207,13 +2172,13 @@ public final class PhantomBot implements Listener {
                 } while (startProperties.getProperty("panelpassword", "").length() <= 0);
 
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("PhantomBot will launch in 5 seconds.\r\n");
-                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the panel here: http://localhost:25000/panel \r\n");
+                com.gmt2001.Console.out.print("PhantomBot will launch in 10 seconds.\r\n");
+                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/panel \r\n");
                 com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
-                com.gmt2001.Console.out.print("25000, 25003, and 25004. You can change 'localhost' to your server ip to access the panel. \r\n");
+                com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException ex) {
                     com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
                 }

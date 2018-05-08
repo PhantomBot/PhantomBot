@@ -37,9 +37,7 @@
         reSubToggle = false,
         subGiftToggle = false,
         donationToggle = false,
-        streamtipdonationToggle = false,
         donationGroup = false,
-        streamtipdonationGroup = false,
         gameWhispToggle = false,
         primeSubToggle = false,
         bitsToggle = false,
@@ -119,31 +117,6 @@
                     }
                     if (panelMatch(key, 'message')) {
                         $('#donateGreetingInput').val(value);
-                    }
-                }
-            }
-
-            if (panelCheckQuery(msgObject, 'greetings_donationstreamtip')) {
-                for (idx in msgObject['results']) {
-                    key = msgObject['results'][idx]['key'];
-                    value = msgObject['results'][idx]['value'];
-
-                    if (panelMatch(key, 'announce')) {
-                        streamtipdonationToggle = value;
-                        $('#streamtipGreetings').html(settingIcon[value]);
-                    }
-                    if (panelMatch(key, 'donationGroup')) {
-                        streamtipdonationGroup = value;
-                        $('#streamtipdonationGroup').html(settingIcon[value]);
-                    }
-                    if (panelMatch(key, 'donationGroupMin')) {
-                        $('#streamtipdonationGroupMin').val(value);
-                    }
-                    if (panelMatch(key, 'reward')) {
-                        $('#streamtipdonateRewardInput').val(value);
-                    }
-                    if (panelMatch(key, 'message')) {
-                        $('#streamtipdonateGreetingInput').val(value);
                     }
                 }
             }
@@ -252,7 +225,7 @@
                     if (panelMatch(key, 'subPlan3000')) {
                         $('#subPlan3000Input').val(value);
                     }
-                    
+
                 }
             }
 
@@ -346,7 +319,6 @@
         sendDBQuery('greetings_followToggle', 'settings', 'followToggle');
         sendDBQuery('greetings_followDelay', 'settings', 'followDelay');
         sendDBKeys('greetings_donation', 'donations');
-        sendDBKeys('greetings_donationstreamtip', 'streamtip');
         sendDBKeys('greetings_subscribers', 'subscribeHandler');
         sendDBKeys('greetings_gamewisp', 'gameWispSubHandler');
         sendDBKeys('greetings_gamewispTiers', 'gameWispTiers');
@@ -401,15 +373,6 @@
             }
             setTimeout(function() { sendCommand('donationpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
-        if (panelMatch(table, 'streamtip')) {
-            $('#streamtipGreetings').html(spinIcon);
-            if (streamtipdonationToggle == "true") {
-                sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'false');
-            } else {
-                sendDBUpdate('greetings_greeting', 'streamtip', 'announce', 'true');
-            }
-            setTimeout(function() { sendCommand('donationpanelupdatestreamtip'); }, TIMEOUT_WAIT_TIME);
-        }
 
         if (panelMatch(table, 'tipeeestream')) {
             $('#tipeeestreamGreetings').html(spinIcon);
@@ -437,15 +400,6 @@
                 sendDBUpdate('greetings_greeting', 'donations', 'donationGroup', 'true');
             }
             setTimeout(function() { sendCommand('donationpanelupdate'); }, TIMEOUT_WAIT_TIME);
-        }
-        if (panelMatch(table, 'streamtipdonationGroup')) {
-            $('#streamtipdonationGroup').html(spinIcon);
-            if (streamtipdonationGroup == "true") {
-                sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'false');
-            } else {
-                sendDBUpdate('greetings_greeting', 'streamtip', 'donationGroup', 'true');
-            }
-            setTimeout(function() { sendCommand('donationpanelupdatestreamtip'); }, TIMEOUT_WAIT_TIME);
         }
         if (panelMatch(table, 'tipeeestreamdonationGroup')) {
             $('#tipeeestreamdonationGroup').html(spinIcon);
@@ -569,9 +523,6 @@
             }
             if (panelMatch(table, 'donations')) {
                 sendCommand('donationpanelupdate');
-            }
-            if (panelMatch(table, 'streamtip')) {
-                sendCommand('donationpanelupdatestreamtip');
             }
             if (panelMatch(table, 'subscribeHandler')) {
                 sendCommand('subscriberpanelupdate');
