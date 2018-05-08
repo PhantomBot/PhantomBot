@@ -405,45 +405,6 @@
     </div>
     </div>
 
-    <h3>StreamTip Alert Settings</h3>
-    <div>
-    <div id="_discord_streamTipHandlerDisabled" />
-    <div id="_discord_streamTipHandler">
-        <table>
-            <tr class="textList">
-                <td>Toggle StreamTip Alerts</td>
-                <td style="width: 25px"><div id="streamtipToggleInput" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('streamtipToggleInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipToggle', 'true')">
-                        <i class="fa fa-circle" /></div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('streamtipToggleInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipToggle', 'false')">
-                        <i class="fa fa-circle-o" /></div>
-                </td>
-            </tr>
-        </table>
-        <br>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Donation Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipMessageInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamtipMessageInput" placeholder="Donation Message" data-toggle="tooltip"
-                    title="Set a donation message for StreamTip. Available tags: (name), (currency), (amount), and (message)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Alert Channel</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipChannelInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipChannel')">Submit</button>
-                <input type="text" class="form-control" id="streamtipChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
-            </div>
-        </form>
-    </div>
-    </div>
-
     <h3>StreamLabs Alert Settings</h3>
     <div>
     <div id="_discord_streamLabsHandlerDisabled" />
