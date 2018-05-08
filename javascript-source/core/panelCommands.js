@@ -332,17 +332,6 @@
         }
 
         /*
-         * Reloads the streamtip variables.
-         */
-        if (command.equalsIgnoreCase('donationpanelupdatestreamtip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.donationpanelupdatestreamtip();
-            return;
-        }
-
-        /*
          * Reloads the subscriber variables.
          */
         if (command.equalsIgnoreCase('subscriberpanelupdate')) {
@@ -503,7 +492,6 @@
             $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdatestreamtip', 30);
             $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);

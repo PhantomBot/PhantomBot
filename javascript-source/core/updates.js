@@ -42,7 +42,6 @@
             './handlers/gameWispHandler.js',
             './handlers/keywordHandler.js',
             './handlers/twitterHandler.js',
-            './handlers/streamTipHandler.js',
             './handlers/tipeeeStreamHandler.js',
             './systems/cleanupSystem.js',
             './systems/greetingSystem.js',
@@ -67,7 +66,6 @@
             './discord/handlers/followHandler.js',
             './discord/handlers/subscribeHandler.js',
             './discord/handlers/tipeeeStreamHandler.js',
-            './discord/handlers/streamtipHandler.js',
             './discord/handlers/streamlabsHandler.js',
             './discord/handlers/hostHandler.js',
             './discord/handlers/twitterHandler.js',
@@ -340,9 +338,6 @@
     if (!$.inidb.exists('updates', 'installedv2.1.1') || $.inidb.get('updates', 'installedv2.1.1') != 'true') {
         $.consoleLn('Starting PhantomBot v2.2 updates...');
 
-        $.consoleLn('Disabling new modules...');
-        $.inidb.set('modules', './handlers/streamTipHandler.js', 'false');
-
         $.consoleLn('PhantomBot v2.2 updates completed!');
         $.inidb.set('updates', 'installedv2.1.1', 'true');
     }
@@ -482,7 +477,6 @@
             './discord/handlers/bitsHandler.js',
             './discord/handlers/followHandler.js',
             './discord/handlers/subscribeHandler.js',
-            './discord/handlers/streamtipHandler.js',
             './discord/handlers/streamlabsHandler.js',
             './discord/handlers/tipeeeStreamHandler.js',
             './discord/handlers/hostHandler.js',
