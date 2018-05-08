@@ -662,20 +662,6 @@
         });
 
         /*
-         * @event streamTipDonation
-         */
-        $api.on($script, 'streamTipDonation', function(event) {
-            callHook('streamTipDonation', event, false);
-        });
-
-        /*
-         * @event streamTipDonationInitialized
-         */
-        $api.on($script, 'streamTipDonationInitialized', function(event) {
-            callHook('streamTipDonationInitialized', event, false);
-        });
-
-        /*
          * @event tipeeeStreamDonationInitialized
          */
         $api.on($script, 'tipeeeStreamDonationInitialized', function(event) {
