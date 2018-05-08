@@ -12,3 +12,8 @@ curseappbot
 revlobot
 muxybot
 faegwent
+electricalskateboard
+electricallongboard
+streamelements
+stay_hydrated_bot
+fatmanleg
