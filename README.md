@@ -1,5 +1,4 @@
 
-
 # <img alt="PhantomBot" src="https://i.zelakto.tv/images/bN4H.png" width="600px"/>
 
 [![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
