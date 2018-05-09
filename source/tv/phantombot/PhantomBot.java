@@ -1971,7 +1971,7 @@ public final class PhantomBot implements Listener {
         String requiredPropertiesErrorMessage = "";
 
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8 || Float.valueOf(System.getProperty("java.specification.version")) >= (float) 1.9) {
-            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 will not work.");
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 and above will NOT work.");
             System.exit(1);
         }
 
@@ -2094,24 +2094,25 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
                 com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
+				com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
-                com.gmt2001.Console.out.print("PhantomBot Discord: https://discord.gg/rkPqDuK/\r\n");
-                com.gmt2001.Console.out.print("PhantomBot Knowledgebase: https://docs.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
+                com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
+                com.gmt2001.Console.out.print("\r\n");                
 
                 final String os = System.getProperty("os.name").toLowerCase();
 
-                // Detect Windows, MacOS, or any other Unix OS or other OS.
+                // Detect Windows, MacOS, Linux or any other operating system.
                 if (os.startsWith("win")) {
-                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on Windows.\r\n");
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
                 	com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://community.phantombot.tv/t/windows-setup-guide/");
                 } else if (os.startsWith("mac")) {
-                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on macOS.\r\n");
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
                 	com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://community.phantombot.tv/t/macos-setup-guide/");
                 } else {
-                	com.gmt2001.Console.out.print("PhantomBot has detected that you're on a Unix OS.\r\n");
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
                 	com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
-                	com.gmt2001.Console.out.print("Here's the setup guide for Centos: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                	com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
                 }
 
                 com.gmt2001.Console.out.print("\r\n\r\n\r\n");
