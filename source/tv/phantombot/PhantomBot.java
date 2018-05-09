@@ -2094,7 +2094,7 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
                 com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
                 com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-				com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
                 com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
                 com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
                 com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
