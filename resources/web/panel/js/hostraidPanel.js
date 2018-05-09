@@ -153,8 +153,6 @@
     function doQuery() {
         sendDBKeys('hostraid_hosthistory', 'hosthistory');
         sendDBKeys('hostraid_settings', 'settings');
-        sendDBKeys('hostraid_inraids', 'incommingRaids');
-        sendDBKeys('hostraid_outraids', 'outgoingRaids');
     }
 
     /**
