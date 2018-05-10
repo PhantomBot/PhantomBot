@@ -41,6 +41,9 @@
             }
 
             numberOfNotices = $.inidb.GetKeyList('notices', '').length;
+            if (RandomNotice >= numberOfNotices) {
+                RandomNotice = 0;
+            }
             isReloading = false;
         }
     };
