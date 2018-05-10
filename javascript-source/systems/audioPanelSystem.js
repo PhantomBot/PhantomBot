@@ -17,12 +17,20 @@
 
         for (var i in audioHookFiles) {
             var fileName = audioHookFiles[i] + '';
-            audioHookNames[fileName.replace(reFileExt, '')] = fileName.replace(reFileExt, '');
+            audioHookNames[fileName.replace(reFileExt, '')] = fileName;
         }
 
-        for (var i in audioHookNames) {
-            if (!$.inidb.exists('audio_hooks', audioHookNames[i])) {
-                $.inidb.set('audio_hooks', audioHookNames[i], audioHookNames[i]);
+        var keys = Object.keys(audioHookNames);
+
+        for (var i in keys) {
+            if (!$.inidb.exists('audio_hooks', keys[i])) {
+                $.inidb.set('audio_hooks', keys[i], audioHookNames[keys[i]]);
+            } else {
+                var hook = $.inidb.get('audio_hooks', keys[i]);
+
+                if (hook != null && hook.indexOf('.') === -1) {
+                    $.inidb.set('audio_hooks', keys[i], audioHookNames[keys[i]]);
+                }
             }
         }
 
@@ -111,7 +119,7 @@
         }
 
         /**
-         * Checks if the command is an audio hook 
+         * Checks if the command is an audio hook
          */
         if ($.inidb.exists('audioCommands', command)) {
             if ($.inidb.get('audioCommands', command).match(/\(list\)/g)) {
@@ -127,7 +135,7 @@
 
         /**
          * @commandpath audiohook [play | list] - Base command for audio hooks.
-         * @commandpath audiohook play [audio_hook] - Sends the audio_hook request to the Panel. 
+         * @commandpath audiohook play [audio_hook] - Sends the audio_hook request to the Panel.
          * @commandpath audiohook list - Lists the audio hooks.
          * @commandpath audiohook togglemessages - Enables the success message once a sfx is sent.
          * @commandpath audiohook customcommand [add / remove] [command] [sound] - Adds a custom command that will trigger that sound. Use tag "(list)" to display all the commands.
@@ -159,7 +167,7 @@
                     return;
                 }
 
-                // Moved this from init since only this command can have three commands. Why slow down all of the command with 
+                // Moved this from init since only this command can have three commands. Why slow down all of the command with
                 // 3 db calls just for this?
                 if ((((isModv3 && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isModv3)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                     var commandCost = $.getCommandPrice(command, subCommand, action);
