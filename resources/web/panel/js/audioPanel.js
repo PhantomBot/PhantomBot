@@ -107,7 +107,7 @@
         if (panelCheckQuery(msgObject, 'audio_hook')) {
             sounds = [];
             for (var idx in msgObject['results']) {
-                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['key']});
             }
 
             if (sounds.length === 0) {
@@ -132,7 +132,7 @@
         if (panelCheckQuery(msgObject, 'audio_hook_reload')) {
             sounds = [];
             for (var idx in msgObject['results']) {
-                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['value']});
+                sounds.push({name: msgObject['results'][idx]['key'], desc: msgObject['results'][idx]['key']});
             }
 
             if (sounds.length === 0) {
