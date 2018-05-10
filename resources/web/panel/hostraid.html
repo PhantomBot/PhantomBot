@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
@@ -22,39 +22,18 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="hostraidAccordion">
-    <h3>Host/Raid Channel</h3>
+    <h3>Host Channel</h3>
     <div>
         <div id="_hostChannelPanelDisabled" />
         <div id="_hostChannelPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostChannel">Host Channel</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.hostChannel()">Submit</button>
                 <input type="text" class="form-control" id="hostChannelInput" placeholder="Twitch Channel">
             </div>
-        </form>   
-        </div>
-
-        <div id="_raidChannelPanelDisabled" />
-        <div id="_raidChannelPanel">
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="raidChannel">Raid Channel</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.raidChannel()">Submit</button>
-                <input type="text" class="form-control" id="raidChannelInput" placeholder="Twitch Channel">
-            </div>
-        </form> 
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="raiderChannel">Announce Incoming Raid</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.raiderChannel()">Submit</button>
-                <input type="text" class="form-control" id="raiderChannelInput" placeholder="Twitch Channel">
-            </div>
-        </form> 
+        </form>
     </div>
     </div>
 
@@ -97,7 +76,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostAnnounce">Host Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateHostAnnounce()">Submit</button>
                 <input type="text" class="form-control" id="hostAnnounceInput" placeholder="Host Message"
                        data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
@@ -107,13 +86,13 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostAutoAnnounce">Auto-Host Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateAutoHostAnnounce()">Submit</button>
                 <input type="text" class="form-control" id="hostAutoAnnounceInput" placeholder="Auto-Host Message"
                        data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
             </div>
         </form>
-        
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="hostReward">Host Reward</label>
@@ -183,36 +162,15 @@
     </div>
     </div>
 
-    <h3>Raid Message</h3>
+    <h3>Raid Settings</h3>
     <div>
     <div id="_raidMsgPanelDisabled" />
     <div id="_raidMsgPanel">
         <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="raidMessage">Raid Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.updateRaidMessage()">Submit</button>
-                <input type="text" class="form-control" id="raidMessageInput" placeholder="Raid Message" />
-            </div>
+            <p>Raids are now only supported on the new control panel.</p>
+            <p>For more information please check out
+                <a href="https://blog.phantombot.tv/introducing-the-new-phantombot-control-panel/">our blog post.</a></p>
         </form>
-    </div>
-    </div>
-
-    <h3>Incoming Raids</h3>
-    <div>
-    <div id="_raidIncomingPanelDisabled" />
-    <div id="_raidIncomingPanel">
-        <strong>Incoming Raid List</strong>
-        <div id="incomingRaidList" style="height: 200px; overflow: auto" />
-    </div>
-    </div>
-
-    <h3>Outgoing Raids</h3>
-    <div>
-    <div id="_raidOutgoingPanelDisabled" />
-    <div id="_raidOutgoingPanel">
-        <strong>Outgoing Raid List</strong>
-        <div id="outgoingRaidList" style="height: 200px; overflow: auto" />
     </div>
     </div>
 </div>

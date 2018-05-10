@@ -108,42 +108,6 @@
                 html += '</table>';
                 $('#hostHistoryList').html(html);
             }
-
-            if (panelCheckQuery(msgObject, 'hostraid_inraids')) {
-                if (msgObject['results'].length === 0) {
-                    $('#incomingRaidList').html('<i>No Incoming Raid Data to Display</i>');
-                    return;
-                }
-
-                html = '<br><table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
-
-                for (idx in msgObject['results']) {
-                    html += '<tr style="textList">' +
-                            '    <td>' + msgObject['results'][idx]['key'] + '</td>' +
-                            '    <td style="float: right">' + msgObject['results'][idx]['value'] + '</td>' +
-                            '</tr>';
-                }
-                html += '</table>';
-                $('#incomingRaidList').html(html);
-            }
-
-            if (panelCheckQuery(msgObject, 'hostraid_outraids')) {
-                if (msgObject['results'].length === 0) {
-                    $('#outgoingRaidList').html('<i>No Outgoing Raid Data to Display</i>');
-                    return;
-                }
-
-                html = '<br><table><tr><th>Channel</th><th style="float: right">Raid Count</th></tr>';
-
-                for (idx in msgObject['results']) {
-                    html += '<tr style="textList">' +
-                            '    <td>' + msgObject['results'][idx]['key'] + '</td>' +
-                            '    <td style="float: right">' + msgObject['results'][idx]['value'] + '</td>' +
-                            '</tr>';
-                }
-                html += '</table>';
-                $('#outgoingRaidList').html(html);
-            }
         }
     }
 
@@ -153,8 +117,6 @@
     function doQuery() {
         sendDBKeys('hostraid_hosthistory', 'hosthistory');
         sendDBKeys('hostraid_settings', 'settings');
-        sendDBKeys('hostraid_inraids', 'incommingRaids');
-        sendDBKeys('hostraid_outraids', 'outgoingRaids');
     }
 
     /**
@@ -278,17 +240,6 @@
     }
 
     /**
-     * @function updateRaidMessage
-     */
-    function updateRaidMessage() {
-        var value = $('#raidMessageInput').val();
-        if (value.length > 0) {
-            sendDBUpdate('hostraid_settings', 'settings', 'raidMessage', value);
-            setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
-    }
-
-    /**
      * @function toggle
      */
     function toggle(table, key, value) {
@@ -324,15 +275,12 @@
     $.hostraidOnMessage = onMessage;
     $.hostraidDoQuery = doQuery;
     $.hostChannel = hostChannel;
-    $.raidChannel = raidChannel;
-    $.raiderChannel = raiderChannel;
     $.updateHostAnnounce = updateHostAnnounce;
     $.updateAutoHostAnnounce = updateAutoHostAnnounce;
     $.updateHostReward = updateHostReward;
     $.updateAutoHostReward = updateAutoHostReward;
     $.updateHostMinViewers = updateHostMinViewers;
     $.changeHostHistory = changeHostHistory;
-    $.updateRaidMessage = updateRaidMessage;
     $.toggle = toggle;
     $.hostMinViewersAlert = hostMinViewersAlert;
 })();
