@@ -25,6 +25,13 @@
             $.reloadKill();
         }
 
+        if (command.equalsIgnoreCase('reloadraid')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadRaid();
+        }
+
          /* reloads the clip vars */
         if (command.equalsIgnoreCase('reloadclip')) {
             if (!$.isBot(sender)) {
@@ -510,6 +517,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
         }, 10000);
     });
 })();
