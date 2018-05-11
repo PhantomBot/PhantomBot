@@ -15,10 +15,21 @@
 		if (object.type === undefined) {
 			object.type = type;
 		}
+
 		// Add the object to the array.
 		array.push(object);
+
 		// Only keep 50 objects in the array.
-		array = array.slice(0, 50);
+		if (array.length > 50) {
+			// Sort for newer events
+			array.sort(function(a, b) {
+				return b.date - a.date;
+			});
+
+			// Remove old events.
+			array = array.slice(0, 50);
+		}
+
 		// Save it.
 		saveObject(table, key, array);
 	}
@@ -139,7 +150,7 @@
     });
 
     /*
-     * @event subscriber
+     * @event twitchSubscriber
      */
     $.bind('twitchSubscriber', function(event) {
     	addObjectToArray('panelData', 'data', 'Subscriber', {
@@ -151,7 +162,7 @@
     });
 
     /*
-     * @event primeSubscriber
+     * @event twitchPrimeSubscriber
      */
     $.bind('twitchPrimeSubscriber', function(event) {
     	addObjectToArray('panelData', 'data', 'Prime Subscriber', {
@@ -163,7 +174,7 @@
     });
 
     /*
-     * @event reSubscriber
+     * @event twitchReSubscriber
      */
     $.bind('twitchReSubscriber', function(event) {
     	addObjectToArray('panelData', 'data', 'ReSubscriber', {
@@ -171,6 +182,30 @@
 			'months'  : event.getMonths(),
 			'date'    : $.systemTime(),
 			'isReSub' : true
+		});
+    });
+
+    /*
+     * @event twitchSubscriptionGift
+     */
+    $.bind('twitchSubscriptionGift', function(event) {
+    	addObjectToArray('panelData', 'data', 'Gifted Subscription', {
+			'recipient': event.getRecipient(),
+			'username' : event.getUsername(),
+			'months'   : event.getMonths(),
+			'date'     : $.systemTime(),
+			'isReSub'  : (parseInt(event.getMonths()) > 1)
+		});
+    });
+
+    /*
+     * @event twitchRaid
+     */
+    $.bind('twitchRaid', function(event) {
+    	addObjectToArray('panelData', 'data', 'Raid', {
+			'username' : event.getUsername(),
+			'viewers'  : event.getViewers(),
+			'date'     : $.systemTime()
 		});
     });
 
