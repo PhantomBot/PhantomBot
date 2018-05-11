@@ -79,17 +79,21 @@
 
     /**
      * @function loadAudioHookCommands
+     *
+     * @param {String} cmd
      */
-    function loadAudioHookCommands() {
-        if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
-            var commands = $.inidb.GetKeyList('audioCommands', ''),
-                i;
+    function loadAudioHookCommands(cmd) {
+        if (cmd !== undefined) {
+            $.unregisterChatCommand(cmd);
+        } else {
+            if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
+                var commands = $.inidb.GetKeyList('audioCommands', ''),
+                    i;
 
-            for (i in commands) {
-                if (!$.commandExists(commands[i])) {
-                    $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
-                } else {
-                    //$.log.error('Cannot add custom command audio hook, command already exists: ' + commands[i]);
+                for (i in commands) {
+                    if (!$.commandExists(commands[i])) {
+                        $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
+                    }
                 }
             }
         }
@@ -145,6 +149,15 @@
                 return;
             }
             removeAudioHook(subCommand);
+            return;
+        }
+
+        /* Control Panel reload audio commands */
+        if (command.equalsIgnoreCase('panelloadaudiohookcmds')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            loadAudioHookCommands(subCommand);
             return;
         }
 
@@ -305,6 +318,8 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
         $.registerChatCommand('./systems/audioPanelSystem.js', 'panelremoveaudiohook', 30);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelloadaudiohookcmds', 30);
+
         $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
         $.registerChatSubcommand('audiohook', 'play', 1);
         $.registerChatSubcommand('audiohook', 'list', 1);
