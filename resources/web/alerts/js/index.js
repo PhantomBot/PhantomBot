@@ -92,7 +92,7 @@ $(function() {
         let event = queue[0];
 
         if (event !== undefined && isPlaying === false) {
-            console.log('processing event ' + JSON.stringify(event));
+            console.log('Processing event ' + JSON.stringify(event));
 
             isPlaying = true;
             if (event.alert_image !== undefined) {
@@ -212,17 +212,17 @@ $(function() {
 
             // Check if the file is a gif, or video.
             if (gifFile.match(/\.(webm|mp4|ogg)$/) !== null) {
-            	htmlObj = $('<video/>', {
-            		'src': defaultPath + gifFile,
-            		'volume': gifVolume,
-            		'autoplay': 'autoplay',
-            		'style': gifCss
-            	});
+                htmlObj = $('<video/>', {
+                    'src': defaultPath + gifFile,
+                    'volume': gifVolume,
+                    'autoplay': 'autoplay',
+                    'style': gifCss
+                });
             } else {
-            	htmlObj = $('<img/>', {
-                	'src': defaultPath + gifFile,
-                	'style': gifCss
-            	});
+                htmlObj = $('<img/>', {
+                    'src': defaultPath + gifFile,
+                    'style': gifCss
+                });
             }
 
             // Append a new the image.
@@ -235,8 +235,16 @@ $(function() {
                 audio.play();
             }).delay(gifDuration) // Wait this time before removing this image.
               .fadeOut(1e2, function() { // Remove the image with a fade out.
-                // Remove the image.
-                $(this).remove();
+                const t = $(this);
+
+                // Remove either the img tag or video tag.
+                if (t.find('img').length > 0) {
+                    // Remove the image.
+                    t.find('img').remove();
+                } else {
+                    // Remove the video.
+                    t.find('video').remove();
+                }
 
                 // Stop the audio.
                 audio.pause();
