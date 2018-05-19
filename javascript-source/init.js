@@ -358,6 +358,11 @@
 
             // Load the other discord modules
             loadScriptRecursive('./discord');
+            // Mark that we are using Discord.
+            // This is used by the new panel.
+            $.inidb.set('panelData', 'hasDiscord', 'true');
+        } else {
+            $.inidb.set('panelData', 'hasDiscord', 'false');
         }
 
         // Load new panel handler.
