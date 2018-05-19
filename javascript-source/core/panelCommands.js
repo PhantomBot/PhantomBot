@@ -18,28 +18,6 @@
             $.reloadBet();
         }
 
-        if (command.equalsIgnoreCase('reloadkill')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadKill();
-        }
-
-        if (command.equalsIgnoreCase('reloadraid')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadRaid();
-        }
-
-         /* reloads the clip vars */
-        if (command.equalsIgnoreCase('reloadclip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.reloadClips();
-        }
-
         /** Adds or removes a user from the moderator cache */
         if (command.equalsIgnoreCase('permissionsetuser')) {
             if (!$.isBot(sender)) {
@@ -50,6 +28,15 @@
             } else {
                 $.removeModeratorFromCache(action.toLowerCase());
             }
+        }
+
+        if (command.equalsIgnoreCase('reloadmisc')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            $.reloadMisc();
+            $.reloadWhispers();
         }
 
         /*
@@ -157,6 +144,28 @@
                 return;
             }
             $.reloadModeration();
+        }
+
+        if (command.equalsIgnoreCase('reloadkill')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadKill();
+        }
+
+        if (command.equalsIgnoreCase('reloadraid')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadRaid();
+        }
+
+        /* reloads the clip vars */
+        if (command.equalsIgnoreCase('reloadclip')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadClips();
         }
 
         /*
@@ -518,6 +527,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', 30);
         }, 10000);
     });
 })();
