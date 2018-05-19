@@ -3,7 +3,14 @@
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
-    /** 
+    /**
+     * @function reloadWhispers
+     */
+    function reloadWhispers() {
+        whisperMode = $.getIniDbBoolean('settings', 'whisperMode');
+    }
+
+    /**
      * @function hasKey
      *
      * @param {array} list
@@ -103,4 +110,5 @@
     /** Export functions to API */
     $.whisperPrefix = whisperPrefix;
     $.getBotWhisperMode = getBotWhisperMode;
+    $.reloadWhispers = reloadWhispers;
 })();
