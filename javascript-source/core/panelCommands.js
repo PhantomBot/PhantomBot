@@ -146,6 +146,28 @@
             $.reloadModeration();
         }
 
+        if (command.equalsIgnoreCase('reloadkill')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadKill();
+        }
+
+        if (command.equalsIgnoreCase('reloadraid')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadRaid();
+        }
+
+        /* reloads the clip vars */
+        if (command.equalsIgnoreCase('reloadclip')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadClips();
+        }
+
         /*
          * Clears the highlight
          */
@@ -326,17 +348,6 @@
         }
 
         /*
-         * Reloads the streamtip variables.
-         */
-        if (command.equalsIgnoreCase('donationpanelupdatestreamtip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.donationpanelupdatestreamtip();
-            return;
-        }
-
-        /*
          * Reloads the subscriber variables.
          */
         if (command.equalsIgnoreCase('subscriberpanelupdate')) {
@@ -497,7 +508,6 @@
             $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdatestreamtip', 30);
             $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);
@@ -514,6 +524,9 @@
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', 30);
         }, 10000);
     });
