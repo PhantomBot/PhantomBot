@@ -92,11 +92,11 @@
             s = $.replace(s, '(amount)', bits);
         }
 
-        if ((ircMessage + '').length > 1) {
+        if ((ircMessage + '').length > 0) {
             if (emoteRegexStr.length() > 0) {
                 emoteRegex = new RegExp(emoteRegexStr, 'gi');
                 ircMessage = String(ircMessage).valueOf();
-                ircMessage = ircMessage.replace(emoteRegex, '');
+                ircMessage = ircMessage.replace(emoteRegex, '').trim();
             }
         }
 
