@@ -98,7 +98,9 @@
                 ircMessage = String(ircMessage).valueOf();
                 ircMessage = ircMessage.replace(emoteRegex, '');
             }
+        }
 
+        if (ircMessage.length > 0) { 
         	$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(getBitsColor(bits))
                     .withThumbnail('https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/' + getCheerAmount(bits) + '/1.gif')
