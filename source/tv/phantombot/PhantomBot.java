@@ -1569,7 +1569,7 @@ public final class PhantomBot implements Listener {
 
         /* test the bits event */
         if (message.equalsIgnoreCase("bitstest")) {
-            String sendMessage = "This is a message from Twitch.";
+            String sendMessage = "";
             if (argument != null) {
                 sendMessage = String.join(" ", argument);
             }
