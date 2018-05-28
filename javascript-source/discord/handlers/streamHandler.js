@@ -39,7 +39,7 @@
     function getTrimmedGameName() {
         var game = $.getGame($.channelName) + '';
 
-        return (game.length > 20 ? game.substr(0, 20) : game);
+        return (game.length > 15 ? game.substr(0, 15) + '...' : game);
     }
 
     /**
