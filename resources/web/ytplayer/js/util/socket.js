@@ -60,6 +60,15 @@ $(function() {
     };
 
     /*
+     * @function deletes a song from the current playlist.
+     */
+    player.deleteFromPlaylist = () => {
+        sendToSocket({
+            command: 'deletecurrent'
+        });
+    };
+
+    /*
      * @function "steals" a song and adds it to the default playlist.
      *
      * @param {String} song_id

@@ -141,12 +141,12 @@ a:hover {
 
 .play-pause-controls {
     display: inline-block;
-    width: 100px;
+    width: 135px;
 }
 
 .progress-slider {
     display: inline-block;
-    width: calc(100% - 135px);
+    width: calc(100% - 170px);
     margin-right: 10px;
 }
 
