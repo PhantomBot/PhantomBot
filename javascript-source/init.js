@@ -772,6 +772,13 @@
         });
 
         /*
+         * @event yTPlayerDeleteCurrentEvent
+         */
+        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
+            callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
          * @event yTPlayerStealSongEvent
          */
         $api.on($script, 'yTPlayerStealSong', function(event) {

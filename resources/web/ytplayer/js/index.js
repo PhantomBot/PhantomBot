@@ -381,6 +381,12 @@ $(function() {
 
 // Buttons and events.
 $(function() {
+    // Delete current song from playlist button.
+    $('#del-cur-playlist-button').on('click', () => {
+        player.deleteFromPlaylist();
+        toastr.success('Deleted from playlist: ' + (player.temp.title.length > 30 ? player.temp.title.substring(0, 30) + '...' : player.temp.title));
+    });
+
 	// Fav button to steal a song.
 	$('#fav-button').on('click', () => {
 		player.addSongToPlaylist();

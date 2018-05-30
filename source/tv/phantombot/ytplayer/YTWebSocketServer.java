@@ -166,7 +166,7 @@ public class YTWebSocketServer extends WebSocketServer {
         String           dataString;
         int              dataInt;
 
-        // com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
+        //com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
 
         try {
             jsonObject = new JSONObject(jsonString);
@@ -212,7 +212,6 @@ public class YTWebSocketServer extends WebSocketServer {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
-
                 /* If the current status is buffering and then we receive an unstarted event, then the player
                  * is stuck. This normally happens with videos that are not allowed to play in the region
                  * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
@@ -287,6 +286,8 @@ public class YTWebSocketServer extends WebSocketServer {
                 }
             } else if (jsonObject.getString("command").equals("loadpl")) {
                 EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jsonObject.getString("playlist")));
+            } else if (jsonObject.getString("command").equals("deletecurrent")) {
+                EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
                 return;
