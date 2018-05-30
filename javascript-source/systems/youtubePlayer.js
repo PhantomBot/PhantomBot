@@ -1120,6 +1120,14 @@
         currentPlaylist.loadNewPlaylist(event.getPlaylist());
         loadPanelPlaylist();
     });
+
+    /**
+     * @event ytPlayerDeleteCurrent
+     */
+    $.bind('yTPlayerDeleteCurrent', function(event) {
+        currentPlaylist.deleteCurrentVideo();
+        connectedPlayerClient.pushSongList();
+    });
      
     /**
      * @event ytPlayerSkipSong
