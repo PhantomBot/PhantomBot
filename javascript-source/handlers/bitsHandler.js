@@ -48,6 +48,10 @@
             }
         }
 
+        if (bits == 1) {
+            s = $.replace(s, 'bits', 'bit');
+        }
+
         if (bits >= minimum) {
             $.say(s);
         }
