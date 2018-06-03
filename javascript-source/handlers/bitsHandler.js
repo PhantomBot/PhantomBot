@@ -31,6 +31,10 @@
             return;
         }
 
+        if (bits == 1) {
+            s = $.replace(s, 'bits', 'bit');
+        }
+
         if (s.match(/\(name\)/g)) {
             s = $.replace(s, '(name)', username);
         }
@@ -46,10 +50,6 @@
                 s = String(s).valueOf();
                 s = s.replace(emoteRegex, '');
             }
-        }
-
-        if (bits == 1) {
-            s = $.replace(s, 'bits', 'bit');
         }
 
         if (bits >= minimum) {
