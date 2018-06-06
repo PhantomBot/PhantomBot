@@ -68,8 +68,8 @@ public class TwitchCache implements Runnable {
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
-    private String previewLink = "";
-    private String logoLink = "";
+    private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
+    private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
@@ -283,7 +283,7 @@ public class TwitchCache implements Runnable {
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
-                    this.previewLink = "";
+                    this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                     this.streamCreatedAt = "";
                     this.viewerCount = 0;
                 }
