@@ -17,3 +17,4 @@ electricallongboard
 streamelements
 stay_hydrated_bot
 fatmanleg
+commanderroot
