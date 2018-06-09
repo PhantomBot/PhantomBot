@@ -2,7 +2,7 @@
  * hostHandler.js
  *
  * Register and announce (un)host events.
- * Optionally supports rewarding points for a follow (Only every 6 hours!)
+ * Optionally supports rewarding points for a host (Only every 6 hours!)
  */
 (function() {
     var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 0),
