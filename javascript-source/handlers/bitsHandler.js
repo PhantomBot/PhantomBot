@@ -31,6 +31,10 @@
             return;
         }
 
+        if (bits == 1) {
+            s = $.replace(s, 'bits', 'bit');
+        }
+
         if (s.match(/\(name\)/g)) {
             s = $.replace(s, '(name)', username);
         }
