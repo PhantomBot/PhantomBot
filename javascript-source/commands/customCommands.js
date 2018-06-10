@@ -4,7 +4,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -64,6 +64,10 @@
             if (!message.match(tagCheck)) {
                 return event.getArgs()[0] + ' -> ' + message;
             }
+        }
+
+        if (message.match(/\(views\)/g)) {
+            message = $.replace(message, '(views)', $.twitchcache.getViews());
         }
 
         if (message.match(/\(gameonly=.*\)/g)) {
