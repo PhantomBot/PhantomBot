@@ -794,6 +794,9 @@
 
         $.inidb.del('modules', './systems/raidSystem.js');
 
+        // Remove old raids for the new format.
+        $.inidb.RemoveFile('outgoing_raids');
+
         $.consoleLn('PhantomBot update 2.4.1 completed!');
         $.inidb.set('updates', 'installedv2.4.1', 'true');
     }
