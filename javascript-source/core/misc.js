@@ -135,14 +135,21 @@
             return;
         }
 
-        if (respond && (!action || message.startsWith('/w'))) {
+        if (respond && !action) {
             $.session.say(message);
         } else {
             if (respond && action) {
-                $.session.say('/me ' + message);
+                // If the message is a Twitch command, remove the /me.
+                if (message.startsWith('.') || message.startsWith('/')) {
+                    $.session.say(message);
+                } else {
+                    $.session.say('/me ' + message);
+                }
             }
             if (!respond) {
                 $.consoleLn('[MUTED] ' + message);
+                $.log.file('chat', '[MUTED] ' + $.botName.toLowerCase() + ': ' + message);
+                return;
             }
         }
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
@@ -161,17 +168,7 @@
 
         timeout = systemTime();
 
-        if (respond && (!action || message.startsWith('/w'))) {
-            $.session.say(message);
-        } else {
-            if (respond && action) {
-                $.session.say('/me ' + message);
-            }
-            if (!respond) {
-                $.consoleLn('[MUTED] ' + message);
-            }
-        }
-        $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
+        say(message);
     }
 
     /**
