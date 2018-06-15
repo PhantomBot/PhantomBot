@@ -4,18 +4,16 @@ $.lang.register('rafflesystem.open.time', 'A raffle is now opened! Type $1 to en
 $.lang.register('rafflesystem.open.points', 'A raffle is now opened! Type $1 to enter. Entering cost $2! $3');
 $.lang.register('rafflesystem.open', 'A raffle is now opened! Type $1 to enter$2! $3');
 $.lang.register('rafflesystem.close.error.closed', 'There is no raffle in progress.');
-$.lang.register('rafflesystem.close.success', 'The raffle is now closed! No more entries will be counted.');
+$.lang.register('rafflesystem.close.success', 'The raffle is now closed! No more entries will be counted. Use "!raffle draw" to pick a winner!');
 $.lang.register('rafflesystem.winner', 'The winner of this raffle is $1! $2');
 $.lang.register('rafflesystem.whisper.winner', 'You won the raffle in channel $1!');
-$.lang.register('rafflesystem.whisper.winner.repick', 'You were repicked for the raffle winner in channel $1!');
 $.lang.register('rafflesystem.repick.error', 'There are no more users in the raffle list.');
-$.lang.register('rafflesystem.repick', 'New winner is $1! $2');
 $.lang.register('rafflesystem.enter.404', 'You already entered this raffle.');
 $.lang.register('rafflesystem.enter.following', 'You need to be following to enter this raffle.');
 $.lang.register('rafflesystem.enter.subscriber', 'You need to be subscribed to enter this raffle.');
 $.lang.register('rafflesystem.enter.points', 'You don\'t have enough $1 to enter this raffle.');
 $.lang.register('rafflesystem.enter.time', 'You have not been in the channel long enough to enter this raffle.');
-$.lang.register('rafflesystem.usage', 'Usage: !raffle [open / close / repick / results / subscriberbonus/ regularbonus / whisperwinner]');
+$.lang.register('rafflesystem.usage', 'Usage: !raffle [open / close / draw / results / subscriberbonus/ regularbonus / whisperwinner]');
 $.lang.register('rafflesystem.results', 'A raffle is still opened! Keyword: $1 - Total entries: $2');
 $.lang.register('rafflesystem.fee', ' - Entry fee: $1');
 $.lang.register('rafflesystem.subbonus.usage', 'Usage: !raffle subscriberbonus [1-10]');
@@ -36,3 +34,4 @@ $.lang.register('rafflesystem.open.keyword-exists', 'Keyword cannot be an existi
 $.lang.register('rafflesystem.winner.404', 'Could not pick a winner. No one entered this raffle.');
 $.lang.register('rafflesystem.isfollowing', '[Follower]');
 $.lang.register('rafflesystem.isnotfollowing', '[Not a follower]');
+$.lang.register('rafflesystem.reset', 'The raffle has been reset.');
