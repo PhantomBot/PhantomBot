@@ -37,6 +37,7 @@
             $.say($.lang.get('queuesystem.open.limit', size, title));
         }
         isOpened = true;
+        $.inidb.set('queueSettings', 'isActive', 'true');
     }
 
     /*
@@ -52,6 +53,7 @@
 
         $.say($.lang.get('queuesystem.close.success'));
         isOpened = false;
+        $.inidb.set('queueSettings', 'isActive', 'false');
     }
 
     /*
@@ -394,6 +396,8 @@
         $.registerChatSubcommand('queue', 'next', 7);
         $.registerChatSubcommand('queue', 'info', 7);
         $.registerChatSubcommand('queue', 'position', 7);
+
+        $.inidb.set('queueSettings', 'isActive', 'false');
     });
 
     /**
