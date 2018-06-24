@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitchwsirc.chat;
+package tv.phantombot.wschat.twitch;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +45,13 @@ interface TwitchWSIRCCommand {
 }
 
 public class TwitchWSIRCParser {
-    private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<String, TwitchWSIRCCommand>(8);
-    private final List<String> moderators = new CopyOnWriteArrayList<String>();
+    private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
+    private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
     private final UsernameCache usernameCache = UsernameCache.instance();
     private final EventBus eventBus = EventBus.instance();
     private final WebSocket webSocket;
-    private final Session session;
+    private final TwitchSession session;
     private final String channelName;
 
     /*
@@ -59,75 +59,39 @@ public class TwitchWSIRCParser {
      *
      * @param {WebSocket} webSocket
      * @param {String}    channelName
-     * @param {Session}   session
+     * @param {TwitchSession}   session
      */
-    public TwitchWSIRCParser(WebSocket webSocket, String channelName, Session session) {
+    public TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
         this.webSocket = webSocket;
         this.channelName = channelName;
         this.session = session;
 
         // 001 event from Twitch.
-        parserMap.put("001", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onChannelJoined(message, username, tags);
-            }
-        });
+        parserMap.put("001", (TwitchWSIRCCommand) this::onChannelJoined);
 
         // PRIVMSG event from Twitch.
-        parserMap.put("PRIVMSG", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onPrivMsg(message, username, tags);
-            }
-        });
+        parserMap.put("PRIVMSG", (TwitchWSIRCCommand) this::onPrivMsg);
 
         // CLEARCHAT event from Twitch.
-        parserMap.put("CLEARCHAT", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onClearChat(message, username, tags);
-            }
-        });
+        parserMap.put("CLEARCHAT", (TwitchWSIRCCommand) this::onClearChat);
 
         // WHISPER event from Twitch.
-        parserMap.put("WHISPER", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onWhisper(message, username, tags);
-            }
-        });
+        parserMap.put("WHISPER", (TwitchWSIRCCommand) this::onWhisper);
 
         // JOIN event from Twitch.
-        parserMap.put("JOIN", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onJoin(message, username, tags);
-            }
-        });
+        parserMap.put("JOIN", (TwitchWSIRCCommand) this::onJoin);
 
         // PART event from Twitch.
-        parserMap.put("PART", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onPart(message, username, tags);
-            }
-        });
+        parserMap.put("PART", (TwitchWSIRCCommand) this::onPart);
 
         // NOTICE event from Twitch.
-        parserMap.put("NOTICE", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onNotice(message, username, tags);
-            }
-        });
+        parserMap.put("NOTICE", (TwitchWSIRCCommand) this::onNotice);
 
         // USERSTATE event from Twitch.
-        parserMap.put("USERSTATE", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onUserState(message, username, tags);
-            }
-        });
+        parserMap.put("USERSTATE", (TwitchWSIRCCommand) this::onUserState);
 
         // USERNOTICE event from Twitch.
-        parserMap.put("USERNOTICE", new TwitchWSIRCCommand() {
-            public void exec(String message, String username, Map<String, String> tags) {
-                onUserNotice(message, username, tags);
-            }
-        });
+        parserMap.put("USERNOTICE", (TwitchWSIRCCommand) this::onUserNotice);
     }
 
     /*
@@ -153,11 +117,11 @@ public class TwitchWSIRCParser {
      * @param {String} rawMessage
      */
     private void parseLine(String rawMessage) {
-        Map<String, String> tags = new HashMap<String, String>();
+        Map<String, String> tags = new HashMap<>();
         String messageParts[] = rawMessage.split(" :", 3);
         String username = "";
         String message = "";
-        String event = "";
+        String event;
 
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {

@@ -18,16 +18,16 @@ package tv.phantombot.event.irc.channel;
 
 import tv.phantombot.event.irc.IrcEvent;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 public abstract class IrcChannelEvent extends IrcEvent {
 
     /*
      * Class constructor
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      */
-    protected IrcChannelEvent(Session session) {
+    protected IrcChannelEvent(TwitchSession session) {
         super(session);
     }
 }

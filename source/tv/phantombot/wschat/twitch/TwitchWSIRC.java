@@ -14,28 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitchwsirc.chat;
+package tv.phantombot.wschat.twitch;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import java.net.URI;
 import java.net.Socket;
 
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.exceptions.InvalidFrameException;
 import org.java_websocket.framing.Framedata;
-
-import tv.phantombot.twitchwsirc.chat.TwitchWSIRCParser;
-import tv.phantombot.twitchwsirc.chat.Session;
 
 import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import tv.phantombot.event.EventBus;
@@ -43,7 +42,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.PhantomBot;
 
 public class TwitchWSIRC extends WebSocketClient {
-    private final Session session;
+    private final TwitchSession session;
     private final String botName;
     private final String channelName;
     private final String oAuth;
@@ -61,7 +60,7 @@ public class TwitchWSIRC extends WebSocketClient {
      * @param {String} botName
      * @param {String} oAuth
      */
-    public TwitchWSIRC(URI uri, String channelName, String botName, String oAuth, Session session) {
+    public TwitchWSIRC(URI uri, String channelName, String botName, String oAuth, TwitchSession session) {
         super(uri, new Draft_17());
 
         this.uri = uri;
@@ -100,7 +99,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // Connect.
             this.connect();
             return true;
-        } catch (Exception ex) {
+        } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         return false;
@@ -152,7 +151,7 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         // Reconnect if the bot isn't shutting down.
-        if (reason != "bye") {
+        if (!reason.equals("bye")) {
             com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
 
@@ -212,7 +211,7 @@ public class TwitchWSIRC extends WebSocketClient {
 
                     // Convert the message into a string.
                     message = StandardCharsets.UTF_8.decode(tempFrame.getPayloadData()).toString();
-                } catch (Exception ex) {
+                } catch (InvalidFrameException ex) {
                     com.gmt2001.Console.err.println("Failed to parse message fragment: " + ex.getMessage());
                 }
             } else {

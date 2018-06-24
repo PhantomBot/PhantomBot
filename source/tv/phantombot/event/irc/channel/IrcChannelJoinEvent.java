@@ -16,7 +16,7 @@
  */
 package tv.phantombot.event.irc.channel;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 public class IrcChannelJoinEvent extends IrcChannelEvent {
     private final String user;
@@ -24,10 +24,10 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
     /*
      * Class constructor
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  user
      */
-    public IrcChannelJoinEvent(Session session, String user) {
+    public IrcChannelJoinEvent(TwitchSession session, String user) {
         super(session);
 
         this.user = user;

@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitchwsirc.chat.utils;
+package tv.phantombot.wschat.twitch.chat.utils;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 import tv.phantombot.PhantomBot;
 
 public class MessageQueue implements Runnable {
-    private final BlockingDeque<Message> queue = new LinkedBlockingDeque<Message>();
+    private final BlockingDeque<Message> queue = new LinkedBlockingDeque<>();
     private final String channelName;
     private final Thread thread;
-    private Session session;
+    private TwitchSession session;
     private boolean isAllowedToSend = false;
     private boolean isKilled = false;
     private int writes = 0;
@@ -43,18 +43,21 @@ public class MessageQueue implements Runnable {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         // Start a new thread for our final queue.
-        this.thread = new Thread(this, "tv.phantombot.twitchwsirc.chat.utils.MessageQueue::run");
+        this.thread = new Thread(this, "tv.phantombot.wschat.twitch.chat.utils.MessageQueue::run");
         this.thread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.thread.start();
+        
     }
 
     /*
-     * Method that sets the sesson
+     * Method that starts this queue.
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      */
-    public void setSession(Session session) {
+    public void start(TwitchSession session) {
+        // Set the session.
         this.session = session;
+        // Start the write thread.
+        this.thread.start();
     }
 
     /*
@@ -137,7 +140,7 @@ public class MessageQueue implements Runnable {
                     session.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
                     com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
                 }
-            } catch (Exception ex) {
+            } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }

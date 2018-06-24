@@ -14,18 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.irc.complete;
+package tv.phantombot.wschat.mixer;
 
-import tv.phantombot.wschat.twitch.TwitchSession;
-
-public class IrcConnectCompleteEvent extends IrcCompleteEvent {
-
-    /*
-     * Class constructor
-     *
-     * @param {TwitchSession} session
-     */
-    public IrcConnectCompleteEvent(TwitchSession session) {
-        super(session);
-    }
+public class MixerSession {
+    
 }

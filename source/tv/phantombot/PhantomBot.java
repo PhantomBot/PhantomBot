@@ -56,7 +56,6 @@ import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
 
-import java.net.BindException;
 import java.net.ServerSocket;
 
 import java.security.SecureRandom;
@@ -113,13 +112,12 @@ import tv.phantombot.panel.PanelSocketSecureServer;
 import tv.phantombot.panel.PanelSocketServer;
 import tv.phantombot.panel.NewPanelSocketServer;
 import tv.phantombot.script.Script;
-import tv.phantombot.script.ScriptApi;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
 import tv.phantombot.script.ScriptFileWatcher;
-import tv.phantombot.twitchwsirc.chat.Session;
-import tv.phantombot.twitchwsirc.pubsub.TwitchPubSub;
-import tv.phantombot.twitchwsirc.host.TwitchWSHostIRC;
+import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.wschat.twitch.pubsub.TwitchPubSub;
+import tv.phantombot.wschat.twitch.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
@@ -247,7 +245,7 @@ public final class PhantomBot implements Listener {
 
     /* Other Information */
     private static Boolean newSetup = false;
-    private Session session;
+    private TwitchSession session;
     private String chanName;
     private Boolean timer = false;
     private SecureRandom random;
@@ -628,7 +626,7 @@ public final class PhantomBot implements Listener {
         this.init();
 
         /* Start a session instance and then connect to WS-IRC @ Twitch. */
-        this.session = Session.instance(this.channelName, this.botName, this.oauth).connect();
+        this.session = TwitchSession.instance(this.channelName, this.botName, this.oauth).connect();
 
         /* Start a host checking instance. */
         if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
@@ -741,7 +739,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {session}
      */
-    public Session getSession() {
+    public TwitchSession getSession() {
         return this.session;
     }
 
@@ -2485,11 +2483,11 @@ public final class PhantomBot implements Listener {
         FileOutputStream stream = null;
 
         // Append the headers.
-        builder.append(String.join(",", headers) + "\n");
+        builder.append(String.join(",", headers)).append("\n");
 
         // Append all values.
         for (String[] value : values) {
-            builder.append(String.join(",", value) + "\n");
+            builder.append(String.join(",", value)).append("\n");
         }
 
         // Write the data to a file.

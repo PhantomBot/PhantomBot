@@ -14,15 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitchwsirc.chat;
+package tv.phantombot.wschat.twitch;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.channels.NotYetConnectedException;
 
-import tv.phantombot.twitchwsirc.chat.utils.MessageQueue;
-import tv.phantombot.twitchwsirc.chat.TwitchWSIRC;
+import tv.phantombot.wschat.twitch.chat.utils.MessageQueue;
 
-public class Session extends MessageQueue {
-    private static Session instance;
+public class TwitchSession extends MessageQueue {
+    private static TwitchSession instance;
     private final String botName;
     private final String channelName;
     private final String oAuth;
@@ -35,11 +36,11 @@ public class Session extends MessageQueue {
      * @param  {String} channelName
      * @param  {String} botName
      * @param  {String} oAuth
-     * @return {Session}
+     * @return {TwitchSession}
      */
-    public static Session instance(String channelName, String botName, String oAuth) {
+    public static TwitchSession instance(String channelName, String botName, String oAuth) {
         if (instance == null) {
-            instance = new Session(channelName, botName, oAuth);
+            instance = new TwitchSession(channelName, botName, oAuth);
         }
         return instance;
     }
@@ -51,15 +52,12 @@ public class Session extends MessageQueue {
      * @param  {String} botName
      * @param  {String} oAuth
      */
-    private Session(String channelName, String botName, String oAuth) {
+    private TwitchSession(String channelName, String botName, String oAuth) {
         super(channelName);
 
         this.channelName = channelName;
         this.botName = botName;
         this.oAuth = oAuth;
-
-        // Set the session for our message queue.
-        this.setSession(this);
     }
 
     /*
@@ -88,7 +86,7 @@ public class Session extends MessageQueue {
     public void sendRaw(String message) {
         try {
             this.twitchWSIRC.send(message);
-        } catch (Exception ex) {
+        } catch (NotYetConnectedException ex) {
             com.gmt2001.Console.debug.println("Failed to send message to Twitch: " + ex.getMessage());
         }
     }
@@ -112,7 +110,11 @@ public class Session extends MessageQueue {
     /*
      * Method that creates a connection with Twitch.
      */
-    public Session connect() {
+    public TwitchSession connect() {
+        // Start the write queue.
+        this.start(this);
+        
+        // Connect to Twitch.
         try {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, this);
             if (!this.twitchWSIRC.connectWSS(false)) {
@@ -127,6 +129,7 @@ public class Session extends MessageQueue {
     /*
      * Method that handles reconnecting with Twitch.
      */
+    @SuppressWarnings("SleepWhileInLoop")
     public void reconnect() {
         // Do not try to send messages anymore.
         this.setAllowSendMessages(false);
@@ -145,7 +148,7 @@ public class Session extends MessageQueue {
                     reconnected = this.twitchWSIRC.connectWSS(true);
                     // If we are connected, allow us the send messages again.
                     this.setAllowSendMessages(reconnected);
-                } catch (Exception ex) {
+                } catch (URISyntaxException ex) {
                     com.gmt2001.Console.err.println("Error when reconnecting to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                 }
             }
