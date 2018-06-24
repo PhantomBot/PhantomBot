@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitchwsirc.chat.utils;
+package tv.phantombot.wschat.twitch.chat.utils;
 
 public class Message {
     private final String message;

@@ -18,7 +18,7 @@ package tv.phantombot.event.irc.clearchat;
 
 import tv.phantombot.event.irc.IrcEvent;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 public class IrcClearchatEvent extends IrcEvent {
     private final String username;
@@ -28,12 +28,12 @@ public class IrcClearchatEvent extends IrcEvent {
     /*
      * Class constructor
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  username
      * @param {String}  reason
      * @param {String}  duration
      */
-    public IrcClearchatEvent(Session session, String username, String reason, String duration) {
+    public IrcClearchatEvent(TwitchSession session, String username, String reason, String duration) {
         super(session);
 
         this.username = username;
