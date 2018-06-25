@@ -12,8 +12,8 @@ services:
       - /opt/PhantomBot/addons
       - /opt/PhantomBot/botlogin.txt
       - /opt/PhantomBot/logs
-      - /opt/PhantomBot/phantombot.db
-      - /opt/PhantomBot/phantombot.db-journal
+      - /opt/PhantomBot/config/phantombot.db
+      - /opt/PhantomBot/config/phantombot.db-journal
     environment:
       # Twitch bot user
       - PHANTOMBOT_USER=
