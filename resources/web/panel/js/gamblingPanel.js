@@ -413,7 +413,7 @@
      * @function traffleRepick
      */
     function traffleRepick() {
-        sendCommand('traffle repick');
+        sendCommand('traffle draw');
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
     }
 
