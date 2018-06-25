@@ -492,6 +492,8 @@
 
         // Mark the raffle as off for the panel.
         $.inidb.set('raffleSettings', 'isActive', 'false');
+        $.inidb.set('raffleresults', 'raffleEntries', 0);
+        $.inidb.RemoveFile('raffleList');
     });
 
     $.reloadRaffle = reloadRaffle;
