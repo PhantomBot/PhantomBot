@@ -21,30 +21,17 @@
  */
 package tv.phantombot.httpserver;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import tv.phantombot.event.EventBus;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 
 import com.sun.net.httpserver.HttpsServer;
 import java.security.KeyStore;
-import java.security.PrivateKey;
 import java.security.KeyManagementException;
-import java.security.cert.X509Certificate;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import javax.security.cert.CertificateExpiredException;
-import javax.security.cert.CertificateNotYetValidException;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -53,15 +40,12 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLContext;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpsExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
-import org.json.JSONStringer;
 
 public class HTTPSServer {
     private HttpsServer server;

@@ -21,11 +21,9 @@
 
 package tv.phantombot.panel;
 
-import java.io.File;
 import java.io.FileInputStream;
-
-import java.net.InetSocketAddress;
-import java.net.InetAddress;
+import java.io.IOException;
+import java.security.KeyManagementException;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -34,6 +32,10 @@ import javax.net.ssl.TrustManagerFactory;
 import java.util.concurrent.Executors;
 
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 
@@ -64,7 +66,7 @@ public class PanelSocketSecureServer extends PanelSocketServer {
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
             this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), tasksAllowed));
-        } catch(Exception ex) {
+        } catch(IOException | KeyManagementException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CertificateException ex) {
             com.gmt2001.Console.out.println("PanelSocketSecureServer Exception: " + ex.getMessage());
             throw new Exception("Failed to create PanelSocketSecureServer");
         }
