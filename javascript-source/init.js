@@ -954,13 +954,6 @@
         });
 
         /*
-         * @event webPanelSocketConnected
-         */
-        $api.on($script, 'webPanelSocketConnected', function(event) {
-            callHook('webPanelSocketConnected', event, false);
-        });
-
-        /*
          * @event PubSubModerationTimeout
          */
         $api.on($script, 'PubSubModerationTimeout', function(event) {

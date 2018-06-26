@@ -41,9 +41,9 @@ public class BotImporter {
     public static void ImportRevlo(String fileName) {
         DataStore db = PhantomBot.instance().getDataStore();
         BufferedReader bufferedReader = null;
-        List<String> users = new ArrayList<String>();
-        List<String> points = new ArrayList<String>();
-        String brLine = "";
+        List<String> users = new ArrayList<>();
+        List<String> points = new ArrayList<>();
+        String brLine;
 
         com.gmt2001.Console.out.println("Importing RevloBot points...");
 
@@ -89,10 +89,10 @@ public class BotImporter {
     public static void ImportAnkh(String fileName) {
         DataStore db = PhantomBot.instance().getDataStore();
         BufferedReader bufferedReader = null;
-        List<String> users = new ArrayList<String>();
-        List<String> points = new ArrayList<String>();
-        List<String> time = new ArrayList<String>();
-        String brLine = "";
+        List<String> users = new ArrayList<>();
+        List<String> points = new ArrayList<>();
+        List<String> time = new ArrayList<>();
+        String brLine;
 
         com.gmt2001.Console.out.println("Importing AnkhBot points and time...");
 
@@ -120,7 +120,7 @@ public class BotImporter {
             com.gmt2001.Console.out.println("Importing done! " + (System.currentTimeMillis() - d) + "ms");
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [IOException] " + ex.getMessage());
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             com.gmt2001.Console.err.println("Failed to convert points and time from AnkhBot [Exception] " + ex.getMessage());
         } finally {
             if (bufferedReader != null) {
