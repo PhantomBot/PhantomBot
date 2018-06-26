@@ -19,6 +19,7 @@ package tv.phantombot.wschat.twitch;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
+import tv.phantombot.wschat.twitch.TwitchWSIRC;
 
 import tv.phantombot.wschat.twitch.chat.utils.MessageQueue;
 
