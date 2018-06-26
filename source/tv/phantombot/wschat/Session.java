@@ -14,14 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.webpanel;
 
-public class WebPanelSocketConnectedEvent extends WebPanelSocketEvent {
+package tv.phantombot.wschat;
 
-    /*
+public class Session {
+    private static final Session instance = new Session();
+    
+    /**
+     * Method that returns the session instance.
+     * 
+     * @return 
+     */
+    public static Session instance() {
+        return instance;
+    }
+    
+    /**
      * Class constructor.
      */
-    public WebPanelSocketConnectedEvent() {
-
+    protected Session() {
+        
     }
 }
