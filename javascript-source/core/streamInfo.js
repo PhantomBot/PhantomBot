@@ -378,7 +378,7 @@
             return 0;
         }
 
-        return jsonObject.getInt('_total');
+        return jsonObject.getInt('_total') - 1;
     }
 
     /**
