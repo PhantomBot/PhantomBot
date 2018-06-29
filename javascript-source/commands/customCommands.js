@@ -80,12 +80,11 @@
         }
 
         if (message.match(/\(useronly=.*\)/g)) {
-            var user = message.match(/\(useronly=(.*)\)/)[1];
-
+            var user = message.match(/\(useronly=(.*?)\)/)[1];
             if (!event.getSender().equalsIgnoreCase(user)) {
                 return null;
             }
-            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+            message = $.replace(message, message.match(/(\(useronly=.*?\))/)[1], '');
         }
 
         if (message.match(/\(readfile/)) {
