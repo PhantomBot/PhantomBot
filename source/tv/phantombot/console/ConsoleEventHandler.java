@@ -701,6 +701,6 @@ public class ConsoleEventHandler implements Listener {
         }
 
         // Handle any other commands.
-        PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), message);
+        PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), event.getMessage());
     }
 }
