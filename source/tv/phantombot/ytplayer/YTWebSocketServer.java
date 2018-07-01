@@ -243,6 +243,10 @@ public class YTWebSocketServer extends WebSocketServer {
                 dataInt = jsonStatus.getInt("volume");
                 currentVolume = dataInt;
                 EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
+            } else if (jsonStatus.has("errorcode")) {
+                dataInt = jsonStatus.getInt("errorcode");
+                com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
+                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
                 return;
