@@ -175,7 +175,7 @@
             }
 
             // Join the array to make a string.
-            timeString = timeStringParts.join(', ') + '.';
+            timeString = timeStringParts.join(', ');
 
             // Replace last comma with ", and".
             if (timeString.indexOf(',') !== -1) {
