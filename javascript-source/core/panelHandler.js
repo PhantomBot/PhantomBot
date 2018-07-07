@@ -129,7 +129,7 @@
      * @event twitchAutoHosted
      */
     $.bind('twitchAutoHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Host', {
+    	addObjectToArray('panelData', 'data', 'Auth-Host', {
 			'username': event.getHoster(),
 			'viewers' : event.getUsers(),
 			'date'    : $.systemTime(),
@@ -141,7 +141,7 @@
      * @event twitchHosted
      */
     $.bind('twitchHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Auto-Host', {
+    	addObjectToArray('panelData', 'data', 'Host', {
 			'username': event.getHoster(),
 			'viewers' : event.getUsers(),
 			'date'    : $.systemTime(),
