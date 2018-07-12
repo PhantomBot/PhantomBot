@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -41,7 +41,7 @@ import org.json.JSONObject;
 public class FrankerZAPIv1 {
 
     private static final FrankerZAPIv1 instance = new FrankerZAPIv1();
-    private static final String sAPIURL = "http://api.frankerfacez.com/v1";
+    private static final String sAPIURL = "https://api.frankerfacez.com/v1";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static FrankerZAPIv1 instance() {
@@ -85,12 +85,12 @@ public class FrankerZAPIv1 {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
-        HttpURLConnection urlConn;
+        HttpsURLConnection urlConn;
         String jsonText = "";
 
         try {
             urlRaw = new URL(urlAddress);
-            urlConn = (HttpURLConnection) urlRaw.openConnection();
+            urlConn = (HttpsURLConnection) urlRaw.openConnection();
             urlConn.setDoInput(true);
             urlConn.setRequestMethod("GET");
             urlConn.addRequestProperty("Content-Type", "application/json");
@@ -127,16 +127,17 @@ public class FrankerZAPIv1 {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } finally {
-            if (inputStream != null)
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
                     com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
                 }
+            }
         }
 
-        return(jsonResult);
+        return jsonResult;
     }
 
     /*

@@ -27,6 +27,8 @@
 
     var spinIcon = '<i style="color: var(--main-color)" class="fa fa-spinner fa-spin" />',
         keywords = [],
+        responses = [],
+        isRegexs = [],
         cooldowns = [],
         currentKey = '';
 
@@ -51,17 +53,24 @@
                     return;
                 }
 
-                html = '<table style="width: 100%"><tr><th>Keyword</th><th>Response</th><th style="float: right;"></td>';
+                html = '<table style="width: 100%"><tr><th></th><th>Count</th><th>Keyword</th><th>Response</th><th style="float: right;"></td>';
                 for (idx in msgObject['results'].sort(sortKeywordsTable)) {
                     var json = JSON.parse(msgObject['results'][idx]['value']),
-                        keyword = json.keyword;
-                        response = json.response;
-
+                        keyword = json.keyword,
+                        response = json.response,
+                        isRegex = json.isRegex,
+                        count = json.count;
+                
                     keywords[idx] = keyword;
+                    responses[idx] = response;
+                    isRegexs[idx] = isRegex;
+                
                     html += '<tr>' +
+                        '<td><button type="button" data-toggle="tooltip" title="Reset Keyword Count to 0." id="resetKeywordCount_' + idx + '" class="btn btn-default btn-xs" onclick="$.resetKeywordCount(\'' + idx + '\')"><i class="fa fa-undo" /> </button></td>' +
+                        '<td>' + (count == undefined ? 0 : count) + '</td>' +
                         '<td>' + (keyword.length > 15 ?  keyword.substring(0, 15) + '...' : keyword) + '</td>' +
                         '<td>' + (response.length > 45 ?  response.substring(0, 45) + '...' : response) + '</td>' +
-                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.editKeywordnew(\'' + keyword.replace(/\'/g, '__apos__').replace(/\\/g, '\\\\') + '\', \'' + response.replace(/\'/g, '__apos__').replace(/\\/g, '\\\\') + '\')"><i class="fa fa-edit" /> </button>' +
+                        '<td style="float: right;"><button type="button" class="btn btn-default btn-xs" onclick="$.editKeywordnew(\'' + idx + '\')"><i class="fa fa-edit" /> </button>' +
                         '<button type="button" id="deleteKeyword_' + idx + '" class="btn btn-default btn-xs" onclick="$.deleteKeyword(\'' + idx + '\')"><i class="fa fa-trash" /> </button></td> ' +
                         '</tr>';
                 }
@@ -71,8 +80,8 @@
             }
 
             if (panelCheckQuery(msgObject, 'keywords_cooldown')) {
-                for (idx in msgObject['results']) {
-                    cooldowns[msgObject['results'][idx]['key']] = msgObject['results'][idx]['value'];
+                for (idx in msgObject['results'].sort(sortKeywordsTable)) {
+                    cooldowns[idx] = msgObject['results'][idx]['value'];
                 }
                 sendDBKeys('keywords_keywords', 'keywords');
             }
@@ -84,19 +93,12 @@
      */
     function doQuery() {
         keywords = [];
+        responses = [];
+        isRegexs = [];
         cooldowns = [];
 
         sendDBKeys('keywords_cooldown', 'coolkey');
     }
-    
-    /**
-     * @function sortKeywordsTable
-     * @param {Object} a
-     * @param {Object} b
-     */
-    function sortKeywordsTable(a, b) {
-        return panelStrcmp(a.key, b.key);
-    };
 
     /**
      * @function addKeywordnew
@@ -111,6 +113,23 @@
         $('#keyword-cooldown').val('5');
         $('#keyword-regex').prop('checked', false);
         $('#keyword-modal').modal('toggle');
+    }
+
+    /**
+    * @function resetKeywordCount
+    * @param {String} idx
+    */
+    function resetKeywordCount(idx) {
+        $('#resetKeywordCount_' + idx).html(spinIcon);
+        setTimeout(function() {
+            sendDBUpdate('keywords_resetKeywordCount', 'keywords', keywords[idx], JSON.stringify({
+                keyword: keywords[idx],
+                response: responses[idx],
+                isRegex: isRegexs[idx],
+                count: 0
+            }));
+        }, TIMEOUT_WAIT_TIME);
+        setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME * 2);
     }
 
     /**
@@ -151,7 +170,7 @@
                 response: response,
                 isRegex: isRegex
             }));
-            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword, cooldown);
+            sendDBUpdate('keyword_cooldown_up', 'coolkey', (isRegex ? 'regex:' : '') + keyword.toLowerCase(), cooldown);
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); sendWSEvent('keywords', './handlers/keywordHandler.js', null, []); }, TIMEOUT_WAIT_TIME * 2);
     }
@@ -159,18 +178,25 @@
     /**
      * @function editKeywordnew
      */
-    function editKeywordnew(keyword, response) {
+    function editKeywordnew(idx) {
         $('#keyword-modal-title').html('Edit Keyword');
-        keyword = keyword.replace(/__apos__/g, '\'');
-        response = response.replace(/__apos__/g, '\'');
 
-        currentKey = keyword;
+        currentKey = keywords[idx];
 
-        $('#keyword-name').val(keyword.replace('regex:', ''));
-        $('#keyword-response').val(response);
-        $('#keyword-cooldown').val(isNaN(parseInt(cooldowns[keyword])) ? 5 : cooldowns[keyword]);
-        $('#keyword-regex').prop('checked', keyword.startsWith('regex:'));
+        $('#keyword-name').val(keywords[idx].replace('regex:', ''));
+        $('#keyword-response').val(responses[idx]);
+        $('#keyword-cooldown').val(isNaN(parseInt(cooldowns[idx])) ? 5 : cooldowns[idx]);
+        $('#keyword-regex').prop('checked', isRegexs[idx]);
         $('#keyword-modal').modal('toggle');
+    }
+
+    /**
+     * @function sortKeywordsTable
+     * @param {Object} a
+     * @param {Object} b
+     */
+    function sortKeywordsTable(a, b) {
+        return panelStrcmp(a.key, b.key);
     }
 
     // Import the HTML file for this panel.
@@ -203,4 +229,5 @@
     $.editKeywordnew = editKeywordnew;
     $.deleteKeyword = deleteKeyword;
     $.updateKeyword = updateKeyword;
+    $.resetKeywordCount = resetKeywordCount;
 })();

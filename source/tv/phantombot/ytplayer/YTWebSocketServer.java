@@ -126,6 +126,7 @@ public class YTWebSocketServer extends WebSocketServer {
     private int currentVolume = 0;
     private int currentState = -10;
     private boolean clientConnected = false;
+    private int bufferCounter = 0;
 
     private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
@@ -142,10 +143,7 @@ public class YTWebSocketServer extends WebSocketServer {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, false, webSocket));
     }
 
-    @Override
-    public void onStart() {
-        com.gmt2001.Console.debug.println("Server Started");
-    }
+
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
@@ -168,7 +166,7 @@ public class YTWebSocketServer extends WebSocketServer {
         String           dataString;
         int              dataInt;
 
-        // com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
+        //com.gmt2001.Console.out.println("YTWebSocketServer::onMessage("+jsonString+")");
 
         try {
             jsonObject = new JSONObject(jsonString);
@@ -214,16 +212,20 @@ public class YTWebSocketServer extends WebSocketServer {
             jsonStatus = jsonObject.getJSONObject("status");
             if (jsonStatus.has("state")) {
                 dataInt = jsonStatus.getInt("state");
-
                 /* If the current status is buffering and then we receive an unstarted event, then the player
-                 * is stuck. This normally happens with videos that are not allowed to play in the regioin
-                 * and are not returned as such by the API lookup. Skip the song.
+                 * is stuck. This normally happens with videos that are not allowed to play in the region
+                 * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
+                 * we get back the buffering state a few times.
                  */
                 if (currentState == 3 && dataInt == -1) {
                     currentState = dataInt;
                     playerState = YTPlayerState.getStateFromId(dataInt);
-                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                    if (bufferCounter++ == 3) {
+                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                        bufferCounter = 0;
+                    }
                 } else {
+                    bufferCounter = 0;
                     currentState = (dataInt == 200 ? currentState : dataInt);
                     playerState = YTPlayerState.getStateFromId(dataInt);
                     EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
@@ -241,6 +243,10 @@ public class YTWebSocketServer extends WebSocketServer {
                 dataInt = jsonStatus.getInt("volume");
                 currentVolume = dataInt;
                 EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
+            } else if (jsonStatus.has("errorcode")) {
+                dataInt = jsonStatus.getInt("errorcode");
+                com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
+                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
                 return;
@@ -284,6 +290,8 @@ public class YTWebSocketServer extends WebSocketServer {
                 }
             } else if (jsonObject.getString("command").equals("loadpl")) {
                 EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jsonObject.getString("playlist")));
+            } else if (jsonObject.getString("command").equals("deletecurrent")) {
+                EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
                 return;

@@ -22,26 +22,17 @@
 package tv.phantombot.httpserver;
 
 import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import java.nio.charset.StandardCharsets;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.BindException;
-import java.net.URI;
 
 import tv.phantombot.PhantomBot;
 
-import org.json.JSONStringer;
 
 public class HTTPServer {
     private HttpServer server;
@@ -72,7 +63,6 @@ public class HTTPServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            // For scania.
             if (PhantomBot.betap) {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);

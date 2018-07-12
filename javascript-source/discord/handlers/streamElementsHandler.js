@@ -3,7 +3,7 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'streamelementsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'streamelementsChannel', ''),
         announce = false;
 
@@ -13,7 +13,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamElementsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamelementsToggle', false);
-            message = $.getIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'streamelementsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamelementsChannel', '');
         }
     });
@@ -29,7 +29,7 @@
      * @event streamElementsDonation
      */
     $.bind('streamElementsDonation', function(event) {
-        if (toggle === false || announce === false || channelName == '') {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 
@@ -70,7 +70,14 @@
             s = $.replace(s, '(message)', donationMessage);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(87, 113, 220)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/streamelements-embed-icon.png')
+                    .withTitle($.lang.get('discord.streamelementshandler.embed.title'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

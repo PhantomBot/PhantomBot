@@ -14,7 +14,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author ScaniaTV
 -->
 
@@ -39,48 +39,48 @@
                 <div class="modal-body">
                     <lable><b>Command:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip" 
+                        <input id="command-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip"
                         title="This is the command name. It cannot be edited." disabled />
                     </div>
 
                     <lable><b>Response:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <textarea id="command-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip" 
+                        <textarea id="command-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip"
                         title="This is the response of the command."/>
                     </div>
 
                     <lable><b>Permission:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-permission-modal" type="number" min="0" max="1" class="form-control" placeholder="Permission" data-toggle="tooltip" 
+                        <input id="command-permission-modal" type="number" min="0" max="1" class="form-control" placeholder="Permission" data-toggle="tooltip"
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
                     <lable><b>Cost:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-cost-modal" type="number" min="0" max="1" class="form-control" placeholder="Cost" data-toggle="tooltip" 
+                        <input id="command-cost-modal" type="number" min="0" max="1" class="form-control" placeholder="Cost" data-toggle="tooltip"
                         title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
                     </div>
 
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip" 
+                        <input id="command-cooldown-modal" type="number" class="form-control" placeholder="Cooldown" data-toggle="tooltip"
                         title="Cooldown of the command in seconds." />
-                        <input type="checkbox" id="command-edit-global" checked data-toggle="tooltip" 
+                        <input type="checkbox" id="command-edit-global" checked data-toggle="tooltip"
                         title="When checked, cooldowns will be applied to everyone in the server, and not just per-user." > Global</input>
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
-                        title="Channel that you only want this command to work in, leave it blank to make the command global. 
+                        <input id="command-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip"
+                        title="Channel that you only want this command to work in, leave it blank to make the command global.
                         If you want multiple channels separate them with a comma and space. Never use a #"/>
                     </div>
 
                     <lable><b>Alias:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        <input id="command-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip"
                         title="Make an alias for this command."/>
-                    </div> 
+                    </div>
                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.updateDiscordCommand(null, false)">Update</button>
@@ -101,48 +101,48 @@
                 <div class="modal-body">
                     <lable><b>Command:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip" 
+                        <input id="command-add-name-modal" type="text" class="form-control" placeholder="Command" data-toggle="tooltip"
                         title="Name that you want the command to be, this cannot be changed later."/>
                     </div>
 
                     <lable><b>Response:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <textarea id="command-add-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip" 
+                        <textarea id="command-add-response-modal" type="text" class="form-control" placeholder="Message" data-toggle="tooltip"
                         title="Reponse of this command."/>
                     </div>
 
                     <lable><b>Permission:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-permission-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        <input id="command-add-permission-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip"
                         title="Permission of the command, 0 means it will work everyone and 1 means it's only for administrators." />
                     </div>
 
                     <lable><b>Cost:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-cost-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        <input id="command-add-cost-modal" type="number" min="0" max="1" class="form-control" value="0" placeholder="0" data-toggle="tooltip"
                         title="The cost of this command, note that users have to have their Discord linked in the bot with !accountlink" />
                     </div>
 
                     <lable><b>Cooldown:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip" 
+                        <input id="command-add-cooldown-modal" type="number" class="form-control" value="0" placeholder="0" data-toggle="tooltip"
                         title="Cooldown of the command in seconds." />
-                        <input type="checkbox" id="command-add-global" checked data-toggle="tooltip" 
+                        <input type="checkbox" id="command-add-global" checked data-toggle="tooltip"
                         title="When checked, cooldowns will be applied to everyone in the server, and not just per-user." > Global</input>
                     </div>
 
                     <lable><b>Channel:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip" 
-                        title="Channel that you only want this command to work in, leave it blank to make the command global. 
+                        <input id="command-add-channel-modal" type="text" class="form-control" placeholder="Channel Name" data-toggle="tooltip"
+                        title="Channel that you only want this command to work in, leave it blank to make the command global.
                         If you want multiple channels separate them with a comma and space. Never use a #"/>
                     </div>
 
                     <lable><b>Alias:</b></lable>
                     <div class="form-group" onkeypress="return event.keyCode != 13">
-                        <input id="command-add-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip" 
+                        <input id="command-add-alias-modal" type="text" class="form-control" placeholder="Alias name" data-toggle="tooltip"
                         title="Make an alias for this command."/>
-                    </div> 
+                    </div>
                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.updateDiscordCommand(null, 'false')">Add</button>
@@ -182,7 +182,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gamble_max"><small>Slot Rewards</small></label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.setDiscordSlotRewards()">Update</button>
                 <input style="width: 15%" type="number" min="0" id="discordSlotRewards0Input" placeholder="Points"
                        data-toggle="tooltip" title="Points for First Value">
@@ -201,7 +201,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gamble_max"><small>Slot Emojis&nbsp;&nbsp;&nbsp;</small></label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.setSlotEmojis()">Update</button>
                 <input style="width: 15%" type="text" id="slotEmoji0Input" placeholder="Emoji"
                        data-toggle="tooltip" title="Emoji for First Value">
@@ -224,7 +224,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gamble_max"><small>Roll Rewards</small></label>
-                <button type="button" class="btn btn-primary inline pull-right" 
+                <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.setDiscordRollRewards()">Update</button>
                 <input style="width: 13%" type="number" min="0" id="discordRollRewards0Input" placeholder="Points"
                        data-toggle="tooltip" title="Points for Double 1's">
@@ -269,7 +269,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gamble_winGainPercent"><small>Winning Percent</small></label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winGainPercent', 'games/gambling.js', 'discordGambling', 'winGainPercent')">Submit</button>
-                <input type="number" min="1" class="form-control" id="gamble_winGainPercent" placeholder="Amount" data-toggle="tooltip" 
+                <input type="number" min="1" class="form-control" id="gamble_winGainPercent" placeholder="Amount" data-toggle="tooltip"
                         title="The percent of points the winner wins when gambling. Max is 100." >
             </div>
         </form>
@@ -278,7 +278,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gamble_winRange"><small>Winning Range</small></label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamble_winRange', 'games/gambling.js', 'discordGambling', 'winRange')">Submit</button>
-                <input type="number" min="1" class="form-control" id="gamble_winRange" placeholder="Amount" data-toggle="tooltip" 
+                <input type="number" min="1" class="form-control" id="gamble_winRange" placeholder="Amount" data-toggle="tooltip"
                         title="Range from where people can win, anything under the number you put here will be a lost. Max is 100." >
             </div>
         </form>
@@ -321,7 +321,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="modLogChannelInput">Channel name</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('modLogChannelInput', 'core/moderation.js', 'discordSettings', 'modLogChannel')">Submit</button>
-                <input type="text" class="form-control" id="modLogChannelInput" placeholder="Channel name" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="modLogChannelInput" placeholder="Channel name" data-toggle="tooltip"
                     title="Channel that Twitch moderation logs will be said in."/>
             </div>
         </form>
@@ -351,7 +351,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="tipeeeStreamMessageInput">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('tipeeestreamMessageInput', 'handlers/tipeeeStreamHandler.js', 'discordSettings', 'tipeeestreamMessage')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="tipeeestreamMessageInput" placeholder="Donation Message" data-toggle="tooltip"
                     title="Set a donation message for TipeeeStream. Available tags: (name), (currency), (amount), (message), and (formattedamount)"/>
             </div>
         </form>
@@ -390,7 +390,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamElementsMessageInput">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamelementsMessageInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamelementsMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="streamelementsMessageInput" placeholder="Donation Message" data-toggle="tooltip"
                     title="Set a donation message for StreamElements. Available tags: (name), (currency), (amount), (message)"/>
             </div>
         </form>
@@ -400,45 +400,6 @@
                 <label for="streamElementsChannelInput">Alert Channel</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamelementsChannelInput', 'handlers/streamElementsHandler.js', 'discordSettings', 'streamelementsChannel')">Submit</button>
                 <input type="text" class="form-control" id="streamelementsChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
-            </div>
-        </form>
-    </div>
-    </div>
-
-    <h3>StreamTip Alert Settings</h3>
-    <div>
-    <div id="_discord_streamTipHandlerDisabled" />
-    <div id="_discord_streamTipHandler">
-        <table>
-            <tr class="textList">
-                <td>Toggle StreamTip Alerts</td>
-                <td style="width: 25px"><div id="streamtipToggleInput" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button" onclick="$.updateDiscordTable('streamtipToggleInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipToggle', 'true')">
-                        <i class="fa fa-circle" /></div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button" onclick="$.updateDiscordTable('streamtipToggleInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipToggle', 'false')">
-                        <i class="fa fa-circle-o" /></div>
-                </td>
-            </tr>
-        </table>
-        <br>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Donation Message</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipMessageInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamtipMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
-                    title="Set a donation message for StreamTip. Available tags: (name), (currency), (amount), and (message)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Alert Channel</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamtipChannelInput', 'handlers/streamtipHandler.js', 'discordSettings', 'streamtipChannel')">Submit</button>
-                <input type="text" class="form-control" id="streamtipChannelInput" placeholder="Channel Name" data-toggle="tooltip" title="Set the channel that announcements for this module will be made in."/>
             </div>
         </form>
     </div>
@@ -468,7 +429,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="streamlabsMessageInput">Donation Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('streamlabsMessageInput', 'handlers/streamlabsHandler.js', 'discordSettings', 'streamlabsMessage')">Submit</button>
-                <input type="text" class="form-control" id="streamlabsMessageInput" placeholder="Donation Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="streamlabsMessageInput" placeholder="Donation Message" data-toggle="tooltip"
                     title="Set a donation message for StreamTip. Available tags: (name), (currency), (amount), and (message)"/>
             </div>
         </form>
@@ -515,7 +476,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="joinMessageInput">Join Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('joinMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'joinMessage')">Submit</button>
-                <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="joinMessageInput" placeholder="Join Message" data-toggle="tooltip"
                     title="Set a message for when a new user joins your server. Available tags: (name), (role), and (@name)"/>
             </div>
         </form>
@@ -524,7 +485,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="greetingsDefaultGroupInput">Join Role</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('greetingsDefaultGroupInput', 'systems/greetingsSystem.js', 'discordSettings', 'greetingsDefaultGroup')">Submit</button>
-                <input type="text" class="form-control" id="greetingsDefaultGroupInput" placeholder="Join Role" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="greetingsDefaultGroupInput" placeholder="Join Role" data-toggle="tooltip"
                     title="Set a role users will be assigned when joining the server. Note that join alerts has to be on."/>
             </div>
         </form>
@@ -533,7 +494,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Part Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('partMessageInput', 'systems/greetingsSystem.js', 'discordSettings', 'partMessage')">Submit</button>
-                <input type="text" class="form-control" id="partMessageInput" placeholder="Part Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="partMessageInput" placeholder="Part Message" data-toggle="tooltip"
                     title="Set a message for when a new user leaves your server. Available tags: (name), and (@name)"/>
             </div>
         </form>
@@ -600,7 +561,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="onlineMessageInput">Online Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('onlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'onlineMessage')">Submit</button>
-                <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="onlineMessageInput" placeholder="Online Message" data-toggle="tooltip"
                     title="Set a message for when you go live on Twitch. Available tags: (title)"/>
             </div>
         </form>
@@ -609,7 +570,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="offlineMessageInput">Offline Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('offlineMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'offlineMessage')">Submit</button>
-                <input type="text" class="form-control" id="offlineMessageInput" placeholder="Offline Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="offlineMessageInput" placeholder="Offline Message" data-toggle="tooltip"
                     title="Set a message for when you go offline on Twitch. Available tags: (title)"/>
             </div>
         </form>
@@ -618,7 +579,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Game Change Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gameMessageInput', 'handlers/streamHandler.js', 'discordSettings', 'gameMessage')">Submit</button>
-                <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="gameMessageInput" placeholder="Game Change Message" data-toggle="tooltip"
                     title="Set a message for when you switch games on Twitch. Available tags: (title)"/>
             </div>
         </form>
@@ -869,7 +830,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Subscribe Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispSubMessageInput" placeholder="Subscribe Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="gamewispSubMessageInput" placeholder="Subscribe Message" data-toggle="tooltip"
                 title="Set a message for when someone subscribes to you with GameWisp. Available tags: (name) and (tier)"/>
             </div>
         </form>
@@ -878,7 +839,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Tier-Up Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispReSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispReSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispReSubMessageInput" placeholder="Tier-Up Subscribe Message" data-toggle="tooltip" 
+                <input type="text" class="form-control" id="gamewispReSubMessageInput" placeholder="Tier-Up Subscribe Message" data-toggle="tooltip"
                 title="Set a message for when someone tiers up on GameWisp. Available tags: (name), (tier), and (months)"/>
             </div>
         </form>
@@ -887,7 +848,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Benefits Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispTierMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispTierMessage')">Submit</button>
-                <input type="text" class="form-control" id="gamewispTierMessageInput" placeholder="Tier-Up Message"data-toggle="tooltip" 
+                <input type="text" class="form-control" id="gamewispTierMessageInput" placeholder="Tier-Up Message"data-toggle="tooltip"
                 title="Set a message for when someone tiers up on GameWisp. Available tags: (name) and (tier)" />
             </div>
         </form>
@@ -952,7 +913,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Clips Message</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('clipsMessageInput', 'handlers/clipHandler.js', 'discordSettings', 'clipsMessage')">Submit</button>
-                <input type="text" class="form-control" id="clipsMessageInput" placeholder="Clips Message" data-toggle="tooltip" title="Set a message for a detected clip. Available tags: (name) (url)"/>
+                <input type="text" class="form-control" id="clipsMessageInput" placeholder="Clips Message"
+                    data-toggle="tooltip" title="Set a message for a detected clip. Available tags: (name) (url) and (embedurl) which embeds the clip."/>
             </div>
         </form>
 

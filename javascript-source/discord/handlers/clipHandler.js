@@ -4,8 +4,9 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'clipsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'clipsMessage', '(name) created a clip: (url)'),
-        channelName = $.getSetIniDbString('discordSettings', 'clipsChannel', '');
+        message = $.getSetIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!'),
+        channelName = $.getSetIniDbString('discordSettings', 'clipsChannel', ''),
+        announce = false;
 
     /**
      * @event webPanelSocketUpdate
@@ -13,7 +14,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/clipHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'clipsToggle', false);
-            message = $.getIniDbString('discordSettings', 'clipsMessage', '(name) created a clip: (url)');
+            message = $.getIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!');
             channelName = $.getIniDbString('discordSettings', 'clipsChannel', '');
         }
     });
@@ -21,13 +22,13 @@
     /*
      * @event twitchClip
      */
-    $.bind('twitchClip', function(event) {
+	$.bind('twitchClip', function(event) {
         var creator = event.getCreator(),
             url = event.getClipURL(),
             s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
-        if (toggle === false) {
+        if (announce === false || toggle === false) {
             return;
         }
 
@@ -39,7 +40,23 @@
             s = $.replace(s, '(url)', url);
         }
 
-        $.discord.say(channelName, s);
+        if (s.match(/\(embedurl\)/g)) {
+            s = $.replace(s, '(embedurl)', url);
+        }
+
+        if (message.indexOf('(embedurl)') !== -1) {
+            $.discord.say(channelName, s);
+        } else {
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                        .withColor(100, 65, 164)
+                        .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/clip-embed-icon.png')
+                        .withTitle($.lang.get('discord.cliphandler.clip.embedtitle'))
+                        .appendDescription(s)
+                        .withUrl(url)
+                        .withTimestamp(Date.now())
+                        .withFooterText('Twitch')
+                        .withFooterIcon($.twitchcache.getLogoLink()).build());
+        }
     });
 
     /*
@@ -60,7 +77,7 @@
         if (command.equalsIgnoreCase('clipstoggle')) {
             toggle = !toggle;
             $.setIniDbBoolean('discordSettings', 'clipsToggle', toggle);
-            $.discord.say(channel, $.discord.userPrefix(mention) + (toggle ? $.lang.get('cliphandler.toggle.on') : $.lang.get('cliphandler.toggle.off')));
+            $.discord.say(channel, $.discord.userPrefix(mention) + (toggle ? $.lang.get('discord.cliphandler.toggle.on') : $.lang.get('discord.cliphandler.toggle.off')));
         }
 
         /*
@@ -68,13 +85,13 @@
          */
         if (command.equalsIgnoreCase('clipsmessage')) {
             if (action === undefined) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.message.usage'));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.message.usage'));
                 return;
             }
 
             message = argsString;
             $.setIniDbString('discordSettings', 'clipsMessage', message);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.message.set', message));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.message.set', message));
         }
 
         /*
@@ -82,13 +99,13 @@
          */
         if (command.equalsIgnoreCase('clipschannel')) {
             if (action === undefined) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.channel.usage', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.usage', channelName));
                 return;
             }
 
             channelName = action.replace('#', '').toLowerCase();
             $.setIniDbString('discordSettings', 'clipsChannel', channelName);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.channel.set', channelName));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.set', channelName));
         }
 
         /*
@@ -96,7 +113,7 @@
          */
         if (command.equalsIgnoreCase('lastclip')) {
             var url = $.getIniDbString('streamInfo', 'last_clip_url', $.lang.get('cliphandler.noclip'));
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.lastclip', url));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.lastclip', url));
         }
 
         /*
@@ -104,7 +121,7 @@
          */
         if (command.equalsIgnoreCase('topclip')) {
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('cliphandler.topclip', url));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.topclip', url));
         }
     });
 
@@ -117,5 +134,7 @@
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipschannel', 1);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'lastclip', 0);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'topclip', 0);
+
+        announce = true;
     });
 })();

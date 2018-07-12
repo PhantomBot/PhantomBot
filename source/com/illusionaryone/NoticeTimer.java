@@ -28,7 +28,7 @@ import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 import com.google.common.collect.Maps;
 
@@ -49,7 +49,7 @@ public class NoticeTimer implements Runnable, Listener {
     private static final Map<String, NoticeTimer> instances = Maps.newHashMap();
     private Thread noticeThread;
     private String channel;
-    private Session session;
+    private TwitchSession session;
     private ScriptEventManager scriptEventManager = ScriptEventManager.instance();
     private String botname;
 
@@ -64,10 +64,10 @@ public class NoticeTimer implements Runnable, Listener {
      * The instance creation for a NoticeTimer object.
      *
      * @param    String        Channel - The name of the channel that this object belongs to.
-     * @param    Session       Session - The WSIRC Session object to send data to.
+     * @param    TwitchSession       TwitchSession - The WSIRC TwitchSession object to send data to.
      * @return   NoticeTimer   The newly created, or existing, instanced object.
      */
-    public static NoticeTimer instance(String channel, Session session) {
+    public static NoticeTimer instance(String channel, TwitchSession session) {
         if (channel.startsWith("#")) {
             channel = channel.substring(1);
         }
@@ -85,10 +85,10 @@ public class NoticeTimer implements Runnable, Listener {
      * The constructor for the NoticeTimer object.
      *
      * @param    String        Channel - The name of the channel that this object belongs to.
-     * @param    Session       Session - The WSIRC Session object to send data to.
+     * @param    TwitchSession       TwitchSession - The WSIRC TwitchSession object to send data to.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private NoticeTimer(String channel, Session session) {
+    private NoticeTimer(String channel, TwitchSession session) {
         this.channel = channel;
         this.session = session;
         this.botname = PhantomBot.instance().getBotName();

@@ -142,6 +142,22 @@
             return '';
         }
     }
+    
+    /**
+     * @function getLogo
+     * @export $
+     * @param channelName
+     * @returns {Url}
+     */
+    function getLogo(channelName) {
+        var channel = $.twitch.GetChannel(channelName);
+
+        if (!channel.isNull('logo') && channel.getInt('_http') == 200) {
+            return channel.getString('logo');
+        } else {
+            return 0;
+        }
+    }
 
     /**
      * @function getStreamUptimeSeconds
@@ -303,6 +319,9 @@
      * @param channelName
      */
     function getFollowAge(sender, username, channelName) {
+        username = $.user.sanitize(username);
+        channelName = $.user.sanitize(channelName);
+
         var user = $.twitch.GetUserFollowsChannel(username, channelName);
 
         if (user.getInt('_http') === 404) {
@@ -313,7 +332,7 @@
         var date = new Date(user.getString('created_at')),
             dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
             dateFinal = dateFormat.format(date),
-            days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
+            days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -328,7 +347,7 @@
      * @param event
      */
     function getChannelAge(event) {
-        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]));
+        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])));
 
         if (channelData.getInt('_http') === 404) {
             $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
@@ -341,9 +360,9 @@
             days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
 
         if (days > 0) {
-            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]), dateFinal, days));
+            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
         } else {
-            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : event.getArgs()[0]), dateFinal));
+            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal));
         }
     }
 
@@ -359,7 +378,7 @@
             return 0;
         }
 
-        return jsonObject.getInt('_total');
+        return jsonObject.getInt('_total') - 1;
     }
 
     /**
@@ -451,6 +470,7 @@
     $.getPlayTime = getPlayTime;
     $.getFollows = getFollows;
     $.getGame = getGame;
+    $.getLogo = getLogo;
     $.getStatus = getStatus;
     $.getStreamStartedAt = getStreamStartedAt;
     $.getStreamUptime = getStreamUptime;

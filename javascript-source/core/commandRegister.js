@@ -100,6 +100,9 @@
         }
 
         $.inidb.del('permcom', command);
+        $.inidb.del('pricecom', command);
+        $.inidb.del('cooldown', command);
+        $.inidb.del('paycom', command);
         $.inidb.del('disabledCommands', command);
     }
 
@@ -128,6 +131,7 @@
         }
 
         $.inidb.del('permcom', command + ' ' + subcommand);
+        $.inidb.del('pricecom', command + ' ' + subcommand);
     }
 
     /*

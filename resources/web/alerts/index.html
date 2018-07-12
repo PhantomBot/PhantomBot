@@ -14,34 +14,48 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
 <!DOCTYPE html>
+
 <html>
     <head>
+        <!-- Title -->
         <title>PhantomBot Alerts</title>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/common/js/jquery-ui/jquery-ui.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Main styles. -->
+        <style>
+            body {
+                background-color: transparent;
+            }
 
-        <script src="/common/js/jquery-ui/external/jquery/jquery.min.js"></script>
-        <script src="/common/js/jquery-ui/jquery-ui.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            .main-alert {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
 
-        <script src="/common/js/wsConfig.js"></script>
-        <script src="/alerts/js/alertHandler.js"></script>
-
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="stylesheet" type="text/css" href="/style.css">
-
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+        <!-- Load our favicon -->
+        <link rel="icon" href="/favicon.ico" />
     </head>
 
-    <body style="background-color: transparent">
-        <div id="imageLocation"> </div>
+    <!-- Main body -->
+    <body>
+        <div class="main-alert">
+            <!-- Where the gif gets played. -->
+            <div id="alert"></div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="/common/js/jquery-ui/external/jquery/jquery.min.js"></script>
+        <!-- Bot config file -->
+        <script src="/common/js/wsConfig.js"></script>
+        <!-- Reconnecting socket -->
+        <script src="/alerts/js/reconnectingWS.min.js"></script>
+        <!-- File that handles alerts -->
+        <script src="/alerts/js/index.js"></script>
     </body>
 </html>

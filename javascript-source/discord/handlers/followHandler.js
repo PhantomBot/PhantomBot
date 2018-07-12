@@ -32,7 +32,7 @@
         var follower = event.getFollower(),
             s = message;
 
-        if (toggle === false || announce === false || channelName == '') {
+        if (announce === false || toggle === false  || channelName == '') {
             return;
         }
 
@@ -40,7 +40,14 @@
             s = $.replace(s, '(name)', follower);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(20, 184, 102)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/follow-embed-icon.png')
+                    .withTitle($.lang.get('discord.followhandler.follow.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import tv.phantombot.event.irc.IrcEvent;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 public abstract class IrcMessageEvent extends IrcEvent {
     private final String sender;
@@ -31,11 +31,11 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /*
      * Class constructor.
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  sender
      * @param {String}  message
      */
-    protected IrcMessageEvent(Session session, String sender, String message) {
+    protected IrcMessageEvent(TwitchSession session, String sender, String message) {
         super(session);
 
         this.sender = sender;
@@ -46,12 +46,12 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /*
      * Class constructor.
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  sender
      * @param {String}  message
      * @param {Map}     tags
      */
-    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
+    protected IrcMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session);
 
         this.sender = sender;

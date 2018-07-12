@@ -14,7 +14,12 @@
             var json = JSON.parse($.inidb.get('keywords', keys[i]));
 
             if (json.isRegex) {
-                json.regexKey = new RegExp(json.keyword.replace('regex:', ''));
+                try {
+                    json.regexKey = new RegExp(json.keyword.replace('regex:', ''));
+                } catch (ex) {
+                    $.log.error('Bad regex detected in keyword [' + keys[i] + ']: ' + ex.message);
+                    continue;
+                }
             }
 
             keywords.push(json);
@@ -25,9 +30,9 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        var message = event.getMessage().toLowerCase(),
+        var message = event.getMessage(),
             sender = event.getSender(),
-            messageParts = message.split(' '),
+            messageParts = message.toLowerCase().split(' '),
             str = '',
             json;
 
@@ -51,6 +56,8 @@
                     }
                     // Keyword just has a normal response.
                     else {
+                        json.response = $.replace(json.response, '.*\(keywordcount\s(.*)\).*', '');
+                        json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
                         $.say($.tags(event, json.response, false));
                     }
                     break;
@@ -60,7 +67,7 @@
                     // Create a string to match on the keyword.
                     str += (messageParts[idx] + ' ');
                     // Either match on the exact word or phrase if it contains it.
-                    if ((json.keyword.includes(' ') && str.includes(json.keyword)) || messageParts[idx].equals(json.keyword)) {
+                    if ((json.keyword.includes(' ') && str.includes(json.keyword)) || messageParts[idx].equalsIgnoreCase(json.keyword)) {
                         // Make sure the keyword isn't on cooldown.
                         if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
                             return;
@@ -71,6 +78,8 @@
                         }
                         // Keyword just has a normal response.
                         else {
+                            json.response = $.replace(json.response, '.*\(keywordcount\s(.*)\).*', '');
+                            json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
                             $.say($.tags(event, json.response, false));
                         }
                         break;
@@ -114,13 +123,13 @@
                 subAction = subAction.toLowerCase();
 
                 var json = JSON.stringify({
-                    keyword: (subAction + ''),
+                    keyword: (args[1] + ''),
                     response: response,
                     isRegex: subAction.startsWith('regex:')
                 });
 
                 $.setIniDbString('keywords', subAction, json);
-                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', subAction));
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', (args[1] + '')));
                 loadKeywords();
             }
 

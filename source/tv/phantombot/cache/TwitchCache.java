@@ -68,8 +68,8 @@ public class TwitchCache implements Runnable {
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
-    private String previewLink = "";
-    private String logoLink = "";
+    private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
+    private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
@@ -189,6 +189,8 @@ public class TwitchCache implements Runnable {
         String createdAt = "";
         String clipURL = "";
         String creator = "";
+        String title = "";
+        JSONObject thumbnailObj = new JSONObject();
         int largestTrackingId = 0;
 
         if (clipsObj.has("clips")) {
@@ -206,6 +208,8 @@ public class TwitchCache implements Runnable {
                         createdAt = clipData.getString("created_at");
                         clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
                         creator = clipData.getJSONObject("curator").getString("display_name");
+                        thumbnailObj = clipData.getJSONObject("thumbnails");
+                        title = clipData.getString("title");
                     }
                 }
             }
@@ -214,7 +218,7 @@ public class TwitchCache implements Runnable {
         if (clipURL.length() > 0) {
             setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
             setDBString("last_clip_url", clipURL);
-            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator));
+            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, title, thumbnailObj));
         }
     }
 
@@ -279,7 +283,7 @@ public class TwitchCache implements Runnable {
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
-                    this.previewLink = "";
+                    this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                     this.streamCreatedAt = "";
                     this.viewerCount = 0;
                 }
@@ -350,14 +354,14 @@ public class TwitchCache implements Runnable {
 
                         if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitle)) {
                             setDBString("title", streamTitle);
-                            this.streamTitle = streamTitle;					
+                            this.streamTitle = streamTitle;
                             /* Send an event if we did not just send a TwitchOnlineEvent. */
                             if (!sentTwitchOnlineEvent) {
                                 this.streamTitle = streamTitle;
                                 EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
                             }
                             this.streamTitle = streamTitle;
-                        }			
+                        }
                         if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitle)) {
                             forcedStreamTitleUpdate = false;
                         }
@@ -465,7 +469,7 @@ public class TwitchCache implements Runnable {
     public void setStreamStatus(String streamTitle) {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
-        EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));  
+        EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
     }
 
     /*

@@ -311,7 +311,7 @@
          */
         if (command.equalsIgnoreCase('reconnect')) {
             if ($.isBot(sender)) {
-                $.session.getSocket().close();
+                $.session.reconnect();
             }
         }
 

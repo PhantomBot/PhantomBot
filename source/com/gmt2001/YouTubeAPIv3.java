@@ -451,6 +451,30 @@ public class YouTubeAPIv3 {
                };
     }
 
+    public int[] GetVideoInfo(String id) {
+        int licenseRetval = 0;
+        int embedRetval = 0;
+
+        JSONObject jsonObject = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=status");
+
+        if (jsonObject.getBoolean("_success")) {
+            if (jsonObject.getInt("_http") == 200) {
+                JSONArray items = jsonObject.getJSONArray("items");
+                if (items.length() > 0) {
+                    JSONObject item = items.getJSONObject(0);
+                    JSONObject status = item.getJSONObject("status");
+
+                    String license = status.getString("license");
+                    boolean embeddable = status.getBoolean("embeddable");
+
+                    licenseRetval = license.equals("creativeCommon") ? 1 : 0;
+                    embedRetval = embeddable == true ? 1 : 0;
+                }
+            }
+        }
+        return new int[] { licenseRetval, embedRetval };
+    }
+
     public int max() {
         return Integer.parseInt(simpleScramble.simpleFixedUnscramble("FHgb"));
     }

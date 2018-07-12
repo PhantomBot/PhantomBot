@@ -33,6 +33,7 @@
         gain = $.getIniDbNumber('bettingSettings', 'gain');
         saveBets = $.getIniDbBoolean('bettingSettings', 'save');
         saveFormat = $.getIniDbString('bettingSettings', 'format');
+        warningMessages = $.getIniDbBoolean('bettingSettings', 'warningMessages')
     }
 
     /**
@@ -62,6 +63,10 @@
             return;
         }
 
+        // Remove the old files.
+        $.inidb.RemoveFile('bettingPanel');
+        $.inidb.RemoveFile('bettingVotes');
+
         bet.title = title;
         bet.minimum = parseInt(minimum);
         bet.maximum = parseInt(maximum);
@@ -75,17 +80,25 @@
             }, timer * 6e4);
         }
 
-        var split = options.split(', ');
+        // Trim first spaces.
+        var split = options.trim().split(', ');
 
         for (var i = 0; i < split.length; i++) {
-            bet.options[split[i].toLowerCase()] = {
+            // Trim other spaces.
+            split[i] = split[i].trim().toLowerCase();
+
+            bet.options[split[i]] = {
                 bets: 0,
                 total: 0
             };
-            bet.opt.push(split[i].toLowerCase());
+            bet.opt.push(split[i]);
+            $.inidb.set('bettingVotes', (split[i] + '').replace(/\s/, '%space_option%'), 0);
         }
 
-        $.say($.lang.get('bettingsystem.open.success', title, options));
+        $.say($.lang.get('bettingsystem.open.success', title, split.join(', ')));
+        $.inidb.set('bettingPanel', 'title', title);
+        $.inidb.set('bettingPanel', 'options', split.join('%space_option%'));
+        $.inidb.set('bettingPanel', 'isActive', 'true');
     }
 
     /**
@@ -110,6 +123,8 @@
         }
 
         clearInterval(timeout);
+
+        $.inidb.set('bettingPanel', 'isActive', 'false');
 
         bet.status = false;
         bet.opened = false;
@@ -159,6 +174,7 @@
         if (saveBets) {
             var dateFormat = new java.text.SimpleDateFormat(saveFormat),
                 date = dateFormat.format(new Date());
+
             if (!$.inidb.exists('bettingResults', date)) {
                 $.inidb.set('bettingResults', date, $.lang.get('bettingsystem.save.format', bet.title, bet.opt.join(', '), bet.total, bet.entries, bet.pointsWon));
             } else {
@@ -256,11 +272,12 @@
             amount: amount
         };
         $.inidb.decr('points', sender, amount);
+        $.inidb.incr('bettingVotes', option.replace(/\s/, '%space_option%'), 1);
     }
 
     /**
      * @event command
-     * @info Used for commands. 
+     * @info Used for commands.
      *
      * @param {object} event
      */
@@ -278,7 +295,7 @@
             }
 
             /**
-             * @commandpath bet open ["title"] ["option1, option2, option3"] [minimum bet] [maximum bet] [close timer] - Opens a bet with those options. 
+             * @commandpath bet open ["title"] ["option1, option2, option3"] [minimum bet] [maximum bet] [close timer] - Opens a bet with those options.
              */
             if (action.equalsIgnoreCase('open')) {
                 open(sender, args[1], args[2], args[3], args[4], args[5]);

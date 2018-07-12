@@ -45,38 +45,44 @@ import java.awt.Color;
 /*
  * Has all of the methods to work with Discord4J.
  *
- * @author Illusionaryone
+ * @author IllusionaryOne
  * @author ScaniaTV
  */
 public class DiscordUtil {
     /*
      * Method to send a message to a channel.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @return {IMessage}
      */
-    public void sendMessage(IChannel channel, String message) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessage(IChannel channel, String message) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
 
-                    channel.sendMessage(message);
+
+                    return channel.sendMessage(message);
                 }
+                // Throw this if the channel object is null.
+                throw new DiscordException("Failed to send message due to the channel object being null.");
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send a message to a channel.
      *
-     * @param {String} channelName
-     * @param {String} message
+     * @param  {String} channelName
+     * @param  {String} message
+     * @return {IMessage}
      */
-    public void sendMessage(String channelName, String message) {
-        sendMessage(getChannel(channelName), message);
+    public IMessage sendMessage(String channelName, String message) {
+        return sendMessage(getChannel(channelName), message);
     }
 
     /*
@@ -92,7 +98,10 @@ public class DiscordUtil {
                     com.gmt2001.Console.out.println("[DISCORD] [@" + user.getName().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
 
                     user.getOrCreatePMChannel().sendMessage(message);
+                    return;
                 }
+                // Throw this if the user object is null.
+                throw new DiscordException("Failed to send private message due to the user being null.");
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a private message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
@@ -112,54 +121,63 @@ public class DiscordUtil {
     /*
      * Method to send embed messages.
      *
-     * @param {IChannel}     channel
-     * @param {EmbedObject} EmbedBuilder
+     * @param  {IChannel}     channel
+     * @param  {EmbedObject} EmbedBuilder
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(IChannel channel, EmbedObject builder) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessageEmbed(IChannel channel, EmbedObject builder) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null && builder != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] ");
 
-                    channel.sendMessage(builder);
+                    return channel.sendMessage(builder);
                 }
+                // Throw this if the channel and builder object is null.
+                throw new DiscordException("Failed to send embed message due to either the channel or builder being null.");
             } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send embed messages.
      *
-     * @param {String} channelName
-     * @param {EmbedObject} bulder
+     * @param  {String} channelName
+     * @param  {EmbedObject} bulder
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(String channelName, EmbedObject builder) {
-        sendMessageEmbed(getChannel(channelName), builder);
+    public IMessage sendMessageEmbed(String channelName, EmbedObject builder) {
+        return sendMessageEmbed(getChannel(channelName), builder);
     }
 
     /*
      * Method to send embed messages.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
-     * @param {String}   color
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @param  {String}   color
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(IChannel channel, String color, String message) {
-        RequestBuffer.request(() -> {
+    public IMessage sendMessageEmbed(IChannel channel, String color, String message) {
+        return RequestBuffer.request(() -> {
             try {
                 EmbedObject builder = new EmbedBuilder().withDescription(message).withColor(getColor(color)).build();
 
                 if (channel != null) {
                     com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + message);
 
-                    channel.sendMessage(builder);
+                    return channel.sendMessage(builder);
                 }
+                // Throw this if the channel object is null.
+                throw new DiscordException("Failed to send embed message due to the channel being null.");
             } catch (MissingPermissionsException | DiscordException | IllegalArgumentException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
@@ -168,55 +186,67 @@ public class DiscordUtil {
      * @param {String} channelName
      * @param {String} message
      * @param {String} color
+     * @return {IMessage}
      */
-    public void sendMessageEmbed(String channelName, String color, String message) {
-        sendMessageEmbed(getChannel(channelName), color, message);
+    public IMessage sendMessageEmbed(String channelName, String color, String message) {
+        return sendMessageEmbed(getChannel(channelName), color, message);
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {IChannel} channel
-     * @param {String}   message
-     * @param {String}   fileLocation
+     * @param  {IChannel} channel
+     * @param  {String}   message
+     * @param  {String}   fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(IChannel channel, String message, String fileLocation) {
-        RequestBuffer.request(() -> {
+    public IMessage sendFile(IChannel channel, String message, String fileLocation) {
+        return RequestBuffer.request(() -> {
             try {
                 if (channel != null) {
-                    com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
-
-                    if (message.isEmpty()) {
-                        channel.sendFile(new File(fileLocation));
+                    if (fileLocation.contains("..")) {
+                        com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation that contains '..'");
+                        return null;
                     } else {
-                        channel.sendFile(message, new File(fileLocation));
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
+
+                        if (message.isEmpty()) {
+                            return channel.sendFile(new File("addons/" + fileLocation));
+                        } else {
+                            return channel.sendFile(message, new File("addons/" + fileLocation));
+                        }
                     }
                 }
+                // Throw this if the channel object is null.
+                throw new DiscordException("Failed to send file message due to the channel being null.");
             } catch (MissingPermissionsException | DiscordException | FileNotFoundException ex) {
                 com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                return null;
             }
-        });
+        }).get();
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {String} channelName
-     * @param {String} message
-     * @param {String} fileLocation
+     * @param  {String} channelName
+     * @param  {String} message
+     * @param  {String} fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(String channelName, String message, String fileLocation) {
-        sendFile(getChannel(channelName), message, fileLocation);
+    public IMessage sendFile(String channelName, String message, String fileLocation) {
+        return sendFile(getChannel(channelName), message, fileLocation);
     }
 
     /*
      * Method to send a file to a channel.
      *
-     * @param {String} channelName
-     * @param {String} fileLocation
+     * @param  {String} channelName
+     * @param  {String} fileLocation
+     * @return {IMessage}
      */
-    public void sendFile(String channelName, String fileLocation) {
-        sendFile(getChannel(channelName), "", fileLocation);
+    public IMessage sendFile(String channelName, String fileLocation) {
+        return sendFile(getChannel(channelName), "", fileLocation);
     }
 
     /*
@@ -370,6 +400,7 @@ public class DiscordUtil {
             try {
                 if (roles != null && user != null) {
                     DiscordAPI.getGuild().editUserRoles(user, roles);
+                    return;
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to edit roles on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -398,6 +429,7 @@ public class DiscordUtil {
             try {
                 if (role != null && user != null) {
                     user.addRole(role);
+                    return;
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to add role on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -436,6 +468,7 @@ public class DiscordUtil {
             try {
                 if (role != null && user != null) {
                     user.removeRole(role);
+                    return;
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to remove role on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -462,6 +495,7 @@ public class DiscordUtil {
         RequestBuffer.request(() -> {
             try {
                 DiscordAPI.getGuild().createRole().changeName(roleName);
+                return;
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
@@ -478,6 +512,7 @@ public class DiscordUtil {
             try {
                 if (role != null) {
                     role.delete();
+                    return;
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to delete role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -525,19 +560,17 @@ public class DiscordUtil {
         // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
 
         if (channel != null) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    RequestBuffer.request(() -> {
-                        try {
-                            List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
+            Thread thread = new Thread(() -> {
+                RequestBuffer.request(() -> {
+                    try {
+                        List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
 
-                            channel.bulkDelete(messages);
-                        } catch (DiscordException ex) {
-                            com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
-                        }
-                    });
-                }
+                        channel.bulkDelete(messages);
+                        return;
+                    } catch (DiscordException ex) {
+                        com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                    }
+                });
             }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
 
             thread.start();
@@ -567,6 +600,7 @@ public class DiscordUtil {
                     List<IMessage> messages = Arrays.asList(list);
 
                     channel.bulkDelete(messages);
+                    return;
                 } catch (DiscordException ex) {
                     com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 }
@@ -590,7 +624,15 @@ public class DiscordUtil {
      * @param {IMessage} message
      */
     public void deleteMessage(IMessage message) {
-        message.delete();
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null) {
+                    message.delete();
+                }
+            } catch (DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to delete a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        });
     }
 
     /*
@@ -640,30 +682,30 @@ public class DiscordUtil {
             return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
         } else {
             switch (color) {
-            case "black":
-                return Color.black;
-            case "blue":
-                return Color.blue;
-            case "cyan":
-                return Color.cyan;
-            case "gray":
-                return Color.gray;
-            case "green":
-                return Color.green;
-            case "magenta":
-                return Color.magenta;
-            case "orange":
-                return Color.orange;
-            case "pink":
-                return Color.pink;
-            case "red":
-                return Color.red;
-            case "white":
-                return Color.white;
-            case "yellow":
-                return Color.yellow;
-            default:
-                return Color.gray;
+                case "black":
+                    return Color.black;
+                case "blue":
+                    return Color.blue;
+                case "cyan":
+                    return Color.cyan;
+                case "gray":
+                    return Color.gray;
+                case "green":
+                    return Color.green;
+                case "magenta":
+                    return Color.magenta;
+                case "orange":
+                    return Color.orange;
+                case "pink":
+                    return Color.pink;
+                case "red":
+                    return Color.red;
+                case "white":
+                    return Color.white;
+                case "yellow":
+                    return Color.yellow;
+                default:
+                    return Color.gray;
             }
         }
     }

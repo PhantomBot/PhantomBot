@@ -17,12 +17,20 @@
 
         for (var i in audioHookFiles) {
             var fileName = audioHookFiles[i] + '';
-            audioHookNames[fileName.replace(reFileExt, '')] = fileName.replace(reFileExt, '');
+            audioHookNames[fileName.replace(reFileExt, '')] = fileName;
         }
 
-        for (var i in audioHookNames) {
-            if (!$.inidb.exists('audio_hooks', audioHookNames[i])) {
-                $.inidb.set('audio_hooks', audioHookNames[i], audioHookNames[i]);
+        var keys = Object.keys(audioHookNames);
+
+        for (var i in keys) {
+            if (!$.inidb.exists('audio_hooks', keys[i])) {
+                $.inidb.set('audio_hooks', keys[i], audioHookNames[keys[i]]);
+            } else {
+                var hook = $.inidb.get('audio_hooks', keys[i]);
+
+                if (hook != null && hook.indexOf('.') === -1) {
+                    $.inidb.set('audio_hooks', keys[i], audioHookNames[keys[i]]);
+                }
             }
         }
 
@@ -71,19 +79,43 @@
 
     /**
      * @function loadAudioHookCommands
+     *
+     * @param {String} cmd
      */
-    function loadAudioHookCommands() {
-        if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
-            var commands = $.inidb.GetKeyList('audioCommands', ''),
-                i;
+    function loadAudioHookCommands(cmd) {
+        if (cmd !== undefined) {
+            $.unregisterChatCommand(cmd);
+        } else {
+            if ($.bot.isModuleEnabled('./systems/audioPanelSystem.js')) {
+                var commands = $.inidb.GetKeyList('audioCommands', ''),
+                    i;
 
-            for (i in commands) {
-                if (!$.commandExists(commands[i])) {
-                    $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
-                } else {
-                    $.log.error('Cannot add custom command audio hook, command already exists: ' + commands[i]);
+                for (i in commands) {
+                    if (!$.commandExists(commands[i])) {
+                        $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
+                    }
                 }
             }
+        }
+    };
+
+    /*
+     * @function removeAudioHook
+     *
+     * @param {String} audioHookName
+     */
+    function removeAudioHook(audioHookName) {
+        if ($.inidb.exists('audio_hooks', audioHookName)) {
+            var files = $.findFiles('./config/audio-hooks/', '');
+
+            for (var i in files) {
+                var fileName = files[i].substring(0, files[i].indexOf('.'));
+                if (fileName.equalsIgnoreCase(audioHookName)) {
+                    $.deleteFile('./config/audio-hooks/' + files[i], true);
+                }
+            }
+
+            $.inidb.del('audio_hooks', audioHookName);
         }
     };
 
@@ -108,10 +140,29 @@
                 return;
             }
             updateAudioHookDB();
+            return;
+        }
+
+        /* Control Panel remove audio hook */
+        if (command.equalsIgnoreCase('panelremoveaudiohook')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            removeAudioHook(subCommand);
+            return;
+        }
+
+        /* Control Panel reload audio commands */
+        if (command.equalsIgnoreCase('panelloadaudiohookcmds')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            loadAudioHookCommands(subCommand);
+            return;
         }
 
         /**
-         * Checks if the command is an audio hook 
+         * Checks if the command is an audio hook
          */
         if ($.inidb.exists('audioCommands', command)) {
             if ($.inidb.get('audioCommands', command).match(/\(list\)/g)) {
@@ -127,7 +178,7 @@
 
         /**
          * @commandpath audiohook [play | list] - Base command for audio hooks.
-         * @commandpath audiohook play [audio_hook] - Sends the audio_hook request to the Panel. 
+         * @commandpath audiohook play [audio_hook] - Sends the audio_hook request to the Panel.
          * @commandpath audiohook list - Lists the audio hooks.
          * @commandpath audiohook togglemessages - Enables the success message once a sfx is sent.
          * @commandpath audiohook customcommand [add / remove] [command] [sound] - Adds a custom command that will trigger that sound. Use tag "(list)" to display all the commands.
@@ -159,7 +210,7 @@
                     return;
                 }
 
-                // Moved this from init since only this command can have three commands. Why slow down all of the command with 
+                // Moved this from init since only this command can have three commands. Why slow down all of the command with
                 // 3 db calls just for this?
                 if ((((isModv3 && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isModv3)) && $.bot.isModuleEnabled('./systems/pointSystem.js')) {
                     var commandCost = $.getCommandPrice(command, subCommand, action);
@@ -266,6 +317,9 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelremoveaudiohook', 30);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelloadaudiohookcmds', 30);
+
         $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
         $.registerChatSubcommand('audiohook', 'play', 1);
         $.registerChatSubcommand('audiohook', 'list', 1);

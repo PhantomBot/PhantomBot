@@ -217,6 +217,33 @@
                 handleInputFocus();
             }
 
+            if (panelCheckQuery(msgObject, 'commands_count')) {
+                if (msgObject['results'].length === 0) {
+                    $('#countCommandsList').html('<i>There are no commands with counters defined.</i>');
+                    return;
+                }
+                msgObject['results'].sort(sortCommandTable);
+                for (idx in msgObject['results']) {
+                    commandName = msgObject['results'][idx]['key'];
+                    commandValue = msgObject['results'][idx]['value'];
+                    html += '<tr style="textList">' +
+                        '    <td style="width: 10%">!' + commandName + '</td>' +
+                        '    <td style="vertical-align: middle">' +
+                        '        <form onkeypress="return event.keyCode != 13">' +
+                        '            <input style="width: 60%" type="text" class="input-control" id="resetCommandCount_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '"' +
+                        '                   value="' + commandValue + '" readonly/>' +
+                        '              <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="Reset Count to 0." onclick="$.resetCommandCount(\'' + commandName + '\')"><i class="fa fa-undo" /> </button> ' +
+                        '              <button type="button" class="btn btn-default btn-xs" id="deleteCommandCount_' + commandName.replace(/[^a-zA-Z0-9_]/g, '_SP_') + '" data-toggle="tooltip" title="Removes Current Counter." onclick="$.deleteCommandCount(\'' + commandName + '\')"><i class="fa fa-trash" /> </button>' +
+                        '             </form>' +
+                        '        </form>' +
+                        '    </td>' +
+                        '</tr>';
+                }
+                html += "</table>";
+                $("#countCommandsList").html(html);
+                handleInputFocus();
+            }
+
             if (panelCheckQuery(msgObject, 'commands_payment')) {
                 if (msgObject['results'].length === 0) {
                     $('#payCommandsList').html('<i>There are no commands with payments defined.</i>');
@@ -320,6 +347,7 @@
         sendDBKeys("commands_commands", "command");
         sendDBKeys("commands_aliases", "aliases");
         sendDBKeys("commands_pricecom", "pricecom");
+        sendDBKeys("commands_count", "commandCount");
         sendDBKeys("commands_payment", "paycom");
         sendDBKeys("commands_cooldown", "cooldown");
         sendDBKeys("commands_cooldownsettings", "cooldownSettings");
@@ -365,6 +393,28 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
     };
+
+    /**
+     * @function deleteCommandCount
+     * @param {String} command
+     */
+    function deleteCommandCount(command) {
+        $("#deleteCommandCount_" + command.replace(/[^a-zA-Z0-9_]/g, '_SP_')).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBDelete("commands_delcomcount_" + command, "commandCount", command);
+        setTimeout(function () { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function () { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+    };
+
+    /**
+    * @function resetCommandCount
+    * @param {String} command
+    */
+    function resetCommandCount(command) {
+        $('#resetCommandCount_' + command.replace(/[^a-zA-Z0-9_]/g, '_SP_')).html("<i style=\"color: var(--main-color)\" class=\"fa fa-spinner fa-spin\" />");
+        sendDBUpdate('commands_editcount_' + command, 'commandCount', command.toLowerCase(), '0');
+        setTimeout(function () { doQuery(); }, TIMEOUT_WAIT_TIME);
+        setTimeout(function () { sendCommand("reloadcommand") }, TIMEOUT_WAIT_TIME);
+    }
 
     /**
      * @function deleteCommandPay
@@ -716,6 +766,8 @@
     $.setCommandPrice = setCommandPrice;
     $.setCommandPay = setCommandPay;
     $.updateCommandPrice = updateCommandPrice;
+    $.deleteCommandCount = deleteCommandCount;
+    $.resetCommandCount = resetCommandCount;
     $.updateCommandPay = updateCommandPay;
     $.addCooldown = addCooldown;
     $.deleteCooldown = deleteCooldown;
