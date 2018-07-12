@@ -157,65 +157,6 @@
     </div>
     </div>
 
-    <h3>StreamTip Settings</h3>
-    <div>
-    <div id="_streamtipdonationAlertsPanelDisabled" />
-    <div id="_streamtipdonationAlertsPanel">
-        <table>
-            <tr class="textList">
-                <td>Toggle Donation Alerts</td>
-                <td style="width: 25px"><div id="streamtipGreetings" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleGreetings('streamtip', 'announce');"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
-
-            <tr class="textList">
-                <td>Toggle Donator Promotion</td>
-                <td style="width: 25px"><div id="streamtipdonationGroup" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
-                         onclick="$.toggleGreetings('streamtipdonationGroup', 'donationGroup');"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
-        </table>
-        <br>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonateReward">Multiplier Reward</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamtipdonateRewardInput', 'streamtip', 'reward')">Submit</button>
-                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
-                       type="number" min="0" step="0.1" class="form-control" id="streamtipdonateRewardInput" placeholder="Points" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonationGroupMin">Promote Amount</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamtipdonationGroupMin', 'streamtip', 'donationGroupMin')">Submit</button>
-                <input type="text" class="form-control" id="streamtipdonationGroupMin" placeholder="Amount"
-                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamtipdonateGreeting">Message</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamtipdonateGreetingInput', 'streamtip', 'message')">Submit</button>
-                <input type="text" class="form-control" id="streamtipdonateGreetingInput" placeholder="Donation Message"
-                       data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
-            </div>
-        </form>
-    </div>
-    </div>
-
     <h3>TipeeeStream Settings</h3>
     <div>
     <div id="_tipeeeStreamDonationsPanelDisabled" />
@@ -395,7 +336,7 @@
                 <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
             </div>
         </form>
-     
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="giftSubReward">Gift Subscribing Reward</label>
@@ -510,7 +451,7 @@
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('bitsMessage', 'bitsSettings', 'message')">Submit</button>
                 <input type="text" class="form-control" id="bitsMessage" placeholder="Message"
-                       data-toggle="tooltip" title="Tags: (name) (reward) (amount)"/>
+                       data-toggle="tooltip" title="Tags: (name) (amount) (message)"/>
             </div>
         </form>
 

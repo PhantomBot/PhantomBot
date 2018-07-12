@@ -41,7 +41,14 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
+                    .withTitle($.lang.get('discord.subscribehandler.subscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
@@ -59,7 +66,14 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
+                    .withTitle($.lang.get('discord.subscribehandler.primesubscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**
@@ -82,7 +96,14 @@
             s = $.replace(s, '(months)', months);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
+                    .withTitle($.lang.get('discord.subscribehandler.resubscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

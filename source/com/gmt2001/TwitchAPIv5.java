@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Communicates with Twitch Kraken server using the version 5 API
@@ -48,6 +49,7 @@ public class TwitchAPIv5 {
     private static final int timeout = 2 * 1000;
     private String clientid = "";
     private String oauth = "";
+    private String cheerEmotes = "";
 
     private enum request_type {
 
@@ -132,7 +134,25 @@ public class TwitchAPIv5 {
             if (c.getResponseCode() == 204 || i == null) {
                 content = "{}";
             } else {
-                content = IOUtils.toString(i, c.getContentEncoding());
+                // default to UTF-8, it'll probably be the best bet if there's
+                // no charset specified.
+                String charset = "utf-8";
+                String ct = c.getContentType();
+                if (ct != null) {
+                    String[] cts = ct.split(" *; *");
+                    for (int idx = 1; idx < cts.length; ++idx) {
+                        String[] val = cts[idx].split("=", 2);
+                        if (val[0] == "charset" && val.length > 1) {
+                            charset = val[1];
+                        }
+                    }
+                }
+
+                if ("gzip".equals(c.getContentEncoding())) {
+                    i = new GZIPInputStream(i);
+                }
+
+                content = IOUtils.toString(i, charset);
             }
 
             j = new JSONObject(content);
@@ -493,6 +513,39 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetEmotes() {
         return GetData(request_type.GET, base_url + "/chat/emoticons", false);
+    }
+
+    /**
+     * Gets the list of cheer emotes from Twitch
+     *
+     * @return
+     */
+    public JSONObject GetCheerEmotes() {
+        return GetData(request_type.GET, base_url + "/bits/actions", false);
+    }
+
+    /**
+     * Builds a RegExp String to match cheer emotes from Twitch
+     *
+     * @return
+     */
+    public String GetCheerEmotesRegex() {
+        String[] emoteList;
+        JSONObject jsonInput;
+        JSONArray jsonArray;
+
+        if (cheerEmotes == "") {
+            jsonInput = GetCheerEmotes();
+            if (jsonInput.has("actions")) {
+                jsonArray = jsonInput.getJSONArray("actions");
+                emoteList = new String[jsonArray.length()];
+                for (int idx = 0; idx < jsonArray.length(); idx++) {
+                    emoteList[idx] = "\\b" + jsonArray.getJSONObject(idx).getString("prefix") + "\\d+\\b";
+                }
+                cheerEmotes = String.join("|", emoteList);
+            }
+        }
+        return cheerEmotes;
     }
 
     /**

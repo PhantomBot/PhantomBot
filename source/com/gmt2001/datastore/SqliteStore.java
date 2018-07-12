@@ -25,6 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
 
@@ -882,25 +884,60 @@ public class SqliteStore extends DataStore {
         fName = validateFname(fName);
         AddFile(fName);
 
+        /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
+        Map<String, String> insertMap = new HashMap<String, String>();
+        Map<String, String> updateMap = new HashMap<String, String>();
+
+        for (int idx = 0; idx < keys.length; idx++) {
+            if (HasKey(fName, section, keys[idx])) {
+                updateMap.put(keys[idx], values[idx]);
+            } else {
+                insertMap.put(keys[idx], values[idx]);
+            }
+        }
+        
         setAutoCommit(false);
 
         try {
-            try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
-                statement.setQueryTimeout(10);
-                for (int idx = 0; idx < keys.length; idx++) {
-                    statement.setString(1, values[idx]);
-                    statement.setString(2, section);
-                    statement.setString(3, keys[idx]);
-                    statement.addBatch();
-
-                    if (idx % 500 == 0) {
-                        statement.executeBatch();
-                        statement.clearBatch();
+            if (insertMap.size() > 0) {
+                int idx = 0;
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+                    statement.setQueryTimeout(10);
+                    for (String key : insertMap.keySet()) {
+                        statement.setString(1, insertMap.get(key));
+                        statement.setString(2, section);
+                        statement.setString(3, key);
+                        statement.addBatch();
+    
+                        if (idx++ % 500 == 0) {
+                            statement.executeBatch();
+                            statement.clearBatch();
+                        }
                     }
+                    statement.executeBatch();
+                    statement.clearBatch();
+                    connection.commit();
                 }
-                statement.executeBatch();
-                statement.clearBatch();
-                connection.commit();
+            }
+            if (updateMap.size() > 0) {
+                int idx = 0;
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
+                    statement.setQueryTimeout(10);
+                    for (String key : updateMap.keySet()) {
+                        statement.setString(1, updateMap.get(key));
+                        statement.setString(2, section);
+                        statement.setString(3, key);
+                        statement.addBatch();
+    
+                        if (idx++ % 500 == 0) {
+                            statement.executeBatch();
+                            statement.clearBatch();
+                        }
+                    }
+                    statement.executeBatch();
+                    statement.clearBatch();
+                    connection.commit();
+                }
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);

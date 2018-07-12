@@ -1,4 +1,4 @@
-/* 
+/*
  * This script is used to reload variables from scripts when you edit stuff on the panel. Only the bot can use these, and you can't disable them
  */
 
@@ -28,6 +28,15 @@
             } else {
                 $.removeModeratorFromCache(action.toLowerCase());
             }
+        }
+
+        if (command.equalsIgnoreCase('reloadmisc')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+
+            $.reloadMisc();
+            $.reloadWhispers();
         }
 
         /*
@@ -135,6 +144,28 @@
                 return;
             }
             $.reloadModeration();
+        }
+
+        if (command.equalsIgnoreCase('reloadkill')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadKill();
+        }
+
+        if (command.equalsIgnoreCase('reloadraid')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadRaid();
+        }
+
+        /* reloads the clip vars */
+        if (command.equalsIgnoreCase('reloadclip')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadClips();
         }
 
         /*
@@ -317,17 +348,6 @@
         }
 
         /*
-         * Reloads the streamtip variables.
-         */
-        if (command.equalsIgnoreCase('donationpanelupdatestreamtip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.donationpanelupdatestreamtip();
-            return;
-        }
-
-        /*
          * Reloads the subscriber variables.
          */
         if (command.equalsIgnoreCase('subscriberpanelupdate')) {
@@ -382,7 +402,7 @@
         }
 
         /*
-         * Gives points to everyone in the channel 
+         * Gives points to everyone in the channel
          */
         if (command.equalsIgnoreCase('pointsallpanel')) {
             if (!$.isBot(sender)) {
@@ -488,7 +508,6 @@
             $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdatestreamtip', 30);
             $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);
@@ -505,6 +524,10 @@
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', 30);
         }, 10000);
     });
 })();

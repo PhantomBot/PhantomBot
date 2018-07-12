@@ -77,7 +77,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
      * @return {String} months
      */
     public String getMonths() {
-        return this.months;
+        return (this.months == null) ? "1" : this.months;
     }
 
     /*

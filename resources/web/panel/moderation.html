@@ -37,7 +37,7 @@
                 <label for="msgCooldownSec">Message cooldown</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#msgCooldownSec', 'msgCooldownSecs')">Submit</button>
-                <input type="number" min="1" class="form-control" id="msgCooldownSec" placeholder="Loading..."
+                <input type="number" min="1" class="form-control" id="msgCooldownSec" placeholder="seconds"
                      data-toggle="tooltip" title="Set a cooldown in seconds on the punishment messages." />
             </div>
         </form>
@@ -46,7 +46,7 @@
                 <label for="warningResetTime">Warning reset time</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                      onclick="$.updateRedrawModSetting('#warningResetTime', 'warningResetTime')">Submit</button>
-                <input type="number" min="10" class="form-control" id="warningResetTime" placeholder="Loading..."
+                <input type="number" min="10" class="form-control" id="warningResetTime" placeholder="seconds"
                      data-toggle="tooltip" title="Set how long a warning in minutes lasts on a user." />
             </div>
         </form>
@@ -922,7 +922,7 @@
 
                     <div class="form" onkeypress="return event.keyCode != 13">
                         <lable for="blacklistTimeout"><b>Timeout Time</b></lable>
-                        <input type="number" class="form-control" id="blacklistTimeout" value="600" data-toggle="tooltip" title="Timeout time given for this blacklist word."/>
+                        <input type="number" class="form-control" id="blacklistTimeout" value="600" data-toggle="tooltip" title="Timeout time in seconds given for this blacklist word. Use -1 for a ban."/>
                     </div>
 
                     <form role="form">

@@ -47,7 +47,7 @@
                 hours = parseInt(streamUptimeMinutes / 60),
                 minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
                 timestamp = hours + ':' + minutes,
-                localDate = getCurLocalTimeString('dd-MM-yyyy hh:mm');
+                localDate = $.getCurLocalTimeString('dd-MM-yyyy hh:mm');
 
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.success', timestamp));
             $.inidb.set('highlights', localDate, vodURL + ' : ' + args.join(' '));

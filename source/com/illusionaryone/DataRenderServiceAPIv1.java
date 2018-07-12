@@ -234,7 +234,7 @@ public class DataRenderServiceAPIv1 {
         if (sAPIKey.length() == 0) {
             return "no_auth_key";
         }
-        JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/delete/" + channelName, "");
+        JSONObject jsonObject = readJsonFromUrl(sAPIURL + "/delete/" + channelName, "{}");
         if (jsonObject.has("status")) {
             return jsonObject.getString("status");
         } else {

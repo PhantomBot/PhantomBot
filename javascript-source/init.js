@@ -358,7 +358,15 @@
 
             // Load the other discord modules
             loadScriptRecursive('./discord');
+            // Mark that we are using Discord.
+            // This is used by the new panel.
+            $.inidb.set('panelData', 'hasDiscord', 'true');
+        } else {
+            $.inidb.set('panelData', 'hasDiscord', 'false');
         }
+
+        // Load new panel handler.
+        loadScript('./core/panelHandler.js', false, true);
 
         $.log.event('Bot modules loaded. Initializing main functions...');
 
@@ -645,31 +653,17 @@
         });
 
         /*
-         * @event twitchAlertsDonation
+         * @event streamLabsDonation
          */
-        $api.on($script, 'twitchAlertsDonation', function(event) {
-            callHook('twitchAlertsDonation', event, false);
+        $api.on($script, 'streamLabsDonation', function(event) {
+            callHook('streamLabsDonation', event, false);
         });
 
         /*
-         * @event twitchAlertsDonationInitialized
+         * @event streamLabsDonationInitialized
          */
-        $api.on($script, 'twitchAlertsDonationInitialized', function(event) {
-            callHook('twitchAlertsDonationInitialized', event, false);
-        });
-
-        /*
-         * @event streamTipDonation
-         */
-        $api.on($script, 'streamTipDonation', function(event) {
-            callHook('streamTipDonation', event, false);
-        });
-
-        /*
-         * @event streamTipDonationInitialized
-         */
-        $api.on($script, 'streamTipDonationInitialized', function(event) {
-            callHook('streamTipDonationInitialized', event, false);
+        $api.on($script, 'streamLabsDonationInitialized', function(event) {
+            callHook('streamLabsDonationInitialized', event, false);
         });
 
         /*
@@ -778,6 +772,13 @@
         });
 
         /*
+         * @event yTPlayerDeleteCurrentEvent
+         */
+        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
+            callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
          * @event yTPlayerStealSongEvent
          */
         $api.on($script, 'yTPlayerStealSong', function(event) {
@@ -874,14 +875,14 @@
         $api.on($script, 'twitchGameChange', function(event) {
             callHook('twitchGameChange', event, false);
         });
-		
+
         /*
          * @event twitchTitleChangeEvent
          */
         $api.on($script, 'twitchTitleChange', function(event) {
             callHook('twitchTitleChange', event, false);
         });
-								
+
         /*
          * @event twitchSubscriber
          */
@@ -950,13 +951,6 @@
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
-        });
-
-        /*
-         * @event webPanelSocketConnected
-         */
-        $api.on($script, 'webPanelSocketConnected', function(event) {
-            callHook('webPanelSocketConnected', event, false);
         });
 
         /*

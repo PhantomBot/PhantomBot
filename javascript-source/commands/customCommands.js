@@ -4,7 +4,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -64,6 +64,27 @@
             if (!message.match(tagCheck)) {
                 return event.getArgs()[0] + ' -> ' + message;
             }
+        }
+
+        if (message.match(/\(views\)/g)) {
+            message = $.replace(message, '(views)', $.twitchcache.getViews());
+        }
+
+        if (message.match(/\(gameonly=.*\)/g)) {
+            var game = message.match(/\(gameonly=(.*)\)/)[1];
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
+        }
+
+        if (message.match(/\(useronly=.*\)/g)) {
+            var user = message.match(/\(useronly=(.*?)\)/)[1];
+            if (!event.getSender().equalsIgnoreCase(user)) {
+                return null;
+            }
+            message = $.replace(message, message.match(/(\(useronly=.*?\))/)[1], '');
         }
 
         if (message.match(/\(readfile/)) {
@@ -150,6 +171,14 @@
             message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
+        if (message.match(/\(countup=[^)]+\)/g)) {
+            var t = message.match(/\([^)]+\)/)[0],
+                countup, time;
+            countup = t.replace('(countup=', '').replace(')', '');
+            time = (Date.parse($.getLocalTime()) - Date.parse(countup));
+            message = $.replace(message, t, $.getTimeString(time / 1000));
+        }
+
         if (message.match(/\(downtime\)/g)) {
             message = $.replace(message, '(downtime)', String($.getStreamDownTime()));
         }
@@ -203,6 +232,20 @@
             message = $.replace(message, '(count)', $.inidb.get('commandCount', event.getCommand()));
         }
 
+        if (message.match(/\(keywordcount\s(.+)\)/g)) {
+            var input_keyword = message.match(/.*\(keywordcount\s(.+)\).*/)[1],
+                keyword_info = JSON.parse($.inidb.get('keywords', input_keyword));
+
+            if ('count' in keyword_info) {
+                ++keyword_info["count"];
+            } else {
+                keyword_info["count"] = 1;
+            }
+            $.inidb.set('keywords', input_keyword, JSON.stringify(keyword_info));
+
+            message = $.replace(message, '(keywordcount ' + input_keyword + ')', keyword_info["count"]);
+        }
+
         if (message.match(/\(random\)/g)) {
             message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
         }
@@ -213,6 +256,10 @@
 
         if (message.match(/\(pointname\)/g)) {
             message = $.replace(message, '(pointname)', $.pointNameMultiple);
+        }
+
+        if (message.match(/\(points\)/g)) {
+            message = $.replace(message, '(points)', $.getUserPoints(event.getSender()));
         }
 
         if (message.match(/\(price\)/g)) {
@@ -272,10 +319,10 @@
             message = $.replace(message, '(code=' + length + ')', String(text));
         }
 
-        if (message.match(/\(alert [,.\w]+\)/g)) {
-            var filename = message.match(/\(alert ([,.\w]+)\)/)[1];
+        if (message.match(/\(alert [,.\w\W]+\)/g)) {
+            var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
             $.panelsocketserver.alertImage(filename);
-            message = (message + '').replace(/\(alert [,.\w]+\)/, '');
+            message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             if (message == '') return null;
         }
 
@@ -375,15 +422,6 @@
             var m = message.match(/\(encodeurl ([\w\W]+)\)/);
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
-        
-        if (message.match(/\(gameonly=.*\)/g)) {
-            var game = message.match(/\(gameonly=(.*)\)/)[1];
- 
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
-        }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
@@ -471,7 +509,7 @@
                             $.log.error('Failed to get data from API: ' + ex.message);
                             return $.lang.get('customcommands.customapijson.err', command);
                         }
-                        customAPIReturnString += " " + customAPIResponse;
+                        customAPIReturnString += customAPIResponse;
                     } else {
                         for (var i = 0; i < jsonCheckList.length - 1; i++) {
                             if (i == 0) {
@@ -503,7 +541,7 @@
                             $.log.error('Failed to get data from API: ' + ex.message);
                             return $.lang.get('customcommands.customapijson.err', command);
                         }
-                        customAPIReturnString += " " + customAPIResponse;
+                        customAPIReturnString += customAPIResponse;
                     }
                 }
             }
@@ -514,7 +552,7 @@
             if (commandToExec.length > 0) {
                 var EventBus = Packages.tv.phantombot.event.EventBus;
                 var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-                EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '')));
+                EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '').substring(1)));
                 return null;
             }
         }
@@ -1068,7 +1106,7 @@
         }
 
         /*
-         * @commandpath resetcom [command] - Resets the counter to zero, for a command that uses the (count) tag
+         * @commandpath resetcom [command] [count] - Resets the counter to zero, for a command that uses the (count) tag or optionally set to a specific value.
          */
         if (command.equalsIgnoreCase('resetcom')) {
             if (action === undefined) {
@@ -1078,8 +1116,17 @@
 
             action = action.replace('!', '').toLowerCase();
 
-            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
-            $.inidb.del('commandCount', action);
+            if (args.length === 1) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
+                $.inidb.del('commandCount', action);
+            } else {
+                if (isNaN(subAction)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.change.fail', subAction));
+                } else {
+                    $.inidb.set('commandCount', action, subAction);
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.change.success', action, subAction));
+                }
+            }
             return;
         }
     });

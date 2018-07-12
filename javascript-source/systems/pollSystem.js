@@ -22,7 +22,7 @@
         },
         timeout;
 
-    /** 
+    /**
      * @function hasKey
      * @param {Array} list
      * @param {*} value
@@ -84,9 +84,16 @@
         poll.counts = [];
         poll.hasTie = 0;
 
+        // Remove the old files.
+        $.inidb.RemoveFile('pollPanel');
+        $.inidb.RemoveFile('pollVotes');
+
+        $.inidb.setAutoCommit(false);
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
+            $.inidb.set('pollVotes', poll.options[i].replace(/\s/, '%space_option'), 0);
         }
+        $.inidb.setAutoCommit(true);
 
         if (poll.time > 0) {
             $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
@@ -98,6 +105,9 @@
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
+        $.inidb.set('pollPanel', 'title', question);
+        $.inidb.set('pollPanel', 'options', options.join('%space_option%'));
+        $.inidb.set('pollPanel', 'isActive', 'true');
         return true;
     };
 
@@ -127,6 +137,7 @@
         optionIndex--;
         poll.voters.push(sender);
         poll.votes.push(optionIndex);
+        $.inidb.incr('pollVotes', poll.options[optionIndex].replace(/\s/, '%space_option%'), 1);
     };
 
     /**
@@ -142,6 +153,8 @@
         }
 
         clearTimeout(timeout);
+
+        $.inidb.set('pollPanel', 'isActive', 'false');
 
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';
@@ -168,7 +181,6 @@
         $.inidb.set('pollresults', 'options', poll.options.join(','));
         $.inidb.set('pollresults', 'counts', poll.counts.join(','));
         $.inidb.set('pollresults', 'istie', poll.hasTie);
-
         poll.callback(poll.result);
     };
 

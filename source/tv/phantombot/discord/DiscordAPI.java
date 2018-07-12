@@ -44,7 +44,7 @@ import tv.phantombot.event.EventBus;
 /*
  * Communicates with the Discord API.
  *
- * @author Illusionaryone
+ * @author IllusionaryOne
  * @author ScaniaTV
  */
 public class DiscordAPI extends DiscordUtil {
@@ -127,9 +127,14 @@ public class DiscordAPI extends DiscordUtil {
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
-        // The bot should only be in one server, so this should be fine.
-        DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
-        DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
+        // PhantomBot only works in one server, so throw an error if there's multiple.
+        if (DiscordAPI.getClient().getGuilds().size() > 1) {
+            com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
+            DiscordAPI.client.logout();
+        } else {
+            DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
+            DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
+        }
     }
 
     /*

@@ -347,6 +347,32 @@
             sendDBKeys("dashboard_chatCount", "panelchatstats");
             sendDBKeys("dashboard_modCount", "panelmodstats");
         }
+
+        // New panel alert.
+        if (localStorage.getItem('_phantombot_new_panel_alert') !== 'true') {
+            $('#new-panel-alert').html($('<div/>', {
+                'class': 'alert alert-warning'
+            }).append($('<a/>', {
+                'class': 'close',
+                'data-dismiss': 'alert',
+                'style': 'color: black;',
+                'html': '&times;',
+                'href': 'javascript:void(0)',
+                'click': function() {
+                    localStorage.setItem('_phantombot_new_panel_alert', 'true');
+                }
+            })).append($('<strong/>', {
+                'text': 'New Panel Beta! '
+            })).append($('<p/>', {
+                'text': 'Want to test out our new modern, responsive, and prettier panel? Learn more by ',
+                'style': 'display: inline;'
+            })).append($('<a/>', {
+                'html': 'clicking here.',
+                'href': 'https://blog.phantombot.tv/tag/beta-features/',
+                'target': '_blank',
+                'style': 'color: #6441a5;'
+            })));
+        }
     }
 
     /**
@@ -623,7 +649,7 @@
             // Load the iframe if it isn't there.
             if ($("#chatsidebar").html().indexOf(getChannelName().toLowerCase()) === -1) {
                 $("#chatsidebar").append("<iframe id=\"chat\" frameborder=\"0\" scrolling=\"no\" onload=\"hideLoadingImage()\"" +
-                                             "src=\"https://www.twitch.tv/" + getChannelName().toLowerCase() + "/chat?popout=\">");
+                                             "src=\"https://www.twitch.tv/embed/" + getChannelName().toLowerCase() + "/chat\">");
                 $("#chatsidebar").draggable({ iframeFix: true });
             }
             localStorage.setItem('phantombot_chattoggle', 'true');

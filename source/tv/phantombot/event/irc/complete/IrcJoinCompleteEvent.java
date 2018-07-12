@@ -16,16 +16,16 @@
  */
 package tv.phantombot.event.irc.complete;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 public class IrcJoinCompleteEvent extends IrcCompleteEvent {
 
     /*
      * Class constructor
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      */
-    public IrcJoinCompleteEvent(Session session) {
+    public IrcJoinCompleteEvent(TwitchSession session) {
         super(session);
     }
 }

@@ -1,22 +1,21 @@
 Guten Tag lieber PhantomBot Benutzer!
 
-Die deutsche �bersetzung f�r PhantomBot findest Du unter
+Die deutsche Übersetzung für PhantomBot findest Du unter
 
-https://github.com/X00LA/PhantomBot-German-Translation
+https://github.com/vesturo/PhantomBotDE
 
 den PhantomBot Forumsbeitrag findest Du unter
 
-https://community.phantombot.tv/t/german-translation-github/217
+https://community.phantombot.tv/t/3872
 
 
-Sollten Probleme, Fragen, Fehler oder Verbesserungsvorschl�ge auftauchen,
+Sollten Probleme, Fragen, Fehler oder Verbesserungsvorschläge auftauchen,
 kannst Du diese im Forum oder auf GitHub posten.
 
-Du bist auch herzlichst eingeladen, Dich an der �bersetzung zu beteiligen.
+Du bist auch herzlichst eingeladen, Dich an der Übersetzung zu beteiligen.
 
-Viel Spa� beim Streamen und mit PhantomBot!
+Viel Spaß beim Streamen und mit PhantomBot!
 
-X00LA
+Vesturo
 
-Hier auch noch ein gro�es Dankesch�n an die Devs von PhantomBot f�r diesen
-gro�artigen Twitch-Chat-Bot!
+Hier auch noch ein großes Danke an die DEVs für diesen wundervollen bot!

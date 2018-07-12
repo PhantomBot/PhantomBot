@@ -29,7 +29,7 @@
      * @event tipeeeStreamDonation
      */
     $.bind('tipeeeStreamDonation', function(event) {
-        if (toggle === false || announce === false || channelName == '') {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 
@@ -75,7 +75,14 @@
             s = $.replace(s, '(formattedamount)', donationFormattedAmount);
         }
 
-        $.discord.say(channelName, s);
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(216, 67, 89)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/tipeeestream-embed-icon.png')
+                    .withTitle($.lang.get('discord.tipeeestreamhandler.embed.title'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
     });
 
     /**

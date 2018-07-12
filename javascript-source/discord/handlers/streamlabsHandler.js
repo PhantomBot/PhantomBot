@@ -19,17 +19,17 @@
     });
 
     /**
-     * @event twitchAlertsDonationsInitialized
+     * @event streamLabsDonationInitialized
      */
-    $.bind('twitchAlertsDonationInitialized', function(event) {
+    $.bind('streamLabsDonationInitialized', function(event) {
         announce = true;
     });
 
     /**
-     * @event twitchAlertsDonations
+     * @event streamLabsDonation
      */
-    $.bind('twitchAlertsDonation', function(event) {
-        if (toggle === false || announce === false || channelName == '') {
+    $.bind('streamLabsDonation', function(event) {
+        if (announce === false || toggle === false || channelName == '') {
             return;
         }
 
@@ -69,8 +69,15 @@
             s = $.replace(s, '(message)', donationMsg);
         }
 
-        $.discord.say(channelName, s);
-    });
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(49, 196, 162)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/streamlabs-embed-icon.png')
+                    .withTitle($.lang.get('discord.streamlabshandler.embed.title'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
+        });
 
     /**
      * @event discordChannelCommand

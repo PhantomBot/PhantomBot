@@ -11,8 +11,15 @@ $.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have b
 $.lang.register('ytplayer.command.volume.get', 'Current YouTube Player Volume: $1');
 $.lang.register('ytplayer.command.volume.set', 'Set YouTube Player Volume: $1');
 
+$.lang.register('ytplayer.command.ytp.resetdefaultlist.active', 'This must be ran when the YouTube Player is not connected.');
+$.lang.register('ytplayer.command.ytp.resetdefaultlist.success', 'The default playlist has been reset.');
+
+$.lang.register('ytplayer.command.ytp.togglecconly.enable', 'YouTube Player will only play Creative Commons licensed songs.');
+$.lang.register('ytplayer.command.ytp.togglecconly.disable', 'YouTube Player will play all licensed songs.');
+
 $.lang.register('ytplayer.command.ytp.togglestealrefund.enable', 'YouTube Player stolen songs will be refunded to users.');
 $.lang.register('ytplayer.command.ytp.togglestealrefund.disable', 'YouTube Player stolen songs will NOT be refunded to users.');
+
 $.lang.register('ytplayer.command.ytp.togglerandom.toggled', 'YouTube Player Playlist Randomization has been $1');
 $.lang.register('ytplayer.command.ytp.toggleannounce.toggled', 'YouTube Player Announcements have been $1');
 
@@ -63,7 +70,10 @@ $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'Usage: !ytp delrequest [YouTube ID]');
 
-$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglesongrequest | toggleannounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
+$.lang.register('ytplayer.command.ytp.clearcache.warning', 'This will remove all cached YouTube Player IDs. If you are sure, run !ytp clearcache now');
+$.lang.register('ytplayer.command.ytp.clearcache.success', 'YouTube Player ID cache has been cleared.');
+
+$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglecconly | togglesongrequest | toggleannounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount | resetdefaultlist | clearcache]');
 
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');

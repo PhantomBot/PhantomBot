@@ -14,11 +14,14 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  @author IllusionaryOne
 -->
 
 <!-- This is outside of the accordion, so will always be on top of the tab -->
+
+<!-- New panel alert. -->
+<div id="new-panel-alert"></div>
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="dashboardAccordion">
@@ -42,7 +45,7 @@
             </div>
         </form>
         <br>
-        
+
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="gameTitle">Game Title</label>
@@ -70,10 +73,10 @@
             </div>
         </form>
 
-        <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()" 
+        <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()"
         data-toggle="tooltip" title="NOTE: This will remove the bot from your channel, you will have to manually rejoin it.">Remove</button>
 
-        <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()" 
+        <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()"
         data-toggle="tooltip" title="Reconnect PhantomBot to your Twitch channel. This does not reconnect if the 'Remove' action was performed.">Reconnect</button>
 
         <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleTwitchChat()">Toggle Chat</button>
@@ -162,7 +165,7 @@
              <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="logRotate">Number of Days to Keep Logs</label>
                 <button type="button" class="btn btn-primary pull-right" onclick="$.setLogRotate()">Submit</button>
-                <input type="number" min="0" class="form-control" id="logRotateInput" placeholder="Days" 
+                <input type="number" min="0" class="form-control" id="logRotateInput" placeholder="Days"
                        data-toggle="tooltip" title="Days to keep logs, 0 means do not delete logs."/>
             </div>
         </form>
@@ -196,13 +199,13 @@
                 </div>
             </form>
             <br>
-            
+
             <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Clear Highlights</button>
             <strong>Current Highlights</strong><br>
             <span id="showHighlights" />
         </div>
     </div>
-    
+
     <h3>Death Counter</h3>
     <div>
         <div id="_deathCtrPanelDisabled" />
@@ -240,7 +243,7 @@
                            data-toggle="tooltip" title="Place channels that you want to be in the multi-link, separate them with a space. Do not include your channel in this." />
                 </div>
             </form>
-    
+
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
                     <label for="multi-link">Timer Interval</label>
@@ -249,16 +252,16 @@
                         data-toggle="tooltip" title="Set the interval (in minutes) for the multi-link to be said in chat. Minimum is 5 minutes." />
                 </div>
             </form>
-    
+
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
                     <label for="multi-link">Required Messages</label>
                     <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Submit</button>
-                    <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount" 
+                    <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount"
                         data-toggle="tooltip" title="Set the amount of messages required before sending the multi-link." />
                 </div>
             </form>
-    
+
             <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
             <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
             <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>

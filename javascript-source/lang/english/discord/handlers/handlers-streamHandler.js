@@ -20,4 +20,4 @@ $.lang.register('discord.streamhandler.offline.chatters', 'Chatters');
 $.lang.register('discord.streamhandler.offline.followers', 'Followers');
 $.lang.register('discord.streamhandler.offline.viewers.stat', 'Average - $1 High - $2');
 $.lang.register('discord.streamhandler.offline.chatters.stat', 'Average - $1 High - $2');
-$.lang.register('discord.streamhandler.offline.followers.stat', 'Session - $1 High - $2');
+$.lang.register('discord.streamhandler.offline.followers.stat', 'Session - $1 Total - $2');

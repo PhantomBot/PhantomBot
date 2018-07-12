@@ -18,7 +18,7 @@ package tv.phantombot.event.irc.message;
 
 import java.util.Map;
 
-import tv.phantombot.twitchwsirc.chat.Session;
+import tv.phantombot.wschat.twitch.TwitchSession;
 
 /**
  *
@@ -29,23 +29,23 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
     /*
      * Class constructor.
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  sender
      * @param {String}  message
      */
-    public IrcPrivateMessageEvent(Session session, String sender, String message) {
+    public IrcPrivateMessageEvent(TwitchSession session, String sender, String message) {
         super(session, sender, message);
     }
 
     /*
      * Class constructor.
      *
-     * @param {Session} session
+     * @param {TwitchSession} session
      * @param {String}  sender
      * @param {String}  message
      * @param {Map}     tags
      */
-    public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags) {
+    public IrcPrivateMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session, sender, message, tags);
     }
 }

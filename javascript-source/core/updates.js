@@ -42,7 +42,6 @@
             './handlers/gameWispHandler.js',
             './handlers/keywordHandler.js',
             './handlers/twitterHandler.js',
-            './handlers/streamTipHandler.js',
             './handlers/tipeeeStreamHandler.js',
             './systems/cleanupSystem.js',
             './systems/greetingSystem.js',
@@ -67,7 +66,6 @@
             './discord/handlers/followHandler.js',
             './discord/handlers/subscribeHandler.js',
             './discord/handlers/tipeeeStreamHandler.js',
-            './discord/handlers/streamtipHandler.js',
             './discord/handlers/streamlabsHandler.js',
             './discord/handlers/hostHandler.js',
             './discord/handlers/twitterHandler.js',
@@ -104,7 +102,7 @@
             'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s',
             'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installedv2.3.6',
             'installedv2.3.6ss', 'installedv2.3.6b', 'installedv2.3.7', 'installedv2.3.7b', 'installedv2.3.9', 'installedv2.3.9.1', 'installedv2.3.9.1b',
-            'installedv2.4.0'
+            'installedv2.4.0', 'installedv2.4.1'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
@@ -340,9 +338,6 @@
     if (!$.inidb.exists('updates', 'installedv2.1.1') || $.inidb.get('updates', 'installedv2.1.1') != 'true') {
         $.consoleLn('Starting PhantomBot v2.2 updates...');
 
-        $.consoleLn('Disabling new modules...');
-        $.inidb.set('modules', './handlers/streamTipHandler.js', 'false');
-
         $.consoleLn('PhantomBot v2.2 updates completed!');
         $.inidb.set('updates', 'installedv2.1.1', 'true');
     }
@@ -482,7 +477,6 @@
             './discord/handlers/bitsHandler.js',
             './discord/handlers/followHandler.js',
             './discord/handlers/subscribeHandler.js',
-            './discord/handlers/streamtipHandler.js',
             './discord/handlers/streamlabsHandler.js',
             './discord/handlers/tipeeeStreamHandler.js',
             './discord/handlers/hostHandler.js',
@@ -792,6 +786,19 @@
 
         $.consoleLn('PhantomBot update 2.4.0 completed!');
         $.inidb.set('updates', 'installedv2.4.0', 'true');
+    }
+
+    /* version 2.4.1 updates */
+    if (!$.inidb.exists('updates', 'installedv2.4.1') || $.inidb.get('updates', 'installedv2.4.1') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.4.1 updates...');
+
+        $.inidb.del('modules', './systems/raidSystem.js');
+
+        // Remove old raids for the new format.
+        $.inidb.RemoveFile('outgoing_raids');
+
+        $.consoleLn('PhantomBot update 2.4.1 completed!');
+        $.inidb.set('updates', 'installedv2.4.1', 'true');
     }
 
 

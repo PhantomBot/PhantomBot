@@ -23,10 +23,16 @@
     $.bind('twitchBits', function(event) {
         var username = event.getUsername(),
             bits = event.getBits(),
+            ircMessage = event.getMessage(),
+            emoteRegexStr = $.twitch.GetCheerEmotesRegex(),
             s = message;
 
         if (announceBits === false || toggle === false) {
             return;
+        }
+
+        if (bits == 1) {
+            s = $.replace(s, 'bits', 'bit');
         }
 
         if (s.match(/\(name\)/g)) {
@@ -36,10 +42,20 @@
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
         }
+ 
+        if (s.match(/\(message\)/g)) {
+            s = $.replace(s, '(message)', ircMessage);
+            if (emoteRegexStr.length() > 0) {
+                emoteRegex = new RegExp(emoteRegexStr, 'gi');
+                s = String(s).valueOf();
+                s = s.replace(emoteRegex, '');
+            }
+        }
 
         if (bits >= minimum) {
             $.say(s);
         }
+
         $.writeToFile(username + ' ', './addons/bitsHandler/latestCheer.txt', false);
         $.writeToFile(username + ': ' + bits + ' ', './addons/bitsHandler/latestCheer&Bits.txt', false);
     });
