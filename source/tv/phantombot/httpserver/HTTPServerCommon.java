@@ -218,13 +218,19 @@ public class HTTPServerCommon {
                 handleFile(uriPath, exchange, hasPassword, false);
             } else if (uriPath.startsWith("/config/gif-alerts")) {
                 handleFile(uriPath, exchange, hasPassword, false);
+            } else if (uriPath.startsWith("/lang")) {
+                handleFile("/scripts/lang/english/" + headers.getFirst("lang-path"), exchange, hasPassword, true);
             } else {
                 handleFile("/web" + uriPath, exchange, hasPassword, false);
             }
         }
 
         if (requestMethod.equals("PUT")) {
-            handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
+            if (myHdrUser.isEmpty() && headers.containsKey("lang-path")) {
+                handlePutRequestLang(headers.getFirst("lang-path"), headers.getFirst("lang"), exchange, hasPassword);
+            } else {
+                handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
+            }
         }
     }
 
@@ -589,6 +595,15 @@ public class HTTPServerCommon {
             PhantomBot.instance().getSession().say(message);
         }
         sendData("text/text", "event posted", exchange);
+    }
+
+    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) {
+        if (!hasPassword) {
+            sendHTMLError(403, "Access Denied.", exchange);
+            return;
+        }
+
+        sendHTMLError(200, "File Updated.", exchange);
     }
 
     private static void sendData(String contentType, String data, HttpExchange exchange) {
