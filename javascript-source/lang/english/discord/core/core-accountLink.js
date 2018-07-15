@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $.lang.register('discord.accountlink.usage.nolink', 'In order to use this module, make sure the bot is not blocked from private messaging you on Discord.\nTo link your Discord and Twitch accounts please use the following command **!account link**');
 $.lang.register('discord.accountlink.usage.link', 'Your Discord account is currently linked to **https://twitch.tv/$1**.\nYou can change it using **!account link** or remove it using **!account remove**');
 $.lang.register('discord.accountlink.link', '**NOTE: This expires in 10 minutes**.\nTo complete the process of linking your Discord and Twitch accounts, please login to Twitch, go to **https://twitch.tv/$1**, and send the command **!account link $2**');
