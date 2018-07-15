@@ -90,6 +90,7 @@ public final class LangFileUpdater {
             // Write the data.
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CUSTOM_LANG_ROOT + langFile, false)))) {
                 bw.write(sb.toString());
+                bw.close();
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -114,6 +115,7 @@ public final class LangFileUpdater {
                 while ((c = br.read()) != -1) {
                     sb.append((char)c);
                 }
+                br.close();
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
