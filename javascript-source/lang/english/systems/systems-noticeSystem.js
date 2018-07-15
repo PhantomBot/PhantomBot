@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $.lang.register('noticehandler.notice-config', 'Notice Settings - [Notice Toggle: $1 / Interval: $2 / Message Trigger: $3 / Amount: $4 / Say notice in offline chat: $5]');
 $.lang.register('noticehandler.notice-usage', 'Usage: !notice [add / get / remove / edit / config / interval / req / toggle / toggleoffline]');
 $.lang.register('noticehandler.notice-get-usage', 'Usage: !notice get (notice id) - Notice id\'s go from 0 to $1');
