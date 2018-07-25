@@ -49,6 +49,22 @@ import tv.phantombot.discord.DiscordAPI;
  * @author ScaniaTV
  */
 public class DiscordUtil {
+    
+    /*
+     * Method that removes the # in the channel name.
+     *
+     * @param  {String} channelName
+     * @return {String}
+     */
+    public String sanitizeChannelName(String channelName) {
+        // We have to make sure that it's at the start.
+        if (channelName.startsWith("#")) {
+            return channelName.substring(1);
+        } else {
+            return channelName;
+        }
+    }
+    
     /*
      * Method to send a message to a channel.
      *
@@ -269,6 +285,9 @@ public class DiscordUtil {
      * @return {IChannel}
      */
     public IChannel getChannel(String channelName) {
+        // Remove any # in the channel name.
+        channelName = sanitizeChannelName(channelName);
+        
         List<IChannel> channels = DiscordAPI.getGuild().getChannels();
 
         for (IChannel channel : channels) {
