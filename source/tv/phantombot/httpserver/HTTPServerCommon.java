@@ -21,6 +21,7 @@
  */
 package tv.phantombot.httpserver;
 
+import com.scaniatv.LangFileUpdater;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -218,8 +219,10 @@ public class HTTPServerCommon {
                 handleFile(uriPath, exchange, hasPassword, false);
             } else if (uriPath.startsWith("/config/gif-alerts")) {
                 handleFile(uriPath, exchange, hasPassword, false);
+            } else if (uriPath.startsWith("/get-lang")) {
+                handleLangFile("", exchange, hasPassword, true);
             } else if (uriPath.startsWith("/lang")) {
-                handleFile("/scripts/lang/english/" + headers.getFirst("lang-path"), exchange, hasPassword, true);
+                handleLangFile(headers.getFirst("lang-path"), exchange, hasPassword, true);
             } else {
                 handleFile("/web" + uriPath, exchange, hasPassword, false);
             }
@@ -441,6 +444,25 @@ public class HTTPServerCommon {
         jsonObject.object().key("error").value("malformed request").endObject();
         sendHTMLError(400, jsonObject.toString(), exchange);
         return;
+    }
+    
+    private static void handleLangFile(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+        if (needsPassword) {
+            if (!hasPassword) {
+                sendHTMLError(403, "Access Denied", exchange);
+                return;
+            }
+        }
+        
+        if (path.isEmpty()) {
+            // Get all lang files and their paths.
+            String[] files = LangFileUpdater.getLangFiles();
+        
+            // Send the files.W
+            sendData("text/text", String.join("\n", files), exchange);
+        } else {
+            sendData("text/text", LangFileUpdater.getCustomLang(path), exchange);
+        }
     }
 
     private static void handleFile(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {

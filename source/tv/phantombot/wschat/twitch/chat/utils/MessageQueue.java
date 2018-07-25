@@ -123,7 +123,7 @@ public class MessageQueue implements Runnable {
                 long time = System.currentTimeMillis();
 
                 // Make sure we're allowed to send messages and that this one can be sent.
-                if (isAllowedToSend && (nextWrite < time || (message.hasPriority() && writes <= 99))) {
+                if ((nextWrite < time || (message.hasPriority() && writes <= 99))) {
                     if (lastWrite > time) {
                         if (writes >= limit && !message.hasPriority()) {
                             nextWrite = (time + (lastWrite - time));

@@ -26,10 +26,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.HashMap;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -54,7 +59,7 @@ public final class LangFileUpdater {
      * @return 
      */
     public static String getCustomLang(String langFile) {
-        String stringArray = null;
+        String stringArray;
         
         stringArray = convertLangMapToJSONArray(
             getCustomAndDefaultLangMap(
@@ -98,6 +103,24 @@ public final class LangFileUpdater {
     }
     
     /**
+     * Method that gets a list of all lang files.
+     * 
+     * @return 
+     */
+    public static String[] getLangFiles() {
+        Collection<File> files = FileUtils.listFiles(new File(DEFAULT_LANG_ROOT), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+        ArrayList<String> fileNames = new ArrayList<>();
+        
+        String sep = File.separator;
+        
+        files.forEach((File file) -> {
+            fileNames.add(file.getPath().replace("." + sep + "scripts" + sep + "lang" + sep + "english" + sep, ""));
+        });
+        
+        return fileNames.toArray(new String[fileNames.size()]);
+    }
+    
+    /**
      * Method that gets a lang file.
      * 
      * @param langFile
@@ -133,7 +156,7 @@ public final class LangFileUpdater {
      */
     private static HashMap<String, String> getCustomAndDefaultLangMap(String defaultLang, String customLang) {
         // Create a new patter that will match if the default lang ID is also in the custom one.
-        final Pattern pattern = Pattern.compile("\\$\\.lang\\.register\\(\\'([a-zA-Z0-9,.-]+)\\'\\,\\s\\'(.*)\\'\\);");
+        final Pattern pattern = Pattern.compile("^\\$\\.lang\\.register\\(\\'([a-zA-Z0-9,.-]+)\\'\\,\\s\\'(.*)\\'\\);", Pattern.MULTILINE);
         
         // Get all matches for the default lang.
         final Matcher m1 = pattern.matcher(defaultLang);
@@ -174,7 +197,7 @@ public final class LangFileUpdater {
         map.forEach((String key, String value) -> {
             final JSONObject obj = new JSONObject();
             
-            jsonArray.object().key(key).value(value).endObject();
+            jsonArray.object().key("id").value(key).key("response").value(value).endObject();
         });
         
         // Close the array.
