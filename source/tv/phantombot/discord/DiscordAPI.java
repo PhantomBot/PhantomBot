@@ -95,14 +95,6 @@ public class DiscordAPI extends DiscordUtil {
         try {
             DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(150).setDaemon(false).registerListener(new DiscordEventListener()).login();
             
-            // Set a timer that checks our connection status with Discord every 60 seconds.
-            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.scheduleAtFixedRate(() -> {
-                if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
-                    com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
-                    com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
-                }
-            }, 0, 1, TimeUnit.MINUTES);
         } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
@@ -211,6 +203,15 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
 
             setGuildAndShard();
+            
+            // Set a timer that checks our connection status with Discord every 60 seconds
+            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+            service.scheduleAtFixedRate(() -> {
+                if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
+                    com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
+                    com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
+                }
+            }, 0, 1, TimeUnit.MINUTES);
         }
 
         @EventSubscriber
