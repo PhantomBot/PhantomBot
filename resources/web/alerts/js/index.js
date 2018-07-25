@@ -188,6 +188,8 @@ $(function() {
             });
             // Play the audio.
             audio.play();
+        } else {
+            isPlaying = false;
         }
     }
 
@@ -276,6 +278,8 @@ $(function() {
                 // Mark as done playing.
                 isPlaying = false;
             });
+        } else {
+            isPlaying = false;
         }
     }
 
