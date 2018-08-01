@@ -127,7 +127,7 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 import tv.phantombot.PhantomBot;
 
