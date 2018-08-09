@@ -45,7 +45,7 @@ public class YouTubeAPIv3 {
 
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
     private final SimpleScramble simpleScramble = new SimpleScramble();
-    private String scramblekey = "ZARRKwMxPRhrCX4RSiZTYlEcIANwPns+ZwZbCAg4dwVpG2gSLlpA";
+    private String scramblekey = "ZARRKwMxPQ8OSXZWDAJEVycATzBiJl89XDVmR21eXCF/Kz8AHzhi";
     private String apikey = simpleScramble.simpleFixedUnscramble(scramblekey);
 
     private enum request_type {
