@@ -114,14 +114,12 @@ public class TwitchWSIRCParser implements Runnable {
                 
                 if (bulkSubscriberGifters.containsKey(tags.get("login"))) {
                     SubscriberBulkGifter gifter = bulkSubscriberGifters.get(tags.get("login"));
-                    System.out.println(">>>>>>>GIFT IGNORE.");
                     if (gifter.getCurrentSubscriptionGifted() < gifter.getSubscritpionsGifted()) {
                         gifter.increaseCurrentSubscriptionGifted();
                     } else {
                         bulkSubscriberGifters.remove(tags.get("login"));
                     }
                 } else {
-                    System.out.println(">>>>>>>GIFT NORMAL.");
                     scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
                 }
             } catch (InterruptedException ex) {
