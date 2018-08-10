@@ -19,9 +19,11 @@ package tv.phantombot.wschat.twitch;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.java_websocket.WebSocket;
 
@@ -38,21 +40,25 @@ import tv.phantombot.event.irc.message.*;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
 import tv.phantombot.event.twitch.subscriber.*;
+import tv.phantombot.wschat.twitch.chat.utils.SubscriberBulkGifter;
 
 // Create an interface that is used to create event handling methods.
-interface TwitchWSIRCCommand {
+interface TwitchWSIRCCommand{
     void exec(String message, String username, Map<String, String> tags);
 }
 
-public class TwitchWSIRCParser {
+public class TwitchWSIRCParser implements Runnable {
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
     private final UsernameCache usernameCache = UsernameCache.instance();
     private final EventBus eventBus = EventBus.instance();
+    private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
+    private final BlockingDeque<Map<String, String>> giftedSubscriptionEvents = new LinkedBlockingDeque<>();
     private final WebSocket webSocket;
     private final TwitchSession session;
     private final String channelName;
+    private final Thread runThread;
 
     /*
      * Class constructor.
@@ -92,6 +98,36 @@ public class TwitchWSIRCParser {
 
         // USERNOTICE event from Twitch.
         parserMap.put("USERNOTICE", (TwitchWSIRCCommand) this::onUserNotice);
+        
+        // Start a new thread for events.
+        this.runThread = new Thread(this);
+        this.runThread.start();
+    }
+    
+    /*
+     * Method which is on a new thread that keeps track of gifted subscribers.
+     */
+    public void run() {
+        while (true) {
+            try {
+                Map<String, String> tags = giftedSubscriptionEvents.take();
+                
+                if (bulkSubscriberGifters.containsKey(tags.get("login"))) {
+                    SubscriberBulkGifter gifter = bulkSubscriberGifters.get(tags.get("login"));
+                    System.out.println(">>>>>>>GIFT IGNORE.");
+                    if (gifter.getCurrentSubscriptionGifted() < gifter.getSubscritpionsGifted()) {
+                        gifter.increaseCurrentSubscriptionGifted();
+                    } else {
+                        bulkSubscriberGifters.remove(tags.get("login"));
+                    }
+                } else {
+                    System.out.println(">>>>>>>GIFT NORMAL.");
+                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
+                }
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     /*
@@ -402,7 +438,12 @@ public class TwitchWSIRCParser {
                     scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan")));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
-                scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
+                giftedSubscriptionEvents.add(tags);
+            } else if (tags.get("msg-id").equalsIgnoreCase("submysterygift")) {
+                bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count"))));
+            
+                // Send event for this.
+                scriptEventManager.onEvent(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
             } else {
                 if (tags.get("msg-id").equalsIgnoreCase("raid")) {
                     scriptEventManager.onEvent(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));

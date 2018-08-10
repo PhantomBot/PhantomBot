@@ -40,6 +40,8 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONStringer;
 
+import tv.phantombot.script.ScriptManager;
+
 public final class LangFileUpdater {
     private static final LangFileUpdater INSTANCE = new LangFileUpdater();
     private static final String CUSTOM_LANG_ROOT = "./scripts/lang/custom/";
@@ -84,22 +86,49 @@ public final class LangFileUpdater {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             
-            sb.append("$.lang.register('" + obj.getString("id") + "', '" + obj.getString("response") + "');\n");
+            sb.append("$.lang.register('" + obj.getString("id") + "', '" + sanitizeResponse(obj.getString("response")) + "');\n");
         }
         
         try {
+            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/");
+            
+            System.out.println(langFile);
+            File file = new File(langFile);
+            boolean exists = true;
+            
             // Make sure the folder exists.
-            if (!new File(langFile).isDirectory()) {
-                new File(langFile).mkdirs();
+            if (!file.getParentFile().isDirectory()) {
+                System.out.println("no");
+                file.getParentFile().mkdirs();
             }
+            
+            if (!file.exists()) {
+                System.out.println("no2");
+                exists = false;
+            }
+            
             // Write the data.
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CUSTOM_LANG_ROOT + langFile, false)))) {
-                bw.write(sb.toString());
-                bw.close();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CUSTOM_LANG_ROOT + langFile, false)));
+            bw.write(sb.toString());
+            bw.close();
+            
+            // If the script doesn't exist, load it.
+            if (!exists) {
+                ScriptManager.loadScript(file);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+    
+    /**
+     * Method that replaces ' with \'.
+     * 
+     * @param response
+     * @return 
+     */
+    private static String sanitizeResponse(String response) {
+        return response.replaceAll("'", "\'");
     }
     
     /**
@@ -156,20 +185,20 @@ public final class LangFileUpdater {
      */
     private static HashMap<String, String> getCustomAndDefaultLangMap(String defaultLang, String customLang) {
         // Create a new patter that will match if the default lang ID is also in the custom one.
-        final Pattern pattern = Pattern.compile("^\\$\\.lang\\.register\\(\\'([a-zA-Z0-9,.-]+)\\'\\,\\s\\'(.*)\\'\\);", Pattern.MULTILINE);
+        final Pattern pattern = Pattern.compile("^\\$\\.lang\\.register\\((\\'|\\\")([a-zA-Z0-9,.-]+)(\\'|\\\")\\,\\s(\\'|\\\")(.*)(\\'|\\\")\\);", Pattern.MULTILINE);
         
         // Get all matches for the default lang.
         final Matcher m1 = pattern.matcher(defaultLang);
         final HashMap<String, String> defaultMatches = new HashMap<>();
         while (m1.find()) {
-            defaultMatches.put(m1.group(1), m1.group(2));
+            defaultMatches.put(m1.group(2), m1.group(5));
         }
         
         // Get all matches for the custom lang.
         final Matcher m2 = pattern.matcher(customLang);
         HashMap<String, String> customMatches = new HashMap<>();
         while (m2.find()) {
-            customMatches.put(m2.group(1), m2.group(2));
+            defaultMatches.put(m1.group(2), m1.group(5));
         }
         
         // Check if any is missing in the custom one.

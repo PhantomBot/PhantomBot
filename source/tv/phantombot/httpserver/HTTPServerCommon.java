@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import org.apache.commons.io.IOUtils;
 
 import tv.phantombot.PhantomBot;
 
@@ -220,9 +221,9 @@ public class HTTPServerCommon {
             } else if (uriPath.startsWith("/config/gif-alerts")) {
                 handleFile(uriPath, exchange, hasPassword, false);
             } else if (uriPath.startsWith("/get-lang")) {
-                handleLangFile("", exchange, hasPassword, true);
+                handleLangFiles("", exchange, hasPassword, true);
             } else if (uriPath.startsWith("/lang")) {
-                handleLangFile(headers.getFirst("lang-path"), exchange, hasPassword, true);
+                handleLangFiles(headers.getFirst("lang-path"), exchange, hasPassword, true);
             } else {
                 handleFile("/web" + uriPath, exchange, hasPassword, false);
             }
@@ -230,7 +231,7 @@ public class HTTPServerCommon {
 
         if (requestMethod.equals("PUT")) {
             if (myHdrUser.isEmpty() && headers.containsKey("lang-path")) {
-                handlePutRequestLang(headers.getFirst("lang-path"), headers.getFirst("lang"), exchange, hasPassword);
+                handlePutRequestLang(headers.getFirst("lang-path"), headers.getFirst("lang-data"), exchange, hasPassword);
             } else {
                 handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
             }
@@ -446,7 +447,7 @@ public class HTTPServerCommon {
         return;
     }
     
-    private static void handleLangFile(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+    private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
         if (needsPassword) {
             if (!hasPassword) {
                 sendHTMLError(403, "Access Denied", exchange);
@@ -619,12 +620,13 @@ public class HTTPServerCommon {
         sendData("text/text", "event posted", exchange);
     }
 
-    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) {
+    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) throws IOException {
         if (!hasPassword) {
             sendHTMLError(403, "Access Denied.", exchange);
             return;
         }
-
+        
+        LangFileUpdater.updateCustomLang(langData, langFile);
         sendHTMLError(200, "File Updated.", exchange);
     }
 
