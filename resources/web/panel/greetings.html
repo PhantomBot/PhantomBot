@@ -316,6 +316,15 @@
                      </div>
                 </td>
             </tr>
+             <tr class="textList">
+                <td>Toggle Mass Subscription Gift Alerts</td>
+                <td style="width: 25px"><div id="masssubscriptiongiftGreetings" /></td>
+                <td style="width: 25px">
+                    <div data-toggle="tooltip" title="Toggle" class="button"
+                         onclick="$.toggleGreetings('subscribeHandler', 'massGiftSubWelcomeToggle');"><i class="fa fa-refresh" />
+                     </div>
+                </td>
+            </tr>
         </table>
         <br>
 
@@ -343,6 +352,15 @@
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('giftSubRewardInput', 'subscribeHandler', 'giftSubReward')">Submit</button>
                 <input type="number" min="0" class="form-control" id="giftSubRewardInput" placeholder="Points" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="massGiftSubReward">Mass Gift Subscribing Reward Multiplier</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('massGiftSubRewardInput', 'subscribeHandler', 'massGiftSubReward')">Submit</button>
+                <input type="number" min="0" class="form-control" id="massGiftSubRewardInput" placeholder="Points" />
             </div>
         </form>
 
@@ -383,6 +401,16 @@
                         onclick="$.updateGreetingData('giftsubGreetingInput', 'subscribeHandler', 'giftSubMessage')">Submit</button>
                 <input type="text" class="form-control" id="giftsubGreetingInput" placeholder="Greeting Message"
                        data-toggle="tooltip" title="Tags: (name) (recipient) (reward) (plan) (months) (customemote)" />
+            </div>
+        </form>
+
+        <form role="form">
+            <div class="form-group" onkeypress="return event.keyCode != 13">
+                <label for="massGiftsubGreeting">Mass Subscription Gift Message</label>
+                <button type="button" class="btn btn-primary inline pull-right"
+                        onclick="$.updateGreetingData('massGiftsubGreetingInput', 'subscribeHandler', 'massGiftSubMessage')">Submit</button>
+                <input type="text" class="form-control" id="massGiftsubGreetingInput" placeholder="Greeting Message"
+                       data-toggle="tooltip" title="Tags: (name) (amount) (plan)" />
             </div>
         </form>
 

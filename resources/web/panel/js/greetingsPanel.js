@@ -36,6 +36,7 @@
         subToggle = false,
         reSubToggle = false,
         subGiftToggle = false,
+        massSubGiftToggle = false,
         donationToggle = false,
         donationGroup = false,
         gameWhispToggle = false,
@@ -188,11 +189,17 @@
                     if (panelMatch(key, 'giftSubReward')) {
                         $('#giftSubRewardInput').val(value);
                     }
+                    if (panelMatch(key, 'massGiftSubReward')) {
+                        $('#massGiftSubRewardInput').val(value);
+                    }
                     if (panelMatch(key, 'reSubscribeMessage')) {
                         $('#resubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'giftSubMessage')) {
                         $('#giftsubGreetingInput').val(value);
+                    }
+                    if (panelMatch(key, 'massGiftSubMessage')) {
+                        $('#massGiftsubGreetingInput').val(value);
                     }
                     if (panelMatch(key, 'subscriberWelcomeToggle')) {
                         subToggle = value;
@@ -209,6 +216,10 @@
                     if (panelMatch(key, 'giftSubWelcomeToggle')) {
                         subGiftToggle = value;
                         $('#subscriptiongiftGreetings').html(settingIcon[value]);
+                    }
+                    if (panelMatch(key, 'massGiftSubWelcomeToggle')) {
+                        massSubGiftToggle = value;
+                        $('#masssubscriptiongiftGreetings').html(settingIcon[value]);
                     }
                     if (panelMatch(key, 'subscribeReward')) {
                         $('#subRewardInput').val(value);
@@ -452,6 +463,15 @@
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'false');
             } else {
                 sendDBUpdate('greetings_greeting', 'subscribeHandler', 'giftSubWelcomeToggle', 'true');
+            }
+            setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
+        }
+        if (panelMatch(table, 'subscribeHandler') && panelMatch(key, 'massGiftSubWelcomeToggle')) {
+            $('#masssubscriptiongiftGreetings').html(spinIcon);
+            if (massSubGiftToggle == "true") {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'massGiftSubWelcomeToggle', 'false');
+            } else {
+                sendDBUpdate('greetings_greeting', 'subscribeHandler', 'massGiftSubWelcomeToggle', 'true');
             }
             setTimeout(function() { sendCommand('subscriberpanelupdate'); }, TIMEOUT_WAIT_TIME);
         }
