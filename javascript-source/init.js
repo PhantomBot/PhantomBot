@@ -789,13 +789,6 @@
         });
 
         /*
-         * @event yTPlayerDeleteCurrentEvent
-         */
-        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
-            callHook('yTPlayerDeleteCurrent', event, false);
-        });
-
-        /*
          * @event yTPlayerStealSongEvent
          */
         $api.on($script, 'yTPlayerStealSong', function(event) {
@@ -926,6 +919,13 @@
          */
         $api.on($script, 'twitchSubscriptionGift', function(event) {
             callHook('twitchSubscriptionGift', event, false);
+        });
+
+        /*
+         * @event twitchMassSubscriptionGifted
+         */
+        $api.on($script, 'twitchMassSubscriptionGifted', function(event) {
+            callHook('twitchMassSubscriptionGifted', event, false);
         });
 
         /*
