@@ -824,6 +824,13 @@
         });
 
         /*
+         * @event yTPlayerDeleteCurrentEvent
+         */
+        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
+            callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
          * @event gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {
