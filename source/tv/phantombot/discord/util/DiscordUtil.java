@@ -27,6 +27,7 @@ import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
+import tv.phantombot.discord.DiscordAPI;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.util.regex.Pattern;
