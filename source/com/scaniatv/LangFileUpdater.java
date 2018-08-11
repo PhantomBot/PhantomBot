@@ -19,13 +19,16 @@ package com.scaniatv;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -92,25 +95,21 @@ public final class LangFileUpdater {
         try {
             langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/");
             
-            System.out.println(langFile);
             File file = new File(langFile);
             boolean exists = true;
             
             // Make sure the folder exists.
             if (!file.getParentFile().isDirectory()) {
-                System.out.println("no");
                 file.getParentFile().mkdirs();
             }
             
+            // This is used if we need to load the script or not.
             if (!file.exists()) {
-                System.out.println("no2");
                 exists = false;
             }
             
             // Write the data.
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(CUSTOM_LANG_ROOT + langFile, false)));
-            bw.write(sb.toString());
-            bw.close();
+            Files.write(Paths.get(langFile), sb.toString().getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             
             // If the script doesn't exist, load it.
             if (!exists) {
@@ -128,7 +127,7 @@ public final class LangFileUpdater {
      * @return 
      */
     private static String sanitizeResponse(String response) {
-        return response.replaceAll("'", "\'");
+        return response.replaceAll("'", "\\\\'");
     }
     
     /**
@@ -161,7 +160,7 @@ public final class LangFileUpdater {
         final StringBuilder sb = new StringBuilder();
         
         try {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile.replaceAll("\\\\", "/"))))) {
                 int c;
             
                 while ((c = br.read()) != -1) {
@@ -172,6 +171,7 @@ public final class LangFileUpdater {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
         return sb.toString();
     }
     
@@ -196,9 +196,9 @@ public final class LangFileUpdater {
         
         // Get all matches for the custom lang.
         final Matcher m2 = pattern.matcher(customLang);
-        HashMap<String, String> customMatches = new HashMap<>();
+        final HashMap<String, String> customMatches = new HashMap<>();
         while (m2.find()) {
-            defaultMatches.put(m1.group(2), m1.group(5));
+            customMatches.put(m2.group(2), m2.group(5));
         }
         
         // Check if any is missing in the custom one.
