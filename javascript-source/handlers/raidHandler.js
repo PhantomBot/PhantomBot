@@ -89,10 +89,10 @@
      * @param {String} viewers
      */
     function saveOutRaidForUsername(username, viewers) {
-    	var raidObj = JSON.parse($.getIniDbString('outgoing_raids', username, '{}'));
+        var raidObj = JSON.parse($.getIniDbString('outgoing_raids', username, '{}'));
 
-    	if (raidObj.hasOwnProperty('totalRaids')) {
-    		// Increase total raids.
+        if (raidObj.hasOwnProperty('totalRaids')) {
+            // Increase total raids.
             raidObj.totalRaids = parseInt(raidObj.totalRaids) + 1;
             // Increase total viewers which the channel has raided the other channel for (all time).
             raidObj.totalViewers = (parseInt(raidObj.totalViewers) + parseInt(viewers));
@@ -101,7 +101,7 @@
             // Last raid viewers.
             raidObj.lastRaidViewers = viewers;
         } else {
-        	// Increase total raids.
+            // Increase total raids.
             raidObj.totalRaids = '1';
             // Increase total viewers.
             raidObj.totalViewers = viewers;
@@ -110,6 +110,9 @@
             // Last raid viewers.
             raidObj.lastRaidViewers = viewers;
         }
+
+        // Save the new object.
+        $.setIniDbString('outgoing_raids', username, JSON.stringify(raidObj));
     }
 
     /*
