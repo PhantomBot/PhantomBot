@@ -1,10 +1,10 @@
 
 # <img alt="PhantomBot" src="https://i.zelakto.tv/images/bN4H.png" width="600px"/>
 
-[![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
+[![Build Status](https://travis-ci.org/PhantomBotDE/PhantomBotDE.svg?branch=dev)](https://travis-ci.org/PhantomBotDE/PhantomBotDE)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)
 
-[**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, [and more](https://phantombot.tv/features)! PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
+[**PhantomBot**](https://phantombot.tv) ist ein Twitch Chat-Bot powered by Java. PhantomBot hat viele moderne Eigenschaften standrtmäßig, sowie ein eingebautes Webpanel, verbesserte Moderation, Spiele, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, ein Musikpalyer, [und mehr](https://phantombot.tv/features)! PhantomBot kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
 
 Additional functionality is enabled through the use of third-party modules.
 
