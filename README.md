@@ -6,6 +6,8 @@
 
 [**PhantomBot**](https://phantombot.tv) ist ein Twitch Chat-Bot powered by Java. PhantomBot hat viele moderne Eigenschaften standrtmäßig, sowie ein eingebautes Webpanel, verbesserte Moderation, Spiele, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, ein Musikpalyer, [und mehr](https://phantombot.tv/features)! PhantomBot kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
 
+Dies ist der deutsche Fork von PhantomBot, wir übersetzten immer die neuste Version.
+
 Zusätzliche Funktionalität wird durch die Verwendung von Modulen von Drittanbietern ermöglicht.
 
 * [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
