@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="PhantomBot" basedir="." default="dist">
+<project name="PhantomBotDE" basedir="." default="dist">
 
     <!-- To specify a Nightly Build run as ant -Dbuildtype=nightly_build -->
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->

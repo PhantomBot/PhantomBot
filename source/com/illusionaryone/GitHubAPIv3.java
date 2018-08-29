@@ -42,7 +42,7 @@ import org.json.JSONObject;
 public class GitHubAPIv3 {
 
     private static final GitHubAPIv3 instance = new GitHubAPIv3();
-    private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
+    private static final String sAPIURL = "https://api.github.com/repos/PhantomBotDE/PhantomBotDE";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static GitHubAPIv3 instance() {
