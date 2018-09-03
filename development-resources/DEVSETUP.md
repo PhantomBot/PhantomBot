@@ -1,7 +1,7 @@
 # Development Setup Guide  
 This guide is for the people that would like to contribute to PhantomBot and do it well. <3
 
-Please have a read on [CODESTYLE.md](/CODESTYLE.md), any code that does not apply to these rules will not get merged.
+Please have a read on [CODESTYLE.md](CODESTYLE.md), any code that does not apply to these rules will not get merged.
 
 ## General (All other IDE's)
 This section is for all IDE's not mentioned in this guide.  
@@ -24,10 +24,7 @@ You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 3. Open up a file from `./source/` where IntelliJ will ask you for a project SDK. Use SDK [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 4. Next up mark the directories `./source` and `./javascript-source` as "Sources Root".  
   *"Mark Directory As" in the context menu.*
-5. Install the "File Watchers" plugin if you haven't already.
-6. Import `./development-resources/watchers.xml` into your File Watchers.  
-  *The File Watchers are located in "Settings" under "Tools"*
-7. Import `build.xml` into the ANT task manager.  
+5. Import `build.xml` into the ANT task manager.  
   *IntelliJ might have already asked this of you and you were right in accepting it*
 
 DONE! Happy coding <3
