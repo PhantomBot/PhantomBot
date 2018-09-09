@@ -27,6 +27,6 @@ IF %ERRORLEVEL% NEQ 0 (
     pause
     exit
 )
-java -Dinteractive -Dfile.encoding=UTF-8 -jar PhantomBot.jar %1
+java -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar %1
 endlocal
 pause
