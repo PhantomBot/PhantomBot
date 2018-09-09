@@ -158,18 +158,21 @@ public final class LangFileUpdater {
      */
     private static String getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
+        langFile = langFile.replaceAll("\\\\", "/");
         
-        try {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile.replaceAll("\\\\", "/"))))) {
-                int c;
+        if (new File(langFile).exists()) {
+            try {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
+                    int c;
             
-                while ((c = br.read()) != -1) {
-                    sb.append((char)c);
+                    while ((c = br.read()) != -1) {
+                        sb.append((char)c);
+                    }
+                    br.close();     
                 }
-                br.close();
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         return sb.toString();
