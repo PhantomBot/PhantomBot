@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/PhantomBot/PhantomBot.svg?branch=master)](https://travis-ci.org/PhantomBot/PhantomBot)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/Xdh5SRY)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/PhantomBot/PhantomBot.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PhantomBot/PhantomBot/context:javascript)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/PhantomBot/PhantomBot.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PhantomBot/PhantomBot/alerts)
 
 [**PhantomBot**](https://phantombot.tv) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, [and more](https://phantombot.tv/features)! PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
 
