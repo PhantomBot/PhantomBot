@@ -1197,9 +1197,9 @@
             if (args.length === 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
                 $.logCustomCommand({
-                  'reset.command': '!' + action,
-                  'reset.count': 0,
-                  'sender': sender,
+                    'reset.command': '!' + action,
+                    'reset.count': 0,
+                    'sender': sender,
                 });
                 $.inidb.del('commandCount', action);
             } else {
