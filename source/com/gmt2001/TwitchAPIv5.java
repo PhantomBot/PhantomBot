@@ -646,6 +646,26 @@ public class TwitchAPIv5 {
         }
         return "ERROR";
     }
+    
+    /**
+     * Method that gets the teams that the channel is in.
+     * 
+     * @param channelName
+     * @return 
+     */
+    public JSONObject getChannelTeams(String channelName) {
+        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channelName) + "/teams", false);
+    }
+    
+    /**
+     * Method that gets a Twitch team.
+     * 
+     * @param teamName
+     * @return 
+     */
+    public JSONObject getTeam(String teamName) {
+        return GetData(request_type.GET, base_url + "/teams/" + teamName, false);
+    }
 
     /**
       * Checks to see if the bot account is verified by Twitch.
