@@ -109,6 +109,7 @@ import tv.phantombot.discord.DiscordAPI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
+import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.console.ConsoleEventHandler;
 
 public final class PhantomBot implements Listener {
@@ -197,6 +198,7 @@ public final class PhantomBot implements Listener {
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
+    private TwitchTeamsCache twitchTeamCache;
     private UsernameCache usernameCache;
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
@@ -1191,6 +1193,7 @@ public final class PhantomBot implements Listener {
 
         /* Load the caches for each channels */
         this.twitchCache = TwitchCache.instance(this.channelName);
+        this.twitchTeamCache = TwitchTeamsCache.instance(this.channelName);
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
         this.viewerListCache = ViewerListCache.instance(this.channelName);
@@ -1222,6 +1225,7 @@ public final class PhantomBot implements Listener {
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
+        Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
