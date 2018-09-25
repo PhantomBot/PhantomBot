@@ -399,7 +399,7 @@
             consoleLn('https://community.phantombot.tv/c/support/bug-reports');
         } else if ($.isPrerelease) {
             consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
-            consoleLn('When reporting bugs or issues, please remember to indicate that this is a pre-release build.');
+            consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
         } else {
             consoleLn('For support please visit: https://community.phantombot.tv');
         }

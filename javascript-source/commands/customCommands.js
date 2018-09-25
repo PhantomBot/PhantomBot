@@ -21,7 +21,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -440,8 +440,124 @@
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
 
+        // Variables for Twitch teams.
+        if (message.match(/\(team_.*/)) {
+            message = handleTwitchTeamVariables(message);
+        }
+
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
+        }
+
+        return message;
+    }
+
+    /*
+     * @function handleTwitchTeamVariables Handles the twitch team tags.
+     *
+     * @return String
+     */
+    function handleTwitchTeamVariables(message) {
+        if (message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getTotalMembers());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getUrl());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getName());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getRandomMember());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.getString('game'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.get('followers'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.getString('url'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
         }
 
         return message;
