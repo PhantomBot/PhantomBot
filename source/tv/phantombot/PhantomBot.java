@@ -966,12 +966,14 @@ public final class PhantomBot implements Listener {
             data += "    panelPort   : " + panelSocketPort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuth + "\",\r\n";
-            data += "    http        : \"" + http + "\"\r\n";
+            data += "    http        : \"" + http + "\"\r\n, ";
+            data += "    displayName : \"@DISPLAY_NAME@\"\r\n, ";
             data += "};\r\n\r\n";
             data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
             data += "function getChannelName() { return panelSettings.channelName; }\r\n";
             data += "function getAuth() { return panelSettings.auth; }\r\n";
             data += "function getProtocol() { return panelSettings.http; }\r\n";
+            data += "function getDisplayName() { return panelSettings.displayName; }\r\n";
 
             /* Create a new file if it does not exist */
             if (!new File ("./web/panel/").exists()) new File ("./web/panel/").mkdirs();

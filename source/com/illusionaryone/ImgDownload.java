@@ -33,7 +33,7 @@ import java.net.URL;
  * @author illusionaryone
  */
 public class ImgDownload {
-
+    
     /*
      * Download an image from a HTTP URL.
      *
@@ -41,7 +41,7 @@ public class ImgDownload {
      * @param   String  The filename to save the remote image as.
      * @return  String  Returns 'true' or 'false'.  As Rhino does not like Boolean, this is a String.
      */
-    public static String downloadHTTP(String urlString, String filename) {
+    public static String downloadHTTPTo(String urlString, String location) {
         try {
             URL url = new URL(urlString);
             ByteArrayOutputStream outputStream;
@@ -56,18 +56,29 @@ public class ImgDownload {
             }
             byte[] imgData = outputStream.toByteArray();
 
-            if (!new File ("./addons/downloadHTTP").exists()) {
-                new File ("./addons/downloadHTTP").mkdirs();
+            if (!new File (location.substring(0, location.lastIndexOf("/"))).exists()) {
+                new File (location.substring(0, location.lastIndexOf("/"))).mkdirs();
             }
 
-            try (FileOutputStream fileOutputStream = new FileOutputStream("./addons/downloadHTTP/" + filename)) {
+            try (FileOutputStream fileOutputStream = new FileOutputStream(location)) {
                 fileOutputStream.write(imgData);
             }
             return new String("true");
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("ImgDownload::downloadHTTP(" + urlString + ", " + filename + ") failed: " +
+            com.gmt2001.Console.err.println("ImgDownload::downloadHTTP(" + urlString + ", " + location + ") failed: " +
                                             ex.getMessage());
             return new String("false");
         }
+    }
+    
+    /*
+     * Download an image from a HTTP URL.
+     *
+     * @param   String  HTTP URL to download from.
+     * @param   String  The filename to save the remote image as.
+     * @return  String  Returns 'true' or 'false'.  As Rhino does not like Boolean, this is a String.
+     */
+    public static String downloadHTTP(String urlString, String filename) {
+        return downloadHTTPTo(urlString, "./addons/downloadHTTP/" + filename);
     }
 }
