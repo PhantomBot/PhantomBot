@@ -1436,7 +1436,7 @@
 
                 if (subAction.equalsIgnoreCase('links')) {
                     if (!args[2]) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.link', getModerationFilterStatus(silentTimeout.Links, true)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.silenttimeout.toggle.links', getModerationFilterStatus(silentTimeout.Links, true)));
                         return;
                     }
 
