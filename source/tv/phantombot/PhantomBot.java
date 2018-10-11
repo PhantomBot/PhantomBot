@@ -418,7 +418,11 @@ public final class PhantomBot implements Listener {
 
         /* Set the Discord variables */
         this.discordToken = this.pbProperties.getProperty("discord_token", "");
-        this.discordServerId = Long.parseLong(this.pbProperties.getProperty("discord_server"));
+        try {
+            this.discordServerId = Long.parseLong(this.pbProperties.getProperty("discord_server"));
+        } catch(NumberFormatException nfe) {
+            this.discordServerId = null;
+        }
 
         /* Set the GameWisp variables */
         this.gameWispOAuth = this.pbProperties.getProperty("gamewispauth", "");
