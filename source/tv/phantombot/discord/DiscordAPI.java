@@ -171,7 +171,7 @@ public class DiscordAPI extends DiscordUtil {
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
-        if (DiscordAPI.getClient().getGuilds().size() > 1 && DiscordAPI.serverId != null) {
+        if (DiscordAPI.getClient().getGuilds().size() > 1 && DiscordAPI.serverId == null) {
             // PhantomBot only works in one server, so throw an error if there's multiple.
             com.gmt2001.Console.err.println("Discord bot works only with one server. Please define 'discord_server' parameter if you want to unleash custom emotes. Now disconnecting from Discord...");
             DiscordAPI.client.logout();
@@ -188,6 +188,11 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
+    /**
+     * Method that will return a comma separated list of guild names
+     *
+     * @return {String} guilds
+     */
     private String getGuildNamesFormatted()
     {
         ArrayList<String> guilds = new ArrayList<>();
