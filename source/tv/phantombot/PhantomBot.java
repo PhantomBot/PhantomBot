@@ -187,6 +187,7 @@ public final class PhantomBot implements Listener {
 
     /* Discord Configuration */
     private String discordToken = "";
+    private Long discordServerId;
 
     /* PhantomBot Commands API Configuration */
     private String dataRenderServiceAPIToken = "";
@@ -417,6 +418,7 @@ public final class PhantomBot implements Listener {
 
         /* Set the Discord variables */
         this.discordToken = this.pbProperties.getProperty("discord_token", "");
+        this.discordServerId = Long.parseLong(this.pbProperties.getProperty("discord_server"));
 
         /* Set the GameWisp variables */
         this.gameWispOAuth = this.pbProperties.getProperty("gamewispauth", "");
@@ -881,7 +883,7 @@ public final class PhantomBot implements Listener {
 
         /* Connect to Discord if the data is present. */
         if (!discordToken.isEmpty()) {
-            DiscordAPI.instance().connect(discordToken);
+            DiscordAPI.instance().connect(discordToken, discordServerId);
         }
 
         /* Set Streamlabs currency code, if possible */

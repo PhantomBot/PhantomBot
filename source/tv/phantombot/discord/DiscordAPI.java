@@ -17,6 +17,7 @@
 
 package tv.phantombot.discord;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import sx.blah.discord.modules.Configuration;
 
 import sx.blah.discord.api.events.EventSubscriber;
@@ -42,6 +43,7 @@ import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
 import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.EventBus;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +61,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IDiscordClient client;
     private static ShardImpl shard;
     private static IGuild guild;
+    private static Long serverId;
 
     /*
      * Method to return this class object.
@@ -92,9 +95,10 @@ public class DiscordAPI extends DiscordUtil {
      *
      * @param {String} token
      */
-    public void connect(String token) {
+    public void connect(String token, Long serverId) {
         try {
             DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(150).setDaemon(false).registerListener(new DiscordEventListener()).login();
+            DiscordAPI.serverId = serverId;
             
         } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
@@ -167,14 +171,32 @@ public class DiscordAPI extends DiscordUtil {
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
-        // PhantomBot only works in one server, so throw an error if there's multiple.
-        if (DiscordAPI.getClient().getGuilds().size() > 1) {
-            com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
+        if (DiscordAPI.getClient().getGuilds().size() > 1 && DiscordAPI.serverId != null) {
+            // PhantomBot only works in one server, so throw an error if there's multiple.
+            com.gmt2001.Console.err.println("Discord bot works only with one server. Please define 'discord_server' parameter if you want to unleash custom emotes. Now disconnecting from Discord...");
             DiscordAPI.client.logout();
         } else {
-            DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
+            if (DiscordAPI.serverId != null) {
+                // Connecting to the defined server
+                DiscordAPI.guild = DiscordAPI.getClient().getGuildByID(DiscordAPI.serverId);
+            }
+            if (DiscordAPI.guild == null){
+                // Falling back to the first server in the list
+                DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
+            }
             DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
         }
+    }
+
+    private String getGuildNamesFormatted()
+    {
+        ArrayList<String> guilds = new ArrayList<>();
+
+        for(IGuild guild : DiscordAPI.getClient().getGuilds()) {
+            guilds.add("[" + guild.getName() + "]");
+        }
+
+        return String.join(",", guilds);
     }
 
     /*
@@ -202,6 +224,7 @@ public class DiscordAPI extends DiscordUtil {
         @EventSubscriber
         public void onDiscordReadyEvent(ReadyEvent event) {
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
+            com.gmt2001.Console.out.println("Connected to " + getGuildNamesFormatted() + ".");
 
             setGuildAndShard();
             
