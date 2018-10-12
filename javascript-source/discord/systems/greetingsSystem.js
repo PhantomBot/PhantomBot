@@ -97,7 +97,7 @@
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             mention = event.getMention(),
             args = event.getArgs(),
             action = args[0],

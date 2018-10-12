@@ -25,7 +25,7 @@
      */
     $.bind('discordChannelMessage', function(event) {
         var message = event.getMessage().toLowerCase(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             keys = $.inidb.GetKeyList('discordKeywords', ''),
             keyword,
             i;
@@ -58,7 +58,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

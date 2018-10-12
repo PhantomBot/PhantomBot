@@ -117,7 +117,7 @@
             }
         }
 
-        if (ircMessage.length > 0) { 
+        if (ircMessage.length > 0) {
         	$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(getBitsColor(bits))
                     .withThumbnail('https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/' + getCheerAmount(bits) + '/1.gif')
@@ -144,7 +144,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

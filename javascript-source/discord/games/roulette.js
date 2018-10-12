@@ -41,7 +41,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getUsername(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand();
 
         /**

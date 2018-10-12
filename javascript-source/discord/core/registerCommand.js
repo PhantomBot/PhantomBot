@@ -25,7 +25,7 @@
 
     /**
      * @function commandExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {boolean}
@@ -36,7 +36,7 @@
 
     /**
      * @function aliasExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {boolean}
@@ -47,7 +47,7 @@
 
     /**
      * @function subCommandExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -59,7 +59,7 @@
 
     /**
      * @function setCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {int} permmission
@@ -78,7 +78,7 @@
 
     /**
      * @function setCommandChannel
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} channel
@@ -103,7 +103,7 @@
 
     /**
      * @function setCommandCost
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {int}    cost
@@ -116,7 +116,7 @@
 
     /**
      * @function setCommandAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} alias
@@ -130,7 +130,7 @@
 
     /**
      * @function removeAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} alias
@@ -144,7 +144,7 @@
 
     /**
      * @function getCommandCost
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {int}
@@ -158,7 +158,7 @@
 
     /**
      * @function getCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {int}
@@ -172,7 +172,7 @@
 
     /**
      * @function getCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -187,21 +187,30 @@
 
     /**
      * @function getCommandChannel
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {string}
      */
-    function getCommandChannel(command, channel) {
+    function getCommandChannel(command, channelObj) {
         if (commandExists(command)) {
-            return commands[command].channel[channel];
+            if (typeof channelObj === 'object') {
+                if (commands[command].channel[channelObj.getName()] === undefined) {
+                    return commands[command].channel[channelObj.getStringID()]
+                } else {
+                    return commands[command].channel[channelObj.getName()];
+                }
+            } else {
+                return commands[command].channel[channelObj];
+            }
+
         }
         return undefined;
     }
 
     /**
      * @function getCommandAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {string}
@@ -215,7 +224,7 @@
 
     /**
      * @function registerCommand
-     * 
+     *
      * @export $.discord
      * @param {string} scriptFile
      * @param {string} command
@@ -253,7 +262,7 @@
 
     /**
      * @function registerSubCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -270,7 +279,7 @@
 
     /**
      * @function unregisterSubCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -283,7 +292,7 @@
 
     /**
      * @function unregisterCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      */
