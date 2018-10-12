@@ -523,7 +523,9 @@
         $api.on($script, 'discordChannelCommand', function(event) {
             var username = event.getUsername(),
                 command = event.getCommand(),
-                channel = event.getChannel(),
+                channel = event.getDiscordChannel(),
+                channelName = event.getChannel(),
+                channelId = event.getChannelId(),
                 isAdmin = event.isAdmin(),
                 senderId = event.getSenderId(),
                 args = event.getArgs();
@@ -551,7 +553,7 @@
             if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
                     return;
                 }
             }

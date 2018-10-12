@@ -272,7 +272,7 @@
      */
     $.bind('discordChannelMessage', function(event) {
         var sender = event.getSenderId(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
@@ -321,7 +321,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

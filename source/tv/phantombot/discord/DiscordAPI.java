@@ -17,7 +17,6 @@
 
 package tv.phantombot.discord;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import sx.blah.discord.modules.Configuration;
 
 import sx.blah.discord.api.events.EventSubscriber;
@@ -62,6 +61,7 @@ public class DiscordAPI extends DiscordUtil {
     private static ShardImpl shard;
     private static IGuild guild;
     private static Long serverId;
+    private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
     /*
      * Method to return this class object.
@@ -87,7 +87,8 @@ public class DiscordAPI extends DiscordUtil {
     public static enum ConnectionState {
         CONNECTED,
         RECONNECTED,
-        DISCONNECTED
+        DISCONNECTED,
+        CANNOT_RECONNECT
     }
 
     /*
@@ -175,6 +176,7 @@ public class DiscordAPI extends DiscordUtil {
             // PhantomBot only works in one server, so throw an error if there's multiple.
             com.gmt2001.Console.err.println("Discord bot works only with one server. Please define 'discord_server' parameter if you want to unleash custom emotes. Now disconnecting from Discord...");
             DiscordAPI.client.logout();
+            reconnectState = ConnectionState.CANNOT_RECONNECT;
         } else {
             if (DiscordAPI.serverId != null) {
                 // Connecting to the defined server
@@ -236,9 +238,11 @@ public class DiscordAPI extends DiscordUtil {
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.scheduleAtFixedRate(() -> {
-                if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
-                    com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
-                    com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
+                if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
+                    if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
+                        com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
+                        com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
+                    }
                 }
             }, 0, 1, TimeUnit.MINUTES);
         }
