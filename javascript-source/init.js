@@ -553,7 +553,7 @@
             if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) || !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
                     return;
                 }
             }
