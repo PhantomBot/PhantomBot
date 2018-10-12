@@ -59,6 +59,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IDiscordClient client;
     private static ShardImpl shard;
     private static IGuild guild;
+    private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
     /*
      * Method to return this class object.
@@ -84,7 +85,8 @@ public class DiscordAPI extends DiscordUtil {
     public static enum ConnectionState {
         CONNECTED,
         RECONNECTED,
-        DISCONNECTED
+        DISCONNECTED,
+        CANNOT_RECONNECT
     }
 
     /*
@@ -171,6 +173,7 @@ public class DiscordAPI extends DiscordUtil {
         if (DiscordAPI.getClient().getGuilds().size() > 1) {
             com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
             DiscordAPI.client.logout();
+            reconnectState = ConnectionState.CANNOT_RECONNECT;
         } else {
             DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
             DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
@@ -208,9 +211,11 @@ public class DiscordAPI extends DiscordUtil {
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.scheduleAtFixedRate(() -> {
-                if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
-                    com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
-                    com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
+                if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
+                    if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
+                        com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
+                        com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
+                    }
                 }
             }, 0, 1, TimeUnit.MINUTES);
         }
