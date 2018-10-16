@@ -105,27 +105,6 @@ public class MessageQueue implements Runnable {
     public void sayNow(String message) {
         queue.addFirst(new Message(message, message.startsWith(".")));
     }
-    
-    /*
-     * Method that sends a message with custom tags to Twitch.
-     * This should only be used for timeouts and bans.
-     *
-     * @param {String} message
-     * @param {HashMap} tags
-     */
-    public void sayNow(String message, HashMap<String, String> tags) {
-        StringBuilder builder = new StringBuilder();
-        
-        // Add @ to send our tags.
-        builder.append("@");
-        
-        // Insert all of the tags.
-        tags.keySet().forEach((key) -> {
-            builder.append(key).append("=").append(tags.get(key)).append(" ");
-        });
-        
-        queue.addFirst(new Message(message, message.startsWith("."), builder.toString()));
-    }
 
     /*
      * Method that handles sending messages to Twitch from our queue.
@@ -159,7 +138,7 @@ public class MessageQueue implements Runnable {
                     }
 
                     // Send the message.
-                    session.sendRaw(message.getTags() + "PRIVMSG #" + this.channelName + " :" + message.getMessage());
+                    session.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
                     com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
                 }
             } catch (InterruptedException ex) {
