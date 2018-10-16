@@ -18,7 +18,6 @@ package tv.phantombot.wschat.twitch.chat.utils;
 
 public class Message {
     private final String message;
-    private final String tags;
     private final boolean hasPriority;
 
     /*
@@ -29,7 +28,6 @@ public class Message {
     public Message(String message) {
         this.message = message;
         this.hasPriority = false;
-        this.tags = "";
     }
 
     /*
@@ -41,20 +39,6 @@ public class Message {
     public Message(String message, boolean hasPriority) {
         this.message = message;
         this.hasPriority = hasPriority;
-        this.tags = "";
-    }
-    
-    /*
-     * Class constructor.
-     *
-     * @param {String} message
-     * @param {boolean} hasPriority
-     * @param {String} tags
-     */
-    public Message(String message, boolean hasPriority, String tags) {
-        this.message = message;
-        this.hasPriority = hasPriority;
-        this.tags = tags;
     }
 
     /*
@@ -73,14 +57,5 @@ public class Message {
      */
     public boolean hasPriority() {
         return this.hasPriority;
-    }
-    
-    /*
-     * Method that returns our custom tags if any.
-     *
-     * @return {String} tags
-     */
-    public String getTags() {
-        return this.tags;
     }
 }
