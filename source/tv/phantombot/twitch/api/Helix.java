@@ -418,7 +418,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch.
      * @return 
      */
-    public JSONObject getStreamsById(String[] ids, String[] parameters) {
+    public JSONObject getStreamsByIds(String[] ids, String[] parameters) {
         return getStreamsByType("user_id", ids, parameters);
     }
     
@@ -429,7 +429,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch.
      * @return 
      */
-    public JSONObject getStreamByIds(String id, String[] parameters) {
+    public JSONObject getStreamById(String id, String[] parameters) {
         return getStreamsByIds(new String[] {
             id
         }, parameters);
