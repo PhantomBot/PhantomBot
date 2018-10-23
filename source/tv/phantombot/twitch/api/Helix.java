@@ -418,7 +418,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch.
      * @return 
      */
-    public JSONObject getStreamsByIds(String[] ids, String[] parameters) {
+    public JSONObject getStreamsById(String[] ids, String[] parameters) {
         return getStreamsByType("user_id", ids, parameters);
     }
     
@@ -506,7 +506,7 @@ public class Helix {
      * @param gameID The Id of the game.
      * @return 
      */
-    public JSONObject getGamesByIds(String gameID) {
+    public JSONObject getGameById(String gameID) {
         return getGamesByNames(new String[] {
             gameID
         });
