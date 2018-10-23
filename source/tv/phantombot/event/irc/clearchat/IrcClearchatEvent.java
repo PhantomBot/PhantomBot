@@ -18,7 +18,7 @@ package tv.phantombot.event.irc.clearchat;
 
 import tv.phantombot.event.irc.IrcEvent;
 
-import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcClearchatEvent extends IrcEvent {
     private final String username;

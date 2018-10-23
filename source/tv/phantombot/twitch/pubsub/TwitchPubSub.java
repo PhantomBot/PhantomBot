@@ -20,31 +20,25 @@
  * @author ScaniaTV
  */
 
-package tv.phantombot.wschat.twitch.pubsub;
+package tv.phantombot.twitch.pubsub;
 
 import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
+import java.io.IOException;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -52,6 +46,9 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.moderation.*;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 public class TwitchPubSub {
     private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
@@ -131,7 +128,7 @@ public class TwitchPubSub {
                     this.twitchPubSubWS.delete();
                     this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
                     reconnected = this.twitchPubSubWS.connectWSS(true);
-                } catch (Exception ex) {
+                } catch (URISyntaxException ex) {
                     com.gmt2001.Console.err.println("TwitchPubSub failed to reconnect: " + ex.getMessage());
                     System.exit(0);
                 }
@@ -181,7 +178,7 @@ public class TwitchPubSub {
                 sslContext.init(null, null, null);
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
                 this.setSocket(sslSocketFactory.createSocket());
-            } catch (Exception ex) {
+            } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
             }
         }

@@ -16,7 +16,7 @@
  */
 package tv.phantombot.event.irc.complete;
 
-import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcJoinCompleteEvent extends IrcCompleteEvent {
 
