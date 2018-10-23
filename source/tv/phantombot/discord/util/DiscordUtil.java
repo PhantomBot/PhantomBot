@@ -277,6 +277,17 @@ public class DiscordUtil {
      * @param  {String} fileLocation
      * @return {IMessage}
      */
+    public IMessage sendFile(IChannel channel, String fileLocation) {
+        return sendFile(channel, "", fileLocation);
+    }
+    
+    /*
+     * Method to send a file to a channel.
+     *
+     * @param  {String} channelName
+     * @param  {String} fileLocation
+     * @return {IMessage}
+     */
     public IMessage sendFile(String channelName, String fileLocation) {
         return sendFile(getChannel(channelName), "", fileLocation);
     }

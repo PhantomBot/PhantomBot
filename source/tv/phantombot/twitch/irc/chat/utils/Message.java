@@ -53,7 +53,7 @@ public class Message {
     /*
      * Method that returns if the message has priority.
      *
-     * @return {boolean} message
+     * @return {boolean} hasPriority
      */
     public boolean hasPriority() {
         return this.hasPriority;
