@@ -442,7 +442,7 @@ public class Helix {
      * @return 
      */
     public JSONObject getStreamsByIds(String[] ids) {
-        return getStreamsByIds(ids new String[0]);
+        return getStreamsByIds(ids, new String[0]);
     }
 
     /**
