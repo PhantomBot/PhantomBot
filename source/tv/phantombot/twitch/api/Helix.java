@@ -436,6 +436,16 @@ public class Helix {
     }
     
     /**
+     * Method that gets streams by their IDs.
+     * 
+     * @param ids The ids of the streams to get.
+     * @return 
+     */
+    public JSONObject getStreamsByIds(String[] ids) {
+        return getStreamsByIds(ids new String[0]);
+    }
+
+    /**
      * Method that gets streams by their ID.
      * 
      * @param id The id of the stream to get.
