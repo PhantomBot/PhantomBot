@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.wschat.twitch;
+package tv.phantombot.twitch.irc;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ import tv.phantombot.event.irc.message.*;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
 import tv.phantombot.event.twitch.subscriber.*;
-import tv.phantombot.wschat.twitch.chat.utils.SubscriberBulkGifter;
+import tv.phantombot.twitch.irc.chat.utils.SubscriberBulkGifter;
 
 // Create an interface that is used to create event handling methods.
 interface TwitchWSIRCCommand{

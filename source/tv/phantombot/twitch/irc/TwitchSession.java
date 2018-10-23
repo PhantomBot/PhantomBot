@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.wschat.twitch;
+package tv.phantombot.twitch.irc;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
-import tv.phantombot.wschat.twitch.TwitchWSIRC;
+import tv.phantombot.twitch.irc.TwitchWSIRC;
 
-import tv.phantombot.wschat.twitch.chat.utils.MessageQueue;
+import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
 public class TwitchSession extends MessageQueue {
     private static TwitchSession instance;

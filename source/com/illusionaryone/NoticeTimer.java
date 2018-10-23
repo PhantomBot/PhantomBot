@@ -28,7 +28,7 @@ import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
-import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 import com.google.common.collect.Maps;
 

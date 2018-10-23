@@ -21,7 +21,7 @@ import java.util.Map;
 
 import tv.phantombot.event.irc.IrcEvent;
 
-import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 public abstract class IrcMessageEvent extends IrcEvent {
     private final String sender;

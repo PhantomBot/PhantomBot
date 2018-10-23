@@ -18,7 +18,7 @@ package tv.phantombot.event.irc.message;
 
 import java.util.Map;
 
-import tv.phantombot.wschat.twitch.TwitchSession;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 /**
  *
