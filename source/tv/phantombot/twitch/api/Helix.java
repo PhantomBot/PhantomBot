@@ -264,7 +264,7 @@ public class Helix {
             // Parse the data.
             returnObject = new JSONObject(getStringFromInputStream(inStream));
             // Generate the return object,
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "", "");
+            generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
         } catch (JSONException ex) {
             // Generate the return object.
             generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "JSONException", ex.getMessage());
