@@ -213,8 +213,10 @@ public class Helix {
         // Check our rate limit.
         checkRateLimit();
         
-        // Update the end point URL.
-        endPoint = BASE_URL + endPoint;
+        // Update the end point URL, if it is an endpoint and not full URL.
+        if (endPoint.startsWith("/")) {
+            endPoint = BASE_URL + endPoint;
+        }
         
         try {
             // Generate a new URL.
@@ -415,7 +417,7 @@ public class Helix {
      * Method that gets streams by their ID.
      * 
      * @param ids A string array of stream IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch.
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
     public JSONObject getStreamsByIds(String[] ids, String[] parameters) {
@@ -426,7 +428,7 @@ public class Helix {
      * Method that gets streams by their id.
      * 
      * @param id The id of the stream to get.
-     * @param parameters A string array of parameters allow by Twitch.
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
     public JSONObject getStreamById(String id, String[] parameters) {
@@ -438,7 +440,7 @@ public class Helix {
     /**
      * Method that gets streams by their IDs.
      * 
-     * @param ids The ids of the streams to get.
+     * @param ids The IDs of the streams to get. Limit: 100
      * @return 
      */
     public JSONObject getStreamsByIds(String[] ids) {
@@ -510,5 +512,100 @@ public class Helix {
         return getGamesByNames(new String[] {
             gameID
         });
+    }
+    
+    /**
+     * Method that gets clips by type.
+     * 
+     * @param type Either broadcaster_id, game_id or id.
+     * @param clipIds A string array of clips, games, or channel IDs. Limit: 100
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
+     * @return 
+     */
+    private JSONObject getClipsByType(String type, String clipIds[], String[] parameters) {
+        return handleRequest(RequestType.GET, "/clips?" + type + "=" + String.join("&" + type + "=", clipIds) + (parameters.length > 0 ? "&" + String.join("&", parameters) : ""));
+    }
+    
+    /**
+     * Method that gets clips from a broadcaster (channel).
+     * 
+     * @param channelId the ID of the broadcaster (channel).
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
+     * @return 
+     */
+    public JSONObject getBroadcasterClipsById(String channelId, String[] parameters) {
+        return getClipsByType("broadcaster_id", new String[] {
+            channelId
+        }, parameters);
+    }
+    
+    /**
+     * Method that gets clips from a broadcaster (channel).
+     * 
+     * @param channelId the ID of the broadcaster (channel).
+     * @return 
+     */
+    public JSONObject getBroadcasterClipsById(String channelId) {
+        return getClipsByType("broadcaster_id", new String[] {
+            channelId
+        }, new String[0]);
+    }
+    
+    /**
+     * Method that gets clips from a certain game.
+     * 
+     * @param gameId The ID of the game.
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
+     * @return 
+     */
+    public JSONObject getGameClipsById(String gameId, String[] parameters) {
+        return getClipsByType("game_id", new String[] { 
+            gameId
+        }, parameters);
+    }
+    
+    /**
+     * Method that gets clips from a certain game.
+     * 
+     * @param gameId The ID of the game.
+     * @return 
+     */
+    public JSONObject getGameClipsById(String gameId) {
+        return getClipsByType("game_id", new String[] { 
+            gameId
+        }, new String[0]);
+    }
+    
+    /**
+     * Method that gets a bunch of clips by their IDs.
+     * 
+     * @param clipIds A string array of clip IDs. Limit: 100
+     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
+     * @return 
+     */
+    public JSONObject getClipsById(String[] clipIds, String[] parameters) {
+        return getClipsByType("id", clipIds, parameters);
+    }
+    
+    /**
+     * Method that gets a bunch of clips by their IDs.
+     * 
+     * @param clipIds A string array of clip IDs.
+     * @return 
+     */
+    public JSONObject getClipsById(String[] clipIds) {
+        return getClipsByType("id", clipIds, new String[0]);
+    }
+    
+    /**
+     * Method that gets a clip by its ID.
+     * 
+     * @param clipId The ID of the clip
+     * @return 
+     */
+    public JSONObject getClipById(String clipId) {
+        return getClipsByType("id", new String[] { 
+            clipId 
+        }, new String[0]);
     }
 }
