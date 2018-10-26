@@ -187,7 +187,7 @@
             if (action.equalsIgnoreCase('subtoggle')) {
                 subToggle = !subToggle;
                 $.inidb.set('discordSettings', 'subToggle', subToggle);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.sub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /**
