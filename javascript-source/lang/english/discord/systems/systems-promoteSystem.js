@@ -58,3 +58,4 @@ $.lang.register('discord.promotesystem.livemsg.views', 'Views');
 
 $.lang.register('discord.promotesystem.promotemsg.description', 'Be sure to follow and checkout $1');
 $.lang.register('discord.promotesystem.promotemsg.biography', 'Bio');
+$.lang.register('discord.promotesystem.promotemsg.nobio', 'No biography provided.');
