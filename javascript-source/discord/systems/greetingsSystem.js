@@ -41,6 +41,12 @@
      * @event discordChannelJoin
      */
     $.bind('discordChannelJoin', function(event) {
+        // Add the join group if there's one.
+        if (joinGroup !== '' && joinGroup != null && joinGroup.length > 0) {
+            $.discord.setRole(joinGroup, event.getDiscordUser());
+        }
+
+        // Check for the toggle.
         if (joinToggle === false || channelName == '') {
             return;
         }
@@ -59,10 +65,6 @@
 
         if (s.match(/\(role\)/)) {
             s = $.replace(s, '(role)', joinGroup);
-        }
-
-        if (joinGroup !== '') {
-            $.discord.setRole(joinGroup, event.getDiscordUser());
         }
 
         $.discord.say(channelName, s);

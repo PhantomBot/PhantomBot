@@ -25,6 +25,8 @@
         subToggle = $.getSetIniDbBoolean('discordSettings', 'subToggle', false),
         primeToggle = $.getSetIniDbBoolean('discordSettings', 'primeToggle', false),
         resubToggle = $.getSetIniDbBoolean('discordSettings', 'resubToggle', false),
+        giftsubToggle = $.getSetIniDbBoolean('discordSettings', 'giftsubToggle', false),
+        giftsubMessage = $.getSetIniDbString('discordSettings', 'resubMessage', '(name) just gifted (recipient) a subscription!'),
         channelName = $.getSetIniDbString('discordSettings', 'subChannel', ''),
         announce = false;
 
@@ -36,9 +38,11 @@
             subMessage = $.getIniDbString('discordSettings', 'subMessage', '(name) just subscribed!');
             primeMessage = $.getIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!');
             resubMessage = $.getIniDbString('discordSettings', 'resubMessage', '(name) just subscribed for (months) months in a row!');
+            giftsubMessage = $.getSetIniDbString('discordSettings', 'resubMessage', '(name) just gifted (recipient) a subscription!');
             subToggle = $.getIniDbBoolean('discordSettings', 'subToggle', false);
             primeToggle = $.getIniDbBoolean('discordSettings', 'primeToggle', false);
             resubToggle = $.getIniDbBoolean('discordSettings', 'resubToggle', false);
+            giftsubToggle = $.getSetIniDbBoolean('discordSettings', 'giftsubToggle', false);
             channelName = $.getIniDbString('discordSettings', 'subChannel', '');
         }
     });
@@ -62,6 +66,41 @@
                     .withColor(100, 65, 164)
                     .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
                     .withTitle($.lang.get('discord.subscribehandler.subscriber.embedtitle'))
+                    .appendDescription(s)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
+    });
+
+     /*
+     * @event twitchSubscriptionGift
+     */
+    $.bind('twitchSubscriptionGift', function(event) {
+        var gifter = event.getUsername(),
+            recipient = event.getRecipient(),
+            months = event.getMonths(),
+            s = giftsubMessage;
+
+        if (announce === false || giftsubToggle === false || channelName == '') {
+            return;
+        }
+
+        if (s.match(/\(name\)/g)) {
+            s = $.replace(s, '(name)', gifter);
+        }
+
+        if (s.match(/\(recipient\)/g)) {
+            s = $.replace(s, '(recipient)', recipient);
+        }
+
+        if (s.match(/\(months\)/g)) {
+            s = $.replace(s, '(months)', months);
+        }
+
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
+                    .withTitle($.lang.get('discord.subscribehandler.giftsubscriber.embedtitle'))
                     .appendDescription(s)
                     .withTimestamp(Date.now())
                     .withFooterText('Twitch')
@@ -148,7 +187,16 @@
             if (action.equalsIgnoreCase('subtoggle')) {
                 subToggle = !subToggle;
                 $.inidb.set('discordSettings', 'subToggle', subToggle);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.sub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            }
+
+            /**
+             * @discordcommandpath subscribehandler giftsubtoggle - Toggles gifted subscriber announcements.
+             */
+            if (action.equalsIgnoreCase('giftsubtoggle')) {
+                giftsubToggle = !giftsubToggle;
+                $.inidb.set('discordSettings', 'giftsubToggle', giftsubToggle);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.toggle', (giftsubToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /**
@@ -181,6 +229,21 @@
                 subMessage = args.slice(1).join(' ');
                 $.inidb.set('discordSettings', 'subMessage', subMessage);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.sub.message.set', subMessage));
+            }
+
+
+            /**
+             * @discordcommandpath subscribehandler giftsubmessage [message] - Sets the gift subscriber announcement message.
+             */
+            if (action.equalsIgnoreCase('giftsubmessage')) {
+                if (subAction === undefined) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.message.usage'));
+                    return;
+                }
+
+                giftsubMessage = args.slice(1).join(' ');
+                $.inidb.set('discordSettings', 'giftsubMessage', giftsubMessage);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.message.set', giftsubMessage));
             }
 
             /**
@@ -233,9 +296,11 @@
     $.bind('initReady', function() {
         $.discord.registerCommand('./discord/handlers/subscribeHandler.js', 'subscribehandler', 1);
         $.discord.registerSubCommand('subscribehandler', 'subtoggle', 1);
+        $.discord.registerSubCommand('subscribehandler', 'giftsubtoggle', 1);
         $.discord.registerSubCommand('subscribehandler', 'primetoggle', 1);
         $.discord.registerSubCommand('subscribehandler', 'resubtoggle', 1);
         $.discord.registerSubCommand('subscribehandler', 'submessage', 1);
+        $.discord.registerSubCommand('subscribehandler', 'giftsubmessage', 1);
         $.discord.registerSubCommand('subscribehandler', 'primemessage', 1);
         $.discord.registerSubCommand('subscribehandler', 'resubmessage', 1);
         $.discord.registerSubCommand('subscribehandler', 'channel', 1);
