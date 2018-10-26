@@ -303,7 +303,7 @@
                 var twitchName = $.inidb.get('promoteids', twitchID);
                 var biography = $.inidb.get('promotebio', twitchID);
                 if (biography.equals('')) {
-                    biography = 'No biography provided.';
+                    biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
                 }
                 $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
                                               .withThumbnail('http://iotv.me/i/followontwitch.jpg')
@@ -421,7 +421,7 @@
             var twitchName = $.inidb.get('promoteids', twitchIDs[lastIdx]);
             var biography = $.inidb.get('promotebio', twitchIDs[lastIdx]);
             if (biography.equals('')) {
-                biography = 'No biography provided.';
+                biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
             $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
                                           .withThumbnail('http://iotv.me/i/followontwitch.jpg')
