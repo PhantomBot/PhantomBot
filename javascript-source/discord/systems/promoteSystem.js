@@ -222,7 +222,7 @@
                 if (allowSelfManage) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.toggleselfmanage.off'));
                 } else {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.toggleselfmanage.off'));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.toggleselfmanage.on'));
                 }
                 allowSelfManage = !allowSelfManage;
                 $.setIniDbBoolean('promotesettings', 'allowselfmanage', allowSelfManage);
