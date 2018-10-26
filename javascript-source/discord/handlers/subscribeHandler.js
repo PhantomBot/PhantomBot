@@ -22,11 +22,11 @@
     var subMessage = $.getSetIniDbString('discordSettings', 'subMessage', '(name) just subscribed!'),
         primeMessage = $.getSetIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!'),
         resubMessage = $.getSetIniDbString('discordSettings', 'resubMessage', '(name) just subscribed for (months) months in a row!'),
+        giftsubMessage = $.getSetIniDbString('discordSettings', 'giftsubMessage', '(name) just gifted (recipient) a subscription!'),
         subToggle = $.getSetIniDbBoolean('discordSettings', 'subToggle', false),
         primeToggle = $.getSetIniDbBoolean('discordSettings', 'primeToggle', false),
         resubToggle = $.getSetIniDbBoolean('discordSettings', 'resubToggle', false),
         giftsubToggle = $.getSetIniDbBoolean('discordSettings', 'giftsubToggle', false),
-        giftsubMessage = $.getSetIniDbString('discordSettings', 'resubMessage', '(name) just gifted (recipient) a subscription!'),
         channelName = $.getSetIniDbString('discordSettings', 'subChannel', ''),
         announce = false;
 
@@ -38,7 +38,7 @@
             subMessage = $.getIniDbString('discordSettings', 'subMessage', '(name) just subscribed!');
             primeMessage = $.getIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!');
             resubMessage = $.getIniDbString('discordSettings', 'resubMessage', '(name) just subscribed for (months) months in a row!');
-            giftsubMessage = $.getSetIniDbString('discordSettings', 'resubMessage', '(name) just gifted (recipient) a subscription!');
+            giftsubMessage = $.getSetIniDbString('discordSettings', 'giftsubMessage', '(name) just gifted (recipient) a subscription!');
             subToggle = $.getIniDbBoolean('discordSettings', 'subToggle', false);
             primeToggle = $.getIniDbBoolean('discordSettings', 'primeToggle', false);
             resubToggle = $.getIniDbBoolean('discordSettings', 'resubToggle', false);
