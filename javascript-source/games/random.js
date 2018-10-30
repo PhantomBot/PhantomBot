@@ -52,6 +52,7 @@
 
         /**
          * @commandpath random - Something random will happen
+         * @commandpath random pg13toggle - Toggle PG-13 mode on and off
          */
         if (command.equalsIgnoreCase('random')) {
             if (args[0] !== undefined) {
