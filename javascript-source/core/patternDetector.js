@@ -30,7 +30,7 @@
         nonAlphaCount: /([^a-z0-9а-яёα-ϖ ])/ig,
         capsCount: /([A-ZА-ЯЁΑ-Ω])/g,
         meCheck: /^\/me/,
-        fakePurge: new RegExp(/(^<[mмμ][eеε]ss[aаα]g[eеε]\s+d[eеε][liι][eеε][tтτ][eе]d\.?>$)/i)
+        fakePurge: new RegExp(/(^<[mмμ][eеε]ss[aаα]g[eеε]\s+d[eеε][liι][eеε][tтτ][eеε]d\.?>$)/i)
     };
 
     /**
