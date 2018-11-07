@@ -16,66 +16,69 @@
  */
 
 (function() {
-	var botList = $.readFile('./addons/ignorebots.txt');
+    var botList = [];
 
-	/**
-     * @function reloadIgnore
+    /**
+     * @function loadBotList
      *
-     * Reloads ignoreHandler settings
+     * Loads ignoreHandler settings
      *
      * Parameters: n/a
      */
-    function reloadIgnore() {
-        botList = $.readFile('./addons/ignorebots.txt');
+    function loadBotList() {
+        var list = $.readFile('./addons/ignorebots.txt');
+
+        for (var i = 0; i < list.length; i++) {
+            botList[list[i]] = true;
+        }
     }
 
-	/**
+    /**
      * @function isTwitchBot
-     * 
+     *
      * Checks a username against a list of known bots
      *
      * Parameters:
      * @string username
      */
     function isTwitchBot(username) {
-        for (var i in botList) {
-            if (botList[i].equalsIgnoreCase(username)) {
-                return true;
-            }
+        return botList[username] !== undefined;
+    }
+
+    /**
+     * @function removeTwitchBot
+     *
+     * Removes bot from ignoreHandler settings
+     *
+     * Parameters:
+     * @string username
+     */
+    function removeTwitchBot(username) {
+        if (isTwitchBot(username)) {
+            delete botList[username];
         }
-        return false;
+    }
+
+    /**
+     * @function addTwitchBot
+     *
+     * Adds bot to ignoreHandler settings
+     *
+     * Parameters:
+     * @string username
+     */
+    function addTwitchBot(username) {
+        if (!isTwitchBot(username)) {
+            botList[username] = true;
+        }
     }
 
     /**
      * @function savebotList
      * 
      */
-    function savebotList() {
-        $.writeToFile(botList.join(String.fromCharCode(13, 10)), './addons/ignorebots.txt', false);
-    }
-
-    /**
-     * @function getIndex
-     * 
-     * Parameters:
-     * @array anArray
-     * @string value
-     *
-     * returns:
-     * integer
-     *
-     */
-    function getIndex(anArray, value) {
-        if(!Array.isArray(anArray)) {
-            return -1;
-        } else {
-            for (var i in anArray) {
-                if (anArray[i].equalsIgnoreCase(value)) {
-                    return i;
-                }
-            }
-            return -1;
-        }
+    function saveBotList() {
+        $.writeToFile(Object.keys(botList).join(String.fromCharCode(13, 10)), './addons/ignorebots.txt', false);
     }
 
     /**
@@ -86,27 +89,25 @@
             command = event.getCommand(),
             args = event.getArgs(),
             actionValue = args[0];
-        
+
         if (command.equalsIgnoreCase('ignore')) {
-        	$.say($.whisperPrefix(sender) + $.lang.get('ignore.usage'));
+            $.say($.whisperPrefix(sender) + $.lang.get('ignore.usage'));
         }
 
         if (command.equalsIgnoreCase('ignorelist')) {
-        	$.say($.whisperPrefix(sender) + $.lang.get('ignorelist', botList.join(', ')));
+            $.say($.whisperPrefix(sender) + $.lang.get('ignorelist', Object.keys(botList).join(', ')));
         }
 
         if (command.equalsIgnoreCase('ignoreadd')) {
-        	if (!actionValue) {
+            if (!actionValue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.usage'));
             } else {
                 actionValue = actionValue.toLowerCase();
                 actionValue = actionValue.trim();
-                var i = getIndex(botList, actionValue);
-                if (i < 0) {
+                if (!isTwitchBot(actionValue)) {
                     actionValue = actionValue.trim();
-                    botList.push(actionValue);
-                    savebotList();
-                    reloadIgnore();
+                    addTwitchBot(actionValue);
+                    saveBotList();
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.added', actionValue));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.nouser', actionValue));
@@ -115,17 +116,15 @@
         }
 
         if (command.equalsIgnoreCase('ignoreremove')) {
-        	if (!actionValue) {
+            if (!actionValue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.usage'));
             } else {
                 actionValue = actionValue.toLowerCase();
-                var i = getIndex(botList, actionValue);
-                if (i < 0) {
+                if (!isTwitchBot(actionValue)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.nouser', actionValue));
                 } else {
-                    botList.splice(i, 1);
-                    savebotList();
-                    reloadIgnore();
+                    removeTwitchBot(actionValue);
+                    saveBotList();
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.removed', actionValue));
                 }
             }
@@ -142,6 +141,8 @@
         $.registerChatCommand('./handlers/ignoreHandler.js', 'ignoreadd', 1);
         $.registerChatCommand('./handlers/ignoreHandler.js', 'ignoreremove', 1);
     });
+
+    loadBotList();
 
     /* Export to API */
     $.isTwitchBot = isTwitchBot;
