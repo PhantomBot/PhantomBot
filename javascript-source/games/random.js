@@ -28,6 +28,15 @@
         lastPG13Random = 0;
 
     /**
+     * @event webPanelSocketUpdate
+     */
+    $.bind('webPanelSocketUpdate', function(event) {
+        if (event.getScript().equalsIgnoreCase('./games/random.js')) {
+            pg13toggle = $.getIniDbBoolean('randomSettings', 'pg13toggle');
+        }
+    });
+
+    /**
      * @function loadResponses
      */
     function loadResponses() {
