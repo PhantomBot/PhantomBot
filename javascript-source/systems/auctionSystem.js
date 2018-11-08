@@ -30,10 +30,10 @@
     /**
      * @function openAuction
      *
-     * @param {string} user 
-     * @param {int} increments 
-     * @param {int} minimum 
-     * @param {int} timer 
+     * @param {string} user
+     * @param {int} increments
+     * @param {int} minimum
+     * @param {int} timer
      */
     function openAuction(user, increments, minimum, timer) {
         if (auction.status) {
@@ -73,12 +73,13 @@
                 clearInterval(b);
             }, timer * 1000);
         }
+        $.inidb.set('auctionSettings', 'isActive', 'true');
     };
 
     /**
      * @function closeAuction
      *
-     * @param {string} user 
+     * @param {string} user
      */
     function closeAuction(user) {
         if (!auction.status) {
@@ -101,12 +102,13 @@
         setTimeout(function() {
             resetAuction();
         }, 1000);
+        $.inidb.set('auctionSettings', 'isActive', 'false');
     };
 
     /**
      * @function warnAuction
      *
-     * @param {boolean} force 
+     * @param {boolean} force
      */
     function warnAuction(force, user) {
         if (!auction.status) {
@@ -124,8 +126,8 @@
     /**
      * @function bid
      *
-     * @param {string} user 
-     * @param {int} amount 
+     * @param {string} user
+     * @param {int} amount
      */
     function bid(user, amount) {
         if (!auction.status) {
@@ -158,11 +160,16 @@
      * @function resetAuction
      */
     function resetAuction() {
+        clearInterval(a);
+        clearInterval(b);
         auction.increments = 0;
         auction.minimum = 0;
         auction.topUser = 0;
         auction.topPoints = 0;
         auction.timer = 0;
+        $.inidb.set('auctionSettings', 'isActive', 'false');
+        $.inidb.del('auctionresults', 'winner');
+        $.inidb.del('auctionresults', 'amount');
     };
 
     /**
@@ -198,6 +205,13 @@
             }
 
             /**
+             * @commandpath auction reset - Resets the auction.
+             */
+            if (action.equalsIgnoreCase('reset')) {
+                resetAuction();
+            }
+
+            /**
              * @commandpath auction warn - Shows the top bidder in an auction
              */
             if (action.equalsIgnoreCase('warn')) {
@@ -219,5 +233,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/auctionSystem.js', 'auction', 2);
         $.registerChatCommand('./systems/auctionSystem.js', 'bid', 7);
+
+        $.inidb.set('auctionSettings', 'isActive', 'false');
     });
 })();

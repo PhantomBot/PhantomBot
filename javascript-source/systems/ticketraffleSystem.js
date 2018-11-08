@@ -38,7 +38,7 @@
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
     }
 
-    function checkArgs(user, max, price, regMulti, subMulti, followersOnly) {
+    function checkArgs(user, max, regMulti, subMulti, price, followersOnly) {
         if (raffleStatus) {
             $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.raffle.opened'));
             return;
@@ -235,6 +235,7 @@
                 if (args[4] === undefined) {
                     checkArgs(sender, args[1], args[2], 1, 1, args[3]);
                 } else {
+                    $.consoleLn(args[4]);
                     checkArgs(sender, args[1], args[2], args[3], args[4], args[5]);
                 }
             }
