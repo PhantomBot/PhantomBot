@@ -171,6 +171,7 @@
          * @returns {number}
          */
         this.getVideoLength = function() {
+            var attempts = 0;
             if (videoLength != -1) {
                 return videoLength;
             }
@@ -180,9 +181,12 @@
             if (lengthData[0] == 123 && lengthData[1] == 456 && lengthData[2] === 7899) {
                 throw 'Live Stream Detected';
             }
-
-            while (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0) {
+            // only try 2 times.
+            // No point in spamming the API, we'll hit the limit.
+            // If we try more than 2 times, that's 2 times on each song.
+            while (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0 && attempts <= 2) {
                 lengthData = $.youtube.GetVideoLength(videoId);
+                attempts++;
             }
             if (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0) {
                 return 0;
@@ -275,11 +279,13 @@
         } else {
             var data = null;
             var attempts = 0;
-            // We do not need an infinite loop here. 5 attempts is enough.
+            // We do not need an infinite loop here. 2 attempts is enough.
+            // If we loop more we might hit the limit.
+            // Since we need to look x times for each songs.
             do {
                 data = $.youtube.SearchForVideo(searchQuery);
                 attempts++;
-            } while (data[0].length() < 11 && data[1] != "No Search Results Found" && attempts < 5);
+            } while (data[0].length() < 11 && data[1] != "No Search Results Found" && attempts <= 2);
 
             // Hit 5 trys and nothing was found
             if (data[0].length() < 11) {
@@ -731,7 +737,7 @@
                         }
                         return new YoutubeVideo('7lO1iBF0p_0', playlistDJname);
                     }
-    
+
                     try {
                         var playListIndex = defaultPlaylist.shift();
                         currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
@@ -740,7 +746,7 @@
                         $.log.error("YoutubeVideo::exception: " + ex);
                         exception = true;
                     }
-    
+
                 }
             }
 
@@ -1176,7 +1182,7 @@
             }
         }
     });
-    
+
     /**
      * @event yTPlayerLoadPlaylist
      */
@@ -1192,7 +1198,7 @@
         currentPlaylist.deleteCurrentVideo();
         connectedPlayerClient.pushSongList();
     });
-     
+
     /**
      * @event ytPlayerSkipSong
      */
@@ -1362,7 +1368,7 @@
                 }
                 return;
             }
-            
+
             /**
              * @commandpath ytp resetdefaultlist - Resets the default playlist back to the default songs.
              */
