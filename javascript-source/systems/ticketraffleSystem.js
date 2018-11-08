@@ -235,7 +235,6 @@
                 if (args[4] === undefined) {
                     checkArgs(sender, args[1], args[2], 1, 1, args[3]);
                 } else {
-                    $.consoleLn(args[4]);
                     checkArgs(sender, args[1], args[2], args[3], args[4], args[5]);
                 }
             }

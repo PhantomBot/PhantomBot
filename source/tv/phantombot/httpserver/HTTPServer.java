@@ -28,6 +28,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.BindException;
 
@@ -63,7 +64,7 @@ public class HTTPServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);
             }

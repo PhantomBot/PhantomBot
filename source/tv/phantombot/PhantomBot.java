@@ -224,7 +224,6 @@ public final class PhantomBot implements Listener {
     public static String timeZone = "GMT";
     public static Boolean useMessageQueue = true;
     public static Boolean twitch_tcp_nodelay = true;
-    public static Boolean betap = false;
     public static Boolean isInExitState = false;
     public Boolean isExiting = false;
     private Boolean interactive;
@@ -483,8 +482,6 @@ public final class PhantomBot implements Listener {
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
         PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
-        /* Setting for scania */
-        PhantomBot.betap = this.pbProperties.getProperty("betap", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -985,7 +982,7 @@ public final class PhantomBot implements Listener {
             Files.write(Paths.get("./web/panel/js/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
             // If betap write the file in that folder too.
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
             	Files.write(Paths.get("./web/beta-panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             }
         } catch (IOException ex) {
