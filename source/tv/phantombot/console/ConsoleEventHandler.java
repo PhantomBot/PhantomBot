@@ -255,13 +255,17 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand jointest - Sends 30 fake join events.
+         * @consolecommand jointest - Sends 30 fake join events or one specific user for testing.
          */
         if (message.equalsIgnoreCase("jointest")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing jointest");
 
-            for (int i = 0 ; i < 30; i++) {
-                EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
+            if (argument != null) {
+                EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), argument[0]));
+            } else {
+                for (int i = 0 ; i < 30; i++) {
+                    EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
+                }
             }
         }
 
