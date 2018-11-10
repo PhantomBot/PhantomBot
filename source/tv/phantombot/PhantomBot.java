@@ -1,4 +1,4 @@
-/*
+/*            
  * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -105,6 +105,7 @@ import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -567,10 +568,14 @@ public final class PhantomBot implements Listener {
         /* Set the client Id in the Twitch api. */
         TwitchAPIv5.instance().SetClientID(this.clientId);
 
-        /* Set the oauth key in the Twitch api. */
+        /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+            TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
         }
+
+        /* Validate the chat OAUTH token. */
+        TwitchValidate.instance().validate(this.oauth, "CHAT (oauth)");
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
