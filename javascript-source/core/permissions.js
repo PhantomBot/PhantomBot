@@ -32,7 +32,32 @@
         users = [],
         moderatorsCache = [],
         lastJoinPart = $.systemTime(),
-        isUpdatingUsers = false;
+        isUpdatingUsers = false,
+        twitchBots = $.readFile('./addons/ignorebots.txt');
+
+    /**
+     * @function cleanTwitchBots
+     */
+    function cleanTwitchBots() {
+        for (var i in twitchBots) {
+            $.inidb.del('points', twitchBots[i].toLowerCase());
+            $.inidb.del('time', twitchBots[i].toLowerCase());
+        }
+    }
+
+    /**
+     * @function isTwitchBot
+     * @param {string} username
+     * @returns {Boolean}
+     */
+    function isTwitchBot(username) {
+        for (var i in twitchBots) {
+            if (twitchBots[i].equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @function updateUsersObject
@@ -647,6 +672,10 @@
                 // Cast the user as a string, because Rhino.
                 joins[i] = (joins[i] + '');
 
+                if (isTwitchBot(joins[i])) {
+                    continue;
+                }
+
                 if (!userExists(joins[i])) {
                     if (!$.user.isKnown(joins[i])) {
                         $.setIniDbBoolean('visited', joins[i], true);
@@ -668,6 +697,10 @@
     $.bind('ircChannelJoin', function(event) {
         var username = event.getUser().toLowerCase();
 
+        if (isTwitchBot(username)) {
+            return;
+        }
+
         if (!isUpdatingUsers && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
@@ -685,6 +718,10 @@
      */
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
+
+        if (isTwitchBot(username)) {
+            return;
+        }
 
         if (!isUpdatingUsers && !userExists(username)) {
             if (!$.user.isKnown(username)) {
@@ -822,6 +859,15 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs();
+
+        /*
+         * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
+         */
+        if (command.equalsIgnoreCase('reloadbots')) {
+            twitchBots = $.readFile('./addons/ignorebots.txt');
+            cleanTwitchBots();
+            $.say($.whisperPrefix(sender) + $.lang.get('permissions.reloadbots'));
+        }
 
         /**
          * @commandpath users - List users currently in the channel
@@ -980,6 +1026,8 @@
         $.registerChatCommand('./core/permissions.js', 'permissionpoints', 1);
         $.registerChatCommand('./core/permissions.js', 'users', 2);
         $.registerChatCommand('./core/permissions.js', 'mods', 2);
+        $.registerChatCommand('./core/permissions.js', 'reloadbots', 1);
+
 
         /** Load groups and generate default groups if they don't exist */
         reloadGroups();
@@ -988,6 +1036,9 @@
 
         // Load the moderators cache. This needs to load after the privmsg check.
         setTimeout(loadModeratorsCache, 7e3);
+
+        // Clean up data for Twitch bots. 
+        cleanTwitchBots();
     });
 
     /** Export functions to API */

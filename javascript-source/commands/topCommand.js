@@ -21,8 +21,7 @@
  * Build and announce lists of top viewers (Highest points, highest time spent in the channel)
  */
 (function() {
-    var bots = $.readFile('./addons/ignorebots.txt'),
-        amountPoints = $.getSetIniDbNumber('settings', 'topListAmountPoints', 5),
+    var amountPoints = $.getSetIniDbNumber('settings', 'topListAmountPoints', 5),
         amountTime = $.getSetIniDbNumber('settings', 'topListAmountTime', 5);
 
     /*
@@ -34,32 +33,22 @@
     }
 
     /*
-     * @function isTwitchBot
-     * @param {string} username
-     * @returns {Boolean}
-     */
-    function isTwitchBot(username) {
-        for (var i in bots) {
-            if (bots[i].equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
      * @function getTop5
      *
      * @param {string} iniName
      * @returns {Array}
      */
     function getTop5(iniName) {
-        var keys = $.inidb.GetKeysByNumberOrderValue(iniName, '', 'DESC', (iniName.equals('points') ? amountPoints + bots.length + 1 : amountTime + bots.length + 1), 0),
+        var keys = $.inidb.GetKeysByNumberOrderValue(iniName, '', 'DESC', (iniName.equals('points') ? amountPoints + 2: amountTime + 2), 0),
             list = [],
-            i;
+            i,
+            ctr = 0;
 
         for (i in keys) {
-            if (!$.isBot(keys[i]) && !$.isOwner(keys[i]) && !isTwitchBot(keys[i])) {
+            if (!$.isBot(keys[i]) && !$.isOwner(keys[i])) {
+                if (ctr++ == (iniName.equals('points') ? amountPoints : amountTime)) {
+                    break;
+                }
                 list.push({
                     username: keys[i],
                     value: $.inidb.get(iniName, keys[i])
@@ -158,10 +147,9 @@
         }
 
         /*
-         * @commandpath reloadtopbots - Reload the list of bots and users to ignore
+         * @commandpath reloadtopbots - DEPRECATED. Use !reloadbots
          */
         if (command.equalsIgnoreCase('reloadtopbots')) {
-            bots = $.readFile('./addons/ignorebots.txt');
             $.say($.whisperPrefix(sender) + $.lang.get('top5.reloadtopbots'));
         }
 
