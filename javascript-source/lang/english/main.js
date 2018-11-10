@@ -243,6 +243,7 @@ $.lang.register('cmd.404', 'command !$1 does not exist or is not registered.');
 $.lang.register('cmd.adminonly', 'Only an Administrator has access to that command!');
 $.lang.register('cmd.casteronly', 'Only a Caster has access to that command!');
 $.lang.register('cmd.modonly', 'Only a Moderator has access to that command!');
+$.lang.register('cmd.useronly', 'Only $1 has access to that command!');
 $.lang.register('cmd.needpoints', 'That command costs $1, which you don\'t have.');
 $.lang.register('cmd.perm.404', 'you do not have access to that command. Only $1 or higher can access it.');
 $.lang.register('commandlist.commands', 'Commands (page $1 of $2): $3');
