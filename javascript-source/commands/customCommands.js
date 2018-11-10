@@ -99,6 +99,9 @@
         if (message.match(/\(useronly=.*\)/g)) {
             var user = message.match(/\(useronly=(.*?)\)/)[1];
             if (!event.getSender().equalsIgnoreCase(user)) {
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.useronly', user));
+                }
                 return null;
             }
             message = $.replace(message, message.match(/(\(useronly=.*?\))/)[1], '');
