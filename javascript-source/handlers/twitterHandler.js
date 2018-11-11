@@ -504,8 +504,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.inuse', subCommandArg.toLowerCase()));
                     return;
                 }
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.success', $.getSetIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase())));
                 $.setIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase());
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.success', subCommandArg.toLowerCase()));
                 return;
             }
 
