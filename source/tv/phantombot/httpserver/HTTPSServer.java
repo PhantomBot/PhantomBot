@@ -45,6 +45,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
+import java.io.File;
 
 
 public class HTTPSServer {
@@ -114,7 +115,7 @@ public class HTTPSServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);
             }

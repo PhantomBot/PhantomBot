@@ -1,4 +1,4 @@
-/*
+/*            
  * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -105,6 +105,7 @@ import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -224,7 +225,6 @@ public final class PhantomBot implements Listener {
     public static String timeZone = "GMT";
     public static Boolean useMessageQueue = true;
     public static Boolean twitch_tcp_nodelay = true;
-    public static Boolean betap = false;
     public static Boolean isInExitState = false;
     public Boolean isExiting = false;
     private Boolean interactive;
@@ -483,8 +483,6 @@ public final class PhantomBot implements Listener {
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
         PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
-        /* Setting for scania */
-        PhantomBot.betap = this.pbProperties.getProperty("betap", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -570,10 +568,14 @@ public final class PhantomBot implements Listener {
         /* Set the client Id in the Twitch api. */
         TwitchAPIv5.instance().SetClientID(this.clientId);
 
-        /* Set the oauth key in the Twitch api. */
+        /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+            TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
         }
+
+        /* Validate the chat OAUTH token. */
+        TwitchValidate.instance().validate(this.oauth, "CHAT (oauth)");
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
@@ -985,7 +987,7 @@ public final class PhantomBot implements Listener {
             Files.write(Paths.get("./web/panel/js/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
             // If betap write the file in that folder too.
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
             	Files.write(Paths.get("./web/beta-panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             }
         } catch (IOException ex) {
