@@ -261,10 +261,11 @@ $(function() {
             if (gifFile.match(/\.(webm|mp4|ogg)$/) !== null) {
                 htmlObj = $('<video/>', {
                     'src': defaultPath + gifFile,
-                    'volume': gifVolume,
                     'autoplay': 'autoplay',
                     'style': gifCss
                 });
+
+                htmlObj.prop('volume', gifVolume);
             } else {
                 htmlObj = $('<img/>', {
                     'src': defaultPath + gifFile,
@@ -279,7 +280,9 @@ $(function() {
                 // Set the volume.
                 audio.volume = gifVolume;
                 // Play the sound.
-                audio.play();
+                audio.play().catch(function() {
+                    // Ignore.
+                });
             }).delay(gifDuration) // Wait this time before removing this image.
               .fadeOut(1e2, function() { // Remove the image with a fade out.
                 let t = $(this);
