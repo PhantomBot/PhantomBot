@@ -438,6 +438,9 @@ $(function() {
                     }
 
                     player.updateState(e.data);
+                },
+                'onError': (e) => {
+                    player.sendError(e.data);
                 }
             },
             playerVars: {
