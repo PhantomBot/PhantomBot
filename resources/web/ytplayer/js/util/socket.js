@@ -166,19 +166,6 @@ $(function() {
             }
         });
     };
-    
-    /*
-     * @function sends error code from YouTube Player
-     *
-     * @param {Number} status
-     */
-    player.sendError = (status) => {
-        sendToSocket({
-            status: {
-                errorcode: status
-            }
-        });
-    };
 
     /*
      * @function updates the current song.

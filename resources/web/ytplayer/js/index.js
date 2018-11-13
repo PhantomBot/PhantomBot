@@ -27,16 +27,90 @@
  * You can also generate modals with jQuery, see util/helpers.js for more information.
  */
 $(function() {
-    var cluster = null;
+    var cluster = null,
+        timer = null;
+
+    /*
+     * @function Loads the player page.
+     *
+     * @param {boolean} hasPlaylistData - If a playlis is loaded.
+     */
+    const openPlayer = hasPlaylistData => {
+        $('.loader').fadeOut(6e2, () => {
+            $(this).remove();
+        });
+        // Show the page.
+        $('#main').fadeIn(5e2);
+
+        if (!hasPlaylistData) {
+            toastr.error('Failed to load a playlist with songs.');
+
+            // Create a fake progress slider.
+            player.progressSlider = $('#progress-slider').slider({
+                'value': 0,
+                'min': 0,
+                'step': 0.1,
+                'tooltip': 'hide',
+                'selection': 'none'
+            });
+
+            // Error the to user.
+            helpers.getErrorModal('Playist Error', 'Failed to load a playlist with songs, please load a playlist.', () => {
+                player.dbQuery('get_playlists', 'yt_playlists_registry', (results) => {
+                    // Get the keys.
+                    results = Object.keys(results);
+                    const playlists = [];
+
+                    for (let i = 0; i < results.length; i++) {
+                        if (results[i].indexOf('ytPlaylist_') !== -1) {
+                            playlists.push(results[i].substr(results[i].indexOf('_') + 1, results[i].length));
+                        }
+                    }
+
+                    helpers.getPlaylistModal('Load Playlist', 'Playlist Name', 'Load', 'Playlist', playlists, () => {
+                        let playlist = $('#playlist-load').find(':selected').text();
+
+                        if (playlist === 'Select a playlist') {
+                            toastr.error('Please select a valid playlist.');
+                        } else {
+                            if (playlist.length > 0) {
+                                player.loadPlaylist(playlist);
+                                toastr.success('Loading playlist: ' + playlist);
+
+                                if (player.firstLoad === true) {
+                                    player.ready();
+                                }
+                            }
+                        }
+                    }).modal('toggle');
+                });
+            }).modal('toggle');;
+        }
+    };
 
     /*
      * Global function that is called once the socket is connected and that the YouTube iframe is loaded.
      */
     window.onYouTubeIframeAPIReady = () => {
+        // Set a timer in case no songs load to send a error.
+        timer = setTimeout(openPlayer, 5e3, false);
+
         // Set a var for the slider.
         player.canSlide = true;
         // Set a var for the first load.
         player.firstLoad = true;
+
+        // Check if the player is disabled right away.
+        player.dbQuery('get_module_status', 'modules', (data) => {
+            if (data['./systems/youtubePlayer.js'] == 'false') {
+                helpers.getErrorModal('Module Disabled', 'The YouTube player module is disabled, please go and enable it.', () => {
+                    window.location.reload();
+                }).modal('toggle');
+
+                openPlayer(true);
+                clearTimeout(timer);
+            }
+        });
 
         // Add a listener to load the main playlist.
         player.addListener('playlist', (e) => {
@@ -275,12 +349,10 @@ $(function() {
                 player.API.cueVideoById(e.play, 0, 'medium');
                 // Mark as not first load.
                 player.firstLoad = false;
+                // Clear timer
+                clearTimeout(timer);
                 // Remove loader.
-                $('.loader').fadeOut(6e2, () => {
-                    $(this).remove();
-                });
-                // Show the page.
-                $('#main').fadeIn(5e2);
+                openPlayer(true);
                 // Alert the user.
                 toastr.info('Song queued: ' + (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
             } else {
@@ -366,9 +438,6 @@ $(function() {
                     }
 
                     player.updateState(e.data);
-                },
-                'onError': (e) => {
-                    player.sendError(e.data);
                 }
             },
             playerVars: {
@@ -376,7 +445,8 @@ $(function() {
                 controls: 0,
                 showinfo: 0,
                 showsearch: 0,
-                autoplay: 1
+                autoplay: 1,
+                rel: 0
             }
         });
     };

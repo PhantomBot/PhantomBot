@@ -114,6 +114,22 @@ $(function() {
     };
 
     /*
+     * @function Generates a load playlist modal
+     *
+     * @param  {String}   title
+     * @param  {String}   body
+     * @param  {Function} onClose
+     * @return {Object}
+     */
+    helpers.getErrorModal = (title, body, onClose) => {
+        return helpers.getModal('err-modal', title, 'Ok', $('<div/>', {
+            'class': 'form-group'
+        }).append($('<p/>', {
+            'text': body
+        })), onClose);
+    };
+
+    /*
      * @function Generates the settings modal
      *
      * @param  {Function} onClose
