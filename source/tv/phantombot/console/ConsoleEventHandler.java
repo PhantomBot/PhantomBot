@@ -100,7 +100,7 @@ public class ConsoleEventHandler implements Listener {
         // Split arguments of the message string.
         String[] argument = null;
         // Set the datastore.
-        DataStore dataStore = DataStore.instance();
+        DataStore dataStore = PhantomBot.instance().getDataStore();
 
         // If the message is null, or empty ignore everything below.
         if (message == null || message.isEmpty()) {
