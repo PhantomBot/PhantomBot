@@ -100,24 +100,16 @@
 
 package tv.phantombot.panel;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import com.gmt2001.TwitchAPIv5;
-
-import com.google.common.collect.Maps;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -129,8 +121,7 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.webpanel.WebPanelSocketConnectedEvent;
-import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 import tv.phantombot.PhantomBot;
 
@@ -141,9 +132,9 @@ import tv.phantombot.PhantomBot;
  */
 public class PanelSocketServer extends WebSocketServer {
 
-    private String authString;
-    private String authStringRO;
-    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final String authString;
+    private final String authStringRO;
+    private final Map<String, wsSession> wsSessionMap = new HashMap<>();
     private boolean dbCallNull = false;
 
     /**
@@ -152,7 +143,7 @@ public class PanelSocketServer extends WebSocketServer {
      * @param ip           The IP to bind to.
      * @param port         The port to bind to.
      * @param authString   The authorization string to use for read/write connectivity.
-     * @param authStringRO The authorizatin string to use for read-only connectivity.
+     * @param authStringRO The authorization string to use for read-only connectivity.
      */
     public PanelSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
         super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
@@ -276,16 +267,11 @@ public class PanelSocketServer extends WebSocketServer {
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, true);
-                return;
             } else if (jsonObject.has("command_sync")) {
                 String command = jsonObject.getString("command_sync");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, false);
-                return;
-            } else if (jsonObject.has("connected")) {
-                handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
-                return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
                 doVersion(webSocket, uniqueID);
@@ -294,7 +280,6 @@ public class PanelSocketServer extends WebSocketServer {
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String key = jsonObject.getJSONObject("query").getString("key");
                 doDBQuery(webSocket, uniqueID, table, key);
-                return;
             } else if (jsonObject.has("dbkeys")) {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -357,7 +342,6 @@ public class PanelSocketServer extends WebSocketServer {
                 doDBKeysSearch(webSocket, uniqueID, table, key, limit, order, offset);
             } else {
                 com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
-                return;
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.println("PanelSocketServer::JSONException(" + ex.getMessage() + "): " + jsonString);
@@ -469,22 +453,6 @@ public class PanelSocketServer extends WebSocketServer {
     }
 
     /**
-     * handles event of when we are fully connected with the panel
-     *
-     * @param webSocket The WebSocket which provided the command.
-     * @param id Optional unique ID which is sent back to the WebSocket.
-     */
-    private void handleConnection(WebSocket webSocket, String id) {
-        if (!id.isEmpty()) {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("query_id").value(id).endObject();
-            webSocket.send(jsonObject.toString());
-        }
-
-        EventBus.instance().postAsync(new WebPanelSocketConnectedEvent());
-    }
-
-    /**
      * Provides a version payload.
      *
      * @param webSocket The WebSocket which requested the version.
@@ -492,7 +460,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     private void doVersion(WebSocket webSocket, String id) {
         JSONStringer jsonObject = new JSONStringer();
-        String version = "";
+        String version;
 
         try {
             version = PhantomBot.instance().getBotInfo();
@@ -522,7 +490,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     private void doDBQuery(WebSocket webSocket, String id, String table, String key) {
         JSONStringer jsonObject = new JSONStringer();
-        String value = "";
+        String value;
 
         try {
             value = PhantomBot.instance().getDataStore().GetString(table, "", key);
@@ -666,7 +634,7 @@ public class PanelSocketServer extends WebSocketServer {
         jsonObject.object().key("query_id").value(id).key("results").array();
 
         try {
-            String[] dbKeys = null;
+            String[] dbKeys;
             if (isNumber.equals("true")) {
                 dbKeys = PhantomBot.instance().getDataStore().GetKeysByNumberOrderValue(table, "", order, limit, offset);
             } else {
@@ -861,11 +829,11 @@ public class PanelSocketServer extends WebSocketServer {
      */
     private void doWSEvent(WebSocket webSocket, String id, String script, String arguments, JSONArray jsonArray) {
         JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<String>();
+        List<String> tempArgs = new LinkedList<>();
         String[] args = null;
 
-        for (Object str : jsonArray) {
-            tempArgs.add(str.toString());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            tempArgs.add(jsonArray.getString(i));
         }
 
         if (tempArgs.size() > 0) {
@@ -901,7 +869,7 @@ public class PanelSocketServer extends WebSocketServer {
      * @return          Newly generated session key.
      */
     private static String genSessionKey(WebSocket webSocket) {
-        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+        return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
     }
 
     /**
@@ -933,11 +901,7 @@ public class PanelSocketServer extends WebSocketServer {
         if (value == null) {
             return false;
         }
-        if (value.equals(authUsername)) {
-            return true;
-        }
-
-        return false;
+        return value.equals(authUsername);
     }
 
     /**
@@ -1020,8 +984,8 @@ public class PanelSocketServer extends WebSocketServer {
      * Helper class responsible for spawning threads for handling input from a WebSocket.
      */
     private class MessageRunnable implements Runnable {
-        private WebSocket webSocket;
-        private String jsonString;
+        private final WebSocket webSocket;
+        private final String jsonString;
 
         /**
          * Constructor which sets the values on the object.
@@ -1037,6 +1001,7 @@ public class PanelSocketServer extends WebSocketServer {
         /**
          * Execute the parser to handle the input data from the WebSocket.
          */
+        @Override
         public void run() {
             handleMessage(webSocket, jsonString);
         }

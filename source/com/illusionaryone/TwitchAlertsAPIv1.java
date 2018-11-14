@@ -21,6 +21,7 @@ package com.illusionaryone;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -28,6 +29,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.commons.io.IOUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,21 +88,37 @@ public class TwitchAlertsAPIv1 {
 
     @SuppressWarnings("UseSpecificCatch")
     private static JSONObject readJsonFromUrl(String urlAddress) {
+        return readJsonFromUrl(urlAddress, "");
+    }
+
+    @SuppressWarnings("UseSpecificCatch")
+    private static JSONObject readJsonFromUrl(String urlAddress, String postString) {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
         HttpsURLConnection urlConn;
         String jsonText = "";
+        boolean doPost = (postString.length() > 0);
 
         try {
             urlRaw = new URL(urlAddress);
             urlConn = (HttpsURLConnection) urlRaw.openConnection();
             urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
+            urlConn.setRequestMethod(doPost ? "POST" : "GET");
+            urlConn.addRequestProperty("Content-Type", doPost ? "application/x-www-form-urlencoded" : "application/json");
             urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
                                        "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            if (doPost) {
+                urlConn.setDoOutput(true);
+            }
+
             urlConn.connect();
+
+            if (doPost) {
+                try (OutputStream outputStream = urlConn.getOutputStream()) {
+                    IOUtils.write(postString, outputStream);
+                }
+            }
 
             if (urlConn.getResponseCode() == 200) {
                 inputStream = urlConn.getInputStream();
@@ -110,31 +129,31 @@ public class TwitchAlertsAPIv1 {
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             jsonText = readAll(rd);
             jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
+            fillJSONObject(jsonResult, true, doPost ? "POST" : "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
+            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
         } finally {
             if (inputStream != null)
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+                    fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
                     com.gmt2001.Console.debug.println("TwitchAlertsAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
                 }
         }
@@ -172,9 +191,98 @@ public class TwitchAlertsAPIv1 {
     /*
      * Pulls donation information.
      *
-     * @return
+     * @return donationsObject
      */
     public JSONObject GetDonations() {
         return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit + "&currency=" + this.sCurrencyCode);
+    }
+
+    /*
+     * Get an individuals points.
+     *
+     * @param userName    User to lookup
+     * @param channelName Channel name to lookup
+     *
+     * @return pointsObject
+     */
+    public JSONObject GetPointsAPI(String userName, String channelName) {
+        return readJsonFromUrl(sAPIURL + "/points?access_token=" + this.sAccessToken + "&username=" + userName + "&channel=" + channelName);
+    }
+
+    /*
+     * Set points for an individual.
+     *
+     * @param userName User to modify
+     * @param points   Points to set to.
+     *
+     * @return pointsObject
+     */
+    public JSONObject SetPointsAPI(String userName, int points) {
+        return readJsonFromUrl(sAPIURL + "/points/user_point_edit", "access_token=" + this.sAccessToken + "&username=" + userName + "&points=" + points);
+    }
+
+    /*
+     * Add points to all in chat.
+     *
+     * @param channelName Channel name
+     * @param points      Points to add.
+     *
+     * @return pointsToAddObject
+     */
+    public JSONObject AddToAllPointsAPI(String channelName, int points) {
+        return readJsonFromUrl(sAPIURL + "/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&points=" + points);
+    }
+
+    /*
+     * Get an individuals points.
+     *
+     * @param userName    User to lookup
+     * @param channelName Channel name to lookup
+     *
+     * @return points (-1 on error)
+     */
+    public int GetPoints(String userName, String channelName) {
+        JSONObject jsonObject = GetPointsAPI(userName, channelName);
+
+        if (jsonObject.has("points")) {
+            return jsonObject.getInt("points");
+        }
+        return -1;
+    }
+
+    /*
+     * Set points for an individual.
+     *
+     * @param userName User to modify
+     * @param points   Points to set to.
+     *
+     * @return newPoints
+     */
+    public int SetPoints(String userName, int points) {
+        JSONObject jsonObject = SetPointsAPI(userName, points);
+
+        if (jsonObject.has("points")) {
+            return jsonObject.getInt("points");
+        }
+        return -1;
+    }
+
+    /*
+     * Add points to all in chat.
+     *
+     * @param channelName Channel name
+     * @param points      Points to add.
+     *
+     * @return boolean
+     */
+    public boolean AddToAllPoints(String channelName, int points) {
+        JSONObject jsonObject = AddToAllPointsAPI(channelName, points);
+
+        if (jsonObject.has("message")) {
+            if (jsonObject.getString("message").equalsIgnoreCase("success")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // Only tracks data for now.
 (function() {
 	/*
@@ -129,7 +146,7 @@
      * @event twitchAutoHosted
      */
     $.bind('twitchAutoHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Host', {
+    	addObjectToArray('panelData', 'data', 'Auto-Host', {
 			'username': event.getHoster(),
 			'viewers' : event.getUsers(),
 			'date'    : $.systemTime(),
@@ -141,7 +158,7 @@
      * @event twitchHosted
      */
     $.bind('twitchHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Auto-Host', {
+    	addObjectToArray('panelData', 'data', 'Host', {
 			'username': event.getHoster(),
 			'viewers' : event.getUsers(),
 			'date'    : $.systemTime(),

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This module is to handles the 8ball game.
  */
@@ -18,7 +35,7 @@
      * @event discordChannelCommand
      */
     $.bind('discordChannelCommand', function(event) {
-        var channel = event.getChannel(),
+        var channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),
@@ -30,7 +47,7 @@
          */
         if (command.equalsIgnoreCase('8ball')) {
             if (action === undefined) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + 'Usage: !8ball [question]');
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('8ball.usage'));
                 return;
             }
 

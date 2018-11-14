@@ -82,29 +82,36 @@ $(function() {
      * @param  {String}   label
      * @param  {String}   btn
      * @param  {String}   placeholder
+     * @param  {Array}    playlists
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getPlaylistModal = (title, label, btn, placeholder, onClose) => {
+    helpers.getPlaylistModal = (title, label, btn, placeholder, playlists, onClose) => {
         return helpers.getModal('playlist-load-modal', title, btn, $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
             'text': label
-        })).append($('<input/>', {
+        })).append($('<select/>', {
             'class': 'form-control',
-            'type': 'text',
-            'placeholder': placeholder,
             'id': 'playlist-load',
-            'focus': () => {
-                $('#playlist-load').attr('placeholder', '');
-            },
-            'blur': () => {
-                $('#playlist-load').attr('placeholder', placeholder);
-            }
-        })), onClose);
+            'text': 'Select a playlist',
+            'style': 'width: 100%; cursor: pointer;',
+            'data-toggle': 'dropdown'
+        }).append($('<option/>', {
+            'html': 'Select a playlist',
+            'selected': 'true',
+            'disabled': 'true',
+            'hidden': 'true'
+        })).append(playlists.map(function(playlist) {
+            return $('<option/>', {
+                'html': playlist
+            });
+        })).append($('<option/>', {
+            'html': 'Select a playlist',
+            'disabled': 'true',
+            'hidden': 'true'
+        }))), onClose);
     };
-
-
 
     /*
      * @function Generates the settings modal

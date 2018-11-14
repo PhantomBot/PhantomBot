@@ -127,8 +127,7 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.webpanel.WebPanelSocketConnectedEvent;
-import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 import tv.phantombot.PhantomBot;
 
@@ -142,7 +141,7 @@ public class NewPanelSocketServer {
     private WebsocketServer server;
     private String authString;
     private String authStringRO;
-    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final Map<String, wsSession> wsSessionMap = new HashMap<>();
     private boolean dbCallNull = false;
 
     /**
@@ -242,7 +241,7 @@ public class NewPanelSocketServer {
     /**
      * Override for the IWebsocketClientServer class which is called upon a server error.
      *
-     * @param String The error message from the socket server.
+     * @param errorMessage The error message from the socket server.
      */
     public void serverError(String errorMessage) {
         com.gmt2001.Console.err.println("WebSocket Server Error, will attempt to restart server. Error: " + errorMessage);
@@ -257,7 +256,8 @@ public class NewPanelSocketServer {
     /**
      * Override for the IWebsocketClientServer class which is called upon a client connection error.
      *
-     * @param String The error message from the socket server.
+     * @param webSocket The websocket client
+     * @param errorMessage The error message
      */
     public void clientError(IWebsocketClient webSocket, String errorMessage) {
         /* TODO: This may also need to remove the session, will need to check more on this. */
@@ -341,16 +341,11 @@ public class NewPanelSocketServer {
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, true);
-                return;
             } else if (jsonObject.has("command_sync")) {
                 String command = jsonObject.getString("command_sync");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, false);
-                return;
-            }  else if (jsonObject.has("connected")) {
-                handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
-                return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
                 doVersion(webSocket, uniqueID);
@@ -359,7 +354,6 @@ public class NewPanelSocketServer {
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String key = jsonObject.getJSONObject("query").getString("key");
                 doDBQuery(webSocket, uniqueID, table, key);
-                return;
             } else if (jsonObject.has("dbkeys")) {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -486,22 +480,6 @@ public class NewPanelSocketServer {
             jsonObject.object().key("query_id").value(id).endObject();
             webSocket.send(jsonObject.toString());
         }
-    }
-
-    /**
-     * handles event of when we are fully connected with the panel
-     *
-     * @param webSocket The WebSocket which provided the command.
-     * @param id Optional unique ID which is sent back to the WebSocket.
-     */
-    private void handleConnection(IWebsocketClient webSocket, String id) {
-        if (!id.isEmpty()) {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("query_id").value(id).endObject();
-            webSocket.send(jsonObject.toString());
-        }
-
-        EventBus.instance().postAsync(new WebPanelSocketConnectedEvent());
     }
 
     /**
@@ -882,11 +860,11 @@ public class NewPanelSocketServer {
      */
     private void doWSEvent(IWebsocketClient webSocket, String id, String script, String arguments, JSONArray jsonArray) {
         JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<String>();
+        List<String> tempArgs = new LinkedList<>();
         String[] args = null;
 
-        for (Object str : jsonArray) {
-            tempArgs.add(str.toString());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            tempArgs.add(jsonArray.getString(i));
         }
 
         if (tempArgs.size() > 0) {
@@ -922,7 +900,7 @@ public class NewPanelSocketServer {
      * @return          Newly generated session key.
      */
     private static String genSessionKey(IWebsocketClient webSocket) {
-        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+        return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
     }
 
     /**
@@ -1058,6 +1036,7 @@ public class NewPanelSocketServer {
         /**
          * Execute the parser to handle the input data from the IWebsocketClient.
          */
+        @Override
         public void run() {
             handleMessage(webSocket, jsonString);
         }

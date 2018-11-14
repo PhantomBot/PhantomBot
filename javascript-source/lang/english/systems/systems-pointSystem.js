@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $.lang.register('pointsystem.add.all.success', '$1 have been sent to everybody in the channel!');
 $.lang.register('pointsystem.add.all.usage', 'Usage: !points all [amount]');
 $.lang.register('pointsystem.take.all.success', '$1 have been removed from everybody in the channel!');
@@ -10,7 +27,7 @@ $.lang.register('pointsystem.user.success', ' $1 currently has $2.');
 $.lang.register('pointsystem.makeitrain.error.invalid', 'Sorry, but it\'s not possible to rain $1 at the moment.');
 $.lang.register('pointsystem.makeitrain.error.needpoints', 'You can not afford to make it rain $1.');
 $.lang.register('pointsystem.makeitrain.error.negative', 'You can not make it rain negative $1.');
-$.lang.register('pointsystem.makeitrain.success', 'A rainstorm\'s incoming! $1 just tossed a total of $2 $3 in the air!');
+$.lang.register('pointsystem.makeitrain.success', 'A rainstorm\'s incoming! Thanks to $1, everyone gets a bonus of up to $2 $3!');
 $.lang.register('pointsystem.makeitrain.usage', 'Usage: !makeitrain [amount]');
 $.lang.register('pointsystem.set.bonus.error.negative', 'You can not set the bonus per group level to negative $1.');
 $.lang.register('pointsystem.set.bonus.success', 'Set the $1 bonus to $2 per group level.');

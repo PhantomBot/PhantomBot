@@ -1,10 +1,27 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     // Pre-build regular expressions.
     var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&\-]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(downtime\)|\(paycom\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -66,6 +83,10 @@
             }
         }
 
+        if (message.match(/\(views\)/g)) {
+            message = $.replace(message, '(views)', $.twitchcache.getViews());
+        }
+
         if (message.match(/\(gameonly=.*\)/g)) {
             var game = message.match(/\(gameonly=(.*)\)/)[1];
 
@@ -76,12 +97,11 @@
         }
 
         if (message.match(/\(useronly=.*\)/g)) {
-            var user = message.match(/\(useronly=(.*)\)/)[1];
-
+            var user = message.match(/\(useronly=(.*?)\)/)[1];
             if (!event.getSender().equalsIgnoreCase(user)) {
                 return null;
             }
-            message = $.replace(message, message.match(/(\(useronly=.*\))/)[1], '');
+            message = $.replace(message, message.match(/(\(useronly=.*?\))/)[1], '');
         }
 
         if (message.match(/\(readfile/)) {
@@ -165,6 +185,14 @@
                 countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
             time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
+            message = $.replace(message, t, $.getTimeString(time / 1000));
+        }
+
+        if (message.match(/\(countup=[^)]+\)/g)) {
+            var t = message.match(/\([^)]+\)/)[0],
+                countup, time;
+            countup = t.replace('(countup=', '').replace(')', '');
+            time = (Date.parse($.getLocalTime()) - Date.parse(countup));
             message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
@@ -412,8 +440,124 @@
             message = $.replace(message, m[0], encodeURI(m[1]));
         }
 
+        // Variables for Twitch teams.
+        if (message.match(/\(team_.*/)) {
+            message = handleTwitchTeamVariables(message);
+        }
+
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
+        }
+
+        return message;
+    }
+
+    /*
+     * @function handleTwitchTeamVariables Handles the twitch team tags.
+     *
+     * @return String
+     */
+    function handleTwitchTeamVariables(message) {
+        if (message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getTotalMembers());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getUrl());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getName());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/)) {
+            var teamMatch = message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/),
+                teamName = teamMatch[1],
+                teamObj = $.twitchteamscache.getTeam(teamName);
+
+            if (teamObj != null) {
+                message = $.replace(message, teamMatch[0], teamObj.getRandomMember());
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.getString('game'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.get('followers'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
+        }
+
+        if (message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
+            var teamMatch = message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
+                teamName = teamMatch[1],
+                teamUser = teamMatch[2]
+                teamObj = $.twitchteamscache.getTeam(teamName),
+                teamMember = teamObj.getTeamMember(teamUser);
+
+            if (teamObj != null) {
+                if (teamMember != null) {
+                    message = $.replace(message, teamMatch[0], teamMember.getString('url'));
+                } else {
+                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
+                }
+            } else {
+                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
+            }
         }
 
         return message;
@@ -724,6 +868,11 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.add.success', action));
+            $.logCustomCommand({
+                'add.command': '!' + action,
+                'add.response': argsString,
+                'sender': sender,
+            });
             $.registerChatCommand('./commands/customCommands.js', action);
             $.inidb.set('command', action, argsString);
             customCommands[action] = argsString;
@@ -756,6 +905,11 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.success', action));
+            $.logCustomCommand({
+                'edit.command': '!' + action,
+                'edit.response': argsString,
+                'sender': sender,
+            });
             $.registerChatCommand('./commands/customCommands.js', action, 7);
             $.inidb.set('command', action, argsString);
             customCommands[action] = argsString;
@@ -779,6 +933,10 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.success', action));
+            $.logCustomCommand({
+                'delete.command': '!' + action,
+                'sender': sender,
+            });
             $.inidb.del('command', action);
             $.inidb.del('permcom', action);
             $.inidb.del('pricecom', action);
@@ -812,6 +970,11 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.success', subAction, action));
+            $.logCustomCommand({
+                'alias.command': '!' + action,
+                'alias.target': '!' + subAction,
+                'sender': sender,
+            });
             $.registerChatCommand('./commands/customCommands.js', action);
             $.inidb.set('aliases', action, subAction);
             $.registerChatAlias(action);
@@ -835,6 +998,10 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.success', action));
+            $.logCustomCommand({
+                'alias.delete.command': '!' + action,
+                'sender': sender,
+            });
             $.unregisterChatCommand(action);
             $.inidb.del('aliases', action);
             return;
@@ -863,6 +1030,11 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
+                $.logCustomCommand({
+                    'set.perm.command': '!' + action,
+                    'set.perm.group': $.getGroupNameById(group),
+                    'sender': sender,
+                });
 
                 var list = $.inidb.GetKeyList('aliases', ''),
                     i;
@@ -887,6 +1059,11 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + ' ' + subAction, $.getGroupNameById(group)));
+                $.logCustomCommand({
+                    'set.perm.command': '!' + action + ' ' + subAction,
+                    'set.perm.group': $.getGroupNameById(group),
+                    'sender': sender,
+                });
                 $.inidb.set('permcom', action + ' ' + subAction, group);
                 $.updateSubcommandGroup(action, subAction, group);
             }
@@ -916,6 +1093,11 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action, subAction, $.pointNameMultiple));
+                $.logCustomCommand({
+                    'set.price.command': '!' + action,
+                    'set.price.amount': subAction,
+                    'sender': sender,
+                });
                 $.inidb.set('pricecom', action, subAction);
 
                 var list = $.inidb.GetKeyList('aliases', ''),
@@ -936,6 +1118,11 @@
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action + ' ' + subAction, args[2], $.pointNameMultiple));
+                $.logCustomCommand({
+                    'set.price.command': '!' + action + ' ' + subAction,
+                    'set.price.amount': args[2],
+                    'sender': sender,
+                });
                 $.inidb.set('pricecom', action + ' ' + subAction, args[2]);
             } else {
                 if (args.length === 4) {
@@ -945,6 +1132,11 @@
                     }
 
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.price.success', action + ' ' + subAction + ' ' + args[2], args[3], $.pointNameMultiple));
+                    $.logCustomCommand({
+                        'set.price.command': '!' + action + ' ' + subAction + ' ' + args[2],
+                        'set.price.amount': args[3],
+                        'sender': sender,
+                    });
                     $.inidb.set('pricecom', action + ' ' + subAction + ' ' + args[2], args[3]);
                 }
             }
@@ -971,6 +1163,11 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.pay.success', action, subAction, $.pointNameMultiple));
+            $.logCustomCommand({
+                'set.pay.command': '!' + action,
+                'set.pay.amount': subAction,
+                'sender': sender,
+            });
             $.inidb.set('paycom', action, subAction);
 
             var list = $.inidb.GetKeyList('aliases', ''),
@@ -1067,6 +1264,10 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.success', action));
+            $.logCustomCommand({
+                'disable.command': '!' + action,
+                'sender': sender,
+            });
             $.inidb.set('disabledCommands', action, true);
             $.tempUnRegisterChatCommand(action);
             return;
@@ -1089,6 +1290,10 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
+            $.logCustomCommand({
+                'enable.command': '!' + action,
+                'sender': sender,
+            });
             $.inidb.del('disabledCommands', action);
             $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', action) ? $.inidb.get('tempDisabledCommandScript', action) : './commands/customCommands.js'), action);
             return;
@@ -1107,6 +1312,11 @@
 
             if (args.length === 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.success', action));
+                $.logCustomCommand({
+                    'reset.command': '!' + action,
+                    'reset.count': 0,
+                    'sender': sender,
+                });
                 $.inidb.del('commandCount', action);
             } else {
                 if (isNaN(subAction)) {
@@ -1114,6 +1324,11 @@
                 } else {
                     $.inidb.set('commandCount', action, subAction);
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.reset.change.success', action, subAction));
+                    $.logCustomCommand({
+                        'reset.command': '!' + action,
+                        'reset.count': subAction,
+                        'sender': sender,
+                    });
                 }
             }
             return;

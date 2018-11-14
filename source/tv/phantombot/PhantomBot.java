@@ -19,7 +19,6 @@ package tv.phantombot;
 
 import net.engio.mbassy.listener.Handler;
 
-import com.gmt2001.Logger;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.IniStore;
 import com.gmt2001.datastore.MySQLStore;
@@ -41,8 +40,6 @@ import com.illusionaryone.DataRenderServiceAPIv1;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv2;
-import com.scaniatv.BotImporter;
-import com.scaniatv.GenerateLogs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +53,6 @@ import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
 
-import java.net.BindException;
 import java.net.ServerSocket;
 
 import java.security.SecureRandom;
@@ -69,7 +65,6 @@ import java.util.List;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -90,36 +85,23 @@ import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleInputListener;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
-import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.command.CommandEvent;
-import tv.phantombot.event.console.ConsoleInputEvent;
-import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
-import tv.phantombot.event.gamewisp.GameWispSubscribeEvent;
-import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.event.twitch.subscriber.*;
-import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
-import tv.phantombot.event.twitch.host.TwitchHostedEvent;
-import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
-import tv.phantombot.event.twitter.TwitterRetweetEvent;
-import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.httpserver.HTTPServer;
 import tv.phantombot.httpserver.HTTPSServer;
 import tv.phantombot.panel.PanelSocketSecureServer;
 import tv.phantombot.panel.PanelSocketServer;
 import tv.phantombot.panel.NewPanelSocketServer;
 import tv.phantombot.script.Script;
-import tv.phantombot.script.ScriptApi;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
 import tv.phantombot.script.ScriptFileWatcher;
-import tv.phantombot.twitchwsirc.chat.Session;
-import tv.phantombot.twitchwsirc.pubsub.TwitchPubSub;
-import tv.phantombot.twitchwsirc.host.TwitchWSHostIRC;
+import tv.phantombot.twitch.irc.TwitchSession;
+import tv.phantombot.twitch.pubsub.TwitchPubSub;
+import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
@@ -127,6 +109,8 @@ import tv.phantombot.discord.DiscordAPI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
+import tv.phantombot.cache.TwitchTeamsCache;
+import tv.phantombot.console.ConsoleEventHandler;
 
 public final class PhantomBot implements Listener {
     /* Bot Information */
@@ -214,6 +198,7 @@ public final class PhantomBot implements Listener {
     private EmotesCache emotesCache;
     private TwitterCache twitterCache;
     private TwitchCache twitchCache;
+    private TwitchTeamsCache twitchTeamCache;
     private UsernameCache usernameCache;
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
@@ -239,7 +224,6 @@ public final class PhantomBot implements Listener {
     public static String timeZone = "GMT";
     public static Boolean useMessageQueue = true;
     public static Boolean twitch_tcp_nodelay = true;
-    public static Boolean betap = false;
     public static Boolean isInExitState = false;
     public Boolean isExiting = false;
     private Boolean interactive;
@@ -247,11 +231,10 @@ public final class PhantomBot implements Listener {
 
     /* Other Information */
     private static Boolean newSetup = false;
-    private Session session;
+    private TwitchSession session;
     private String chanName;
     private Boolean timer = false;
     private SecureRandom random;
-    private Boolean devCommands = true;
     private Boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
@@ -493,17 +476,12 @@ public final class PhantomBot implements Listener {
         /* Set the panel password login for the panel to use */
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
-        /* Enable/disable devCommands */
-        this.devCommands = this.pbProperties.getProperty("devcommands", "false").equalsIgnoreCase("true");
-
         /* Toggle for the old servers. */
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
         PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
-        /* Setting for scania */
-        PhantomBot.betap = this.pbProperties.getProperty("betap", "false").equalsIgnoreCase("true");
 
         /*
          * Set the message limit for session.java to use, note that Twitch rate limits at 100 messages in 30 seconds
@@ -628,7 +606,7 @@ public final class PhantomBot implements Listener {
         this.init();
 
         /* Start a session instance and then connect to WS-IRC @ Twitch. */
-        this.session = Session.instance(this.channelName, this.botName, this.oauth).connect();
+        this.session = TwitchSession.instance(this.channelName, this.botName, this.oauth).connect();
 
         /* Start a host checking instance. */
         if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
@@ -741,7 +719,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {session}
      */
-    public Session getSession() {
+    public TwitchSession getSession() {
         return this.session;
     }
 
@@ -808,6 +786,15 @@ public final class PhantomBot implements Listener {
     public String getBotInformation() {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
+    }
+
+    /*
+     * Method that gets the PhantomBot properties.
+     *
+     * @return
+     */
+    public Properties getProperties() {
+        return this.pbProperties;
     }
 
     /*
@@ -976,12 +963,14 @@ public final class PhantomBot implements Listener {
             data += "    panelPort   : " + panelSocketPort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuth + "\",\r\n";
-            data += "    http        : \"" + http + "\"\r\n";
+            data += "    http        : \"" + http + "\"\r\n, ";
+            data += "    displayName : \"@DISPLAY_NAME@\"\r\n, ";
             data += "};\r\n\r\n";
             data += "function getPanelPort() { return panelSettings.panelPort; }\r\n";
             data += "function getChannelName() { return panelSettings.channelName; }\r\n";
             data += "function getAuth() { return panelSettings.auth; }\r\n";
             data += "function getProtocol() { return panelSettings.http; }\r\n";
+            data += "function getDisplayName() { return panelSettings.displayName; }\r\n";
 
             /* Create a new file if it does not exist */
             if (!new File ("./web/panel/").exists()) new File ("./web/panel/").mkdirs();
@@ -993,7 +982,7 @@ public final class PhantomBot implements Listener {
             Files.write(Paths.get("./web/panel/js/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
             // If betap write the file in that folder too.
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
             	Files.write(Paths.get("./web/beta-panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             }
         } catch (IOException ex) {
@@ -1038,6 +1027,8 @@ public final class PhantomBot implements Listener {
         EventBus.instance().register(this);
         /* Register the script manager with the event bus. */
         EventBus.instance().register(ScriptEventManager.instance());
+        /* Register the console event handler */
+        EventBus.instance().register(ConsoleEventHandler.instance());
 
         /* Load the datastore config */
         dataStore.LoadConfig(dataStoreConfig);
@@ -1069,6 +1060,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("dataRenderServiceAPI", DataRenderServiceAPIv1.instance(), 0);
+        Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(() -> {
@@ -1200,6 +1192,7 @@ public final class PhantomBot implements Listener {
 
         /* Load the caches for each channels */
         this.twitchCache = TwitchCache.instance(this.channelName);
+        this.twitchTeamCache = TwitchTeamsCache.instance(this.channelName);
         this.emotesCache = EmotesCache.instance(this.channelName);
         this.followersCache = FollowersCache.instance(this.channelName);
         this.viewerListCache = ViewerListCache.instance(this.channelName);
@@ -1231,6 +1224,7 @@ public final class PhantomBot implements Listener {
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
+        Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
@@ -1285,567 +1279,8 @@ public final class PhantomBot implements Listener {
      */
     @Handler
     public void ircChannelMessage(IrcChannelMessageEvent event) {
-        if (event.getMessage().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMessage(), event.getTags().get("user-id"), event.getSender(), false);
-        }
-
         if (this.pubSubEdge != null) {
             this.pubSubEdge.ircChannelMessageEvent(event);
-        }
-    }
-
-    /*
-     * Check to see if someone is typing in the console.
-     *
-     */
-    @Handler
-    public void consoleInput(ConsoleInputEvent event) {
-        String message = event.getMessage();
-        Boolean changed = false;
-        Boolean reset = false;
-        String arguments = "";
-        String[] argument = null;
-
-        /* Check to see if the message is null or has nothing in it */
-        if (message == null || message.isEmpty()) {
-            return;
-        }
-
-        /* Check for arguments */
-        if (message.contains(" ")) {
-            String messageString = message;
-            message = messageString.substring(0, messageString.indexOf(" "));
-            arguments = messageString.substring(messageString.indexOf(" ") + 1);
-            argument = arguments.split(" ");
-        }
-
-        if (message.equalsIgnoreCase("exportpoints")) {
-            print("[CONSOLE] Executing exportpoints, this can take a bit of time.");
-
-            String[] headers = new String[] {"Username", "Seconds", "Points"};
-            String[] keys = dataStore.GetKeyList("points", "");
-            List<String[]> values = new ArrayList<String[]>();
-
-            for (int i = 0; i < keys.length; i++) {
-                String[] str = new String[3];
-                str[0] = keys[i];
-                str[1] = (dataStore.exists("time", keys[i]) ? dataStore.get("time", keys[i]) : "0");
-                str[2] = dataStore.get("points", keys[i]);
-
-                values.add(str);
-            }
-
-            toCSV(headers, values, "points_export.csv");
-            print("[CONSOLE] Points have been exported to points_export.csv");
-        }
-
-        if (message.equalsIgnoreCase("createcmdlist")) {
-            print("[CONSOLE] Executing createcmdlist, this can take a bit of time.");
-
-            String[] headers = new String[] {"Command", "Permission", "Module"};
-            String[] keys = dataStore.GetKeyList("permcom", "");
-            List<String[]> values = new ArrayList<String[]>();
-
-            for (int i = 0; i < keys.length; i++) {
-                String[] str = new String[3];
-                str[0] = ("!" + keys[i]);
-                str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
-                str[2] = Script.callMethod("getCommandScript", (keys[i].contains(" ") ? keys[i].substring(0, keys[i].indexOf(" ")) : keys[i]));
-
-                // If the module is disabled, return.
-                if (str[2].contains("Undefined")) {
-                    continue;
-                }
-                values.add(str);
-            }
-
-            toCSV(headers, values, "command_list.csv");
-            print("[CONSOLE] Command list has been created under command_list.csv");
-        }
-
-        if (message.equalsIgnoreCase("createcustomcmdlist")) {
-            print("[CONSOLE] Executing createcustomcmdlist, this can take a bit of time.");
-
-            String[] headers = new String[] {"Command", "Permission"};
-            String[] keys = dataStore.GetKeyList("command", "");
-            List<String[]> values = new ArrayList<String[]>();
-
-            for (int i = 0; i < keys.length; i++) {
-                String[] str = new String[2];
-                str[0] = ("!" + keys[i]);
-                str[1] = dataStore.get("groups", dataStore.get("permcom", keys[i]));
-
-                values.add(str);
-            }
-
-            toCSV(headers, values, "custom_command_list.csv");
-            print("[CONSOLE] Command list has been created under custom_command_list.csv");
-        }
-
-        if (message.equalsIgnoreCase("retweettest")) {
-            if (argument == null) {
-                com.gmt2001.Console.out.println(">> retweettest requires a Twitter ID (or Twitter IDs)");
-                return;
-            }
-            com.gmt2001.Console.out.println(">> Sending retweet test event");
-            EventBus.instance().postAsync(new TwitterRetweetEvent(argument));
-            return;
-        }
-
-        if (message.equalsIgnoreCase("botinfo")) {
-            com.gmt2001.Console.out.print(getBotInformation());
-            return;
-        }
-
-        if (message.equalsIgnoreCase("revloconvert")) {
-            print("[CONSOLE] Executing revloconvert");
-            if (arguments.length() > 0) {
-                BotImporter.ImportRevlo(arguments);
-            } else {
-                print("You must specify the file name you want to convert.");
-            }
-            return;
-        }
-
-        if (message.equalsIgnoreCase("ankhconvert")) {
-            print("[CONSOLE] Executing ankhconvert");
-            if (arguments.length() > 0) {
-                BotImporter.ImportAnkh(arguments);
-            } else {
-                print("You must specify the file name you want to convert.");
-            }
-            return;
-        }
-
-        if (message.equalsIgnoreCase("backupdb")) {
-            print("[CONSOLE] Executing backupdb");
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
-            String timestamp = datefmt.format(new Date());
-
-            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
-            return;
-        }
-
-        /* Update the followed (followers) table. */
-        if (message.equalsIgnoreCase("fixfollowedtable")) {
-            print("[CONSOLE] Executing fixfollowedtable");
-            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, false);
-            return;
-        }
-
-        /* Update the followed (followers) table - forced. */
-        if (message.equalsIgnoreCase("fixfollowedtable-force")) {
-            print("[CONSOLE] Executing fixfollowedtable-force");
-            TwitchAPIv5.instance().FixFollowedTable(channelName, dataStore, true);
-            return;
-        }
-
-        if (message.equalsIgnoreCase("jointest")) {
-            print("[CONSOLE] Executing jointest");
-            for (int i = 0 ; i < 30; i++) {
-                EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session, generateRandomString(8)));
-            }
-        }
-
-        /* tests a follow event */
-        if (message.equalsIgnoreCase("followertest")) {
-            String user;
-            if (argument != null) {
-                user = argument[0];
-            } else {
-                user = generateRandomString(10);
-            }
-
-            print("[CONSOLE] Executing followertest (User: " + user + ")");
-            EventBus.instance().postAsync(new TwitchFollowEvent(user));
-            return;
-        }
-
-        /* tests multiple follows */
-        if (message.equalsIgnoreCase("followerstest")) {
-            String randomUser = generateRandomString(10);
-            int followCount = 5;
-
-            if (argument != null) {
-                followCount = Integer.parseInt(argument[0]);
-            }
-
-            print("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
-            for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i));
-            }
-            return;
-        }
-
-        /* Test a subscriber event */
-        if (message.equalsIgnoreCase("subscribertest")) {
-            String randomUser = generateRandomString(10);
-            print("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
-            return;
-        }
-
-        /* Test a prime subscriber event */
-        if (message.equalsIgnoreCase("primesubscribertest")) {
-            String randomUser = generateRandomString(10);
-            print("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser));
-            return;
-        }
-
-        /* Test a resubscriber event */
-        if (message.equalsIgnoreCase("resubscribertest")) {
-            String randomUser = generateRandomString(10);
-            print("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
-            return;
-        }
-
-        /* Test a gift sub event */
-        if (message.equalsIgnoreCase("giftsubtest")) {
-            String randomUser = generateRandomString(10);
-            print("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
-            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(this.channelName, randomUser, "10", "1000"));
-            return;
-        }
-
-        /* Test the online event */
-        if (message.equalsIgnoreCase("onlinetest")) {
-            print("[CONSOLE] Executing onlinetest");
-            EventBus.instance().postAsync(new TwitchOnlineEvent());
-            return;
-        }
-
-        /* Test the offline event */
-        if (message.equalsIgnoreCase("offlinetest")) {
-            print("[CONSOLE] Executing offlinetest");
-            EventBus.instance().postAsync(new TwitchOfflineEvent());
-            return;
-        }
-
-        /* Test the clips event */
-        if (message.equalsIgnoreCase("cliptest")) {
-            String randomUser = "";
-            if (argument == null) {
-                randomUser = generateRandomString(10);
-            } else {
-                randomUser = argument[0];
-            }
-            print("[CONSOLE] Executing cliptest " + randomUser);
-            EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, "Some title",
-                new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", " +
-                    "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", " +
-                    "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
-            return;
-        }
-
-        /* Test the host event */
-        if (message.equalsIgnoreCase("hosttest")) {
-            String randomUser = "";
-            if (argument == null) {
-                randomUser = generateRandomString(10);
-            } else {
-                randomUser = argument[0];
-            }
-            print("[CONSOLE] Executing hosttest " + randomUser);
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser));
-            return;
-        }
-
-        /* test the gamewisp subscriber event */
-        if (message.equalsIgnoreCase("gamewispsubscribertest")) {
-            print("[CONSOLE] Executing gamewispsubscribertest");
-            EventBus.instance().postAsync(new GameWispSubscribeEvent(this.botName, 1));
-            return;
-        }
-
-        /* test the gamewisp resubscriber event */
-        if (message.equalsIgnoreCase("gamewispresubscribertest")) {
-            print("[CONSOLE] Executing gamewispresubscribertest");
-            EventBus.instance().postAsync(new GameWispAnniversaryEvent(this.botName, 2));
-            return;
-        }
-
-        /* test the bits event */
-        if (message.equalsIgnoreCase("bitstest")) {
-            String sendMessage = "This is a message from Twitch.";
-            if (argument != null) {
-                sendMessage = String.join(" ", argument);
-            }
-            print("[CONSOLE] Executing bitstest");
-            EventBus.instance().postAsync(new TwitchBitsEvent(this.botName, "100", sendMessage));
-            return;
-        }
-
-        if (message.equalsIgnoreCase("discordreconnect")) {
-        	print("[CONSOLE] Executing discordreconnect");
-        	DiscordAPI.instance().reconnect();
-        	return;
-        }
-
-        /* enables debug mode */
-        if (message.equalsIgnoreCase("debugon")) {
-            print("[CONSOLE] Executing debugon: Enable Debug Mode");
-            PhantomBot.setDebugging(true);
-            return;
-        }
-
-        /* disables debug mode - note that setDebuggingLogOnly() completely disables all debugging */
-        if (message.equalsIgnoreCase("debugoff")) {
-            print("[CONSOLE] Executing debugoff: Disable Debug Mode");
-            PhantomBot.setDebuggingLogOnly(false);
-            return;
-        }
-
-        /* Writes the latest logs to a file. */
-        if (message.equalsIgnoreCase("dumplogs")) {
-            print("[CONSOLE] Executing dumplogs");
-            GenerateLogs.writeLogs();
-        }
-
-        /* Prints the latest logs in the console. */
-        if (message.equalsIgnoreCase("printlogs")) {
-            print("[CONSOLE] Executing printlogs");
-            GenerateLogs.printLogs();
-        }
-
-        /* enables debug mode - log only */
-        if (message.equalsIgnoreCase("debuglog")) {
-            print("[CONSOLE] Executing debuglog: Enable Debug Mode - Log Only");
-            PhantomBot.setDebuggingLogOnly(true);
-            return;
-        }
-
-        /* Reset the bot login */
-        if (message.equalsIgnoreCase("reset")) {
-            print("Are you sure you want to reset the bot login? [y/n]");
-            String check = System.console().readLine().trim();
-            if (check.equals("y")) {
-                reset = true;
-                changed = true;
-            } else {
-                print("No changes were made.");
-                return;
-            }
-        }
-
-        /* Change the apiOAuth token */
-        if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
-            apiOAuth = System.console().readLine().trim();
-            pbProperties.setProperty("apioauth", apiOAuth);
-            changed = true;
-        }
-
-        /* Setup for MySql */
-        if (message.equalsIgnoreCase("mysqlsetup")) {
-            try {
-                print("");
-                print("PhantomBot MySQL setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your MySQL host name: ");
-                mySqlHost = System.console().readLine().trim();
-                pbProperties.setProperty("mysqlhost", mySqlHost);
-
-                com.gmt2001.Console.out.print("Please enter your MySQL port: ");
-                mySqlPort = System.console().readLine().trim();
-                pbProperties.setProperty("mysqlport", mySqlPort);
-
-                com.gmt2001.Console.out.print("Please enter your MySQL db name: ");
-                mySqlName = System.console().readLine().trim();
-                pbProperties.setProperty("mysqlname", mySqlName);
-
-                com.gmt2001.Console.out.print("Please enter a username for MySQL: ");
-                mySqlUser = System.console().readLine().trim();
-                pbProperties.setProperty("mysqluser", mySqlUser);
-
-                com.gmt2001.Console.out.print("Please enter a password for MySQL: ");
-                mySqlPass = System.console().readLine().trim();
-                pbProperties.setProperty("mysqlpass", mySqlPass);
-
-                dataStoreType = "MySQLStore";
-                pbProperties.setProperty("datastore", dataStoreType);
-
-                print("PhantomBot MySQL setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Setup for GameWisp */
-        if (message.equalsIgnoreCase("gamewispsetup")) {
-            try {
-                print("");
-                print("PhantomBot GameWisp setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your GameWisp OAuth key: ");
-                gameWispOAuth = System.console().readLine().trim();
-                pbProperties.setProperty("gamewispauth", gameWispOAuth);
-
-                com.gmt2001.Console.out.print("Please enter your GameWisp refresh key: ");
-                gameWispRefresh = System.console().readLine().trim();
-                pbProperties.setProperty("gamewisprefresh", gameWispRefresh);
-
-                print("PhantomBot GameWisp setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Setup for StreamLabs (TwitchAlerts) */
-        if (message.equalsIgnoreCase("streamlabssetup")) {
-            try {
-                print("");
-                print("PhantomBot StreamLabs setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your StreamLabs OAuth key: ");
-                twitchAlertsKey = System.console().readLine().trim();
-                pbProperties.setProperty("twitchalertskey", twitchAlertsKey);
-
-                print("PhantomBot StreamLabs setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Setup for TipeeeStream */
-        if (message.equalsIgnoreCase("tipeeestreamsetup")) {
-            try {
-                print("");
-                print("PhantomBot TipeeeStream setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your TipeeeStream Api OAuth: ");
-                tipeeeStreamOAuth = System.console().readLine().trim();
-                pbProperties.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
-
-                print("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Setup the web panel login info */
-        if (message.equalsIgnoreCase("panelsetup")) {
-            try {
-                print("");
-                print("PhantomBot Web Panel setup.");
-                print("Note: Do not use any ascii characters in your username of password.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter a username of your choice: ");
-                panelUsername = System.console().readLine().trim();
-                pbProperties.setProperty("paneluser", panelUsername);
-
-                com.gmt2001.Console.out.print("Please enter a password of your choice: ");
-                panelPassword = System.console().readLine().trim();
-                pbProperties.setProperty("panelpassword", panelPassword);
-
-                print("PhantomBot Web Panel setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Setup for Twitter */
-        if (message.equalsIgnoreCase("twittersetup")) {
-            try {
-                print("");
-                print("PhantomBot Twitter setup.");
-                print("");
-
-                com.gmt2001.Console.out.print("Please enter your Twitter username: ");
-                twitterUsername = System.console().readLine().trim();
-                pbProperties.setProperty("twitterUser", twitterUsername);
-
-                com.gmt2001.Console.out.print("Please enter your consumer key: ");
-                twitterConsumerToken = System.console().readLine().trim();
-                pbProperties.setProperty("twitter_consumer_key", twitterConsumerToken);
-
-                com.gmt2001.Console.out.print("Please enter your consumer secret: ");
-                twitterConsumerSecret = System.console().readLine().trim();
-                pbProperties.setProperty("twitter_consumer_secret", twitterConsumerSecret);
-
-                com.gmt2001.Console.out.print("Please enter your access token: ");
-                twitterAccessToken = System.console().readLine().trim();
-                pbProperties.setProperty("twitter_access_token", twitterAccessToken);
-
-                com.gmt2001.Console.out.print("Please enter your access token secret: ");
-                twitterSecretToken = System.console().readLine().trim();
-                pbProperties.setProperty("twitter_secret_token", twitterSecretToken);
-
-                /* Delete the old Twitter file if it exists */
-                try {
-                    File f = new File("./twitter.txt");
-                    f.delete();
-                } catch (NullPointerException ex) {
-                    com.gmt2001.Console.debug.println(ex);
-                }
-
-                print("PhantomBot Twitter setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /* Check to see if any settings have been changed */
-        if (changed && !reset) {
-            Properties outputProperties = new Properties() {
-                @Override
-                public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<>(super.keySet()));
-                }
-            };
-
-            try {
-                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                    outputProperties.putAll(pbProperties);
-                    outputProperties.store(outputStream, "PhantomBot Configuration File");
-                }
-
-                dataStore.SaveAll(true);
-
-                print("");
-                print("Changes have been saved, now exiting PhantomBot.");
-                print("");
-                System.exit(0);
-            } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-            return;
-        }
-
-        /* Save everything */
-        if (message.equalsIgnoreCase("save")) {
-            print("[CONSOLE] Executing save");
-            dataStore.SaveAll(true);
-            return;
-        }
-
-        /* Exit phantombot */
-        if (message.equalsIgnoreCase("exit")) {
-            print("[CONSOLE] Executing exit");
-            System.exit(0);
-            return;
-        }
-
-        /* handle any other commands */
-        handleCommand(botName, event.getMessage());
-        // Need to support channel here. command (channel) argument[1]
-
-        /* Handle dev commands */
-        if (event.getMessage().startsWith("!debug !dev")) {
-            devDebugCommands(event.getMessage(), "no_id", botName, true);
         }
     }
 
@@ -1873,92 +1308,6 @@ public final class PhantomBot implements Listener {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         EventBus.instance().post(new CommandEvent(username, command, arguments));
-    }
-
-    /* Handles dev debug commands. */
-    public void devDebugCommands(String command, String id, String sender, boolean isConsole) {
-        if (!command.equalsIgnoreCase("!debug !dev") && (id.equals("32896646") || id.equals("88951632") || id.equals("9063944") || id.equals("74012707") || id.equals("77632323") || sender.equalsIgnoreCase(ownerName) || sender.equalsIgnoreCase(botName))) {
-            String arguments = "";
-            String[] args = null;
-            command = command.substring(12);
-
-            if (!command.contains("!") || (!devCommands && !isConsole)) {
-                return;
-            }
-
-            command = command.substring(1);
-
-            if (command.contains(" ")) {
-                String commandString = command;
-                command = commandString.substring(0, commandString.indexOf(" "));
-                arguments = commandString.substring(commandString.indexOf(" ") + 1);
-                args = arguments.split(" ");
-            }
-
-            if (command.equals("consoleevent")) {
-                EventBus.instance().postAsync(new ConsoleInputEvent(arguments));
-                Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ConsoleEvent: " + arguments + ". Id: " + id);
-                Logger.instance().log(Logger.LogType.Debug, "");
-                return;
-            }
-
-            if (command.equals("exit")) {
-                Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". ShutDown: " + botName + ". Id: " + id);
-                Logger.instance().log(Logger.LogType.Debug, "");
-                System.exit(0);
-                return;
-            }
-
-            if (command.equals("version")) {
-                PhantomBot.instance().getSession().say("@" + sender + ", Info: " + getBotInfo() + ". OS: " + System.getProperty("os.name"));
-                return;
-            }
-
-            if (command.equals("dbbackup")) {
-                SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-                datefmt.setTimeZone(TimeZone.getTimeZone(timeZone));
-                String timestamp = datefmt.format(new Date());
-
-                dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
-                return;
-            }
-
-            if (command.equals("dbtabledel")) {
-                try {
-                    PhantomBot.instance().getDataStore().RemoveFile(args[0]);
-                    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Removed DB Table: " + args[0] + ". Id: " + id);
-                    Logger.instance().log(Logger.LogType.Debug, "");
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
-                }
-                return;
-            }
-
-            if (command.equals("dbedit")) {
-                try {
-                    PhantomBot.instance().getDataStore().set(args[0], args[1], arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1));
-                    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " With: " + arguments.substring(arguments.indexOf(args[1]) + args[1].length() + 1) + ". Id: " + id);
-                    Logger.instance().log(Logger.LogType.Debug, "");
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
-                }
-                return;
-            }
-
-            if (command.equals("dbdel")) {
-                try {
-                    PhantomBot.instance().getDataStore().del(args[0], args[1]);
-                    Logger.instance().log(Logger.LogType.Debug, "User: " + sender + ". Edited DB Table: " + args[0] + " Del: " + args[1] + ". Id: " + id);
-                    Logger.instance().log(Logger.LogType.Debug, "");
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Could not edit the db: " + ex.getMessage());
-                }
-                return;
-            }
-
-            Logger.instance().log(Logger.LogType.Debug, "User: " + sender + " Issued Command: " + command + ". Id: " + id);
-            Logger.instance().log(Logger.LogType.Debug, "");
-        }
     }
 
     /* Load up main */
@@ -2311,7 +1660,7 @@ public final class PhantomBot implements Listener {
     }
 
     /* gen a random string */
-    private static String generateRandomString(int length) {
+    public static String generateRandomString(int length) {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
         char[] randomBuffer;
@@ -2480,16 +1829,16 @@ public final class PhantomBot implements Listener {
      * @param {List}     values
      * @param {String}   fileName
      */
-    private void toCSV(String[] headers, List<String[]> values, String fileName) {
+    public void toCSV(String[] headers, List<String[]> values, String fileName) {
         StringBuilder builder = new StringBuilder();
         FileOutputStream stream = null;
 
         // Append the headers.
-        builder.append(String.join(",", headers) + "\n");
+        builder.append(String.join(",", headers)).append("\n");
 
         // Append all values.
         for (String[] value : values) {
-            builder.append(String.join(",", value) + "\n");
+            builder.append(String.join(",", value)).append("\n");
         }
 
         // Write the data to a file.

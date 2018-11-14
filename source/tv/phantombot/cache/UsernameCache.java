@@ -80,6 +80,12 @@ public class UsernameCache {
         }
     }
 
+    // This will be implemented later
+    // For now it's just to keep another class from throwing errors.
+    public JSONObject getUserData(String username) {
+        return new JSONObject("");
+    }
+
     public String resolve(String username) {
         return resolve(username, new HashMap<String, String>());
     }

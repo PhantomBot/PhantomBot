@@ -18,6 +18,7 @@ $(function() {
     var webSocket = getWebSocket(),
         queryMap = getQueryMap(),
         isPlaying = false,
+        isDebug = localStorage.getItem('phantombot_alerts_debug') === 'true' || false;
         queue = [];
 
     /*
@@ -26,8 +27,7 @@ $(function() {
      * @return {ReconnectingWebSocket}
      */
     function getWebSocket() {
-        let locationHost = window.location.host.substr(0, window.location.host.indexOf(':')), // Domain part of the URL.
-            socketUri = ((getProtocol() == 'https://' ? 'wss://' : 'ws://') + locationHost + ':' + getPanelPort()), // URI of the socket.
+        let socketUri = ((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.hostname + ':' + getPanelPort()), // URI of the socket.
             reconnectInterval = 5000; // How often in milliseconds we should try reconnecting.
 
         return new ReconnectingWebSocket(socketUri, null, {
@@ -58,6 +58,29 @@ $(function() {
     }
 
     /*
+     * @function Prints debug logs.
+     *
+     * @param {String} message
+     */
+    function printDebug(message, force) {
+        if (isDebug || force) {
+            console.log('%c[PhantomBot Log]', 'color: #6441a5; font-weight: 900;', message);
+        }
+    }
+
+    /*
+     * @function Toggles the debug mode.
+     *
+     * @param {String} toggle
+     */
+    window.toggleDebug = function(toggle) {
+        localStorage.setItem('phantombot_alerts_debug', toggle.toString());
+
+        // Refresh the page.
+        window.location.reload();
+    }
+
+    /*
      * @function Checks if the query map has the option, if not, returns default.
      *
      * @param  {String} option
@@ -81,7 +104,7 @@ $(function() {
         try {
             webSocket.send(JSON.stringify(message));
         } catch (ex) {
-            console.error('Failed to send a message to the socket: ' + ex.stack);
+            printDebug('Failed to send a message to the socket: ' + ex.stack);
         }
     }
 
@@ -92,7 +115,7 @@ $(function() {
         let event = queue[0];
 
         if (event !== undefined && isPlaying === false) {
-            console.log('Processing event ' + JSON.stringify(event));
+            printDebug('Processing event ' + JSON.stringify(event));
 
             isPlaying = true;
             if (event.alert_image !== undefined) {
@@ -165,6 +188,8 @@ $(function() {
             });
             // Play the audio.
             audio.play();
+        } else {
+            isPlaying = false;
         }
     }
 
@@ -235,7 +260,7 @@ $(function() {
                 audio.play();
             }).delay(gifDuration) // Wait this time before removing this image.
               .fadeOut(1e2, function() { // Remove the image with a fade out.
-                const t = $(this);
+                let t = $(this);
 
                 // Remove either the img tag or video tag.
                 if (t.find('img').length > 0) {
@@ -253,6 +278,8 @@ $(function() {
                 // Mark as done playing.
                 isPlaying = false;
             });
+        } else {
+            isPlaying = false;
         }
     }
 
@@ -260,7 +287,7 @@ $(function() {
      * @event Called once the socket opens.
      */
     webSocket.onopen = function() {
-        console.log('Successfully connected to the socket.');
+        printDebug('Successfully connected to the socket.', true);
         // Authenticate with the socket.
         sendToSocket({
             authenticate: getAuth()
@@ -271,7 +298,7 @@ $(function() {
      * @event Called when the socket closes.
      */
     webSocket.onclose = function() {
-        console.error('Disconnected from the socket.');
+        printDebug('Disconnected from the socket.', true);
     };
 
     /*
@@ -284,13 +311,15 @@ $(function() {
             let rawMessage = e.data,
                 message = JSON.parse(rawMessage);
 
+            printDebug('[MESSAGE] ' + rawMessage);
+
             if (message.query_id === undefined) {
                 // Check for our auth result.
                 if (message.authresult !== undefined) {
                     if (message.authresult === 'true') {
-                        console.log('Successfully authenticated with the socket.');
+                        printDebug('Successfully authenticated with the socket.', true);
                     } else {
-                        console.error('Failed to authenticate with the socket.');
+                        printDebug('Failed to authenticate with the socket.', true);
                     }
                 } else
 
@@ -301,11 +330,11 @@ $(function() {
 
                 // Message cannot be handled error.
                 else {
-                    console.error('Failed to process message from socket: ' + rawMessage);
+                    printDebug('Failed to process message from socket: ' + rawMessage);
                 }
             }
         } catch (ex) {
-            console.error('Failed to parse socket message [' + e.data + ']: ' + e.stack);
+            printDebug('Failed to parse socket message [' + e.data + ']: ' + e.stack);
         }
     };
 

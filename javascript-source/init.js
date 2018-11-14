@@ -1,4 +1,21 @@
 /*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * init.js
  * This scripts handles all events and most things for the scripts.
  */
@@ -382,7 +399,7 @@
             consoleLn('https://community.phantombot.tv/c/support/bug-reports');
         } else if ($.isPrerelease) {
             consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
-            consoleLn('When reporting bugs or issues, please remember to indicate that this is a pre-release build.');
+            consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
         } else {
             consoleLn('For support please visit: https://community.phantombot.tv');
         }
@@ -506,7 +523,9 @@
         $api.on($script, 'discordChannelCommand', function(event) {
             var username = event.getUsername(),
                 command = event.getCommand(),
-                channel = event.getChannel(),
+                channel = event.getDiscordChannel(),
+                channelName = event.getChannel(),
+                channelId = event.getChannelId(),
                 isAdmin = event.isAdmin(),
                 senderId = event.getSenderId(),
                 args = event.getArgs();
@@ -534,7 +553,7 @@
             if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
                     return;
                 }
             }
@@ -807,6 +826,13 @@
         });
 
         /*
+         * @event yTPlayerDeleteCurrentEvent
+         */
+        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
+            callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
          * @event gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {
@@ -905,6 +931,13 @@
         });
 
         /*
+         * @event twitchMassSubscriptionGifted
+         */
+        $api.on($script, 'twitchMassSubscriptionGifted', function(event) {
+            callHook('twitchMassSubscriptionGifted', event, false);
+        });
+
+        /*
          * @event twitchBits
          */
         $api.on($script, 'twitchBits', function(event) {
@@ -944,13 +977,6 @@
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
-        });
-
-        /*
-         * @event webPanelSocketConnected
-         */
-        $api.on($script, 'webPanelSocketConnected', function(event) {
-            callHook('webPanelSocketConnected', event, false);
         });
 
         /*

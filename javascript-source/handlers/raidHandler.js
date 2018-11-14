@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
         newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
@@ -30,7 +47,7 @@
         if (raidObj.hasOwnProperty('totalRaids')) {
             // Increase total raids.
             raidObj.totalRaids = parseInt(raidObj.totalRaids) + 1;
-            // Increase total viewers.
+            // Increase total viewers which the user has raided for in total (all time).
             raidObj.totalViewers = (parseInt(raidObj.totalViewers) + parseInt(viewers));
             // Update last raid time.
             raidObj.lastRaidTime = $.systemTime();
@@ -66,6 +83,39 @@
     }
 
     /*
+     * @function Saves the outgoing raid for the user or adds it to the list.
+     *
+     * @param {String} username
+     * @param {String} viewers
+     */
+    function saveOutRaidForUsername(username, viewers) {
+        var raidObj = JSON.parse($.getIniDbString('outgoing_raids', username, '{}'));
+
+        if (raidObj.hasOwnProperty('totalRaids')) {
+            // Increase total raids.
+            raidObj.totalRaids = parseInt(raidObj.totalRaids) + 1;
+            // Increase total viewers which the channel has raided the other channel for (all time).
+            raidObj.totalViewers = (parseInt(raidObj.totalViewers) + parseInt(viewers));
+            // Update last raid time.
+            raidObj.lastRaidTime = $.systemTime();
+            // Last raid viewers.
+            raidObj.lastRaidViewers = viewers;
+        } else {
+            // Increase total raids.
+            raidObj.totalRaids = '1';
+            // Increase total viewers.
+            raidObj.totalViewers = viewers;
+            // Update last raid time.
+            raidObj.lastRaidTime = $.systemTime();
+            // Last raid viewers.
+            raidObj.lastRaidViewers = viewers;
+        }
+
+        // Save the new object.
+        $.setIniDbString('outgoing_raids', username, JSON.stringify(raidObj));
+    }
+
+    /*
      * @function Handles sending the messages in chat for outgoing raids.
      *
      * @param {String} username
@@ -90,7 +140,7 @@
         // Use the .raid command.
         $.say('.raid ' + username);
         // Increase out going raids.
-        $.inidb.incr('outgoing_raids', username, 1);
+        saveOutRaidForUsername(username + '', $.getViewers($.channelName) + '');
     }
 
     /*
