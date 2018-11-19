@@ -167,7 +167,7 @@ public class TwitchCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -273,7 +273,7 @@ public class TwitchCache implements Runnable {
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
                         success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Falsches Datum von Twitch, kann nicht für die Stream-Uptime konvertiert werden (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
                     }
 
                     /* Determine the preview link. */
@@ -393,7 +393,7 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Aktualisierung fehlgeschlagen.");
                 }
             }
         } catch (Exception ex) {
@@ -419,7 +419,7 @@ public class TwitchCache implements Runnable {
             }
             this.communities = communities;
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: Failed to get communities: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitchCache::updateCache: Communities konnten nicht abgerufen werden: " + ex.getMessage());
         }
 
         if (PhantomBot.twitchCacheReady.equals("false") && success) {

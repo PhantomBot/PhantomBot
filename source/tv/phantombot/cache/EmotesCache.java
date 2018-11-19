@@ -99,7 +99,7 @@ public class EmotesCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("EmotesCache.run: Failed to update emotes: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.run: Die Emotes konnten nicht aktualisiert werden: " + ex.getMessage());
                 }
             } catch (Exception ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
@@ -108,7 +108,7 @@ public class EmotesCache implements Runnable {
             try {
                 Thread.sleep(loopSleep * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("EmotesCache.run: Der Initial-Sleep konnte nicht ausgeführt werden: [InterruptedException] " + ex.getMessage());
             }
         }
     }
@@ -128,7 +128,7 @@ public class EmotesCache implements Runnable {
                                          jsonResult.getString("message") : "content=" + jsonResult.getString("_content")) +
                                         "Emotes Type=" + emoteType);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Failed to update emotes (" + emoteType + "): " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Die Emotes konnten nicht aktualisiert werden (" + emoteType + "): " + ex.getMessage());
                 }
             }
         } else {
@@ -137,7 +137,7 @@ public class EmotesCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Failed to update emotes (" + emoteType + "): " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Die Emotes konnten nicht aktualisiert werden (" + emoteType + "): " + ex.getMessage());
                 }
             }
         }
@@ -166,7 +166,7 @@ public class EmotesCache implements Runnable {
         // We will pull emotes, set the sleep to every 10 minutes.
         loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
-        com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
+        com.gmt2001.Console.debug.println("Abruf von Emotes von BTTV und FFZ");
 
         /**
          * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes.
@@ -179,29 +179,29 @@ public class EmotesCache implements Runnable {
 
         bttvJsonResult = BTTVAPIv2.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
-            com.gmt2001.Console.err.println("Failed to get BTTV Emotes");
+            com.gmt2001.Console.err.println("BTTV Emotes konnten nicht abgerufen werden");
             return;
         }
 
         bttvLocalJsonResult = BTTVAPIv2.instance().GetLocalEmotes(this.channel);
         if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
-            com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
+            com.gmt2001.Console.err.println("BTTV Lokale Emotes konnten nicht abgerufen werden");
             return;
         }
 
         ffzJsonResult = FrankerZAPIv1.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(ffzJsonResult, true, "Global FrankerZ")) {
-            com.gmt2001.Console.err.println("Failed to get FFZ Emotes");
+            com.gmt2001.Console.err.println("FFZ Emotes konnten nicht abgerufen werden");
             return;
         }
 
         ffzLocalJsonResult = FrankerZAPIv1.instance().GetLocalEmotes(this.channel);
         if (!checkJSONExceptions(ffzLocalJsonResult, true, "Local FrankerZ")) {
-            com.gmt2001.Console.err.println("Failed to get FFZ Local Emotes");
+            com.gmt2001.Console.err.println("FFZ Lokale Emotes konnten nicht abgerufen werden");
             return;
         }
 
-        com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
+        com.gmt2001.Console.debug.println("Verschiebe das Emote JSON-Objekt auf den EventBus");
         EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
         System.gc();
 

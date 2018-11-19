@@ -96,7 +96,7 @@ public class DonationsCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("DonationsCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -107,16 +107,16 @@ public class DonationsCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("DonationsCache.run: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                com.gmt2001.Console.err.println("DonationsCache.run: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("DonationsCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -145,10 +145,10 @@ public class DonationsCache implements Runnable {
                 } catch (Exception ex) {
                     /* Kill this cache if the streamlabs token is bad and disable the module. */
                     if (ex.getMessage().contains("message=Unauthorized")) {
-                        com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
+                        com.gmt2001.Console.err.println("DonationsCache.updateCache: Falscher API-Schlüssel, deaktiviere des StreamLabs-Modul.");
                         PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
                     } else {
-                        com.gmt2001.Console.err.println("Donations.updateCache: Failed to update donations: " + ex.getMessage());
+                        com.gmt2001.Console.err.println("Donations.updateCache: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
                     }
                     this.kill();
                 }
@@ -159,7 +159,7 @@ public class DonationsCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.warn.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.warn.println("DonationsCache.run: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
                 }
             }
         }

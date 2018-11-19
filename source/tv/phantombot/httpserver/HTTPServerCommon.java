@@ -524,7 +524,7 @@ public class HTTPServerCommon {
                 // Send the data.
                 sendData("text/text", stringer.toString(), exchange);
             } catch (IOException ex) {
-                com.gmt2001.Console.err.println("Failed to read game file: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Die Spiel-Datei konnte nicht gelesen werden: " + ex.getMessage());
             }
         } else {
             // Send empty json array.
@@ -592,7 +592,7 @@ public class HTTPServerCommon {
 
         if (inputFile.isDirectory()) {
             sendHTMLError(500, "Server Error: Refresh/Marquee does not support a directory, only a file", exchange);
-            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Refresh/Marquee does not support a directory, only a file.");
+            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Aktualisierung / Marquee unterstützt keine Verzeichnisse, sondern nur eine Datei.");
         } else {
             try {
                 FileInputStream fileStream = new FileInputStream(inputFile);

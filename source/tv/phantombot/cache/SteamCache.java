@@ -75,11 +75,11 @@ public class SteamCache implements Runnable {
 				try {
 					Thread.sleep(30 * 60 * 1000);
 				} catch (InterruptedException ex) {
-					com.gmt2001.Console.debug.println("SteamCache.run::Failed to sleep [InterruptedException]: " +
+					com.gmt2001.Console.debug.println("SteamCache.run::Sleep konnte nicht ausgeführt werden [InterruptedException]: " +
 						ex.getMessage());
 				}
 			} catch (Exception ex) {
-				com.gmt2001.Console.err.println("SteamCache.run::Failed to update cache " +
+				com.gmt2001.Console.err.println("SteamCache.run::Der Cache konnte nicht aktualisiert werden " +
 					"[" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
 			}
 		}

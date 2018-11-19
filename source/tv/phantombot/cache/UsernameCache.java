@@ -54,7 +54,7 @@ public class UsernameCache {
                         cache.put(username, new UserData(displayName, userID));
                     }
                 } else {
-                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Failed to get username [" + username + "] http error [" + user.getInt("_http") + "]");
+                    com.gmt2001.Console.debug.println("UsernameCache.updateCache: Der Username konnte nicht abgerufen werden [" + username + "] http error [" + user.getInt("_http") + "]");
                 }
             } else {
                 if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {

@@ -71,25 +71,25 @@ public class HTTPServer {
 
             server.start();
         } catch (BindException ex) {
-            com.gmt2001.Console.err.println("Failed to bind to port for HTTP Server on port " + myPort);
-            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system");
-            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
-            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
+            com.gmt2001.Console.err.println("Verbindung zum Port für HTTP-Server auf Port " + myPort + " konnte nicht hergestellt werden.");
+            com.gmt2001.Console.warn.println("Bitte stellen Sie sicher, dass auf Ihrem System derzeit nicht der Port " + myPort + " verwendet wird.");
+            com.gmt2001.Console.warn.println("Du kannst den Basis-Port in botlogin.txt auch auf einen anderen Wert ändern, z.B. " + (myPort + 1000));
+            throw new Exception("HTTP-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("HTTP-Server konnte nicht erstellt werden: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
+            throw new Exception("HTTP-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTP Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("HTTP-Server konnte nicht erstellt werden: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPServer on Port " + myPort);
+            throw new Exception("HTTP-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         }
     }
 
     public void close() {
-        com.gmt2001.Console.out.println("HTTP server closing down on port " + serverPort + " with 5 second delay.");
+        com.gmt2001.Console.out.println("HTTP-Server schließt Port " + serverPort + " mit 5 Sekunden Verzögerung.");
         server.stop(5);
-        com.gmt2001.Console.out.println("HTTP server stopped on port " + serverPort);
+        com.gmt2001.Console.out.println("HTTP-Server auf Port "+ serverPort +" gestoppt");
     }
 
     class YTPHandler implements HttpHandler {
