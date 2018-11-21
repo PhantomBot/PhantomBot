@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
  * This doesn't allow us to make functions to get "totals" of things and reuse them.
  * 
  * @author ScaniaTV
- */
+// */
 public final class Moderation {
     private static final Moderation INSTANCE = new Moderation();
     
