@@ -18,7 +18,9 @@ package tv.phantombot.scripts.core;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * This system has a lot of repeating code, mostly because when matching spam, 
@@ -29,7 +31,8 @@ import java.util.regex.Matcher;
 // */
 public final class Moderation {
     private static final Moderation INSTANCE = new Moderation();
-    
+    private final Pattern URL_PATTERN = Pattern.compile("((?:(http|https|rtsp):\\\\/\\\\/(?:(?:[a-z0-9\\\\$\\\\-\\\\_\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\;\\\\?\\\\&\\\\=]|(?:\\\\%[a-fA-F0-9]{2})){1,64}(?:\\\\:(?:[a-z0-9\\\\$\\\\-\\\\_\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\;\\\\?\\\\&\\\\=]|(?:\\\\%[a-fA-F0-9]{2})){1,25})?\\\\@)?)?((?:(?:[a-z0-9][a-z0-9\\\\-]{0,64}\\\\.)+(?:(?:aero|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:com|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|(?:fyi|f[ijkmor])|(?:gov|g[abdefghilmnpqrstuwy])|(?:how|h[kmnrtu])|(?:info|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|(?:r[eouw])|(?:s[abcdeghijklmnortuvyz])|(?:t[cdfghjklmnoprtvwz])|u[agkmsyz]|(?:vote|v[ceginu])|(?:xxx)|(?:watch|w[fs])|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\\\\:\\\\d{1,5})?)(\\\\/(?:(?:[a-z0-9\\\\;\\\\/\\\\?\\\\:\\\\@\\\\&\\\\=\\\\#\\\\~\\\\-\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\_])|(?:\\\\%[a-fA-F0-9]{2}))*)?(?:\\\\b|$)|(\\\\.[a-z]+\\\\/|magnet:\\/\\/|mailto:\\/\\/|ed2k:\\/\\/|irc:\\/\\/|ircs:\\/\\/|skype:\\/\\/|ymsgr:\\/\\/|xfire:\\/\\/|steam:\\/\\/|aim:\\/\\/|spotify:\\/\\/)");
+    private final Pattern YOUTUBE_PATTERN = Pattern.compile("!\\w{1,9}\\s((http(s)?:\\/\\/)?youtu(\\.be)?(be\\.com))");
     /**
      * Class constructor.
      */
@@ -44,6 +47,49 @@ public final class Moderation {
      */
     public static Moderation instance() {
         return INSTANCE;
+    }
+    
+    /**
+     * Method that checks if the message has a URL.
+     * 
+     * @param message
+     * @param isSongrequestsEnabled
+     * @return 
+     */
+    public boolean hasURL(String message, boolean isSongrequestsEnabled) {
+        boolean hasMatch = URL_PATTERN.matcher(message).matches();
+        
+        if (isSongrequestsEnabled && YOUTUBE_PATTERN.matcher(message).matches()) {
+            hasMatch = false;
+        }
+        
+        return hasMatch;
+    }
+    
+    /**
+     * Method that checks if a message or username has a blacklist.
+     * 
+     * @param username
+     * @param message
+     * @param blacklist
+     * @return 
+     */
+    public boolean hasBlacklist(String username, String message, JSONObject blacklist) {
+        boolean hasBlacklist = false;
+        
+        if (blacklist.has("_total") && blacklist.getInt("_total") > 0) {
+            JSONArray list = blacklist.getJSONArray("list");
+            
+            for (int i = 0; i < list.length(); i++) {
+                JSONArray words = list.getJSONArray(i);
+                for (int j = 0; j < words.length(); j++) {
+                    JSONObject wordObj = words.getJSONObject(i);
+                    
+                    // Do things.
+                }
+            }
+        }
+        return hasBlacklist;
     }
     
     /**
