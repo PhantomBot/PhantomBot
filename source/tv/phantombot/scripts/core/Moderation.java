@@ -18,6 +18,7 @@ package tv.phantombot.scripts.core;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -33,6 +34,8 @@ public final class Moderation {
     private static final Moderation INSTANCE = new Moderation();
     private final Pattern URL_PATTERN = Pattern.compile("((?:(http|https|rtsp):\\\\/\\\\/(?:(?:[a-z0-9\\\\$\\\\-\\\\_\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\;\\\\?\\\\&\\\\=]|(?:\\\\%[a-fA-F0-9]{2})){1,64}(?:\\\\:(?:[a-z0-9\\\\$\\\\-\\\\_\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\;\\\\?\\\\&\\\\=]|(?:\\\\%[a-fA-F0-9]{2})){1,25})?\\\\@)?)?((?:(?:[a-z0-9][a-z0-9\\\\-]{0,64}\\\\.)+(?:(?:aero|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:com|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|(?:fyi|f[ijkmor])|(?:gov|g[abdefghilmnpqrstuwy])|(?:how|h[kmnrtu])|(?:info|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|(?:r[eouw])|(?:s[abcdeghijklmnortuvyz])|(?:t[cdfghjklmnoprtvwz])|u[agkmsyz]|(?:vote|v[ceginu])|(?:xxx)|(?:watch|w[fs])|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\\\\:\\\\d{1,5})?)(\\\\/(?:(?:[a-z0-9\\\\;\\\\/\\\\?\\\\:\\\\@\\\\&\\\\=\\\\#\\\\~\\\\-\\\\.\\\\+\\\\!\\\\*\\\\\\'\\\\(\\\\)\\\\,\\\\_])|(?:\\\\%[a-fA-F0-9]{2}))*)?(?:\\\\b|$)|(\\\\.[a-z]+\\\\/|magnet:\\/\\/|mailto:\\/\\/|ed2k:\\/\\/|irc:\\/\\/|ircs:\\/\\/|skype:\\/\\/|ymsgr:\\/\\/|xfire:\\/\\/|steam:\\/\\/|aim:\\/\\/|spotify:\\/\\/)");
     private final Pattern YOUTUBE_PATTERN = Pattern.compile("!\\w{1,9}\\s((http(s)?:\\/\\/)?youtu(\\.be)?(be\\.com))");
+    private final Pattern URL_DECIPHER = Pattern.compile("(\\s?\\(?(dot|\\.){1,2}\\)?\\s?)");
+    
     /**
      * Class constructor.
      */
@@ -53,17 +56,51 @@ public final class Moderation {
      * Method that checks if the message has a URL.
      * 
      * @param message
+     * @param isDecipher
      * @param isSongrequestsEnabled
      * @return 
      */
-    public boolean hasURL(String message, boolean isSongrequestsEnabled) {
-        boolean hasMatch = URL_PATTERN.matcher(message).matches();
+    public boolean hasURL(String message, boolean isDecipher, boolean isSongrequestsEnabled) {
+        // If fake links like "google dot com", "google(.)com" should be changed to "google.com".
+        if (isDecipher) {
+            message = getDecipheredURLFromMessage(message);
+        }
         
-        if (isSongrequestsEnabled && YOUTUBE_PATTERN.matcher(message).matches()) {
+        boolean hasMatch = URL_PATTERN.matcher(message).find();
+        
+        if (isSongrequestsEnabled && YOUTUBE_PATTERN.matcher(message).find()) {
             hasMatch = false;
         }
         
         return hasMatch;
+    }
+    
+    /**
+     * Method that deciphers a URL from a message, if a link has "(dot)" and not a "." it gets replaced with a ".".
+     * 
+     * @param message
+     * @return 
+     */
+    private String getDecipheredURLFromMessage(String message) {
+        Matcher matches = URL_DECIPHER.matcher(message);
+        StringBuffer sb = null;
+        
+        // Create a new string buffer if needed.
+        // The while doesn't need to be in here, but what the heck.
+        if (matches.find()) {
+            // Build our string buffer
+            sb = new StringBuffer(message.length());
+            // Replace the first match.
+            matches.appendReplacement(sb, ".");
+            
+            // Get all the other macthes and replace them.
+            while (matches.find()) {
+                matches.appendReplacement(sb, ".");
+            }
+            matches.appendTail(sb);
+        }
+        
+        return (sb == null ? message : sb.toString());
     }
     
     /**
@@ -81,14 +118,12 @@ public final class Moderation {
             JSONArray list = blacklist.getJSONArray("list");
             
             for (int i = 0; i < list.length(); i++) {
-                JSONArray words = list.getJSONArray(i);
-                for (int j = 0; j < words.length(); j++) {
-                    JSONObject wordObj = words.getJSONObject(i);
-                    
-                    // Do things.
-                }
+                JSONObject wordObj = list.getJSONObject(i);
+                
+                // Handle the things.
             }
         }
+        
         return hasBlacklist;
     }
     
@@ -103,7 +138,7 @@ public final class Moderation {
     public boolean hasMaximumNonAlphanumeric(String message, int maxNonAlpha, float maxPercent) {
         boolean hasMaximumNonAlpha = false;
         int messageLength = message.length();
-        int totalNonAlphanumericCount = 0;
+        int totalNonAlphanumericCount = 1;
         
         for (int i = 0; i < messageLength; i++) {
             char c = message.charAt(i);
@@ -129,7 +164,7 @@ public final class Moderation {
      */
     public boolean hasLongNonAlphanumericSequence(String message, int maxLength) {
         boolean hasLongRepeatingSequence = false;
-        int totalRepeatingSequence = 0;
+        int totalRepeatingSequence = 1;
         
         for (int i = 0; i < message.length(); i++) {
             char c = message.charAt(i);
@@ -141,7 +176,7 @@ public final class Moderation {
                     break;
                 }
             } else {
-                totalRepeatingSequence = 0;
+                totalRepeatingSequence = 1;
             }
         }
         
@@ -157,7 +192,7 @@ public final class Moderation {
      */
     public boolean hasLongCharacterSequence(String message, int maxLength) {
         boolean hasLongRepeatingSequence = false;
-        int totalRepeatingSequence = 0;
+        int totalRepeatingSequence = 1;
         char lastCharacter = message.charAt(0);
         
         for (int i = 1; i < message.length(); i++) {
@@ -170,7 +205,7 @@ public final class Moderation {
                     break;
                 }
             } else {
-                totalRepeatingSequence = 0;
+                totalRepeatingSequence = 1;
             }
             lastCharacter = c;
         }
@@ -179,16 +214,18 @@ public final class Moderation {
     }
     
     /**
-     * Method that checks if a word is repeated multiple times in a for.
+     * Method that checks if a word is repeated multiple times in a row or in a phrase
      * 
      * @param message
-     * @param maxLength
+     * @param maxLength How many times a word can be repeated after another in a row.
+     * @param maxTimes How many times total in a message a word can be repeated.
      * @param rawEmoteIndexes
      * @return 
      */
-    public boolean hasLongWordSequence(String message, int maxLength, String rawEmoteIndexes) {
+    public boolean hasRepeatingWordsOrSequence(String message, int maxLength, int maxTimes, String rawEmoteIndexes) {
         boolean hasLongRepeatingSequence = false;     
-        int totalRepeatingSequence = 0;
+        int totalRepeatingSequence = 1;
+        HashMap<String, Integer> repeats = new HashMap<>();
         String[] messageParts = getMessageWithoutEmotes(message, rawEmoteIndexes).split(" ");
         String lastWord = messageParts[0];
 
@@ -202,7 +239,19 @@ public final class Moderation {
                     break;
                 }
             } else {
-                totalRepeatingSequence = 0;
+                totalRepeatingSequence = 1;
+            }
+            
+            if (!repeats.containsKey(word)) {
+                repeats.put(word, 1);
+            } else {
+                int times = (repeats.get(word) + 1);
+                // If we said it the max times, break and return.
+                if (times >= maxTimes) {
+                   hasLongRepeatingSequence = true;
+                   break;
+                }
+                repeats.put(word, times);
             }
             lastWord = word;
         }
@@ -218,14 +267,16 @@ public final class Moderation {
      */
     private HashMap<Integer, Integer> getEmotesIndexMap(String rawEmoteIndexes) {
         HashMap<Integer, Integer> emoteIndexMap = new HashMap<>();
-        String[] indexArray = rawEmoteIndexes.split("/");
+        String[] indexArray;
         
-        for (int i = 0; i < indexArray.length; i++) {
-            String[] indexes = indexArray[i].substring(indexArray[i].indexOf(":") + 1).split(",");
-            for (int j = 0; j < indexes.length; j++) {
-                String[] index = indexes[j].split("-");
+        if (rawEmoteIndexes.length() > 0) {
+            indexArray = rawEmoteIndexes.split("/");
+        
+            for (int i = 0; i < indexArray.length; i++) {
+                String[] indexes = indexArray[i].substring(indexArray[i].indexOf(":") + 1).split(",");
+                for (int j = 0; j < indexes.length; j++) {
+                    String[] index = indexes[j].split("-");
                 
-                if (index.length > 1) {
                     emoteIndexMap.put(Integer.parseInt(index[0]), Integer.parseInt(index[1]));
                 }
             }
@@ -244,11 +295,9 @@ public final class Moderation {
     private String getMessageWithoutEmotes(String message, String rawEmoteIndexes) {
         HashMap<Integer, Integer> emoteIndexMap = getEmotesIndexMap(rawEmoteIndexes);
         
-        if (!emoteIndexMap.isEmpty()) {
-            for (int i = message.length() - 1; i >= 0; i--) {
-                if (emoteIndexMap.containsKey(i)) {
-                    message = message.substring(0, i) + message.substring(emoteIndexMap.get(i) + 1);
-                }
+        for (int i = message.length() - 1; i >= 0; i--) {
+            if (emoteIndexMap.containsKey(i)) {
+                message = message.substring(0, i) + message.substring(emoteIndexMap.get(i) + 1);
             }
         }
 
@@ -270,7 +319,7 @@ public final class Moderation {
         
         boolean hasMaxCaps = false;
         int messageLength = message.length();
-        int totalCapsCount = 0;
+        int totalCapsCount = 1;
 
         for (int i = 0; i < messageLength; i++) {
             char c = message.charAt(i);
