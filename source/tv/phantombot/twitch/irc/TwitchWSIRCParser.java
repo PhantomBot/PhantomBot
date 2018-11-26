@@ -289,6 +289,7 @@ public class TwitchWSIRCParser implements Runnable {
 
         // Send the moderation event.
         scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, tags));
+        //eventBus.postAsync(new IrcModerationEvent(session, username, message, tags));
 
         // Check to see if the user is a channel subscriber.
         if (tags.containsKey("subscriber") && tags.get("subscriber").equals("1")) {
