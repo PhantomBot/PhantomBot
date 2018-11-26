@@ -1035,6 +1035,7 @@ public final class PhantomBot implements Listener {
         EventBus.instance().register(ScriptEventManager.instance());
         /* Register the console event handler */
         EventBus.instance().register(ConsoleEventHandler.instance());
+        //EventBus.instance().register(tv.phantombot.scripts.core.Moderation.instance());
 
         /* Load the datastore config */
         dataStore.LoadConfig(dataStoreConfig);
