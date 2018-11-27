@@ -31,9 +31,7 @@ import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.scripts.core.ModerationUtil.ChatMessage;
 
 /**
- * This system has a lot of repeating code, mostly because when matching spam, 
- * once we hit the limit, we no longer need to keep matching, so we return true.
- * This doesn't allow us to make functions to get "totals" of things and reuse them.
+ * Handles checking each message.
  * 
  * @author ScaniaTV
  */
@@ -79,6 +77,13 @@ public class Moderation extends ModerationUtil implements Listener {
      */
     public static Moderation instance() {
         return INSTANCE;
+    }
+    
+    /**
+     * Method that loads all settings and blacklists and whitelists.
+     */
+    public void loadSettings() {
+        // Handle loading settings, and the blacklist/whitelist.
     }
     
     /**
