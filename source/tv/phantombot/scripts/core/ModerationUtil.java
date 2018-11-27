@@ -1,19 +1,35 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package tv.phantombot.scripts.core;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
- * @author Branden
+ * This system has a lot of repeating code, mostly because when matching spam, 
+ * once we hit the limit, we no longer need to keep matching, so we return true.
+ * This doesn't allow us to make functions to get "totals" of things and reuse them.
+ * 
+ * @author ScaniaTV
  */
 public class ModerationUtil {
     private static final ModerationUtil INSTANCE = new ModerationUtil();
@@ -34,13 +50,13 @@ public class ModerationUtil {
      * Method that checks if the message has a URL.
      * 
      * @param message
-     * @param isDecipher
+     * @param doDecipher
      * @param isSongrequestsEnabled
      * @return 
      */
-    public boolean hasURL(String message, boolean isDecipher, boolean isSongrequestsEnabled) {
+    public boolean hasURL(String message, boolean doDecipher, boolean isSongrequestsEnabled) {
         // If fake links like "google dot com", "google(.)com" should be changed to "google.com".
-        if (isDecipher) {
+        if (doDecipher) {
             message = getDecipheredURLFromMessage(message);
         }
         
@@ -95,11 +111,7 @@ public class ModerationUtil {
         if (blacklist.has("_total") && blacklist.getInt("_total") > 0) {
             JSONArray list = blacklist.getJSONArray("list");
             
-            for (int i = 0; i < list.length(); i++) {
-                JSONObject wordObj = list.getJSONObject(i);
-                
-                // Handle the things.
-            }
+            
         }
         
         return hasBlacklist;
@@ -321,7 +333,7 @@ public class ModerationUtil {
      * @return 
      */
     public boolean hasColorMessage(String message) {
-        return (message.startsWith("/me ")); // The space is required for the color.
+        return (message.toLowerCase().startsWith("/me ")); // The space is required for the color.
     }
     
     /**
@@ -334,7 +346,7 @@ public class ModerationUtil {
         boolean hasFakePurge = false;
         
         // Removed the colored settings, if any.
-        if (message.startsWith("/me ")) {
+        if (hasColorMessage(message)) {
             message = message.substring(4); // Remove 3 + 1 for the space.
         }
         
@@ -435,6 +447,34 @@ public class ModerationUtil {
         }
         
         return hasMaxSpecialLetters;
+    }
+    
+    /**
+     * Method that detects if a message spams numbers.
+     * 
+     * @param message
+     * @param maxNumbers
+     * @param maxPercent
+     * @return 
+     */
+    public boolean hasNumberSpam(String message, int maxNumbers, float maxPercent) {
+        boolean hasNumberSpam = false;
+        int totalNumbers = 0;
+        float messageLength = message.length();
+        
+        for (int i = 0; i < message.length(); i++) {
+            char c = message.charAt(i);
+            
+            if (Character.isDigit(c)) {
+                totalNumbers++;
+                if (totalNumbers >= maxNumbers || (totalNumbers / messageLength) >= maxPercent) {
+                    hasNumberSpam = true;
+                    break;
+                }
+            }
+        }
+        
+        return hasNumberSpam;
     }
     
     /**
