@@ -37,13 +37,42 @@ public class ModerationUtil {
     private final Pattern YOUTUBE_PATTERN = Pattern.compile("!\\w{1,9}\\s((http(s)?:\\/\\/)?(youtu(\\.be|be\\.com)))");
     private final Pattern URL_DECIPHER = Pattern.compile("(\\s?\\(?(dot|\\.){1,2}\\)?\\s?)");
     private final Pattern ZALGO_PATTERN = Pattern.compile("(?:[\\p{M}])([\\p{M}])+?");
-    private final Pattern SPEICAL_LETTERS_PATTERN = Pattern.compile("\\p{M}|\\p{So}|\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}");
+    private final Pattern GRAPHEMES_PATTERN = Pattern.compile("\\p{M}|\\p{So}|\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}");
     
     /**
      * Class constructor.
      */
     public ModerationUtil() {
         
+    }
+    
+    /**
+     * Types of filters we have,
+     */
+    public static enum FilterType {
+        Links,
+        Caps,
+        Symbols,
+        Spam,
+        Zalgo,
+        OneManSpam,
+        Digits,
+        FakePurges,
+        Actions,
+        Paragraphs,
+        Emotes,
+        Graphemes,
+        R9k
+    }
+    
+    /**
+     * Types if punishments we have.
+     */
+    public static enum PunishmentType {
+        WARNING,
+        PURGE,
+        TIMEOUT,
+        BAN
     }
     
     /**
@@ -436,7 +465,7 @@ public class ModerationUtil {
         boolean hasMaxSpecialLetters = false;
         int totaSpecialLetters = 0;
         float messageLength = message.length();
-        Matcher matches = SPEICAL_LETTERS_PATTERN.matcher(message);
+        Matcher matches = GRAPHEMES_PATTERN.matcher(message);
         
         while (matches.find()) {
             totaSpecialLetters++;
@@ -475,6 +504,19 @@ public class ModerationUtil {
         }
         
         return hasNumberSpam;
+    }
+    
+    /**
+     * Method that matches the similarity between the last few messages. (This is to stop bots).
+     * 
+     * @param message
+     * @param maxSimilarity
+     * @return 
+     */
+    public boolean hasR9k(String message, float maxSimilarity) {
+        boolean hasR9k = false;
+        
+        return hasR9k;
     }
     
     /**
