@@ -431,6 +431,18 @@ public class ModerationUtil {
     }
     
     /**
+     * Method that checks if a message has too many emotes.
+     * 
+     * @param message
+     * @param maxEmotes
+     * @param rawEmoteIndexes
+     * @return 
+     */
+    public boolean hasMaximumEmotes(String message, int maxEmotes, String rawEmoteIndexes) {
+        return (getEmotesIndexMap(rawEmoteIndexes).size() >= maxEmotes);
+    }
+    
+    /**
      * Method that tells us if we have enough zalgo/box characters.
      * 
      * @param message
@@ -507,6 +519,17 @@ public class ModerationUtil {
     }
     
     /**
+     * Method that checks if a message is too long.
+     * 
+     * @param message
+     * @param maxLength
+     * @return 
+     */
+    public boolean hasLongParagraph(String message, int maxLength) {
+        return (message.length() >= maxLength);
+    }
+    
+    /**
      * Method that matches the similarity between the last few messages. (This is to stop bots).
      * 
      * @param message
@@ -515,6 +538,10 @@ public class ModerationUtil {
      */
     public boolean hasR9k(String message, float maxSimilarity) {
         boolean hasR9k = false;
+        
+        for (int i = (Moderation.instance().chatCache.size() - 1); i >= 0; i--) {
+            
+        }
         
         return hasR9k;
     }
