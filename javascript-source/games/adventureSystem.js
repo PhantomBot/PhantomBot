@@ -318,9 +318,6 @@
         var temp = [];
 
         for (i in currentAdventure.survivors) {
-            if (currentAdventure.survivors[i].tgOwner) {
-                currentAdventure.survivors[i].username = currentAdventure.survivors[i].tgOwner;
-            }
             pay = (currentAdventure.survivors[i].bet * (gainPercent / 100));
             $.inidb.incr('adventurePayouts', currentAdventure.survivors[i].username, pay);
             $.inidb.incr('adventurePayoutsTEMP', currentAdventure.survivors[i].username, pay);
@@ -358,7 +355,6 @@
         currentAdventure = {
             gameState: 0,
             users: [],
-            tgOwners: [],
             survivors: [],
             caught: [],
         }
