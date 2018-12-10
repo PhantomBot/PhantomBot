@@ -134,7 +134,7 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String} rawMessage
      */
     public void parseData(String rawMessage) {
-        if (rawMessage.indexOf("\n") != -1) {
+        if (rawMessage.contains("\n")) {
             String[] messageList = rawMessage.split("\n");
 
             for (String message : messageList) {
