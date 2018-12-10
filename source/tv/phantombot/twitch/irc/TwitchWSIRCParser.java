@@ -144,6 +144,52 @@ public class TwitchWSIRCParser implements Runnable {
             parseLine(rawMessage);
         }
     }
+    
+    /**
+     * Method that parses raw badges.
+     * 
+     * @param rawBadges 
+     * @return
+     */
+    // "staff/1,moderator/1,turbo/1,bits/1000"
+    private Map<String, String> parseBadges(String rawBadges) {
+        // A user cannot have more than 4 badges, acording to Twitch.
+        Map<String, String> badges = new HashMap<>(4);
+        
+        if (rawBadges.length() > 0) {
+            String badgeParts[] = rawBadges.split(",", 4);
+            
+            for (String badge : badgeParts) {
+                // Remove the `/1` from the badge.
+                // For bits it can be `/1000`, so we need to use indexOf.
+                badge = badge.substring(0, badge.indexOf("/"));
+                
+                switch (badge) {
+                    case "staff":
+                    case "global_mod":
+                    case "admin":
+                    case "broadcaster":
+                    case "moderator":
+                        badges.put("user-type", badge);
+                        break;
+                    case "subscriber":
+                        badges.put("subscribepr", "1");
+                        break;
+                    case "turbo":
+                        badges.put("turbo", "1");
+                        break;
+                    case "premium":
+                        badges.put("premium", "1");
+                        break;
+                    case "vip":
+                        badges.put("vip", "1");
+                        break;
+                }
+            }
+        }
+        
+        return badges;
+    }
 
     /*
      * Method that parses a single line message.
@@ -160,6 +206,27 @@ public class TwitchWSIRCParser implements Runnable {
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {
             String[] tagParts = messageParts[0].substring(1).split(";");
+            
+            /* 
+             **To be added once Twitch removes depricated tags.**
+            
+            // The first tag should be badges.
+            // So we should parse them into tags, since Twitch doesn't provide us this anymore.
+            String[] keyValues = tagParts[0].split("=");
+            if (keyValues.length > 0) {
+                tags.putAll(parseBadges(keyValues[1]));
+            }
+            
+            // We want to skip the first element which are badges, since they are parsed already.
+            for (int i = 1; i < tagParts.length; i++) {
+                keyValues = tagParts[i].split("=");
+                if (keyValues.length > 0) {
+                    tags.putIfAbsent(keyValues[0], (keyValues.length == 1 ? "" : keyValues[1]));
+                }
+            }
+            */
+
+            // Remove this part once the part above is added.
             for (String tag : tagParts) {
                 String[] keyValues = tag.split("=");
                 if (keyValues.length > 0) {
