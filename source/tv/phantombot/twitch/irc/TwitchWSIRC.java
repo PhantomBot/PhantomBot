@@ -178,22 +178,20 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onMessage(String message) {
-        String messageTrim = message.trim();
-        
-        if (messageTrim.startsWith("PONG")) {
+        if (message.startsWith("PONG")) {
             lastPong = System.currentTimeMillis();
-        } else if (messageTrim.startsWith("PING")) {
+        } else if (message.startsWith("PING")) {
             send("PONG");
         } else {
             try {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        twitchWSIRCParser.parseData(messageTrim);
+                        twitchWSIRCParser.parseData(message);
                     }
                 }).start();
             } catch (Exception ex) {
-                twitchWSIRCParser.parseData(messageTrim);
+                twitchWSIRCParser.parseData(message);
             }
         }
     }
