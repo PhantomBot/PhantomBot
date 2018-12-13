@@ -817,7 +817,7 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase().trim(),
-            modMessageStart = 'the moderators of this room are: ',
+            modMessageStart = 'the moderators of this channel are: ',
             vipMessageStart = 'VIPs for this channel are: ',
             keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
