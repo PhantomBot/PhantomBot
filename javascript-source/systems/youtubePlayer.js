@@ -733,9 +733,9 @@
                 } else {
                     if (defaultPlaylist.length == 0) {
                         if (this.loadPlaylistKeys() == 0) {
-                            return new YoutubeVideo('7lO1iBF0p_0', playlistDJname);
+                            return new YoutubeVideo('r9NsG7pMwNk', playlistDJname);
                         }
-                        return new YoutubeVideo('7lO1iBF0p_0', playlistDJname);
+                        return new YoutubeVideo('r9NsG7pMwNk', playlistDJname);
                     }
 
                     try {
