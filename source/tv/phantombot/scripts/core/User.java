@@ -17,7 +17,10 @@
 
 package tv.phantombot.scripts.core;
 
+import java.util.Map;
+
 import tv.phantombot.cache.UsernameCache;
+import tv.phantombot.PhantomBot;
 
 import org.json.JSONObject;
 
@@ -30,7 +33,7 @@ import org.json.JSONObject;
  * 
  * @author ScaniaTV
  */
-public class User {
+public final class User {
     // The username of the user.
     private final String userName;
     // The display name of our User.
@@ -43,6 +46,8 @@ public class User {
     private String logoUrl = "";
     // The type of user, either: user, staff, admin, global_mod
     private String userType = "";
+    // Set's the group ID for the user.
+    private int groupID = -1;
     // If the user is the bot owner.
     private boolean isOwner = false;
     // If the user is a bot admin.
@@ -51,6 +56,10 @@ public class User {
     private boolean isModerator = false;
     // If the user is a subscriber.
     private boolean isSubscriber = false;
+    // If the user is a donator.
+    private boolean isDonator = false;
+    // If the user is a VIP.
+    private boolean isVIP = false;
     // If the user is a bot regular.
     private boolean isRegular = false;
     
@@ -66,11 +75,38 @@ public class User {
     /**
      * Class constructor.
      * 
+     * @param userName The name of the user in lowercase.
+     * @param groupID The group ID of the user.
+     */
+    public User(String userName, int groupID) {
+        this.userName = userName.toLowerCase();
+        this.groupID = groupID;
+        
+        this.updateUserStatus(groupID);
+    }
+    
+    /**
+     * Class constructor.
+     * 
      * @param userName
      * @param displayName
      * @param userID 
      */
     public User(String userName, String displayName, String userID) {
+        this.userName = userName.toLowerCase();
+        this.displayName = sanitizeDisplayName(displayName);
+        this.userID = userID;
+    }
+    
+    /**
+     * Class constructor.
+     * 
+     * @param userName
+     * @param displayName
+     * @param userID 
+     * @param tags
+     */
+    public User(String userName, String displayName, String userID, Map<String, String> tags) {
         this.userName = userName.toLowerCase();
         this.displayName = sanitizeDisplayName(displayName);
         this.userID = userID;
@@ -194,6 +230,108 @@ public class User {
     private String sanitizeDisplayName(String name) {
         return name.replaceAll("\\\\s", " ");
     }
+    
+    /**
+     * Method that sets the group ID for the user.
+     * 
+     * @param groupID 
+     */
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
+        PhantomBot.instance().getDataStore().set("group", getUsername(), String.valueOf(groupID));
+    }
+    
+    /**
+     * Method that gets the group ID for the user.
+     * 
+     * @return 
+     */
+    public int getGroupID() {
+        build(false);
+        return groupID;
+    }
+    
+    /**
+     * Method that says if this user is the owner of the bot.
+     * 
+     * @return 
+     */
+    public boolean isOwner() {
+        build(false);
+        return (isOwner || isAdministrator);
+    }
+    
+    /**
+     * Method that says if this user is an administrator.
+     * 
+     * @return 
+     */
+    public boolean isAdministrator() {
+        build(false);
+        return (isAdministrator || isOwner);
+    }
+    
+    /**
+     * Method that says if this user is a moderator.
+     * 
+     * @return 
+     */
+    public boolean isModerator() {
+        build(false);
+        return (isModerator || isAdministrator || isOwner);
+    }
+    
+    /**
+     * Method that returns if the user is a donator.
+     * @return 
+     */
+    public boolean isDonator() {
+        build(false);
+        return isDonator;
+    }
+    
+    /**
+     * Method that returns if the user is a subscriber.
+     * @return 
+     */
+    public boolean isSubscriber() {
+        build(false);
+        return isSubscriber;
+    }
+    
+    /**
+     * Method that returns if the user is a VIP.
+     * @return 
+     */
+    public boolean isVIP() {
+        build(false);
+        return isVIP;
+    }
+    
+    /**
+     * Method that returns if the user is a regular.
+     * @return 
+     */
+    public boolean isRegular() {
+        build(false);
+        return isRegular;
+    }
+    
+    /***
+     * Method that updates the status of the user, either a regular, VIP, sub, mod, etc.
+     * 
+     * @param groupID 
+     */
+    public void updateUserStatus(int groupID) {
+        // Reset all of the permissions of the user.
+        isOwner = (groupID >= 0);
+        isAdministrator = (groupID >= 1);
+        isModerator = (groupID >= 2);
+        isSubscriber = (groupID == 3);
+        isDonator = (groupID == 4);
+        isVIP = (groupID == 5);
+        isRegular = (groupID == 6);
+    }
      
     /**
      * Method that builds this object if not done already.
@@ -220,6 +358,15 @@ public class User {
             } else {
                 com.gmt2001.Console.err.println("Failed to get data for user: " + getUsername());
             }
+            
+            if (groupID == -1) {
+                String strID = PhantomBot.instance().getDataStore().get("group", getUsername());
+                if (strID != null) {
+                    int id = Integer.parseInt(strID);
+                    updateUserStatus(id);
+                    setGroupID(id);
+                }
+            }
         }
     }
     
@@ -230,12 +377,12 @@ public class User {
      * @return 
      */
     private boolean isBuilt(boolean isFull) {
-        boolean built = ("".equals(displayName) || "".equals(userID));
+        boolean built = ("".equals(displayName) || "".equals(userID) || groupID == -1);
         
         if (isFull && built) {
             built = ("".equals(userType) || "".equals(createdAt) || "".equals(logoUrl));
         }
         
-        return built;
+        return !built;
     }
 }
