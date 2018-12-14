@@ -156,6 +156,16 @@ public class YouTubeAPIv3 {
             j.put("_exceptionMessage", "");
             j.put("_content", content);
             postjson = new Date();
+
+            /* If the JSON was properly parsed then we may have received back a proper error JSON payload from YouTube. */
+            if (j.has("error")) {
+                if (j.getJSONObject("error").has("errors")) {
+                    JSONArray jaerror = j.getJSONObject("error").getJSONArray("errors");
+                    if (jaerror.getJSONObject(0).has("reason") && jaerror.getJSONObject(0).has("domain")) {
+                        com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain") + " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
+                    }
+                }
+            }
         } catch (JSONException ex) {
             if (ex.getMessage().contains("A JSONObject text must begin with")) {
                 j = new JSONObject("{}");
