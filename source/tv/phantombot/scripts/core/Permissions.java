@@ -19,6 +19,7 @@ package tv.phantombot.scripts.core;
 
 import net.engio.mbassy.listener.Handler;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,7 +39,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  */
 public class Permissions implements Listener {
     public static final Permissions INSTANCE = new Permissions();
-    private final ConcurrentMap<String, User> users = new ConcurrentHashMap();
+    private ConcurrentMap<String, User> users = new ConcurrentHashMap();
     
     /**
      * Method that returns this instance.
@@ -50,7 +51,7 @@ public class Permissions implements Listener {
     }
     
     /**
-     * Method that removes a user from the cache.
+     * Method that gets a user.
      * 
      * @param username
      * @return 
@@ -62,8 +63,6 @@ public class Permissions implements Listener {
         if (user == null) {
             // Create the user object.
             user = new User(username);
-            // Add it to the object,
-            users.put(user.getUsername(), user);
         }
         
         return user;
@@ -84,47 +83,68 @@ public class Permissions implements Listener {
      * 
      * @param username 
      */
-    public void removeUser(String username) {
-        username = username.toLowerCase();
-        
+    private void removeUser(String username) {
         if (hasUser(username)) {
-            users.remove(username);
+            users.remove(username.toLowerCase());
+        }
+    }
+    
+    /**
+     * Method that adds a user to the map.
+     * 
+     * @param username 
+     */
+    private void addUser(String username) {
+        if (!hasUser(username)) {
+            // Create the user object.
+            User user = new User(username);
+            // Add it to the object.
+            users.put(user.getUsername(), user);
         }
     }
     
     // A handler event for IrcChannelUsersUpdateEvent.
     @Handler
-    private void ircChannelUsersUpdateEvent(IrcChannelUsersUpdateEvent event) {
+    private synchronized void ircChannelUsersUpdateEvent(IrcChannelUsersUpdateEvent event) {
+        ConcurrentMap<String, User> usersMap = new ConcurrentHashMap<>();
+        List<String> usersList = event.getUsers();
         
+        // Generate the new user list.
+        usersList.forEach((user) -> {
+            usersMap.put(user, getUser(user));
+        });
+        
+        // Update the users map.
+        this.users = usersMap;
     }
     
     // A handler event for IrcChannelJoinEvent.
     @Handler
-    private void ircChannelJoinEvent(IrcChannelJoinEvent event) {
-        
+    private synchronized void ircChannelJoinEvent(IrcChannelJoinEvent event) {
+        addUser(event.getUser());
     }
     
     // A handler event for IrcChannelLeaveEvent.
     @Handler
-    private void ircChannelLeaveEvent(IrcChannelLeaveEvent event) {
-        
+    private synchronized void ircChannelLeaveEvent(IrcChannelLeaveEvent event) {
+        removeUser(event.getUser());
     }
     
     // A handler event for IrcChannelUserModeEvent.
     @Handler
-    private void ircChannelUserModeEvent(IrcChannelUserModeEvent event) {
+    private synchronized void ircChannelUserModeEvent(IrcChannelUserModeEvent event) {
         
     }
     
     // A handler event for IrcPrivateMessageEvent.
     @Handler
-    private void ircPrivateMessageEvent(IrcPrivateMessageEvent event) {
+    private synchronized void ircPrivateMessageEvent(IrcPrivateMessageEvent event) {
         
     }
     
     // A handler event for IrcChannelMessageEvent.
     @Handler
-    private void ircChannelMessageEvent(IrcChannelMessageEvent event) {
-        
+    private synchronized void ircChannelMessageEvent(IrcChannelMessageEvent event) {
+        addUser(event.getSender());
     }
 }
