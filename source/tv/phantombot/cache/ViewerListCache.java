@@ -32,6 +32,7 @@ public class ViewerListCache implements Runnable {
     private static ViewerListCache instance = null;
     private final String channelName;
     private final Thread thread;
+    private List<String> cache = new ArrayList<String>();
     private boolean isKilled = false;
 
     /*
@@ -64,7 +65,7 @@ public class ViewerListCache implements Runnable {
     }
 
     /*
-     * Method that updates the cache every 5 minutes.
+     * Method that updates the cache every 10 minutes.
      */
     @Override
     @SuppressWarnings("SleepWhileInLoop")
@@ -81,7 +82,7 @@ public class ViewerListCache implements Runnable {
             }
 
             try {
-                Thread.sleep(300 * 1000);
+                Thread.sleep(600 * 1000);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.println("ViewerListCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
@@ -93,7 +94,9 @@ public class ViewerListCache implements Runnable {
      */
     private void updateCache() throws Exception {
         String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
-        List<String> users = new ArrayList<>();
+        List<String> cache = new ArrayList<String>();
+        List<String> joins = new ArrayList<String>();
+        List<String> parts = new ArrayList<String>();
 
         com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
         try {
@@ -101,8 +104,8 @@ public class ViewerListCache implements Runnable {
             JSONObject chatters;
 
             if (object.getBoolean("_success") && object.getInt("_http") == 200) {
-                // TMI might have failed, or the user doesn't have chatters.
                 if (object.getInt("chatter_count") == 0) {
+                    this.cache = cache;
                     return;
                 }
 
@@ -111,11 +114,31 @@ public class ViewerListCache implements Runnable {
                 for (String type : types) {
                     JSONArray array = chatters.getJSONArray(type);
                     for (int i = 0; i < array.length(); i++) {
-                        users.add(array.getString(i));
+                        cache.add(array.getString(i));
                     }
                 }
 
-                EventBus.instance().post(new IrcChannelUsersUpdateEvent(users));
+                // Check for new users that joined.
+                for (int i = 0; i < cache.size(); i++) {
+                    if (!this.cache.contains(cache.get(i))) {
+                        joins.add(cache.get(i));
+                    }
+                }
+
+                // Check for old users that left.
+                for (int i = 0; i < this.cache.size(); i++) {
+                    if (!cache.contains(this.cache.get(i))) {
+                        parts.add(this.cache.get(i));
+                    }
+                }
+
+                EventBus.instance().post(new IrcChannelUsersUpdateEvent(joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
+                // Set the new cache.
+                this.cache = cache;
+                // Delete the temp caches.
+                cache = null;
+                parts = null;
+                joins = null;
                 // Run the GC to clear memory,
                 System.gc();
             } else {
@@ -124,6 +147,25 @@ public class ViewerListCache implements Runnable {
         } catch (Exception ex) {
             com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Failed to update: " + ex.getMessage());
         }
+    }
+
+    /*
+     * Method to check if a user is in the cache.
+     *
+     * @param  {String} username
+     * @return {Boolean}
+     */
+    public boolean hasUser(String username) {
+        return (!this.cache.isEmpty() ? this.cache.contains(username) : true);
+    }
+
+    /*
+     * Method to add users to the cache.
+     *
+     * @param  {String} username
+     */
+    public void addUser(String username) {
+        this.cache.add(username);
     }
 
     /*

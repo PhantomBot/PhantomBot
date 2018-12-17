@@ -106,7 +106,7 @@ public class Permissions implements Listener {
     // A handler event for IrcChannelUsersUpdateEvent.
     @Handler
     private synchronized void ircChannelUsersUpdateEvent(IrcChannelUsersUpdateEvent event) {
-        ConcurrentMap<String, User> usersMap = new ConcurrentHashMap<>();
+        /*ConcurrentMap<String, User> usersMap = new ConcurrentHashMap<>();
         List<String> usersList = event.getUsers();
         
         // Generate the new user list.
@@ -115,7 +115,7 @@ public class Permissions implements Listener {
         });
         
         // Update the users map.
-        this.users = usersMap;
+        this.users = usersMap;*/
     }
     
     // A handler event for IrcChannelJoinEvent.
