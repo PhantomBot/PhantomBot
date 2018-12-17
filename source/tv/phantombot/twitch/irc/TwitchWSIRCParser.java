@@ -250,7 +250,7 @@ public class TwitchWSIRCParser implements Runnable {
         webSocket.send("JOIN #" + channelName);
 
         // Log in the console that web joined.
-        com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
+        com.gmt2001.Console.out.println("Channel beigetreten [#" + channelName + "]");
 
         // Port the channel joined event.
         eventBus.postAsync(new IrcJoinCompleteEvent(session));
@@ -374,7 +374,7 @@ public class TwitchWSIRCParser implements Runnable {
         // Post the event.
         eventBus.postAsync(new IrcChannelJoinEvent(session, username));
         // Show the message in debug mode.
-        com.gmt2001.Console.debug.println("User Joined Channel [" + username + " -> " + channelName + "]");
+        com.gmt2001.Console.debug.println("Benutzer ist dem Kanal beigetreten [" + username + " -> " + channelName + "]");
     }
 
     /*
@@ -388,7 +388,7 @@ public class TwitchWSIRCParser implements Runnable {
         // Post the event.
         eventBus.postAsync(new IrcChannelLeaveEvent(session, username));
         // Show the message in debug mode.
-        com.gmt2001.Console.debug.println("User Left Channel [" + username + " -> " + channelName + "]");
+        com.gmt2001.Console.debug.println("Benutzer hat den Kanal verlassen [" + username + " -> " + channelName + "]");
     }
 
     /*
@@ -399,22 +399,22 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {Map}    tags
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
-        if (message.equals("Login authentication failed")) {
+        if (message.equals("Login authentication failed")) { // DON'T CHANGE
             com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
-            com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
+            com.gmt2001.Console.out.println("Twitch iniziiertes Login fehlgeschlagen. Überprüfen Sie das OAUTH-Passwort.");
+            com.gmt2001.Console.out.println("Bitte beachten Sie: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
             com.gmt2001.Console.out.println();
             System.exit(0);
-        } else if (message.equals("Invalid NICK")) {
+        } else if (message.equals("Invalid NICK")) { //DON'T CHANGE
             com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
+            com.gmt2001.Console.out.println("Ungültiger Bot-Name von Twitch gemeldet. Überprüfen Sie die Einstellung 'user=' in der Datei botlogin.txt");
+            com.gmt2001.Console.out.println("Beende PhantomBotDE.");
             com.gmt2001.Console.out.println();
             System.exit(0);
         } else {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
-            com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+            com.gmt2001.Console.debug.println("Nachricht von jtv (NOTICE): " + message);
         }
     }
 
@@ -474,16 +474,16 @@ public class TwitchWSIRCParser implements Runnable {
                     }
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
                     com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[ERROR] oAuth token doesn't match the bot's Twitch account name.");
-                    com.gmt2001.Console.out.println("[ERROR] Please go to http://twitchapps.com/tmi and generate a new token.");
-                    com.gmt2001.Console.out.println("[ERROR] Be sure to go to twitch.tv and login as the bot before getting the token.");
-                    com.gmt2001.Console.out.println("[ERROR] After, open the botlogin.txt file and replace the oauth= value with the token.");
+                    com.gmt2001.Console.out.println("[FEHLER] oAuth Token stimmt nicht mit dem Benutzernamen des Twitch Bots überein.");
+                    com.gmt2001.Console.out.println("[FEHLER] Bitte besuchen Sie http://twitchapps.com/tmi und generieren Sie einen neuen Token.");
+                    com.gmt2001.Console.out.println("[FEHLER] Achten Sie darauf, dass Sie auf twitch.tv gehen und sich als Bot anmelden, bevor Sie das Token beziehen.");
+                    com.gmt2001.Console.out.println("[FEHLER] Öffnen Sie anschließend die Datei botlogin.txt und ersetzen Sie den Wert von 'oauth=' durch den Token.");
                     com.gmt2001.Console.out.println();
                 } else {
                     com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
-                    com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
-                    com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
+                    com.gmt2001.Console.out.println("[FEHLER] " + username + " wurde nicht als Moderator erkannt!");
+                    com.gmt2001.Console.out.println("[FEHLER] Du musst " + username + " als Channel-Moderator hinzufügen, damit er den Chat moderieren kann.");
+                    com.gmt2001.Console.out.println("[FEHLER] Geben Sie /mod " + username + " ein, um " + username + " als Channel-Moderator hinzuzufügen.");
                     com.gmt2001.Console.out.println();
 
                     // We're not a mod thus we cannot send messages.

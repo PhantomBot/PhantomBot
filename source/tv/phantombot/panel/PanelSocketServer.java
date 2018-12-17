@@ -162,7 +162,7 @@ public class PanelSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, true, webSocket));
-        com.gmt2001.Console.debug.println("PanelSocketServer: Connection from " +
+        com.gmt2001.Console.debug.println("PanelSocketServer: Verbindung von " +
                                           webSocket.getRemoteSocketAddress().getHostName() +
                                           ":" + webSocket.getRemoteSocketAddress().getPort());
 
@@ -184,7 +184,7 @@ public class PanelSocketServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         wsSessionMap.remove(genSessionKey(webSocket));
-        com.gmt2001.Console.debug.println("PanelSocketServer: Disconnection from " +
+        com.gmt2001.Console.debug.println("PanelSocketServer: Verbindung getrennt von " +
                                           webSocket.getRemoteSocketAddress().getHostName() +
                                           ":" + webSocket.getRemoteSocketAddress().getPort());
     }
@@ -223,11 +223,11 @@ public class PanelSocketServer extends WebSocketServer {
         try {
             jsonObject = new JSONObject(jsonString);
         } catch (JSONException ex) {
-            com.gmt2001.Console.err.println("PanelSocketServer: Bad JSON passed ["+jsonString+"]");
+            com.gmt2001.Console.err.println("PanelSocketServer: Schlechtes JSON übergeben ["+jsonString+"]");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("PanelSocketServer: Exception Occurred");
+            com.gmt2001.Console.err.println("PanelSocketServer: Fehler aufgetreten");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
@@ -341,7 +341,7 @@ public class PanelSocketServer extends WebSocketServer {
                 String order = jsonObject.getJSONObject("query").getString("order");
                 doDBKeysSearch(webSocket, uniqueID, table, key, limit, order, offset);
             } else {
-                com.gmt2001.Console.err.println("PanelSocketServer: Unknown JSON passed [" + jsonString + "]");
+                com.gmt2001.Console.err.println("PanelSocketServer: Unbekanntes JSON übergeben [" + jsonString + "]");
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.println("PanelSocketServer::JSONException(" + ex.getMessage() + "): " + jsonString);
@@ -383,7 +383,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     @Override
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
-        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket Initiated");
+        com.gmt2001.Console.debug.println("PanelSocketServer::Closing WebSocket eingeleitet");
     }
 
     /**
@@ -409,7 +409,7 @@ public class PanelSocketServer extends WebSocketServer {
                 try {
                     c.send(text);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("Es ist nicht gelungen, eine Nachricht an den Panel-Socket zu senden: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 }
             }
         }
@@ -467,7 +467,7 @@ public class PanelSocketServer extends WebSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from PhantomBot instance.");
+                debugMsg("NULL wurde von der PhantomBot-Instanz zurückgegeben.");
             }
             return;
         }
@@ -497,7 +497,7 @@ public class PanelSocketServer extends WebSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -528,7 +528,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -571,7 +571,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -604,7 +604,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -646,7 +646,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -680,7 +680,7 @@ public class PanelSocketServer extends WebSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -708,7 +708,7 @@ public class PanelSocketServer extends WebSocketServer {
             PhantomBot.instance().getDataStore().set(table, key, value);
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -732,7 +732,7 @@ public class PanelSocketServer extends WebSocketServer {
             PhantomBot.instance().getDataStore().incr(table, key, Integer.parseInt(value));
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -756,7 +756,7 @@ public class PanelSocketServer extends WebSocketServer {
             PhantomBot.instance().getDataStore().decr(table, key, Integer.parseInt(value));
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -778,7 +778,7 @@ public class PanelSocketServer extends WebSocketServer {
             PhantomBot.instance().getDataStore().del(table, key);
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -893,7 +893,7 @@ public class PanelSocketServer extends WebSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return false;
         }

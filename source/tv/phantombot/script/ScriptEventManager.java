@@ -74,9 +74,9 @@ public class ScriptEventManager implements Listener {
 
                 e.handler.handle(event);
 
-                com.gmt2001.Console.debug.println("Dispatched event " + eventName);
+                com.gmt2001.Console.debug.println("Dispatched Event " + eventName);
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
+                com.gmt2001.Console.err.println("Dispatchen des Events fehlgeschlagen " + event.getClass().getName());
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -114,7 +114,7 @@ public class ScriptEventManager implements Listener {
         if (event != null) {
             events.put(event.getSimpleName(), new EventHandler(event, handler));
         } else {
-            com.gmt2001.Console.err.println("Event class not found for: " + eventName);
+            com.gmt2001.Console.err.println("Event Klasse nicht gefunden für: " + eventName);
         }
     }
 

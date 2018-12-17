@@ -96,10 +96,10 @@ public class TwitchPubSub {
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
             if (!this.twitchPubSubWS.connectWSS(false)) {
-                throw new Exception("Failed to connect to PubSub.");
+                throw new Exception("Die PubSub Verbindung ist fehlgeschlagen.");
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchPubSub connection error: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitchPubSub Verbindungsfehler: " + ex.getMessage());
             System.exit(0);
         }
     }
@@ -129,7 +129,7 @@ public class TwitchPubSub {
                     this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
                     reconnected = this.twitchPubSubWS.connectWSS(true);
                 } catch (URISyntaxException ex) {
-                    com.gmt2001.Console.err.println("TwitchPubSub failed to reconnect: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("TwitchPubSub reconnect fehlgeschlagen: " + ex.getMessage());
                     System.exit(0);
                 }
             }
@@ -137,7 +137,7 @@ public class TwitchPubSub {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("TwitchPubSub failed to sleep before reconnecting: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("TwitchPubSub sleep ist Fehlgeschlagen vor dem Reconnect: " + ex.getMessage());
             }
         }
     }
@@ -198,16 +198,16 @@ public class TwitchPubSub {
          */
         public Boolean connectWSS(Boolean reconnect) {
             if (!reconnect) {
-                com.gmt2001.Console.debug.println("Connecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.debug.println("Verbinde zu Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
             } else {
-                com.gmt2001.Console.debug.println("Reconnecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.debug.println("Reconnecte zu Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
             }
 
             try {
                 connect();
                 return true;
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchPubSubWS Verbindungsfehler: " + ex.getMessage());
                 return false;
             }
         }
@@ -312,8 +312,8 @@ public class TwitchPubSub {
          */
         @Override
         public void onOpen(ServerHandshake handshakedata) {
-            com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
-            com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
+            com.gmt2001.Console.debug.println("Verbunden zu Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+            com.gmt2001.Console.out.println("Verbunden zu Twitch Moderation Data Feed");
 
 
             String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
@@ -338,7 +338,7 @@ public class TwitchPubSub {
         @Override
         public void onClose(int code, String reason, boolean remote) {
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
+            com.gmt2001.Console.out.println("Verbindung zum Twitch Moderation Data Feed verloren, neuer Versuch in 10 Sekunden.");
 
             closeTimer();
             twitchPubSub.reconnectWSS();
@@ -372,13 +372,13 @@ public class TwitchPubSub {
             }
 
             if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                com.gmt2001.Console.err.println("TwitchPubSubWS Fehler: " + messageObj.getString("error"));
                 reconAllowed = false;
                 return;
             }
 
             if (messageObj.getString("type").equalsIgnoreCase("pong")) {
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
+                com.gmt2001.Console.debug.println("TwitchPubSubWS: PONG erhalten.");
             }
 
             if (messageObj.getString("type").equalsIgnoreCase("message")) {
@@ -397,7 +397,7 @@ public class TwitchPubSub {
                 jsonObject.put("type", "PING");
 
                 send(jsonObject.toString());
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Sent a PING.");
+                com.gmt2001.Console.debug.println("TwitchPubSubWS: PING gesendet.");
             }
         }
     }

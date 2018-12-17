@@ -218,7 +218,7 @@ public class User {
                 // Set the user's logo.
                 setLogo(user.getString("logo"));
             } else {
-                com.gmt2001.Console.err.println("Failed to get data for user: " + getUsername());
+                com.gmt2001.Console.err.println("Fehler beim Abrufen der Daten des Benutzers: " + getUsername());
             }
         }
     }

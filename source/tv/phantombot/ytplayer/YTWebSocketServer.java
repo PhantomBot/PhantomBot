@@ -171,11 +171,11 @@ public class YTWebSocketServer extends WebSocketServer {
         try {
             jsonObject = new JSONObject(jsonString);
         } catch (JSONException ex) {
-            com.gmt2001.Console.err.println("YTWebSocketServer: Bad JSON passed ["+jsonString+"]");
+            com.gmt2001.Console.err.println("YTWebSocketServer: Falsches JSON erhalten ["+jsonString+"]");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("YTWebSocketServer: Exception Occurred");
+            com.gmt2001.Console.err.println("YTWebSocketServer: Fehler aufgetreten");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
@@ -245,10 +245,10 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
             } else if (jsonStatus.has("errorcode")) {
                 dataInt = jsonStatus.getInt("errorcode");
-                com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
+                com.gmt2001.Console.err.println("Überspringe Song, YouTube hat einen Fehler geworfen: " + dataInt);
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else {
-                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
+                com.gmt2001.Console.err.println("YTWebSocketServer: Falsche ['status'] Anfrage gesendet ["+jsonString+"]");
                 return;
             }
         } else if (jsonObject.has("query")) {
@@ -259,7 +259,7 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonObject.getString("query").equals("currentsong")) {
                 EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
             } else {
-                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
+                com.gmt2001.Console.err.println("YTWebSocketServer: Falsche ['query'] Anfrage gesendet ["+jsonString+"]");
                 return;
             }
         } else if (jsonObject.has("dbquery")) {
@@ -293,11 +293,11 @@ public class YTWebSocketServer extends WebSocketServer {
             } else if (jsonObject.getString("command").equals("deletecurrent")) {
                 EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
             } else {
-                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
+                com.gmt2001.Console.err.println("YTWebSocketServer: Falsche ['command'] Anfrage gesendet ["+jsonString+"]");
                 return;
             }
         } else {
-            com.gmt2001.Console.err.println("YTWebSocketServer: Unknown JSON passed ["+jsonString+"]");
+            com.gmt2001.Console.err.println("YTWebSocketServer: Unbekanntes JSON übergeben ["+jsonString+"]");
             return;
         }
     }
@@ -343,7 +343,7 @@ public class YTWebSocketServer extends WebSocketServer {
                 jsonObject.key(dbKey).value(value);
             }
         } catch (NullPointerException ex) {
-            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
+            com.gmt2001.Console.debug.println("NULL von der DB erhalten. DB-Objekt noch nicht angelegt.");
             return;
         }
         jsonObject.endObject();
@@ -356,7 +356,7 @@ public class YTWebSocketServer extends WebSocketServer {
         try {
             PhantomBot.instance().getDataStore().set(table, key, value);
         } catch (NullPointerException ex) {
-            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
+            com.gmt2001.Console.debug.println("NULL von der DB erhalten. DB-Objekt noch nicht angelegt.");
             return;
         }
 

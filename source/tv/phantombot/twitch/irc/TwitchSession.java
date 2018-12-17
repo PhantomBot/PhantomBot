@@ -88,7 +88,7 @@ public class TwitchSession extends MessageQueue {
         try {
             this.twitchWSIRC.send(message);
         } catch (NotYetConnectedException ex) {
-            com.gmt2001.Console.debug.println("Failed to send message to Twitch: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("Fehler beim Senden einer Nachricht an Twitch: " + ex.getMessage());
         }
     }
 
@@ -122,7 +122,7 @@ public class TwitchSession extends MessageQueue {
                 throw new Exception("Error when connecting to Twitch.");
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create a new TwitchWSIRC instance: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Fehler beim Erstellen einer neuen TwitchWSIRC-Instanz: " + ex.getMessage());
         }
         return this;
     }
@@ -150,14 +150,14 @@ public class TwitchSession extends MessageQueue {
                     // If we are connected, allow us the send messages again.
                     this.setAllowSendMessages(reconnected);
                 } catch (URISyntaxException ex) {
-                    com.gmt2001.Console.err.println("Error when reconnecting to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("Fehler beim Neuverbinden mit Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                 }
             }
             // Sleep for 5 seconds.
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("Sleep failed during reconnect [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("Sleep fehlgeschlagen während der Neuverbindung [InterruptedException]: " + ex.getMessage());
             }
         }
     }

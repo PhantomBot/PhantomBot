@@ -67,8 +67,8 @@ public class YTWebSocketSecureServer extends YTWebSocketServer {
 
             this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), tasksAllowed));
         } catch(Exception ex) {
-            com.gmt2001.Console.out.println("YTWebSocketSecureServer Exception: " + ex.getMessage());
-            throw new Exception("Failed to create YTWebSocketSecureServer");
+            com.gmt2001.Console.out.println("YTWebSocketSecureServer Fehler: " + ex.getMessage());
+            throw new Exception("Fehler beim erstellen vom YTWebSocketSecureServer");
         }
     }
 }

@@ -70,14 +70,14 @@ public class Script {
         try {
             load();
             if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.out.println("Reloaded module: init.js");
+                com.gmt2001.Console.out.println("Neugeladenes Modul: init.js");
             } else {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.out.println("Reloaded module: " + path);
+                com.gmt2001.Console.out.println("Neugeladenes Modul: " + path);
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+            if (ex.getMessage().indexOf("Dies könnte ein Caching-Problem sein") != -1) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -87,10 +87,10 @@ public class Script {
             }
 
             if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Modul konnte nicht neu geladen werden: init.js: " + ex.getMessage());
             } else {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
+                com.gmt2001.Console.err.println("Modul konnte nicht neu geladen werden: " + path + ": " + ex.getMessage());
             }
         }
     }
@@ -106,15 +106,15 @@ public class Script {
             load();
             if (silent) {
                 if (file.getPath().endsWith("init.js")) {
-                    com.gmt2001.Console.out.println("Reloaded module: init.js");
+                    com.gmt2001.Console.out.println("Neugeladenes Modul: init.js");
                 } else {
                     String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                    com.gmt2001.Console.out.println("Reloaded module: " + path);
+                    com.gmt2001.Console.out.println("Neugeladenes Modul: " + path);
                 }
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+            if (ex.getMessage().indexOf("Dies könnte ein Caching-Problem sein") != -1) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -124,10 +124,10 @@ public class Script {
             }
 
             if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Modul konnte nicht neu geladen werden: init.js: " + ex.getMessage());
             } else {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
+                com.gmt2001.Console.err.println("Modul konnte nicht neu geladen werden: " + path + ": " + ex.getMessage());
             }
         }
     }

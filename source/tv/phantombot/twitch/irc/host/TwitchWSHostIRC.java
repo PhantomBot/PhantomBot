@@ -96,11 +96,11 @@ public class TwitchWSHostIRC {
         try {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
             if (!twitchWSHostIRCWS.connectWSS()) {
-                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
+                com.gmt2001.Console.err.println("Verbindung mit dem Twitch Data Host Feed ist fehlgeschlagen. Beende PhantomBot.");
                 System.exit(0);
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
+            com.gmt2001.Console.err.println("TwitchWSHostIRC URI fehlgeschlagen. Beende PhantomBot.");
             System.exit(0);
         }
     }
@@ -152,11 +152,11 @@ public class TwitchWSHostIRC {
             if (lastTry + 10000L <= System.currentTimeMillis()) {
                 lastTry = System.currentTimeMillis();
                 try {
-                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed...");
+                    com.gmt2001.Console.out.println("Neuverbinden mit dem Twitch Host Data Feed...");
                     this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
                     reconnected = twitchWSHostIRCWS.connectWSS();
                 } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("Fehler beim Neuverbinden des Twitch Data Host Feed. Beende PhantomBot: " + ex.getMessage());
                     System.exit(0);
                 }
             } else {
@@ -250,7 +250,7 @@ public class TwitchWSHostIRC {
             try {
                 super.send(message);
             } catch (Exception  ex) {
-                com.gmt2001.Console.out.println("Failed to send message: " + ex.getMessage());
+                com.gmt2001.Console.out.println("Fehler beim Senden der Nachricht: " + ex.getMessage());
             }
         }
 
@@ -300,7 +300,7 @@ public class TwitchWSHostIRC {
         @Override
         public void onClose(int code, String reason, boolean remote) {
             if (!badOauth) {
-                com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds");
+                com.gmt2001.Console.out.println("Verbindung zum Twitch Host Data Feed verloren, erneuter Versuch in 10 Sekunden.");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
                 twitchWSHostIRC.reconnect();
             }
@@ -314,7 +314,7 @@ public class TwitchWSHostIRC {
         @Override
         public void onMessage(String message) {
             if (message.startsWith("PING")) {
-                com.gmt2001.Console.debug.println("Got a PING from Twitch Host Data Feed");
+                com.gmt2001.Console.debug.println("PING vom Twitch Host Data Feed erhalten");
                 sentPing = false;
                 lastPing = System.currentTimeMillis();
                 sendPong();
@@ -322,7 +322,7 @@ public class TwitchWSHostIRC {
             }
 
             if (message.startsWith(":tmi.twitch.tv PONG")) {
-                com.gmt2001.Console.debug.println("Got a PONG from Twitch Host Data Feed");
+                com.gmt2001.Console.debug.println("PONG vom Twitch Host Data Feed erhalten");
                 sentPing = false;
                 lastPing = System.currentTimeMillis();
                 return;
@@ -332,7 +332,7 @@ public class TwitchWSHostIRC {
                 // This is to make sure the caster created the oauth with his channel account and not the bot's.
                 if (message.contains("002 " + channelName + " :")) {
                     connected = true;
-                    com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
+                    com.gmt2001.Console.out.println("Verbunden mit Twitch Host Data Feed");
                     lastPing = System.currentTimeMillis();
                     checkPingTime();
 
@@ -340,17 +340,17 @@ public class TwitchWSHostIRC {
                     try {
                         Thread.sleep(20 * 1000);
                     } catch (InterruptedException ex) {
-                        com.gmt2001.Console.debug.println("TwitchWSIRC: Failed to sleep: [InterruptedException] " + ex.getMessage());
+                        com.gmt2001.Console.debug.println("TwitchWSIRC: Fehler beim sleep: [InterruptedException] " + ex.getMessage());
                     }
                     eventBus.postAsync(new TwitchHostsInitializedEvent());
                 } else {
                     connected = false;
                     badOauth = true;
                     com.gmt2001.Console.out.println("");
-                    com.gmt2001.Console.out.println("Wrong API OAuth detected.");
-                    com.gmt2001.Console.out.println("The API OAuth belongs to another account.");
-                    com.gmt2001.Console.out.println("Please obtain new API OAuth at with your channel account: https://phantombot.tv/oauth");
-                    com.gmt2001.Console.out.println("Now disabling host module.");
+                    com.gmt2001.Console.out.println("Falscher API OAuth erkannt.");
+                    com.gmt2001.Console.out.println("Der API OAuth gehört zu einem anderen Konto.");
+                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Channel-Account: https://phantombot.tv/oauth");
+                    com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
                     com.gmt2001.Console.out.println("");
                     PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                     close();
@@ -360,9 +360,9 @@ public class TwitchWSHostIRC {
 
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && badOauth == false) {
                 com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data.");
-                com.gmt2001.Console.out.println("Please obtain new API OAuth at: https://phantombot.tv/oauth");
-                com.gmt2001.Console.out.println("Now disabling host module.");
+                com.gmt2001.Console.out.println("API OAuth darf keine Hostdaten sammeln.");
+                com.gmt2001.Console.out.println("Bitte beziehen Sie einen neuen API OAuth unter: https://phantombot.tv/oauth");
+                com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
                 com.gmt2001.Console.out.println("");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                 badOauth = true;
@@ -430,13 +430,13 @@ public class TwitchWSHostIRC {
                     Thread.currentThread().setName("tv.phantombot.twitchwsirc.TwitchWSHostIRC::checkPingTime");
 
                     if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
-                        com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
+                        com.gmt2001.Console.debug.println("Sende einen PING an Twitch (Hostdaten) zur Überprüfung der Verbindung");
                         sentPing = true;
                         send("PING :tmi.twitch.tv");
                     }
 
                     if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
-                        com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
+                        com.gmt2001.Console.debug.println("PING nicht von Twitch erkannt (Hostdaten) - Erzwingen der Neuverbindung (Timeout beträgt " + pingWaitTime + "ms)");
                         close();
                     }
                 }
