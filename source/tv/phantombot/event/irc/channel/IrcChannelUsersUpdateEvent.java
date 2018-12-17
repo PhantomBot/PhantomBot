@@ -16,54 +16,42 @@
  */
 package tv.phantombot.event.irc.channel;
 
+import java.util.List;
+
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
-    private final String[] joins;
-    private final String[] parts;
+    private final List<String> users;
 
     /*
      * Class constructor.
      *
      * @param {TwitchSession}  session
-     * @param {String[]} joins
-     * @param {String[]} parts
+     * @param {List} users
      */
-    public IrcChannelUsersUpdateEvent(TwitchSession session, String[] joins, String[] parts) {
+    public IrcChannelUsersUpdateEvent(TwitchSession session, List<String> users) {
         super(session);
 
-        this.joins = joins;
-        this.parts = parts;
+        this.users = users;
     }
 
     /*
      * Class constructor.
      *
-     * @param {String[]} joins
-     * @param {String[]} parts
+     * @param {List} users
      */
-    public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
+    public IrcChannelUsersUpdateEvent(List<String> users) {
         super(null);
 
-        this.joins = joins;
-        this.parts = parts;
+        this.users = users;
     }
 
     /*
-     * Method that returns the current array of users who joined the channel in the last 10 minutes.
+     * Returns the list of all users.
      *
-     * @return {String[]} joins
+     * @return {List} users
      */
-    public String[] getJoins() {
-        return this.joins;
-    }
-
-    /*
-     * Method that returns the current array of users who left the channel in the last 10 minutes.
-     *
-     * @return {String[]} parts
-     */
-    public String[] getParts() {
-        return this.parts;
+    public List<String> getUsers() {
+        return this.users;
     }
 }
