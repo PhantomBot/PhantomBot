@@ -110,10 +110,6 @@
             if (panelMatch(module, './handlers/subscribeHandler.js')) {
                 handlePanel('./handlers/subscribeHandler.js', '#_twitchSubPanel', moduleEnabled);
             }
-            if (panelMatch(module, './handlers/gameWispHandler.js')) {
-                handlePanel('./handlers/gameWispHandler.js', '#_gwSubPanel', moduleEnabled);
-                handlePanel('./handlers/gameWispHandler.js', '#_gwTierPanel', moduleEnabled);
-            }
             if (panelMatch(module, './systems/noticeSystem.js')) {
                 handlePanel('./systems/noticeSystem.js', '#_noticeConfigPanel', moduleEnabled);
                 handlePanel('./systems/noticeSystem.js', '#_noticesPanel', moduleEnabled);
@@ -218,9 +214,6 @@
             }
             if (panelMatch(module, './discord/handlers/streamHandler.js')) {
                 handlePanel('./discord/handlers/streamHandler.js', '#_discord_streamHandler', moduleEnabled);
-            }
-            if (panelMatch(module, './discord/handlers/gamewispHandler.js')) {
-                handlePanel('./discord/handlers/gamewispHandler.js', '#_discord_gameWispHandler', moduleEnabled);
             }
             if (panelMatch(module, './discord/handlers/keywordHandler.js')) {
                 handlePanel('./discord/handlers/keywordHandler.js', '#_discord_customkeywords', moduleEnabled);

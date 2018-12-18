@@ -833,34 +833,6 @@
         });
 
         /*
-         * @event gameWispChangeEvent
-         */
-        $api.on($script, 'gameWispChange', function(event) {
-            callHook('gameWispChange', event, false);
-        });
-
-        /*
-         * @event gameWispBenefitsEvent
-         */
-        $api.on($script, 'gameWispBenefits', function(event) {
-            callHook('gameWispBenefits', event, false);
-        });
-
-        /*
-         * @event gameWispSubscribeEvent
-         */
-        $api.on($script, 'gameWispSubscribe', function(event) {
-            callHook('gameWispSubscribe', event, false);
-        });
-
-        /*
-         * @event gameWispAnniversaryEvent
-         */
-        $api.on($script, 'gameWispAnniversary', function(event) {
-            callHook('gameWispAnniversary', event, false);
-        });
-
-        /*
          * @event twitterEvent
          */
         $api.on($script, 'twitter', function(event) {

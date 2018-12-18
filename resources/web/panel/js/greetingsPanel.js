@@ -240,33 +240,6 @@
                 }
             }
 
-            if (panelCheckQuery(msgObject, 'greetings_gamewisp')) {
-                for (idx in msgObject['results']) {
-                    key = msgObject['results'][idx]['key'];
-                    value = msgObject['results'][idx]['value'];
-
-                    if (panelMatch(key, 'subscriberShowMessages')) {
-                        gameWhispToggle = value;
-                        $('#gameWispGreetings').html(settingIcon[value]);
-                    }
-                    if (panelMatch(key, 'subscribeMessage')) {
-                        $('#gwSubGreetingInput').val(value);
-                    }
-                    if (panelMatch(key, 'reSubscribeMessage')) {
-                        $('#gwResubGreetingInput').val(value);
-                    }
-                    if (panelMatch(key, 'tierUpMessage')) {
-                        $('#gwTierupGreetingInput').val(value);
-                    }
-                    if (panelMatch(key, 'subscribeReward')) {
-                        $('#gwSubRewardInput').val(value);
-                    }
-                    if (panelMatch(key, 'reSubscribeReward')) {
-                        $('#gwResubRewardInput').val(value);
-                    }
-                }
-            }
-
             if (panelCheckQuery(msgObject, 'greetings_bits')) {
                 for (idx in msgObject['results']) {
                     key = msgObject['results'][idx]['key'];
@@ -284,39 +257,6 @@
                     }
                 }
             }
-
-            if (panelCheckQuery(msgObject, 'greetings_gamewispTiers')) {
-                var tier = "",
-                    html = "",
-                    songRequestHtml = "<table>",
-                    bonusPointsHtml = "<table>",
-                    subBonusPointsHtml = "<table>";
-
-                for (idx in msgObject['results']) {
-                    key = msgObject['results'][idx]['key'];
-                    value = msgObject['results'][idx]['value'];
-                    tier = key[key.indexOf('_') + 1];
-                    html = '<tr class="textList">' +
-                           '    <td>Tier ' + tier + '</td>' +
-                           '    <td style="vertical-align: middle">' +
-                           '        <input type="number" class="input-control" min="0" id="inline_' + key + '"' +
-                           '               placeholder="' + value + '" value="' + value + '"' +
-                           '               style="width: 8em" />' +
-                           '        <button type="button" class="btn btn-default btn-xs"' +
-                           '                onclick="$.updateGWTierData(\'' + key + '\')"><i class="fa fa-hdd-o" />' +
-                           '        </button>' +
-                           '    </td>' +
-                           '</tr>';
-                    if (key.startsWith('songrequest_') === true) { songRequestHtml += html; }
-                    if (key.startsWith('bonuspoints_') === true) { bonusPointsHtml += html; }
-                    if (key.startsWith('subbonuspoints_') === true) { subBonusPointsHtml += html; }
-                }
-
-                $('#gameWispSongRequests').html(songRequestHtml);
-                $('#gameWispBonusPoints').html(bonusPointsHtml);
-                $('#gameWispSubBonusPoints').html(subBonusPointsHtml);
-                handleInputFocus();
-            }
         }
     }
 
@@ -331,24 +271,9 @@
         sendDBQuery('greetings_followDelay', 'settings', 'followDelay');
         sendDBKeys('greetings_donation', 'donations');
         sendDBKeys('greetings_subscribers', 'subscribeHandler');
-        sendDBKeys('greetings_gamewisp', 'gameWispSubHandler');
-        sendDBKeys('greetings_gamewispTiers', 'gameWispTiers');
         sendDBKeys('greetings_bits', 'bitsSettings');
         sendDBKeys('greetings_tipeeestream', 'tipeeeStreamHandler');
         sendDBKeys('greetings_streamelements', 'streamElementsHandler');
-    }
-
-    /**
-     * @function updateGWTierData
-     * @param {String} key
-     */
-    function updateGWTierData(key) {
-        var value = $('#inline_' + key).val();
-
-        if (value.length > 0) {
-            sendDBUpdate('greetings_updateTier', 'gameWispTiers', key, value);
-            setTimeout(function() { sendCommand('gamewisppanelupdate'); doQuery(); }, TIMEOUT_WAIT_TIME);
-        }
     }
 
     /**
@@ -493,15 +418,6 @@
             }
             setTimeout(function() { sendCommand('reloadbits'); }, TIMEOUT_WAIT_TIME);
         }
-        if (panelMatch(table, 'gameWispSubHandler')) {
-            $('#gameWispGreetings').html(spinIcon);
-            if (gameWhispToggle == "true") {
-                sendDBUpdate('greetings_greeting', 'gameWispSubHandler', 'subscriberShowMessages', 'false');
-            } else {
-                sendDBUpdate('greetings_greeting', 'gameWispSubHandler', 'subscriberShowMessages', 'true');
-            }
-            setTimeout(function() { sendCommand('gamewisppanelupdate'); }, TIMEOUT_WAIT_TIME);
-        }
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
     }
 
@@ -555,9 +471,6 @@
             }
             if (panelMatch(table, 'streamElementsHandler')) {
                 sendCommand('streamelementsreload');
-            }
-            if (panelMatch(table, 'gameWispSubHandler')) {
-                sendCommand('gamewisppanelupdate');
             }
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         }
