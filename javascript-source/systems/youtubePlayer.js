@@ -373,9 +373,6 @@
                             $.log.error("importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
                             failCount++;
                         }
-                        if (importCount == $.youtube.max() && !$.youtube.checkapi()) {
-                            break;
-                        }
                     }
                     $.inidb.set(playlistDbPrefix + listName, 'lastkey', importCount);
 
