@@ -44,9 +44,7 @@ import com.illusionaryone.SimpleScramble;
 public class YouTubeAPIv3 {
 
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
-    private final SimpleScramble simpleScramble = new SimpleScramble();
-    private String scramblekey = "ZARRKwMxPSgWRQ5rKQdHQVhAFUAXH14BQCdAa2UYfB9IIA8OKgET";
-    private String apikey = simpleScramble.simpleFixedUnscramble(scramblekey);
+    private String apikey = "";
 
     private enum request_type {
 
@@ -127,21 +125,6 @@ public class YouTubeAPIv3 {
                 i = new BufferedInputStream(c.getErrorStream());
             }
 
-            /*
-             * if (i != null) { available = i.available();
-             *
-             * while (available == 0 && (new Date().getTime() -
-             * postconnect.getTime()) < 450) { Thread.sleep(500); available =
-             * i.available(); }
-             *
-             * if (available == 0) { i = new
-             * BufferedInputStream(c.getErrorStream());
-             *
-             * if (i != null) { available = i.available(); } } }
-             *
-             * if (available == 0) { content = "{}"; } else { content =
-             * IOUtils.toString(i, c.getContentEncoding()); }
-             */
             content = IOUtils.toString(i, c.getContentEncoding());
             rawcontent = content;
             prejson = new Date();
@@ -409,7 +392,6 @@ public class YouTubeAPIv3 {
                                };
                     }
 
-                    //String d = cd.getString("duration").substring(2);
                     int h, m, s;
 
                     String hours = d.toStandardHours().toString().substring(2);
@@ -421,19 +403,6 @@ public class YouTubeAPIv3 {
                     String seconds = d.toStandardSeconds().toString().substring(2);
                     s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
 
-                    /*
-                     * if (d.contains("H")) { h =
-                     * Integer.parseInt(d.substring(0, d.indexOf("H")));
-                     *
-                     * d = d.substring(0, d.indexOf("H")); }
-                     *
-                     * if (d.contains("M")) { m =
-                     * Integer.parseInt(d.substring(0, d.indexOf("M")));
-                     *
-                     * d = d.substring(0, d.indexOf("M")); }
-                     *
-                     * s = Integer.parseInt(d.substring(0, d.indexOf("S")));
-                     */
                     com.gmt2001.Console.debug.println("YouTubeAPIv3.GetVideoLength Success");
 
                     return new int[] {
@@ -483,13 +452,5 @@ public class YouTubeAPIv3 {
             }
         }
         return new int[] { licenseRetval, embedRetval };
-    }
-
-    public int max() {
-        return Integer.parseInt(simpleScramble.simpleFixedUnscramble("FHgb"));
-    }
-
-    public boolean checkapi() {
-        return !apikey.equals(simpleScramble.simpleFixedUnscramble(scramblekey));
     }
 }

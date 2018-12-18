@@ -187,7 +187,9 @@ public class YTWebSocketServer extends WebSocketServer {
             sessionData.setPlayer(true);
             authResult(authenticated, webSocket);
             if (authenticated) {
-                EventBus.instance().postAsync(new YTPlayerConnectEvent());
+                if (!checkYouTubeKey(webSocket)) {
+                    EventBus.instance().postAsync(new YTPlayerConnectEvent());
+                }
             }
             return;
         }
@@ -431,6 +433,17 @@ public class YTWebSocketServer extends WebSocketServer {
 
     public void setClientConnected(boolean clientConnected) {
         this.clientConnected = clientConnected;
+    }
+
+    private boolean checkYouTubeKey(WebSocket webSocket) {
+        JSONStringer jsonObject = new JSONStringer();
+        webSocket.send(jsonObject.object().key("ytkeycheck").value(!PhantomBot.instance().isYouTubeKeyEmpty()).endObject().toString());
+
+        if (PhantomBot.instance().isYouTubeKeyEmpty()) {
+            com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions on the " +
+                                            "PhantomBot Community Forum at: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
+        }
+        return PhantomBot.instance().isYouTubeKeyEmpty();
     }
 
     // Class for storing Session data.
