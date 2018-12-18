@@ -356,6 +356,12 @@ public final class PhantomBot implements Listener {
         }
     }
 
+    /* Check to see if YouTube Key is configured.
+     */
+    public boolean isYouTubeKeyEmpty() {
+        return youtubeKey.isEmpty();
+    }
+
     /*
      * Constructor for PhantomBot object.
      *
