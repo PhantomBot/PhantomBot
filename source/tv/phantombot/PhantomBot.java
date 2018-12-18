@@ -28,11 +28,9 @@ import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStoreConverter;
 
-import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
-import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.DataRenderServiceAPIv1;
@@ -179,10 +177,6 @@ public final class PhantomBot implements Listener {
     private String streamElementsJWT = "";
     private String streamElementsID = "";
     private int streamElementsLimit = 5;
-
-    /* GameWisp Information */
-    private String gameWispOAuth;
-    private String gameWispRefresh;
 
     /* Notice Timer and Handling */
     private NoticeTimer noticeTimer;
@@ -424,10 +418,6 @@ public final class PhantomBot implements Listener {
 
         /* Set the Discord variables */
         this.discordToken = this.pbProperties.getProperty("discord_token", "");
-
-        /* Set the GameWisp variables */
-        this.gameWispOAuth = this.pbProperties.getProperty("gamewispauth", "");
-        this.gameWispRefresh = this.pbProperties.getProperty("gamewisprefresh", "");
 
         /* Set the TwitchAlerts variables */
         this.twitchAlertsKey = this.pbProperties.getProperty("twitchalertskey", "");
@@ -877,17 +867,6 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        /* Enable GameWisp if the oAuth is set */
-        if (!gameWispOAuth.isEmpty() && checkModuleEnabled("./handlers/gameWispHandler.js")) {
-            /* Set the oAuths */
-            GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
-            GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
-            SingularityAPI.instance().setAccessToken(gameWispOAuth);
-            SingularityAPI.instance().StartService();
-            /* get a fresh token */
-            doRefreshGameWispToken();
-        }
-
         /* Connect to Discord if the data is present. */
         if (!discordToken.isEmpty()) {
             DiscordAPI.instance().connect(discordToken);
@@ -1062,7 +1041,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
-        Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
@@ -1640,34 +1618,6 @@ public final class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    public void updateGameWispTokens(String[] newTokens) {
-        Properties outputProperties = new Properties() {
-            @Override
-            public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<>(super.keySet()));
-            }
-        };
-
-        gameWispOAuth = newTokens[0];
-        gameWispRefresh = newTokens[1];
-
-        pbProperties.setProperty("gamewispauth", newTokens[0]);
-        pbProperties.setProperty("gamewisprefresh", newTokens[1]);
-
-        try {
-            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                outputProperties.putAll(pbProperties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-            }
-            print("GameWisp Token has been refreshed.");
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! Failed to update GameWisp Refresh Tokens into ./config/botlogin.txt! Must manually add!");
-            com.gmt2001.Console.err.println("!!!! CRITICAL !!!! gamewispauth = " + newTokens[0] + " gamewisprefresh = " + newTokens[1]);
-        }
-
-        SingularityAPI.instance().setAccessToken(gameWispOAuth);
-    }
-
     /* gen a oauth */
     private static String generateWebAuth() {
         return generateRandomString(30);
@@ -1685,33 +1635,6 @@ public final class PhantomBot implements Listener {
             randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
         }
         return new String(randomBuffer);
-    }
-
-    /*
-     * doRefreshGameWispToken
-     *
-     */
-    public void doRefreshGameWispToken() {
-
-        long curTime = System.currentTimeMillis() / 1000L;
-
-        if (!dataStore.exists("settings", "gameWispRefreshTime")) {
-            dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
-        }
-
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.PhantomBot::doRefreshGameWispToken");
-
-            long curTime1 = System.currentTimeMillis() / 1000L;
-            String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
-            long lastRun = Long.parseLong(lastRunStr);
-            if ((curTime1 - lastRun) > (10 * 24 * 60 * 60)) {
-                // 10 days, token expires every 35.
-                dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime1));
-                updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
-            }
-        }, 0, 1, TimeUnit.DAYS);
     }
 
     /*
