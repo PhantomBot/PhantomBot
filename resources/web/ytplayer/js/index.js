@@ -33,7 +33,7 @@ $(function() {
     /*
      * @function Loads the player page.
      *
-     * @param {boolean} hasPlaylistData - If a playlis is loaded.
+     * @param {boolean} hasPlaylistData - If a playlist is loaded.
      */
     const openPlayer = hasPlaylistData => {
         $('.loader').fadeOut(6e2, () => {
@@ -42,7 +42,7 @@ $(function() {
         // Show the page.
         $('#main').fadeIn(5e2);
 
-        if (!hasPlaylistData) {
+        if (!hasPlaylistData && player.hasAPIKey()) {
             toastr.error('Failed to load a playlist with songs.');
 
             // Create a fake progress slider.
