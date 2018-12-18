@@ -677,6 +677,24 @@ public class ConsoleEventHandler implements Listener {
             }
         }
 
+        /**
+         * @consolecommand ytsetup - Sets up YouTube API Key
+         */
+        if (message.equalsIgnoreCase("ytsetup")) {
+            try {
+                System.out.println("");
+                System.out.println("PhantomBot YouTube API Key Setup");
+                System.out.println("");
+                System.out.println("Please enter the YouTube API key that you have acquired: ");
+                String youtubeKey = System.console().readLine().trim();
+                PhantomBot.instance().getProperties().setProperty("youtubekey", youtubeKey);
+                System.out.println("PhantomBot YouTube API key setup done, PhantomBot will exit.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
         // Check to see if any settings have been changed.
         if (changed) {
             Properties outputProperties = new Properties() {
