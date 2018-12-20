@@ -877,11 +877,7 @@
                     ++currentRequestCount;
                 }
             }
-            if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
-                return (currentRequestCount >= songRequestsMaxParallel + $.getTierData(sender, 'songrequests'));
-            } else {
-                return (currentRequestCount >= songRequestsMaxParallel);
-            }
+            return (currentRequestCount >= songRequestsMaxParallel);
         };
 
         /**
