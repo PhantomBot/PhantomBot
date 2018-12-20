@@ -66,7 +66,7 @@
                 subAction = subAction.replace(action, '').toLowerCase();
                 $.inidb.del('wordCounter', subAction);
                 $.say(subAction + $.lang.get('wordcounter.removed'));
-                $.log.event(sender + ' removed "' + subAction + '" to the word counter list');
+                $.log.event(sender + ' removed "' + subAction + '" from the word counter list');
             }
         }
 
