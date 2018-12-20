@@ -188,7 +188,7 @@
 
             // If the array is empty, return 0 seconds.
             if (timeStringParts.length === 0) {
-                return ('0 ' + $.lang.get('common.time.seconds'));
+                return ($.lang.get('common.time.expired'));
             }
 
             // Join the array to make a string.
