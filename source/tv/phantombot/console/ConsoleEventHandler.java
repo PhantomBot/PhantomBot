@@ -114,6 +114,21 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
+         * @consolecommand checkytquota - This command checks the quota points used by YouTube.
+         */
+        if (message.equalsIgnoreCase("checkytquota")) {
+            String ytQuotaDate = dataStore.GetString("youtubePlayer", "", "quotaDate");
+            String ytQuotaPoints = dataStore.GetString("youtubePlayer", "", "quotaPoints");
+
+            if (ytQuotaDate == null || ytQuotaPoints == null) {
+                com.gmt2001.Console.out.println("No YouTube Quota Data Found.");
+            } else {
+                com.gmt2001.Console.out.println("YouTube Quota Date (US/Pacific): " + ytQuotaDate + " Points Used: " + ytQuotaPoints);
+            }
+            return;
+        }
+            
+        /**
          * @consolecommand exportpoints - This command exports points and time to a CSV file.
          */
         if (message.equalsIgnoreCase("exportpoints")) {
