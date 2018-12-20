@@ -356,7 +356,7 @@ $.lang.register('permissions.grouppoints.showgroup.online', '$1 gains $2 $3 onli
 $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Set permission $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set permission $1 to gain $2 $3 offline.');
-$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch or GameWisp.');
+$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch.'); 
 $.lang.register('timesystem.uptime.offline', '$1 is currently offline.');
 $.lang.register('timesystem.uptime', '$1 has been live for $2!');
 $.lang.register('timesystem.add.error.negative', 'You can not give negative time.');
