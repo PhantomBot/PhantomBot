@@ -413,3 +413,4 @@ $.lang.register('common.time.minutes', 'minutes');
 $.lang.register('common.time.second', 'second');
 $.lang.register('common.time.seconds', 'seconds');
 $.lang.register('common.time.and', ', and ');
+$.lang.register('common.time.expired', 'looks like that countdown has expired');
