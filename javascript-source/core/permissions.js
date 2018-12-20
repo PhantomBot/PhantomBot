@@ -1051,4 +1051,5 @@
     $.addModeratorToCache = addModeratorToCache;
     $.removeModeratorFromCache = removeModeratorFromCache;
     $.updateUsersObject = updateUsersObject;
+    $.restoreSubscriberStatus = restoreSubscriberStatus;
 })();
