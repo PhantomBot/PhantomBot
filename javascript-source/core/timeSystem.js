@@ -147,7 +147,7 @@
      * @param {boolean} [hoursOnly]
      * @returns {string}
      */
-    function getTimeString(time, hoursOnly) {
+    function getTimeString(time, countUp, hoursOnly) {
         var floor = Math.floor,
             months = (time / 2628000);
             days = ((months % 1) * 30.42),
@@ -188,7 +188,11 @@
 
             // If the array is empty, return 0 seconds.
             if (timeStringParts.length === 0) {
-                return ($.lang.get('common.time.expired'));
+                if (countUp) {
+                    return ($.lang.get('common.time.nostart'));
+                } else {
+                    return ($.lang.get('common.time.expired'));
+                }
             }
 
             // Join the array to make a string.
