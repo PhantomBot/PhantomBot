@@ -292,7 +292,7 @@
         }, newTime);
 
         if (time >= 60) {
-            newTime = $.getTimeString((time * 6e4) / 1000, true);
+            newTime = $.getTimeString((time * 6e4) / 1000, true, true);
         } else {
             newTime = $.getTimeStringMinutes((time * 6e4) / 1000);
         }
