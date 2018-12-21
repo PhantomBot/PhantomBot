@@ -105,7 +105,7 @@
                 i;
 
             for (i in temp) {
-                top.push((parseInt(i) + 1) + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getTimeString(temp[i].value, true, true));
+                top.push((parseInt(i) + 1) + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getTimeString(temp[i].value, true));
             }
 
             $.say($.lang.get('top5.default', amountTime, 'time', top.join(', ')));
