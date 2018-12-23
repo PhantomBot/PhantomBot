@@ -90,7 +90,17 @@ public class Permissions implements Listener {
     }
     
     /**
-     * Method that adds a user to the map.
+     * Puts a user in the map.
+     * @param username
+     * @param user 
+     */
+    private void putUser(String username, User user) {
+        // According to docs, put overwrites the value.
+        users.put(username.toLowerCase(), user);
+    }
+    
+    /**
+     * Method that adds a user to the map and creates it.
      * 
      * @param username 
      */
@@ -99,7 +109,7 @@ public class Permissions implements Listener {
             // Create the user object.
             User user = new User(username);
             // Add it to the object.
-            users.put(user.getUsername(), user);
+            putUser(username, user);
         }
     }
     
