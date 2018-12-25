@@ -578,7 +578,7 @@ $(function() {
             //Update the votecount.
             let voteCount = $('#vote-count').val();
             if (parseInt(voteCount) > 0) {
-                player.dbUpdate('vote_count', 'ytSettings', 'VoteCount', String(voteCount));
+                player.dbUpdate('vote_count', 'ytSettings', 'voteCount', String(voteCount));
             }
         });
     });
