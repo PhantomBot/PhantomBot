@@ -34,7 +34,7 @@
         pointsBonusAmount = 0,
         pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
         pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
-        pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
+        pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) du hast momentan (pointsstring) und du warst im Chat für (time).'),
         userCache = {};
 
     /**
@@ -236,7 +236,7 @@
             }
         }
         $.inidb.setAutoCommit(true);
-        $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+        $.log.file('pointSystem', 'Führe ' + pointNameMultiple + ' Auszahlungen aus. Nutzer: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
         lastPayout = now;
     };
 

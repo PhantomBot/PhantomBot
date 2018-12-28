@@ -45,12 +45,12 @@
      */
     $.bind('streamElementsDonationInitialized', function(event) {
         if (!$.isDirectory(dir)) {
-            $.consoleDebug('>> Creating the StreamElements Handler Directory: ' + dir);
+            $.consoleDebug('>> Erstelle den StreamElements Handler Ordner: ' + dir);
             $.mkDir(dir);
         }
 
-        $.consoleLn('>> Enabling StreamElements donation announcements');
-        $.log.event('StreamElements donation announcements enabled');
+        $.consoleLn('>> Aktiviere StreamElements Spenden Ankündigung');
+        $.log.event('StreamElements Spenden Ankündigung aktiviert');
         announce = true;
     });
 

@@ -22,9 +22,9 @@
  */
 (function() {
 
-    var subMessage = $.getSetIniDbString('gameWispSubHandler', 'subscribeMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
-        reSubMessage = $.getSetIniDbString('gameWispSubHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
-        tierUpMessage = $.getSetIniDbString('gameWispSubHandler', 'tierUpMessage', '(name) upgraded to tier (tier) on GameWisp!'),
+    var subMessage = $.getSetIniDbString('gameWispSubHandler', 'subscribeMessage', '(name) hat gerade über GameWisp auf dem Level (tier) abonniert!'),
+        reSubMessage = $.getSetIniDbString('gameWispSubHandler', 'reSubscribeMessage', '(name) hat gerade für (months) Monate hintereinander über GameWisp abonniert!'),
+        tierUpMessage = $.getSetIniDbString('gameWispSubHandler', 'tierUpMessage', '(name) hat sich auf das Level (tier) bei GameWisp hochgestufft!'),
         subShowMessages = $.getSetIniDbBoolean('gameWispSubHandler', 'subscriberShowMessages', true),
         subReward = $.getSetIniDbNumber('gameWispSubHandler', 'subscribeReward', 0),
         reSubReward = $.getSetIniDbNumber('gameWispSubHandler', 'reSubscribeReward', 0);
@@ -205,7 +205,7 @@
         if (jsonData['error_description'] !== undefined) {
             if (jsonData['error_description'].equals('The resource owner or authorization server denied the request.')) {
                 gameWispAuthenticated = false;
-                $.log.error('GameWisp: Access denied, please check your access tokens, will stop checking subscriber status.');
+                $.log.error('GameWisp: Zugang verweigert, bitte überprüfe deinen Zugangschlüssel, stoppe die Abonnenten-Status-Überprüfung.');
                 return;
             }
         }
@@ -238,15 +238,15 @@
         }
 
         if (jsonData['data'][0]['status'].equals('inactive')) {
-            $.consoleDebug('checkGameWispSub(' + username + '): inactive account');
+            $.consoleDebug('checkGameWispSub(' + username + '): inaktiver Account');
             $.delGWSubUsersList(username);
             $.restoreSubscriberStatus(username, false);
         } else {
-            $.consoleDebug('checkGameWispSub(' + username + '): adding to sub users list');
+            $.consoleDebug('checkGameWispSub(' + username + '): hinzufügen zur Abonnenten Liste!');
             $.addGWSubUsersList(username, parseInt(jsonData['data'][0]['tier']['data']['level']));
-            $.consoleDebug('checkGameWispSub(' + username + '): calling DB update; mods are ignored');
+            $.consoleDebug('checkGameWispSub(' + username + '): rufe DB Update ab; Mods werden ignoriert');
             $.restoreSubscriberStatus(username, false);
-            $.consoleDebug('checkGameWispSub(' + username + '): handler complete');
+            $.consoleDebug('checkGameWispSub(' + username + '): Handler fertiggestellt');
         }
     }
 

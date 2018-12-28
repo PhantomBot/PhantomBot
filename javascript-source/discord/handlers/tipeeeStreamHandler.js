@@ -20,7 +20,7 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'tipeeestreamToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'tipeeestreamMessage', 'Vielen Dank (name) für deine Spende von (formattedamount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'tipeeestreamChannel', ''),
         announce = false;
 
@@ -30,7 +30,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/tipeeeStreamHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'tipeeestreamToggle', false);
-            message = $.getIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'tipeeestreamMessage', 'Vielen Dank (name) für deine Spende von (formattedamount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'tipeeestreamChannel', '');
         }
     });

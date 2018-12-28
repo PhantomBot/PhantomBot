@@ -47,7 +47,7 @@
             }
             fis.close();
         } catch (e) {
-            $.log.error('Failed to open \'' + path + '\': ' + e);
+            $.log.error('Fehler beim öffnen von \'' + path + '\': ' + e);
         }
         return lines;
     }
@@ -99,7 +99,7 @@
             }
             fos.close();
         } catch (e) {
-            $.log.error('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
         }
     }
 
@@ -150,7 +150,7 @@
             ps.println(line);
             fos.flush();
         } catch (e) {
-            $.log.error('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
         }
     }
 
@@ -164,7 +164,7 @@
             var fos = new JFileOutputStream(path, true);
             fos.close();
         } catch (e) {
-            $.log.error('Failed to touch \'' + path + '\': ' + e);
+            $.log.error('Fehler beim erstellen von \'' + path + '\': ' + e);
         }
     }
 
@@ -183,7 +183,7 @@
                 f.deleteOnExit();
             }
         } catch (e) {
-            $.log.error('Failed to delete \'' + path + '\': ' + e);
+            $.log.error('Fehler beim löschen von \'' + path + '\': ' + e);
         }
     }
 
@@ -223,7 +223,7 @@
                 return ret;
             }
         } catch (e) {
-            $.log.error('Failed to search in \'' + directory + '\': ' + e);
+            $.log.error('Fehler beim suchen in \'' + directory + '\': ' + e);
         }
         return [];
     }

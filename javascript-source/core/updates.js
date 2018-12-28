@@ -36,7 +36,7 @@
     /** New setup */
     if ($.changed == true && $.changed != null && $.changed != undefined && !$.inidb.exists('updates', 'installedNewBot') && $.inidb.get('updates', 'installedNewBot') != 'true') {
         $.consoleLn('');
-        $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
+        $.consoleLn('Initialisiere PhantomBot Version ' + $.version + ' das erste mal...');
 
         modules = [
             './commands/topCommand.js',
@@ -101,20 +101,20 @@
             './discord/systems/pointSystem.js'
         ];
 
-        $.consoleLn('Disabling default modules...');
+        $.consoleLn('Deaktiviere standart Module...');
         for (i in modules) {
             $.inidb.set('modules', modules[i], 'false');
         }
 
-        $.consoleLn('Adding default custom commands...');
-        $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
+        $.consoleLn('Füge standart benutzerdefinierte Befehle hinzu...');
+        $.inidb.set('command', 'uptime', '(pointtouser) (channelname) war schon für (uptime) online.');
         $.inidb.set('command', 'followage', '(followage)');
-        $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+        $.inidb.set('command', 'playtime', '(pointtouser) (channelname) spielt (game) schon für (playtime)');
         $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
         $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
-        $.consoleLn('Installing old updates...');
+        $.consoleLn('Installiere alte Updates...');
         versions = ['installedv2', 'installedv2.0.5', 'installedv2.0.6', 'installedv2.0.7', 'installedv2.0.7.2',
             'installedv2.0.8', 'installedv2.0.9', 'installedv2.1.0', 'installedv2.1.1', 'installedv2.2.1', 'installedv2.3s',
             'installedv2.3.3ss', 'installedv2.3.5ss', 'installedv2.3.5.1', 'installedv2.3.5.2', 'installedv2.3.5.3', 'installedv2.3.6',
@@ -130,13 +130,13 @@
         versions = "";
         $.changed = false;
         $.inidb.set('updates', 'installedNewBot', 'true');
-        $.consoleLn('Initializing complete!');
+        $.consoleLn('Initialisierung fertiggestellt!');
         $.consoleLn('');
     }
 
     /** Version 2.0 updates */
     if (!$.inidb.exists('updates', 'installedv2') || $.inidb.get('updates', 'installedv2') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0 Updates...');
         var tableNamesList = $.inidb.GetFileList(),
             commandsBackup,
             timeBackup,
@@ -168,37 +168,37 @@
             ];
 
         if ($.inidb.FileExists('points') || $.inidb.FileExists('command') || $.inidb.FileExists('time')) {
-            $.consoleLn('Backing up commands...');
+            $.consoleLn('Sichere Befehle...');
             commandsBackup = getTableContents('command');
 
-            $.consoleLn('Backing up times...');
+            $.consoleLn('Sichere Zeiten...');
             timeBackup = getTableContents('time');
 
-            $.consoleLn('Backing up points...');
+            $.consoleLn('Sichere Punkte...');
             pointsBackup = getTableContents('points');
 
-            $.consoleLn('Backup completed.');
-            $.consoleLn('Deleting old files...');
+            $.consoleLn('Sicherung fertiggestellt.');
+            $.consoleLn('Entferne alte Dateien...');
             for (i in tableNamesList) {
                 $.inidb.RemoveFile(tableNamesList[i]);
             }
 
-            $.consoleLn('Restoring commands...');
+            $.consoleLn('Stelle Befehle wieder her...');
             restoreTableContents('command', commandsBackup);
 
-            $.consoleLn('Restoring times...');
+            $.consoleLn('Stelle Zeiten wieder her...');
             restoreTableContents('time', timeBackup);
 
-            $.consoleLn('Restoring points...');
+            $.consoleLn('Stelle Punkte wieder her...');
             restoreTableContents('points', pointsBackup);
         }
 
-        $.consoleLn('Disabling default modules...');
+        $.consoleLn('Deaktiviere standart Module...');
         for (i in defaultDisabledModules) {
             $.inidb.set('modules', defaultDisabledModules[i], 'false');
         }
 
-        $.consoleLn('PhantomBot v2.0 updates completed!');
+        $.consoleLn('PhantomBot v2.0 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2', 'true');
     }
 
@@ -212,42 +212,42 @@
             './commands/highlightCommand.js'
         ]; //ADD NEW MODULES IN 2.0.5 TO BE DISABLED PLEASE.
 
-        $.consoleLn('Starting PhantomBot version 2.0.5 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.5 Updates...');
 
-        $.consoleLn('Disabling new default modules...');
+        $.consoleLn('Deaktiviere neue standart Module...');
         for (i in newDefaultDisabledModules) {
             $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
 
-        $.consoleLn('Removing commandCooldown table...');
+        $.consoleLn('Entferne commandCooldown Tabelle...');
         $.inidb.RemoveFile('commandCooldown');
 
-        $.consoleLn('PhantomBot v2.0.5 updates completed!');
+        $.consoleLn('PhantomBot v2.0.5 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.0.5', 'true');
     }
 
     if (!$.inidb.exists('updates', 'installedv2.0.6') || $.inidb.get('updates', 'installedv2.0.6') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0.6 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.6 Updates...');
 
 
         if ($.inidb.exists('chatModerator', 'capsLimit')) {
             $.inidb.del('chatModerator', 'capsLimit');
         }
 
-        $.consoleLn('PhantomBot v2.0.6 updates completed!');
+        $.consoleLn('PhantomBot v2.0.6 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.0.6', 'true');
     }
 
     /** Version 2.0.7 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.7') || $.inidb.get('updates', 'installedv2.0.7') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0.7 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.7 Updates...');
 
         var newDefaultDisabledModules = [
             './handlers/gameWispHandler.js',
             './commands/deathctrCommand.js',
         ]; //ADD NEW MODULES IN 2.0.7 TO BE DISABLED PLEASE.
 
-        $.consoleLn('Disabling new default modules...');
+        $.consoleLn('Deaktiviere neue standart Module...');
         for (i in newDefaultDisabledModules) {
             $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
@@ -285,7 +285,7 @@
 
     /** Version 2.0.7.2 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.7.2') || $.inidb.get('updates', 'installedv2.0.7.2') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0.7.2 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.7.2 Updates...');
 
         if ($.inidb.exists('chatModerator', 'longMessageMessage')) {
             if ($.inidb.get('chatModerator', 'longMessageMessage').equalsIgnoreCase('false')) {
@@ -293,13 +293,13 @@
             }
         }
 
-        $.consoleLn('PhantomBot v2.0.7.2 updates completed!');
+        $.consoleLn('PhantomBot v2.0.7.2 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.0.7.2', 'true');
     }
 
     /** Version 2.0.8 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.8') || $.inidb.get('updates', 'installedv2.0.8') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0.8 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.8 Updates...');
 
         var newDefaultDisabledModules = [
             './handlers/twitterHandler.js',
@@ -307,74 +307,74 @@
             './systems/queueSystem.js'
         ]; //ADD NEW MODULES IN 2.0.8 TO BE DISABLED PLEASE.
 
-        $.consoleLn('Disabling new default modules...');
+        $.consoleLn('Deaktiviere neue standart Module...');
         for (i in newDefaultDisabledModules) {
             $.inidb.set('modules', newDefaultDisabledModules[i], 'false');
         }
 
-        $.consoleLn('PhantomBot v2.0.8 updates completed!');
+        $.consoleLn('PhantomBot v2.0.8 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.0.8', 'true');
     }
 
     /** Version 2.0.9 updates */
     if (!$.inidb.exists('updates', 'installedv2.0.9') || $.inidb.get('updates', 'installedv2.0.9') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.0.9 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.0.9 Updates...');
 
-        $.consoleLn('Deleting old emotes cache...');
+        $.consoleLn('Leere alten Emote Cache...');
         $.inidb.del('emotescache', 'emotes');
 
-        $.consoleLn('PhantomBot v2.0.9 updates completed!');
+        $.consoleLn('PhantomBot v2.0.9 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.0.9', 'true');
     }
 
     /** Version 2.1/2.0.10 updates */
     if (!$.inidb.exists('updates', 'installedv2.1.0') || $.inidb.get('updates', 'installedv2.1.0') != 'true') {
-        $.consoleLn('Starting PhantomBot version 2.1 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.1 Updates...');
 
-        $.consoleLn('Aliasing !permission to !group...');
+        $.consoleLn('Aliasing !permission zu !group...');
         $.inidb.set('aliases', 'group', 'permission');
 
-        $.consoleLn('Aliasing !permissionpoints to !grouppoints...');
+        $.consoleLn('Aliasing !permissionpoints zu !grouppoints...');
         $.inidb.set('aliases', 'grouppoints', 'permissionpoints');
 
-        $.consoleLn('Aliasing !permissions to !groups...');
+        $.consoleLn('Aliasing !permissions zu !groups...');
         $.inidb.set('aliases', 'groups', 'permissions');
 
-        $.consoleLn('Disabling new modules...');
+        $.consoleLn('Deaktiviere neue Module...');
         $.inidb.set('modules', './games/gambling.js', 'false');
 
-        $.consoleLn('Setting up the new Twitter post delay...');
+        $.consoleLn('Richte die neuen Twitter post Verzögerung ein...');
         $.inidb.set('twitter', 'postdelay_update', 180);
 
-        $.consoleLn('PhantomBot v2.1 updates completed!');
+        $.consoleLn('PhantomBot v2.1 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.1.0', 'true');
         $.inidb.set('updates', 'installedNewBot', 'true'); //If bot login is deleted after updates were installed we don't want to reset the modules.
     }
 
     /** Version 2.2 updates */
     if (!$.inidb.exists('updates', 'installedv2.1.1') || $.inidb.get('updates', 'installedv2.1.1') != 'true') {
-        $.consoleLn('Starting PhantomBot v2.2 updates...');
+        $.consoleLn('Starte PhantomBot v2.2 Updates...');
 
-        $.consoleLn('PhantomBot v2.2 updates completed!');
+        $.consoleLn('PhantomBot v2.2 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.1.1', 'true');
     }
 
     /** Version 2.3 updates */
     if (!$.inidb.exists('updates', 'installedv2.3s') || $.inidb.get('updates', 'installedv2.3s') != 'true') {
-        $.consoleLn('Starting PhantomBot v2.3 updates...');
+        $.consoleLn('Starte PhantomBot v2.3 Updates...');
 
-        $.consoleLn('Disabling new modules...');
+        $.consoleLn('Deaktiviere neue Module...');
         $.inidb.set('modules', './handlers/bitsHandler.js', 'false');
 
-        $.consoleLn('Setting up new default custom commands...');
+        $.consoleLn('Richte neue standart benutzerdefinierte Befehle ein...');
         if (!$.inidb.exists('command', 'uptime')) {
-            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) war online für (uptime).');
         }
         if (!$.inidb.exists('command', 'followage')) {
             $.inidb.set('command', 'followage', '(followage)');
         }
         if (!$.inidb.exists('command', 'playtime')) {
-            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) hat (game) für (playtime) gespielt.');
         }
         if (!$.inidb.exists('command', 'title')) {
             $.inidb.set('command', 'title', '(pointtouser) (titleinfo)');
@@ -395,22 +395,22 @@
         $.inidb.del('permcom', 'game set');
         $.inidb.del('permcom', 'title set');
 
-        $.consoleLn('Setting up new toggles...');
+        $.consoleLn('Einrichten neuer Umschaltmöglichkeiten...');
         $.inidb.set('adventureSettings', 'warningMessage', true);
         $.inidb.set('adventureSettings', 'enterMessage', true);
 
-        $.consoleLn('PhantomBot v2.3 updates completed!');
+        $.consoleLn('PhantomBot v2.3 Updates fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3s', 'true');
     }
 
     /* version 2.3.3s updates */
     if (!$.inidb.exists('updates', 'installedv2.3.3ss') || $.inidb.get('updates', 'installedv2.3.3ss') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.3 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.3 Updates...');
 
-        $.consoleLn('Deleting the old emotes cache.');
+        $.consoleLn('Leere den alten Emote Cache.');
         $.inidb.RemoveFile('emotecache');
 
-        $.consoleLn('Updating raffle settings...');
+        $.consoleLn('Aktuellisiere Verlosungseinstellungen...');
         if ($.inidb.exists('settings', 'raffleMSGToggle')) {
             $.inidb.set('raffleSettings', 'raffleMSGToggle', $.inidb.get('settings', 'raffleMSGToggle'));
             $.inidb.del('settings', 'raffleMSGToggle');
@@ -432,11 +432,11 @@
         }
 
         if ($.inidb.exists('command', 'uptime') && $.inidb.get('command', 'uptime').equalsIgnoreCase('(@sender) (channelname) has been online for (uptime)')) {
-            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) has been online for (uptime)');
+            $.inidb.set('command', 'uptime', '(pointtouser) (channelname) war online für (uptime)');
         }
 
         if ($.inidb.exists('command', 'playtime') && $.inidb.get('command', 'playtime').equalsIgnoreCase('(@sender) (channelname) has been playing (game) for (playtime)')) {
-            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) has been playing (game) for (playtime)');
+            $.inidb.set('command', 'playtime', '(pointtouser) (channelname) spielte (game) für (playtime)');
         }
 
         if ($.inidb.exists('command', 'title') && $.inidb.get('command', 'title').equalsIgnoreCase('(@sender) (titleinfo)')) {
@@ -448,29 +448,29 @@
         }
 
 
-        $.consoleLn('PhantomBot update 2.3.3 completed!');
+        $.consoleLn('PhantomBot Update 2.3.3 fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.3ss', 'true');
     }
 
     /* version 2.3.5 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.5ss') || $.inidb.get('updates', 'installedv2.3.5ss') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.5 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.5 Updates...');
 
         $.inidb.set('chatModerator', 'moderationLogs', 'false');
         $.inidb.set('modules', './systems/bettingSystem.js', 'false');
         $.inidb.del('modules', './systems/betSystem.js');
 
-        $.consoleLn('Removing old discord settings...');
+        $.consoleLn('Entferne alte Discord Einstellungen...');
         $.inidb.RemoveFile('discordSettings');
         $.inidb.RemoveFile('discordKeywords');
         $.inidb.RemoveFile('discordCommands');
         $.inidb.RemoveFile('discordCooldown');
         $.inidb.del('modules', './handlers/discordHandler.js');
 
-        $.consoleLn('Disabling new modules.');
+        $.consoleLn('Deaktiviere neue Module...');
         $.inidb.set('modules', './handlers/tipeeeStreamHandler.js', 'false');
 
-        $.consoleLn('Reloading blacklist and whitelist...');
+        $.consoleLn('Lade schwarze und weiße Liste neu...');
         var keys = $.inidb.GetKeyList('blackList', ''),
             i;
 
@@ -486,10 +486,10 @@
             $.inidb.del('whiteList', keys[i]);
         }
 
-        $.consoleLn('Updating host settings...');
+        $.consoleLn('Aktuellisiere Host Einstellungen...');
         $.inidb.set('settings', 'hostToggle', true);
 
-        $.consoleLn('Disabling default discord modules.');
+        $.consoleLn('Deaktiviere standart Discord Module...');
         modules = [
             './discord/handlers/bitsHandler.js',
             './discord/handlers/followHandler.js',
@@ -517,13 +517,13 @@
             $.inidb.set('permcom', 'group', '1');
         }
 
-        $.consoleLn('PhantomBot update 2.3.5 completed!');
+        $.consoleLn('PhantomBot v2.3.5 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.5ss', 'true');
     }
 
     /* version 2.3.5.1 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.5.1') || $.inidb.get('updates', 'installedv2.3.5.1') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.5.1 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.5.1 Updates...');
 
         if ($.inidb.exists('aliases', 'points')) {
             $.inidb.del('aliases', 'points');
@@ -533,15 +533,15 @@
             $.inidb.del('aliases', 'point');
         }
 
-        $.consoleLn('PhantomBot update 2.3.5.1 completed!');
+        $.consoleLn('PhantomBot v2.3.5.1 fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.5.1', 'true');
     }
 
     /* version 2.3.5.2 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.5.2') || $.inidb.get('updates', 'installedv2.3.5.2') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.5.2 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.5.2 Updates...');
 
-        $.consoleLn('Reloading quotes... Please do not turn off your bot.');
+        $.consoleLn('Lade Zitate neu... Bitte beende den Bot derweile nicht!');
         var keys = $.inidb.GetKeyList('quotes', ''),
             temp = [],
             i;
@@ -564,27 +564,27 @@
 
         $.inidb.del('modules', './handlers/discordHandler.js');
 
-        $.consoleLn('PhantomBot update 2.3.5.2 completed!');
+        $.consoleLn('PhantomBot v2.3.5.2 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.5.2', 'true');
     }
 
     /* version 2.3.5.3 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.5.3') || $.inidb.get('updates', 'installedv2.3.5.3') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.5.3 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.5.3 Updates...');
 
         if (!$.inidb.exists('settings', 'followDelay') || ($.inidb.exists('settings', 'followDelay') && parseInt($.inidb.get('settings', 'followDelay')) < 5)) {
             $.inidb.set('settings', 'followDelay', 5);
         }
 
-        $.consoleLn('PhantomBot update 2.3.5.3 completed!');
+        $.consoleLn('PhantomBot v2.3.5.3 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.5.3', 'true');
     }
 
     /* version 2.3.6 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.6') || $.inidb.get('updates', 'installedv2.3.6') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.6 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.6 Updates...');
 
-        $.consoleLn('Disabling default discord modules.');
+        $.consoleLn('Deaktiviere standart Discord Module...');
         $.inidb.set('modules', './discord/games/roll.js', 'false');
         $.inidb.set('modules', './discord/games/slotMachine.js', 'false');
         $.inidb.set('modules', './discord/games/gambling.js', 'false');
@@ -592,13 +592,13 @@
 
         $.inidb.set('permcom', $.botName.toLowerCase(), '2');
 
-        $.consoleLn('PhantomBot update 2.3.6 completed!');
+        $.consoleLn('PhantomBot v2.3.6 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.6', 'true');
     }
 
     /* version 2.3.6s updates */
     if (!$.inidb.exists('updates', 'installedv2.3.6ss') || $.inidb.get('updates', 'installedv2.3.6ss') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.6s updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.6s Updates...');
 
         $.inidb.del('cooldown', 'globalCooldownTime');
         $.inidb.del('cooldown', 'modCooldown');
@@ -611,7 +611,7 @@
             seconds,
             i;
 
-        $.consoleLn('Updating cooldowns...');
+        $.consoleLn('Aktuellisiere Abklingzeiten...');
         for (i in keys) {
             seconds = $.inidb.get('cooldown', keys[i]);
             $.inidb.set('cooldown', keys[i], JSON.stringify({
@@ -621,7 +621,7 @@
             }));
         }
 
-        $.consoleLn('Updating Discord cooldowns...');
+        $.consoleLn('Aktuellisiere Discord Abklingzeiten...');
         for (i in keys) {
             seconds = $.inidb.get('discordCooldown', keys[i]);
             $.inidb.set('discordCooldown', keys[i], JSON.stringify({
@@ -631,15 +631,15 @@
             }));
         }
 
-        $.consoleLn('PhantomBot update 2.3.6s completed!');
+        $.consoleLn('PhantomBot v2.3.6 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.6ss', 'true');
     }
 
     /* version 2.3.6b updates */
     if (!$.inidb.exists('updates', 'installedv2.3.6b') || $.inidb.get('updates', 'installedv2.3.6b') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.6b updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.6b Updates...');
 
-        $.consoleLn('Fixing uppercase usernames in tables.');
+        $.consoleLn('Behebe Großgeschriebene Nutzernamen in den Tabellen...');
 
         var keys = $.inidb.GetKeyList('points', ''),
             i;
@@ -675,18 +675,18 @@
         $.inidb.setAutoCommit(true);
         $.inidb.SaveAll(true);
 
-        $.consoleLn('PhantomBot update 2.3.6b completed!');
+        $.consoleLn('PhantomBot v2.3.6b Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.6b', 'true');
     }
 
     /* version 2.3.7 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.7b') || $.inidb.get('updates', 'installedv2.3.7b') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.7 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.7 Updates...');
 
         var keys = $.inidb.GetKeyList('blackList', ''),
             timeout = $.getIniDbNumber('chatModerator', 'blacklistTimeoutTime', 600),
-            message = $.getIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
-            messageB = $.getIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted word. (Automated by ' + $.botName + ')'),
+            message = $.getIniDbString('chatModerator', 'blacklistMessage', 'du wurdest für die Benutzung eines gesperrten Wortes gesperrt.'),
+            messageB = $.getIniDbString('chatModerator', 'silentBlacklistMessage', 'Nutzung eines gesperrten Wortes. (Automatisiert von ' + $.botName + ')'),
             obj = {},
             i;
 
@@ -694,7 +694,7 @@
             $.inidb.set('chatModerator', 'msgCooldownSecs', 30);
         }
 
-        $.consoleLn('Updating blacklist...');
+        $.consoleLn('Aktuellisiere schwarze Liste...');
         for (i in keys) {
             obj = {
                 id: String(i),
@@ -710,64 +710,64 @@
             $.inidb.set('blackList', keys[i], JSON.stringify(obj));
         }
 
-        $.consoleLn('PhantomBot update 2.3.7 completed!');
+        $.consoleLn('PhantomBot v2.3.7 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.7b', 'true');
     }
 
     /* version 2.3.9 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.9') || $.inidb.get('updates', 'installedv2.3.9') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.9 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.9 Updates...');
 
-        $.consoleLn('Removing old discord handler...');
+        $.consoleLn('Lösche alten Discord Handler...');
         $.inidb.del('modules', './handlers/discordHandler.js');
 
-        $.consoleLn('Removing old emotes cache...');
+        $.consoleLn('Leere alten Emote Cache...');
         $.inidb.RemoveFile('emotecache');
 
         $.inidb.set('modules', './discord/handlers/streamElementsHandler.js', 'false');
         $.inidb.set('modules', './handlers/streamElementsHandler.js', 'false');
 
-        $.consoleLn('PhantomBot update 2.3.9 completed!');
+        $.consoleLn('PhantomBot v2.3.9 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.9', 'true');
     }
 
     /* version 2.3.9.1 updates */
     if (!$.inidb.exists('updates', 'installedv2.3.9.1') || $.inidb.get('updates', 'installedv2.3.9.1') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.9.1 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.9.1 Updates...');
 
-        $.consoleLn('Updating old variables...');
+        $.consoleLn('Aktuellisiere alte Variablen...');
 
         if ($.inidb.FileExists('discordSettings')) {
-            $.inidb.set('discordSettings', 'gameMessage', '(name) just changed game on Twitch!');
-            $.inidb.set('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
+            $.inidb.set('discordSettings', 'gameMessage', '(name) hat das Spiel auf Twitch geändert!');
+            $.inidb.set('discordSettings', 'onlineMessage', '(name) ist auf Twitch online gegangen!');
         }
 
-        $.consoleLn('PhantomBot update 2.3.9.1 completed!');
+        $.consoleLn('PhantomBot v2.3.9.1 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.9.1', 'true');
     }
 
     /* version 2.3.9.1b updates */
     if (!$.inidb.exists('updates', 'installedv2.3.9.1b') || $.inidb.get('updates', 'installedv2.3.9.1b') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.3.9.1b updates...');
+        $.consoleLn('Starte PhantomBot Version 2.3.9.1b Updates...');
 
         if ($.inidb.FileExists('discordStreamStats')) {
-            $.consoleLn('Removing old Discord stats...');
+            $.consoleLn('Leere alte Discord Statisiken...');
             $.inidb.RemoveFile('discordStreamStats');
         }
 
-        $.consoleLn('PhantomBot update 2.3.9.1b completed!');
+        $.consoleLn('PhantomBot v2.3.9.1b Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.3.9.1b', 'true');
     }
 
     /* version 2.4.0 updates */
     if (!$.inidb.exists('updates', 'installedv2.4.0') || $.inidb.get('updates', 'installedv2.4.0') != 'true') {
-        $.consoleLn('Starting PhantomBot update 2.4.0 updates...');
+        $.consoleLn('Starte PhantomBot Version 2.4.0 Updates...');
 
         if ($.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5) < 5) {
             $.inidb.set('cooldownSettings', 'defaultCooldownTime', 5);
         }
 
-        $.consoleLn('Updating keywords...');
+        $.consoleLn('Aktuellisiere Schlagwörter...');
         var keys = $.inidb.GetKeyList('keywords', ''),
             keywords = [],
             i;
@@ -801,7 +801,7 @@
             }
         }
 
-        $.consoleLn('PhantomBot update 2.4.0 completed!');
+        $.consoleLn('PhantomBot v2.4.0 Update fertiggestellt!');
         $.inidb.set('updates', 'installedv2.4.0', 'true');
     }
 

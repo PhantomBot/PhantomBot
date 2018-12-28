@@ -285,7 +285,7 @@
                             $.bot.getHook(module.scriptName, 'initReady').handler();
                         }
                     } catch (ex) {
-                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.log.error('Aufrufen der initReady Funktion zum aktivieren des Modules (' + module.scriptName + ') nicht möglich: ' + ex);
                     }
                 }
             }

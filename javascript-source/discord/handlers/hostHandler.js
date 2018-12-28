@@ -20,8 +20,8 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'hostToggle', false),
-        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!'),
-        autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!'),
+        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) hostet dich jetzt mit (viewers) Zuschauern!'),
+        autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) Auto-Hostet dich jetzt!'),
         channelName = $.getSetIniDbString('discordSettings', 'hostChannel', ''),
         hosters = {},
         announce = false;
@@ -32,8 +32,8 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/hostHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'hostToggle', false);
-            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!');
-            autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!');
+            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) hostet dich jetzt mit (viewers) Zuschauern!');
+            autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) Auto-Hostet dich jetzt!');
             channelName = $.getIniDbString('discordSettings', 'hostChannel', '');
         }
     });

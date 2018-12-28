@@ -1033,8 +1033,8 @@
 
                             jsonList['playlist'].push({ "song": videoId, "title": videoTitle, "duration": videoLength });
                         } catch (ex) {
-                            $.log.error('YouTube API Failed Lookup: Playlist [' + jsonList['playlistname'] +
-                                '] Index [' + playList[i] + '] YT ID [' + youTubeDbId + '] Error [' + ex + ']');
+                            $.log.error('YouTube API suche schlägt fehl: Playlist [' + jsonList['playlistname'] +
+                                '] Index [' + playList[i] + '] YT ID [' + youTubeDbId + '] Fehler [' + ex + ']');
                         }
                     }
                 }

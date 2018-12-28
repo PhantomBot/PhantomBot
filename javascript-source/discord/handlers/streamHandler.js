@@ -20,11 +20,11 @@
  */
 (function() {
     var onlineToggle = $.getSetIniDbBoolean('discordSettings', 'onlineToggle', false),
-        onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!'),
+        onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) ist auf Twitch online gegangen!'),
         offlineToggle = $.getSetIniDbBoolean('discordSettings', 'offlineToggle', false),
-        offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.'),
+        offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) ist jetzt offline.'),
         gameToggle = $.getSetIniDbBoolean('discordSettings', 'gameToggle', false),
-        gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!'),
+        gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) hat das Spiel auf Twitch gewechselt!'),
         botGameToggle = $.getSetIniDbBoolean('discordSettings', 'botGameToggle', true),
         channelName = $.getSetIniDbString('discordSettings', 'onlineChannel', ''),
         timeout = (6e4 * 5), // 5 minutes.
@@ -38,11 +38,11 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
-            onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
+            onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) ist auf Twitch online gegangen!');
             offlineToggle = $.getIniDbBoolean('discordSettings', 'offlineToggle', false);
-            offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.');
+            offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) ist jetzt offline.');
             gameToggle = $.getIniDbBoolean('discordSettings', 'gameToggle', false);
-            gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!');
+            gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) hat das Spiel auf Twitch gewechselt!');
             channelName = $.getIniDbString('discordSettings', 'onlineChannel', '');
             botGameToggle = $.getIniDbBoolean('discordSettings', 'botGameToggle', true);
         }

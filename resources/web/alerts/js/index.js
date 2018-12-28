@@ -104,7 +104,7 @@ $(function() {
         try {
             webSocket.send(JSON.stringify(message));
         } catch (ex) {
-            printDebug('Failed to send a message to the socket: ' + ex.stack);
+            printDebug('Es ist nicht gelungen, eine Nachricht an den Socket zu senden: ' + ex.stack);
         }
     }
 
@@ -115,7 +115,7 @@ $(function() {
         let event = queue[0];
 
         if (event !== undefined && isPlaying === false) {
-            printDebug('Processing event ' + JSON.stringify(event));
+            printDebug('Verarbeite event ' + JSON.stringify(event));
 
             isPlaying = true;
             if (event.alert_image !== undefined) {

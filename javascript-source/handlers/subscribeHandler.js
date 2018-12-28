@@ -21,10 +21,10 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function() {
-    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
-        primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
-        reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
-        giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
+    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) hat dich abonniert!'),
+        primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) hat dich über Twitch Prime abonniert!'),
+        reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) hat dich für (months) Monate hintereinander abonniert!'),
+        giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) hat (recipient) ein Abo geschenkt!'),
         massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),

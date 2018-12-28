@@ -77,7 +77,7 @@
             }
         }
 
-        $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
+        $.log.warn('Du musst mindestens ein Abenteuer haben, welches nicht ein bestimmtes Spiel gesetzt benötigt .');
         currentAdventure.gameState = 2;
     };
 
@@ -206,7 +206,7 @@
      */
     function joinHeist(username, bet) {
         if (stories.length < 1) {
-            $.log.error('No adventures found; cannot start an adventure.');
+            $.log.error('Kein Abenteuer gefunden; kann kein Abenteuer starten.');
             return;
         }
 

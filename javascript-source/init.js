@@ -146,10 +146,10 @@
                     modules[scriptName] = new Module(scriptName, script, enabled);
 
                     if (!silent) {
-                        consoleLn('Loaded module: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Enabled' : 'Disabled') + ')');
+                        consoleLn('Modul geladen: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Aktiviert' : 'Deaktiviert') + ')');
                     }
                 } catch (ex) {
-                    consoleLn('Failed loading "' + scriptName + '": ' + ex);
+                    consoleLn('Fehler beim laden "' + scriptName + '": ' + ex);
                 }
             }
         }
@@ -385,7 +385,7 @@
         // Load new panel handler.
         loadScript('./core/panelHandler.js', false, true);
 
-        $.log.event('Bot modules loaded. Initializing main functions...');
+        $.log.event('Bot Module geladen. Initialisiere Hauptfunktionen...');
 
         // Register custom commands.
         $.addComRegisterCommands();
@@ -394,11 +394,11 @@
         consoleLn('');
 
         if ($.isNightly) {
-            consoleLn('PhantomBot Nightly Build - No Support is Provided');
+            consoleLn('PhantomBotDE Nightly Build - Ohne Support.');
             consoleLn('Bitte melden Sie Fehler, einschließlich des Datums des Nightly Builds und der Repo Version, an:');
             consoleLn('https://community.phantombot.tv/t/phantombotde-vollubersetzung-complete-translation/3872');
         } else if ($.isPrerelease) {
-            consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
+            consoleLn('PhantomBot Pre-Release Build - Bitte melden Sie gefundene Fehler und Probleme');
             consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
         } else {
             consoleLn('For support please visit: https://community.phantombot.tv');
@@ -488,21 +488,21 @@
             // Check the command permission.
             if ($.permCom(sender, command, subCommand) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to the user not having permission for it.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da der Nutzer nicht genug Rechte für ihn hat.');
                 return;
             } else
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da er noch in der Abklingzeit ist.');
                 return;
             } else
 
             // Check the command cost.
             if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da der Nutzer nicht genug Punkte hat.');
                 return;
             }
 

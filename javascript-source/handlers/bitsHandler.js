@@ -21,7 +21,7 @@
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('bitsSettings', 'toggle', false),
-        message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
+        message = $.getSetIniDbString('bitsSettings', 'message', '(name) hat (amount) bits gecheert !'),
         minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
         announceBits = false;
 
@@ -30,7 +30,7 @@
      */
     function reloadBits() {
         toggle = $.getIniDbBoolean('bitsSettings', 'toggle', false);
-        message = $.getIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!');
+        message = $.getIniDbString('bitsSettings', 'message', '(name) hat (amount) bits gecheert !');
         minimum = $.getIniDbNumber('bitsSettings', 'minimum', 0);
     }
 
@@ -123,7 +123,7 @@
             minimum = parseInt(action);
             $.setIniDbNumber('bitsSettings', 'minimum', minimum);
             $.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.set', minimum));
-            $.log.event(sender + ' changed the bits minimum to: ' + minimum + ' bits.');
+            $.log.event(sender + ' änderte das Bits minimum zu: ' + minimum + ' Bits.');
         }
     });
 

@@ -49,11 +49,11 @@
         }
 
         if (!$.isDirectory(donationAddonDir)) {
-            $.consoleDebug('>> Creating Donation Handler Directory: ' + donationAddonDir);
+            $.consoleDebug('>> Erstelle Spenden Handler Ordner: ' + donationAddonDir);
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn('>> Enabling StreamLabs donation announcements');
+        $.consoleLn('>> Aktiviere StreamLabs spenden Ankündigung');
         $.log.event('Donation announcements enabled');
         announceDonationsAllowed = true;
     });

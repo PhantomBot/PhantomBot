@@ -179,7 +179,7 @@
 
                         say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
                     } catch (ex) {
-                        $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.log.error('[DISCORD] Nicht möglich die initReady zum aktivieren des Moduls (' + module.scriptName + ') aufzurufen: ' + ex.message);
                     }
                 } else {
                     say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));

@@ -328,13 +328,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.log.error('Failed to use random.org: ' + request.exception);
+                    $.log.error('Fehler beim nutzen von random.org: ' + request.exception);
                 } else {
-                    $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Fehler beim nutzen von random.org: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.log.error('Failed to use random.org: ' + error);
+            $.log.error('Fehler beim nutzen von random.org: ' + error);
         }
 
         return randRange(min, max);

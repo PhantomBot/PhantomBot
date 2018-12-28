@@ -34,7 +34,7 @@
                 try {
                     json.regexKey = new RegExp(json.keyword.replace('regex:', ''));
                 } catch (ex) {
-                    $.log.error('Bad regex detected in keyword [' + keys[i] + ']: ' + ex.message);
+                    $.log.error('Fehlerhaftes regex im Schlagwort erkannt [' + keys[i] + ']: ' + ex.message);
                     continue;
                 }
             }

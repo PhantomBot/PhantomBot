@@ -17,10 +17,10 @@
 
 (function() {
     var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
-        newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
-        raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
+        newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) raidet uns gerade mit (viewers) Zuschauern!'),
+        raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) raidet uns gerade mit (viewers) Zuschauern! Dies ist das (times). mal dass (username) uns raidet!'),
         raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
-        raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
+        raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'Wir raiden jetzt (username)! Gehe jetzt zum Channel (url)!'),
         raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
 
     /*

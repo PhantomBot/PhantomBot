@@ -19,9 +19,9 @@
  * This module is to handle gamewisp subscriber notifications.
  */
 (function() {
-    var subMessage = $.getSetIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!'),
-        resubMessage = $.getSetIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!'),
-        tierMessage = $.getSetIniDbString('discordSettings', 'gamewispTierMessage', '(name) upgraded to tier (tier) on GameWisp!'),
+    var subMessage = $.getSetIniDbString('discordSettings', 'gamewispSubMessage', '(name) hat gerade über GameWisp auf dem Level (tier) abonniert!'),
+        resubMessage = $.getSetIniDbString('discordSettings', 'gamewispReSubMessage', '(name) hat gerade für (months) Monate hintereinander über GameWisp abonniert!'),
+        tierMessage = $.getSetIniDbString('discordSettings', 'gamewispTierMessage', '(name) hat sich auf das Level (tier) bei GameWisp hochgestufft!'),
         channelName = $.getSetIniDbString('discordSettings', 'gamewispChannel', ''),
         subToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispSubToggle', false),
         resubToggle = $.getSetIniDbBoolean('discordSettings', 'gamewispReSubToggle', false),
@@ -33,9 +33,9 @@
      */
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/gamewispHandler.js')) {
-            subMessage = $.getIniDbString('discordSettings', 'gamewispSubMessage', '(name) just subscribed via GameWisp at tier level (tier)!');
-            resubMessage = $.getIniDbString('discordSettings', 'gamewispReSubMessage', '(name) just subscribed for (months) months in a row via GameWisp!');
-            tierMessage = $.getIniDbString('discordSettings', 'gamewispTierMessage', '(name) upgraded to tier (tier) on GameWisp!');
+            subMessage = $.getIniDbString('discordSettings', 'gamewispSubMessage', '(name) hat gerade über GameWisp auf dem Level (tier) abonniert!');
+            resubMessage = $.getIniDbString('discordSettings', 'gamewispReSubMessage', '(name) hat gerade für (months) Monate über GameWisp abonniert!');
+            tierMessage = $.getIniDbString('discordSettings', 'gamewispTierMessage', '(name) hat sich auf das Level (tier) bei GameWisp hochgestufft!');
             channelName = $.getIniDbString('discordSettings', 'gamewispChannel', '');
             subToggle = $.getIniDbBoolean('discordSettings', 'gamewispSubToggle', false);
             resubToggle = $.getIniDbBoolean('discordSettings', 'gamewispReSubToggle', false);

@@ -35,9 +35,9 @@
         interval;
 
     /* Set default values for all configuration items. */
-    $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
-    $.getSetIniDbString('twitter', 'message_gamechange', 'Changing game over to (game) (twitchurl)');
-    $.getSetIniDbString('twitter', 'message_update', 'Still streaming (game) [(uptime)] (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_online', 'Der Stream hat begonnen (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_gamechange', 'Habe das Spiel zu (game) gewechselt. (twitchurl)');
+    $.getSetIniDbString('twitter', 'message_update', 'Streame immer noch (game) [(uptime)] (twitchurl)');
 
     $.getSetIniDbNumber('twitter', 'polldelay_mentions', 60);
     $.getSetIniDbNumber('twitter', 'polldelay_retweets', 60);
@@ -449,11 +449,11 @@
              */
             if (commandArg.equalsIgnoreCase('lasttweet')) {
                 if ($.getIniDbBoolean('twitter', 'poll_hometimeline', false)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lasttweet', $.getIniDbString('twitter', 'last_hometimeline', 'No Tweets have been pulled yet!')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lasttweet', $.getIniDbString('twitter', 'last_hometimeline', 'Es wurden noch keine Tweets gezogen!')));
                     return;
                 }
                 if ($.getIniDbBoolean('twitter', 'poll_usertimeline', false)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lasttweet', $.getIniDbString('twitter', 'last_usertimeline', 'No Tweets have been pulled yet!')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lasttweet', $.getIniDbString('twitter', 'last_usertimeline', 'Es wurden noch keine Tweets gezogen!')));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.lasttweet.disabled'));
@@ -465,7 +465,7 @@
              */
             if (commandArg.equalsIgnoreCase('lastmention')) {
                 if ($.getIniDbBoolean('twitter', 'poll_mentions', false)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastmention', $.getIniDbString('twitter', 'last_mentions', 'No Mentions have been pulled yet!')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastmention', $.getIniDbString('twitter', 'last_mentions', 'Es wurden noch keine Erwähnungen gezogen!')));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastmention.disabled'));
@@ -477,7 +477,7 @@
              */
             if (commandArg.equalsIgnoreCase('lastretweet')) {
                 if ($.getIniDbBoolean('twitter', 'poll_retweets', false)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastretweet', $.getIniDbString('twitter', 'last_retweets', 'No Retweets have been pulled yet!')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastretweet', $.getIniDbString('twitter', 'last_retweets', 'Es wurden noch keine Retweets gezogen!')));
                     return;
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('twitter.lastretweet.disabled'));
@@ -554,7 +554,7 @@
                 } else {
                     $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
                 }
-                $.log.event('Sent Auto Update to Twitter');
+                $.log.event('Auto Update zu Twitter gesendet');
             }
         }
     }
