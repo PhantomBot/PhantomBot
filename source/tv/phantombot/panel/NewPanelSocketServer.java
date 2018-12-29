@@ -97,26 +97,13 @@
 
 package tv.phantombot.panel;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.net.InetSocketAddress;
-import java.net.InetAddress;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.gmt2001.TwitchAPIv5;
 
-import com.google.common.collect.Maps;
-
-import fr.bmartel.protocol.http.utils.StringUtils;
 import fr.bmartel.protocol.websocket.listeners.IClientEventListener;
 import fr.bmartel.protocol.websocket.server.IWebsocketClient;
 import fr.bmartel.protocol.websocket.server.WebsocketServer;
@@ -249,7 +236,7 @@ public class NewPanelSocketServer {
             start();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("PhantomBot is Exiting...");
-            System.exit(0);
+            PhantomBot.exitError();
         }
     }
 

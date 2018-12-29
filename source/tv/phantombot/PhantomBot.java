@@ -40,7 +40,6 @@ import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv2;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -57,16 +56,13 @@ import java.security.SecureRandom;
 
 import java.text.SimpleDateFormat;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -239,6 +235,11 @@ public final class PhantomBot implements Listener {
     private Boolean backupSQLiteAuto = false;
     private int backupSQLiteHourFrequency = 0;
     private int backupSQLiteKeepDays = 0;
+    
+    // Error codes
+    // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
+    private static final int EXIT_STATUS_OK = 0;
+    private static final int EXIT_STATUS_ERROR = 1;
 
     /*
      * PhantomBot Instance.
@@ -336,7 +337,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
             com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
             com.gmt2001.Console.err.println("PhantomBot will now exit.");
-            System.exit(0);
+            PhantomBot.exitError();
         } finally {
             if (serverSocket != null) {
                 try {
@@ -344,7 +345,7 @@ public final class PhantomBot implements Listener {
                 } catch (IOException e) {
                     com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
                     com.gmt2001.Console.err.println("PhantomBot will now exit.");
-                    System.exit(0);
+                    PhantomBot.exitError();
                 }
             }
         }
@@ -455,13 +456,13 @@ public final class PhantomBot implements Listener {
             if (this.httpsFileName.equals("")) {
                 com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not defined.");
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
-                System.exit(1);
+                PhantomBot.exitError();
             }
 
             if (!new File (httpsFileName).exists()) {
                 com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not present: " + httpsFileName);
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
-                System.exit(1);
+                PhantomBot.exitError();
             }
         }
 
@@ -528,7 +529,7 @@ public final class PhantomBot implements Listener {
             /* Check to see if we can create a connection */
             if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
                 print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
-                System.exit(0);
+                PhantomBot.exitError();
             }
             /* Convert to MySql */
             if (IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
@@ -541,7 +542,7 @@ public final class PhantomBot implements Listener {
 
             if (dataStore.CreateConnection("", "", "") == null) {
                 print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
-                System.exit(0);
+                PhantomBot.exitError();
             }
 
             if (SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
@@ -866,7 +867,7 @@ public final class PhantomBot implements Listener {
                 }
             } catch (Exception ex) {
                 print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
-                System.exit(0);
+                PhantomBot.exitError();
             }
         }
 
@@ -1312,7 +1313,7 @@ public final class PhantomBot implements Listener {
 
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8 || Float.valueOf(System.getProperty("java.specification.version")) >= (float) 1.9) {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 and above will NOT work.");
-            System.exit(1);
+            PhantomBot.exitError();
         }
 
         /* Print the user dir */
@@ -1326,7 +1327,7 @@ public final class PhantomBot implements Listener {
         if (args.length > 0) {
             if (args[0].equals("--version") || args[0].equals("-v")) {
                 com.gmt2001.Console.out.println("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
-                System.exit(1);
+                PhantomBot.exitOK();
             }
         }
 
@@ -1515,5 +1516,19 @@ public final class PhantomBot implements Listener {
                 }
             }
         }
+    }
+    
+    /**
+     * End PhantomBot with an error state
+     */
+    public static void exitError() {
+        System.exit(EXIT_STATUS_ERROR);
+    }
+    
+    /**
+     * End PhantomBot with an OK state
+     */
+    public static void exitOK() {
+        System.exit(EXIT_STATUS_OK);
     }
 }

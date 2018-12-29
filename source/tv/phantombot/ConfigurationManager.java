@@ -219,7 +219,7 @@ public class ConfigurationManager {
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
                 com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
-                System.exit(0);
+                PhantomBot.exitError();
             }
         }
 
@@ -281,7 +281,7 @@ public class ConfigurationManager {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
             com.gmt2001.Console.err.println("Exiting PhantomBot");
-            System.exit(0);
+            PhantomBot.exitError();
         }
 
         /* Check to see if anything changed */
