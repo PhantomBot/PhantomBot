@@ -219,7 +219,18 @@ $(function() {
                 'title': 'How long in seconds a song can be.',
                 'class': 'form-control',
                 'value': e.songRequestsMaxSecondsforVideo
-            }))), onClose).modal('toggle');
+            }))).append($('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'text': 'Vote Count'
+            })).append($('<input/>', {
+                'type': 'number',
+                'data-toggle': 'tooltip',
+                'id': 'vote-count',
+                'title': 'How many votes it takes to Skip.',
+                'class': 'form-control',
+                'value': e.voteCount
+            }))),onClose).modal('toggle');
         });
     };
 
