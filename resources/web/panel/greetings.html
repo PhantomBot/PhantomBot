@@ -22,16 +22,16 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="greetingsAccordion">
-    <h3>Greeting Settings</h3>
+    <h3>Begrüßungs-Einstellungen</h3>
     <div>
     <div id="_globalGreetingsPanelDisabled" />
     <div id="_globalGreetingsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Global Greetings</td>
+                <td>Globale Begrüßungs Einstellungen</td>
                 <td style="width: 25px"><div id="globalGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('greeting', 'autoGreetEnabled');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -41,26 +41,26 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="greetingCooldown">Greeting Cooldown (hours)</label>
+                <label for="greetingCooldown">Begrüßungs Abklingzeit (Stunden)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('greetingCooldownInput', 'cooldown')">Submit</button>
-                <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="hours" />
+                        onclick="$.updateGreetingData('greetingCooldownInput', 'cooldown')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="greetingCooldownInput" placeholder="Stunden" />
             </div>
         </form>
-        <i>Users have to set their own message to be greeted when joining the channel.</i>
+        <i>BenutzerInnen müssen ihre eigene Begrüßungsnachricht festlegen, wenn sie begrüßt werden wollen.</i>
     </div>
     </div>
 
-    <h3>Follow Alert Settings</h3>
+    <h3>Follow Benachrichtigungs Einstellungen</h3>
     <div>
     <div id="_followAlertsPanelDisabled" />
     <div id="_followAlertsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Follower Alerts</td>
+                <td>Follower Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="followerGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('settings', 'followToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -70,54 +70,54 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followerGreeting">Message</label>
+                <label for="followerGreeting">Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('followerGreetingInput', 'settings', 'followMessage')">Submit</button>
-                <input type="text" class="form-control" id="followerGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('followerGreetingInput', 'settings', 'followMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="followerGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followerReward">Reward</label>
+                <label for="followerReward">Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('followerRewardInput', 'settings', 'followReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="followerRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('followerRewardInput', 'settings', 'followReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="followerRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="followDelay">Delay (seconds)</label>
+                <label for="followDelay">Verzögerung (Sekunden)</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('followDelay', 'settings', 'followDelay')">Submit</button>
-                <input type="number" min="0" class="form-control" id="followDelay" placeholder="Delay in seconds" />
+                        onclick="$.updateGreetingData('followDelay', 'settings', 'followDelay')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="followDelay" placeholder="Verzögerung in Sekunden" />
             </div>
         </form>
     </div>
     </div>
 
-    <h3>StreamLabs Settings</h3>
+    <h3>StreamLabs Einstellungen</h3>
     <div>
     <div id="_donationAlertsPanelDisabled" />
     <div id="_donationAlertsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Donation Alerts</td>
+                <td>Spendenbenachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="donationGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('donations', 'announce');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
 
             <tr class="textList">
-                <td>Toggle Donator Promotion</td>
+                <td>Spender-Beförderung An/Aus</td>
                 <td style="width: 25px"><div id="donationGroup" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('donationGroup', 'donationGroup');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -127,56 +127,56 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateReward">Multiplier Reward</label>
+                <label for="donateReward">Belohnungsmultiplikator</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('donateRewardInput', 'donations', 'reward')">Submit</button>
-                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
-                       type="number" min="0" step="0.1" class="form-control" id="donateRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('donateRewardInput', 'donations', 'reward')">Übermitteln</button>
+                <input data-toggle="tooltip" title="Punkt(e) für eine Einheit der gespendeten Währung. Kommazahlen (0.1) sind erlaubt."
+                       type="number" min="0" step="0.1" class="form-control" id="donateRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donationGroupMin">Promote Amount</label>
+                <label for="donationGroupMin">Beförderungsbetrag</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('donationGroupMin', 'donations', 'donationGroupMin')">Submit</button>
-                <input type="text" class="form-control" id="donationGroupMin" placeholder="Amount"
-                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+                        onclick="$.updateGreetingData('donationGroupMin', 'donations', 'donationGroupMin')">Übermitteln</button>
+                <input type="text" class="form-control" id="donationGroupMin" placeholder="Betrag"
+                       data-toggle="tooltip" title="Minimaler Betrag den jemand Spenden muss."/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="donateGreeting">Message</label>
+                <label for="donateGreeting">Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Submit</button>
-                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Donation Message"
+                        onclick="$.updateGreetingData('donateGreetingInput', 'donations', 'message')">Übermitteln</button>
+                <input type="text" class="form-control" id="donateGreetingInput" placeholder="Spendennachricht"
                        data-toggle="tooltip" title="Tags: (name) (amount) (points) (pointname) (message) (currency)"/>
             </div>
         </form>
     </div>
     </div>
 
-    <h3>TipeeeStream Settings</h3>
+    <h3>TipeeeStream Einstellungen</h3>
     <div>
     <div id="_tipeeeStreamDonationsPanelDisabled" />
     <div id="_tipeeeStreamDonationsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Donation Alerts</td>
+                <td>Spenden Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="tipeeestreamGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('tipeeestream', 'toggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
 
             <tr class="textList">
-                <td>Toggle Donator Promotion</td>
+                <td>Spender-Beförderung An/Aus</td>
                 <td style="width: 25px"><div id="tipeeestreamdonationGroup" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('tipeeestreamdonationGroup', 'group');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -186,56 +186,56 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="tipeeestreamdonateRewardInput">Multiplier Reward</label>
+                <label for="tipeeestreamdonateRewardInput">Belohnungsmultiplikator</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('tipeeestreamdonateRewardInput', 'tipeeeStreamHandler', 'reward')">Submit</button>
-                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
-                       type="number" min="0" step="0.1" class="form-control" id="tipeeestreamdonateRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('tipeeestreamdonateRewardInput', 'tipeeeStreamHandler', 'reward')">Übermitteln</button>
+                <input data-toggle="tooltip" title="Punkt(e) für eine Einheit der gespendeten Währung. Kommazahlen (0.1) sind erlaubt."
+                       type="number" min="0" step="0.1" class="form-control" id="tipeeestreamdonateRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="tipeeestreamdonationGroupMin">Promote Amount</label>
+                <label for="tipeeestreamdonationGroupMin">Beförderungsbetrag</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('tipeeestreamdonationGroupMin', 'tipeeeStreamHandler', 'groupMin')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamdonationGroupMin" placeholder="Amount"
-                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+                        onclick="$.updateGreetingData('tipeeestreamdonationGroupMin', 'tipeeeStreamHandler', 'groupMin')">Übermitteln</button>
+                <input type="text" class="form-control" id="tipeeestreamdonationGroupMin" placeholder="Betrag"
+                       data-toggle="tooltip" title="Minimaler Betrag den jemand Spenden muss."/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="tipeeestreamdonateGreeting">Message</label>
+                <label for="tipeeestreamdonateGreeting">Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('tipeeestreamdonateGreetingInput', 'tipeeeStreamHandler', 'message')">Submit</button>
-                <input type="text" class="form-control" id="tipeeestreamdonateGreetingInput" placeholder="Donation Message"
+                        onclick="$.updateGreetingData('tipeeestreamdonateGreetingInput', 'tipeeeStreamHandler', 'message')">Übermitteln</button>
+                <input type="text" class="form-control" id="tipeeestreamdonateGreetingInput" placeholder="Spendennachricht"
                        data-toggle="tooltip" title="Tags: (name) (amount) (reward) (message) (currency) (formattedamount)"/>
             </div>
         </form>
     </div>
     </div>
 
-    <h3>StreamElements Settings</h3>
+    <h3>StreamElements Einstellungen</h3>
     <div>
     <div id="_streamElementsDonationsPanelDisabled" />
     <div id="_streamElementsDonationsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Donation Alerts</td>
+                <td>Spenden Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="streamelementsGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('streamelements', 'toggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
 
             <tr class="textList">
-                <td>Toggle Donator Promotion</td>
+                <td>Spender Beförderung An/Aus</td>
                 <td style="width: 25px"><div id="streamelementsdonationGroup" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('streamelementsdonationGroup', 'group');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -245,82 +245,82 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamelementsdonateRewardInput">Multiplier Reward</label>
+                <label for="streamelementsdonateRewardInput">Belohnungsmultiplikator</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamelementsdonateRewardInput', 'streamElementsHandler', 'reward')">Submit</button>
-                <input data-toggle="tooltip" title="Point(s) per single unit of currency donated. Partial numbers (0.1) are allowed."
-                       type="number" min="0" step="0.1" class="form-control" id="streamelementsdonateRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('streamelementsdonateRewardInput', 'streamElementsHandler', 'reward')">Übermitteln</button>
+                <input data-toggle="tooltip" title="Punkt(e) für eine Einheit der gespendeten Währung. Kommazahlen (0.1) sind erlaubt."
+                       type="number" min="0" step="0.1" class="form-control" id="streamelementsdonateRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamelementsdonationGroupMin">Promote Amount</label>
+                <label for="streamelementsdonationGroupMin">Beförderungsbetrag</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamelementsdonationGroupMin', 'streamElementsHandler', 'groupMin')">Submit</button>
-                <input type="text" class="form-control" id="streamelementsdonationGroupMin" placeholder="Amount"
-                       data-toggle="tooltip" title="Tags: Minimum amount someone needs to donate in total"/>
+                        onclick="$.updateGreetingData('streamelementsdonationGroupMin', 'streamElementsHandler', 'groupMin')">Übermitteln</button>
+                <input type="text" class="form-control" id="streamelementsdonationGroupMin" placeholder="Betrag"
+                       data-toggle="tooltip" title="Minimaler Betrag den jemand Spenden muss."/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamelementsdonateGreeting">Message</label>
+                <label for="streamelementsdonateGreeting">Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('streamelementsdonateGreetingInput', 'streamElementsHandler', 'message')">Submit</button>
-                <input type="text" class="form-control" id="streamelementsdonateGreetingInput" placeholder="Donation Message"
+                        onclick="$.updateGreetingData('streamelementsdonateGreetingInput', 'streamElementsHandler', 'message')">Übermitteln</button>
+                <input type="text" class="form-control" id="streamelementsdonateGreetingInput" placeholder="Spendennachricht"
                        data-toggle="tooltip" title="Tags: (name) (amount) (reward) (message) (currency)"/>
             </div>
         </form>
     </div>
     </div>
 
-    <h3>Subscriber Alert Settings</h3>
+    <h3>Abonnenten Benachrichtigungs Einstellungen</h3>
     <div>
     <div id="_twitchSubPanelDisabled" />
     <div id="_twitchSubPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Subscription Alerts</td>
+                <td>Abonnement Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="subscriptionGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('subscribeHandler', 'subscriberWelcomeToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
             <tr class="textList">
-                <td>Toggle Prime Subscription Alerts</td>
+                <td>Prime Abonnement Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="primeSubscriptionGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('subscribeHandler', 'primeSubscriberWelcomeToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
             <tr class="textList">
-                <td>Toggle Resubscription Alerts</td>
+                <td>Re-Abonnement Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="resubscriptionGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('subscribeHandler', 'reSubscriberWelcomeToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
             <tr class="textList">
-                <td>Toggle Subscription Gift Alerts</td>
+                <td>Geschenks-Abonnement Alarm An/Aus</td>
                 <td style="width: 25px"><div id="subscriptiongiftGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('subscribeHandler', 'giftSubWelcomeToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
              <tr class="textList">
-                <td>Toggle Mass Subscription Gift Alerts</td>
+                <td>Massen Geschenks-Abonnement Alarm An/Aus</td>
                 <td style="width: 25px"><div id="masssubscriptiongiftGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('subscribeHandler', 'massGiftSubWelcomeToggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -330,142 +330,142 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subReward">Subscribing Reward</label>
+                <label for="subReward">Abonnement Belohnung</label>
                     <button type="button" class="btn btn-primary inline pull-right"
-                          onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Submit</button>
-                    <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Points" />
+                          onclick="$.updateGreetingData('subRewardInput', 'subscribeHandler', 'subscribeReward')">Übermitteln</button>
+                    <input type="number" min="0" class="form-control" id="subRewardInput" placeholder="Punkte" />
               </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="reSubReward">Resubscribing Reward</label>
+                <label for="reSubReward">Re-Abonnement Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('reSubRewardInput', 'subscribeHandler', 'reSubscribeReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="reSubRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="giftSubReward">Gift Subscribing Reward</label>
+                <label for="giftSubReward">Geschenks-Abonnement Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('giftSubRewardInput', 'subscribeHandler', 'giftSubReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="giftSubRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('giftSubRewardInput', 'subscribeHandler', 'giftSubReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="giftSubRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="massGiftSubReward">Mass Gift Subscribing Reward Multiplier</label>
+                <label for="massGiftSubReward">Massen Geschenks-Abonnement Belohnungsmultiplikator</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('massGiftSubRewardInput', 'subscribeHandler', 'massGiftSubReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="massGiftSubRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('massGiftSubRewardInput', 'subscribeHandler', 'massGiftSubReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="massGiftSubRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subGreeting">Subscriber Message</label>
+                <label for="subGreeting">Abonnenten Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('subGreetingInput', 'subscribeHandler', 'subscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="subGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('subGreetingInput', 'subscribeHandler', 'subscribeMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="subGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (reward) (plan)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="primeSubGreeting">Prime Subscriber Message</label>
+                <label for="primeSubGreeting">Prime Abonnenten Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('primeSubGreetingInput', 'subscribeHandler', 'primeSubscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="primeSubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('primeSubGreetingInput', 'subscribeHandler', 'primeSubscribeMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="primeSubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (reward)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="resubGreeting">Resubscriber Message</label>
+                <label for="resubGreeting">Re-Abonnement Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'reSubscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="resubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('resubGreetingInput', 'subscribeHandler', 'reSubscribeMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="resubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (reward) (plan) (months) (customemote)" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="giftsubGreeting">Subscription Gift Message</label>
+                <label for="giftsubGreeting">Geschenks-Abonnement Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('giftsubGreetingInput', 'subscribeHandler', 'giftSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="giftsubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('giftsubGreetingInput', 'subscribeHandler', 'giftSubMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="giftsubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (recipient) (reward) (plan) (months) (customemote)" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="massGiftsubGreeting">Mass Subscription Gift Message</label>
+                <label for="massGiftsubGreeting">Massen Geschenks-Abonnement Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('massGiftsubGreetingInput', 'subscribeHandler', 'massGiftSubMessage')">Submit</button>
-                <input type="text" class="form-control" id="massGiftsubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('massGiftsubGreetingInput', 'subscribeHandler', 'massGiftSubMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="massGiftsubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (amount) (plan)" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="resubEmote">Resubscriber Custom Emote</label>
+                <label for="resubEmote">Re-Abonnements benutzerdefiniertes Emoji</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('resubEmoteInput', 'subscribeHandler', 'resubEmote')">Submit</button>
-                <input type="text" class="form-control" id="resubEmoteInput" placeholder="Emote name"
-                       data-toggle="tooltip" title="Emote that the (customemote) that will be replaced with. The emote will be added the amount of months the user subscribed for." />
+                        onclick="$.updateGreetingData('resubEmoteInput', 'subscribeHandler', 'resubEmote')">Übermitteln</button>
+                <input type="text" class="form-control" id="resubEmoteInput" placeholder="Emoji Name"
+                       data-toggle="tooltip" title="Emoji welches mit (customemote) ersetzt wird. Dem Emote wird die Anzahl der Monate hinzugefügt, die der Nutzer abonniert hat." />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subPlan1000">Subscriber Plan 1 Name</label>
+                <label for="subPlan1000">Abonnement Plan 1 Name</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('subPlan1000Input', 'subscribeHandler', 'subPlan1000')">Submit</button>
-                <input type="text" class="form-control" id="subPlan1000Input" placeholder="Plan name"
-                       data-toggle="tooltip" title="Name to give to this subscription plan (4.99). " />
+                        onclick="$.updateGreetingData('subPlan1000Input', 'subscribeHandler', 'subPlan1000')">Übermitteln</button>
+                <input type="text" class="form-control" id="subPlan1000Input" placeholder="Abonnement Name"
+                       data-toggle="tooltip" title="Name für dieses Abonnement (4,99). " />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subPlan2000">Subscriber Plan 2 Name</label>
+                <label for="subPlan2000">Abonnement Plan 2 Name</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('subPlan2000Input', 'subscribeHandler', 'subPlan2000')">Submit</button>
-                <input type="text" class="form-control" id="subPlan2000Input" placeholder="Plan name"
-                       data-toggle="tooltip" title="Name to give to this subscription plan (9.99). " />
+                        onclick="$.updateGreetingData('subPlan2000Input', 'subscribeHandler', 'subPlan2000')">Übermitteln</button>
+                <input type="text" class="form-control" id="subPlan2000Input" placeholder="Abonnement Name"
+                       data-toggle="tooltip" title="Name für dieses Abonnement (9,99). " />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="subPlan3000">Subscriber Plan 3 Name</label>
+                <label for="subPlan3000">Abonnement Plan 3 Name</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('subPlan3000Input', 'subscribeHandler', 'subPlan3000')">Submit</button>
-                <input type="text" class="form-control" id="subPlan3000Input" placeholder="Plan name"
-                       data-toggle="tooltip" title="Name to give to this subscription plan (24.99). " />
+                        onclick="$.updateGreetingData('subPlan3000Input', 'subscribeHandler', 'subPlan3000')">Übermitteln</button>
+                <input type="text" class="form-control" id="subPlan3000Input" placeholder="Abonnement Name"
+                       data-toggle="tooltip" title="Name für dieses Abonnement (24,99). " />
             </div>
         </form>
     </div>
     </div>
 
-    <h3>Bits Alert Settings</h3>
+    <h3>Bits Benachrichtigungs Einstellungen</h3>
     <div>
     <div id="_twitchBitsAlertsPanelDisabled" />
     <div id="_twitchBitsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Bits Alerts</td>
+                <td>Bits Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="bitsToggle" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('bitsSettings', 'toggle');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -475,10 +475,10 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="bitsMessage">Message</label>
+                <label for="bitsMessage">Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('bitsMessage', 'bitsSettings', 'message')">Submit</button>
-                <input type="text" class="form-control" id="bitsMessage" placeholder="Message"
+                        onclick="$.updateGreetingData('bitsMessage', 'bitsSettings', 'message')">Übermitteln</button>
+                <input type="text" class="form-control" id="bitsMessage" placeholder="Nachricht"
                        data-toggle="tooltip" title="Tags: (name) (amount) (message)"/>
             </div>
         </form>
@@ -487,8 +487,8 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="bitsMinimum">Minimum</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('bitsMinimum', 'bitsSettings', 'minimum')">Submit</button>
-                <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Amount" data-toggle="tooltip" title="Set the minimum amount of bits a user needs to cheer before triggering the alert."/>
+                        onclick="$.updateGreetingData('bitsMinimum', 'bitsSettings', 'minimum')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Höhe" data-toggle="tooltip" title="Lege die minimale Menge an Bits fest, bei denen der Alarm ausgelöst werden soll."/>
             </div>
         </form>
 
@@ -496,16 +496,16 @@
     </div>
 
 
-    <h3>GameWisp Alert Settings</h3>
+    <h3>GameWisp Benachrichtigungs Einstellungen</h3>
     <div>
     <div id="_gwSubPanelDisabled" />
     <div id="_gwSubPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Subscription Alert</td>
+                <td>Abonnement Benachrichtigung An/Aus</td>
                 <td style="width: 25px"><div id="gameWispGreetings" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleGreetings('gameWispSubHandler', 'showSubscribeMessage');"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -515,65 +515,65 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubGreeting">Subscriber Message</label>
+                <label for="gwSubGreeting">Abonnement Nachrichten</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwSubGreetingInput', 'gameWispSubHandler', 'subscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('gwSubGreetingInput', 'gameWispSubHandler', 'subscribeMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (tier) (reward)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubGreeting">Resubscriber Message</label>
+                <label for="gwResubGreeting">Re-Abonnement Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwResubGreetingInput', 'gameWispSubHandler', 'reSubscribeMessage')">Submit</button>
-                <input type="text" class="form-control" id="gwResubGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('gwResubGreetingInput', 'gameWispSubHandler', 'reSubscribeMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="gwResubGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (tier) (reward) (months)" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwTierupGreeting">Tier Up Announcement</label>
+                <label for="gwTierupGreeting">Hochstufungs Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwTierupGreetingInput', 'gameWispSubHandler', 'tierUpMessage')">Submit</button>
-                <input type="text" class="form-control" id="gwTierupGreetingInput" placeholder="Greeting Message"
+                        onclick="$.updateGreetingData('gwTierupGreetingInput', 'gameWispSubHandler', 'tierUpMessage')">Übermitteln</button>
+                <input type="text" class="form-control" id="gwTierupGreetingInput" placeholder="Begrüßungsnachricht"
                        data-toggle="tooltip" title="Tags: (name) (tier)" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubReward">Subscription Reward</label>
+                <label for="gwSubReward">Abonnement Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwSubRewardInput', 'gameWispSubHandler', 'subscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="gwSubRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('gwSubRewardInput', 'gameWispSubHandler', 'subscribeReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="gwSubRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubReward">Resubscription Reward</label>
+                <label for="gwResubReward">Re-Abonnement Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwResubRewardInput', 'gameWispSubHandler', 'reSubscribeReward')">Submit</button>
-                <input type="number" min="0" class="form-control" id="gwResubRewardInput" placeholder="Points" />
+                        onclick="$.updateGreetingData('gwResubRewardInput', 'gameWispSubHandler', 'reSubscribeReward')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="gwResubRewardInput" placeholder="Punkte" />
             </div>
         </form>
     </div>
     </div>
 
-    <h3>GameWisp Tier Perks</h3>
+    <h3>GameWisp Rang Vorteile</h3>
     <div>
     <div id="_gwTierPanelDisabled" />
     <div id="_gwTierPanel">
         <table style="background: transparent">
             <tr>
-                <td> <strong>Song Request Perks</strong> <div id="gameWispSongRequests" style="height: 220px; overflow: auto;" /> </td>
-                <td> <strong>Subscription Bonus Points Perks</strong> <div id="gameWispBonusPoints" style="height: 220px; overflow: auto;" /> </td>
+                <td> <strong>Songanfrage Vorteil</strong> <div id="gameWispSongRequests" style="height: 220px; overflow: auto;" /> </td>
+                <td> <strong>Abonnement Bonuspunkte Vorteil</strong> <div id="gameWispBonusPoints" style="height: 220px; overflow: auto;" /> </td>
             </tr>
             <tr>
-                <td> <strong>Resubscription Bonus Points Perks</strong> <div id="gameWispSubBonusPoints" style="height: 220px; overflow: auto;" /> </td>
+                <td> <strong>Re-Abonnement Bonuspunkte Vorteil</strong> <div id="gameWispSubBonusPoints" style="height: 220px; overflow: auto;" /> </td>
             </tr>
         </table>
     </div>

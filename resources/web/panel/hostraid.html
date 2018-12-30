@@ -22,50 +22,50 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="hostraidAccordion">
-    <h3>Host Channel</h3>
+    <h3>Kanal Hosting/Überfall</h3>
     <div>
         <div id="_hostChannelPanelDisabled" />
         <div id="_hostChannelPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostChannel">Host Channel</label>
+                <label for="hostChannel">Kanal Hosten</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.hostChannel()">Submit</button>
-                <input type="text" class="form-control" id="hostChannelInput" placeholder="Twitch Channel">
+                        onclick="$.hostChannel()">Übermitteln</button>
+                <input type="text" class="form-control" id="hostChannelInput" placeholder="Twitch Kanal">
             </div>
         </form>
     </div>
     </div>
 
-    <h3>Host Settings</h3>
+    <h3>Hosts Einstellungen</h3>
     <div>
     <div id="_hostAlertsPanelDisabled" />
     <div id="_hostAlertsPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Host Announcements</td>
+                <td>Host Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="hostToggle" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button"
+                    <div data-toggle="tooltip" title="Aktivieren" class="button"
                          onclick="$.toggle('settings', 'hostToggle', 'true');"><i class="fa fa-circle" />
                      </div>
                 </td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button"
+                    <div data-toggle="tooltip" title="Deaktivieren" class="button"
                          onclick="$.toggle('settings', 'hostToggle', 'false');"><i class="fa fa-circle-o" />
                      </div>
                 </td>
             </tr>
             <tr class="textList">
-                <td>Toggle Auto Host Announcements</td>
+                <td>Auto-Host Benachrichtigungen An/Aus</td>
                 <td style="width: 25px"><div id="autoHostToggle" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button"
+                    <div data-toggle="tooltip" title="Aktivieren" class="button"
                          onclick="$.toggle('settings', 'autoHostToggle', 'true');"><i class="fa fa-circle" />
                      </div>
                 </td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button"
+                    <div data-toggle="tooltip" title="Deaktivieren" class="button"
                          onclick="$.toggle('settings', 'autoHostToggle', 'false');"><i class="fa fa-circle-o" />
                      </div>
                 </td>
@@ -75,81 +75,81 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostAnnounce">Host Message</label>
+                <label for="hostAnnounce">Host Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateHostAnnounce()">Submit</button>
-                <input type="text" class="form-control" id="hostAnnounceInput" placeholder="Host Message"
+                        onclick="$.updateHostAnnounce()">Übermitteln</button>
+                <input type="text" class="form-control" id="hostAnnounceInput" placeholder="Host Nachricht"
                        data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostAutoAnnounce">Auto-Host Message</label>
+                <label for="hostAutoAnnounce">Auto-Host Nachricht</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateAutoHostAnnounce()">Submit</button>
-                <input type="text" class="form-control" id="hostAutoAnnounceInput" placeholder="Auto-Host Message"
+                        onclick="$.updateAutoHostAnnounce()">Übermitteln</button>
+                <input type="text" class="form-control" id="hostAutoAnnounceInput" placeholder="Auto-Host Nachricht"
                        data-toggle="tooltip" title="Tags: (name) (viewers) (reward)"/>
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostReward">Host Reward</label>
+                <label for="hostReward">Host Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateHostReward()">Submit</button>
-                <input type="number" min="0" class="form-control" id="hostRewardInput" placeholder="Points" />
+                        onclick="$.updateHostReward()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="hostRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="autoHostReward">Auto Host Reward</label>
+                <label for="autoHostReward">Auto Host Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateAutoHostReward()">Submit</button>
-                <input type="number" min="0" class="form-control" id="autoHostRewardInput" placeholder="Points" />
+                        onclick="$.updateAutoHostReward()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="autoHostRewardInput" placeholder="Punkte" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostMinViewers">Minimum Viewers for Host Reward</label>
+                <label for="hostMinViewers">Minimale Zuschauer für Belohnung</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateHostMinViewers()">Submit</button>
-                <input type="number" min="0" class="form-control" id="hostMinViewersInput" placeholder="Points" />
+                        onclick="$.updateHostMinViewers()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="hostMinViewersInput" placeholder="Punkte" />
             </div>
-            <small><b>Warning:</b> Twitch does not always provide viewer counts if the channel hosting you has stopped streaming which may result in providing no reward to a broadcaster that stops streaming prior to hosting you.</small>
+            <small><b>Warnung:</b> Twitch übermittelt nicht immer die Zuschauerzahlen, wenn der dich hostende Kanal gerade zu streamen aufgehört hat. Dies kann dazu führen, dass der/die StreamerIn keine Belohnung für das Hosting bekommt!</small>
         </form>
 
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="hostMinViewersAlert">Minimum Viewers for Host Alert</label>
+                <label for="hostMinViewersAlert">Minmale Anzahl an Zuschauern für die Host Benachrichtigung.</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.hostMinViewersAlert()">Submit</button>
-                <input type="number" min="0" class="form-control" id="hostMinViewersAlertInput" placeholder="Points" />
+                        onclick="$.hostMinViewersAlert()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="hostMinViewersAlertInput" placeholder="Punkte" />
             </div>
-            <small><b>Warning:</b> Twitch does not always provide viewer counts if the channel hosting you has stopped streaming which may result in providing an alert to a broadcaster that stops streaming prior to hosting you.</small>
+            <small><b>Warnung:</b> Twitch übermittelt nicht immer die Zuschauerzahlen, wenn der dich hostende Kanal gerade zu streamen aufgehört hat. Dies kann dazu führen, dass der/die StreamerIn keine Belohnung für das Hosting bekommt!</small>
         </form>
 
     </div>
     </div>
 
-    <h3>Host History</h3>
+    <h3>Host Geschichte</h3>
     <div>
     <div id="_hostHistoryPanelDisabled" />
     <div id="_hostHistoryPanel">
         <table>
             <tr class="textList">
-                <td>Host History</td>
+                <td>Host Geschichte</td>
                 <td style="width: 25px"><div id="hostHistoryMode" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Enable" class="button"
+                    <div data-toggle="tooltip" title="Aktivieren" class="button"
                          onclick="$.changeHostHistory('on');"><i class="fa fa-circle" />
                      </div>
                 </td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Disable" class="button"
+                    <div data-toggle="tooltip" title="Deaktivieren" class="button"
                          onclick="$.changeHostHistory('off');"><i class="fa fa-circle-o" />
                      </div>
                 </td>
@@ -157,12 +157,12 @@
         </table>
         <br>
 
-        <strong>Host History</strong>
+        <strong>Host Geschichte</strong>
         <div id="hostHistoryList" style="height: 200px; overflow: auto" />
     </div>
     </div>
 
-    <h3>Raid Settings</h3>
+    <h3>Überfall Nachricht</h3>
     <div>
         <form role="form">
             <p>Raids are now only supported on the new control panel.</p>

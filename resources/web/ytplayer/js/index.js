@@ -282,10 +282,10 @@ $(function() {
                 // Show the page.
                 $('#main').fadeIn(5e2);
                 // Alert the user.
-                toastr.info('Song queued: ' + (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
+                toastr.info('Song in der Warteschlange: ' + (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
             } else {
                 player.API.loadVideoById(e.play, 0, 'medium');
-                toastr.success('Now playing: ' +  (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
+                toastr.success('Jetzt spielt: ' +  (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
             }
 
             // Update the value under the slider.
@@ -426,10 +426,10 @@ $(function() {
         }
     });
 
-    // Add song to queue button.
-    $('#queue-add-song-button').on('click', () => {
-        helpers.getSongModal('Add Song to Queue', 'Song Name or YouTube Url', 'Add', 'https://youtu.be/dQw4w9WgXcQ', () => {
-            let song = $('#song-url').val();
+	// Add song to queue button.
+	$('#queue-add-song-button').on('click', () => {
+		helpers.getSongModal('Song zur Warteschlange hinzufügen', 'Songname oder YouTube Url', 'Hinzufügen', 'https://youtu.be/dQw4w9WgXcQ', () => {
+			let song = $('#song-url').val();
 
             if (song.length > 0) {
                 player.requestSong(song);

@@ -22,11 +22,11 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="timeAccordion">
-    <h3>Time Configuration</h3>
+    <h3>Zeit Einstellungen</h3>
     <div>
         <table>
             <tr class="textList">
-                <td>Stream Offline Time Accumulation</td>
+                <td>Stream-Offline Zeit-Vergabe</td>
                 <td style="width: 25px"><div id="keepTimeWhenOffline" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -35,7 +35,7 @@
                 </td>
             </tr>
             <tr class="textList">
-                <td>Automatic Time Promotion to Regular</td>
+                <td>Automatische Beförderung zum/r StammzuschauerIn</td>
                 <td style="width: 25px"><div id="timeLevel" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -44,7 +44,7 @@
                 </td>
             </tr>
             <tr class="textList">
-                <td>Chat Announcement for Promotion to Regular</td>
+                <td>ModeratorInnen können BenutzerInnen-Zeit einstellen</td>
                 <td style="width: 25px"><div id="timeLevelWarning" /></td>
                 <td style="width: 25px">
                     <div data-toggle="tooltip" title="Toggle" class="button"
@@ -56,40 +56,40 @@
 
         <br>
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="topListAmountTime">Top Time List Amount</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListTime()">Update</button>
-            <input type="number" min="0" class="form-control" id="topListAmountTime" placeholder="Amount" />
+            <label for="topListAmountTime">Top-Zeitliste Anzahl</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListTime()">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="topListAmountTime" placeholder="Anzahl" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setTimePromotion">Hours to Regular Promotion</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimePromotion()">Update</button>
-            <input type="number" min="0" class="form-control" id="setTimePromotionInput" placeholder="Hours" />
+            <label for="setTimePromotion">Stunden bis zur StammzuschauerInbeförderung</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimePromotion()">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setTimePromotionInput" placeholder="Stunden" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setTimeZone">Configure Time Zone (see list
-                <a target="_blank" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">here</a>)
+            <label for="setTimeZone">Konfiguriere Zeitzone (siehe Liste
+                <a target="_blank" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">hier</a>)
             </label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimeZone()">Update</button>
-            <input type="text" class="form-control" id="setTimeZoneInput" placeholder="Timezone" />
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setTimeZone()">Aktualisieren</button>
+            <input type="text" class="form-control" id="setTimeZoneInput" placeholder="Zeitzone" />
         </div>
     </div>
 
-    <h3>Modify User Time</h3>
+    <h3>BenutzerInnen-Zeit ändern</h3>
     <div>
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="adjustUserTime">Adjust User Time (Seconds)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('take')">Take</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('add')">Add</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('set')">Set</button>
-            <input type="text" class="form-control" id="adjustUserTimeNameInput" placeholder="Username or click a row below" />
-            <input type="number" min="0" class="form-control" id="adjustUserTimeSecsInput" placeholder="Seconds" />
+            <label for="adjustUserTime">BenutzerInnen-Zeit anpassen (Sekunden)</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('take')">Nehmen</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('add')">Hinzufügen</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserTime('set')">Festlegen</button>
+            <input type="text" class="form-control" id="adjustUserTimeNameInput" placeholder="BenutzerInnenname, oder klicke unten auf eine Zeile." />
+            <input type="number" min="0" class="form-control" id="adjustUserTimeSecsInput" placeholder="Sekunden" />
         </div>
         <br>
 
         <div>
-            <span id="userTimeTableTitle">User Time Table</span>
+            <span id="userTimeTableTitle">BenutzerInnen Zeitliste</span>
         </div>
         <br>
         <div id="userTimeTable" style="height: 510px; overflow: auto;" />

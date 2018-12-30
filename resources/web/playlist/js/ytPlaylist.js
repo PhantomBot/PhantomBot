@@ -100,14 +100,14 @@ connection.onmessage = function(e) {
 
 function handleNewSong(title, duration, requester, id) {
     debugMsg('handleNewSong(' + title + ', ' + duration + ', ' + requester + ')');
-    $('#currentSongTable').html('<tr><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>' +
+    $('#currentSongTable').html('<tr><th>Titel Name</th><th>Hinzugefügt von</th><th>Länge</th><th>YouTube ID</th></tr>' +
                                 '<tr><td>' + title + '</td><td>' + requester + '</td><td>' + duration + '</td><td>' + id + '</td></tr>');
 }
 
 function handlePlayList(d) {
     debugMsg('handlePlayList(' + d + ')');
-    $('#playlistTableTitle').html('Current Playlist: ' + d['playlistname']);
-    var tableData = '<tr><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>';
+    $('#playlistTableTitle').html('Aktuelle Playlist: ' + d['playlistname']);
+    var tableData = '<tr><th>Titel Name</th><th>Länge</th><th>YouTube ID</th></tr>';
     for (var i in d['playlist']) {
         var id = d['playlist'][i]['song'];
         var title = d['playlist'][i]['title'];
@@ -119,7 +119,7 @@ function handlePlayList(d) {
 
 function handleSongList(d) {
     debugMsg('handleSongList(' + d + ')');
-    var tableData = '<tr><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>';
+    var tableData = '<tr><th>Titel Name</th><th>Hinzugefügt von</th><th>Länge</th><th>YouTube ID</th></tr>';
     for (var i in d['songlist']) {
         var id = d['songlist'][i]['song'];
         var title = d['songlist'][i]['title'];

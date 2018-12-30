@@ -526,7 +526,7 @@
         if (key == 'followDelay') {
             if (parseInt(value) < 5) {
                 document.getElementById(inputId).type = 'text';
-                $('#' + inputId).val('Follow delay cannot be less than 5 seconds!');
+                $('#' + inputId).val('Die Follow-Verzögerung darf nicht weniger als 5 Sekunden betragen!');
                 setTimeout(function() { doQuery(); document.getElementById(inputId).type = 'number'; }, TIMEOUT_WAIT_TIME * 4);
                 return;
             }
@@ -582,7 +582,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 7 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Greeting Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Begrüßungsdaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

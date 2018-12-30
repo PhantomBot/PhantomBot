@@ -22,32 +22,32 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="quotesAccordion">
-    <h3>Quotes</h3>
+    <h3>Zitate</h3>
     <div>
     <div id="_quotesPanelDisabled" />
     <div id="_quotesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <button type="button" class="btn btn-danger inline pull-right" onclick="$.delQuoteMsg()">Delete Quote Message</button>
-                <label for="quoteMessage">Set Quote Message</label>
+                <button type="button" class="btn btn-danger inline pull-right" onclick="$.delQuoteMsg()">Zitat-Nachricht löschen</button>
+                <label for="quoteMessage">Zitat-Nachricht hinzufügen</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.setQuoteMessage()">Submit</button>
-                <input type="text" class="form-control" id="quoteMessageInput" placeholder="Message for Quote in Chat"
+                        onclick="$.setQuoteMessage()">Übermitteln</button>
+                <input type="text" class="form-control" id="quoteMessageInput" placeholder="Zitat-Nachricht für den Chat..."
                        data-toggle="tooltip" title="Tags: (id) (quote) (user) (game) (date)">
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addQuote">Add Quote</label>
+                <label for="addQuote">Zitat hinzufügen</label>
                 <button type="button" class="btn btn-primary inline pull-right" 
-                        onclick="$.addQuote()">Submit</button>
-                <input type="text" class="form-control" id="addQuoteInput" placeholder="A New Quote">
+                        onclick="$.addQuote()">Übermitteln</button>
+                <input type="text" class="form-control" id="addQuoteInput" placeholder="Ein neues Zitat...">
             </div>
         </form>
         <br>
 
-        <strong>Quotes</strong><br><br>
+        <strong>Zitate</strong><br><br>
         <div id="quoteList" style="height: 350px; overflow: auto;" />
     </div>
     </div>

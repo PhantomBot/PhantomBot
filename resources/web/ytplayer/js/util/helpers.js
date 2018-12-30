@@ -94,11 +94,11 @@ $(function() {
         })).append($('<select/>', {
             'class': 'form-control',
             'id': 'playlist-load',
-            'text': 'Select a playlist',
+            'text': 'Wähle eine Playlist aus',
             'style': 'width: 100%; cursor: pointer;',
             'data-toggle': 'dropdown'
         }).append($('<option/>', {
-            'html': 'Select a playlist',
+            'html': 'Wähle eine Playlist aus',
             'selected': 'true',
             'disabled': 'true',
             'hidden': 'true'
@@ -107,7 +107,7 @@ $(function() {
                 'html': playlist
             });
         })).append($('<option/>', {
-            'html': 'Select a playlist',
+            'html': 'Wähle eine Playlist aus',
             'disabled': 'true',
             'hidden': 'true'
         }))), onClose);
@@ -120,10 +120,10 @@ $(function() {
      */
     helpers.getSettingsModal = (onClose) => {
         player.dbQuery('yt_settings', 'ytSettings', (e) => {
-            helpers.getModal('settings-modal', 'YouTube Player and Request Settings', 'Save', $('<form/>').append($('<div/>', {
+            helpers.getModal('settings-modal', 'YouTube Player und Request Einstellungen', 'Speichern', $('<form/>').append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
-                'text': 'Player Size'
+                'text': 'Player-Größe'
             })).append($('<div/>', {
                 'class': 'dropdown'
             }).append($('<button/>', {
@@ -138,35 +138,35 @@ $(function() {
             }).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Default',
+                'text': 'Standard',
                 'click': () => {
                     $('#player-size-btn').text('Default');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Half',
+                'text': 'Hälfte',
                 'click': () => {
                     $('#player-size-btn').text('Half');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Small',
+                'text': 'Klein',
                 'click': () => {
                     $('#player-size-btn').text('Small');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Tiny',
+                'text': 'Winzig',
                 'click': () => {
                     $('#player-size-btn').text('Tiny');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Hidden',
+                'text': 'Versteckt',
                 'click': () => {
                     $('#player-size-btn').text('Hidden');
                 }
@@ -177,30 +177,30 @@ $(function() {
             })).append($('<input/>', {
                 'type': 'text',
                 'data-toggle': 'tooltip',
-                'title': 'Name of the default playlist user.',
+                'title': 'Name des standardmäßigen Playlist-Benutzers.',
                 'class': 'form-control',
                 'id': 'dj-name',
                 'value': e.playlistDJname
             }))).append($('<div/>', {
                 'class': 'form-group',
             }).append($('<label/>', {
-                'text': 'Maximum Songs'
+                'text': 'Maximale Songs'
             })).append($('<input/>', {
                 'type': 'number',
                 'data-toggle': 'tooltip',
-                'title': 'How many songs one user can have in the queue.',
+                'title': 'Wie viele Songs kann ein Benutzer in der Warteschlange haben.',
                 'class': 'form-control',
                 'id': 'max-song-user',
                 'value': e.songRequestsMaxParallel
             }))).append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
-                'text': 'Maximum Song Duration'
+                'text': 'Maximale Songlänge'
             })).append($('<input/>', {
                 'type': 'number',
                 'data-toggle': 'tooltip',
                 'id': 'max-song-length',
-                'title': 'How long in seconds a song can be.',
+                'title': 'Wie lang in Sekunden ein Song sein darf.',
                 'class': 'form-control',
                 'value': e.songRequestsMaxSecondsforVideo
             }))), onClose).modal('toggle');
@@ -215,7 +215,7 @@ $(function() {
     helpers.getPlayerSize = () => {
         let size = localStorage.getItem('phantombot_ytplayer_size');
 
-        return (size === null ? 'Default' : size[0].toUpperCase() + size.substr(1));
+        return (size === null ? 'Standart' : size[0].toUpperCase() + size.substr(1));
     };
 
     /*

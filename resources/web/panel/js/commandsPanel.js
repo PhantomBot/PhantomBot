@@ -133,7 +133,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_commands')) {
                 if (msgObject['results'].length === 0) {
-                    $('#customCommandsList').html('<i>There are no custom commands defined.</i>');
+                    $('#customCommandsList').html('<i>Es sind keine benutzerdefinierten Befehle definiert.</i>');
                     return;
                 }
 
@@ -166,7 +166,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_aliases')) {
                 if (msgObject['results'].length === 0) {
-                    $('#aliasCommandsList').html('<i>There are no aliased commands defined.</i>');
+                    $('#aliasCommandsList').html('<i>Es sind keine Alias-Befehle definiert.</i>');
                     return;
                 }
 
@@ -192,7 +192,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_pricecom')) {
                 if (msgObject['results'].length === 0) {
-                    $('#priceCommandsList').html('<i>There are no commands with prices defined.</i>');
+                    $('#priceCommandsList').html('<i>Es gibt keine Befehle mit festgelegten Preisen.</i>');
                     return;
                 }
                 msgObject['results'].sort(sortCommandTable);
@@ -219,7 +219,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_count')) {
                 if (msgObject['results'].length === 0) {
-                    $('#countCommandsList').html('<i>There are no commands with counters defined.</i>');
+                    $('#countCommandsList').html('<i>Es sind keine Befehle mit festgelegten Zählern vorhanden.</i>');
                     return;
                 }
                 msgObject['results'].sort(sortCommandTable);
@@ -246,7 +246,7 @@
 
             if (panelCheckQuery(msgObject, 'commands_payment')) {
                 if (msgObject['results'].length === 0) {
-                    $('#payCommandsList').html('<i>There are no commands with payments defined.</i>');
+                    $('#payCommandsList').html('<i>Es sind keine Befehle mit festgelegten Zahlungen vorhanden.</i>');
                     return;
                 }
                 msgObject['results'].sort(sortCommandTable);
@@ -295,11 +295,11 @@
                     if (commandName.indexOf(' ') === -1) {
                         if (disabledCommands[commandName] !== undefined) {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
-                                     "         data-toggle=\"tooltip\" title=\"Enable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'enable');\">" +
+                                     "         data-toggle=\"tooltip\" title=\"Aktiviere Befehl\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'enable');\">" +
                                      "    <i style=\"color: var(--main-color)\" class=\"fa fa-toggle-off\" /></div></td>";
                         } else {
                             html +=  "<td><div id=\"commandEnabled_" + commandName + "\"" +
-                                     "         data-toggle=\"tooltip\" title=\"Disable Command\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'disable');\">" +
+                                     "         data-toggle=\"tooltip\" title=\"Deaktiviere Befehl\" class=\"button\" onclick=\"$.commandEnable('" + commandName + "', 'disable');\">" +
                                      "    <i style=\"color: var(--main-color)\" class=\"fa fa-toggle-on\" /></div></td>";
                         }
                     } else {
@@ -309,25 +309,25 @@
                     html += "<td /><td><div id=\"commandsList_" + commandName + "\"><strong><font style=\"color: var(--main-color)\">" + groupIcons[commandValue] +
                             "    </font></strong></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Caster\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Streamer erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 0);\">" +
                             "    <i class=\"fa fa-television\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Admin\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 1);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Admin erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 1);\">" +
                             "    <i class=\"fa fa-cog\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Mod\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 2);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Moderator erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 2);\">" +
                             "    <i class=\"fa fa-shield\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Donator\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 4);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Spender erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 4);\">" +
                             "    <i class=\"fa fa-dollar\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Sub\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 3);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Abonnent erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 3);\">" +
                             "    <i class=\"fa fa-credit-card\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Regular\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 6);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Stammzuschauer erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 6);\">" +
                             "    <i class=\"fa fa-clock-o\" /></div></td>" +
 
-                            "<td><div data-toggle=\"tooltip\" title=\"Set Viewer\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 7);\">" +
+                            "<td><div data-toggle=\"tooltip\" title=\"Ab Zuschauer erlauben\" class=\"button\" onclick=\"$.commandPermission('" + commandName + "', 7);\">" +
                             "    <i class=\"fa fa-user\" /></div></td>" +
 
                             "</tr>";
@@ -435,22 +435,22 @@
         var commandText = $('#addCommandText').val();
 
         if (command.length == 0) {
-            $('#addCommandCommand').val('[ERROR] Please enter a value.');
+            $('#addCommandCommand').val('[ERROR] Bitte gebe einen Wert ein.');
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
         } else if (commandText.length == 0) {
-            $('#addCommandText').val('[ERROR] Please enter a value.');
+            $('#addCommandText').val('[ERROR] Bitte gebe einen Wert ein.');
             $('#addCommandCommand').val('');
             setTimeout(function() { $('#addCommandText').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
         } else if (command.match(/\s+/)) {
-            $('#addCommandCommand').val('[ERROR] Your command cannot contain a space.');
+            $('#addCommandCommand').val('[ERROR] Dein Befehl darf kein Leerzeichen enthalten.');
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
         } else if (botCommands.indexOf(command.replace('!', '')) !== -1) {
-            $('#addCommandCommand').val('[ERROR] Command already exists.');
+            $('#addCommandCommand').val('[ERROR] Befehl existiert bereits.');
             $('#addCommandText').val('');
             setTimeout(function() { $('#addCommandCommand').val(''); }, TIMEOUT_WAIT_TIME * 10);
             return;
@@ -458,7 +458,7 @@
 
         command = command.replace('!', '');
 
-        $('#addCommandText').val('Command successfully added!');
+        $('#addCommandText').val('Befehl erfolgreich hinzugefügt!');
         sendDBUpdate('addCustomCommand', 'command', command.toLowerCase(), commandText);
         sendWSEvent('commands', './commands/customCommands.js', null, ['add', command, commandText]);
         setTimeout(function() {
@@ -493,11 +493,11 @@
         var alias = $('#aliasCommandInputAlias').val();
 
         if (alias.length == 0) {
-            $("#aliasCommandInputAlias").val("[ERROR] Please enter a value.");
+            $("#aliasCommandInputAlias").val("[ERROR] Bitte gebe einen Wert ein.");
             setTimeout(function() { $("#aliasCommandInputAlias").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
         } else if (main.length == 0) {
-            $("#aliasCommandInput").val("[ERROR] Please enter a value.");
+            $("#aliasCommandInput").val("[ERROR] Bitte gebe einen Wert ein.");
             setTimeout(function() { $("#aliasCommandInput").val(""); }, TIMEOUT_WAIT_TIME * 2);
             return;
         }
@@ -678,7 +678,7 @@
         }
 
         if (command.match(/\s/)) {
-            $("#cooldownCmdInputCommand").val("Cooldowns cannot have a space, please set the cooldown on the default command.");
+            $("#cooldownCmdInputCommand").val("Abklingzeiten können kein Leerzeichen enthalten, bitte setzen Sie die Abklingzeit auf den Standardbefehl.");
             setTimeout(function() { $("#cooldownCmdInputCommand").val(""); $("#cooldownCmdInput").val(""); $("#globalCooldownCheck").prop('checked', true); }, TIMEOUT_WAIT_TIME * 3);
             return;
         }
@@ -749,7 +749,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 1 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Commands Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Befehlsdaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

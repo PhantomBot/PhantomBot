@@ -39,18 +39,18 @@
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="streamTitle">Stream Title</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setStreamTitle()">Update</button>
-                <input type="text" class="form-control" id="streamTitleInput" placeholder="Stream Title" />
+                <label for="streamTitle">Stream Titel</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setStreamTitle()">Aktualisieren</button>
+                <input type="text" class="form-control" id="streamTitleInput" placeholder="Stream Titel" />
             </div>
         </form>
         <br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gameTitle">Game Title</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGameTitle()">Update</button>
-                <input type="text" class="form-control" id="gameTitleInput" placeholder="Game Title" />
+                <label for="gameTitle">Spieltitel</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setGameTitle()">Aktualisieren</button>
+                <input type="text" class="form-control" id="gameTitleInput" placeholder="Spieltitel" />
             </div>
         </form>
 
@@ -58,7 +58,7 @@
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Community</label>
-                <button type="button" class="btn btn-primary inline pull-right" style="margin-bottom: -9px;" onclick="$.setCommunity()">Update</button>
+                <button type="button" class="btn btn-primary inline pull-right" style="margin-bottom: -9px;" onclick="$.setCommunity()">Aktualisieren</button>
                 <div class="row" style="padding-top: 10px;">
                     <div class="col-md-4">
                         <input type="text" class="form-control" placeholder="Stream community." id="stream-community-1">
@@ -74,26 +74,26 @@
         </form>
 
         <button type="button" class="btn btn-alert inline pull-left" onclick="$.disconnect()"
-        data-toggle="tooltip" title="NOTE: This will remove the bot from your channel, you will have to manually rejoin it.">Remove</button>
+        data-toggle="tooltip" title="HINWEIS: Dadurch wird der Bot aus dem Kanal entfernt und du musst ihn manuell wieder verbinden.">Entfernen</button>
 
         <button type="button" class="btn btn-warning inline pull-left" onclick="$.chatReconnect()"
-        data-toggle="tooltip" title="Reconnect PhantomBot to your Twitch channel. This does not reconnect if the 'Remove' action was performed.">Reconnect</button>
+        data-toggle="tooltip" title="Verbinde PhantomBot wieder mit deinem Twitch Kanal. Dies funktioniert nicht, wenn vorher die 'Entfernen' Aktion betätigt wurde.">Wiederverbinden</button>
 
-        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleTwitchChat()">Toggle Chat</button>
+        <button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleTwitchChat()">Chat An/Aus</button>
     </div>
 
-    <h3>Chat Configuration and Statistics</h3>
+    <h3>Chat Konfiguration und Statistik</h3>
     <div>
         <div>
-            <strong>Chat Configuration Toggles</strong><br><br>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('pausecommands')">Command Pause</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('togglewhispermode')">Whisper Mode</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('toggleme')">Action (/me) Mode</button>
-            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('mute')">Mute Mode</button>
+            <strong>Chat Konfiguration</strong><br><br>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('pausecommands')">Pause für Befehle</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('togglewhispermode')">Flüstermodus</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('toggleme')">Aktionsmodus (/me)</button>
+            <button type="button" class="btn btn-primary inline" onclick="$.toggleCommand('mute')">Stumm-Modus</button>
         </div>
         <br>
 
-        <div><strong>Chat Statistics</strong><br><br></div>
+        <div><strong>Chat Statistik</strong><br><br></div>
         <div id="panelStatsEnabled" />
         <table>
             <tr style="background-color: transparent">
@@ -125,24 +125,24 @@
         </table>
     </div>
 
-    <h3>Logging Configuration</h3>
+    <h3>Protokollierungs-Konfiguration</h3>
     <div>
         <table>
             <tr class="textList">
-                <td>Event logging</td>
+                <td>Ereignis Protokollierung</td>
                 <td style="width: 25px"><div id="logEvent" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleLog('logEvent');"><i class="fa fa-refresh" />
                      </div>
                     <div>
                 </td>
             </tr>
             <tr class="textlist">
-                <td>Error logging</td>
+                <td>Fehler Protokollierung</td>
                 <td style="width: 25px"><div id="logError" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleLog('logError');"><i class="fa fa-refresh" />
                      </div>
                      </div>
@@ -150,10 +150,10 @@
                     </td>
                 </tr>
                 <tr class="textList">
-                    <td>File & chat logging</td>
+                    <td>Datei & Chat Protokollierung</td>
                     <td style="width: 25px"><div id="logFile" /></td>
                     <td style="width: 25px">
-                        <div data-toggle="tooltip" title="Toggle" class="button"
+                        <div data-toggle="tooltip" title="An/Aus" class="button"
                              onclick="$.toggleLog('logFile');"><i class="fa fa-refresh" />
                          </div>
                     </td>
@@ -163,56 +163,55 @@
         <br>
         <form role="form">
              <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="logRotate">Number of Days to Keep Logs</label>
-                <button type="button" class="btn btn-primary pull-right" onclick="$.setLogRotate()">Submit</button>
-                <input type="number" min="0" class="form-control" id="logRotateInput" placeholder="Days"
-                       data-toggle="tooltip" title="Days to keep logs, 0 means do not delete logs."/>
+                <label for="logRotate">Anzahl der Tage für die Aufbewahrung der Protokolle</label>
+                <button type="button" class="btn btn-primary pull-right" onclick="$.setLogRotate()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="logRotateInput" placeholder="Tage"
+                       data-toggle="tooltip" title="Tage, um Protokolle zu führen, 0 bedeutet, dass Protokolle nicht gelöscht werden."/>
             </div>
         </form>
     </div>
 
-    <h3>Twitch Modules</h3>
+    <h3>Twitch Module</h3>
     <div>
         <div id="modulesList" style="height: 300px; overflow: auto;" />
     </div>
 
-    <h3>Discord Modules</h3>
+    <h3>Discord Module</h3>
 
     <div>
-        <i>These are modules for our discord integration. If you do not have your bot connected to discord the enable buttons will not work and the modules
-            may not show up.</i>
+        <i>Dies sind die Module für unsere Discord Integration. Solltest du deinen Bot nicht mit Discord verbunden haben, wird der Aktivierungs-Knopf nicht funktionieren.</i>
         <div id="discordModulesList" style="height: 300px; overflow: auto;" />
     </div>
 
 
-    <h3>Highlights</h3>
+    <h3>Höhepunkte</h3>
     <div>
         <div id="_highlightsPanelDisabled" />
         <div id="_highlightsPanel">
-            Make a note of an event in the broadcast to make creating highlights in Twitch easier later.
+            Notiere dir ein Ereignis im Stream um später leichter einen Höhepunkt in Twitch zu markieren.
             <br><br>
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <label for="highlight">Create Highlight</label>
-                    <button type="button" class="btn btn-primary pull-right" onclick="$.setHighlight()">Submit</button>
-                    <input type="text" class="form-control" id="highlightInput" placeholder="Game Highlight" />
+                    <label for="highlight">Erstelle Höhepunkt</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setHighlight()">Übermitteln</button>
+                    <input type="text" class="form-control" id="highlightInput" placeholder="Spielhöhenpunkt" />
                 </div>
             </form>
             <br>
 
-            <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Clear Highlights</button>
-            <strong>Current Highlights</strong><br>
+            <button type="button" class="btn btn-danger pull-right" onclick="$.clearHighlights()">Bereinige Höhepunkte</button>
+            <strong>Aktuelle Höhepunkte</strong><br>
             <span id="showHighlights" />
         </div>
     </div>
 
-    <h3>Death Counter</h3>
+    <h3>Todeszähler</h3>
     <div>
         <div id="_deathCtrPanelDisabled" />
         <div id="_deathCtrPanel">
             <table>
                 <tr class="textList" style="vertical-align: middle">
-                    <td>Deaths: <span id="deathCounterValue">Fetching Game...</span></td>
+                    <td>Tode: <span id="deathCounterValue">Aktuelles Spiel...</span></td>
                     <td style="width: 30px">
                         <button type="button" class="btn btn-primary" onclick="$.adjustDeathCounter('add')"><i class="fa fa-plus fa-1x" /></button>
                     </td>
@@ -231,53 +230,53 @@
     <div>
         <div id="_multiLinkPanelDisabled" />
         <div id="_multiLinkPanel">
-            Multi-Link provides a link to share multiple Twitch channels in one UI.
-            Great for races or other competititions. Provide a space delimited list of channels.
-            Set a timer to let chat know on a regular basis that the Multi-Link is on.
+            Multi-Link bietet einen Link um mehrere Twitch Kanäle in einem UI zu teilen.
+            Toll für Rennen, oder andere Wettbewerbe. Gib eine, durch Leerzeichen getrennte, Liste von Kanälen an.
+            Lege einen Zeitintervall fest, welcher den Chat in regelmäßigen Abständen wissen lässt, dass Multi-Link aktiviert ist.
             <br><br>
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <label for="multi-link">Multi-Link Channels</label>
-                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink('#multiLinkInput', 'otherChannels')">Submit</button>
-                    <input type="text" class="form-control" id="multiLinkInput" placeholder="Channel-1 Channel-2"
-                           data-toggle="tooltip" title="Place channels that you want to be in the multi-link, separate them with a space. Do not include your channel in this." />
+                    <label for="multi-link">Multi-Link Kanäle</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLink('#multiLinkInput', 'otherChannels')">Übermitteln</button>
+                    <input type="text" class="form-control" id="multiLinkInput" placeholder="Kanal-1 Kanal-2"
+                           data-toggle="tooltip" title="Platziere hier die Kanäle, getrennt duch ein Leerzeichen, die du im Multi-Link haben willst. Inkludiere nicht deinen Kanal in dieser Liste." />
                 </div>
             </form>
 
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
                     <label for="multi-link">Timer Interval</label>
-                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer('#multiLinkTimerInput', 'timerInterval')">Submit</button>
-                    <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Interval"
-                        data-toggle="tooltip" title="Set the interval (in minutes) for the multi-link to be said in chat. Minimum is 5 minutes." />
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiLinkTimer('#multiLinkTimerInput', 'timerInterval')">Übermitteln</button>
+                    <input type="text" class="form-control" id="multiLinkTimerInput" placeholder="Intervall"
+                        data-toggle="tooltip" title="Lege hier den Intervall (in Minuten) für die Ansage im Chat fest. Minimum sind 5 Minuten." />
                 </div>
             </form>
 
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <label for="multi-link">Required Messages</label>
-                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Submit</button>
-                    <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Amount"
-                        data-toggle="tooltip" title="Set the amount of messages required before sending the multi-link." />
+                    <label for="multi-link">Erforderliche Nachrichten</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.setMultiReqMsgs('#multiLinkReqMsgsInput', 'reqMessages')">Übermitteln</button>
+                    <input type="text" class="form-control" id="multiLinkReqMsgsInput" placeholder="Anzahl"
+                        data-toggle="tooltip" title="Lege die erforderliche Anzahl an Nachrichten fest, welche vor dem senden des Multi-Link nötig sind." />
                 </div>
             </form>
 
-            <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer On</button>
-            <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Off</button>
-            <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Clear Multi-Link</button>
+            <button type="button" class="btn btn-success" onclick="$.multiLinkTimerOn()">Multi-Link Timer An</button>
+            <button type="button" class="btn btn-danger" onclick="$.multiLinkTimerOff()">Multi-Link Timer Aus</button>
+            <button type="button" class="btn btn-danger" onclick="$.clearMultiLink()">Leere Multi-Link</button>
         </div>
     </div>
 
-    <h3>Shoutout a Streamer</h3>
+    <h3>Streamer bekannt machen</h3>
     <div>
         <div id="_shoutoutPanelDisabled" />
         <div id="_shoutoutPanel">
-            Shoutout a streamer!  Will display their Twitch URL in chat along with game being played, or last played.<br><br>
+            Einen Streamer bekannt machen! Zeigt im Chat dessen Twitch URL und das Spiel, welches gerade gespielt wird, oder zuletzt gespielt wurde.<br><br>
             <form role="form">
                  <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <label for="shoutOut">Twitch Channel to Shoutout</label>
-                    <button type="button" class="btn btn-primary pull-right" onclick="$.shoutOut()">Submit</button>
-                    <input type="text" class="form-control" id="shoutOutInput" placeholder="Twitch Channel" />
+                    <label for="shoutOut">Twitch Kanal zum ankündigen</label>
+                    <button type="button" class="btn btn-primary pull-right" onclick="$.shoutOut()">Übermitteln</button>
+                    <input type="text" class="form-control" id="shoutOutInput" placeholder="Twitch Kanal" />
                 </div>
             </form>
         </div>

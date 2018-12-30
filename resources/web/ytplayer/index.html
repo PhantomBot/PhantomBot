@@ -23,7 +23,7 @@
     <!-- Meta data -->
     <meta charset="utf-8">
     <!-- Page title -->
-    <title>PhantomBot YouTube Player</title>
+    <title>PhantomBotDE YouTube Player</title>
     <!-- Load Bootstrap 4.0 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
     <!-- Load Fontawesome 5.0.4 -->
@@ -66,19 +66,19 @@
                                 <div class="play-pause-controls">
                                     <div class="btn-group btn-group-justified">
                                         <!-- Play and pause button handled in js -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="pause-button" data-toggle="tooltip" title="Play song">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="pause-button" data-toggle="tooltip" title="Abspielen">
                                             <i class="fas fa-play" id="play-pause-button"></i>
                                         </button>
                                         <!-- Next song button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Skip song">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Titel Überspringen">
                                             <i class="fas fa-fast-forward"></i>
                                         </button>
                                         <!-- Add to playlist button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Add to playlist (steal song)">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Lied zur Playlist hinzufügen">
                                             <i class="fas fa-star"></i>
                                         </button>
                                         <!-- delete from playlist button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="del-cur-playlist-button" data-toggle="tooltip" title="Delete from playlist">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="del-cur-playlist-button" data-toggle="tooltip" title="Aus der Playlist löschen">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -97,7 +97,7 @@
                                 <!-- Volume controls -->
                                 <div class="mute-control">
                                     <!-- Add to playlist button -->
-                                    <button type="button" class="btn btn-secondary btn-sm" id="mute-button" data-toggle="tooltip" title="Mute song">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="mute-button" data-toggle="tooltip" title="Stummschalten">
                                         <i class="fas fa-volume-down" id="mute-button-icon"></i>
                                     </button>
                                 </div>
@@ -112,9 +112,9 @@
 
                         <!-- Video information -->
                         <div class="video-information">
-                            <p><b>Title:</b> <span id="video-title"></span></p>
-                            <p><b>URL:</b> <span id="video-url"></span></p>
-                            <p><b>Requested by:</b> <span id="user-requester"></span></p>
+                            <p><b>Titel:</b> <span id="video-title"></span></p>
+                            <p><b>Link:</b> <span id="video-url"></span></p>
+                            <p><b>Hinzugefügt von:</b> <span id="user-requester"></span></p>
                         </div>
                     </div>
                 </section>
@@ -127,11 +127,11 @@
                         <div class="queue-section-title">Queue
                             <div class="btn-group btn-group-justified header-button">
                                 <!-- Add song to queue button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="queue-add-song-button" data-toggle="tooltip" title="Add song">
+                                <button type="button" class="btn btn-secondary btn-sm" id="queue-add-song-button" data-toggle="tooltip" title="Lied hinzufügen">
                                     <i class="fas fa-plus"></i>
                                 </button>
                                 <!-- Settings button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="settings-button" data-toggle="tooltip" title="Settings">
+                                <button type="button" class="btn btn-secondary btn-sm" id="settings-button" data-toggle="tooltip" title="Einstellungen">
                                     <i class="fas fa-cog"></i>
                                 </button>
                                 <!-- Clear queue button -->
@@ -147,10 +147,10 @@
                             <table id="queue-table-content" style="width: 100%;">
                                 <tr>
                                     <th style="width: 5%;">#</th>
-                                    <th style="width: 50%;">Song</th>
-                                    <th style="width: 15%;">Duration</th>
-                                    <th style="width: 15%;">Requester</th>
-                                    <th style="width: 10%; text-align: right; padding-right: 16px;">Actions</th>
+                                    <th style="width: 50%;">Lied</th>
+                                    <th style="width: 15%;">Länge</th>
+                                    <th style="width: 15%;">Antragsteller</th>
+                                    <th style="width: 10%; text-align: right; padding-right: 16px;">Aktionen</th>
                                 </tr>
                             </table>
                         </div>
@@ -162,15 +162,15 @@
                         <div class="queue-section-title">Playlist <span id="playlist-name"></span>
                             <div class="btn-group btn-group-justified header-button">
                                 <!-- Add song to playlist button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-add-song-button" data-toggle="tooltip" title="Add song">
+                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-add-song-button" data-toggle="tooltip" title="Lied hinzufügen">
                                     <i class="fas fa-plus"></i>
                                 </button>
                                 <!-- Shuffle button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
+                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-shuffle-button" data-toggle="tooltip" title="Songs mischen">
                                     <i class="fas fa-random"></i>
                                 </button>
                                 <!-- Load playlist button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="load-playlist-button" data-toggle="tooltip" title="Load playlist">
+                                <button type="button" class="btn btn-secondary btn-sm" id="load-playlist-button" data-toggle="tooltip" title="Playlist laden">
                                     <i class="fas fa-upload"></i>
                                 </button>
                             </div>
@@ -183,9 +183,9 @@
                             	<tbody id="playlist-content">
                                		<tr>
                                		    <th style="width: 5%;">#</th>
-                               		    <th style="width: 70%;">Song</th>
-                               		    <th style="width: 15%;">Duration</th>
-                               		    <th style="width: 10%;">Actions</th>
+                               		    <th style="width: 70%;">Lied</th>
+                               		    <th style="width: 15%;">Länge</th>
+                               		    <th style="width: 10%;">Aktionen</th>
                                		</tr>
                                	</tbody>
                             </table>
@@ -200,7 +200,9 @@
             <a href="https://phantombot.tv">PhantomBot</a> &copy; 2016 -
             <script>
             	document.write(new Date().getFullYear());
-            </script>
+            </script> |
+            Deutsche Übersetzung von:
+            <a href="https://github.com/PhantomBotDE/PhantomBotDE" target="_blank">PhantomBotDE</a>
         </footer>
     </div>
 

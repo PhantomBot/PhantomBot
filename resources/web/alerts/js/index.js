@@ -287,7 +287,7 @@ $(function() {
      * @event Called once the socket opens.
      */
     webSocket.onopen = function() {
-        printDebug('Successfully connected to the socket.', true);
+        printDebug('Die Verbindung zum Socket war erfolgreich.', true);
         // Authenticate with the socket.
         sendToSocket({
             authenticate: getAuth()
@@ -298,7 +298,7 @@ $(function() {
      * @event Called when the socket closes.
      */
     webSocket.onclose = function() {
-        printDebug('Disconnected from the socket.', true);
+        printDebug('Vom Socket getrennt..', true);
     };
 
     /*
@@ -317,9 +317,9 @@ $(function() {
                 // Check for our auth result.
                 if (message.authresult !== undefined) {
                     if (message.authresult === 'true') {
-                        printDebug('Successfully authenticated with the socket.', true);
+                        printDebug('Erfolgreiche Authentifizierung mit dem Socket.', true);
                     } else {
-                        printDebug('Failed to authenticate with the socket.', true);
+                        printDebug('Die Authentifizierung mit dem Socket ist fehlgeschlagen.', true);
                     }
                 } else
 
@@ -330,11 +330,11 @@ $(function() {
 
                 // Message cannot be handled error.
                 else {
-                    printDebug('Failed to process message from socket: ' + rawMessage);
+                    printDebug('Die Verarbeitung der Nachricht vom Socket ist fehlgeschlagen: ' + rawMessage);
                 }
             }
         } catch (ex) {
-            printDebug('Failed to parse socket message [' + e.data + ']: ' + e.stack);
+            printDebug('Die Socket-Nachricht konnte nicht verarbeitet werden [' + e.data + ']: ' + e.stack);
         }
     };
 

@@ -118,9 +118,9 @@
 
                     if (msgObject['results'][idx]['key'] == 'lastBet') {
                         var split = msgObject['results'][idx]['value'].split('___');
-                        $('#betResults').html('<strong>Results from Last Bet</strong><br> Winner(s): ' + split[0] + '<br> Amount Won: ' + split[1]);
+                        $('#betResults').html('<strong>Ergebnisse der letzten Wette:</strong><br> SiegerIn(nen): ' + split[0] + '<br> Gewonnener Betrag: ' + split[1]);
                     } else {
-                        $('#betResults').html('<strong>Results from Last Bet: </strong><br> Winner(s): 0 <br> Amount Won: 0 points');
+                        $('#betResults').html('<strong>Ergebnisse der letzten Wette: </strong><br> SiegerIn(nen): 0 <br> Gewonnener Betrag: 0 points');
                     }
                 }
             }
@@ -168,7 +168,7 @@
     function toggleInput() {
         if ($('#tempclose').is(':checked') === true) {
             document.getElementById("betCloseI").disabled = true;
-            document.getElementById("betCloseI").title = "You cannot chose a winning option and turn entries off at the same time.";
+            document.getElementById("betCloseI").title = "Du kannst keine Gewinnmöglichkeit wählen und gleichzeitig die Einträge deaktivieren.";
         } else {
             document.getElementById("betCloseI").disabled = false;
             document.getElementById("betCloseI").title = "";
@@ -433,7 +433,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 15 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Games Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Spieldaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

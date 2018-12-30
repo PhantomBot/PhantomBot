@@ -22,16 +22,16 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="pointsAccordion">
-    <h3>Points Configuration</h3>
+    <h3>Punkte Einstellungen</h3>
     <div>
     <div id="_pointsConfigPanelDisabled" />
     <div id="_pointsConfigPanel">
         <table>
             <tr class="textList">
-                <td>Toggle command costs for moderators</td>
+                <td>Lass ModeratorInnen für Befehle zahlen.</td>
                 <td style="width: 25px"><div id="priceComMods" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleModPriceCom();"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -41,114 +41,114 @@
         <br>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Alternate Point Name</label>
-            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Delete Names</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Update</button>
-            <input type="text" data-toggle="tooltip" title="Name given to a single point. Do not make both points name the same, or it will cause issues" class="form-control"
-                   id="setPointNameInput" placeholder="Singular Point Name" />
+            <label for="setPointName">Alternativen Punktenamen vergeben</label>
+            <button type="button" class="btn btn-danger inline pull-right" onclick="$.clearPointName()">Lösche Namen</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointName()">Aktualisieren</button>
+            <input type="text" data-toggle="tooltip" title="Name für einen einzelnen Punkt. Vergib den selben Namen nicht für beide, denn das verursacht Fehler!" class="form-control"
+                   id="setPointNameInput" placeholder="Punktename Einzahl" />
             <input type="text" data-toggle="tooltip" 
-            title="Name given to zero and two or more points. Do not make both points name the same, or it will cause issues" class="form-control"
-                   id="setPointsNameInput" placeholder="Plural Point Name" />
+            title="Name für 0 oder 2 und mehr Punkte. Vergib den selben Namen nicht für beide, denn das verursacht Fehler!" class="form-control"
+                   id="setPointsNameInput" placeholder="Punktename Mehrzahl" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="pointsMessage">Set Points Message</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointsMessage()">Update</button>
-            <input type="text" class="form-control" id="pointsMessageInput" placeholder="Points Message" data-toggle="tooltip" 
-            title="Set a message for when users use the !points command. Tags: (userprefix), (user), (points), (pointsname), (pointsstring), (time), and (rank)" />
+            <label for="pointsMessage">Punkte Nachricht festlegen</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointsMessage()">Aktualisieren</button>
+            <input type="text" class="form-control" id="pointsMessageInput" placeholder="Punkte Nachricht" data-toggle="tooltip"
+            title="Lege eine Nachricht fest, welche angezeigt wird, wenn BenutzerInnen den !points Befehl verwenden. Tags: (userprefix), (user), (points), (pointsname), (pointsstring), (time), und (rank)" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Points" />
+            <label for="setPointName">Lege Online Punktvergabe Intervall in Minuten fest.</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setinterval')">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setinterval" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Payout Interval (Minutes)</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Points" />
+            <label for="setPointName">Lege Offline Punktvergabe Intervall in Minuten fest.</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflineinterval')">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflineinterval" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Online Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Points" />
+            <label for="setPointName">Lege Online Punkteverdienst fest</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setgain')">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setgain" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setPointName">Set Offline Points Gain</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Points" />
+            <label for="setPointName">Lege Offline Punkteverdienst fest</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setofflinegain')">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setofflinegain" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="setActiveBonus">Set Active Bonus</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setactivebonus')">Update</button>
-            <input type="number" min="0" class="form-control" id="setPointGainInput_setactivebonus" placeholder="Points" />
+            <label for="setActiveBonus">Lege Aktivitätsbonus fest</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.setPointGain('setactivebonus')">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="setPointGainInput_setactivebonus" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="topListAmountPoints">Top Points List Amount</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Update</button>
-            <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Amount" />
+            <label for="topListAmountPoints">Top Punkte Liste Anzahl</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.topListPoints()">Aktualisieren</button>
+            <input type="number" min="0" class="form-control" id="topListAmountPoints" placeholder="Anzahl" />
         </div>
     </div>
     </div>
     
-    <h3>Modify User Points</h3>
+    <h3>Modifiziere BenutzerInnen Punkte</h3>
     <div>
     <div id="_userPointConfigPanelDisabled" />
     <div id="_userPointConfigPanel">
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="giftPoints">Gift Chat Points</label>
-            <button type="button" data-toggle="tooltip" title="Gift the amount below to each person in chat."
-                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('all')">Gift to All</button>
-            <button type="button" data-toggle="tooltip" title="Randomly gift up to the amount below to each person in chat."
-                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('makeitrain')">Make it Rain</button>
-            <button type="button" data-toggle="tooltip" title="Give a bonus of points for X amount of minutes at each payouts."
+            <label for="giftPoints">Punkte an Chat schenken</label>
+            <button type="button" data-toggle="tooltip" title="Schenke die unten stehende Menge an Punkten an jede/n ZuschauerIn im Chat."
+                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('all')">Alle beschenken</button>
+            <button type="button" data-toggle="tooltip" title="Alle ZuschauerInnen via Zufallsprinzip bis zur unten stehenden Höhe beschenken."
+                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('makeitrain')">Lass es regnen</button>
+            <button type="button" data-toggle="tooltip" title="Gewähre einen Bonus für X-Minuten für jede Auszahlung."
                     class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('bonus')">Bonus</button>
-                    <button type="button" data-toggle="tooltip" title="Take X amount of points from everyone in the channel."
-                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('take')">Take from All</button>
-            <input type="text" class="form-control" id="giftChatPointsInput" placeholder="Points [if bonus (time in minutes)]" />
+                    <button type="button" data-toggle="tooltip" title="Nimm jedem im Chat X Punkte weg."
+                    class="btn btn-primary inline pull-right" onclick="$.giftChatPoints('take')">Allen wegnehmen</button>
+            <input type="text" class="form-control" id="giftChatPointsInput" placeholder="Punkte [Wenn Bonus (Zeit in Minuten)]" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="adjustUserPoints">Adjust User Points</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('take')">Take</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('add')">Add</button>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('set')">Set</button>
-            <input type="text" class="form-control" id="adjustUserPointsNameInput" placeholder="Username or click row from user points table" />
-            <input type="number" min="0" class="form-control" id="adjustUserPointsInput" placeholder="Points" />
+            <label for="adjustUserPoints">BenutzerInnen Punkte anpassen</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('take')">Wegnehmen</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('add')">Hinzufügen</button>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.modifyUserPoints('set')">Festlegen</button>
+            <input type="text" class="form-control" id="adjustUserPointsNameInput" placeholder="BenutzerInnenname, oder klicke unten auf eine Zeile." />
+            <input type="number" min="0" class="form-control" id="adjustUserPointsInput" placeholder="Punkte" />
         </div>
 
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="penaltyUserPoints">Penalty User</label>
-            <button type="button" class="btn btn-primary inline pull-right" onclick="$.penaltyUser()">Submit</button>
-            <input type="text" class="form-control" id="penaltyUser" placeholder="Username" data-toggle="tooltip" title="Stop a user from gaining points." class="form-control" />
-            <input type="number" class="form-control" id="penaltyUserTime" placeholder="Time" />
+            <label for="penaltyUserPoints">BenutzerIn bestrafen</label>
+            <button type="button" class="btn btn-primary inline pull-right" onclick="$.penaltyUser()">Übermitteln</button>
+            <input type="text" class="form-control" id="penaltyUser" placeholder="BenutzerInnenname" data-toggle="tooltip" title="Hindere eine/n ZuschauerIn Punkte zu verdienen." class="form-control" />
+            <input type="number" class="form-control" id="penaltyUserTime" placeholder="Zeit" />
         </div>
         <br>
 
         <div>
-            <span id="userPtsTableTitle">User Points Table</span>
+            <span id="userPtsTableTitle">BenutzerInnen Punkteliste</span>
         </div>
         <br>
         <div id="userPointsTable" style="height: 510px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Group Point Configuration</h3>
+    <h3>Gruppen Punkte Konfiguration</h3>
     <div>
     <div id="_groupPointConfigPanelDisabled" />
     <div id="_groupPointConfigPanel">
-        The settings defined here override the global settings. Note that a value of "-1" indicates that the global
-        setting is to be used.<br><br>
-        <strong>Group Point Configuration - Online</strong><br>
+        Die hier definierten Einstellungen überschreiben die globalen Einstellungen. Beachte, dass ein Wert von "-1" anzeigt, dass die
+        globalen Werte verwendet werden.<br><br>
+        <strong>Gruppen Punkte Konfiguration - Online</strong><br>
         <div id="groupPointsTable" style="height: 255px; overflow: auto;" />
         <br>
 
-        <strong>Group Point Configuration - Offline</strong><br>
+        <strong>Gruppen Punkte Konfiguration - Offline</strong><br>
         <div id="groupPointsOfflineTable" style="height: 255px; overflow: auto;" />
     </div>
     </div>

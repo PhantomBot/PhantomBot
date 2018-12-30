@@ -35,7 +35,7 @@
             $(divID + 'Disabled').hide();
             $(divID).show();
         } else {
-            $(divID + 'Disabled').html('Panel disabled due to module being disabled (' + module + ')');
+            $(divID + 'Disabled').html('Panel deaktiviert da Modul deaktiviert ist (' + module + ')');
             $(divID).hide();
             $(divID + 'Disabled').show();
         }
@@ -161,7 +161,7 @@
             }
             if (panelMatch(module, './handlers/panelHandler.js')) {
                 if (!moduleEnabled) {
-                    $('#panelStatsStatus').html('<span class="purplePill" data-toggle="tooltip" title="Panel Stats Disabled. Enable module ./handlers/panelHandler.js for Twitch online/offline information, uptime, and chat statistics data in the panel."><i class="fa fa-exclamation-triangle fa-lg" /></span>');
+                    $('#panelStatsStatus').html('<span class="purplePill" data-toggle="tooltip" title="Panel-Statistiken deaktiviert. Aktivieren Sie das Modul./handlers/panelHandler.js für Twitch-Online-/Offline-Informationen, Betriebszeit und Chat-Statistikdaten im Panel."><i class="fa fa-exclamation-triangle fa-lg" /></span>');
                 } else {
                     $('#panelStatsStatus').html('');
                 }

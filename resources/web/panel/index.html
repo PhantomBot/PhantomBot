@@ -58,17 +58,17 @@
             <span id="header-right">
                 <script>
                     if (window.location.port == getPanelPort() + 1) {
-                        document.write('<i data-toggle="tooltip" data-placement="left" title="Next release port ' + (window.location.port) + ' will be decommissioned, please use ' + (window.location.port - 5) + '." class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;');
+                        document.write('<i data-toggle="tooltip" data-placement="left" title="Bei der nächsten Veröffentlichung wird der Port ' + (window.location.port) + ' stillgelegt, bitte benutze stadessen den Port ' + (window.location.port - 5) + '." class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;');
                     }
                 </script>
-                <i data-toggle="tooltip" data-placement="left" title="Refresh Current Panel Data" class="fa fa-refresh fa-lg" aria-hidden="true" onclick="performCurrentPanelRefresh()"></i>
+                <i data-toggle="tooltip" data-placement="left" title="Aktuelle Contol Panel Daten aktualisieren" class="fa fa-refresh fa-lg" aria-hidden="true" onclick="performCurrentPanelRefresh()"></i>
             </span>
             <div id="newPanelAlert" class="alert" style="display:none"></div>
         </div>
 
-        <span id="panelLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Loading PhantomBot Control Panel</span>
+        <span id="panelLoader"><i style="color: purple" class="fa fa-spinner fa-spin fa-5x"></i><br><br>Lade PhantomBotDE Kontroll Panel...</span>
 
-        <div id="newVersionDialog" title="New Version Available" style="font-size: 90%"> </div>
+        <div id="newVersionDialog" title="Neue Version verfügbar!" style="font-size: 90%"> </div>
         <script>$("#newVersionDialog").dialog({ autoOpen: false, height: 200, width: 600 });</script>
 
         <div>
@@ -92,26 +92,26 @@
         <div id="tabs" style="display:none">
             <ul>
                 <li> <a href="#dashboard">Dashboard</a> </li>
-                <li> <a href="#commands">Commands</a> </li>
+                <li> <a href="#commands">Befehle</a> </li>
                 <li> <a href="#moderation">Moderation</a> </li>
-                <li> <a href="#time">Time</a> </li>
-                <li> <a href="#points">Points</a> </li>
-                <li> <a href="#viewers">Permissions</a> </li>
-                <li> <a href="#ranks">Ranks</a> </li>
-                <li> <a href="#greetings">Alerts</a> </li>
-                <li> <a href="#donations">Donations</a> </li>
-                <li> <a href="#notices">Notices</a> </li>
-                <li> <a href="#quotes">Quotes</a> </li>
-                <li> <a href="#keywords">Keywords</a> </li>
-                <li> <a href="#poll">Polls</a> </li>
+                <li> <a href="#time">Zeit</a> </li>
+                <li> <a href="#points">Punkte</a> </li>
+                <li> <a href="#viewers">Berechtigungen</a> </li>
+                <li> <a href="#ranks">Ränge</a> </li>
+                <li> <a href="#greetings">Benachrichtigungen</a> </li>
+                <li> <a href="#donations">Spenden</a> </li>
+                <li> <a href="#notices">Hinweise</a> </li>
+                <li> <a href="#quotes">Zitate</a> </li>
+                <li> <a href="#keywords">Schlüsselwörter</a> </li>
+                <li> <a href="#poll">Umfragen</a> </li>
                 <li> <a href="#hostraid">Hosts & Raids</a> </li>
                 <li> <a href="#gambling">Giveaways</a> </li>
-                <li> <a href="#games">Games</a> </li>
-                <li> <a href="#queue">Queue</a> </li>
+                <li> <a href="#games">Spiele</a> </li>
+                <li> <a href="#queue">Warteliste</a> </li>
                 <li> <a href="#twitter">Twitter</a> </li>
                 <li> <a href="#discord">Discord</a> </li>
                 <li> <a href="#audio">Audio</a> </li>
-                <li> <a href="#help">Information</a> </li>
+                <li> <a href="#help">Informationen</a> </li>
             </ul>
 
             <div role="tabpanel" class="tab-pane active" id="dashboard">
@@ -257,8 +257,10 @@
         <br>
 
         <div id="copyright">
-            Control Panel by:
-            <a href="https://phantombot.tv">phantombot.tv</a>
+            Kontroll Panel von:
+            <a href="https://phantombot.tv" target="_blank">phantombot.tv</a> |
+            Deutsche Übersetzung von:
+            <a href="https://github.com/PhantomBotDE/PhantomBotDE" target="_blank">PhantomBotDE</a>
         </div>
 
         <script>$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });</script>

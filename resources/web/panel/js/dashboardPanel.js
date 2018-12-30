@@ -70,7 +70,7 @@
                     htmlStr += highlightData + " @ " + msgObject['results'][i]['key'] + "<br>";
                 }
                 if (htmlStr.length == 0) {
-                    $("#showHighlights").html("No Highlights Found");
+                    $("#showHighlights").html("Keine Highlights gefunden");
                 } else {
                     $("#showHighlights").html(htmlStr);
                 }
@@ -99,13 +99,13 @@
                                     "    </td>" +
 
                                     "    <td style=\"width: 25px\">" +
-                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Aktivieren\" class=\"button\"" +
                                     "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
                                     "        </div>" +
                                     "    </td>" +
 
                                     "    <td style=\"width: 25px\">" +
-                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Deaktivieren\" class=\"button\"" +
                                     "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
                                     "        </div>" +
                                     "    </td>" +
@@ -119,13 +119,13 @@
                                     "    </td>" +
 
                                     "    <td style=\"width: 25px\">" +
-                                    "        <div data-toggle=\"tooltip\" title=\"Enable\" class=\"button\"" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Aktivieren\" class=\"button\"" +
                                     "             onclick=\"$.enableModule('" + module + "', " + idx + ")\">" + settingIcon['true'] +
                                     "        </div>" +
                                     "    </td>" +
 
                                     "    <td style=\"width: 25px\">" +
-                                    "        <div data-toggle=\"tooltip\" title=\"Disable\" class=\"button\"" +
+                                    "        <div data-toggle=\"tooltip\" title=\"Deaktivieren\" class=\"button\"" +
                                     "             onclick=\"$.disableModule('" + module + "', " + idx + ")\">" + settingIcon['false'] +
                                     "        </div>" +
                                     "    </td>" +
@@ -202,7 +202,7 @@
                         doQuery(); // Run the query again to populate fields.
                     }
                 } else {
-                    $("#panelStatsEnabled").html("<span>Panel Stats are Disabled</span>");
+                    $("#panelStatsEnabled").html("<span>Panel-Statistiken sind deaktiviert.</span>");
                 }
             }
 
@@ -227,7 +227,7 @@
                 if (msgObject['results']['lastFollow'] == null) {
                     $("#lastFollow").html("");
                 } else {
-                    $("#lastFollow").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Follower\">Follow: " + msgObject['results']['lastFollow'] + "</span>");
+                    $("#lastFollow").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Neuester Follower\">Follow: " + msgObject['results']['lastFollow'] + "</span>");
                 }
             }
 
@@ -235,7 +235,7 @@
                 if (msgObject['results']['lastReSub'] == null) {
                     $("#lastReSub").html("");
                 } else {
-                    $("#lastReSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Re-Subscriber\">ReSub: " + msgObject['results']['lastReSub'] + "</span>");
+                    $("#lastReSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Neuester Re-Abonnent\">ReSub: " + msgObject['results']['lastReSub'] + "</span>");
                 }
             }
 
@@ -243,7 +243,7 @@
                 if (msgObject['results']['lastSub'] == null) {
                     $("#lastSub").html("");
                 } else {
-                    $("#lastSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Subscriber\">Sub: " + msgObject['results']['lastSub'] + "</span>");
+                    $("#lastSub").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Neuester Abonnent\">Sub: " + msgObject['results']['lastSub'] + "</span>");
                 }
             }
 
@@ -251,7 +251,7 @@
                 if (msgObject['results']['lastDonator'] == null) {
                     $("#lastDonator").html("");
                 } else {
-                    $("#lastDonator").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Latest Donator\">Donator: " + msgObject['results']['lastDonator'] + "</span>");
+                    $("#lastDonator").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Neuester Spender\">Donator: " + msgObject['results']['lastDonator'] + "</span>");
                 }
             }
 
@@ -301,7 +301,7 @@
                 if (msgObject['results']['timerInterval'] !== undefined && msgObject['results']['timerInterval'] !== null) {
                     $('#multiLinkTimerInput').attr('placeholder', msgObject['results']['timerInterval']);
                 } else {
-                    $('#multiLinkTimerInput').attr('placeholder', 'Minutes');
+                    $('#multiLinkTimerInput').attr('placeholder', 'Minuten');
                 }
             }
 
@@ -309,7 +309,7 @@
                 if (msgObject['results']['reqMessages'] !== undefined && msgObject['results']['reqMessages'] !== null) {
                     $('#multiLinkReqMsgsInput').attr('placeholder', msgObject['results']['reqMessages']);
                 } else {
-                    $('#multiLinkReqMsgsInput').attr('placeholder', 'Message Count');
+                    $('#multiLinkReqMsgsInput').attr('placeholder', 'Nachrichtenanzahl');
                 }
             }
 
@@ -362,12 +362,12 @@
                     localStorage.setItem('_phantombot_new_panel_alert', 'true');
                 }
             })).append($('<strong/>', {
-                'text': 'New Panel Beta! '
+                'text': 'Neue Panel Beta! '
             })).append($('<p/>', {
-                'text': 'Want to test out our new modern, responsive, and prettier panel? Learn more by ',
+                'text': 'Möchten Sie unser neues modernes, responsives und hübscheres Panel testen? Erfahren Sie mehr, indem Sie ',
                 'style': 'display: inline;'
             })).append($('<a/>', {
-                'html': 'clicking here.',
+                'html': 'hier klicken.',
                 'href': 'https://blog.phantombot.tv/tag/beta-features/',
                 'target': '_blank',
                 'style': 'color: #6441a5;'
@@ -610,7 +610,7 @@
      * @function multiLinkTimerOn
      */
     function multiLinkTimerOn() {
-        $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link Enabled"><i class=\"fa fa-link fa-lg\" /></span>');
+        $('#multiStatus').html('<span class="purplePill" data-toggle="tooltip" title="Multi-Link aktiviert"><i class=\"fa fa-link fa-lg\" /></span>');
         $('[data-toggle="tooltip"]').tooltip();
         sendDBUpdate("multiLinkClear", "dualStreamCommand", "timerToggle", "true");
         setTimeout(function() { sendCommand("reloadmulti"); }, TIMEOUT_WAIT_TIME);
@@ -706,7 +706,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 0 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Dashboard Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Dashboard-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

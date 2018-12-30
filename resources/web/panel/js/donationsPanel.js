@@ -58,7 +58,7 @@
                 }
 
                 if (donationData.length === 0) {
-                    html = "<i>No Data in Donations Table</i>";
+                    html = "<i>Keine Daten in der Spendentabelle</i>";
                     $('#donationsTable').html(html);
                     return;
                 }
@@ -192,7 +192,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 8 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Donations Data', 'success', 1000);
+            newPanelAlert('Aktualisierung der Spendendaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

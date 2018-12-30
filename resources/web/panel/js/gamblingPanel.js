@@ -54,35 +54,35 @@
 
                     if (key == 'raffleMessageInterval') {
                         if (value == 0) {
-                            $('#raffle-message-timer2').html('Disabled');
+                            $('#raffle-message-timer2').html('Deaktiviert');
                             $('#raffle-message-timer').html('0');
                         } else {
-                            $('#raffle-message-timer2').html(value + ' Minutes');
+                            $('#raffle-message-timer2').html(value + ' Minuten');
                             $('#raffle-message-timer').val(value);
                         }
                     }
 
                     if (key == 'noRepickSame') {
                         if (value == 'true') {
-                            $('#raffle-repick').html('No');
+                            $('#raffle-repick').html('Nein');
                         } else {
-                            $('#raffle-repick').html('Yes');
+                            $('#raffle-repick').html('Ja');
                         }
                     }
 
                     if (key == 'raffleWhisperWinner') {
                         if (value == 'true') {
-                            $('#raffle-whisper-winner').html('Yes');
+                            $('#raffle-whisper-winner').html('Ja');
                         } else {
-                            $('#raffle-whisper-winner').html('No');
+                            $('#raffle-whisper-winner').html('Nein');
                         }
                     }
 
                     if (key == 'raffleMSGToggle') {
                         if (value == 'true') {
-                            $('#raffle-message').html('Enabled');
+                            $('#raffle-message').html('Aktiviert');
                         } else {
-                            $('#raffle-message').html('Disabled');
+                            $('#raffle-message').html('Deaktiviert');
                         }
                     }
                 }
@@ -98,16 +98,16 @@
                     }
                 }
                 if (winner.length > 0) {
-                    $('#auctionResults').html('<strong>Results from Last Auction</strong><br>' +
-                                          'Winner: ' + winner + '<br>' +
-                                          'Amount Paid: ' + amount);
+                    $('#auctionResults').html('<strong>Ergebnisse der letzten Auktion</strong><br>' +
+                                          'SiegerIn: ' + winner + '<br>' +
+                                          'Bezahlter Betrag: ' + amount);
                 }
             }
 
             if (panelCheckQuery(msgObject, 'gambling_raffleresults')) {
                 winner = msgObject['results']['winner'];
                 if (winner !== null) {
-                    $('#raffleResults').html('<strong>Winner of Last Raffle: </strong>' + winner);
+                    $('#raffleResults').html('<strong>SiegerIn der letzten Verlosung: </strong>' + winner);
                 }
             }
 
@@ -309,9 +309,9 @@
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         $('#raffle-keyword').val('');
         $('#raffle-cost').val('');
-        $('#raffle-points-sub').html('1 Times');
-        $('#raffle-points-reg').html('1 Times');
-        $('#raffle-points-timer2').html('Until closed');
+        $('#raffle-points-sub').html('1 mal');
+        $('#raffle-points-reg').html('1 mal');
+        $('#raffle-points-timer2').html('Bis geschlossen');
         $('#raffle-points-timer').val('0');
         $('#raffle-points-regluck').val('0');
         $('#raffle-points-subluck').val('0');
@@ -348,9 +348,9 @@
         }, TIMEOUT_WAIT_TIME);
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME * 2);
         $('#raffle-normal-keyword').val('');
-        $('#raffle-normal-subluck2').html('1 Times');
-        $('#raffle-normal-regluck2').html('1 Times');
-        $('#raffle-normal-timer2').html('Until closed');
+        $('#raffle-normal-subluck2').html('1 mal');
+        $('#raffle-normal-regluck2').html('1 mal');
+        $('#raffle-normal-timer2').html('Bis geschlossen');
         $('#raffle-normal-timer').val('0');
         $('#raffle-normal-regluck').val('0');
         $('#raffle-normal-subluck').val('0');
@@ -483,7 +483,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 14 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Gambling Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Glücksspieldaten', 'success', 1000);
             doQuery();
         }
     }, 2e4);
