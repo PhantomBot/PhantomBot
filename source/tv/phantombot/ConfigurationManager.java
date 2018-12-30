@@ -4,13 +4,42 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 import java.util.Map.Entry;
 
 public class ConfigurationManager {
+
+    private static final String BOTLOGIN_TXT_LOCATION = "./config/botlogin.txt";
+    private static final String PANEL_STANDARD_USER = "panel";
+    private static final String PANEL_STANDARD_PASSWORD = "panel";
+    private static final String OUAUTH_PREFIX = "oauth:";
+
+    private static final String PROP_BASEPORT = "baseport";
+    private static final String PROP_USEHTTPS = "usehttps";
+    private static final String PROP_WEBENABLE = "webenable";
+    private static final String PROP_MSGLIMIT30 = "msglimit30";
+    private static final String PROP_MUSICENABLE = "musicenable";
+    private static final String PROP_WHISPERLIMIT60 = "whisperlimit60";
+    private static final String PROP_OAUTH = "oauth";
+    private static final String PROP_CHANNEL = "channel";
+    private static final String PROP_OWNER = "owner";
+    private static final String PROP_USER = "user";
+    private static final String PROP_DEBUGON = "debugon";
+    private static final String PROP_DEBUGLOG = "debuglog";
+    private static final String PROP_RELOADSCRIPTS = "reloadscripts";
+    private static final String PROP_RHINODEBUGGER = "rhinodebugger";
+    private static final String PROP_WEBAUTH = "webauth";
+    private static final String PROP_WEBAUTH_RO = "webauthro";
+    private static final String PROP_PANEL_USER = "paneluser";
+    private static final String PROP_PANEL_PASSWORD = "panelpassword";
+    private static final String PROP_YTAUTH = "ytauth";
+    private static final String PROP_YTAUTH_RO = "ytauthro";
+    private static final String PROP_API_OAUTH = "apioauth";
 
     private ConfigurationManager() {
         // private constructor to prevent users from instantiating a pure static class
@@ -18,7 +47,7 @@ public class ConfigurationManager {
 
     static Properties getConfiguration() {
         /* List of properties that must exist. */
-        String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
+        String[] requiredProperties = new String[] { PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER };
         String requiredPropertiesErrorMessage = "";
 
         /* Properties configuration */
@@ -32,8 +61,8 @@ public class ConfigurationManager {
 
         /* Load up the bot info from the bot login file */
         try {
-            if (new File("./config/botlogin.txt").exists()) {
-                FileInputStream inputStream = new FileInputStream("./config/botlogin.txt");
+            if (new File(BOTLOGIN_TXT_LOCATION).exists()) {
+                FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION);
                 startProperties.load(inputStream);
                 inputStream.close();
             } else {
@@ -41,15 +70,13 @@ public class ConfigurationManager {
                  * Fill in the Properties object with some default values. Note that some values
                  * are left unset to be caught in the upcoming logic to enforce settings.
                  */
-                startProperties.setProperty("baseport", "25000");
-                startProperties.setProperty("usehttps", "false");
-                startProperties.setProperty("webenable", "true");
-                startProperties.setProperty("msglimit30", "19.0");
-                startProperties.setProperty("musicenable", "true");
-                startProperties.setProperty("whisperlimit60", "60.0");
+                startProperties.setProperty(PROP_BASEPORT, "25000");
+                startProperties.setProperty(PROP_USEHTTPS, "false");
+                startProperties.setProperty(PROP_WEBENABLE, "true");
+                startProperties.setProperty(PROP_MSGLIMIT30, "19.0");
+                startProperties.setProperty(PROP_MUSICENABLE, "true");
+                startProperties.setProperty(PROP_WHISPERLIMIT60, "60.0");
             }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -64,124 +91,39 @@ public class ConfigurationManager {
             }
         }
         /* Check to enable debug mode */
-        if (startProperties.getProperty("debugon", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Debug Mode Enabled");
-            PhantomBot.enableDebugging = true;
-        }
+        PhantomBot.enableDebugging = getBoolean(startProperties, PROP_DEBUGON, false, "Debug Mode Enabled", null);
         /* Check to enable debug to File */
-        if (startProperties.getProperty("debuglog", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
-            PhantomBot.enableDebugging = true;
-            PhantomBot.enableDebuggingLogOnly = true;
-        }
+        Boolean debuglog = getBoolean(startProperties, PROP_DEBUGLOG, false, "Debug Log Only Mode Enabled", null);
+        PhantomBot.enableDebugging = debuglog;
+        PhantomBot.enableDebuggingLogOnly = debuglog;
         /* Check to enable Script Reloading */
-        if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Enabling Script Reloading");
-            PhantomBot.reloadScripts = true;
-        }
+        PhantomBot.reloadScripts = getBoolean(startProperties, PROP_RELOADSCRIPTS, false, "Enabling Script Reloading", null);
         /* Check to enable Rhino Debugger */
-        if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
-            PhantomBot.enableRhinoDebugger = true;
-        }
-        /* Check to see if there's a webOauth set */
-        if (startProperties.getProperty("webauth") == null) {
-            startProperties.setProperty("webauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("New webauth key has been generated for ./config/botlogin.txt");
-            changed = true;
-        }
-        /* Check to see if there's a webOAuthRO set */
-        if (startProperties.getProperty("webauthro") == null) {
-            startProperties.setProperty("webauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("New webauth read-only key has been generated for ./config/botlogin.txt");
-            changed = true;
-        }
-        /* Check to see if there's a panelUsername set */
-        if (startProperties.getProperty("paneluser") == null) {
-            com.gmt2001.Console.debug.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
-            startProperties.setProperty("paneluser", "panel");
-            changed = true;
-        }
-        /* Check to see if there's a panelPassword set */
-        if (startProperties.getProperty("panelpassword") == null) {
-            com.gmt2001.Console.debug.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
-            startProperties.setProperty("panelpassword", "panel");
-            changed = true;
-        }
-        /* Check to see if there's a youtubeOAuth set */
-        if (startProperties.getProperty("ytauth") == null) {
-            startProperties.setProperty("ytauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for ./config/botlogin.txt");
-            changed = true;
-        }
-        /* Check to see if there's a youtubeOAuthThro set */
-        if (startProperties.getProperty("ytauthro") == null) {
-            startProperties.setProperty("ytauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for ./config/botlogin.txt");
-            changed = true;
-        }
+        PhantomBot.enableRhinoDebugger = getBoolean(startProperties, PROP_RHINODEBUGGER, false, "Rhino Debugger will be launched if system supports it.", null);
+
+        changed |= generateDefaultValues(startProperties);
 
         /* Make a new botlogin with the botName, oauth or channel is not found */
-        if (startProperties.getProperty("user") == null || startProperties.getProperty("oauth") == null || startProperties.getProperty("channel") == null) {
+        if (startProperties.getProperty(PROP_USER) == null || startProperties.getProperty(PROP_OAUTH) == null || startProperties.getProperty(PROP_CHANNEL) == null) {
             doSetup(startProperties);
             changed = true;
             newSetup = true;
         }
 
-        /* Make sure the oauth has been set correctly */
-        if (startProperties.getProperty("oauth") != null) {
-            if (!startProperties.getProperty("oauth").startsWith("oauth") && !startProperties.getProperty("oauth").isEmpty()) {
-                startProperties.setProperty("oauth", "oauth:" + startProperties.getProperty("oauth"));
-                changed = true;
-            }
-        }
-
-        /* Make sure the apiOAuth has been set correctly */
-        if (startProperties.getProperty("apioauth") != null) {
-            if (!startProperties.getProperty("apioauth").startsWith("oauth") && !startProperties.getProperty("apioauth").isEmpty()) {
-                startProperties.setProperty("apioauth", "oauth:" + startProperties.getProperty("apioauth"));
-                changed = true;
-            }
-        }
-
-        /* Make sure the channelName does not have a # */
-        if (startProperties.getProperty("channel").startsWith("#")) {
-            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(1));
-            changed = true;
-        } else if (startProperties.getProperty("channel").contains(".tv")) {
-            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(startProperties.getProperty("channel").indexOf(".tv/") + 4).replaceAll("/", ""));
-            changed = true;
-        }
-
-        /* Check for the owner after the channel check is done. */
-        if (startProperties.getProperty("owner") == null) {
-            if (startProperties.getProperty("channel") != null) {
-                if (!startProperties.getProperty("channel").isEmpty()) {
-                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
-                    changed = true;
-                }
-            }
-        }
+        changed |= correctCommonErrors(startProperties);
 
         /*
          * Iterate the properties and delete entries for anything that does not have a
          * value.
          */
         for (String propertyKey : startProperties.stringPropertyNames()) {
-            if (startProperties.getProperty(propertyKey).isEmpty()) {
-                changed = true;
-                startProperties.remove(propertyKey);
-            }
+            changed |= startProperties.remove(propertyKey, "");
         }
 
         /*
          * Check for required settings.
          */
-        for (String requiredProperty : requiredProperties) {
-            if (startProperties.getProperty(requiredProperty) == null) {
-                requiredPropertiesErrorMessage += requiredProperty + " ";
-            }
-        }
+        requiredPropertiesErrorMessage = String.join(" ", Arrays.stream(requiredProperties).filter(x -> startProperties.getProperty(x) == null).toArray(String[]::new));
 
         if (!requiredPropertiesErrorMessage.isEmpty()) {
             com.gmt2001.Console.err.println();
@@ -192,27 +134,161 @@ public class ConfigurationManager {
 
         /* Check to see if anything changed */
         if (changed) {
-            Properties outputProperties = new Properties() {
-                @Override
-                public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<>(super.keySet()));
-                }
-            };
-
-            try {
-                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                    outputProperties.putAll(startProperties);
-                    outputProperties.store(outputStream, "PhantomBot Configuration File");
-                }
-            } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
+            saveChanges(startProperties, BOTLOGIN_TXT_LOCATION);
         }
 
         // fresh setup indicator should not be saved
         startProperties.put("newSetup", newSetup);
 
         return startProperties;
+    }
+
+    private static Boolean generateDefaultValues(Properties startProperties) {
+        Boolean changed = false;
+
+        /* Check to see if there's a webOauth set */
+        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth, "New webauth key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        /* Check to see if there's a webOAuthRO set */
+        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH_RO, ConfigurationManager::generateWebAuth, "New webauth read-only key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        /* Check to see if there's a panelUsername set */
+        changed |= setDefaultIfMissing(startProperties, PROP_PANEL_USER, PANEL_STANDARD_USER,
+                "No Panel Username, using default value of '" + PANEL_STANDARD_USER + "' for Control Panel and YouTube Player");
+        /* Check to see if there's a panelPassword set */
+        changed |= setDefaultIfMissing(startProperties, PROP_PANEL_PASSWORD, PANEL_STANDARD_PASSWORD,
+                "No Panel Password, using default value of '" + PANEL_STANDARD_PASSWORD + "' for Control Panel and YouTube Player");
+        /* Check to see if there's a youtubeOAuth set */
+        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH, ConfigurationManager::generateWebAuth, "New YouTube websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        /* Check to see if there's a youtubeOAuthThro set */
+        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH_RO, ConfigurationManager::generateWebAuth, "New YouTube read-only websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        return changed;
+    }
+
+    private static Boolean correctCommonErrors(Properties startProperties) {
+        Boolean changed = false;
+
+        /* Make sure the oauth has been set correctly */
+        if (startProperties.getProperty(PROP_OAUTH) != null && !startProperties.getProperty(PROP_OAUTH).startsWith(OUAUTH_PREFIX) && !startProperties.getProperty(PROP_OAUTH).isEmpty()) {
+            startProperties.setProperty(PROP_OAUTH, OUAUTH_PREFIX + startProperties.getProperty(PROP_OAUTH));
+            changed = true;
+        }
+
+        /* Make sure the apiOAuth has been set correctly */
+        if (startProperties.getProperty(PROP_API_OAUTH) != null && !startProperties.getProperty(PROP_API_OAUTH).startsWith(OUAUTH_PREFIX) && !startProperties.getProperty(PROP_API_OAUTH).isEmpty()) {
+            startProperties.setProperty(PROP_API_OAUTH, OUAUTH_PREFIX + startProperties.getProperty(PROP_API_OAUTH));
+            changed = true;
+        }
+
+        /* Make sure the channelName does not have a # */
+        if (startProperties.getProperty(PROP_CHANNEL).startsWith("#")) {
+            startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(1));
+            changed = true;
+        } else if (startProperties.getProperty(PROP_CHANNEL).contains(".tv")) {
+            startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(startProperties.getProperty(PROP_CHANNEL).indexOf(".tv/") + 4).replaceAll("/", ""));
+            changed = true;
+        }
+
+        /* Check for the owner after the channel check is done. */
+        if (startProperties.getProperty(PROP_OWNER) == null && startProperties.getProperty(PROP_CHANNEL) != null && !startProperties.getProperty(PROP_CHANNEL).isEmpty()) {
+            startProperties.setProperty(PROP_OWNER, startProperties.getProperty(PROP_CHANNEL));
+            changed = true;
+        }
+        return changed;
+    }
+
+    private static void saveChanges(Properties properties, String saveFileDestination) {
+        Properties outputProperties = new Properties() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+
+        try {
+            try (FileOutputStream outputStream = new FileOutputStream(saveFileDestination)) {
+                outputProperties.putAll(properties);
+                outputProperties.store(outputStream, "PhantomBot Configuration File");
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Sets a default value to a properties object if the requested property does
+     * not exist
+     * 
+     * @param properties   the properties object to be modified
+     * @param propertyName the name of the property, which should be set if null
+     * @param defaultValue the default value, to which the property is set, if the
+     *                     property is missing in the properties object
+     * @param setMessage   the message which will be printed if the value is set to
+     *                     the given default value
+     * @return {@code true} if the value has been set to default, {@code false} if
+     *         the value is already present in the properties object
+     */
+    private static Boolean setDefaultIfMissing(Properties properties, String propertyName, String defaultValue, String generatedMessage) {
+        return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
+    }
+
+    /**
+     * Sets a default value to a properties object if the requested property does
+     * not exist
+     * 
+     * @param properties            the properties object to be modified
+     * @param propertyName          the name of the property, which should be
+     *                              generated if null
+     * @param defaultValueGenerator the generating function, which generates the
+     *                              default value, if the property is missing in the
+     *                              properties object
+     * @param generatedMessage      the message which will be printed if the value
+     *                              is generated
+     * @return {@code true} if the value has been generated, {@code false} if the
+     *         value is already present in the properties object and does not have
+     *         to be generated
+     */
+    private static Boolean setDefaultIfMissing(Properties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
+        Boolean changed = false;
+        if (properties.getProperty(propertyName) == null) {
+            properties.setProperty(propertyName, defaultValueGenerator.get());
+            com.gmt2001.Console.debug.println(generatedMessage);
+            changed = true;
+        }
+        return changed;
+    }
+
+    /**
+     * Gets a boolean value from the a properties object and prints a message
+     * according to the property name.
+     * 
+     * @param properties   the Properties object to get the boolean value from
+     * @param propertyName the name of the property to get
+     * @param defaulValue  the default value of the property
+     * @param trueMessage  the message to be printed, if the value of the property
+     *                     value is true. Pass null or an empty String if no message
+     *                     should be shown.
+     * @param falseMessage the message to be printed, if the value of the property
+     *                     value is true. Pass null or an empty String if no message
+     *                     should be shown.
+     * @return the value of the property. If parsing the value to a Boolean fails,
+     *         the default value is returned.
+     */
+    private static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue, String trueMessage, String falseMessage) {
+        Boolean result = defaulValue;
+        try {
+            result = Boolean.parseBoolean(properties.getProperty(propertyName));
+        } catch (Exception e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+            com.gmt2001.Console.err.println("[Error] could not load property '" + propertyName + "'. Fallback to default value (" + defaulValue + ")");
+        }
+
+        if (trueMessage != null && !trueMessage.isEmpty())
+            com.gmt2001.Console.out.println(trueMessage);
+        if (falseMessage != null && !falseMessage.isEmpty())
+            com.gmt2001.Console.out.println(falseMessage);
+
+        return result;
     }
 
     private static void doSetup(Properties startProperties) {
@@ -261,8 +337,8 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
                 com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
 
-                startProperties.setProperty("oauth", System.console().readLine().trim());
-            } while (startProperties.getProperty("oauth", "").length() <= 0);
+                startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
+            } while (startProperties.getProperty(PROP_OAUTH, "").length() <= 0);
 
             // api oauth.
             do {
@@ -273,32 +349,32 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter your OAuth token: ");
 
-                startProperties.setProperty("apioauth", System.console().readLine().trim());
-            } while (startProperties.getProperty("apioauth", "").length() <= 0);
+                startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());
+            } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
 
             // Channel name.
             do {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
 
-                startProperties.setProperty("channel", System.console().readLine().trim());
-            } while (startProperties.getProperty("channel", "").length() <= 0);
+                startProperties.setProperty(PROP_CHANNEL, System.console().readLine().trim());
+            } while (startProperties.getProperty(PROP_CHANNEL, "").length() <= 0);
 
             // Panel username.
             do {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
 
-                startProperties.setProperty("paneluser", System.console().readLine().trim());
-            } while (startProperties.getProperty("paneluser", "").length() <= 0);
+                startProperties.setProperty(PROP_PANEL_USER, System.console().readLine().trim());
+            } while (startProperties.getProperty(PROP_PANEL_USER, "").length() <= 0);
 
             // Panel password.
             do {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
 
-                startProperties.setProperty("panelpassword", System.console().readLine().trim());
-            } while (startProperties.getProperty("panelpassword", "").length() <= 0);
+                startProperties.setProperty(PROP_PANEL_PASSWORD, System.console().readLine().trim());
+            } while (startProperties.getProperty(PROP_PANEL_PASSWORD, "").length() <= 0);
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("PhantomBot will launch in 10 seconds.\r\n");
@@ -306,12 +382,11 @@ public class ConfigurationManager {
             com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
             com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
-            }
-
+            Thread.sleep(10000);
+            
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
+            Thread.currentThread().interrupt();
         } catch (NullPointerException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
