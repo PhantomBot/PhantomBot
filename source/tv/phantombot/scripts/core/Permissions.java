@@ -39,7 +39,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  */
 public class Permissions implements Listener {
     public static final Permissions INSTANCE = new Permissions();
-    private ConcurrentMap<String, User> users = new ConcurrentHashMap();
+    private ConcurrentMap<String, User> users = new ConcurrentHashMap<>();
     
     /**
      * Method that returns this instance.

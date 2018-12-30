@@ -945,6 +945,13 @@
         });
 
         /*
+         * @event discordMessageReaction
+         */
+        $api.on($script, 'discordMessageReaction', function(event) {
+            callHook('discordMessageReaction', event, false);
+        });
+
+        /*
          * @event webPanelSocketUpdate
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
