@@ -399,9 +399,9 @@
             consoleLn('https://community.phantombot.tv/t/phantombotde-vollubersetzung-complete-translation/3872');
         } else if ($.isPrerelease) {
             consoleLn('PhantomBot Pre-Release Build - Bitte melden Sie gefundene Fehler und Probleme');
-            consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
+            consoleLn('Wenn Sie Fehler oder Probleme melden, denken Sie bitte daran, zu sagen, dass es sich um einen Pre-Release Build handelt.');
         } else {
-            consoleLn('For support please visit: https://community.phantombot.tv');
+            consoleLn('Für Support besuche: https://community.phantombot.tv/t/phantombotde-vollubersetzung-complete-translation/3872');
         }
         consoleLn('');
     }

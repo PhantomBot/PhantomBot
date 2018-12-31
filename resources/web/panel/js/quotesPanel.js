@@ -52,7 +52,7 @@
 
             if (panelCheckQuery(msgObject, 'quotes_quotes')) {
                 if (msgObject['results'].length === 0) {
-                    $('#quoteList').html('<i>No Quotes Are Defined</i>');
+                    $('#quoteList').html('<i>Es sind keine Zitate definiert.</i>');
                     return;
                 }
 

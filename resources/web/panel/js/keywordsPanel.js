@@ -49,7 +49,7 @@
         if (panelHasQuery(msgObject)) {
             if (panelCheckQuery(msgObject, 'keywords_keywords')) {
                 if (msgObject['results'].length === 0) {
-                    $('#keywordsList').html('<i>No Keywords are Defined</i>');
+                    $('#keywordsList').html('<i>Es sind keine Schlüsselwörter definiert.</i>');
                     return;
                 }
 
@@ -104,7 +104,7 @@
      * @function addKeywordnew
      */
     function addKeywordnew() {
-        $('#keyword-modal-title').html('Add Keyword');
+        $('#keyword-modal-title').html('Schlüsselwort hinzufügen');
 
         currentKey = '';
 

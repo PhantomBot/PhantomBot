@@ -92,7 +92,7 @@
 
             if (panelCheckQuery(msgObject, 'hostraid_hosthistory')) {
                 if (msgObject['results'].length === 0) {
-                    $('#hostHistoryList').html('<i>No Host History Data to Display</i>');
+                    $('#hostHistoryList').html('<i>Keine Host-Verlaufsdaten zum Anzeigeny</i>');
                     return;
                 }
 
