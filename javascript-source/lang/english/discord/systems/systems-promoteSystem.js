@@ -55,6 +55,8 @@ $.lang.register('discord.promotesystem.livemsg.nowplaying', 'Now Playing');
 $.lang.register('discord.promotesystem.livemsg.streamtitle', 'Stream Title');
 $.lang.register('discord.promotesystem.livemsg.followers', 'Followers');
 $.lang.register('discord.promotesystem.livemsg.views', 'Views');
+$.lang.register('discord.promotesystem.livemsg.missingtitle', 'No Title Provided');
+$.lang.register('discord.promotesystem.livemsg.missinggame', 'No Game Provided');
 
 $.lang.register('discord.promotesystem.promotemsg.description', 'Be sure to follow and checkout $1');
 $.lang.register('discord.promotesystem.promotemsg.biography', 'Bio');
