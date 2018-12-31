@@ -15,22 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.customcommandlogs.sender', 'By');
-$.lang.register('discord.customcommandlogs.add.command', 'Custom command created');
-$.lang.register('discord.customcommandlogs.add.response', 'Response');
-$.lang.register('discord.customcommandlogs.edit.command', 'Custom command edited');
-$.lang.register('discord.customcommandlogs.edit.response', 'New response');
-$.lang.register('discord.customcommandlogs.delete.command', 'Custom command deleted');
-$.lang.register('discord.customcommandlogs.alias.command', 'Custom alias created');
-$.lang.register('discord.customcommandlogs.alias.target', 'To');
-$.lang.register('discord.customcommandlogs.alias.delete.command', 'Custom alias deleted');
-$.lang.register('discord.customcommandlogs.set.perm.command', 'Command permissions updated');
-$.lang.register('discord.customcommandlogs.set.perm.group', 'New group');
-$.lang.register('discord.customcommandlogs.set.price.command', 'Command price updated');
-$.lang.register('discord.customcommandlogs.set.price.amount', 'New price');
-$.lang.register('discord.customcommandlogs.set.pay.command', 'Command reward updated');
-$.lang.register('discord.customcommandlogs.set.pay.amount', 'New reward');
-$.lang.register('discord.customcommandlogs.disable.command', 'Command disabled');
-$.lang.register('discord.customcommandlogs.enable.command', 'Command enabled');
-$.lang.register('discord.customcommandlogs.reset.command', 'Command counter reset');
-$.lang.register('discord.customcommandlogs.reset.count', 'New value');
+$.lang.register('discord.customcommandlogs.sender', 'Von');
+$.lang.register('discord.customcommandlogs.add.command', 'Benutzerdefinierter Befehl erstellt');
+$.lang.register('discord.customcommandlogs.add.response', 'Antwort');
+$.lang.register('discord.customcommandlogs.edit.command', 'Benutzerdefinierter Befehl bearbeitet');
+$.lang.register('discord.customcommandlogs.edit.response', 'Neue Antwort');
+$.lang.register('discord.customcommandlogs.delete.command', 'Benutzerdefinierter Befehl gelöscht');
+$.lang.register('discord.customcommandlogs.alias.command', 'Benutzerdefinierter Alias erstellt');
+$.lang.register('discord.customcommandlogs.alias.target', 'an');
+$.lang.register('discord.customcommandlogs.alias.delete.command', 'Benutzerdefinierter Alias gelöscht');
+$.lang.register('discord.customcommandlogs.set.perm.command', 'Befehlsberechtigungen aktualisiert');
+$.lang.register('discord.customcommandlogs.set.perm.group', 'Neue Gruppe');
+$.lang.register('discord.customcommandlogs.set.price.command', 'Befehlspreis aktualisiert');
+$.lang.register('discord.customcommandlogs.set.price.amount', 'Neuer Preis');
+$.lang.register('discord.customcommandlogs.set.pay.command', 'Befehlsbelohnung aktualisiert');
+$.lang.register('discord.customcommandlogs.set.pay.amount', 'Neue Belohnung');
+$.lang.register('discord.customcommandlogs.disable.command', 'Befehl deaktiviert');
+$.lang.register('discord.customcommandlogs.enable.command', 'Befehl aktiviert');
+$.lang.register('discord.customcommandlogs.reset.command', 'Zurücksetzen des Befehlszählers');
+$.lang.register('discord.customcommandlogs.reset.count', 'Neuer Wert');

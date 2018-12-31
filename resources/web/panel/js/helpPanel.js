@@ -43,7 +43,7 @@
             var version = "",
                 java_version = "",
                 os_version = "",
-                panelVersion = "Control Panel Version " + PANEL_VERSION;
+                panelVersion = "Version des Kontrollpanels " + PANEL_VERSION;
 
             if (panelMatch(msgObject['versionresult'], 'help_version')) {
                 version = msgObject['version'];
@@ -59,7 +59,7 @@
                                   "Java Version: " + java_version + "<br>" +
                                   "OS Version: " + os_version + "<br></strong>" +
                                   "<br><small>" +
-                                  "    <strong>Control Panel Software</strong><br>" +
+                                  "    <strong>Kontrollpanel-Software</strong><br>" +
                                   "    jQuery " + $().jquery + "<br>" + 
                                   "    jQuery UI " + $.ui.version + "<br>" +
                                   "    Bootstrap 3.3.6<br>" +

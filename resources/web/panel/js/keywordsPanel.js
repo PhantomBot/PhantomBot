@@ -66,7 +66,7 @@
                     isRegexs[idx] = isRegex;
                 
                     html += '<tr>' +
-                        '<td><button type="button" data-toggle="tooltip" title="Reset Keyword Count to 0." id="resetKeywordCount_' + idx + '" class="btn btn-default btn-xs" onclick="$.resetKeywordCount(\'' + idx + '\')"><i class="fa fa-undo" /> </button></td>' +
+                        '<td><button type="button" data-toggle="tooltip" title="Schlüsselwortzähler auf 0 zurücksetzen." id="resetKeywordCount_' + idx + '" class="btn btn-default btn-xs" onclick="$.resetKeywordCount(\'' + idx + '\')"><i class="fa fa-undo" /> </button></td>' +
                         '<td>' + (count == undefined ? 0 : count) + '</td>' +
                         '<td>' + (keyword.length > 15 ?  keyword.substring(0, 15) + '...' : keyword) + '</td>' +
                         '<td>' + (response.length > 45 ?  response.substring(0, 45) + '...' : response) + '</td>' +
@@ -179,7 +179,7 @@
      * @function editKeywordnew
      */
     function editKeywordnew(idx) {
-        $('#keyword-modal-title').html('Edit Keyword');
+        $('#keyword-modal-title').html('Schlüsselwort bearbeiten');
 
         currentKey = keywords[idx];
 
@@ -217,7 +217,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 11 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Keyword Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Keyword-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

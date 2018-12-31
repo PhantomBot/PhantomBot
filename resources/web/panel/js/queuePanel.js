@@ -32,19 +32,19 @@
         try {
             msgObject = JSON.parse(message.data);
         } catch (ex) {
-        	console.error('Failed to parse panel message [queuePanel.js]: ' + ex.message);
+        	console.error('Die Meldung des Bedienfelds konnte nicht verarbeitet werden [queuePanel.js]: ' + ex.message);
             return;
         }
 
         if (panelHasQuery(msgObject)) {
             if (panelCheckQuery(msgObject, 'queue_list')) {
             	var keys = msgObject['results'],
-            		html = '<table style="width: 100%"><tr><th>Username</th><th style="padding-left: 50px;">GamerTag</th><th style="padding-left: 50px;">Position</th><th style="padding-left: 50px;">Join Time</th><th style="float: right;"></td>',
+            		html = '<table style="width: 100%"><tr><th>Benutzername</th><th style="padding-left: 50px;">Spieler-Tag</th><th style="padding-left: 50px;">Position</th><th style="padding-left: 50px;">Beitrittszeit</th><th style="float: right;"></td>',
             		jsonObj = '',
             		i;
 
             	if (keys.length === 0) {
-            		$('#queue-list').html('<i>The queue list is currently empty.</i>');
+            		$('#queue-list').html('<i>Die Warteschlangenliste ist derzeit leer.</i>');
             		return;
             	}
 
@@ -124,7 +124,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 16 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Queue Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Warteschlangendaten', 'success', 1000);
             doQuery();
         }
     }, 2e4);

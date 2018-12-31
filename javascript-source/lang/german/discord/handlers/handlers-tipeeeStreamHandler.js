@@ -21,4 +21,4 @@ $.lang.register('discord.tipeeestreamhandler.message.usage', 'Verwendung: !tipee
 $.lang.register('discord.tipeeestreamhandler.message.set', 'TipeeeStream Spendenbenachrichtigungsnachricht wurde festgelegt zu: $1');
 $.lang.register('discord.tipeeestreamhandler.channel.usage', 'Verwendung: !tipeeestreamhandler channel [Kanalname]');
 $.lang.register('discord.tipeeestreamhandler.channel.set', 'TipeeeStream Spenden werden nun im Kanal #$1 ausgegeben!');
-$.lang.register('discord.tipeeestreamhandler.embed.title', 'Neue Donation!');
+$.lang.register('discord.tipeeestreamhandler.embed.title', 'Neue Spende!');

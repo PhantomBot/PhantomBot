@@ -15,24 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('randomcommand.pg13toggle', 'The random command will display PG-13 rated items: $1');
+$.lang.register('randomcommand.pg13toggle', 'Der Zufallsbefehl zeigt PG-13-bewertete Elemente an: $1');
 
 /* PG-13 and above rated items. */
-$.lang.register('randomcommand.pg13.1', 'Oh my, (sender) you make me just want to *SLURP SLURP SLURP*');
-$.lang.register('randomcommand.pg13.2', '(sender) was thrown into a pit of tentacle pleasure.');
-$.lang.register('randomcommand.pg13.3', 'What are we gonna\' do on the bed (sender)?');
-$.lang.register('randomcommand.pg13.4', '(sender) was violated by a tentacle monster!');
-$.lang.register('randomcommand.pg13.5', 'This is the first time (sender) has noticed the scent of a woman..');
-$.lang.register('randomcommand.pg13.6', 'I may be a Twitch bot, but watch, one of these days you will find a spoon up yo ass when you use !random. One of these days...');
-$.lang.register('randomcommand.pg13.7', 'I can feel it coming over me! I feel it all around meee!');
-$.lang.register('randomcommand.pg13.8', '(random) shoved a spoon up (sender)\'s ass.');
-$.lang.register('randomcommand.pg13.9', 'Real men know when to run like a little bitch!');
-$.lang.register('randomcommand.pg13.10', 'When you meet with scary people, you must always protect your wallet and anus!');
-$.lang.register('randomcommand.pg13.11', 'Right, I have something I have to apologize to (random) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.');
-$.lang.register('randomcommand.pg13.12', 'What I want to do most? Let’s see… Just once, I really want to let loose and pee in my pants.');
-$.lang.register('randomcommand.pg13.13', 'A young blonde woman is distraught because she fears her husband is having an affair, so she goes to a gun shop and buys a handgun. The next day she comes home to find her husband in bed with a beautiful redhead. She grabs the gun and holds it to her own head. The husband jumps out of bed, begging and pleading with her not to shoot herself. Hysterically the blonde responds to the husband, \'\'Shut up...you\'re next!\'\'');
-$.lang.register('randomcommand.pg13.14', '(random) vs. (random)  who will win?! Only the one with the smallest penis will win this match! KappaRoss');
-$.lang.register('randomcommand.pg13.15', 'Ever feel like beating someone with a baseball bat to the point of almost unconsciousness, then setting them on fire? No? Just me?');
+$.lang.register('randomcommand.pg13.1', 'Oh mein Gott, (sender), du bringst mich dazu, nur *SLURP SLURP SLURP* zu wollen.');
+$.lang.register('randomcommand.pg13.2', '(sender) wurde in eine Grube voller Tentakelvergnügen geworfen.');
+$.lang.register('randomcommand.pg13.3', 'Was machen wir im Bett, (sender)?');
+$.lang.register('randomcommand.pg13.4', '(sender) wurde von einem Tentakelmonster vergewaltigt!');
+$.lang.register('randomcommand.pg13.5', 'Dies ist das erste Mal, dass (sender) den Duft einer Frau bemerkt...');
+$.lang.register('randomcommand.pg13.6', 'Ich kann ein Twitch-Bot sein, aber schauen Sie, eines Tages werden Sie einen Löffel in Ihrem Arsch finden, wenn Sie !random verwenden. Eines Tages...');
+$.lang.register('randomcommand.pg13.7', 'Ich spüre, wie es über mich kommt! Ich fühle es um mich herum!');
+$.lang.register('randomcommand.pg13.8', '(random) schob (sender) einen Löffel in den Arsch.');
+$.lang.register('randomcommand.pg13.9', 'Echte Männer wissen, wann sie wie eine kleine Schlampe laufen müssen!');
+$.lang.register('randomcommand.pg13.10', 'Wenn du dich mit gruseligen Menschen triffst, musst du immer deine Brieftasche und deinen Arsch schützen!');
+$.lang.register('randomcommand.pg13.11', 'Richtig, ich habe etwas, wofür ich mich bei (random) entschuldigen muss. Manchmal, wenn wir spielten, fingst du plötzlich an zu weinen, und dann bist du nach Hause gelaufen. Du dachtest wahrscheinlich, du hättest uns getäuscht, aber jeder wusste... dass du dir in die Hose gemacht hast! Entschuldigung.');
+$.lang.register('randomcommand.pg13.12', 'Was will ich am meisten tun? Mal sehen.... Nur einmal, ich will wirklich loslassen und in meine Hose pinkeln.');
+$.lang.register('randomcommand.pg13.13', 'Eine junge blonde Frau ist verzweifelt, weil sie befürchtet, dass ihr Mann eine Affäre hat, also geht sie in einen Waffenladen und kauft eine Pistole. Am nächsten Tag kommt sie nach Hause, um ihren Mann im Bett mit einer schönen Rothaarigen zu finden. Sie nimmt die Waffe und hält sie sich selbst an den Kopf. Der Mann springt aus dem Bett, bettelt und fleht sie an, sich nicht selbst zu erschießen. Hysterisch reagiert die Blondine auf den Mann, \'\'Halt die Klappe....du bist der Nächste!\'\'.');
+$.lang.register('randomcommand.pg13.14', '(random) gegen (random), wer gewinnt?! Nur derjenige mit dem kleinsten Penis wird dieses Match gewinnen! KappaRoss');
+$.lang.register('randomcommand.pg13.15', 'Hast du jemals Lust gehabt, jemanden mit einem Baseballschläger bis zur fast Bewusstlosigkeit zu schlagen und ihn dann in Brand zu setzen? Nein? Nur ich?');
 
 $.lang.register('randomcommand.1', '(sender) wurde in eine tiefe Grube mit PJSalz geworfen!');
 $.lang.register('randomcommand.2', 'Oh mein Gott, (sender) will, dass ich einfach nur *SCHLÜRF, SCHLÜRF, SCHLÜRF* mache!');

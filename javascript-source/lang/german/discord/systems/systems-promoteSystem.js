@@ -1,61 +1,78 @@
-$.lang.register('discord.promotesystem.cmd.promote.usage', '!promote add [short bio] | delete - Add or delete yourself from being promoted.');
-$.lang.register('discord.promotesystem.cmd.promote.noselfmanage', 'No one is allowed to manage themselves, please speak to a moderator to be added or deleted.');
-$.lang.register('discord.promotesystem.cmd.promote.nochannels', 'Ask an admin to set a promote channel with !promote channel and/or !promote streamchannel');
-$.lang.register('discord.promotesystem.cmd.promote.revoked', 'You are no longer allowed to add yourself.');
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-$.lang.register('discord.promotesystem.cmd.promote.add.nobio', 'You need to provide a short biography or use the keyword \'none\' (!promote add none).');
-$.lang.register('discord.promotesystem.cmd.promote.add.success', 'You ($1) will now be promoted');
-$.lang.register('discord.promotesystem.cmd.promote.del.success', 'You ($1) will no longer be promoted');
+$.lang.register('discord.promotesystem.cmd.promote.usage', '!promote add [kurze Beschreibung] | delete - Füge hinzu oder lösche dich selbst von der Promotion.');
+$.lang.register('discord.promotesystem.cmd.promote.noselfmanage', 'Niemand darf sich selbst verwalten, bitte sprechen Sie mit einem Moderator, der dich hinzufügt oder löscht.');
+$.lang.register('discord.promotesystem.cmd.promote.nochannels', 'Bitten Sie einen Administrator, einen Werbekanal mit !promote channel und/oder !promote streamchannel einzurichten.');
+$.lang.register('discord.promotesystem.cmd.promote.revoked', 'Du darfst dich nicht mehr selbst hinzufügen.');
+
+$.lang.register('discord.promotesystem.cmd.promote.add.nobio', 'Sie müssen eine kurze Biographie angeben oder das Schlüsselwort "none" (!promote add none) verwenden.');
+$.lang.register('discord.promotesystem.cmd.promote.add.success', 'Du ($1) wirst jetzt promotet.');
+$.lang.register('discord.promotesystem.cmd.promote.del.success', 'Du ($1) wirst nicht mehr promotet.');
 
 $.lang.register('discord.promotesystem.cmd.promoteadm.usage', '!promoteadm add | delete | so | channel | streamchannel | revoke | allow | toggleselfmanage | togglestats | togglebanner | list | setinterval');
-$.lang.register('discord.promotesystem.cmd.promoteadm.nochannels', 'Set channels with !promoteadm channel and/or !promoteadm streamchannel');
-$.lang.register('discord.promotesystem.cmd.promoteadm.noacct', 'That account does not appear to exist in Twitch: $1');
+$.lang.register('discord.promotesystem.cmd.promoteadm.nochannels', 'Setze Kanäle mit !promoteadm Kanal und/oder !promoteadm Streamchannel.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.noacct', 'Dieses Konto scheint in Twitch nicht zu existieren: $1');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.add.nouser', 'Who do you wish to promote?');
-$.lang.register('discord.promotesystem.cmd.promoteadm.add.nobio', 'You need to provide a short biography or use the keyword \'none\' (!promoteadm add user none).');
-$.lang.register('discord.promotesystem.cmd.promoteadm.add.success', '$1 will now be promoted');
-$.lang.register('discord.promotesystem.cmd.promoteadm.del.nouser', 'Who you wish to remove from being promoted?');
-$.lang.register('discord.promotesystem.cmd.promoteadm.del.success', '$1 will no longer be promoted');
+$.lang.register('discord.promotesystem.cmd.promoteadm.add.nouser', 'Wen möchtest du promoten?');
+$.lang.register('discord.promotesystem.cmd.promoteadm.add.nobio', 'Sie müssen eine kurze Biographie angeben oder das Schlüsselwort "none" verwenden (!promoteadm add user none).');
+$.lang.register('discord.promotesystem.cmd.promoteadm.add.success', '$1 wird nun promotet.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.del.nouser', 'Wen möchten Sie von der Promotion ausschließen?');
+$.lang.register('discord.promotesystem.cmd.promoteadm.del.success', '$1 wird nicht mehr promotet.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.channel.nochannel', 'Use which channel for promotions? To remove current channel use !promoteadm channel clear');
-$.lang.register('discord.promotesystem.cmd.promoteadm.channel.cleared', 'Promote channel has been cleared.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.channel.success', 'Promote channel has been set to: #$1'); 
+$.lang.register('discord.promotesystem.cmd.promoteadm.channel.nochannel', 'Welchen Kanal für Promotionen nutzen? Um den aktuellen Kanal zu entfernen, verwenden Sie !promoteadm channel clear.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.channel.cleared', 'Der Promo-Kanal wurde gelöscht.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.channel.success', 'Der Promo-Kanal wurde eingestellt auf: #$1');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.nochannel', 'Use which channel for stream announcements? To remove current channel use !promoteadm streamchannel clear');
-$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.cleared', 'Stream announcement channel has been cleared.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.success', 'Stream announcement channel has been set to: #$1');
+$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.nochannel', 'Welchen Kanal für Stream-Ankündigungen verwenden? Um den aktuellen Kanal zu entfernen, verwenden Sie !promoteadm streamchannel clear.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.cleared', 'Der Stream-Ankündigungskanal wurde gelöscht.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.success', 'Der Stream-Ankündigungskanal wurde gesetzt auf: #$1');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.revoke.nouser', 'Revoke the privilege of which user to be able to add themselves?');
-$.lang.register('discord.promotesystem.cmd.promoteadm.revoke.success', '$1 will no longer be promoted and will no longer be able to manage themselves.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.revoke.nouser', 'Entzug der Berechtigung welche Benutzer sich selbst hinzufügen können?');
+$.lang.register('discord.promotesystem.cmd.promoteadm.revoke.success', '$1 wird nicht mehr promotet und kann sich nicht mehr selbst verwalten.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.allow.nouser',  'Allow which user to be able to add themselves again?');
-$.lang.register('discord.promotesystem.cmd.promoteadm.allow.success', '$1  will be allowed to add themselves again.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.allow.nouser', 'Welchem Benutzer erlauben, sich wieder hinzufügen zu können?');
+$.lang.register('discord.promotesystem.cmd.promoteadm.allow.success', '$1 darf sich wieder selbst hinzufügen.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.toggleselfmanage.off', 'Users will no longer be able to manage themselves via !promote add and delete.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.toggleselfmanage.on', 'Users will now be able to manage themselves via !promote add and delete.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.toggleselfmanage.off', 'Benutzer können sich nicht mehr über !promote add and delete selbst verwalten.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.toggleselfmanage.on', 'Benutzer können sich nun über !promote add and delete selbst verwalten.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.togglestats.off', 'Stats will no longer show when a stream is announced.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.togglestats.on', 'Stats will now show when a stream is announced.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.togglestats.off', 'Statistiken werden nicht mehr angezeigt, wenn ein Stream angekündigt wird.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.togglestats.on', 'Statistiken werden nun angezeigt, wenn ein Stream angekündigt wird.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.togglebanner.off', 'Banners will no longer show when a stream is announced.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.togglebanner.on', 'Banners will now show when a stream is announced.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.togglebanner.off', 'Banner werden nicht mehr angezeigt, wenn ein Stream angekündigt wird.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.togglebanner.on', 'Banner werden nun angezeigt, wenn ein Stream angekündigt wird.');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.list.empty', 'No users are presently being promoted.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.list.success', 'Users being promoted: $1');
+$.lang.register('discord.promotesystem.cmd.promoteadm.list.empty', 'Derzeit werden keine Benutzer promotet.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.list.success', 'Benutzer werden promotet: $1');
 
-$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.nominutes', 'Provide an interval in minutes.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.toolow', 'The interval should be 15 minutes or more as to not spam the channel.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.success', 'The interval for promoting streamers has been set to $1 minutes.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.nominutes', 'Geben Sie ein Intervall in Minuten an.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.toolow', 'Das Intervall sollte 15 Minuten oder mehr betragen, um den Kanal nicht zu spammen.');
+$.lang.register('discord.promotesystem.cmd.promoteadm.setinterval.success', 'Das Intervall für die Promotion von Streamern wurde auf $1 Minuten festgelegt.');
 
-$.lang.register('discord.promotesystem.cmd.so.nouser', 'You must provide a user to lookup and shoutout.');
-$.lang.register('discord.promotesystem.cmd.so.noexist', 'That user is not currently being promoted. Check !promoteadm list');
+$.lang.register('discord.promotesystem.cmd.so.nouser', 'Du musst einen Benutzer zum Nachschlagen und Ausrufen bereitstellen.');
+$.lang.register('discord.promotesystem.cmd.so.noexist', 'Dieser Benutzer wird derzeit nicht befördert. Check !promoteadm Liste');
 
-$.lang.register('discord.promotesystem.livemsg.title', '$1 is LIVE @ https://twitch.tv/$2');
-$.lang.register('discord.promotesystem.livemsg.nowplaying', 'Now Playing');
-$.lang.register('discord.promotesystem.livemsg.streamtitle', 'Stream Title');
-$.lang.register('discord.promotesystem.livemsg.followers', 'Followers');
-$.lang.register('discord.promotesystem.livemsg.views', 'Views');
+$.lang.register('discord.promotesystem.livemsg.title', '$1 ist LIVE @ https://twitch.tv/$2');
+$.lang.register('discord.promotesystem.livemsg.nowplaying', 'Spielt gerade');
+$.lang.register('discord.promotesystem.livemsg.streamtitle', 'Stream Titel');
+$.lang.register('discord.promotesystem.livemsg.followers', 'Follower');
+$.lang.register('discord.promotesystem.livemsg.views', 'Aufrufe');
 
-$.lang.register('discord.promotesystem.promotemsg.description', 'Be sure to follow and checkout $1');
+$.lang.register('discord.promotesystem.promotemsg.description', 'Vergessen Sie nicht, $1 zu folgen und anzusehen. ');
 $.lang.register('discord.promotesystem.promotemsg.biography', 'Bio');
-$.lang.register('discord.promotesystem.promotemsg.nobio', 'No biography provided.');
+$.lang.register('discord.promotesystem.promotemsg.nobio', 'Keine Biographie vorhanden.');

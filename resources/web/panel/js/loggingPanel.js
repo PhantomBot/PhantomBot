@@ -86,7 +86,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 5 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Logging Data', 'success', 1000);
+            newPanelAlert('Protokolldaten aktualisieren', 'success', 1000);
             doQuery();
         }
     }, 3e4);

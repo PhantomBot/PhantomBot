@@ -138,7 +138,7 @@
                     }
                     html += '</table>';
                 } else {
-                    html = '<i>No entries in table.</i>';
+                    html = '<i>Keine Einträge in der Tabelle.</i>';
                 }
                 $("#blacklistModSettings").html(html);
             }
@@ -162,7 +162,7 @@
                     }
                     html += "</table>";
                 } else {
-                    html = "<i>No entries in table.</i>";
+                    html = "<i>Keine Einträge in der Tabelle.</i>";
                 }
                 $("#whitelistModSettings").html(html);
             }
@@ -634,8 +634,8 @@
 
         $("#blacklistWord").val('');
         $("#useRegex").prop("checked", false);
-        $("#blackList_message").val('You were timed out for using a blacklisted word.');
-        $("#blacklistReason").val('Using a blacklisted word');
+        $("#blackList_message").val('Du wurdest wegen der Verwendung eines Wortes von der schwarzen Liste ausgeschlossen.');
+        $("#blacklistReason").val('Verwendung eines Wortes auf der schwarzen Liste');
         $("#blacklistTimeout").val('600');
         $("#blacklist_regs").prop("checked", false);
         $("#blacklist_subs").prop("checked", false);
@@ -934,7 +934,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 2 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Moderation Data', 'success', 1000);
+            newPanelAlert('Moderationsdaten aktualisieren', 'success', 1000);
             doQuery();
         }
     }, 3e4);

@@ -59,7 +59,7 @@
             }
 
             if (panelCheckQuery(msgObject, 'ranks_ranksmapping')) {
-                html = "<br><table><th>&nbsp;&nbsp;&nbsp; Hours &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rank Name</th></tr>";
+                html = "<br><table><th>&nbsp;&nbsp;&nbsp; Stunde &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rang Name</th></tr>";
                 ranksData = msgObject['results'];
                 ranksData.sort(sortRanks);
                 for (idx = 0; idx < ranksData.length; idx++) {
@@ -88,7 +88,7 @@
             }
 
             if (panelCheckQuery(msgObject, 'ranks_customranks')) {
-                html = "<br><table><tr><th /><th>User Name</th><th>Rank Name</th></tr>";
+                html = "<br><table><tr><th /><th>Benutzername</th><th>Rang Name</th></tr>";
                 ranksData = msgObject['results'];
                 ranksData.sort();
                 for (idx = 0; idx < ranksData.length; idx++) {
@@ -113,7 +113,7 @@
                 }
                 html += "</table>";
                 if (ranksData.length === 0) {
-                    html = "<i>There are no users with custom ranks</i>";
+                    html = "<i>Es gibt keine Benutzer mit benutzerdefinierten Rängen.</i>";
                 }
                 $("#ranksCustom").html(html);
                 handleInputFocus();
@@ -258,7 +258,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 6 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Ranks Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Rangdaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

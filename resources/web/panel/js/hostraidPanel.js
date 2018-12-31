@@ -266,7 +266,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 13 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Hosts/Raids Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Hosts und Raids-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);
