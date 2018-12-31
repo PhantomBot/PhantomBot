@@ -314,7 +314,8 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') Stack: ' + ex.stack.split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + ' Exception: ' + ex);
+
             }
         } else {
             for (i in hook.handlers) {
@@ -322,7 +323,8 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                        $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') Stack: ' + ex.stack.split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + ' Exception: ' + ex);
+
                     }
                 }
             }
