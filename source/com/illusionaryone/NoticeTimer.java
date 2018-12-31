@@ -37,6 +37,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.ArrayList;
+
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /*
  * Provides a timer system for managing notices.  Reads data directly from the
@@ -216,6 +222,8 @@ public class NoticeTimer implements Runnable, Listener {
      */
     private void processOrderedTimers() {
         DataStore dataStore = PhantomBot.instance().getDataStore();
+        JSONObject noticeData = null;
+        String message = "";
 
         /*
          * If the lastNoticeTime is -1, then this timer type has not been used yet.  Set to current
@@ -251,26 +259,45 @@ public class NoticeTimer implements Runnable, Listener {
         lastNoticeID++;
 
         /* Check to see if any notices even exist. */
-        String message0 = dataStore.GetString("notices", "notice_0", "message");
-        if (message0 == null) {
-            lastNoticeID = -1;
-            return;
-        }
-        if (message0.length() == 0 && lastNoticeID == 0) {
+        String[] noticeKeys = dataStore.GetKeyList("notices", "");
+        if (noticeKeys == null) {
             return;
         }
 
         /*
-         * Get the notice.  If it is null or empty, assume we are at the end of the list and reset to 0.
+         * If at the end of the list, start over.
          */
-        String message = dataStore.GetString("notices", "notice_" + lastNoticeID, "message");
-        if (message == null) {
+        if (lastNoticeID >= noticeKeys.length) {
             lastNoticeID = 0;
-            message = message0;
         }
-        if (message.length() == 0 && lastNoticeID == 0) {
-            lastNoticeID = 0;
-            message = message0;
+
+        /* Make sure that this notice is enabled and if not, find one that is enabled. */
+        Boolean foundEnabled = Boolean.FALSE;
+        int origLastNoticeID = lastNoticeID;
+        do {
+            String noticeKey = noticeKeys[lastNoticeID];
+            try {
+                noticeData = new JSONObject(dataStore.GetString("notices", "", noticeKey));
+                if (noticeData.getBoolean("enabled")) {
+                    message = noticeData.getString("message");
+                    foundEnabled = Boolean.TRUE;
+                }
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
+            }
+
+            lastNoticeID++;
+            if (lastNoticeID >= noticeKeys.length) {
+                lastNoticeID = 0;
+            }
+            if (lastNoticeID == origLastNoticeID) {
+                break;
+            }
+        } while (!foundEnabled);
+
+        /* All notices are disabled. */
+        if (foundEnabled == Boolean.FALSE) {
+            return;
         }
 
         /* See if the message is really a command and handle accordingly. */
@@ -298,70 +325,76 @@ public class NoticeTimer implements Runnable, Listener {
      * @param    int    currentMinute - The current minute past the hour to compare to the timers.
      */
     private void processScheduledTimers(int currentMinute) {
+        List<JSONObject> eligibleGameNotices = new ArrayList<JSONObject>();
+        List<JSONObject> eligibleNotices = new ArrayList<JSONObject>();
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        JSONObject noticeData = null;
         DataStore dataStore = PhantomBot.instance().getDataStore();
         String currentGameTitle = twitchCache.getGameTitle();
+        int currentWeight = 0;
 
         /* Reset chat lines every 5 minutes. */
         if (currentMinute % 5 == 0) {
             totalChatLines = 0;
         }
 
-        String[] sections = dataStore.GetCategoryList("notices");
-        if (sections == null) {
+        /* Data Format
+            {
+              "gametitle": "Game Title",
+              "message": "This is a message",
+              "enabled": true,
+              "interval": 5,
+              "weight": 1,
+              "chatlines": 5
+            }
+         */
+
+        String[] noticeKeys = dataStore.GetKeyList("notices", "");
+        if (noticeKeys == null) {
             return;
         }
 
-        for (String section : sections) {
-            if (section == null) {
-                continue;
-            }
+        if (currentMinute == 0) {
+            currentMinute = 60;
+        }
 
-            String minutesListStr = dataStore.GetString("notices", section, "minutes");
-            if (minutesListStr == null) {
-                continue;
-            }
-            boolean foundMinuteMatch = false;
+        for (String noticeKey : noticeKeys) {
             try {
-                String[] minutesList = minutesListStr.split(",");
-                for (String minute : minutesList) {
-                    if (currentMinute == Integer.parseInt(minute)) {
-                        foundMinuteMatch = true;
-                        break;
-                    }
-                }
-            } catch (NumberFormatException ex) {
-                continue;
-            }
-            if (!foundMinuteMatch) {
+                noticeData = new JSONObject(dataStore.GetString("notices", "", noticeKey));
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
                 continue;
             }
 
-            /* Pull chatlines.  0 means ignore lines in chat. */
-            String chatlines = dataStore.GetString("notices", section, "chatlines");
-            if (chatlines == null) {
-                continue;
-            }
-            try {
-                if (Integer.parseInt(chatlines) > totalChatLines && Integer.parseInt(chatlines) != 0) {
-                    continue;
-                }
-            } catch (NumberFormatException ex) {
+            if (!noticeData.has("id") || !noticeData.has("gametitle") || !noticeData.has("message") ||
+                !noticeData.has("enabled") || !noticeData.has("interval") || !noticeData.has("weight") ||
+                !noticeData.has("chatlines")) {
+                com.gmt2001.Console.err.println("Notice JSON Missing Data Member: Key [" + noticeKey + "]");
                 continue;
             }
 
-            /* Pull gametitle. If it is empty, always use it, otherwise, compare to current game. */
-            String gametitle = dataStore.GetString("notices", section, "gametitle");
-            if (gametitle != null) {
-                if (gametitle.length() > 0) {
-                    if (!gametitle.toLowerCase().equals(currentGameTitle.toLowerCase())) {
-                        continue;
-                    }
-                }
+            if (!noticeData.getBoolean("enabled")) {
+                continue;
+            }
+
+            int interval = noticeData.getInt("interval");
+            if (interval == 0 || currentMinute % interval != 0) {
+                continue;
+            }
+
+            int weight = noticeData.getInt("weight");
+            if (weight == 0) {
+                continue;
+            }
+
+            /* Pull chatlines. 0 means ignore lines in chat. */
+            int chatlines = noticeData.getInt("chatlines");
+            if (chatlines > totalChatLines && chatlines != 0) {
+                continue;
             }
 
             /* Pull the message (or command). */
-            String message = dataStore.GetString("notices", section, "message");
+            String message = noticeData.getString("message");
             if (message == null) {
                 continue;
             }
@@ -369,28 +402,88 @@ public class NoticeTimer implements Runnable, Listener {
                 continue;
             }
 
-            /* See if the message is really a command and handle accordingly. */
-            if (message.startsWith("command:")) {
-                String arguments = "";
-                String command = message.substring(8);
-
-                if (command.contains(" ")) {
-                    String commandString = command;
-                    command = commandString.substring(0, commandString.indexOf(" "));
-                    arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            /* Pull gametitle. If it is empty, always use it, otherwise, compare to current game. */
+            String gametitle = noticeData.getString("gametitle");
+            if (gametitle != null) {
+                if (gametitle.length() > 0) {
+                    if (gametitle.toLowerCase().equals(currentGameTitle.toLowerCase())) {
+                        eligibleGameNotices.add(noticeData);
+                    }
+                    continue;
                 }
-                this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
-            } else {
-                this.session.say(message);
             }
 
-            /*
-             * Process the first message matched. The user documentation warns against
-             * putting notices at the same time. An exception to this is using different
-             * gametitle settings at the same time, in which case, that will allow
-             * for different timers to be configured at the same time.
-             */
-            break;
+            /* Put this in the running. */
+            eligibleNotices.add(noticeData);
+        }
+
+        /* Nothing found. */
+        if (eligibleGameNotices.size() == 0 && eligibleNotices.size() == 0) {
+            return;
+        }
+
+        /* If there was a single game notice match, use that. */
+        if (eligibleGameNotices.size() == 1) {
+            sendMessage(eligibleGameNotices.get(0).getString("message"));
+            return;
+        } 
+
+        /* If there were no game notices and a single notice, use that. */
+        if (eligibleGameNotices.size() == 0 && eligibleNotices.size() == 1) {
+            sendMessage(eligibleNotices.get(0).getString("message"));
+            return;
+        } 
+
+        /* There were game notices. */
+        if (eligibleGameNotices.size() > 1) {
+            sendMessage(findEligibleNotice(eligibleGameNotices));
+        }
+
+        /* There were notices. */
+        if (eligibleNotices.size() > 1) {
+            sendMessage(findEligibleNotice(eligibleNotices));
+        }
+    }
+
+    /*
+     * Finds the message in a List that represents the eligible notice.  We do not attempt to do
+     * tie breakers or choose a random entry if there are duplicate weights.  The first one will win.
+     *
+     * @param    List      List of notices, which are JSONObjects.
+     * @return   String    The message to send from the JSONObject found.
+     */
+    private String findEligibleNotice(List<JSONObject> noticeList) {
+        String message = "";
+        int weight = 0;
+
+        ListIterator<JSONObject> iterator = noticeList.listIterator();
+        while (iterator.hasNext()) {
+            JSONObject noticeData = iterator.next();
+            if (noticeData.getInt("weight") > weight) {
+                message = noticeData.getString("message");
+            }
+        }
+        return(message);
+    }
+
+    /*
+     * Sends the message.
+     *
+     * @param    String    The message/command to send.
+     */
+    private void sendMessage(String message) {
+        if (message.startsWith("command:")) {
+            String arguments = "";
+            String command = message.substring(8);
+
+            if (command.contains(" ")) {
+                String commandString = command;
+                command = commandString.substring(0, commandString.indexOf(" "));
+                arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            }
+            this.scriptEventManager.onEvent(new CommandEvent(botname, command, arguments));
+        } else {
+            this.session.say(message);
         }
     }
 
