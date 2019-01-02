@@ -29,7 +29,7 @@ public final class out {
     }
 
     public static void print(Object o) {
-        if (PhantomBot.enableDebugging) {
+        if (PhantomBot.getEnableDebugging()) {
             Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
         }
 

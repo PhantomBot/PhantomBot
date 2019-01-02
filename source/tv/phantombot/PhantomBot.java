@@ -49,9 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
-
 import java.net.ServerSocket;
-
 import java.security.SecureRandom;
 
 import java.text.SimpleDateFormat;
@@ -209,15 +207,15 @@ public final class PhantomBot implements Listener {
 
     /* PhantomBot Information */
     private static PhantomBot instance;
-    public static Boolean reloadScripts = false;
-    public static Boolean enableDebugging = false;
-    public static Boolean enableDebuggingLogOnly = false;
-    public static Boolean enableRhinoDebugger = false;
-    public static String timeZone = "GMT";
-    public static Boolean useMessageQueue = true;
-    public static Boolean twitch_tcp_nodelay = true;
-    public static Boolean isInExitState = false;
-    public Boolean isExiting = false;
+    private static Boolean reloadScripts = false;
+    private static Boolean enableDebugging = false;
+    private static Boolean enableDebuggingLogOnly = false;
+    private static Boolean enableRhinoDebugger = false;
+    private static String timeZone = "GMT";
+    private static Boolean useMessageQueue = true;
+    private static Boolean twitchTcpNodelay = true;
+    private static Boolean isInExitState = false;
+    private Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
 
@@ -479,7 +477,7 @@ public final class PhantomBot implements Listener {
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
-        PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
+        PhantomBot.twitchTcpNodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
 
         /*
@@ -662,6 +660,8 @@ public final class PhantomBot implements Listener {
      * @param {boolean} debug
      */
     public static void setDebugging(Boolean debug) {
+        if (debug)
+            com.gmt2001.Console.out.println("Debug Mode Enabled");
         PhantomBot.enableDebugging = debug;
     }
 
@@ -671,6 +671,8 @@ public final class PhantomBot implements Listener {
      * @param {boolean} debug
      */
     public static void setDebuggingLogOnly(Boolean debug) {
+        if (debug)
+            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
     }
@@ -1330,14 +1332,37 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitOK();
             }
         }
+        
+        Properties startProperties = ConfigurationManager.getConfiguration();
+        
+        setStaticFields(startProperties);
 
         /* Start PhantomBot */
-        PhantomBot.instance = new PhantomBot(ConfigurationManager.getConfiguration());
+        PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    /* gen a oauth */
-    private static String generateWebAuth() {
-        return generateRandomString(30);
+    private static void setStaticFields(Properties startProperties) {
+        /* Check to enable debug mode */
+        PhantomBot.setDebugging(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGON, false));
+        /* Check to enable debug to File */
+        PhantomBot.setDebuggingLogOnly(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGLOG, false));
+        /* Check to enable Script Reloading */
+        PhantomBot.setReloadScripts(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RELOADSCRIPTS, false));
+        /* Check to enable Rhino Debugger */
+        PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
+    }
+
+    private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
+        if(enableRhinoDebugger)
+            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+        PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
+    }
+
+    private static void setReloadScripts(Boolean reloadScripts) {
+        if (reloadScripts)
+            com.gmt2001.Console.out.println("Enabling Script Reloading");
+        PhantomBot.reloadScripts = reloadScripts;
+        
     }
 
     /* gen a random string */
@@ -1411,9 +1436,9 @@ public final class PhantomBot implements Listener {
             dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
 
             try {
-                Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
-                    File backupFile = (File) dirIterator.next();
+                    File backupFile = dirIterator.next();
                     if (FileUtils.isFileOlder(backupFile, (System.currentTimeMillis() - (long) (backupSQLiteKeepDays * 864e5)))) {
                         FileUtils.deleteQuietly(backupFile);
                     }
@@ -1530,5 +1555,37 @@ public final class PhantomBot implements Listener {
      */
     public static void exitOK() {
         System.exit(EXIT_STATUS_OK);
+    }
+    
+    public static Boolean getReloadScripts() {
+        return reloadScripts;
+    }
+
+    public static Boolean getEnableDebugging() {
+        return enableDebugging;
+    }
+
+    public static Boolean getEnableDebuggingLogOnly() {
+        return enableDebuggingLogOnly;
+    }
+
+    public static Boolean getEnableRhinoDebugger() {
+        return enableRhinoDebugger;
+    }
+
+    public static String getTimeZone() {
+        return timeZone;
+    }
+
+    public static Boolean getUseMessageQueue() {
+        return useMessageQueue;
+    }
+
+    public static Boolean getTwitchTcpNodelay() {
+        return twitchTcpNodelay;
+    }
+
+    public static Boolean isInExitState() {
+        return isInExitState;
     }
 }

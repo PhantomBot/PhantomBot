@@ -253,7 +253,7 @@ public class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("backupdb")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing backupdb");
             SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
+            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
             dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
