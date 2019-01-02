@@ -19,27 +19,27 @@ public class ConfigurationManager {
     private static final String PANEL_STANDARD_PASSWORD = "panel";
     private static final String OUAUTH_PREFIX = "oauth:";
 
-    private static final String PROP_BASEPORT = "baseport";
-    private static final String PROP_USEHTTPS = "usehttps";
-    private static final String PROP_WEBENABLE = "webenable";
-    private static final String PROP_MSGLIMIT30 = "msglimit30";
-    private static final String PROP_MUSICENABLE = "musicenable";
-    private static final String PROP_WHISPERLIMIT60 = "whisperlimit60";
-    private static final String PROP_OAUTH = "oauth";
-    private static final String PROP_CHANNEL = "channel";
-    private static final String PROP_OWNER = "owner";
-    private static final String PROP_USER = "user";
-    private static final String PROP_DEBUGON = "debugon";
-    private static final String PROP_DEBUGLOG = "debuglog";
-    private static final String PROP_RELOADSCRIPTS = "reloadscripts";
-    private static final String PROP_RHINODEBUGGER = "rhinodebugger";
-    private static final String PROP_WEBAUTH = "webauth";
-    private static final String PROP_WEBAUTH_RO = "webauthro";
-    private static final String PROP_PANEL_USER = "paneluser";
-    private static final String PROP_PANEL_PASSWORD = "panelpassword";
-    private static final String PROP_YTAUTH = "ytauth";
-    private static final String PROP_YTAUTH_RO = "ytauthro";
-    private static final String PROP_API_OAUTH = "apioauth";
+    public static final String PROP_BASEPORT = "baseport";
+    public static final String PROP_USEHTTPS = "usehttps";
+    public static final String PROP_WEBENABLE = "webenable";
+    public static final String PROP_MSGLIMIT30 = "msglimit30";
+    public static final String PROP_MUSICENABLE = "musicenable";
+    public static final String PROP_WHISPERLIMIT60 = "whisperlimit60";
+    public static final String PROP_OAUTH = "oauth";
+    public static final String PROP_CHANNEL = "channel";
+    public static final String PROP_OWNER = "owner";
+    public static final String PROP_USER = "user";
+    public static final String PROP_DEBUGON = "debugon";
+    public static final String PROP_DEBUGLOG = "debuglog";
+    public static final String PROP_RELOADSCRIPTS = "reloadscripts";
+    public static final String PROP_RHINODEBUGGER = "rhinodebugger";
+    public static final String PROP_WEBAUTH = "webauth";
+    public static final String PROP_WEBAUTH_RO = "webauthro";
+    public static final String PROP_PANEL_USER = "paneluser";
+    public static final String PROP_PANEL_PASSWORD = "panelpassword";
+    public static final String PROP_YTAUTH = "ytauth";
+    public static final String PROP_YTAUTH_RO = "ytauthro";
+    public static final String PROP_API_OAUTH = "apioauth";
 
     private ConfigurationManager() {
         // private constructor to prevent users from instantiating a pure static class
@@ -90,16 +90,6 @@ public class ConfigurationManager {
                 startProperties.setProperty(key, value);
             }
         }
-        /* Check to enable debug mode */
-        PhantomBot.enableDebugging = getBoolean(startProperties, PROP_DEBUGON, false, "Debug Mode Enabled", null);
-        /* Check to enable debug to File */
-        Boolean debuglog = getBoolean(startProperties, PROP_DEBUGLOG, false, "Debug Log Only Mode Enabled", null);
-        PhantomBot.enableDebugging = debuglog;
-        PhantomBot.enableDebuggingLogOnly = debuglog;
-        /* Check to enable Script Reloading */
-        PhantomBot.reloadScripts = getBoolean(startProperties, PROP_RELOADSCRIPTS, false, "Enabling Script Reloading", null);
-        /* Check to enable Rhino Debugger */
-        PhantomBot.enableRhinoDebugger = getBoolean(startProperties, PROP_RHINODEBUGGER, false, "Rhino Debugger will be launched if system supports it.", null);
 
         changed |= generateDefaultValues(startProperties);
 
@@ -265,16 +255,10 @@ public class ConfigurationManager {
      * @param properties   the Properties object to get the boolean value from
      * @param propertyName the name of the property to get
      * @param defaulValue  the default value of the property
-     * @param trueMessage  the message to be printed, if the value of the property
-     *                     value is true. Pass null or an empty String if no message
-     *                     should be shown.
-     * @param falseMessage the message to be printed, if the value of the property
-     *                     value is true. Pass null or an empty String if no message
-     *                     should be shown.
      * @return the value of the property. If parsing the value to a Boolean fails,
      *         the default value is returned.
      */
-    private static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue, String trueMessage, String falseMessage) {
+    public static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue) {
         Boolean result = defaulValue;
         try {
             result = Boolean.parseBoolean(properties.getProperty(propertyName));
@@ -282,11 +266,6 @@ public class ConfigurationManager {
             com.gmt2001.Console.err.printStackTrace(e);
             com.gmt2001.Console.err.println("[Error] could not load property '" + propertyName + "'. Fallback to default value (" + defaulValue + ")");
         }
-
-        if (trueMessage != null && !trueMessage.isEmpty())
-            com.gmt2001.Console.out.println(trueMessage);
-        if (falseMessage != null && !falseMessage.isEmpty())
-            com.gmt2001.Console.out.println(falseMessage);
 
         return result;
     }
@@ -383,7 +362,7 @@ public class ConfigurationManager {
             com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
 
             Thread.sleep(10000);
-            
+
         } catch (InterruptedException ex) {
             com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
             Thread.currentThread().interrupt();
