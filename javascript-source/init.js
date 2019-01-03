@@ -314,7 +314,7 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
             }
         } else {
             for (i in hook.handlers) {
@@ -322,7 +322,7 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
                     }
                 }
             }
@@ -942,6 +942,13 @@
          */
         $api.on($script, 'discordChannelPart', function(event) {
             callHook('discordChannelPart', event, false);
+        });
+
+        /*
+         * @event discordMessageReaction
+         */
+        $api.on($script, 'discordMessageReaction', function(event) {
+            callHook('discordMessageReaction', event, false);
         });
 
         /*

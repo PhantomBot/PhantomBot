@@ -53,6 +53,7 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
+import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
@@ -111,6 +112,16 @@ public class ConsoleEventHandler implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        /**
+         * @consolecommand raidtest - Tests the raid event.
+         */
+        if (message.equalsIgnoreCase("raidtest")) {
+            String raidName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Raid Event (Username = " + raidName + ", Viewers = 10)");
+            EventBus.instance().postAsync(new TwitchRaidEvent(raidName, "10"));
+            return;
         }
 
         /**
