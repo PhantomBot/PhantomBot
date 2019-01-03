@@ -188,7 +188,7 @@
                 countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
             time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
-            message = $.replace(message, t, $.getCountString(time / 1000, false));
+            message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
         if (message.match(/\(countup=[^)]+\)/g)) {
@@ -196,7 +196,7 @@
                 countup, time;
             countup = t.replace('(countup=', '').replace(')', '');
             time = (Date.parse($.getLocalTime()) - Date.parse(countup));
-            message = $.replace(message, t, $.getCountString(time / 1000, true));
+            message = $.replace(message, t, $.getTimeString(time / 1000));
         }
 
         if (message.match(/\(downtime\)/g)) {
@@ -450,6 +450,15 @@
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
             message = apiTags(event, message);
+        }
+
+        if (message.match('\n')) {
+            var splitMessage = message.split('\n');
+
+            for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
+                $.say(splitMessage[i]);
+            }
+            return null;
         }
 
         return message;
