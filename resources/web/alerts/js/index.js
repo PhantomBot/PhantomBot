@@ -229,6 +229,7 @@ $(function() {
                 gifVolume = getOptionSetting('gif-default-volume', '0.8'),
                 gifFile = '',
                 gifCss = '',
+                gifText = '',
                 htmlObj,
                 audio;
 
@@ -251,6 +252,9 @@ $(function() {
                         case 3:
                             gifCss = value;
                             break;
+                        case 4:
+                            gifText = value;
+                            break;
                     }
                 });
             } else {
@@ -272,6 +276,20 @@ $(function() {
                     'style': gifCss
                 });
             }
+
+            // p obeject to hold custom gif alert text and style
+            textObj = $('<p/>', {
+                'style': gifCss
+            }).text(gifText);
+
+            // Append the custom text object to the page
+            $('#alert-text').append(textObj).fadeIn(1e2).delay(gifDuration)
+              .fadeOut(1e2, function() { //Remove the text with a fade out.
+                let t = $(this);
+
+                // Remove the p tag
+                t.find('p').remove();
+              });
 
             // Append a new the image.
             $('#alert').append(htmlObj).fadeIn(1e2, function() {
