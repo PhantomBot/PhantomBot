@@ -232,7 +232,7 @@ public class Logger implements Runnable {
 
     public String logTimestamp() {
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
         return datefmt.format(new Date());
     }
 }

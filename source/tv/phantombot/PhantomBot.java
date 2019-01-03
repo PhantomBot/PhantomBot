@@ -40,6 +40,7 @@ import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv2;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,18 +50,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
+
 import java.net.ServerSocket;
+
 import java.security.SecureRandom;
 
 import java.text.SimpleDateFormat;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -207,20 +213,20 @@ public final class PhantomBot implements Listener {
 
     /* PhantomBot Information */
     private static PhantomBot instance;
-    private static Boolean reloadScripts = false;
-    private static Boolean enableDebugging = false;
-    private static Boolean enableDebuggingLogOnly = false;
-    private static Boolean enableRhinoDebugger = false;
-    private static String timeZone = "GMT";
-    private static Boolean useMessageQueue = true;
-    private static Boolean twitchTcpNodelay = true;
-    private static Boolean isInExitState = false;
-    private Boolean isExiting = false;
+    public static Boolean reloadScripts = false;
+    public static Boolean enableDebugging = false;
+    public static Boolean enableDebuggingLogOnly = false;
+    public static Boolean enableRhinoDebugger = false;
+    public static String timeZone = "GMT";
+    public static Boolean useMessageQueue = true;
+    public static Boolean twitch_tcp_nodelay = true;
+    public static Boolean isInExitState = false;
+    public Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
 
     /* Other Information */
-    private Boolean newSetup = false;
+    private static Boolean newSetup = false;
     private TwitchSession session;
     private String chanName;
     private Boolean timer = false;
@@ -233,11 +239,6 @@ public final class PhantomBot implements Listener {
     private Boolean backupSQLiteAuto = false;
     private int backupSQLiteHourFrequency = 0;
     private int backupSQLiteKeepDays = 0;
-    
-    // Error codes
-    // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
-    private static final int EXIT_STATUS_OK = 0;
-    private static final int EXIT_STATUS_ERROR = 1;
 
     /*
      * PhantomBot Instance.
@@ -335,7 +336,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
             com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
             com.gmt2001.Console.err.println("PhantomBot will now exit.");
-            PhantomBot.exitError();
+            System.exit(0);
         } finally {
             if (serverSocket != null) {
                 try {
@@ -343,7 +344,7 @@ public final class PhantomBot implements Listener {
                 } catch (IOException e) {
                     com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
                     com.gmt2001.Console.err.println("PhantomBot will now exit.");
-                    PhantomBot.exitError();
+                    System.exit(0);
                 }
             }
         }
@@ -454,13 +455,13 @@ public final class PhantomBot implements Listener {
             if (this.httpsFileName.equals("")) {
                 com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not defined.");
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
-                PhantomBot.exitError();
+                System.exit(1);
             }
 
             if (!new File (httpsFileName).exists()) {
                 com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not present: " + httpsFileName);
                 com.gmt2001.Console.err.println("Terminating PhantomBot");
-                PhantomBot.exitError();
+                System.exit(1);
             }
         }
 
@@ -477,7 +478,7 @@ public final class PhantomBot implements Listener {
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
-        PhantomBot.twitchTcpNodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
+        PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
 
         /*
@@ -507,9 +508,6 @@ public final class PhantomBot implements Listener {
         this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "true").equalsIgnoreCase("true");
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfrequency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
-        
-        // Set the newSetup flag
-        this.newSetup = this.pbProperties.getProperty("newSetup").equals("true");
 
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
@@ -527,7 +525,7 @@ public final class PhantomBot implements Listener {
             /* Check to see if we can create a connection */
             if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
                 print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
-                PhantomBot.exitError();
+                System.exit(0);
             }
             /* Convert to MySql */
             if (IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
@@ -540,7 +538,7 @@ public final class PhantomBot implements Listener {
 
             if (dataStore.CreateConnection("", "", "") == null) {
                 print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
-                PhantomBot.exitError();
+                System.exit(0);
             }
 
             if (SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
@@ -660,8 +658,6 @@ public final class PhantomBot implements Listener {
      * @param {boolean} debug
      */
     public static void setDebugging(Boolean debug) {
-        if (debug)
-            com.gmt2001.Console.out.println("Debug Mode Enabled");
         PhantomBot.enableDebugging = debug;
     }
 
@@ -671,8 +667,6 @@ public final class PhantomBot implements Listener {
      * @param {boolean} debug
      */
     public static void setDebuggingLogOnly(Boolean debug) {
-        if (debug)
-            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
     }
@@ -869,7 +863,7 @@ public final class PhantomBot implements Listener {
                 }
             } catch (Exception ex) {
                 print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
-                PhantomBot.exitError();
+                System.exit(0);
             }
         }
 
@@ -1313,10 +1307,20 @@ public final class PhantomBot implements Listener {
         // Move user files.
         moveUserConfig();
 
+        /* List of properties that must exist. */
+        String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
+        String requiredPropertiesErrorMessage = "";
+
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8 || Float.valueOf(System.getProperty("java.specification.version")) >= (float) 1.9) {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 8. Java 9 and above will NOT work.");
-            PhantomBot.exitError();
+            System.exit(1);
         }
+
+        /* Properties configuration */
+        Properties startProperties = new Properties();
+
+        /* Indicates that the botlogin.txt file should be overwritten/created. */
+        Boolean changed = false;
 
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
@@ -1329,40 +1333,294 @@ public final class PhantomBot implements Listener {
         if (args.length > 0) {
             if (args[0].equals("--version") || args[0].equals("-v")) {
                 com.gmt2001.Console.out.println("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
-                PhantomBot.exitOK();
+                System.exit(1);
             }
         }
-        
-        Properties startProperties = ConfigurationManager.getConfiguration();
-        
-        setStaticFields(startProperties);
+
+        /* Load up the bot info from the bot login file */
+        try {
+            if (new File("./config/botlogin.txt").exists()) {
+                FileInputStream inputStream = new FileInputStream("./config/botlogin.txt");
+                startProperties.load(inputStream);
+                inputStream.close();
+            } else {
+                /* Fill in the Properties object with some default values. Note that some values are left
+                 * unset to be caught in the upcoming logic to enforce settings.
+                 */
+                startProperties.setProperty("baseport", "25000");
+                startProperties.setProperty("usehttps", "false");
+                startProperties.setProperty("webenable", "true");
+                startProperties.setProperty("msglimit30", "19.0");
+                startProperties.setProperty("musicenable", "true");
+                startProperties.setProperty("whisperlimit60", "60.0");
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        /* Load up the bot info from the environment */
+        for (Entry<String, String> v : System.getenv().entrySet()) {
+            String Prefix = "PHANTOMBOT_";
+            String Key = v.getKey().toUpperCase();
+            String Value = v.getValue();
+            if (Key.startsWith(Prefix) && Prefix.length() < Key.length()) {
+                Key = Key.substring(Prefix.length()).toLowerCase();
+                startProperties.setProperty(Key, Value);
+            }
+        }
+        /* Check to enable debug mode */
+        if (startProperties.getProperty("debugon", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Mode Enabled");
+            PhantomBot.enableDebugging = true;
+        }
+        /* Check to enable debug to File */
+        if (startProperties.getProperty("debuglog", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
+            PhantomBot.enableDebugging = true;
+            PhantomBot.enableDebuggingLogOnly = true;
+        }
+        /* Check to enable Script Reloading */
+        if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Enabling Script Reloading");
+            PhantomBot.reloadScripts = true;
+        }
+        /* Check to enable Rhino Debugger */
+        if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
+            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+            PhantomBot.enableRhinoDebugger = true;
+        }
+        /* Check to see if there's a webOauth set */
+        if (startProperties.getProperty("webauth") == null) {
+            startProperties.setProperty("webauth", generateWebAuth());
+            com.gmt2001.Console.debug.println("New webauth key has been generated for ./config/botlogin.txt");
+            changed = true;
+        }
+        /* Check to see if there's a webOAuthRO set */
+        if (startProperties.getProperty("webauthro") == null) {
+            startProperties.setProperty("webauthro", generateWebAuth());
+            com.gmt2001.Console.debug.println("New webauth read-only key has been generated for ./config/botlogin.txt");
+            changed = true;
+        }
+        /* Check to see if there's a panelUsername set */
+        if (startProperties.getProperty("paneluser") == null) {
+            com.gmt2001.Console.debug.println("No Panel Username, using default value of 'panel' for Control Panel and YouTube Player");
+            startProperties.setProperty("paneluser", "panel");
+            changed = true;
+        }
+        /* Check to see if there's a panelPassword set */
+        if (startProperties.getProperty("panelpassword") == null) {
+            com.gmt2001.Console.debug.println("No Panel Password, using default value of 'panel' for Control Panel and YouTube Player");
+            startProperties.setProperty("panelpassword", "panel");
+            changed = true;
+        }
+        /* Check to see if there's a youtubeOAuth set */
+        if (startProperties.getProperty("ytauth") == null) {
+            startProperties.setProperty("ytauth", generateWebAuth());
+            com.gmt2001.Console.debug.println("New YouTube websocket key has been generated for ./config/botlogin.txt");
+            changed = true;
+        }
+        /* Check to see if there's a youtubeOAuthThro set */
+        if (startProperties.getProperty("ytauthro") == null) {
+            startProperties.setProperty("ytauthro", generateWebAuth());
+            com.gmt2001.Console.debug.println("New YouTube read-only websocket key has been generated for ./config/botlogin.txt");
+            changed = true;
+        }
+
+        /* Make a new botlogin with the botName, oauth or channel is not found */
+        if (startProperties.getProperty("user") == null || startProperties.getProperty("oauth") == null || startProperties.getProperty("channel") == null) {
+            try {
+
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
+                com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
+                com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
+                com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
+                com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
+                com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
+                com.gmt2001.Console.out.print("\r\n");                
+
+                final String os = System.getProperty("os.name").toLowerCase();
+
+                // Detect Windows, MacOS, Linux or any other operating system.
+                if (os.startsWith("win")) {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://community.phantombot.tv/t/windows-setup-guide/");
+                } else if (os.startsWith("mac")) {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://community.phantombot.tv/t/macos-setup-guide/");
+                } else {
+                	com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
+                	com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                }
+
+                com.gmt2001.Console.out.print("\r\n\r\n\r\n");
+
+                // Bot name.
+                do {
+                    com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
+
+                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
+                } while (startProperties.getProperty("user", "").length() <= 0);
+
+                // Twitch oauth.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                    com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
+                    com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
+                    com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                    com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+
+                    startProperties.setProperty("oauth", System.console().readLine().trim());
+                } while (startProperties.getProperty("oauth", "").length() <= 0);
+
+                // api oauth.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
+                    com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
+                    com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
+                    com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                    com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+
+                    startProperties.setProperty("apioauth", System.console().readLine().trim());
+                } while (startProperties.getProperty("apioauth", "").length() <= 0);
+
+                // Channel name.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
+
+                    startProperties.setProperty("channel", System.console().readLine().trim());
+                } while (startProperties.getProperty("channel", "").length() <= 0);
+
+                // Panel username.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
+
+                    startProperties.setProperty("paneluser", System.console().readLine().trim());
+                } while (startProperties.getProperty("paneluser", "").length() <= 0);
+
+                // Panel password.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
+
+                    startProperties.setProperty("panelpassword", System.console().readLine().trim());
+                } while (startProperties.getProperty("panelpassword", "").length() <= 0);
+
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("PhantomBot will launch in 10 seconds.\r\n");
+                com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/panel \r\n");
+                com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
+                com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
+
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
+                }
+
+                changed = true;
+                newSetup = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+                com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
+                System.exit(0);
+            }
+        }
+
+        /* Make sure the oauth has been set correctly */
+        if (startProperties.getProperty("oauth") != null) {
+            if (!startProperties.getProperty("oauth").startsWith("oauth") && !startProperties.getProperty("oauth").isEmpty()) {
+                startProperties.setProperty("oauth", "oauth:" + startProperties.getProperty("oauth"));
+                changed = true;
+            }
+        }
+
+        /* Make sure the apiOAuth has been set correctly */
+        if (startProperties.getProperty("apioauth") != null) {
+            if (!startProperties.getProperty("apioauth").startsWith("oauth") && !startProperties.getProperty("apioauth").isEmpty()) {
+                startProperties.setProperty("apioauth", "oauth:" + startProperties.getProperty("apioauth"));
+                changed = true;
+            }
+        }
+
+        /* Make sure the channelName does not have a # */
+        if (startProperties.getProperty("channel").startsWith("#")) {
+            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(1));
+            changed = true;
+        } else if (startProperties.getProperty("channel").contains(".tv")) {
+            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(startProperties.getProperty("channel").indexOf(".tv/") + 4).replaceAll("/", ""));
+            changed = true;
+        }
+
+        /* Check for the owner after the channel check is done. */
+        if (startProperties.getProperty("owner") == null) {
+            if (startProperties.getProperty("channel") != null) {
+                if (!startProperties.getProperty("channel").isEmpty()) {
+                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
+                    changed = true;
+                }
+            }
+        }
+
+        /* Iterate the properties and delete entries for anything that does not have a
+         * value.
+         */
+        for (String propertyKey : startProperties.stringPropertyNames()) {
+            if (startProperties.getProperty(propertyKey).isEmpty()) {
+                changed = true;
+                startProperties.remove(propertyKey);
+            }
+        }
+
+        /*
+         * Check for required settings.
+         */
+        for (String requiredProperty : requiredProperties) {
+            if (startProperties.getProperty(requiredProperty) == null) {
+                requiredPropertiesErrorMessage += requiredProperty + " ";
+            }
+        }
+
+        if (!requiredPropertiesErrorMessage.isEmpty()) {
+            com.gmt2001.Console.err.println();
+            com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
+            com.gmt2001.Console.err.println("Exiting PhantomBot");
+            System.exit(0);
+        }
+
+        /* Check to see if anything changed */
+        if (changed) {
+            Properties outputProperties = new Properties() {
+                @Override
+                public synchronized Enumeration<Object> keys() {
+                    return Collections.enumeration(new TreeSet<>(super.keySet()));
+                }
+            };
+
+            try {
+                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
+                    outputProperties.putAll(startProperties);
+                    outputProperties.store(outputStream, "PhantomBot Configuration File");
+                }
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
 
         /* Start PhantomBot */
         PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    private static void setStaticFields(Properties startProperties) {
-        /* Check to enable debug mode */
-        PhantomBot.setDebugging(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGON, false));
-        /* Check to enable debug to File */
-        PhantomBot.setDebuggingLogOnly(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGLOG, false));
-        /* Check to enable Script Reloading */
-        PhantomBot.setReloadScripts(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RELOADSCRIPTS, false));
-        /* Check to enable Rhino Debugger */
-        PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
-    }
-
-    private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
-        if(enableRhinoDebugger)
-            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
-        PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
-    }
-
-    private static void setReloadScripts(Boolean reloadScripts) {
-        if (reloadScripts)
-            com.gmt2001.Console.out.println("Enabling Script Reloading");
-        PhantomBot.reloadScripts = reloadScripts;
-        
+    /* gen a oauth */
+    private static String generateWebAuth() {
+        return generateRandomString(30);
     }
 
     /* gen a random string */
@@ -1436,9 +1694,9 @@ public final class PhantomBot implements Listener {
             dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
 
             try {
-                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
-                    File backupFile = dirIterator.next();
+                    File backupFile = (File) dirIterator.next();
                     if (FileUtils.isFileOlder(backupFile, (System.currentTimeMillis() - (long) (backupSQLiteKeepDays * 864e5)))) {
                         FileUtils.deleteQuietly(backupFile);
                     }
@@ -1541,51 +1799,5 @@ public final class PhantomBot implements Listener {
                 }
             }
         }
-    }
-    
-    /**
-     * End PhantomBot with an error state
-     */
-    public static void exitError() {
-        System.exit(EXIT_STATUS_ERROR);
-    }
-    
-    /**
-     * End PhantomBot with an OK state
-     */
-    public static void exitOK() {
-        System.exit(EXIT_STATUS_OK);
-    }
-    
-    public static Boolean getReloadScripts() {
-        return reloadScripts;
-    }
-
-    public static Boolean getEnableDebugging() {
-        return enableDebugging;
-    }
-
-    public static Boolean getEnableDebuggingLogOnly() {
-        return enableDebuggingLogOnly;
-    }
-
-    public static Boolean getEnableRhinoDebugger() {
-        return enableRhinoDebugger;
-    }
-
-    public static String getTimeZone() {
-        return timeZone;
-    }
-
-    public static Boolean getUseMessageQueue() {
-        return useMessageQueue;
-    }
-
-    public static Boolean getTwitchTcpNodelay() {
-        return twitchTcpNodelay;
-    }
-
-    public static Boolean isInExitState() {
-        return isInExitState;
     }
 }
