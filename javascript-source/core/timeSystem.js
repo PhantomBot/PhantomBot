@@ -188,7 +188,7 @@
 
             // If the array is empty, return 0 seconds.
             if (timeStringParts.length === 0) {
-                return ($.lang.get('common.time.expired'));
+                return ('0 ' + $.lang.get('common.time.seconds'));
             }
 
             // Join the array to make a string.
@@ -200,6 +200,68 @@
             }
             return timeString;
         }
+    }
+    
+    /**
+     * @function getCountString
+     * @export $
+     * @param {Number} time
+     * @param {boolean} [countUp]
+     * @returns {string}
+     */
+    function getCountString(time, countUp) {
+        var floor = Math.floor,
+            months = (time / 2628000);
+            days = ((months % 1) * 30.42),
+            hours = ((days % 1) * 24),
+            minutes = ((hours % 1) * 60),
+            seconds = ((minutes % 1) * 60);
+
+        var timeStringParts = [],
+            timeString = '';
+
+        // Append months if greater than one.
+        if (months >= 1) {
+            timeStringParts.push(floor(months) + ' ' + (months < 2 ? $.lang.get('common.time.month') : $.lang.get('common.time.months')));
+        }
+
+        // Append days if greater than one.
+        if (days >= 1) {
+            timeStringParts.push(floor(days) + ' ' + (days < 2 ? $.lang.get('common.time.day') : $.lang.get('common.time.days')));
+        }
+
+        // Append hours if greater than one.
+        if (hours >= 1) {
+            timeStringParts.push(floor(hours) + ' ' + (hours < 2 ? $.lang.get('common.time.hour') : $.lang.get('common.time.hours')));
+        }
+
+        // Append minutes if greater than one.
+        if (minutes >= 1) {
+            timeStringParts.push(floor(minutes) + ' ' + (minutes < 2 ? $.lang.get('common.time.minute') : $.lang.get('common.time.minutes')));
+        }
+
+        // Append seconds if greater than one.
+        if (seconds >= 1) {
+            timeStringParts.push(floor(seconds) + ' ' + (seconds < 2 ? $.lang.get('common.time.second') : $.lang.get('common.time.seconds')));
+        }
+
+        // If the array is empty, return 0 seconds.
+        if (timeStringParts.length === 0) {
+            if (countUp) {
+                 return ($.lang.get('common.time.nostart'));
+             } else {
+                 return ($.lang.get('common.time.expired'));
+             }
+        }
+
+        // Join the array to make a string.
+        timeString = timeStringParts.join(', ');
+
+        // Replace last comma with ", and".
+        if (timeString.indexOf(',') !== -1) {
+            timeString = (timeString.substr(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.substr(timeString.lastIndexOf(',') + 2));
+        }
+        return timeString;
     }
 
     /**
@@ -479,6 +541,7 @@
     /** Export functions to API */
     $.dateToString = dateToString;
     $.getTimeString = getTimeString;
+    $.getCountString = getCountString;
     $.getUserTime = getUserTime;
     $.getUserTimeString = getUserTimeString;
     $.getCurLocalTimeString = getCurLocalTimeString;
