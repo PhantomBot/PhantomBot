@@ -957,6 +957,13 @@
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
         });
+        
+        /*
+         * @event PubSubModerationDelete
+         */
+        $api.on($script, 'PubSubModerationDelete', function (event) {
+            callHook('PubSubModerationDelete', event, false);
+        });
 
         /*
          * @event PubSubModerationTimeout
