@@ -128,7 +128,7 @@ public class ConfigurationManager {
         }
 
         // fresh setup indicator should not be saved
-        startProperties.put("newSetup", newSetup);
+        startProperties.setProperty("newSetup", newSetup.toString());
 
         return startProperties;
     }
