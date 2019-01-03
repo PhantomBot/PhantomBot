@@ -144,6 +144,31 @@
     function timeoutUser(message) {
         $.discordAPI.deleteMessage(message);
     }
+    
+    /*
+     * @function embedDelete
+     *
+     * @param {String} username
+     * @param {String} creator
+     * @param {String} message
+     */
+    function embedDelete(username, creator, message) {
+        var toSend = '',
+            obj = {},
+            i;
+
+        obj['**Deleted_message_of:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Creator:**'] = creator;
+        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+
+        var keys = Object.keys(obj);
+        for (i in keys) {
+            if (obj[keys[i]] != '') {
+                toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
+            }
+        }
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'blue', toSend);
+    }
 
     /*
      * @function embedTimeout
@@ -205,6 +230,21 @@
         }
         $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
     }
+    
+    /*
+     * @event PubSubModerationDelete
+     */
+    $.bind('PubSubModerationDelete', function (event) {
+        var username = event.getUsername(),
+            creator = event.getCreator(),
+            message = event.getMessage();
+
+        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+            return;
+        }
+
+        embedDelete(username, creator, message);
+    });
 
     /*
      * @event PubSubModerationTimeout
