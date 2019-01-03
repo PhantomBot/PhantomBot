@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.java_websocket.WebSocket;
 
 import tv.phantombot.script.ScriptEventManager;
-
+import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 
 import tv.phantombot.event.EventBus;
@@ -107,6 +107,7 @@ public class TwitchWSIRCParser implements Runnable {
     /*
      * Method which is on a new thread that keeps track of gifted subscribers.
      */
+    @Override
     public void run() {
         while (true) {
             try {
@@ -473,13 +474,13 @@ public class TwitchWSIRCParser implements Runnable {
             com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
             com.gmt2001.Console.out.println();
-            System.exit(0);
+            PhantomBot.exitError();
         } else if (message.equals("Invalid NICK")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
             com.gmt2001.Console.out.println();
-            System.exit(0);
+            PhantomBot.exitError();
         } else {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
             com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
