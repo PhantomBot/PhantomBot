@@ -19,6 +19,7 @@ package tv.phantombot.twitch.irc.chat.utils;
 public class SubscriberBulkGifter {
     private final String username;
     private final int totalSubscriptionsGifted;
+    private final boolean isAnonymous;
     private int currentSubscriptionsGifted = 0;
     
     /**
@@ -27,9 +28,10 @@ public class SubscriberBulkGifter {
      * @param username
      * @param totalSubscriptionsGifted 
      */
-    public SubscriberBulkGifter(String username, int totalSubscriptionsGifted) {
+    public SubscriberBulkGifter(String username, int totalSubscriptionsGifted, boolean isAnonymous) {
         this.username = username;
         this.totalSubscriptionsGifted = totalSubscriptionsGifted;
+        this.isAnonymous = isAnonymous;
     }
     
     /**
@@ -61,5 +63,14 @@ public class SubscriberBulkGifter {
      */
     public void increaseCurrentSubscriptionGifted() {
         currentSubscriptionsGifted++;
+    }
+    
+    /**
+     * Method that returns if this was by anonymous.
+     * 
+     * @return 
+     */
+    public boolean isAnonymous() {
+        return isAnonymous;
     }
 }
