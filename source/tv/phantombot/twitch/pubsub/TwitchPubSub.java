@@ -258,6 +258,10 @@ public class TwitchPubSub {
 
                             timeoutCache.put(data.getString("target_user_id"), System.currentTimeMillis() + 1500);
                             switch (action) {
+                            case "delete":
+                                this.log(args1 + "'s message was deleted by " + creator);
+                                EventBus.instance().postAsync(new PubSubModerationDeleteEvent(args1, creator, args2));
+                                break;
                             case "timeout":
                                 this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3));
                                 EventBus.instance().postAsync(new PubSubModerationTimeoutEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args3, args2));
