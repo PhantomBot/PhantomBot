@@ -574,6 +574,12 @@ $(function() {
             if (parseInt(maxSongLen) > 0) {
                 player.dbUpdate('max_song_len_up', 'ytSettings', 'songRequestsMaxSecondsforVideo', String(maxSongLen));
             }
+
+            //Update the votecount.
+            let voteCount = $('#vote-count').val();
+            if (parseInt(voteCount) > 0) {
+                player.dbUpdate('vote_count', 'ytSettings', 'voteCount', String(voteCount));
+            }
         });
     });
 

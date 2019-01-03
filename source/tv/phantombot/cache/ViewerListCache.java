@@ -93,10 +93,10 @@ public class ViewerListCache implements Runnable {
      * Method that updates the cache.
      */
     private void updateCache() throws Exception {
-        String[] types = new String[] { "moderators", "staff", "admins", "global_mods", "viewers" };
-        List<String> cache = new ArrayList<String>();
-        List<String> joins = new ArrayList<String>();
-        List<String> parts = new ArrayList<String>();
+        String[] types = new String[] { "moderators", "staff", "admins", "vips", "viewers" };
+        List<String> cache = new ArrayList<>();
+        List<String> joins = new ArrayList<>();
+        List<String> parts = new ArrayList<>();
 
         com.gmt2001.Console.debug.println("ViewerListCache::updateCache");
         try {

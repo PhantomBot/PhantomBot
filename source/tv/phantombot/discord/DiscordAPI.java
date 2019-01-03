@@ -24,6 +24,8 @@ import sx.blah.discord.api.internal.ShardImpl;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.ClientBuilder;
 
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
@@ -39,14 +41,16 @@ import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
-import tv.phantombot.discord.util.DiscordUtil;
+import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
 import tv.phantombot.event.EventBus;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent;
 
 import tv.phantombot.discord.util.DiscordUtil;
+
 
 /*
  * Communicates with the Discord API.
@@ -248,6 +252,16 @@ public class DiscordAPI extends DiscordUtil {
         @EventSubscriber
         public void onDiscordUserLeaveEvent(UserLeaveEvent event) {
             EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
+        }
+        
+        @EventSubscriber
+        public void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.ADD));
+        }
+        
+        @EventSubscriber
+        public void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
         }
     }
 }
