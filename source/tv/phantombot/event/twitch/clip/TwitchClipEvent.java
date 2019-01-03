@@ -26,7 +26,7 @@ public class TwitchClipEvent extends TwitchEvent {
     private final String clipTitle;
     private final JSONObject thumbnailObj;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String}     clipURL
@@ -41,7 +41,7 @@ public class TwitchClipEvent extends TwitchEvent {
         this.thumbnailObj = thumbnailObj;
     }
 
-    /*
+    /**
      * Method that returns the clip URL.
      *
      * @return {String} clipURL
@@ -50,7 +50,7 @@ public class TwitchClipEvent extends TwitchEvent {
         return this.clipURL;
     }
 
-    /*
+    /**
      * Method that returns the clip creator.
      *
      * @return {String} creator
@@ -59,7 +59,7 @@ public class TwitchClipEvent extends TwitchEvent {
         return this.creator;
     }
 
-    /*
+    /**
      * Method that returns the clip title.
      *
      * @return {String} clipTitle
@@ -68,7 +68,7 @@ public class TwitchClipEvent extends TwitchEvent {
         return this.clipTitle;
     }
 
-    /*
+    /**
      * Method that returns the object of thumnails.
      *
      * @return {JSONObject} thumbnailObj

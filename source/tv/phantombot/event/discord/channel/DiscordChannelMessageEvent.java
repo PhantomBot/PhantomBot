@@ -26,7 +26,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     private final String messageContent;
     private final boolean isAdmin;
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {IUser}    user
@@ -42,7 +42,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
         this.isAdmin = isAdmin;
     }
 
-    /*
+    /**
      * Method that returns the message from the user.
      *
      * @return {String} messageContent
@@ -51,7 +51,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
         return this.messageContent;
     }
 
-    /*
+    /**
      * Method that returns if the user a admin in the server.
      *
      * @return {boolean} isAdmin
@@ -60,7 +60,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
         return this.isAdmin;
     }
 
-    /*
+    /**
      * Method that returns the message object for Discord4J.
      *
      * @return {IMessage} message
@@ -69,7 +69,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
         return this.message;
     }
 
-    /*
+    /**
      * Method that returns this object as a string.
      *
      * @return {String}

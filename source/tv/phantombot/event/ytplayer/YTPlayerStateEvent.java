@@ -21,7 +21,7 @@ import tv.phantombot.ytplayer.YTPlayerState;
 public class YTPlayerStateEvent extends YTPlayerEvent {
     private final YTPlayerState state;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {YTPlayerState} state
@@ -30,7 +30,7 @@ public class YTPlayerStateEvent extends YTPlayerEvent {
         this.state = state;
     }
 
-    /*
+    /**
      * Method that returns the player state.
      *
      * @return {YTPlayerState} state
@@ -39,7 +39,7 @@ public class YTPlayerStateEvent extends YTPlayerEvent {
         return this.state;
     }
 
-    /*
+    /**
      * Method that returns the player state ID.
      *
      * @return {int} state.i

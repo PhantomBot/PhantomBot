@@ -28,7 +28,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     private final String message;
     private final Map<String, String> tags;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {TwitchSession} session
@@ -43,7 +43,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         this.tags = new HashMap<String, String>();
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {TwitchSession} session
@@ -59,7 +59,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         this.tags = (tags == null ? new HashMap<String, String>() : tags);
     }
 
-    /*
+    /**
      * Method that returns the sender.
      *
      * @return {String} sender
@@ -68,7 +68,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         return this.sender;
     }
 
-    /*
+    /**
      * Method that returns the message.
      *
      * @return {String} sender
@@ -77,7 +77,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
         return this.message;
     }
 
-    /*
+    /**
      * Method that returns the IRCv3 tags.
      *
      * @return {Map} tags

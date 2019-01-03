@@ -17,7 +17,7 @@
 package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationDeleteEvent extends PubSubModerationEvent {
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username

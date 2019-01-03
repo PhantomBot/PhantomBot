@@ -22,7 +22,7 @@ public abstract class TwitchHostEvent extends TwitchEvent {
     private final String hoster;
     private final int users;
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {String} hoster
@@ -32,7 +32,7 @@ public abstract class TwitchHostEvent extends TwitchEvent {
         this.users = 0;
     }
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {String} hoster
@@ -43,7 +43,7 @@ public abstract class TwitchHostEvent extends TwitchEvent {
         this.users = users;
     }
 
-    /*
+    /**
      * Method that gets the hosters name.
      *
      * @return {String} hoster
@@ -52,7 +52,7 @@ public abstract class TwitchHostEvent extends TwitchEvent {
         return this.hoster;
     }
 
-    /*
+    /**
      * Method that gets the amount of users the user hosted for.
      *
      * @return {int} users

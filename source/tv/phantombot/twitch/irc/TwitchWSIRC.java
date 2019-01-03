@@ -52,7 +52,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private long lastPing = 0l;
     private Framedata tempFrame;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {URI}    uri
@@ -70,7 +70,7 @@ public class TwitchWSIRC extends WebSocketClient {
         this.session = session;
     }
 
-    /*
+    /**
      * Method that sets sockets and connects to Twitch.
      *
      * @param {boolean} reconnect
@@ -105,7 +105,7 @@ public class TwitchWSIRC extends WebSocketClient {
         return false;
     }
 
-    /*
+    /**
      * Callback that is called when we open a connect to Twitch.
      *
      * @param {ServerHandshake} handshakedata
@@ -141,7 +141,7 @@ public class TwitchWSIRC extends WebSocketClient {
         }, 10, 30, TimeUnit.SECONDS);
     }
 
-    /*
+    /**
      * Callback that is called when the connection with Twitch is lost.
      *
      * @param {int}     code
@@ -161,7 +161,7 @@ public class TwitchWSIRC extends WebSocketClient {
         }
     }
 
-    /*
+    /**
      * Callback that is called when we get an error from the socket.
      *
      * @param {Exception} ex
@@ -171,7 +171,7 @@ public class TwitchWSIRC extends WebSocketClient {
         com.gmt2001.Console.debug.println("Twitch WS-IRC Exception [" + ex.getClass().getSimpleName() + "]: " + ex);
     }
 
-    /*
+    /**
      * Callback that is called when we get a message from Twitch.
      *
      * @param {String} message
