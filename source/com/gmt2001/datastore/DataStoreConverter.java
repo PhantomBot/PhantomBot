@@ -36,8 +36,8 @@ public final class DataStoreConverter {
 	/*
 	 * Method that converts a datastore to another one.
 	 *
-	 * @param  {DataStore} primaryDbInstance - The destination datastore
-	 * @param  {DataStore} secondaryDbInstance - The source datastore
+	 * @param  {DataStore} primaryDbInstance
+	 * @param  {DataStore} secondaryDbInstance
 	 */
 	public static void convertDataStore(DataStore primaryDbInstance, DataStore secondaryDbInstance) {
 		com.gmt2001.Console.out.println("Starting datatore convertion. This could take time...");
