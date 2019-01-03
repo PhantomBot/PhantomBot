@@ -56,14 +56,14 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
             }
 
             SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
             String timestamp = datefmt.format(new Date());
 
             try (FileOutputStream fos = new FileOutputStream("./logs/stacktraces/" + timestamp + ".txt", true)) {
                 PrintStream ps = new PrintStream(fos);
 
                 datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-                datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+                datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
 
                 timestamp = datefmt.format(new Date());
 

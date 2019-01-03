@@ -28,7 +28,7 @@ public final class debug {
     }
 
     private debug(Object o) {
-        if (PhantomBot.getEnableDebugging()) {
+        if (PhantomBot.enableDebugging) {
             String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
@@ -38,33 +38,33 @@ public final class debug {
 
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
             }
         }
     }
 
     public static void println() {
-        if (PhantomBot.getEnableDebugging()) {
+        if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Debug, "");
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 System.out.println();
             }
         }
     }
 
     public static void printlnRhino(Object o) {
-        if (PhantomBot.getEnableDebugging()) {
+        if (PhantomBot.enableDebugging) {
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
             }
         }
     }
 
     public static void println(Object o) {
-        if (PhantomBot.getEnableDebugging()) {
+        if (PhantomBot.enableDebugging) {
             String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
@@ -74,14 +74,14 @@ public final class debug {
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
             }
         }
     }
 
     public static void println(Object o, Boolean force) {
-        if (PhantomBot.getEnableDebugging() || force) {
+        if (PhantomBot.enableDebugging || force) {
             String stackInfo;
             String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
@@ -91,15 +91,15 @@ public final class debug {
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
             }
         }
     }
 
     public static void printStackTrace(Throwable e) {
-        if (PhantomBot.getEnableDebugging()) {
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+        if (PhantomBot.enableDebugging) {
+            if (!PhantomBot.enableDebuggingLogOnly) {
                 e.printStackTrace(System.err);
             }
             logStackTrace(e);
@@ -107,7 +107,7 @@ public final class debug {
     }
 
     public static void logStackTrace(Throwable e) {
-        if (PhantomBot.getEnableDebugging()) {
+        if (PhantomBot.enableDebugging) {
             Writer trace = new StringWriter();
             PrintWriter ptrace = new PrintWriter(trace);
 
