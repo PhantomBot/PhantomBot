@@ -35,7 +35,7 @@ public final class in {
     public static String readLine() throws Exception {
         String s = br.readLine();
 
-        if (PhantomBot.enableDebugging) {
+        if (PhantomBot.getEnableDebugging()) {
             Logger.instance().log(Logger.LogType.Input, "[" + logTimestamp.log() + "] " + s);
             Logger.instance().log(Logger.LogType.Input, "");
         }

@@ -79,7 +79,7 @@
      * @param {String} message
      */
     function consoleDebug(message) {
-        if (Packages.tv.phantombot.PhantomBot.enableDebugging) {
+        if (Packages.tv.phantombot.PhantomBot.getEnableDebugging()) {
             try {
                 throw new Error();
             } catch (ex) {
