@@ -91,7 +91,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // Create the socket.
             Socket socket = sslSocketFactory.createSocket();
             // Set TCP no delay.
-            socket.setTcpNoDelay(PhantomBot.twitch_tcp_nodelay);
+            socket.setTcpNoDelay(PhantomBot.getTwitchTcpNodelay());
             // Set the socket.
             this.setSocket(socket);
             // Create a new parser instance.

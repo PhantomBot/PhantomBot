@@ -28,28 +28,16 @@ import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 
 import com.google.common.collect.Maps;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -97,11 +85,11 @@ public class TwitchWSHostIRC {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
             if (!twitchWSHostIRCWS.connectWSS()) {
                 com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
-                System.exit(0);
+                PhantomBot.exitError();
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
-            System.exit(0);
+            PhantomBot.exitError();
         }
     }
 
@@ -157,7 +145,7 @@ public class TwitchWSHostIRC {
                     reconnected = twitchWSHostIRCWS.connectWSS();
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
-                    System.exit(0);
+                    PhantomBot.exitError();
                 }
             } else {
                 try {
@@ -246,6 +234,7 @@ public class TwitchWSHostIRC {
          *
          * @param {String} message
          */
+        @Override
         public void send(String message) {
             try {
                 super.send(message);
@@ -404,6 +393,7 @@ public class TwitchWSHostIRC {
          *
          * @param  Exception  Java Exception thrown from WebSockets API
          */
+        @Override
         public void onError(Exception ex) {
             if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
                 com.gmt2001.Console.debug.println("Twitch WS-IRC (Host Data) Exception: " + ex);

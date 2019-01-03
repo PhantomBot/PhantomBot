@@ -124,7 +124,7 @@ public class SocketIOExample {
                 @Override
                 public void call(Object... args) {
                     if (Authenticated) {
-                        if (PhantomBot.enableDebugging) {
+                        if (PhantomBot.getEnableDebugging()) {
                             com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Channel");
                         } else {
                             com.gmt2001.Console.out.println("SingularityWS (GameWisp): Connected and Ready for Requests");
