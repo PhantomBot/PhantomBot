@@ -164,6 +164,13 @@ public class TwitchWSIRCParser implements Runnable {
         // A user cannot have more than 4 badges, acording to Twitch.
         Map<String, String> badges = new HashMap<>(4);
         
+        // Add default values.
+        badges.put("user-type", "");
+        badges.put("subscriber", "0");
+        badges.put("turbo", "0");
+        badges.put("premium", "0");
+        badges.put("vip", "0");
+        
         if (rawBadges.length() > 0) {
             String badgeParts[] = rawBadges.split(",", 4);
             
@@ -367,16 +374,9 @@ public class TwitchWSIRCParser implements Runnable {
                     moderators.add(username);
                 }
             } else {
-                if (channelName.equalsIgnoreCase(username)) {
-                    if (!moderators.contains(username)) {
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
-                        moderators.add(username);
-                    }
-                } else {
-                    if (moderators.contains(username)) {
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
-                        moderators.remove(username);
-                    }
+                if (moderators.contains(username)) {
+                    eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                    moderators.remove(username);
                 }
             }
         }
