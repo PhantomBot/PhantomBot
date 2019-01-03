@@ -104,6 +104,12 @@
                 message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber);
@@ -129,6 +135,12 @@
 
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
@@ -226,6 +238,12 @@
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
 
             $.addSubUsersList(recipient);
@@ -267,6 +285,12 @@
 
             if (message.match(/\(plan\)/g)) {
                 message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
