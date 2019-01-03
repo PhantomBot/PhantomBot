@@ -81,6 +81,12 @@
                 s = $.replace(s, '(reward)', $.getPointsString(followReward));
             }
 
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             if (s.match(/^\/w/)) {
                 s = s.replace('/w', ' /w');
             }
