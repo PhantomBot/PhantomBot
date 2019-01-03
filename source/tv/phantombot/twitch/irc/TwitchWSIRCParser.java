@@ -48,6 +48,10 @@ interface TwitchWSIRCCommand{
 }
 
 public class TwitchWSIRCParser implements Runnable {
+    // The user login sent in the anonymous sub gift event from Twitch.
+    // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
+    private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
+    
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
@@ -120,7 +124,11 @@ public class TwitchWSIRCParser implements Runnable {
                         bulkSubscriberGifters.remove(tags.get("login"));
                     }
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
+                    if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
+                        scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
+                    } else {
+                        scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
+                    }
                 }
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -207,9 +215,6 @@ public class TwitchWSIRCParser implements Runnable {
         if (messageParts[0].startsWith("@")) {
             String[] tagParts = messageParts[0].substring(1).split(";");
             
-            /* 
-             **To be added once Twitch removes depricated tags.**
-            
             // The first tag should be badges.
             // So we should parse them into tags, since Twitch doesn't provide us this anymore.
             String[] keyValues = tagParts[0].split("=");
@@ -222,15 +227,6 @@ public class TwitchWSIRCParser implements Runnable {
                 keyValues = tagParts[i].split("=");
                 if (keyValues.length > 0) {
                     tags.putIfAbsent(keyValues[0], (keyValues.length == 1 ? "" : keyValues[1]));
-                }
-            }
-            */
-
-            // Remove this part once the part above is added.
-            for (String tag : tagParts) {
-                String[] keyValues = tag.split("=");
-                if (keyValues.length > 0) {
-                    tags.put(keyValues[0], (keyValues.length == 1 ? "" : keyValues[1]));
                 }
             }
 
@@ -505,11 +501,28 @@ public class TwitchWSIRCParser implements Runnable {
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
                 giftedSubscriptionEvents.add(tags);
+            } else if (tags.get("msg-id").equalsIgnoreCase("anonsubgift")) {
+                // Not in use by Twitch as of right now, 2019-01-03, leaving code there though.
+                // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
+                giftedSubscriptionEvents.add(tags);
+            } else if (tags.get("msg-id").equalsIgnoreCase("giftpaidupgrade")) {
+                // Not in use yet, no examples either.
+                // This will be when a user gifts a sub to a user that already is subscribed.
             } else if (tags.get("msg-id").equalsIgnoreCase("submysterygift")) {
-                bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count"))));
+                bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count")), false));
             
                 // Send event for this.
-                scriptEventManager.onEvent(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
+                    scriptEventManager.onEvent(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                } else {
+                    scriptEventManager.onEvent(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                }
+            } else if (tags.get("msg-id").equalsIgnoreCase("anonsubmysterygift")) {
+                // Not in use by Twitch as of right now, 2019-01-03, leaving code there though.
+                // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
+                bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count")), true));
+                
+                scriptEventManager.onEvent(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
             } else {
                 if (tags.get("msg-id").equalsIgnoreCase("raid")) {
                     scriptEventManager.onEvent(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));
