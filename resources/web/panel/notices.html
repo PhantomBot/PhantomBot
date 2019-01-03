@@ -22,16 +22,16 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="noticesAccordion">
-    <h3>Notices & Settings</h3>
+    <h3>Hinweise & Einstellungen</h3>
     <div>
     <div id="_noticeConfigPanelDisabled" />
     <div id="_noticeConfigPanel">
         <table>
             <tr class="textList">
-                <td>Toggle Chat Notices</td>
+                <td>Chat Hinweise An/Aus</td>
                 <td style="width: 25px"><div id="chatNoticeMode" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleChatNotice();"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -40,10 +40,10 @@
 
         <table>
             <tr class="textList">
-                <td>Toggle Offline Chat Notices</td>
+                <td>Offline Chat Hinweise An/Aus</td>
                 <td style="width: 25px"><div id="chatOfflineNoticeMode" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleChatOfflineNotice();"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -51,44 +51,44 @@
         </table>
         <br>
 
-        Set the interval for notices and the required messages before triggering one. Use 0 for required messages if you only want a timer.<br><br>
+        Lege die Zeit für den Intervall und die erforderlichen Nachrichten zum Auslösen des Hinweises fest. Benutze 0, wenn du nur den Timer zum Auslösen verwenden willst.<br><br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="noticeInterval">Timer Interval</label>
+                <label for="noticeInterval">Timer Intervall</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateNoticeInterval('#noticeIntervalInput', 'interval')">Submit</button>
-                <input type="number" min="5" class="form-control" id="noticeIntervalInput" placeholder="Minutes" 
-                    data-toggle="tooltip" title="Set the interval (in minutes) of when a notice gets triggered. Minimum is 5 minutes" />
+                        onclick="$.updateNoticeInterval('#noticeIntervalInput', 'interval')">Übermitteln</button>
+                <input type="number" min="5" class="form-control" id="noticeIntervalInput" placeholder="Minuten"
+                    data-toggle="tooltip" title="Lege den Intervall (in Minuten), wenn ein Hinweis ausgelöst werden soll, fest. Minimum sind 5 Minuten" />
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="noticeMsgReq">Required Messages</label>
+                <label for="noticeMsgReq">Erforderliche Nachrichten</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateNoticeReq('#noticeReqInput', 'reqmessages')">Submit</button>
-                <input type="number" min="0" class="form-control" id="noticeReqInput" placeholder="Number of Messages"
-                    data-toggle="tooltip" title="Set the amount of messages required before a notice gets triggered." />
+                        onclick="$.updateNoticeReq('#noticeReqInput', 'reqmessages')">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="noticeReqInput" placeholder="Anzahl an Nachrichten"
+                    data-toggle="tooltip" title="Lege die Anzahl an Nachrichten nach denen ein Hinweis ausgelöst werden soll fest." />
             </div>
         </form>
         <br>
 
-        Notices are timed chat announcements that are said randomly with the interval you have set. It is a great feature to promote your social media.<br><br>
+        Hinweise sind Chat-Mitteilungen die zufällig, nach Ablauf des eingestellten Intervalls, gesendet werden. Es ist ein großartiges Feature um deine Social-Media-Links zu teilen.<br><br>
 
         <div id="_noticesPanelDisabled" />
         <div id="_noticesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addNotice">Add New Notice</label>
+                <label for="addNotice">Neuen Hinweis hinzufügen</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.addNotice()">Submit</button>
-                <input type="text" class="form-control" id="addNoticeInput" placeholder="New Notice"
-                       data-toggle="tooltip" title="Enter a message, or you can use a command. command:Command_Name" />
+                        onclick="$.addNotice()">Übermitteln</button>
+                <input type="text" class="form-control" id="addNoticeInput" placeholder="Neuer Hinweis"
+                       data-toggle="tooltip" title="Gib eine Nachricht ein, oder verwende einen Befehl. Befehl:Befehl_Name" />
             </div>
         </form>
 
-        Current Notices
+        Aktuelle Hinweise
         <div id="noticeList" style="height: 200px; overflow: auto;" />
     </div>
     </div>

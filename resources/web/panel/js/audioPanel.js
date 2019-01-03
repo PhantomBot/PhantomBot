@@ -111,7 +111,7 @@
             }
 
             if (sounds.length === 0) {
-                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $('#audioPanelButtons').html('Keine Sounds konfiguriert, bitte klicken Sie auf Audio-Hooks neu laden, wenn Sounds installiert sind.');
                 $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
             } else {
                 setTimeout(function () {
@@ -136,7 +136,7 @@
             }
 
             if (sounds.length === 0) {
-                $('#audioPanelButtons').html('No sounds configured, please click Reload Audio Hooks if sounds are installed.');
+                $('#audioPanelButtons').html('Keine Sounds konfiguriert, bitte klicken Sie auf Audio-Hooks neu laden, wenn Sounds installiert sind.');
                 $("#ionSoundLoaded").html("<span style=\"float: right\" class=\"greenPill-sm\">Ready</span>");
             } else {
                 ion.sound({
@@ -149,7 +149,7 @@
                 });
             }
             loadAudioPanel();
-            $('#reloadSounds').html('Reload Audio Hooks');
+            $('#reloadSounds').html('Audio-Hooks neu laden');
         }
 
         if (panelCheckQuery(msgObject, 'audio_ytptoggle1')) {
@@ -163,7 +163,7 @@
 
         if (panelCheckQuery(msgObject, 'audio_userblacklist')) {
             if (msgObject['results'].length === 0) {
-                $('#ytplayerBUser').html('<i>There are no blacklisted users.</i>');
+                $('#ytplayerBUser').html('<i>Es gibt keine Benutzer auf der schwarzen Liste.</i>');
                 return;
             }
             html = '<table>';
@@ -202,7 +202,7 @@
      * doDBKeysQuery() call with the ID of audio_hook_reload.
      */
     function reloadAudioHooks() {
-        $('#reloadSounds').html('Please wait...');
+        $('#reloadSounds').html('Bitte warten...');
         sendCommand('reloadaudiopanelhooks');
     }
 
@@ -403,8 +403,8 @@
     function drawYouTubePlayer() {
         if (YOUTUBE_IFRAME === true) {
             fillYouTubePlayerIframe();
-            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">Hide/Show YouTube Player</button>' +
-                                       '<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Toggle Pause</button>');
+            $('#youTubeLauncher').html('<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayer()">YouTube Player ausblenden/anzeigen</button>' +
+                                       '<button type="button" class="btn btn-primary inline pull-left" onclick="$.toggleYouTubePlayerPause()">Pause An/Aus</button>');
         }
     }
 
@@ -426,7 +426,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 19 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Audio Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Audiodaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

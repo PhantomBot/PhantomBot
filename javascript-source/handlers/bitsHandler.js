@@ -1,10 +1,27 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This script is for announcing bits from Twitch, and rewarding the user with points if the caster wants too.
  *
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('bitsSettings', 'toggle', false),
-        message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
+        message = $.getSetIniDbString('bitsSettings', 'message', '(name) hat (amount) bits gecheert !'),
         minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
         announceBits = false;
 
@@ -13,7 +30,7 @@
      */
     function reloadBits() {
         toggle = $.getIniDbBoolean('bitsSettings', 'toggle', false);
-        message = $.getIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!');
+        message = $.getIniDbString('bitsSettings', 'message', '(name) hat (amount) bits gecheert !');
         minimum = $.getIniDbNumber('bitsSettings', 'minimum', 0);
     }
 
@@ -29,6 +46,10 @@
 
         if (announceBits === false || toggle === false) {
             return;
+        }
+
+        if (bits == 1) {
+            s = $.replace(s, 'bits', 'bit');
         }
 
         if (s.match(/\(name\)/g)) {
@@ -102,7 +123,7 @@
             minimum = parseInt(action);
             $.setIniDbNumber('bitsSettings', 'minimum', minimum);
             $.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.set', minimum));
-            $.log.event(sender + ' changed the bits minimum to: ' + minimum + ' bits.');
+            $.log.event(sender + ' änderte das Bits minimum zu: ' + minimum + ' Bits.');
         }
     });
 

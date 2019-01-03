@@ -52,7 +52,7 @@
 
             if (panelCheckQuery(msgObject, 'quotes_quotes')) {
                 if (msgObject['results'].length === 0) {
-                    $('#quoteList').html('<i>No Quotes Are Defined</i>');
+                    $('#quoteList').html('<i>Es sind keine Zitate definiert.</i>');
                     return;
                 }
 
@@ -136,7 +136,7 @@
     function setQuoteMessage() {
         var value = $('#quoteMessageInput').val();
         if (value.length > 0) {
-            $('#quoteMessageInput').val('Updating...');
+            $('#quoteMessageInput').val('Aktualisieren...');
             sendDBUpdate('quotes_quotemessage', 'settings', 'quoteMessage', value);
             setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         }
@@ -188,7 +188,7 @@
     function addQuote() {
         var value = $('#addQuoteInput').val();
         if (value.length > 0) {
-            $('#addQuoteInput').val('Adding...').blur();
+            $('#addQuoteInput').val('Hinzufügen...').blur();
             sendCommand('addquotesilent ' + String(value).replace(/"/g, '\'\''));
             setTimeout(function() { doQuery(); $('#addQuoteInput').val(''); }, TIMEOUT_WAIT_TIME * 2);
         }
@@ -221,7 +221,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 10 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Quotes Data', 'success', 1000);
+            newPanelAlert('Aktualisierung der Zitatdaten', 'success', 1000);
             if (!isDeleting) {
                 doQuery();
             }

@@ -22,26 +22,26 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="pollAccordion">
-    <h3>Poll</h3>
+    <h3>Umfrage</h3>
     <div>
     <div id="_pollPanelDisabled" />
     <div id="_pollPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addNotice">Open/Close a Poll</label>
+                <label for="addNotice">Eröffne/Schließe eine Umfrage</label>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.closePoll()">Close Poll</button>
+                        onclick="$.closePoll()">Umfrage schließen</button>
                 <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.openPoll()">Open Poll</button>
-                <input type="text" class="form-control" id="pollQuestionInput" placeholder="Poll Question" />
+                        onclick="$.openPoll()">Umfrage eröffnen</button>
+                <input type="text" class="form-control" id="pollQuestionInput" placeholder="Frage" />
                 <input type="text" class="form-control" id="pollOptionsInput" placeholder="Option1, Option2, ..." />
-                <input type="number" min="30" class="form-control" id="pollLengthInput" placeholder="Seconds (optional, default is until closed)" />
-                <input type="number" min="1" class="form-control" id="pollMinVotesInput" placeholder="Vote Count (optional, default is 1)" />
+                <input type="number" min="30" class="form-control" id="pollLengthInput" placeholder="Sekunden (Optional, Standard ist bis geschlossen.)" />
+                <input type="number" min="1" class="form-control" id="pollMinVotesInput" placeholder="Erlaubte Stimmabgabe (Optional, Standard ist 1.)" />
             </div>
         </form>
         <br>
         
-        <strong>Results from Last Poll</strong>
+        <strong>Ergebnis der letzten Umfrage</strong>
         <div id="pollLastResults" />
     </div>
     </div>

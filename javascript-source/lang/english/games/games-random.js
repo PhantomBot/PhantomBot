@@ -1,56 +1,92 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+$.lang.register('randomcommand.pg13toggle', 'The random command will display PG-13 rated items: $1');
+
+/* PG-13 and above rated items. */
+$.lang.register('randomcommand.pg13.1', 'Oh my, (sender) you make me just want to *SLURP SLURP SLURP*');
+$.lang.register('randomcommand.pg13.2', '(sender) was thrown into a pit of tentacle pleasure.');
+$.lang.register('randomcommand.pg13.3', 'What are we gonna\' do on the bed (sender)?');
+$.lang.register('randomcommand.pg13.4', '(sender) was violated by a tentacle monster!');
+$.lang.register('randomcommand.pg13.5', 'This is the first time (sender) has noticed the scent of a woman..');
+$.lang.register('randomcommand.pg13.6', 'I may be a Twitch bot, but watch, one of these days you will find a spoon up yo ass when you use !random. One of these days...');
+$.lang.register('randomcommand.pg13.7', 'I can feel it coming over me! I feel it all around meee!');
+$.lang.register('randomcommand.pg13.8', '(random) shoved a spoon up (sender)\'s ass.');
+$.lang.register('randomcommand.pg13.9', 'Real men know when to run like a little bitch!');
+$.lang.register('randomcommand.pg13.10', 'When you meet with scary people, you must always protect your wallet and anus!');
+$.lang.register('randomcommand.pg13.11', 'Right, I have something I have to apologize to (random) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.');
+$.lang.register('randomcommand.pg13.12', 'What I want to do most? Let’s see… Just once, I really want to let loose and pee in my pants.');
+$.lang.register('randomcommand.pg13.13', 'A young blonde woman is distraught because she fears her husband is having an affair, so she goes to a gun shop and buys a handgun. The next day she comes home to find her husband in bed with a beautiful redhead. She grabs the gun and holds it to her own head. The husband jumps out of bed, begging and pleading with her not to shoot herself. Hysterically the blonde responds to the husband, \'\'Shut up...you\'re next!\'\'');
+$.lang.register('randomcommand.pg13.14', '(random) vs. (random)  who will win?! Only the one with the smallest penis will win this match! KappaRoss');
+$.lang.register('randomcommand.pg13.15', 'Ever feel like beating someone with a baseball bat to the point of almost unconsciousness, then setting them on fire? No? Just me?');
+
 $.lang.register('randomcommand.1', '(sender) was thrown into a large pit of PJSalt');
-$.lang.register('randomcommand.2', 'Oh my, (sender) you make me just want to *SLURP SLURP SLURP*');
-$.lang.register('randomcommand.3', '(sender) was thrown into a pit of tentacle pleasure.');
-$.lang.register('randomcommand.4', '(sender) was thrown into a pit of genetically modified super lions.');
-$.lang.register('randomcommand.5', '(sender) was thrown into a pit of explosive prinnies.');
-$.lang.register('randomcommand.6', 'I want you (sender).');
-$.lang.register('randomcommand.7', '/me threw (sender) into a pit of PJSalt');
-$.lang.register('randomcommand.8', 'Dango, dango, dango, dango, big (sender) family~\u266B');
-$.lang.register('randomcommand.9', 'What are we gonna\' do on the bed (sender)?');
-$.lang.register('randomcommand.10', 'Your mother was a hamster and your father smelt of elderberries!');
-$.lang.register('randomcommand.11', 'When life gives you lemons (sender), make orange juice and leave the world wondering how the hell you did it.');
-$.lang.register('randomcommand.12', '(sender) was violated by a tentacle monster!');
-$.lang.register('randomcommand.13', '/me licked (sender). . .');
-$.lang.register('randomcommand.14', 'This is the first time (sender) has noticed the scent of a woman..');
-$.lang.register('randomcommand.15', '/me licking intensifies!');
-$.lang.register('randomcommand.16', 'I hope (sender)-senpai notices me..');
-$.lang.register('randomcommand.17', 'I can feel it coming over me! I feel it all around meee!');
-$.lang.register('randomcommand.18', 'I may be a Twitch bot, but watch, one of these days you will find a spoon up yo ass when you use !random. One of these days...');
-$.lang.register('randomcommand.19', 'Ok everyone shhhhh. The rice crispies are telling me what to do next.');
-$.lang.register('randomcommand.20', '(sender) made eye contact with (random) while eating a banana!');
-$.lang.register('randomcommand.21', '(random) mysteriously died.');
-$.lang.register('randomcommand.22', '(random) stopped existing.');
-$.lang.register('randomcommand.23', 'All 7 of the Dragon Balls have been gathered! Now to wish (sender) to become a sloth!');
-$.lang.register('randomcommand.24', '(random) shoved a spoon up (sender)\'s ass.');
-$.lang.register('randomcommand.25', 'Real men know when to run like a little bitch!');
-$.lang.register('randomcommand.26', 'If I get reincarnated…. I wanna be a clam.');
-$.lang.register('randomcommand.27', 'Why don’t we drink to me and my reflection in your lovely eyes?');
-$.lang.register('randomcommand.28', 'I can show you what color your brain is.');
-$.lang.register('randomcommand.29', 'And while you\'re waiting for us to kill you, we highly recommend p*ssing yourself, Followed by a course of praying to your impudent god. And cowering in the corner and begging, always good. But if you act now, theres still time for an old-fashioned Suicide!! Thank you London! We love you! goodnight!!');
-$.lang.register('randomcommand.30', 'If you die, don’t come crying to me about it.');
-$.lang.register('randomcommand.31', 'From this point on, all your opinions will be rejected!');
-$.lang.register('randomcommand.32', 'Kakarot! Is That A Vegetable?! I Hate Vegetables!');
-$.lang.register('randomcommand.33', 'I see. (sender) is the type of person who is thinking positively to the extent of being stupid.');
-$.lang.register('randomcommand.34', 'I know as much of games as hugs and puppies, and care for them even less.');
-$.lang.register('randomcommand.35', '(sender) not just a pervert…He/She\'s A SUPER PERVERT');
-$.lang.register('randomcommand.36', 'When you meet with scary people, you must always protect your wallet and anus!');
-$.lang.register('randomcommand.37', 'Women’s minds and Autumn Winds change often.');
-$.lang.register('randomcommand.38', 'I’m literally hemorrhaging generosity.');
-$.lang.register('randomcommand.39', 'They were traps? I thought they were attractions.');
-$.lang.register('randomcommand.40', 'Okay, here’s the plan: We go in, start hitting people, and see where it takes us.');
-$.lang.register('randomcommand.41', 'The key in turning people on is a girl with a lolita face and big breasts.');
-$.lang.register('randomcommand.42', 'When a woman says something cute, a man just can’t trust it.');
-$.lang.register('randomcommand.43', 'A life without gambling is like sushi without wasabi.');
-$.lang.register('randomcommand.44', 'Stress makes you bald, but it’s stressful to avoid stress, so you end up stressed out anyway, so in the end there’s nothing you can do.');
-$.lang.register('randomcommand.45', 'Do evil, get caught, then claim demons were brainwashing you. A common way that human politicians evade responsibility.');
-$.lang.register('randomcommand.46', 'I have one last request. Please slap me in the face with that wad of cash.');
-$.lang.register('randomcommand.47', 'Why do people have to work for you viewers? I just want to eat and sleep. I should have been born as a panda at the zoo.');
-$.lang.register('randomcommand.48', 'Right, I have something I have to apologize to (random) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.');
-$.lang.register('randomcommand.49', 'What I want to do most? Let’s see… Just once, I really want to let loose and pee in my pants.');
-$.lang.register('randomcommand.50', 'Please everyone! Send me your energy!! \(-o-)/');
-$.lang.register('randomcommand.51', '(random) vs. (random)  who will win?! Only the one with the smallest penis will win this match! KappaRoss');
-$.lang.register('randomcommand.52', '(sender), during your last physical it was discovered you have Athletes Foot, and we now believe it is affecting your brain.');
-$.lang.register('randomcommand.53', 'When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren\’t wearing anything.');
+$.lang.register('randomcommand.2', '(sender) was thrown into a pit of genetically modified super lions.');
+$.lang.register('randomcommand.3', '(sender) was thrown into a pit of explosive prinnies.');
+$.lang.register('randomcommand.4', 'I want you (sender).');
+$.lang.register('randomcommand.5', '/me threw (sender) into a pit of PJSalt');
+$.lang.register('randomcommand.6', 'Dango, dango, dango, dango, big (sender) family~\u266B');
+$.lang.register('randomcommand.7', 'Your mother was a hamster and your father smelt of elderberries!');
+$.lang.register('randomcommand.8', 'When life gives you lemons (sender), make orange juice and leave the world wondering how the hell you did it.');
+$.lang.register('randomcommand.9', '/me licked (sender). . .');
+$.lang.register('randomcommand.10', '/me licking intensifies!');
+$.lang.register('randomcommand.11', 'I hope (sender)-senpai notices me..');
+$.lang.register('randomcommand.12', 'Ok everyone shhhhh. The rice krispies are telling me what to do next.');
+$.lang.register('randomcommand.13', '(sender) made eye contact with (random) while eating a banana!');
+$.lang.register('randomcommand.14', '(random) mysteriously died.');
+$.lang.register('randomcommand.15', '(random) stopped existing.');
+$.lang.register('randomcommand.16', 'All 7 of the Dragon Balls have been gathered! Now to wish (sender) to become a sloth!');
+$.lang.register('randomcommand.17', 'If I get reincarnated…. I wanna be a clam.');
+$.lang.register('randomcommand.18', 'Why don’t we drink to me and my reflection in your lovely eyes?');
+$.lang.register('randomcommand.19', 'I can show you what color your brain is.');
+$.lang.register('randomcommand.20', 'If you die, don’t come crying to me about it.');
+$.lang.register('randomcommand.21', 'From this point on, all your opinions will be rejected!');
+$.lang.register('randomcommand.22', 'Kakarot! Is That A Vegetable?! I Hate Vegetables!');
+$.lang.register('randomcommand.23', 'I see. (sender) is the type of person who is thinking positively to the extent of being stupid.');
+$.lang.register('randomcommand.24', 'I know as much of games as hugs and puppies, and care for them even less.');
+$.lang.register('randomcommand.25', '(sender) not just a pervert...they are a SUPER PERVERT');
+$.lang.register('randomcommand.26', 'I’m literally hemorrhaging generosity.');
+$.lang.register('randomcommand.27', 'They were traps? I thought they were attractions.');
+$.lang.register('randomcommand.28', 'Okay, here’s the plan: We go in, start hitting people, and see where it takes us.');
+$.lang.register('randomcommand.29', 'When a woman says something cute, a man just can’t trust it.');
+$.lang.register('randomcommand.30', 'A life without gambling is like sushi without wasabi.');
+$.lang.register('randomcommand.31', 'Stress makes you bald, but it\'s stressful to avoid stress, so you end up stressed out anyway, so in the end there\'s nothing you can do.');
+$.lang.register('randomcommand.32', 'Do evil, get caught, then claim demons were brainwashing you. A common way that human politicians evade responsibility.');
+$.lang.register('randomcommand.33', 'I have one last request. Please slap me in the face with that wad of cash.');
+$.lang.register('randomcommand.34', 'Why do people have to work for you viewers? I just want to eat and sleep. I should have been born as a panda at the zoo.');
+$.lang.register('randomcommand.35', 'Please everyone! Send me your energy!! \(-o-)/');
+$.lang.register('randomcommand.36', 'Did you hear about the guy whose whole left side was cut off? He\'s all right now.');
+$.lang.register('randomcommand.37', '(sender), during your last physical it was discovered you have Athletes Foot, and we now believe it is affecting your brain.');
+$.lang.register('randomcommand.38', 'When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren\'t wearing anything.');
+$.lang.register('randomcommand.39', 'Call Pizza Hut and ask for the phone number to Domino\'s.');
+$.lang.register('randomcommand.40', 'When someone tells you to have a nice day, stare at them and say "Don\'t tell me what to do!"');
+$.lang.register('randomcommand.41', 'Point to the sky and shout "look a dead bird" and see how many look.');
+$.lang.register('randomcommand.42', 'Dress up as an m&m and run through the mall yelling "the Skittles are coming!"');
+$.lang.register('randomcommand.43', 'If someone asks you what time it is, say yes and walk away.');
+$.lang.register('randomcommand.44', 'Tie a balloon to your back and run screaming "It\'s chasing me!"');
+$.lang.register('randomcommand.45', 'Chase the ice cream truck until it stops for you. Then walk away.');
+$.lang.register('randomcommand.46', 'Keep screaming after you get off a roller coaster, even when it stops.');
+$.lang.register('randomcommand.47', 'Go into the middle of a crowd and call out a random name and see who replies.');
+$.lang.register('randomcommand.48', 'Glue coins to the ground and laugh as people try to pick them up.');
+$.lang.register('randomcommand.49', 'Sometimes when I\'m alone, I like to dress up in all brown, lay on the floor and pretend I\'m a potato.');
+$.lang.register('randomcommand.50', 'I started a band called 999 Megabytes - we haven\'t gotten a gig yet.');
+$.lang.register('randomcommand.51', 'A man knocked on my door and asked for a small donation for a local swimming pool. So I gave him a glass of water.');
+$.lang.register('randomcommand.52', 'I nearly drowned yesterday. It was a breathtaking experience.');
+$.lang.register('randomcommand.53', 'Coffee is a silent victim in my house. It gets mugged every day.');
 $.lang.register('randomcommand.54', 'I came to laugh at you - Chars Aznabal (Gundam)');
 $.lang.register('randomcommand.55', 'You\'re thinking in Japanese! If you must think, do it in German!');
 $.lang.register('randomcommand.56', '*bursts into tears* I can\'t talk about it! It\'s so horrible! They were-- they were-- the milk! Oh God, the milk!');
@@ -71,7 +107,7 @@ $.lang.register('randomcommand.70', 'OK think of a number. Add 12 to the number.
 $.lang.register('randomcommand.71', 'If somebody throws skittles at me and yells "TASTE THE RAINBOW", I\'m gonna throw a 2 liter bottle of Dr.Pepper and yell "TRUST ME I\'M THE DOCTOR."');
 $.lang.register('randomcommand.72', 'A few days ago I very sternly told the voices in my head to stop talking to Me. Now they are sending me txt mgs say that they r sorry and want to get back2gethr.');
 $.lang.register('randomcommand.73', 'Things to do at Walmart: hide behind teddy bears and make evil laughing noises when little kids come by.');
-$.lang.register('randomcommand.74', 'Ever feel like beating someone with a baseball bat to the point of almost unconsciousness, then setting them on fire? No? Just me?');
+$.lang.register('randomcommand.74', 'Stand at a crosswalk and \'honk\' at every car that stops for you.');
 $.lang.register('randomcommand.75', 'I\'m not crazy.. don\'t you judge me! You\'re just jealous cause I get texts from the flying gummy bears and you don\'t!');
 $.lang.register('randomcommand.76', 'I saw a flying cow yesterday. It was purple and I named him Phillip...I wish the dancing unicorn had seen him but she was too busy laughing at Steve the snake');
 $.lang.register('randomcommand.77', 'I was sitting there when I got attacked by the purple hedgehogs, neon dragons, and glow-in-the-dark leprechauns that kid-napped the unicorn and strawberry king');
@@ -94,7 +130,7 @@ $.lang.register('randomcommand.93', 'I\'m on my way to Walmart to take the "try 
 $.lang.register('randomcommand.94', 'A woman gets on a bus with her baby. The bus driver says: \'\'Ugh, that\'s the ugliest baby I\'ve ever seen!\'\' The woman walks to the rear of the bus and sits down, fuming. She says to a man next to her: \'\'The driver just insulted me!\'\' The man says: \'\'You go up there and tell him off. Go on, I\'ll hold your monkey for you.\'\'');
 $.lang.register('randomcommand.95', '\'\'I went to the zoo the other day, there was only one dog in it, it was a shitzu.\'\'');
 $.lang.register('randomcommand.96', '\'\'Dyslexic man walks into a bra\'\'');
-$.lang.register('randomcommand.97', 'A young blonde woman is distraught because she fears her husband is having an affair, so she goes to a gun shop and buys a handgun. The next day she comes home to find her husband in bed with a beautiful redhead. She grabs the gun and holds it to her own head. The husband jumps out of bed, begging and pleading with her not to shoot herself. Hysterically the blonde responds to the husband, \'\'Shut up...you\'re next!\'\'');
+$.lang.register('randomcommand.97', 'I wasn\'t originally going to get a brain transplant, but then I changed my mind.');
 $.lang.register('randomcommand.98', 'A classic Tommy Cooper gag \'\'I said to the Gym instructor "Can you teach me to do the splits?" He said, "How flexible are you?" I said, "I can\'t make Tuesdays", was fifth.');
 $.lang.register('randomcommand.99', 'Police arrested two kids yesterday, one was drinking battery acid, the other was eating fireworks. They charged one - and let the other one off.');
 $.lang.register('randomcommand.100', 'Two aerials meet on a roof - fall in love - get married.  The ceremony was rubbish - but the reception was brilliant.');
@@ -165,7 +201,7 @@ $.lang.register('randomcommand.164', 'Sit and stare at this screen for 30 second
 $.lang.register('randomcommand.165', 'Have fun.');
 $.lang.register('randomcommand.166', 'Lie on the grass and look at clouds. Breathe in. Life is beautiful.');
 $.lang.register('randomcommand.167', 'Kaioken!!!!');
-$.lang.register('randomcommand.168', 'POTATO');
+$.lang.register('randomcommand.168', ':potato: POTATO :potato:');
 $.lang.register('randomcommand.169', 'When it is complete silence in class, during a test laugh real loud for no reason.');
 $.lang.register('randomcommand.170', 'Complain About Everything.');
 $.lang.register('randomcommand.171', 'Hide in a cabinet in Ikea, and slam the doors closed every time someone tries to open it.');
@@ -250,7 +286,7 @@ $.lang.register('randomcommand.249', 'Shake up a bottle of soft drink then quick
 $.lang.register('randomcommand.250', 'Buy a new T.V., and have fun with the box.');
 $.lang.register('randomcommand.251', 'Draw a little smiley face on a paper and talk to it in front of people...');
 $.lang.register('randomcommand.252', 'Hand out lemons wearing a shirt that says life.');
-$.lang.register('randomcommand.253', 'Try to make a porter potty fly.');
+$.lang.register('randomcommand.253', 'Try to make a porta potty fly.');
 $.lang.register('randomcommand.254', 'Donate money to hospitals, children homes, and give till it you feel you have gave enough.');
 $.lang.register('randomcommand.255', 'Go to the cereal aisle and build a fort and see how big you can get it without getting in trouble.');
 $.lang.register('randomcommand.256', 'Eat a potato... and when your done with that eat another potato.');
@@ -259,22 +295,4 @@ $.lang.register('randomcommand.258', 'For Sale: Parachute. Only used once, never
 $.lang.register('randomcommand.259', 'If a wild pig kills you, does it mean you’ve been boared to death?');
 $.lang.register('randomcommand.260', 'eBay is so useless. I tried to look up lighters and all they had were 13,749 matches.');
 $.lang.register('randomcommand.261', 'Broken puppets for sale. No strings attached.');
-$.lang.register('randomcommand.262', 'Stand at a crosswalk and \'honk\' at every car that stops for you.');
-$.lang.register('randomcommand.263', 'Call Pizza Hut and ask for the phone number to Domino\'s.');
-$.lang.register('randomcommand.264', 'When someone tells you to have a nice day, stare at them and say "Don\'t tell me what to do!".');
-$.lang.register('randomcommand.265', 'Point to the sky and shout "look a dead bird" and see how many look.');
-$.lang.register('randomcommand.266', 'Dress up as an m&m and run through the mall yelling "the Skittles are coming!".');
-$.lang.register('randomcommand.267', 'If someone asks you what time it is, say yes and walk away.');
-$.lang.register('randomcommand.268', 'Tie a balloon to your back and run screaming "It\'s chasing me!".');
-$.lang.register('randomcommand.269', 'Chase the ice cream truck until it stops for you. Then walk away.');
-$.lang.register('randomcommand.270', 'Keep screaming after you get off a roller coaster, even when it stops.');
-$.lang.register('randomcommand.271', 'Go into the middle of a crowd and call out a random name and see who replies.');
-$.lang.register('randomcommand.272', 'Glue coins to the ground and laugh as people try to pick them up.');
-$.lang.register('randomcommand.273', 'Sometimes when I\'m alone, I like to dress up in all brown, lay on the floor and pretend I\'m a potato.');
-$.lang.register('randomcommand.274', 'I started a band called 999 Megabytes - we haven\'t gotten a gig yet.');
-$.lang.register('randomcommand.275', 'A man knocked on my door and asked for a small donation for a local swimming pool. So I gave him a glass of water.');
-$.lang.register('randomcommand.276', 'I nearly drowned yesterday. It was a breathtaking experience.');
-$.lang.register('randomcommand.277', 'Coffee is a silent victim in my house. It gets mugged every day.');
-$.lang.register('randomcommand.278', 'Did you hear about the guy whose whole left side was cut off? He\'s all right now.');
-$.lang.register('randomcommand.279', 'I wasn\'t originally going to get a brain transplant, but then I changed my mind.');
 $.lang.register('randomcommand.console.loaded', 'Found $1 random command messages.');

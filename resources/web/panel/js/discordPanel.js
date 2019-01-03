@@ -34,7 +34,7 @@
         try {
             msgObject = JSON.parse(message.data);
         } catch (jsonEx) {
-            console.error('Failed to parse panel message [discordPanel.js]: ' + jsonEx.message);
+            console.error('Es ist nicht gelungen, die Meldung des Panels zu verarbeiten [discordPanel.js]: ' + jsonEx.message);
             return;
         }
 
@@ -81,7 +81,7 @@
                 html = '<table>';
 
             if (keys.length === 0) {
-                $('#keyword-list').html('<i>There are no keywords defined.</i>');
+                $('#keyword-list').html('<i>Es sind keine Schlüsselwörter definiert.</i>');
                 return;
             }
 
@@ -108,7 +108,7 @@
 
         if (panelCheckQuery(msgObject, 'discord_commands')) {
             var keys = msgObject['results'].sort(sortKeywordsCommandsTable),
-                html = '<table style="width: 100%"><tr><th>Command</th><th>Response</th><th>Cooldown</th><th style="float: right;"></td>',
+                html = '<table style="width: 100%"><tr><th>Befehl</th><th>Antwort</th><th>Abklingzeit</th><th style="float: right;"></td>',
                 dataObj = {},
                 command,
                 response,
@@ -120,7 +120,7 @@
                 alias;
 
             if (keys.length === 0) {
-                $('#commands-list').html('<i>There are no commands defined.</i>');
+                $('#commands-list').html('<i>Es sind keine Befehle definiert.</i>');
                 return;
             }
 
@@ -281,7 +281,7 @@
 
             if (command.length === 0 || response.length === 0 || command.match(/[\'\"\s]/ig) || (permission != 1 && permission != 0)) {
                 setTimeout(function() { doQuery(); resetHtmlValues(); }, TIMEOUT_WAIT_TIME);
-                newPanelAlert('Could not add command !' + command + '. Either the response was blank, the permission was invalid, or it contained a special symbol.', 'danger', 10000);
+                newPanelAlert('Befehl !' + command + ' konnte nicht hinzugefügt werden. Entweder war die Antwort leer, die Berechtigung war ungültig oder sie enthielt ein spezielles Symbol.', 'danger', 10000);
                 return;
             }
 
@@ -452,7 +452,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 18 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Discord Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Discord-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

@@ -22,59 +22,59 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="ranksAccordion">
-    <h3>Ranks Mapping</h3>
+    <h3>Ränge Zuordnung</h3>
     <div>
     <div id="_ranksMappingPanelDisabled" />
     <div id="_ranksMappingPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addRank">Add Rank</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addRank()">Submit</button>
-                <input type="text" class="form-control" id="addRankNameInput" placeholder="Rank Name" />
-                <input type="number" min="0" class="form-control" id="addRankHoursInput" placeholder="Hours"
-                       data-toggle="tooltip" title="Once user reaches this number of hours in chat, they are given this rank." />
+                <label for="addRank">Rang hinzufügen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addRank()">Übermitteln</button>
+                <input type="text" class="form-control" id="addRankNameInput" placeholder="Rangname" />
+                <input type="number" min="0" class="form-control" id="addRankHoursInput" placeholder="Stunden"
+                       data-toggle="tooltip" title="Sobald der/die BenutzerIn die erforderlichen Stunden erreicht hat, wird ihm/r der Rang zugewiesen." />
             </div>
         </form>
         <br>
 
-        <strong>Current Ranks</strong>
+        <strong>Derzeitige Ränge</strong>
         <div id="ranksMapping" style="height: 300px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Custom User Ranks</h3>
+    <h3>Benutzerdefinierte Benutzerränge</h3>
     <div>
     <div id="_customRanksPanelDisabled" />
     <div id="_customRanksPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="customRankTime">User Custom Rank Eligable Time</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateCustomRankTime()">Submit</button>
-                <input type="number" min="0" class="form-control" id="customRankTimeInput" placeholder="Hours" />
+                <label for="customRankTime">Berechtigungszeit für benutzerdefinierten Rang</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateCustomRankTime()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="customRankTimeInput" placeholder="Stunden" />
             </div>
         </form>
         <br>
        
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="customRankCost">User Custom Rank Cost</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateCustomRankCost()">Submit</button>
-                <input type="number" min="0" class="form-control" id="customRankCostInput" placeholder="Points" />
+                <label for="customRankCost">Kosten für benutzerInnendefinierten Rang</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateCustomRankCost()">Übermitteln</button>
+                <input type="number" min="0" class="form-control" id="customRankCostInput" placeholder="Punkte" />
             </div>
         </form>
         <br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addCustomRank">Assign User Custom Rank</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomRank()">Submit</button>
-                <input type="text" class="form-control" id="addCustomRankUserInput" placeholder="User Name" />
-                <input type="text" class="form-control" id="addCustomRankNameInput" placeholder="Rank Name" />
+                <label for="addCustomRank">Benutzerdefinierten Rang zuweisen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomRank()">Übermitteln</button>
+                <input type="text" class="form-control" id="addCustomRankUserInput" placeholder="BenutzerInnenname" />
+                <input type="text" class="form-control" id="addCustomRankNameInput" placeholder="Rangname" />
             </div>
         </form>
         <br>
 
-        <strong>Users with Custom Ranks</strong>
+        <strong>Benutzer mit benutzerdefiniertem Rang</strong>
         <div id="ranksCustom" style="height: 300px; overflow: auto;" />
     </div>
     </div>

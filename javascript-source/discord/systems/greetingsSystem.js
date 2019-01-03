@@ -1,8 +1,25 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     var joinToggle = $.getSetIniDbBoolean('discordSettings', 'joinToggle', false),
         partToggle = $.getSetIniDbBoolean('discordSettings', 'partToggle', false),
-        joinMessage = $.getSetIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!'),
-        partMessage = $.getSetIniDbString('discordSettings', 'partMessage', '(name) just left the server!'),
+        joinMessage = $.getSetIniDbString('discordSettings', 'joinMessage', '(name) ist dem Server beigetreten'),
+        partMessage = $.getSetIniDbString('discordSettings', 'partMessage', '(name) hat den Server verlassen!'),
         channelName = $.getSetIniDbString('discordSettings', 'greetingsChannel', ''),
         joinGroup = $.getSetIniDbString('discordSettings', 'greetingsDefaultGroup', '');
 
@@ -13,8 +30,8 @@
         if (event.getScript().equalsIgnoreCase('./discord/systems/greetingsSystem.js')) {
             joinToggle = $.getIniDbBoolean('discordSettings', 'joinToggle', false);
             partToggle = $.getIniDbBoolean('discordSettings', 'partToggle', false);
-            joinMessage = $.getIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!');
-            partMessage = $.getIniDbString('discordSettings', 'partMessage', '(name) just left the server!');
+            joinMessage = $.getIniDbString('discordSettings', 'joinMessage', '(name) ist dem Server beigetreten');
+            partMessage = $.getIniDbString('discordSettings', 'partMessage', '(name) hat den Server verlassen!');
             channelName = $.getIniDbString('discordSettings', 'greetingsChannel', '');
             joinGroup = $.getIniDbString('discordSettings', 'greetingsDefaultGroup', '');
         }
@@ -24,6 +41,12 @@
      * @event discordChannelJoin
      */
     $.bind('discordChannelJoin', function(event) {
+        // Add the join group if there's one.
+        if (joinGroup !== '' && joinGroup != null && joinGroup.length > 0) {
+            $.discord.setRole(joinGroup, event.getDiscordUser());
+        }
+
+        // Check for the toggle.
         if (joinToggle === false || channelName == '') {
             return;
         }
@@ -42,10 +65,6 @@
 
         if (s.match(/\(role\)/)) {
             s = $.replace(s, '(role)', joinGroup);
-        }
-
-        if (joinGroup !== '') {
-            $.discord.setRole(joinGroup, event.getDiscordUser());
         }
 
         $.discord.say(channelName, s);
@@ -80,7 +99,7 @@
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             mention = event.getMention(),
             args = event.getArgs(),
             action = args[0],

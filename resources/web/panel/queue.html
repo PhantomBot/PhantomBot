@@ -19,14 +19,14 @@
 -->
 
 <div id="queueSystemAccordion">
-	<h3>Queue</h3>
+	<h3>Warteschlange</h3>
 	<div>
 		<div id="_queuePanelDisabled"/>
 		<div id="_queuePanel">
-			<button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand('clear');">Clear</button>
-			<button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand('close');">Close</button>
-			<button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#queue-pick">Pick</button>
-			<button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#queue-modal">Open</button>
+			<button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand('clear');">Bereinigen</button>
+			<button type="button" class="btn btn-primary inline pull-right" onclick="$.runCommand('close');">Schließen</button>
+			<button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#queue-pick">Auswählen</button>
+			<button type="button" class="btn btn-primary inline pull-right" data-toggle="modal" data-target="#queue-modal">Eröffnen</button>
 
 		<br><br><br>
 		<div id="queue-list"/>
@@ -36,23 +36,23 @@
         	    <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
         	        <div class="modal-header">
         	            <button type="button" class="close" data-dismiss="modal"> </button>
-        	            <h4 class="modal-title">Open a Queue</h4>
+        	            <h4 class="modal-title">Warteliste eröffnen</h4>
         	        </div>
 	
         	        <div class="modal-body">
-        	        	<lable><b>Title:</b></lable>
+        	        	<lable><b>Titel:</b></lable>
         	            <div class="form-group" onkeypress="return event.keyCode != 13">
-        	                <input id="queue-title" type="text" class="form-control" placeholder="Queue Title" data-toggle="tooltip" title="The title of the queue you want to open."/>
+        	                <input id="queue-title" type="text" class="form-control" placeholder="Wartelisten Titel" data-toggle="tooltip" title="Der Titel der Warteliste die du eröffnen willst."/>
         	            </div>
 	
-        	            <lable><b>Max Size:</b></lable>
+        	            <lable><b>Max. Größe:</b></lable>
         	            <div class="form-group" onkeypress="return event.keyCode != 13">
-        	                <input id="queue-size" type="number" min="0" value="0" class="form-control" placeholder="Max Size" data-toggle="tooltip" title="Max size of the queue, 0 is unlimited" />
+        	                <input id="queue-size" type="number" min="0" value="0" class="form-control" placeholder="Max. Größe" data-toggle="tooltip" title="Maximale Größe der Warteliste, 0 ist endlos." />
         	            </div>
         	        </div>
         	        <div class="modal-footer">
-        	            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.runCommand('open')">Open</button>
-        	            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        	            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.runCommand('open')">Eröffnen</button>
+        	            <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
         	        </div>
         	    </div>
         	</div>
@@ -63,18 +63,18 @@
         	    <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
         	        <div class="modal-header">
         	            <button type="button" class="close" data-dismiss="modal"> </button>
-        	            <h4 class="modal-title">Pick a User</h4>
+        	            <h4 class="modal-title">Wähle eine/n BenutzerIn</h4>
         	        </div>
 	
         	        <div class="modal-body">
-        	            <lable><b>Amount</b></lable>
+        	            <lable><b>Anzahl</b></lable>
         	            <div class="form-group" onkeypress="return event.keyCode != 13">
-        	                <input id="queue-amount" type="number" min="0" value="1" class="form-control" placeholder="Amount" data-toggle="tooltip" title="Amount of users you want to pick, default is one." />
+        	                <input id="queue-amount" type="number" min="0" value="1" class="form-control" placeholder="Anzahl" data-toggle="tooltip" title="Anzahl an BenutzerInnen die du auswählen willst, Standard ist eine/r." />
         	            </div>
         	        </div>
         	        <div class="modal-footer">
-        	            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.runCommand('pick')">Pick</button>
-        	            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        	            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.runCommand('pick')">Auswählen</button>
+        	            <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
         	        </div>
         	    </div>
         	</div>

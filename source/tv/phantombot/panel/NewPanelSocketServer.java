@@ -127,8 +127,7 @@ import org.json.JSONException;
 import org.json.JSONStringer;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.webpanel.WebPanelSocketConnectedEvent;
-import tv.phantombot.event.webpanel.WebPanelSocketUpdateEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 import tv.phantombot.PhantomBot;
 
@@ -142,7 +141,7 @@ public class NewPanelSocketServer {
     private WebsocketServer server;
     private String authString;
     private String authStringRO;
-    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final Map<String, wsSession> wsSessionMap = new HashMap<>();
     private boolean dbCallNull = false;
 
     /**
@@ -213,7 +212,7 @@ public class NewPanelSocketServer {
         try {
             server.start();
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to start WebSocket Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("WebSocket Server konnte nicht gestartet werden: " + ex.getMessage());
             throw ex;
         }
     }
@@ -225,7 +224,7 @@ public class NewPanelSocketServer {
      */
     public void onOpen(IWebsocketClient webSocket) {
         wsSessionMap.put(genSessionKey(webSocket), new wsSession(false, true, webSocket));
-        com.gmt2001.Console.debug.println("Connection from " + webSocket.getHostName() + ":" + webSocket.getPort());
+        com.gmt2001.Console.debug.println("Verbindung von " + webSocket.getHostName() + ":" + webSocket.getPort());
 
     }
 
@@ -236,20 +235,20 @@ public class NewPanelSocketServer {
      */
     public void onClose(IWebsocketClient webSocket) {
         wsSessionMap.remove(genSessionKey(webSocket));
-        com.gmt2001.Console.debug.println("Close from " + webSocket.getHostName() + ":" + webSocket.getPort());
+        com.gmt2001.Console.debug.println("Schließen von " + webSocket.getHostName() + ":" + webSocket.getPort());
     }
 
     /**
      * Override for the IWebsocketClientServer class which is called upon a server error.
      *
-     * @param String The error message from the socket server.
+     * @param errorMessage The error message from the socket server.
      */
     public void serverError(String errorMessage) {
-        com.gmt2001.Console.err.println("WebSocket Server Error, will attempt to restart server. Error: " + errorMessage);
+        com.gmt2001.Console.err.println("WebSocket Server Error, versucht den Server neu zu starten. Error: " + errorMessage);
         try {
             start();
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("PhantomBot is Exiting...");
+            com.gmt2001.Console.err.println("PhantomBot wird beendet...");
             System.exit(0);
         }
     }
@@ -257,11 +256,12 @@ public class NewPanelSocketServer {
     /**
      * Override for the IWebsocketClientServer class which is called upon a client connection error.
      *
-     * @param String The error message from the socket server.
+     * @param webSocket The websocket client
+     * @param errorMessage The error message
      */
     public void clientError(IWebsocketClient webSocket, String errorMessage) {
         /* TODO: This may also need to remove the session, will need to check more on this. */
-        com.gmt2001.Console.debug.println("Error from Client Socket: " + errorMessage);
+        com.gmt2001.Console.debug.println("Fehler vom Client Socket: " + errorMessage);
     }
 
     /**
@@ -297,11 +297,11 @@ public class NewPanelSocketServer {
         try {
             jsonObject = new JSONObject(jsonString);
         } catch (JSONException ex) {
-            com.gmt2001.Console.err.println("NewPanelSocketServer: Bad JSON passed ["+jsonString+"]");
+            com.gmt2001.Console.err.println("NewPanelSocketServer: Schlechtes JSON übergeben ["+jsonString+"]");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("NewPanelSocketServer: Exception Occurred");
+            com.gmt2001.Console.err.println("NewPanelSocketServer: Fehler aufgetreten");
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
@@ -341,16 +341,11 @@ public class NewPanelSocketServer {
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, true);
-                return;
             } else if (jsonObject.has("command_sync")) {
                 String command = jsonObject.getString("command_sync");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, false);
-                return;
-            }  else if (jsonObject.has("connected")) {
-                handleConnection(webSocket, jsonObject.has("query_id") ? jsonObject.getString("query_id") : "");
-                return;
             } else if (jsonObject.has("version")) {
                 uniqueID = jsonObject.getString("version");
                 doVersion(webSocket, uniqueID);
@@ -359,7 +354,6 @@ public class NewPanelSocketServer {
                 String table = jsonObject.getJSONObject("query").getString("table");
                 String key = jsonObject.getJSONObject("query").getString("key");
                 doDBQuery(webSocket, uniqueID, table, key);
-                return;
             } else if (jsonObject.has("dbkeys")) {
                 uniqueID = jsonObject.getString("dbkeys");
                 String table = jsonObject.getJSONObject("query").getString("table");
@@ -421,7 +415,7 @@ public class NewPanelSocketServer {
                 String order = jsonObject.getJSONObject("query").getString("order");
                 doDBKeysSearch(webSocket, uniqueID, table, key, limit, order, offset);
             } else {
-                com.gmt2001.Console.err.println("NewPanelSocketServer: Unknown JSON passed [" + jsonString + "]");
+                com.gmt2001.Console.err.println("NewPanelSocketServer: Unbekanntes JSON übergeben [" + jsonString + "]");
                 return;
             }
         } catch (JSONException ex) {
@@ -446,7 +440,7 @@ public class NewPanelSocketServer {
             try {
                 session.getIWebsocketClient().send(text);
             } catch (Exception ex) {
-                com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("Es ist nicht gelungen, eine Nachricht an den Panel-Socket zu senden: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         }
     }
@@ -489,22 +483,6 @@ public class NewPanelSocketServer {
     }
 
     /**
-     * handles event of when we are fully connected with the panel
-     *
-     * @param webSocket The WebSocket which provided the command.
-     * @param id Optional unique ID which is sent back to the WebSocket.
-     */
-    private void handleConnection(IWebsocketClient webSocket, String id) {
-        if (!id.isEmpty()) {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("query_id").value(id).endObject();
-            webSocket.send(jsonObject.toString());
-        }
-
-        EventBus.instance().postAsync(new WebPanelSocketConnectedEvent());
-    }
-
-    /**
      * Provides a version payload.
      *
      * @param webSocket The IWebsocketClient which requested the version.
@@ -519,7 +497,7 @@ public class NewPanelSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from PhantomBot instance.");
+                debugMsg("NULL wurde von der PhantomBot-Instanz zurückgegeben.");
             }
             return;
         }
@@ -549,7 +527,7 @@ public class NewPanelSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -580,7 +558,7 @@ public class NewPanelSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -624,7 +602,7 @@ public class NewPanelSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -657,7 +635,7 @@ public class NewPanelSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -699,7 +677,7 @@ public class NewPanelSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -733,7 +711,7 @@ public class NewPanelSocketServer {
             }
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -761,7 +739,7 @@ public class NewPanelSocketServer {
             PhantomBot.instance().getDataStore().set(table, key, value);
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -785,7 +763,7 @@ public class NewPanelSocketServer {
             PhantomBot.instance().getDataStore().incr(table, key, Integer.parseInt(value));
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -809,7 +787,7 @@ public class NewPanelSocketServer {
             PhantomBot.instance().getDataStore().decr(table, key, Integer.parseInt(value));
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -831,7 +809,7 @@ public class NewPanelSocketServer {
             PhantomBot.instance().getDataStore().del(table, key);
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return;
         }
@@ -882,11 +860,11 @@ public class NewPanelSocketServer {
      */
     private void doWSEvent(IWebsocketClient webSocket, String id, String script, String arguments, JSONArray jsonArray) {
         JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<String>();
+        List<String> tempArgs = new LinkedList<>();
         String[] args = null;
 
-        for (Object str : jsonArray) {
-            tempArgs.add(str.toString());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            tempArgs.add(jsonArray.getString(i));
         }
 
         if (tempArgs.size() > 0) {
@@ -922,7 +900,7 @@ public class NewPanelSocketServer {
      * @return          Newly generated session key.
      */
     private static String genSessionKey(IWebsocketClient webSocket) {
-        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+        return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
     }
 
     /**
@@ -946,7 +924,7 @@ public class NewPanelSocketServer {
         } catch (NullPointerException ex) {
             if (!dbCallNull) {
                 dbCallNull = true;
-                debugMsg("NULL returned from DB. DB Object not created yet.");
+                debugMsg("NULL wurde von der DB zurückgegeben. DB-Objekt noch nicht angelegt.");
             }
             return false;
         }
@@ -1058,6 +1036,7 @@ public class NewPanelSocketServer {
         /**
          * Execute the parser to handle the input data from the IWebsocketClient.
          */
+        @Override
         public void run() {
             handleMessage(webSocket, jsonString);
         }

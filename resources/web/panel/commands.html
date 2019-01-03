@@ -22,48 +22,48 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="customCommandsAccordion">
-    <h3>Commands</h3>
+    <h3>Befehle</h3>
     <div>
         <div id="_editCustomCommandsPanelDisabled" />
     <div id="_editCustomCommandsPanel">
 
         <div>
-            <button type="button" class="btn btn-primary btn-xs inline pull-right" onclick="window.open('https://community.phantombot.tv/t/command-variables')"><small>Command variables</small></button>
+            <button type="button" class="btn btn-primary btn-xs inline pull-right" onclick="window.open('https://community.phantombot.tv/t/command-variables')"><small>Befehlsvariablen</small></button>
             <br><br>
         </div>
     </div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="runCustomCommand">Run a command</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.runCustomCommand()">Run</button>
-                <input type="text" class="form-control" id="commandImput" placeholder="Command name" />
+                <label for="runCustomCommand">Befehl ausführen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.runCustomCommand()">Ausführen</button>
+                <input type="text" class="form-control" id="commandImput" placeholder="Name des Befehls" />
             </div>
         </form>
         <br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addCustomCommand">Add a command</label>
+                <label for="addCustomCommand">Befehl hinzufügen</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCustomCommand()">Submit</button>
-                <input type="text" class="form-control" id="addCommandCommand" placeholder="Command name" />
-                <input type="text" class="form-control" id="addCommandText" placeholder="Command response" />
+                <input type="text" class="form-control" id="addCommandCommand" placeholder="Name des Befehls" />
+                <input type="text" class="form-control" id="addCommandText" placeholder="Antwort des Befehls" />
             </div>
         </form>
-        <label for="addCustomCommand">Command list</label>
+        <label for="addCustomCommand">Befehlsliste</label>
     <div id="_viewCustomCommandsPanelDisabled" />
     <div id="_viewCustomCommandsPanel">
         <div id="customCommandsList" style="height: 250px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Aliases</h3>
+    <h3>Aliasse</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="addCustomCommand">Add a alias</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Submit</button>
-                <input type="text" class="form-control" id="aliasCommandInputAlias" placeholder="Default command name" />
-                <input type="text" class="form-control" id="aliasCommandInput" placeholder="Alias name" />
+                <label for="addCustomCommand">Alias hinzufügen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.aliasCommand()">Übermitteln</button>
+                <input type="text" class="form-control" id="aliasCommandInputAlias" placeholder="Standard Befehlsname" />
+                <input type="text" class="form-control" id="aliasCommandInput" placeholder="Alias Name" />
             </div>
         </form>
     <div id="_viewCommandAliasesPanelDisabled" />
@@ -72,20 +72,20 @@
     </div>
     </div>
 
-    <h3>Cost</h3>
+    <h3>Kosten</h3>
     <div>
     <div id="_commandPricesPanelDisabled" />
     <div id="_commandPricesPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="setCommandPrice">Add a new price</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Submit</button>
-                <input type="text" class="form-control" id="setCommandPriceInputCommand" placeholder="Command name" />
-                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="Price" />
+                <label for="setCommandPrice">Neuen Preis hinzufügen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPrice()">Übermitteln</button>
+                <input type="text" class="form-control" id="setCommandPriceInputCommand" placeholder="Name des Befehls" />
+                <input type="text" class="form-control" id="setCommandPriceInput" placeholder="Preis" />
             </div>
         </form>
 
-        <strong>Current Command Prices</strong><br><br>
+        <strong>Aktuelle Befehlspreise</strong><br><br>
         <div id="priceCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
@@ -107,26 +107,26 @@
     <div id="_commandPayPanel">
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="setCommandPay">Add a new payment</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPay()">Submit</button>
-                <input type="text" class="form-control" id="setCommandPayInputCommand" placeholder="Command name" />
-                <input type="text" class="form-control" id="setCommandPayInput" placeholder="Payment" />
+                <label for="setCommandPay">Neue Vergütung hinzufügen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setCommandPay()">Übermitteln</button>
+                <input type="text" class="form-control" id="setCommandPayInputCommand" placeholder="Name des Befehls" />
+                <input type="text" class="form-control" id="setCommandPayInput" placeholder="Vergütung" />
             </div>
         </form>
 
-        <strong>Current Command Payments</strong><br><br>
+        <strong>Aktuelle Befehlsvergütungen</strong><br><br>
         <div id="payCommandsList" style="height: 200px; overflow: auto;" />
     </div>
     </div>
 
-    <h3>Permissions</h3>
+    <h3>Berechtigungen</h3>
     <div>
         <table>
             <tr class="textList">
-                <td>No permission warning message</td>
+                <td>Keine Warnmeldungen für Berechtigungen</td>
                 <td style="width: 25px"><div id="permcomMsg" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.togglePermcomMsg();"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -139,24 +139,24 @@
     </div>
     </div>
 
-    <h3>Cooldown</h3>
+    <h3>Abklingzeit</h3>
     <div>
         <table>
             <tr class="textList">
             <tr class="textList">
-                <td>Mod cooldown</td>
+                <td>Mod Abklingzeit</td>
                 <td style="width: 25px"><div id="toggleModCooldown" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleModCooldown();"><i class="fa fa-refresh" />
                      </div>
                 </td>
             </tr>
             <tr class="textList">
-                <td>Cooldown warning message</td>
+                <td>Abklingzeit Warnmeldungen</td>
                 <td style="width: 25px"><div id="cooldownMsg" /></td>
                 <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Toggle" class="button"
+                    <div data-toggle="tooltip" title="An/Aus" class="button"
                          onclick="$.toggleCooldownMsg();"><i class="fa fa-refresh" />
                      </div>
                 </td>
@@ -166,32 +166,32 @@
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="defaultCooldownInput">Default Cooldown</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setDefaultCooldown()">Submit</button>
-                <input type="number" min="5" class="form-control" id="defaultCooldownInput" placeholder="Seconds" data-toggle="tooltip" title="Default cooldown applied to all commands
-                that don't have a cooldown set. Minimum is 5 seconds."/>
+                <label for="defaultCooldownInput">Standard Abklingzeit</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.setDefaultCooldown()">Übermitteln</button>
+                <input type="number" min="5" class="form-control" id="defaultCooldownInput" placeholder="Sekunden" data-toggle="tooltip" title="Standard Abklingzeit für alle Befehle,
+                für welche keine Abklingzeit festgelegt wurde."/>
             </div>
         </form>
 
         <br>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="cooldownCmd">Command cooldown</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Submit</button>
-                <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Command name" />
-                <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Seconds" />
+                <label for="cooldownCmd">Befehlsabklingzeit</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.addCooldown()">Übermitteln</button>
+                <input type="text" class="form-control" id="cooldownCmdInputCommand" placeholder="Befehlsname" />
+                <input type="number" min="0" class="form-control" id="cooldownCmdInput" placeholder="Sekunden" />
             
             <div class="checkbox pull-right">
                 <label>
-                    <input type="checkbox" id="globalCooldownCheck" value="global" checked data-toggle="tooltip" title="When this is checked the cooldown will be applied to everyone
-                    in the channel, if it is not the cooldown will be applied on a per-user base.">Global
+                    <input type="checkbox" id="globalCooldownCheck" value="global" checked data-toggle="tooltip" title="Wenn ausgewählt, wird die Abklingzeit auf jeden im Kanal angewendet,
+                    wenn nicht, wird die Abklingzeit auf per BenutzerInnen Basis angewendet.">Global
                 </label>
             </div>
             </div>
         </form>
 
         <br><br>
-        <strong>Commands with Cooldowns</strong>
+        <strong>Befehle mit Abklingzeit</strong>
         <div id="cooldownList" style="height: 200px; overflow: auto;" />
     </div>
 </div>

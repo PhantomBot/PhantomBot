@@ -49,7 +49,7 @@
         if (panelHasQuery(msgObject)) {
             if (panelCheckQuery(msgObject, 'poll_results')) {
                 if (msgObject['results'].length === 0) {
-                    $('#pollLastResults').html('<i>No Previous Poll Results</i>');
+                    $('#pollLastResults').html('<i>Keine früheren Umfrageergebnisse</i>');
                     return;
                 }
                 for (idx in msgObject['results']) {
@@ -73,9 +73,9 @@
                     }
                 }
 
-                html += '<strong>Question:</strong> ' + question + '<br>' +
-                        '<strong>Result:</strong> ' + (panelMatch(isTie, 'true') ? 'Tie!' : result) + '<br><br>' +
-                        '<strong>Votes:</strong><br><br>';
+                html += '<strong>Frage:</strong> ' + question + '<br>' +
+                        '<strong>Ergebnis:</strong> ' + (panelMatch(isTie, 'true') ? 'Tie!' : result) + '<br><br>' +
+                        '<strong>Stimmen:</strong><br><br>';
 
                 optionsData = options.split(',');
                 countsData = counts.split(',');
@@ -151,7 +151,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 12 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Poll Data', 'success', 1000);
+            newPanelAlert('Aktualisierung der Umfragedaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

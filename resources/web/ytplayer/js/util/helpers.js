@@ -82,29 +82,36 @@ $(function() {
      * @param  {String}   label
      * @param  {String}   btn
      * @param  {String}   placeholder
+     * @param  {Array}    playlists
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getPlaylistModal = (title, label, btn, placeholder, onClose) => {
+    helpers.getPlaylistModal = (title, label, btn, placeholder, playlists, onClose) => {
         return helpers.getModal('playlist-load-modal', title, btn, $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
             'text': label
-        })).append($('<input/>', {
+        })).append($('<select/>', {
             'class': 'form-control',
-            'type': 'text',
-            'placeholder': placeholder,
             'id': 'playlist-load',
-            'focus': () => {
-                $('#playlist-load').attr('placeholder', '');
-            },
-            'blur': () => {
-                $('#playlist-load').attr('placeholder', placeholder);
-            }
-        })), onClose);
+            'text': 'Wähle eine Playlist aus',
+            'style': 'width: 100%; cursor: pointer;',
+            'data-toggle': 'dropdown'
+        }).append($('<option/>', {
+            'html': 'Wähle eine Playlist aus',
+            'selected': 'true',
+            'disabled': 'true',
+            'hidden': 'true'
+        })).append(playlists.map(function(playlist) {
+            return $('<option/>', {
+                'html': playlist
+            });
+        })).append($('<option/>', {
+            'html': 'Wähle eine Playlist aus',
+            'disabled': 'true',
+            'hidden': 'true'
+        }))), onClose);
     };
-
-
 
     /*
      * @function Generates the settings modal
@@ -113,10 +120,10 @@ $(function() {
      */
     helpers.getSettingsModal = (onClose) => {
         player.dbQuery('yt_settings', 'ytSettings', (e) => {
-            helpers.getModal('settings-modal', 'YouTube Player and Request Settings', 'Save', $('<form/>').append($('<div/>', {
+            helpers.getModal('settings-modal', 'YouTube Player und Request Einstellungen', 'Speichern', $('<form/>').append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
-                'text': 'Player Size'
+                'text': 'Player-Größe'
             })).append($('<div/>', {
                 'class': 'dropdown'
             }).append($('<button/>', {
@@ -131,35 +138,35 @@ $(function() {
             }).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Default',
+                'text': 'Standard',
                 'click': () => {
                     $('#player-size-btn').text('Default');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Half',
+                'text': 'Hälfte',
                 'click': () => {
                     $('#player-size-btn').text('Half');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Small',
+                'text': 'Klein',
                 'click': () => {
                     $('#player-size-btn').text('Small');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Tiny',
+                'text': 'Winzig',
                 'click': () => {
                     $('#player-size-btn').text('Tiny');
                 }
             })).append($('<a/>', {
                 'class': 'dropdown-item',
                 'href': '#',
-                'text': 'Hidden',
+                'text': 'Versteckt',
                 'click': () => {
                     $('#player-size-btn').text('Hidden');
                 }
@@ -170,30 +177,30 @@ $(function() {
             })).append($('<input/>', {
                 'type': 'text',
                 'data-toggle': 'tooltip',
-                'title': 'Name of the default playlist user.',
+                'title': 'Name des standardmäßigen Playlist-Benutzers.',
                 'class': 'form-control',
                 'id': 'dj-name',
                 'value': e.playlistDJname
             }))).append($('<div/>', {
                 'class': 'form-group',
             }).append($('<label/>', {
-                'text': 'Maximum Songs'
+                'text': 'Maximale Songs'
             })).append($('<input/>', {
                 'type': 'number',
                 'data-toggle': 'tooltip',
-                'title': 'How many songs one user can have in the queue.',
+                'title': 'Wie viele Songs kann ein Benutzer in der Warteschlange haben.',
                 'class': 'form-control',
                 'id': 'max-song-user',
                 'value': e.songRequestsMaxParallel
             }))).append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
-                'text': 'Maximum Song Duration'
+                'text': 'Maximale Songlänge'
             })).append($('<input/>', {
                 'type': 'number',
                 'data-toggle': 'tooltip',
                 'id': 'max-song-length',
-                'title': 'How long in seconds a song can be.',
+                'title': 'Wie lang in Sekunden ein Song sein darf.',
                 'class': 'form-control',
                 'value': e.songRequestsMaxSecondsforVideo
             }))), onClose).modal('toggle');
@@ -208,7 +215,7 @@ $(function() {
     helpers.getPlayerSize = () => {
         let size = localStorage.getItem('phantombot_ytplayer_size');
 
-        return (size === null ? 'Default' : size[0].toUpperCase() + size.substr(1));
+        return (size === null ? 'Standart' : size[0].toUpperCase() + size.substr(1));
     };
 
     /*

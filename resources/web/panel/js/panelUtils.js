@@ -63,7 +63,7 @@ connection.onopen = function(data) {
     debugMsg('connection.onopen()');
     jsonObject['authenticate'] = getAuth();
     connection.send(JSON.stringify(jsonObject));
-    newPanelAlert('Connecting to WebSocket', 'success', 1000);
+    newPanelAlert('Verbindung mit WebSocket herstellen', 'success', 1000);
     isConnected = true;
 }
 
@@ -73,7 +73,7 @@ connection.onopen = function(data) {
  */
 connection.onclose = function(data) {
     debugMsg('connection.onclose()');
-    newPanelAlert('WebSocket Disconnected - Retrying Connection Every 5 Seconds', 'danger', 0);
+    newPanelAlert('WebSocket getrennt - Wiederholung der Verbindung alle 5 Sekunden', 'danger', 0);
     isConnected = false;
 }
 
@@ -94,7 +94,7 @@ connection.onmessage = function(e) {
     if (messageObject['authresult'] !== undefined) {
         if (messageObject['authresult'] === 'false') {
             isConnected = false;
-            newPanelAlert('Authorization Failed! Check Configuration File', 'danger', 0);
+            newPanelAlert('Autorisierung fehlgeschlagen! Konfigurationsdatei prüfen', 'danger', 0);
         }
         return;
     }
@@ -379,83 +379,83 @@ function performCurrentPanelRefresh() {
 
     switch (active) {
          case 0 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.dashboardDoQuery();
              break;
          case 1 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.commandsDoQuery();
              break;
          case 2 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisierena', 'success', 1000);
              $.moderationDoQuery();
              break;
          case 3 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.timeDoQuery();
              break;
          case 4 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.pointsDoQuery();
              break;
          case 5 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.viewersDoQuery();
              break;
          case 6 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.ranksDoQuery();
              break;
          case 7 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.greetingsDoQuery();
              break;
          case 8 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.donationsDoQuery();
              break;
          case 9 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.noticesDoQuery();
              break;
          case 10 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.quotesDoQuery();
              break;
          case 11 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.keywordsDoQuery();
              break;
          case 12 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.pollDoQuery();
              break;
          case 13 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.hostraidDoQuery();
              break;
          case 14 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.gamblingDoQuery();
              break;
          case 15 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.gamesDoQuery();
              break;
          case 16 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.queueDoQuery();
              break;
          case 17 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.twitterDoQuery();
              break;
          case 18 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.discordDoQuery();
              break;
          case 19 :
-             newPanelAlert('Refreshing Data', 'success', 1000);
+             newPanelAlert('Daten aktualisieren', 'success', 1000);
              $.audioDoQuery();
              break;
 

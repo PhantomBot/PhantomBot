@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This module is to handle StreamLabs notifications.
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'streamlabsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!'),
+        message = $.getSetIniDbString('discordSettings', 'streamlabsMessage', 'Vielen Dank (name) für deine Spende von $(amount) (currency)!'),
         channelName = $.getSetIniDbString('discordSettings', 'streamlabsChannel', ''),
         announce = false;
 
@@ -13,7 +30,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamlabsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'streamlabsToggle', false);
-            message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Thank you very much (name) for the tip of $(amount) (currency)!');
+            message = $.getIniDbString('discordSettings', 'streamlabsMessage', 'Vielen Dank (name) für deine Spende von $(amount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'streamlabsChannel', '');
         }
     });
@@ -84,7 +101,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

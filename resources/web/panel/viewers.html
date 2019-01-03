@@ -22,17 +22,17 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="viewersAccordion">
-    <h3>Administrators</h3>
+    <h3>AdministratorInnen</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="promoteUserAdmin">Promote to Administrator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Admin')">Promote</button>
-                <input type="text" class="form-control" id="promoteUserAdmin" placeholder="Username" />
+                <label for="promoteUserAdmin">Zu AdministratorIn befördern</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Admin')">Befördern</button>
+                <input type="text" class="form-control" id="promoteUserAdmin" placeholder="BenutzerInnenname" />
                 <br>
-                <label for="unPromoteUserAdmin">Demote from Administrator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Admin')">Demote</button>
-                <input type="text" class="form-control" id="unPromoteUserAdmin" placeholder="Username" />
+                <label for="unPromoteUserAdmin">AdministratorIn degradieren</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Admin')">Degradieren</button>
+                <input type="text" class="form-control" id="unPromoteUserAdmin" placeholder="BenutzerInnenname" />
             </div>
             <div>
                 <div id="viewersAdminList" style="height: 420px; overflow: auto;" />
@@ -40,17 +40,17 @@
         </form>
     </div>
 
-    <h3>Moderators</h3>
+    <h3>ModeratorInnen</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="promoteUserMod">Promote to Moderator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Mod')">Promote</button>
-                <input type="text" class="form-control" id="promoteUserMod" placeholder="Username" data-toggle="tooltip" title="Make sure to '/mod' the user in your channel too." />
+                <label for="promoteUserMod">Zu ModeratorIn befördern</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Mod')">Befördern</button>
+                <input type="text" class="form-control" id="promoteUserMod" placeholder="BenutzerInnenname" data-toggle="tooltip" title="Stelle sicher, dass du den/die BenutzerIn auch in deinem Kanal mit '/mod' zu einem/r ModeratorIn machst." />
                 <br>
-                <label for="unPromoteUserMod">Demote from Moderator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Mod')">Demote</button>
-                <input type="text" class="form-control" id="unPromoteUserMod" placeholder="Username" data-toggle="tooltip" title="Make sure to '/unmod' the user in your channel too." />
+                <label for="unPromoteUserMod">ModeratorIn degradieren</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Mod')">Degradieren</button>
+                <input type="text" class="form-control" id="unPromoteUserMod" placeholder="BenutzerInnenname" data-toggle="tooltip" title="Stelle sicher, dass du den/die BenutzerIn auch in deinem Kanal mit '/unmod' den/die ModeratorIn wegnimmst." />
             </div>
             <div>
                 <div id="viewersModList" style="height: 420px; overflow: auto;" />
@@ -78,17 +78,17 @@
         </form>
     </div> -->
 
-    <h3>Donators</h3>
+    <h3>SpenderInnen</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="promoteUserDonator">Promote to Donator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Donator')">Promote</button>
-                <input type="text" class="form-control" id="promoteUserDonator" placeholder="Username" />
+                <label for="promoteUserDonator">Zu SpenderIn befördern</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Donator')">Befördern</button>
+                <input type="text" class="form-control" id="promoteUserDonator" placeholder="BenutzerInnenname" />
                 <br>
-                <label for="unPromoteUserDonator">Demote from Donator</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Donator')">Demote</button>
-                <input type="text" class="form-control" id="unPromoteUserDonator" placeholder="Username" />
+                <label for="unPromoteUserDonator">SpenderIn degradieren</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Donator')">Degradieren</button>
+                <input type="text" class="form-control" id="unPromoteUserDonator" placeholder="BenutzerInnenname" />
             </div>
             <div>
                 <div id="viewersDonatorList" style="height: 420px; overflow: auto;" />
@@ -115,17 +115,17 @@
     ** We will only unlock this once we use the Donator and Hoster group.
     -->
 
-    <h3>Regulars</h3>
+    <h3>StammzuschauerInnen</h3>
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="promoteUserReg">Promote to Regular</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Reg')">Promote</button>
-                <input type="text" class="form-control" id="promoteUserReg" placeholder="Username" />
+                <label for="promoteUserReg">Zu StammzuschauerIn befördern</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateUserPerm('Reg')">Befördern</button>
+                <input type="text" class="form-control" id="promoteUserReg" placeholder="BenutzerInnenname" />
                 <br>
-                <label for="unPromoteUserReg">Demote from Regular</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Reg')">Demote</button>
-                <input type="text" class="form-control" id="unPromoteUserReg" placeholder="Username" />
+                <label for="unPromoteUserReg">StammzuschauerIn degradieren</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.demoteUser('Reg')">Degradieren</button>
+                <input type="text" class="form-control" id="unPromoteUserReg" placeholder="BenutzerInnenname" />
             </div>
             <div>
                 <div id="viewersRegList" style="height: 420px; overflow: auto;" />
@@ -137,9 +137,9 @@
     <div>
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="fixFollower">Force follow</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.fixFollower()">Update</button>
-                <input type="text" class="form-control" id="fixFollower" placeholder="Username" data-toggle="tooltip" title="This will make the heart light up next to the users name." />
+                <label for="fixFollower">Follow erzwingen</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.fixFollower()">Aktualisieren</button>
+                <input type="text" class="form-control" id="fixFollower" placeholder="Benutzername" data-toggle="tooltip" title="Diese Funktion lässt das Herz neben dem Benutzernamen aufleuchten." />
             </div>
         <div>
     <div>

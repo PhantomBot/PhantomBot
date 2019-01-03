@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * pointSystem.js
  *
@@ -17,7 +34,7 @@
         pointsBonusAmount = 0,
         pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
         pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
-        pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
+        pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) du hast momentan (pointsstring) und du warst im Chat für (time).'),
         userCache = {};
 
     /**
@@ -219,7 +236,7 @@
             }
         }
         $.inidb.setAutoCommit(true);
-        $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+        $.log.file('pointSystem', 'Führe ' + pointNameMultiple + ' Auszahlungen aus. Nutzer: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
         lastPayout = now;
     };
 

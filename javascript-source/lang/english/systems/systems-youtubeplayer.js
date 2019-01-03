@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $.lang.register('ytplayer.client.404', 'The YouTube Player is currently not being used, and song requests are disabled!');
 $.lang.register('ytplayer.playlist.404', 'Cannot find playlist [$1]');
 $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Requester: $2');
@@ -11,8 +28,15 @@ $.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have b
 $.lang.register('ytplayer.command.volume.get', 'Current YouTube Player Volume: $1');
 $.lang.register('ytplayer.command.volume.set', 'Set YouTube Player Volume: $1');
 
+$.lang.register('ytplayer.command.ytp.resetdefaultlist.active', 'This must be ran when the YouTube Player is not connected.');
+$.lang.register('ytplayer.command.ytp.resetdefaultlist.success', 'The default playlist has been reset.');
+
+$.lang.register('ytplayer.command.ytp.togglecconly.enable', 'YouTube Player will only play Creative Commons licensed songs.');
+$.lang.register('ytplayer.command.ytp.togglecconly.disable', 'YouTube Player will play all licensed songs.');
+
 $.lang.register('ytplayer.command.ytp.togglestealrefund.enable', 'YouTube Player stolen songs will be refunded to users.');
 $.lang.register('ytplayer.command.ytp.togglestealrefund.disable', 'YouTube Player stolen songs will NOT be refunded to users.');
+
 $.lang.register('ytplayer.command.ytp.togglerandom.toggled', 'YouTube Player Playlist Randomization has been $1');
 $.lang.register('ytplayer.command.ytp.toggleannounce.toggled', 'YouTube Player Announcements have been $1');
 
@@ -63,7 +87,10 @@ $.lang.register('ytplayer.command.delrequest.success', 'Removed song with ID [$1
 $.lang.register('ytplayer.command.delrequest.404', 'Song requests do not have a song with an ID of [$1]');
 $.lang.register('ytplayer.command.delrequest.usage', 'Usage: !ytp delrequest [YouTube ID]');
 
-$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglesongrequest | toggleannounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
+$.lang.register('ytplayer.command.ytp.clearcache.warning', 'This will remove all cached YouTube Player IDs. If you are sure, run !ytp clearcache now');
+$.lang.register('ytplayer.command.ytp.clearcache.success', 'YouTube Player ID cache has been cleared.');
+
+$.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglecconly | togglesongrequest | toggleannounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount | resetdefaultlist | clearcache]');
 
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');

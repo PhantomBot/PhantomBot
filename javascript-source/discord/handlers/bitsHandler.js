@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This module is to handle bits notifications.
  */
@@ -96,9 +113,11 @@
             if (emoteRegexStr.length() > 0) {
                 emoteRegex = new RegExp(emoteRegexStr, 'gi');
                 ircMessage = String(ircMessage).valueOf();
-                ircMessage = ircMessage.replace(emoteRegex, '');
+                ircMessage = ircMessage.replace(emoteRegex, '').trim();
             }
+        }
 
+        if (ircMessage.length > 0) {
         	$.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
                     .withColor(getBitsColor(bits))
                     .withThumbnail('https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/' + getCheerAmount(bits) + '/1.gif')
@@ -125,7 +144,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

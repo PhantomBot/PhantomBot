@@ -92,7 +92,7 @@
 
             if (panelCheckQuery(msgObject, 'hostraid_hosthistory')) {
                 if (msgObject['results'].length === 0) {
-                    $('#hostHistoryList').html('<i>No Host History Data to Display</i>');
+                    $('#hostHistoryList').html('<i>Keine Host-Verlaufsdaten zum Anzeigeny</i>');
                     return;
                 }
 
@@ -266,7 +266,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 13 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Hosts/Raids Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Hosts und Raids-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

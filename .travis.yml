@@ -1,7 +1,4 @@
 language: java
 jdk:
   - oraclejdk8
-notifications:
-  slack: zelakto:YwbCS7lxWrNFsFvNDXaoyLHU
-  email: false
 sudo: false

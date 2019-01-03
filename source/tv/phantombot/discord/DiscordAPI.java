@@ -39,7 +39,14 @@ import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
+import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.EventBus;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import tv.phantombot.discord.util.DiscordUtil;
 
 /*
  * Communicates with the Discord API.
@@ -52,6 +59,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IDiscordClient client;
     private static ShardImpl shard;
     private static IGuild guild;
+    private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
     /*
      * Method to return this class object.
@@ -72,28 +80,62 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     /*
+     * Enum list of our connection states.
+     */
+    public static enum ConnectionState {
+        CONNECTED,
+        RECONNECTED,
+        DISCONNECTED,
+        CANNOT_RECONNECT
+    }
+
+    /*
      * Method to connect to Discord.
      *
      * @param {String} token
      */
     public void connect(String token) {
         try {
-            DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(50).setDaemon(false).registerListener(new DiscordEventListener()).login();
+            DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(150).setDaemon(false).registerListener(new DiscordEventListener()).login();
+
         } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            com.gmt2001.Console.err.println("Die Authentifizierung mit Discord ist fehlgeschlagen: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
 
     /*
      * Method to reconnect to Discord.
      */
-    public void reconnect() {
+    public boolean reconnect() {
         try {
-            DiscordAPI.client.logout();
+            if (DiscordAPI.client.isLoggedIn()) {
+                DiscordAPI.client.logout();
+            }
             DiscordAPI.client.login();
+            return true;
         } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            com.gmt2001.Console.err.println("Die Verbindung mit Discord konnte nicht wiederhergestellt werden: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
+        return false;
+    }
+
+    /*
+     * Mehtod that checks if we are still connected to Discord and reconnects if we are not.
+     */
+    public ConnectionState checkConnectionStatus() {
+        if (!DiscordAPI.client.isLoggedIn() || !DiscordAPI.client.isReady()) {
+            com.gmt2001.Console.warn.println("Verbindung mit Discord verloren, Versuche erneut zu Verbinden...");
+            if (reconnect()) {
+                com.gmt2001.Console.warn.println("Verbindung mit Discord wiederhergestellt.");
+                // We were able to reconnect.
+                return ConnectionState.RECONNECTED;
+            } else {
+                // We are disconnected and could not reconnect.
+                return ConnectionState.DISCONNECTED;
+            }
+        }
+        // We are still connected, return true.
+        return ConnectionState.CONNECTED;
     }
 
     /*
@@ -129,8 +171,9 @@ public class DiscordAPI extends DiscordUtil {
     private void setGuildAndShard() {
         // PhantomBot only works in one server, so throw an error if there's multiple.
         if (DiscordAPI.getClient().getGuilds().size() > 1) {
-            com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
+            com.gmt2001.Console.err.println("Discord Bot Account, ist mit mehreren Servern verbunden. Die Verbindung zu Discord wird getrennt...");
             DiscordAPI.client.logout();
+            reconnectState = ConnectionState.CANNOT_RECONNECT;
         } else {
             DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
             DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
@@ -161,9 +204,20 @@ public class DiscordAPI extends DiscordUtil {
     private class DiscordEventListener {
         @EventSubscriber
         public void onDiscordReadyEvent(ReadyEvent event) {
-            com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
+            com.gmt2001.Console.out.println("Erfolgreiche Authentifizierung mit Discord.");
 
             setGuildAndShard();
+
+            // Set a timer that checks our connection status with Discord every 60 seconds
+            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+            service.scheduleAtFixedRate(() -> {
+                if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
+                    if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
+                        com.gmt2001.Console.err.println("Die Verbindung mit Discord wurde getrennt.");
+                        com.gmt2001.Console.err.println("Eine erneutes verbinden wird in 60 Sekunden versucht...");
+                    }
+                }
+            }, 0, 1, TimeUnit.MINUTES);
         }
 
         @EventSubscriber

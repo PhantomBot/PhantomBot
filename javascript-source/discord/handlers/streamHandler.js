@@ -1,13 +1,30 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This module is to handle online and offline events from Twitch.
  */
 (function() {
     var onlineToggle = $.getSetIniDbBoolean('discordSettings', 'onlineToggle', false),
-        onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!'),
+        onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) ist auf Twitch online gegangen!'),
         offlineToggle = $.getSetIniDbBoolean('discordSettings', 'offlineToggle', false),
-        offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.'),
+        offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) ist jetzt offline.'),
         gameToggle = $.getSetIniDbBoolean('discordSettings', 'gameToggle', false),
-        gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!'),
+        gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) hat das Spiel auf Twitch gewechselt!'),
         botGameToggle = $.getSetIniDbBoolean('discordSettings', 'botGameToggle', true),
         channelName = $.getSetIniDbString('discordSettings', 'onlineChannel', ''),
         timeout = (6e4 * 5), // 5 minutes.
@@ -21,11 +38,11 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
-            onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
+            onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) ist auf Twitch online gegangen!');
             offlineToggle = $.getIniDbBoolean('discordSettings', 'offlineToggle', false);
-            offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.');
+            offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) ist jetzt offline.');
             gameToggle = $.getIniDbBoolean('discordSettings', 'gameToggle', false);
-            gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!');
+            gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) hat das Spiel auf Twitch gewechselt!');
             channelName = $.getIniDbString('discordSettings', 'onlineChannel', '');
             botGameToggle = $.getIniDbBoolean('discordSettings', 'botGameToggle', true);
         }
@@ -39,7 +56,7 @@
     function getTrimmedGameName() {
         var game = $.getGame($.channelName) + '';
 
-        return (game.length > 20 ? game.substr(0, 20) : game);
+        return (game.length > 15 ? game.substr(0, 15) + '...' : game);
     }
 
     /**
@@ -227,7 +244,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

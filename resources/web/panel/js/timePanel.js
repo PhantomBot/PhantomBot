@@ -121,8 +121,8 @@
                         "       data-paging-count-format='Rows {PF}-{PL} / {TR}' data-show-header='true'>";
                 html += "<thead><tr>" +
                         "    <th data-breakpoints='xs'>Username</th>" +
-                        "    <th data-filterable='false' data-type='number'>Time (Secs)</th>" +
-                        "    <th data-filterable='false' data-type='number'>Time (Hrs)</th>" +
+                        "    <th data-filterable='false' data-type='number'>Zeit (Secs)</th>" +
+                        "    <th data-filterable='false' data-type='number'>Zeit (Std)</th>" +
                         "</tr></thead><tbody>";
 
                 for (var idx = 0; idx < timeTableData.length; idx++) {
@@ -281,7 +281,7 @@
                 sendDBUpdate("times", "time", username, timeAdjust);
             }
         }
-        $("#adjustUserTimeNameInput").val("Submitting...");
+        $("#adjustUserTimeNameInput").val("Einreichung...");
         setTimeout(function() { doQuery(); }, TIMEOUT_WAIT_TIME);
         setTimeout(function() {
             $("#adjustUserTimeNameInput").val("");
@@ -319,7 +319,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 3 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Time Data', 'success', 1000);
+            newPanelAlert('Aktualisieren der Zeitdaten', 'success', 1000);
             doLiteQuery();
         }
     }, 3e4);

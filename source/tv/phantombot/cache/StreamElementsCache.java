@@ -119,7 +119,7 @@ public class StreamElementsCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -130,16 +130,16 @@ public class StreamElementsCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("StreamElementsCache.run: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("StreamElementsCache.run: Failed to update donations: " + ex.getMessage());
+                com.gmt2001.Console.err.println("StreamElementsCache.run: Spenden konnten nicht aktualisiert werden: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("StreamElementsCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -168,11 +168,11 @@ public class StreamElementsCache implements Runnable {
                 }
             } else {
                 if (jsonResult.has("error") && jsonResult.getString("error").equalsIgnoreCase("Unauthorized")) {
-                    com.gmt2001.Console.err.println("StreamElementsCache.updateCache: Bad JWT token disabling the StreamElements module.");
+                    com.gmt2001.Console.err.println("StreamElementsCache.updateCache: Falscher JWT-Token, deaktiviere das StreamElements-Modul.");
                     PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamElementsHandler.js", "false");
                     killed = true;
                 } else {
-                    throw new Exception("Failed to get donations: " + jsonResult);
+                    throw new Exception("Fehler beim erhalt von Spenden: " + jsonResult);
                 }
             }
         } else {

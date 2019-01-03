@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     var reCustomAPI = new RegExp(/\(customapi\s.*\)/),
         reCustomAPIJson = new RegExp(/\(customapijson\s.*\)/);
@@ -23,8 +40,8 @@
             return;
         }
 
-        $.consoleLn('DataRenderService: Processing Data (see event logs for details)');
-        $.log.event('DataRenderService: Handler Process Start');
+        $.consoleLn('DataRenderService: Verarbeite Daten (siehe Event Log für Details)');
+        $.log.event('DataRenderService: Handler Prozess Start');
 
         commandHelpFileData = $.readFile('./addons/dataservice/commands_help.txt');
         for (var idx in commandHelpFileData) {
@@ -65,7 +82,7 @@
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'commands');
-        $.log.event('DataRenderService: Commands API status : ' + apiStatus);
+        $.log.event('DataRenderService: Befehl API Status : ' + apiStatus);
 
         keys = $.inidb.GetKeyList('quotes', '');
         jsonStringer = new JSONStringer();
@@ -80,7 +97,7 @@
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'quotes');
-        $.log.event('DataRenderService: Quotes API status : ' + apiStatus);
+        $.log.event('DataRenderService: Zitat API Status : ' + apiStatus);
 
         keys = $.inidb.GetKeyList('points', '');
         jsonStringer = new JSONStringer();
@@ -93,7 +110,7 @@
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'points');
-        $.log.event('DataRenderService: Points API status : ' + apiStatus);
+        $.log.event('DataRenderService: Punkte API Status : ' + apiStatus);
 
         keys = $.inidb.GetKeyList('time', '');
         jsonStringer = new JSONStringer();
@@ -114,15 +131,15 @@
         jsonStringer.endArray().endObject();
         ranksJsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'times');
-        $.log.event('DataRenderService: Times API status : ' + apiStatus);
+        $.log.event('DataRenderService: Zeit API Status : ' + apiStatus);
 
         apiStatus = $.dataRenderServiceAPI.postData(ranksJsonStringer.toString(), $.channelName, 'ranks');
-        $.log.event('DataRenderService: Ranks API status : ' + apiStatus);
+        $.log.event('DataRenderService: Rang API Status : ' + apiStatus);
 
-        $.log.event('DataRenderService: Handler Process Complete');
+        $.log.event('DataRenderService: Handler Prozess fertiggestellt');
         $.setIniDbNumber('datarenderservice', 'last_time', $.systemTime());
 
-        $.consoleLn('DataRenderService: Data has been Processed');
+        $.consoleLn('DataRenderService: Daten wurden verarbeitet.');
     }
 
     /**
@@ -151,7 +168,7 @@
         $.registerChatCommand('./handlers/dataServiceHandler.js', 'terminatedataserviceapi', 1);
 
         if ($.dataRenderServiceAPI.hasAPIKey()) {
-            $.consoleLn('Data Render Service API Key Present, Enabling Data Feed');
+            $.consoleLn('Daten Render Service API-Schlüssel vorhanden, Aktiviere Daten Strom');
             setInterval(drsTimer, 6e4);
         }
     });

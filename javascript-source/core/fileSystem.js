@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * fileSystem.js
  *
@@ -30,7 +47,7 @@
             }
             fis.close();
         } catch (e) {
-            $.log.error('Failed to open \'' + path + '\': ' + e);
+            $.log.error('Fehler beim öffnen von \'' + path + '\': ' + e);
         }
         return lines;
     }
@@ -82,7 +99,7 @@
             }
             fos.close();
         } catch (e) {
-            $.log.error('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
         }
     }
 
@@ -133,7 +150,7 @@
             ps.println(line);
             fos.flush();
         } catch (e) {
-            $.log.error('Failed to write to \'' + path + '\': ' + e);
+            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
         }
     }
 
@@ -147,7 +164,7 @@
             var fos = new JFileOutputStream(path, true);
             fos.close();
         } catch (e) {
-            $.log.error('Failed to touch \'' + path + '\': ' + e);
+            $.log.error('Fehler beim erstellen von \'' + path + '\': ' + e);
         }
     }
 
@@ -166,7 +183,7 @@
                 f.deleteOnExit();
             }
         } catch (e) {
-            $.log.error('Failed to delete \'' + path + '\': ' + e);
+            $.log.error('Fehler beim löschen von \'' + path + '\': ' + e);
         }
     }
 
@@ -206,7 +223,7 @@
                 return ret;
             }
         } catch (e) {
-            $.log.error('Failed to search in \'' + directory + '\': ' + e);
+            $.log.error('Fehler beim suchen in \'' + directory + '\': ' + e);
         }
         return [];
     }

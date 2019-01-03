@@ -21,12 +21,9 @@
  */
 package tv.phantombot.httpserver;
 
-import com.sun.net.httpserver.BasicAuthenticator;
+import com.scaniatv.LangFileUpdater;
 import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 
 import java.nio.charset.StandardCharsets;
 import java.io.File;
@@ -35,8 +32,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.URI;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import tv.phantombot.PhantomBot;
 
@@ -223,13 +221,23 @@ public class HTTPServerCommon {
                 handleFile(uriPath, exchange, hasPassword, false);
             } else if (uriPath.startsWith("/config/gif-alerts")) {
                 handleFile(uriPath, exchange, hasPassword, false);
+            } else if (uriPath.startsWith("/get-lang")) {
+                handleLangFiles("", exchange, hasPassword, true);
+            } else if (uriPath.startsWith("/lang")) {
+                handleLangFiles(headers.getFirst("lang-path"), exchange, hasPassword, true);
+            } else if (uriPath.startsWith("/games")) {
+                handleGamesList(exchange, hasPassword, true);
             } else {
                 handleFile("/web" + uriPath, exchange, hasPassword, false);
             }
         }
 
         if (requestMethod.equals("PUT")) {
-            handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
+            if (myHdrUser.isEmpty() && headers.containsKey("lang-path")) {
+                handlePutRequestLang(headers.getFirst("lang-path"), headers.getFirst("lang-data"), exchange, hasPassword);
+            } else {
+                handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
+            }
         }
     }
 
@@ -442,6 +450,95 @@ public class HTTPServerCommon {
         return;
     }
 
+    /**
+     * Method that handles getting the lang files list for the panel.
+     * @param path
+     * @param exchange
+     * @param hasPassword
+     * @param needsPassword
+     */
+    private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+        if (needsPassword) {
+            if (!hasPassword) {
+                sendHTMLError(403, "Access Denied", exchange);
+                return;
+            }
+        }
+
+        if (path.isEmpty()) {
+            // Get all lang files and their paths.
+            String[] files = LangFileUpdater.getLangFiles();
+
+            // Send the files.W
+            sendData("text/text", String.join("\n", files), exchange);
+        } else {
+            sendData("text/text", LangFileUpdater.getCustomLang(path), exchange);
+        }
+    }
+
+    /**
+     * Method that handles searching for a game in our games list and sends it to the panel.
+     * @param exchange
+     * @param hasPassword
+     * @param needsPassword
+     */
+    private static void handleGamesList(HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+        if (needsPassword) {
+            if (!hasPassword) {
+                sendHTMLError(403, "Access Denied", exchange);
+                return;
+            }
+        }
+
+        String query= exchange.getRequestURI().getQuery();
+        String[] queryData;
+        String search = null;
+        if (query != null) {
+            queryData = query.split("&");
+
+            if (queryData[1].contains("search")) {
+                search = queryData[1].split("=")[1].toLowerCase();
+            }
+        }
+
+
+        if (search != null) {
+            try {
+                String data = FileUtils.readFileToString(new File("./web/beta-panel/js/utils/gamesList.txt"), "utf-8");
+                JSONStringer stringer = new JSONStringer();
+                String[] games = data.split("\n");
+
+                // Create a new json array.
+                stringer.array();
+                for (String game : games) {
+                    if (game.toLowerCase().startsWith(search)) {
+                        stringer.object().key("game").value(game.replace("\r", "")).endObject();
+                    }
+                }
+                // Empty the array.
+                games = null;
+                // Run the GC.
+                System.gc();
+                // Close the array.
+                stringer.endArray();
+                // Send the data.
+                sendData("text/text", stringer.toString(), exchange);
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.println("Die Spiel-Datei konnte nicht gelesen werden: " + ex.getMessage());
+            }
+        } else {
+            // Send empty json array.
+            sendData("text/text", "[]", exchange);
+        }
+    }
+
+    /**
+     * Method that handles files.
+     * @param uriPath
+     * @param exchange
+     * @param hasPassword
+     * @param needsPassword
+     */
     private static void handleFile(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
         if (needsPassword) {
             if (!hasPassword) {
@@ -495,7 +592,7 @@ public class HTTPServerCommon {
 
         if (inputFile.isDirectory()) {
             sendHTMLError(500, "Server Error: Refresh/Marquee does not support a directory, only a file", exchange);
-            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Refresh/Marquee does not support a directory, only a file.");
+            com.gmt2001.Console.err.println("HTTP Server: handleFile(): Aktualisierung / Marquee unterstützt keine Verzeichnisse, sondern nur eine Datei.");
         } else {
             try {
                 FileInputStream fileStream = new FileInputStream(inputFile);
@@ -594,6 +691,16 @@ public class HTTPServerCommon {
             PhantomBot.instance().getSession().say(message);
         }
         sendData("text/text", "event posted", exchange);
+    }
+
+    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) throws IOException {
+        if (!hasPassword) {
+            sendHTMLError(403, "Access Denied.", exchange);
+            return;
+        }
+
+        LangFileUpdater.updateCustomLang(langData, langFile);
+        sendHTMLError(200, "File Updated.", exchange);
     }
 
     private static void sendData(String contentType, String data, HttpExchange exchange) {

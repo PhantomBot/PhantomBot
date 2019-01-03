@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This script is made to register discord commands.
  *
@@ -8,7 +25,7 @@
 
     /**
      * @function commandExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {boolean}
@@ -19,7 +36,7 @@
 
     /**
      * @function aliasExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {boolean}
@@ -30,7 +47,7 @@
 
     /**
      * @function subCommandExists
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -42,7 +59,7 @@
 
     /**
      * @function setCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {int} permmission
@@ -61,7 +78,7 @@
 
     /**
      * @function setCommandChannel
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} channel
@@ -86,7 +103,7 @@
 
     /**
      * @function setCommandCost
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {int}    cost
@@ -99,7 +116,7 @@
 
     /**
      * @function setCommandAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} alias
@@ -113,7 +130,7 @@
 
     /**
      * @function removeAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} alias
@@ -127,7 +144,7 @@
 
     /**
      * @function getCommandCost
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {int}
@@ -141,7 +158,7 @@
 
     /**
      * @function getCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {int}
@@ -155,7 +172,7 @@
 
     /**
      * @function getCommandPermission
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -170,21 +187,30 @@
 
     /**
      * @function getCommandChannel
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {string}
      */
-    function getCommandChannel(command, channel) {
+    function getCommandChannel(command, channelObj) {
         if (commandExists(command)) {
-            return commands[command].channel[channel];
+            if (typeof channelObj === 'object') {
+                if (commands[command].channel[channelObj.getName()] === undefined) {
+                    return commands[command].channel[channelObj.getStringID()]
+                } else {
+                    return commands[command].channel[channelObj.getName()];
+                }
+            } else {
+                return commands[command].channel[channelObj];
+            }
+
         }
         return undefined;
     }
 
     /**
      * @function getCommandAlias
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @return {string}
@@ -198,7 +224,7 @@
 
     /**
      * @function registerCommand
-     * 
+     *
      * @export $.discord
      * @param {string} scriptFile
      * @param {string} command
@@ -236,7 +262,7 @@
 
     /**
      * @function registerSubCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -253,7 +279,7 @@
 
     /**
      * @function unregisterSubCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      * @param {string} subCommand
@@ -266,7 +292,7 @@
 
     /**
      * @function unregisterCommand
-     * 
+     *
      * @export $.discord
      * @param {string} command
      */

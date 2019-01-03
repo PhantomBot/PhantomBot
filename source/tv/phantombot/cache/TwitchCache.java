@@ -39,6 +39,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.gmt2001.TwitchAPIv5;
+import com.illusionaryone.ImgDownload;
+import java.io.File;
+import org.apache.commons.io.FileUtils;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -68,8 +71,8 @@ public class TwitchCache implements Runnable {
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
-    private String previewLink = "";
-    private String logoLink = "";
+    private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
+    private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
@@ -164,7 +167,7 @@ public class TwitchCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -270,7 +273,7 @@ public class TwitchCache implements Runnable {
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (Exception ex) {
                         success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Falsches Datum von Twitch, kann nicht für die Stream-Uptime konvertiert werden (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
                     }
 
                     /* Determine the preview link. */
@@ -283,7 +286,7 @@ public class TwitchCache implements Runnable {
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
-                    this.previewLink = "";
+                    this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                     this.streamCreatedAt = "";
                     this.viewerCount = 0;
                 }
@@ -345,6 +348,22 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("logo") && !streamObj.isNull("logo")) {
                     logoLink = streamObj.getString("logo");
                     this.logoLink = logoLink;
+                    if (new File("./web/beta-panel").isDirectory()) {
+                        ImgDownload.downloadHTTPTo(logoLink, "./web/beta-panel/img/logo.png");
+                    }
+                }
+
+                // Get the display name.
+                if (new File("./web/beta-panel").isDirectory() && streamObj.has("display_name") && !streamObj.isNull("display_name")) {
+                    File file = new File("./web/beta-panel/js/utils/panelConfig.js");
+                    if (file.exists()) {
+                        // Read the file.
+                        String fileContent = FileUtils.readFileToString(file, "utf-8");
+                        // Replace the name.
+                        fileContent = fileContent.replace("@DISPLAY_NAME@", streamObj.getString("display_name"));
+                        // Write the new stuff.
+                        FileUtils.writeStringToFile(file, fileContent, "utf-8");
+                    }
                 }
 
                 /* Get the title. */
@@ -374,7 +393,7 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Aktualisierung fehlgeschlagen.");
                 }
             }
         } catch (Exception ex) {
@@ -400,7 +419,7 @@ public class TwitchCache implements Runnable {
             }
             this.communities = communities;
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: Failed to get communities: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitchCache::updateCache: Communities konnten nicht abgerufen werden: " + ex.getMessage());
         }
 
         if (PhantomBot.twitchCacheReady.equals("false") && success) {

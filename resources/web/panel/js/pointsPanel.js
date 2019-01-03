@@ -109,7 +109,7 @@
                 html += "</tbody></table>";
                 $("#userPointsTable").html(html);
                 $('.table').footable({
-                    'on': { 'postdraw.ft.table': function(e, ft) { $("#userPtsTableTitle").html("User Points Table"); } }
+                    'on': { 'postdraw.ft.table': function(e, ft) { $("#userPtsTableTitle").html("Benutzerpunkte-Tabelle"); } }
                 });
                 handleInputFocus();
             }
@@ -153,7 +153,7 @@
                             "    </form></td>";
 
                     if (groupPoints === '-1') {
-                        html += "<td style=\"float: right\"><i>Using Global Value</i></td>";
+                        html += "<td style=\"float: right\"><i>Verwendung von Globalen Werten</i></td>";
                     } else {
                         html += "<td />";
                     }
@@ -193,7 +193,7 @@
                             "    </form></td>";
 
                     if (groupPoints === '-1') {
-                        html += "<td style=\"float: right\"><i>Using Global Value</i></td>";
+                        html += "<td style=\"float: right\"><i>Verwendung von Globalen Werten</i></td>";
                     } else {
                         html += "<td />";
                     }
@@ -274,7 +274,7 @@
             pluralName = $("#setPointsNameInput").val();
 
         if (singleName.match(/\s/ig) || pluralName.match(/\s/ig)) {
-            $("#setPointsNameInput").val("Your points name cannot contain a space.");
+            $("#setPointsNameInput").val("Der Name deiner Punkte darf kein Leerzeichen enthalten.");
             setTimeout(function() { doLiteQuery(); }, TIMEOUT_WAIT_TIME * 2);
             return;
         }
@@ -314,7 +314,7 @@
         }
 
         if (value.indexOf('.') !== -1 || (parseInt(value) < 1 && parseInt(value) !== 0)) {
-            $("#setPointGainInput_" + action).val('Only natural numbers are allowed.');
+            $("#setPointGainInput_" + action).val('Es sind nur natürliche Zahlen erlaubt.');
             setTimeout(function() { $("#setPointGainInput_" + action).val(''); }, TIMEOUT_WAIT_TIME * 3);
             return;
         }
@@ -426,7 +426,7 @@
 
         if (time.length != 0 && user.length != 0) {
             sendCommand('penalty ' + user + ' ' + time);
-            $("#penaltyUser").val(user + ' wont gain points for ' + time + ' minutes.');
+            $("#penaltyUser").val(user + ' bekommt ' + time + ' Minuten lang keine Punkte.');
         } else {
             $("#penaltyUser").val('Error.');
         }
@@ -477,7 +477,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 4 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Points Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Punktdaten', 'success', 1000);
             doLiteQuery();
         }
     }, 3e4);

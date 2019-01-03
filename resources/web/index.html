@@ -1,110 +1,190 @@
+<!--
+    Copyright (C) 2016-2018 phantombot.tv
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <!DOCTYPE html>
+
 <html>
     <head>
-        <title>PhantomBot</title>
+        <title>PhantomBotDE</title>
+        <!-- Theme color of the page -->
         <meta name="theme-color" content="#570075">
-        <link rel="icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <!-- Favicon -->
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <!-- Bootstrap 3.3.7 css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!-- Our main styles -->
         <link rel="stylesheet" type="text/css" href="style.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        <link href="common/css/fontawesome-all.min.css" rel="stylesheet">
+        <!-- Google font -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <!-- Fontawesome -->
+        <link rel="stylesheet" href="common/css/fontawesome-all.min.css">
     </head>
 
     <body>
-
-        <div class="header">
+        <!-- Header -->
+        <header class="header">
+            <!-- Header logo -->
             <img id="logo" src="common/images/logo.png"/>
+
+            <!-- Patreon link -->
             <span>
-                <a target="_blank" href="https://www.patreon.com/phantombot" id="header-right">
+                <a target="_blank" href="https://www.patreon.com/phantombotDE" id="header-right">
                     <i data-toggle="tooltip" data-placement="bottom" title="Patreon" style="color: white" class="fab fa-patreon fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
+
+            <!-- Discord link -->
             <span>
-                <a target="_blank" href="https://discord.gg/rkPqDuK" id="header-right">
+                <a target="_blank" href="https://discord.gg/9JsZyT4" id="header-right">
                     <i data-toggle="tooltip" data-placement="bottom" title="Discord" style="color: white" class="fab fa-discord fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
+
+            <!-- Twitter link -->
             <span>
-                <a target="_blank" href="https://twitter.com/PhantomBot" id="header-right">
+                <a target="_blank" href="https://twitter.com/VesturoTV" id="header-right">
                     <i data-toggle="tooltip" data-placement="bottom" title="Twitter" style="color: white" class="fab fa-twitter fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
+
+            <!-- Blog link -->
             <span>
                 <a target="_blank" href="https://blog.phantombot.tv/" id="header-right">
-                    <i data-toggle="tooltip" data-placement="bottom" title="Blog" style="color: white" class="fas fa-rss fa-lg" aria-hidden="true"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" title="Englischer Blog" style="color: white" class="fas fa-rss fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
+
+            <!-- Forum link -->
             <span>
                 <a target="_blank" href="https://community.phantombot.tv" id="header-right">
                     <i data-toggle="tooltip" data-placement="bottom" title="Community Forum" style="color: white" class="fab fa-discourse fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
-        </div>
+        </header>
 
+        <!-- Main content -->
         <div class="main">
-            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
-                <script>
-                    var urlInfo = window.location.host.split(":");
-                    var url = urlInfo[0];
-                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
-                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/ytplayer">');
-                </script>
+            <div class="launcher launcher-panelbeta" data-toggle="tooltip" data-placement="right" title="Klicken Sie hier, um das Beta-Control Panel zu öffnen." id="betapanel-tab">
                 <span id="middle">
-                    <span id="spacer" />
-                    <i id="fontawesome" class="fab fa-youtube" aria-hidden="true"></i>
-                    <span id="spacer">Launch PhantomBot YouTube Player</span>
+                    <i id="fontawesome" class="fas fa-cogs" aria-hidden="true"></i>
+
+                    <span>Öffne PhantomBot BETA Control Panel</span>
                 </span>
-                </a>
-                <span class="launcher-lock"><i class="fas fa-lock"></i></span>
+
+                <!-- Pad lock saying that this panel requires a password -->
+                <span class="launcher-lock">
+                    <i class="fas fa-lock"></i>
+                </span>
             </div>
 
-            <div class="launcher" data-toggle="tooltip" data-placement="right" title="The username and password are found in botlogin.txt, see the paneluser and panelpassword settings.">
-                <script>
-                    var urlInfo = window.location.host.split(":");
-                    var url = urlInfo[0];
-                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
-                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/panel">');
-                </script>
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="Klicken Sie hier, um das Kontrollpanel zu öffnen." id="panel-tab">
                 <span id="middle">
-                    <span id="spacer" />
                     <i id="fontawesome" class="fas fa-desktop" aria-hidden="true"></i>
-                    <span id="spacer">Launch PhantomBot Control Panel</span>
+
+                    <span>Starte das PhantomBotDE Kontrollpanel</span>
                 </span>
-                </a>
-                <span class="launcher-lock"><i class="fas fa-lock"></i></span>
+
+                <!-- Pad lock saying that this panel requires a password -->
+                <span class="launcher-lock">
+                    <i class="fas fa-lock"></i>
+                </span>
             </div>
 
-            <div class="launcher">
-                <script>
-                    var urlInfo = window.location.host.split(":");
-                    var url = urlInfo[0];
-                    var port = (typeof urlInfo[1] === 'undefined' ? '80' : urlInfo[1]);
-                    var protocol = window.location.href.indexOf("https://") == 0 ? "https" : "http";
-                    document.write('<a target="_blank" style="color: white;" href="' + protocol + '://' + urlInfo[0] + ':' + port + '/playlist">');
-                </script>
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="Klicken Sie hier, um den YouTube-Player zu öffnen." id="yt-tab">
                 <span id="middle">
-                    <span id="spacer" />
-                    <i id="fontawesome" class="fas fa-music" aria-hidden="true"></i>
-                    <span id="spacer">Launch PhantomBot YouTube Playlist Viewer</span>
+                    <i id="fontawesome" class="fab fa-youtube" aria-hidden="true"></i>
+
+                    <span>Öffne den PhantomBot YouTube Player.</span>
                 </span>
-                </a>
+
+                <!-- Pad lock saying that this panel requires a password -->
+                <span class="launcher-lock">
+                    <i class="fas fa-lock"></i>
+                </span>
             </div>
 
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="Klicken Sie hier, um die Wiedergabeliste zu öffnen." id="playlist-tab">
+                <span id="middle">
+                    <i id="fontawesome" class="fas fa-music" aria-hidden="true"></i>
+                    <span>Öffne die PhantomBot YouTube Playlist Anzeige.</span>
+                </span>
+            </div>
         </div>
 
-        <div id="copyright">
-            PhantomBot - A Free, Open Source, Multipurpose Twitch Chat Bot<br>
-            <a href="https://phantombot.tv">phantombot.tv</a>
-        </div>
+        <!-- Copyright footer -->
+        <footer id="copyright">
+            PhantomBotDE - ein kostenloser Multifunktions Twitch Chat Bot<br />
+            <a href="https://phantombot.tv" style="color: #6441a5;">phantombot.tv</a> &copy; 2016 - <script>document.write(new Date().getFullYear());</script>
+        </footer>
 
-        <script>$(document).ready(function() { $('[data-toggle="tooltip"').tooltip(); });</script>
+        <!-- Load jQuery 1.11.3 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Load Bootsrap 3.3.7 -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!-- Generate the panel links -->
+        <script>
+            $(function() {
+                /**
+                 * @function Gets the window URL for a specific path.
+                 *
+                 * @param  {String} path
+                 * @return {String}
+                 */
+                const getWindowUrl = function(path) {
+                    return window.location.protocol + '//' + window.location.host + '/' + path;
+                };
 
+                // If the beta panel js folder exists, load the panel tab.
+                $.ajax({
+                    'type': 'GET',
+                    'url': '/beta-panel/js',
+                    'username': 'null',
+                    'password': 'null'
+                }).done(function(err, data) {
+                    // Generate beta panel tab.
+                    $('#betapanel-tab').wrapInner($('<a/>', {
+                        'href': getWindowUrl('beta-panel')
+                    }));
+                }).fail(function(err) {
+                    if (err.status === 401) {
+                        // Generate beta panel tab.
+                        $('#betapanel-tab').wrapInner($('<a/>', {
+                            'href': getWindowUrl('beta-panel')
+                        }));
+                    } else {
+                        $('#betapanel-tab').remove();
+                    }
+                })
+
+                // Generate panel tab.
+                $('#panel-tab').wrapInner($('<a/>', {
+                    'href': getWindowUrl('panel')
+                }));
+
+                // Generate YouTube tab.
+                $('#yt-tab').wrapInner($('<a/>', {
+                    'href': getWindowUrl('ytplayer')
+                }));
+
+                // Generate playlist tab.
+                $('#playlist-tab').wrapInner($('<a/>', {
+                    'href': getWindowUrl('playlist')
+                }));
+
+                // Start tooltips.
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
     </body>
 </html>

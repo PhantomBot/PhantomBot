@@ -1,8 +1,25 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * hostHandler.js
  *
  * Register and announce (un)host events.
- * Optionally supports rewarding points for a follow (Only every 6 hours!)
+ * Optionally supports rewarding points for a host (Only every 6 hours!)
  */
 (function() {
     var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 0),
@@ -41,7 +58,7 @@
             return;
         }
 
-        $.consoleLn('>> Enabling hosts announcements');
+        $.consoleLn('>> Aktiviere Host Ankündigungen');
         announceHosts = true;
     });
 
@@ -91,7 +108,7 @@
             $.say(s);
         }
 
-        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHost.txt', false);
+        $.writeToFile(hoster + ' ', './addons/hostHandler/latestAutoHost.txt', false);
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestHostOrAutoHost.txt', false);
         if (autoHostReward > 0 && viewers >= hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), autoHostReward);
@@ -158,7 +175,7 @@
             $.say(s);
         }
 
-        $.writeToFile(hoster + ' ', './addons/hostHandler/latestAutoHost.txt', false);
+        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHost.txt', false);
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestHostOrAutoHost.txt', false);
         if (hostReward > 0 && viewers >= hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), hostReward);

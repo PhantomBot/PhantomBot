@@ -1,4 +1,21 @@
 /*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * init.js
  * This scripts handles all events and most things for the scripts.
  */
@@ -129,10 +146,10 @@
                     modules[scriptName] = new Module(scriptName, script, enabled);
 
                     if (!silent) {
-                        consoleLn('Loaded module: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Enabled' : 'Disabled') + ')');
+                        consoleLn('Modul geladen: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Aktiviert' : 'Deaktiviert') + ')');
                     }
                 } catch (ex) {
-                    consoleLn('Failed loading "' + scriptName + '": ' + ex);
+                    consoleLn('Fehler beim laden "' + scriptName + '": ' + ex);
                 }
             }
         }
@@ -368,7 +385,7 @@
         // Load new panel handler.
         loadScript('./core/panelHandler.js', false, true);
 
-        $.log.event('Bot modules loaded. Initializing main functions...');
+        $.log.event('Bot Module geladen. Initialisiere Hauptfunktionen...');
 
         // Register custom commands.
         $.addComRegisterCommands();
@@ -377,14 +394,14 @@
         consoleLn('');
 
         if ($.isNightly) {
-            consoleLn('PhantomBot Nightly Build - No Support is Provided');
-            consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
-            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+            consoleLn('PhantomBotDE Nightly Build - Ohne Support.');
+            consoleLn('Bitte melden Sie Fehler, einschließlich des Datums des Nightly Builds und der Repo Version, an:');
+            consoleLn('https://community.phantombot.tv/t/phantombotde-vollubersetzung-complete-translation/3872');
         } else if ($.isPrerelease) {
-            consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
-            consoleLn('When reporting bugs or issues, please remember to indicate that this is a pre-release build.');
+            consoleLn('PhantomBot Pre-Release Build - Bitte melden Sie gefundene Fehler und Probleme');
+            consoleLn('Wenn Sie Fehler oder Probleme melden, denken Sie bitte daran, zu sagen, dass es sich um einen Pre-Release Build handelt.');
         } else {
-            consoleLn('For support please visit: https://community.phantombot.tv');
+            consoleLn('Für Support besuche: https://community.phantombot.tv/t/phantombotde-vollubersetzung-complete-translation/3872');
         }
         consoleLn('');
     }
@@ -471,21 +488,21 @@
             // Check the command permission.
             if ($.permCom(sender, command, subCommand) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to the user not having permission for it.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da der Nutzer nicht genug Rechte für ihn hat.');
                 return;
             } else
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da er noch in der Abklingzeit ist.');
                 return;
             } else
 
             // Check the command cost.
             if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
+                consoleDebug('Befehl !' + command + ' wurde nicht gesendet, da der Nutzer nicht genug Punkte hat.');
                 return;
             }
 
@@ -506,7 +523,9 @@
         $api.on($script, 'discordChannelCommand', function(event) {
             var username = event.getUsername(),
                 command = event.getCommand(),
-                channel = event.getChannel(),
+                channel = event.getDiscordChannel(),
+                channelName = event.getChannel(),
+                channelId = event.getChannelId(),
                 isAdmin = event.isAdmin(),
                 senderId = event.getSenderId(),
                 args = event.getArgs();
@@ -534,7 +553,7 @@
             if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channel)) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
                     return;
                 }
             }
@@ -807,6 +826,13 @@
         });
 
         /*
+         * @event yTPlayerDeleteCurrentEvent
+         */
+        $api.on($script, 'yTPlayerDeleteCurrent', function(event) {
+            callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
          * @event gameWispChangeEvent
          */
         $api.on($script, 'gameWispChange', function(event) {
@@ -905,6 +931,13 @@
         });
 
         /*
+         * @event twitchMassSubscriptionGifted
+         */
+        $api.on($script, 'twitchMassSubscriptionGifted', function(event) {
+            callHook('twitchMassSubscriptionGifted', event, false);
+        });
+
+        /*
          * @event twitchBits
          */
         $api.on($script, 'twitchBits', function(event) {
@@ -944,13 +977,6 @@
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
-        });
-
-        /*
-         * @event webPanelSocketConnected
-         */
-        $api.on($script, 'webPanelSocketConnected', function(event) {
-            callHook('webPanelSocketConnected', event, false);
         });
 
         /*

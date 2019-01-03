@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="PhantomBotDE" basedir="." default="dist">
 
+    <!--
+
+    Copyright (C) 2016-2018 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    -->
+
     <!-- To specify a Nightly Build run as ant -Dbuildtype=nightly_build -->
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="2.4.1" />
+    <property name="version" value="2.4.2" />
     <property name="webpanel.version" value="1.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
     <property name="build" location="build" />
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
-    <property name="version.name" value="${ant.project.name}-${version}" />
+    <property name="version.name" value="${ant.project.name}-${version}-(${buildtype})" />
     <property name="version.folder" location="${dist}/${version.name}" />
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />

@@ -24,7 +24,7 @@
 <div>
     <form role="form">
         <div class="form-group" onkeypress="return event.keyCode != 13">
-            <label for="postTweet">Post a Tweet</label>
+            <label for="postTweet">Poste einen Tweet</label>
             <button type="button" class="btn btn-primary inline pull-right" onclick="$.postTweet()">Tweet</button>
             <input type="text" maxlength="140" class="form-control" id="postTweetInput" placeholder="Tweet Text">
         </div>
@@ -33,60 +33,60 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="twitterAccordion">
-    <h3>Polling Options</h3>
+    <h3>Abfrageoptionen</h3>
     <div>
         <div id="twitterPollTable" style="height: 120px; overflow: auto;" />
         <small><i>
-        Please note that if Poll Home Timeline is enabled then PhantomBot will not poll any other data from Twitter.
-        The other options are not automatically marked as disabled, but PhantomBot will not perform the poll.
+        Bitte beachte, dass wenn Startseiten-Zeitleisten-Abfrage aktiviert ist, wird PhantomBotDE keine weiteren Daten von Twitter abfragen.
+        Die anderen Optionen sind nicht automatisch als deaktiviert markiert, aber PhantomBotDE führt die Abfrage nicht aus.
         </i></small>
         <br><br>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="pollDelayMentionsTweet">Mentions Poll Delay</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_mentions')">Update</button>
-                <input type="number" min="60" class="form-control" id="polldelay_mentionsTweetInput" placeholder="Seconds"
-                       data-toggle="tooltip" title="Poll delay in seconds. Minimum is 60.">
+                <label for="pollDelayMentionsTweet">Erwähnungs-Abfrage-Verzögerung</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_mentions')">Aktualisieren</button>
+                <input type="number" min="60" class="form-control" id="polldelay_mentionsTweetInput" placeholder="Sekunden"
+                       data-toggle="tooltip" title="Abfrageverzögerung in Sekunden. Minimum sind 60.">
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="pollDelayRetweetsTweet">Retweets Poll Delay</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_retweets')">Update</button>
-                <input type="number" min="60" class="form-control" id="polldelay_retweetsTweetInput" placeholder="Seconds"
-                       data-toggle="tooltip" title="Poll delay in seconds. Minimum is 60.">
+                <label for="pollDelayRetweetsTweet">Retweets-Abfrage-Verzögerung</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_retweets')">Aktualisieren</button>
+                <input type="number" min="60" class="form-control" id="polldelay_retweetsTweetInput" placeholder="Sekunden"
+                       data-toggle="tooltip" title="Abfrageverzögerung in Sekunden. Minimum sind 60.">
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="pollDelayHomeTweet">Home Timeline Poll Delay</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_hometimeline')">Update</button>
-                <input type="number" min="60" class="form-control" id="polldelay_hometimelineTweetInput" placeholder="Seconds"
-                       data-toggle="tooltip" title="Poll delay in seconds. Minimum is 60.">
+                <label for="pollDelayHomeTweet">Startseiten-Zeitleisten-Abfrage-Verzögerung</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_hometimeline')">Aktualisieren</button>
+                <input type="number" min="60" class="form-control" id="polldelay_hometimelineTweetInput" placeholder="Sekunden"
+                       data-toggle="tooltip" title="Abfrageverzögerung in Sekunden. Minimum sind 60.">
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="pollDelayUserTweet">User Timeline Poll Delay</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_usertimeline')">Update</button>
-                <input type="number" min="15" class="form-control" id="polldelay_usertimelineTweetInput" placeholder="Seconds"
-                       data-toggle="tooltip" title="Poll delay in seconds. Minimum is 15.">
+                <label for="pollDelayUserTweet">Benutzer-Zeitleisten-Abfrage-Verzögerung</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('polldelay_usertimeline')">Aktualisieren</button>
+                <input type="number" min="15" class="form-control" id="polldelay_usertimelineTweetInput" placeholder="Sekunden"
+                       data-toggle="tooltip" title="Abfrageverzögerung in Sekunden. Minimum sind 15.">
             </div>
         </form>
     </div>
 
-    <h3>Posting Options</h3>
+    <h3>Posting Optionen</h3>
     <div>
         <div id="twitterPostTable" style="height: 100px; overflow: auto;" />
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label for="postOnlineTweet">Stream Online Tweet</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_online')">Update</button>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_online')">Aktualisieren</button>
                 <input type="text" maxlength="140" class="form-control" id="message_onlineTweetInput" placeholder="Tweet Text"
                        data-toggle="tooltip" title="Tags: (title) (game) (twitchurl)">
             </div>
@@ -94,8 +94,8 @@
     
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="postGameChangeTweet">Game Change Tweet</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_gamechange')">Update</button>
+                <label for="postGameChangeTweet">Spielwechsel Tweet</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_gamechange')">Aktualisieren</button>
                 <input type="text" maxlength="140" class="form-control" id="message_gamechangeTweetInput" placeholder="Tweet Text"
                        data-toggle="tooltip" title="Tags: (title) (game) (twitchurl)">
             </div>
@@ -103,8 +103,8 @@
     
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="postAutoUpdateTweet">Auto-Tweet Stream Status Tweet</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_update')">Update</button>
+                <label for="postAutoUpdateTweet">Automatischer Stream Status Tweet</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('message_update')">Aktualisieren</button>
                 <input type="text" maxlength="140" class="form-control" id="message_updateTweetInput" placeholder="Tweet Text"
                        data-toggle="tooltip" title="Tags: (title) (game) (twitchurl) (uptime)">
             </div>
@@ -112,33 +112,33 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="postDelayUpdateTweet">Auto Updates Post Delay</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('postdelay_update')">Update</button>
+                <label for="postDelayUpdateTweet">Auto Post Aktualisierungs Verzögerung</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('postdelay_update')">Aktualisieren</button>
                 <input type="number" min="180" class="form-control" id="postdelay_updateTweetInput" placeholder="Minutes"
-                       data-toggle="tooltip" title="Post delay in minutes. Minimum is 180.">
+                       data-toggle="tooltip" title="Post Verzögerung in Minuten. Minimum sind 180.">
             </div>
         </form>
     </div>
 
-    <h3>Retweet Reward Options</h3>
+    <h3>Retweet Belohnungsoptionen</h3>
     <div>
         <div id="twitterRewardTable" style="height: 80px; overflow: auto;" />
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="rewardPointsTweet">Reward Points for Retweeting</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('reward_points')">Update</button>
-                <input type="number" min="0" class="form-control" id="reward_pointsTweetInput" placeholder="Points"
-                       data-toggle="tooltip" title="Points rewarded for retweeting posts.">
+                <label for="rewardPointsTweet">Belohnungspunkte fürs Retweeten</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('reward_points')">Aktualisieren</button>
+                <input type="number" min="0" class="form-control" id="reward_pointsTweetInput" placeholder="Punkte"
+                       data-toggle="tooltip" title="Bonuspunkte, welche für das Retweeten von Tweets vergeben werden.">
             </div>
         </form>
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="rewardCoodownTweet">Hours Between Rewards for User for Retweeting</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('reward_cooldown')">Update</button>
-                <input type="number" min="0" class="form-control" id="reward_cooldownTweetInput" placeholder="Hours"
-                       data-toggle="tooltip" title="Time in hours that must pass before user can receive a reward between retweets.  Fractions are allowed (0.5 = 30 minutes).">
+                <label for="rewardCoodownTweet">Stunden zwischen den Belohnungen für BenutzerInnen fürs Retweeten</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDataTwitter('reward_cooldown')">Aktualisieren</button>
+                <input type="number" min="0" class="form-control" id="reward_cooldownTweetInput" placeholder="Stunden"
+                       data-toggle="tooltip" title="Zeit, in Stunden, welche vergehen müssen, bevor ein/e BenutzerIn weitere Bonuspunkte fürs Retweeten bekommt. Kommazahlen sind erlaubt (0.5 = 30 minutes).">
             </div>
         </form>
     </div>

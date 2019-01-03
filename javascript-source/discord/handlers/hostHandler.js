@@ -1,10 +1,27 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * This module is to handle hosts notifications.
  */
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'hostToggle', false),
-        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!'),
-        autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!'),
+        hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) hostet dich jetzt mit (viewers) Zuschauern!'),
+        autoHostMessage = $.getSetIniDbString('discordSettings', 'autohostMessage', '(name) Auto-Hostet dich jetzt!'),
         channelName = $.getSetIniDbString('discordSettings', 'hostChannel', ''),
         hosters = {},
         announce = false;
@@ -15,8 +32,8 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/hostHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'hostToggle', false);
-            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!');
-            autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) just auto-hosted!');
+            hostMessage = $.getIniDbString('discordSettings', 'hostMessage', '(name) hostet dich jetzt mit (viewers) Zuschauern!');
+            autoHostMessage = $.getIniDbString('discordSettings', 'autohostMessage', '(name) Auto-Hostet dich jetzt!');
             channelName = $.getIniDbString('discordSettings', 'hostChannel', '');
         }
     });
@@ -115,7 +132,7 @@
      */
     $.bind('discordChannelCommand', function(event) {
         var sender = event.getSender(),
-            channel = event.getChannel(),
+            channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
             arguments = event.getArguments(),

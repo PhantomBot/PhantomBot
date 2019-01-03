@@ -76,7 +76,7 @@
 
             if (panelCheckQuery(msgObject, 'notices_notices')) {
                 if (msgObject['results'].length === 0) {
-                    $('#noticeList').html('<i>No Notices Are Defined</i>');
+                    $('#noticeList').html('<i>Es sind keine Hinweise definiert.</i>');
                     return;
                 }
 
@@ -225,7 +225,7 @@
     setInterval(function() {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 9 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Notices Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Hinweisdaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

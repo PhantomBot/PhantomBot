@@ -41,12 +41,12 @@ public class ScriptManager {
             script.load();
         } catch (Exception ex) {
             if (scriptFile.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to load module: init.js: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Fehler beim Laden des Moduls: init.js: " + ex.getMessage());
             } else {
-                com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+                com.gmt2001.Console.err.println("Fehler beim Laden des Moduls: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
             if (!PhantomBot.reloadScripts) {
-                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
+                com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Datei");
                 System.exit(0);
             }
             throw new IOException(ex.getMessage());
@@ -69,12 +69,12 @@ public class ScriptManager {
             script.reload(false);
         } catch (Exception ex) {
             if (scriptFile.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Fehler beim Neuladen des Moduls: init.js: " + ex.getMessage());
             } else {
-                com.gmt2001.Console.err.println("Failed to reload module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
+                com.gmt2001.Console.err.println("Fehler beim Neuladen des Moduls: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
             if (!PhantomBot.reloadScripts) {
-                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
+                com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Dateie");
                 System.exit(0);
             }
             throw new IOException(ex.getMessage());

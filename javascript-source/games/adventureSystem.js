@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     var joinTime = $.getSetIniDbNumber('adventureSettings', 'joinTime', 60),
         coolDown = $.getSetIniDbNumber('adventureSettings', 'coolDown', 900),
@@ -60,7 +77,7 @@
             }
         }
 
-        $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
+        $.log.warn('Du musst mindestens ein Abenteuer haben, welches nicht ein bestimmtes Spiel gesetzt benötigt .');
         currentAdventure.gameState = 2;
     };
 
@@ -189,7 +206,7 @@
      */
     function joinHeist(username, bet) {
         if (stories.length < 1) {
-            $.log.error('No adventures found; cannot start an adventure.');
+            $.log.error('Kein Abenteuer gefunden; kann kein Abenteuer starten.');
             return;
         }
 

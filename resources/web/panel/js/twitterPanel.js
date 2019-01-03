@@ -106,13 +106,13 @@
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Enable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Aktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Disable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Deaktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
                                     '        </div>' +
                                     '    </td>' +
@@ -130,13 +130,13 @@
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Enable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Aktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Disable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Deaktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
                                     '        </div>' +
                                     '    </td>' +
@@ -154,13 +154,13 @@
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Enable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Aktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'true\', \'' + idx + '\')">' + settingIcon['true'] +
                                     '        </div>' +
                                     '    </td>' +
 
                                     '    <td style="width: 25px">' +
-                                    '        <div data-toggle="tooltip" title="Disable" class="button"' +
+                                    '        <div data-toggle="tooltip" title="Deaktivieren" class="button"' +
                                     '             onclick="$.toggleTwitter(\'' + setting + '\', \'false\', \'' + idx + '\')">' + settingIcon['false'] +
                                     '        </div>' +
                                     '    </td>' +
@@ -302,7 +302,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 17 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Twitter Data', 'success', 1000);
+            newPanelAlert('Aktualisieren von Twitter-Daten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

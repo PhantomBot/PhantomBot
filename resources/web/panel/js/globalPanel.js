@@ -53,7 +53,7 @@
                         doQuery(); // Run the query again to populate fields.
                     }
                 } else {
-                    $('#panelStatsEnabled').html('<span>Panel Stats are Disabled</span>');
+                    $('#panelStatsEnabled').html('<span>Panel-Statistiken sind deaktiviert.</span>');
                 }
             }
 
@@ -80,37 +80,37 @@
             }
 
             if (whisperMode) {
-                $('#whisperModeStatus').html('<span class="purplePill" data-toggle="tooltip" title="Whisper Mode"><i class="fa fa-user-secret fa-lg" /></span>');
+                $('#whisperModeStatus').html('<span class="purplePill" data-toggle="tooltip" title="Leiser Mode"><i class="fa fa-user-secret fa-lg" /></span>');
             } else {
                 $('#whisperModeStatus').html('');
             }
 
             if (meMode) {
-                $("#meModeStatus").html('<span class="purplePill" data-toggle="tooltip" title="Action (/me) Mode"><i class="fa fa-hand-o-right fa-lg" /></span>');
+                $("#meModeStatus").html('<span class="purplePill" data-toggle="tooltip" title="Farb (/me) Modus"><i class="fa fa-hand-o-right fa-lg" /></span>');
             } else {
                 $("#meModeStatus").html('');
             }
             if (!responseMode) {
-                $("#muteModeStatus").html('<span class="redPill" data-toggle="tooltip" title="Mute Mode"><i class="fa fa-microphone-slash fa-lg" /></span>');
+                $("#muteModeStatus").html('<span class="redPill" data-toggle="tooltip" title="Stummer Modus"><i class="fa fa-microphone-slash fa-lg" /></span>');
             } else {
                 $("#muteModeStatus").html('');
             }
 
             if ($.globalPauseMode) {
-                $("#commandPauseStatus").html("<span class=\"redPill\" data-toggle=\"tooltip\" title=\"Commands Paused\"><i class=\"fa fa-pause-circle-o fa-lg\" /></span>");
+                $("#commandPauseStatus").html('<span class="redPill" data-toggle="tooltip" title="Befehle pausiert"><i class="fa fa-pause-circle-o fa-lg" /></span>');
             } else {
                 $("#commandPauseStatus").html("");
             }
 
             if (streamOnline) {
                 if (panelCheckQuery(msgObject, 'global_streamUptime')) {
-                    $("#streamUptime").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Uptime\"><i class=\"fa fa-clock-o fa-lg\" /> " + msgObject['results']['streamUptime'] + "</span>");
+                    $("#streamUptime").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Onlinezeit\"><i class=\"fa fa-clock-o fa-lg\" /> " + msgObject['results']['streamUptime'] + "</span>");
                 }
                 if (panelCheckQuery(msgObject, 'global_playTime')) {
-                    $("#timePlayed").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Time Played\"><i class=\"fa fa-gamepad fa-lg\" /> " + msgObject['results']['playTime'] + "</span>");
+                    $("#timePlayed").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Spielzeit\"><i class=\"fa fa-gamepad fa-lg\" /> " + msgObject['results']['playTime'] + "</span>");
                 }
                 if (panelCheckQuery(msgObject, 'global_viewerCount')) {
-                    $("#viewerCount").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"Viewers\"><i class=\"fa fa-users fa-lg\" /> " + msgObject['results']['viewerCount'] + "</span>");
+                    $("#viewerCount").html("<span class=\"purplePill\" data-toggle=\"tooltip\" title=\"ZuschauerInnen\"><i class=\"fa fa-users fa-lg\" /> " + msgObject['results']['viewerCount'] + "</span>");
                 }
             } else {
                 $("#streamUptime").html('');
@@ -132,12 +132,12 @@
                 var release_info = msgObject['results']['newrelease_info'];
                 if (msgObject['results']['newrelease_info'] !== undefined && msgObject['results']['newrelease_info'] !== null) {
                     var newVersionData = msgObject['results']['newrelease_info'].split('|'),
-                        changeLog = 'https://github.com/PhantomBot/PhantomBot/releases/' + newVersionData[0];
-                    $('#newVersionDialog').html('Version <b>' + newVersionData[0] + '</b> of PhantomBot is now available for download! Review the changelog for details!<br><br>' +
+                        changeLog = 'https://github.com/PhantomBotDE/PhantomBotDE/releases/' + newVersionData[0];
+                    $('#newVersionDialog').html('Die Version <b>' + newVersionData[0] + '</b> von PhantomBot steht ab sofort zum Download bereit! Schauen Sie sich das Changelog für Details an!<br><br>' +
                                                 '<b>Release Changelog:</b><br><a target="_blank" href="' + changeLog + '">' + changeLog + '</a><br><br>' +
                                                 '<b>Download Link:</b><br><a target="_blank" href="' + newVersionData[1] + '">' + newVersionData[1] + '</a><br><br>');
-                    $('#newVersionAvailable').html('<span class="yellowPill" data-toggle="tooltip" title="New Version Available! Click for more information."' +
-                                                   'onclick="$(\'#newVersionDialog\').dialog(\'open\')">New Version!</span>');
+                    $('#newVersionAvailable').html('<span class="yellowPill" data-toggle="tooltip" title="Neue Version verfügbar! Klicke hier für mehr Information."' +
+                                                   'onclick="$(\'#newVersionDialog\').dialog(\'open\')">Neue Version!</span>');
 
                 } else {
                     $('#newVersionAvailable').html('');

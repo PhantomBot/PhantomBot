@@ -5,14 +5,14 @@
 var DateFormat = {};
 
 (function($) {
-  var daysInWeek          = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  var shortDaysInWeek     = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  var shortMonthsInYear   = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var longMonthsInYear    = ['January', 'February', 'March', 'April', 'May', 'June',
-                              'July', 'August', 'September', 'October', 'November', 'December'];
-  var shortMonthsToNumber = { 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                              'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12' };
+  var daysInWeek          = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  var shortDaysInWeek     = ['So', 'Mo', 'Di', 'Mi', 'Di', 'Fr', 'Sa'];
+  var shortMonthsInYear   = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+                              'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  var longMonthsInYear    = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                              'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  var shortMonthsToNumber = { 'Jan': '01', 'Feb': '02', 'Mär': '03', 'Apr': '04', 'Mai': '05', 'Jun': '06',
+                              'Jul': '07', 'Aug': '08', 'Sep': '09', 'Okt': '10', 'Nov': '11', 'Dez': '12' };
 
   var YYYYMMDD_MATCHER = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.?\d{0,3}[Z\-+]?(\d{2}:?\d{2})?/;
 
@@ -446,23 +446,23 @@ var DateFormat = {};
         }
 
         if(diff < 60) {
-          return 'just now';
+          return 'jetzt gerade';
         } else if(diff < 120) {
-          return '1 minute ago';
+          return 'vor einer Minute';
         } else if(diff < 3600) {
-          return Math.floor(diff / 60) + ' minutes ago';
+          return 'vor ' + Math.floor(diff / 60) + ' Minuten';
         } else if(diff < 7200) {
-          return '1 hour ago';
+          return 'vor einer Stunde';
         } else if(diff < 86400) {
-          return Math.floor(diff / 3600) + ' hours ago';
+          return 'vor ' + Math.floor(diff / 3600) + ' Stunden';
         } else if(day_diff === 1) {
-          return 'Yesterday';
+          return 'Gestern';
         } else if(day_diff < 7) {
-          return day_diff + ' days ago';
+          return 'vor ' + day_diff + ' Tagen';
         } else if(day_diff < 31) {
-          return Math.ceil(day_diff / 7) + ' weeks ago';
+          return 'vor ' + Math.ceil(day_diff / 7) + ' Wochen';
         } else if(day_diff >= 31) {
-          return 'more than 5 weeks ago';
+          return 'vor mehr als 5 Wochen';
         }
       },
       toBrowserTimeZone : function(value, format) {

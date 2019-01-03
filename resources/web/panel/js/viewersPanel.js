@@ -175,9 +175,9 @@
                              "       data-sorting='true'" +
                              "       data-paging-count-format='Rows {PF}-{PL} / {TR}' data-show-header='true'>" +
                              "<thead><tr>" +
-                             "    <th data-breakpoints='xs'>User</th>" +
-                             "    <th data-type='Date'>Last Seen</th>" +
-                             "    <th data-type='Date'>Time in Chat</th>" +
+                             "    <th data-breakpoints='xs'>Nutzer</th>" +
+                             "    <th data-type='Date'>Zuletzt gesehen</th>" +
+                             "    <th data-type='Date'>Zeit im Chat</th>" +
                              "    <th data-type='number'><i class='fa fa-money' /></th>" +
                              "    <th data-type='number'><i class='fa fa-comment' /></th>" +
                              "    <th data-type='number'><i class='fa fa-ban' /></th>" +
@@ -284,12 +284,12 @@
             sendDBKeys("viewers_chat", "panelchatuserstats");
         }
 
-        $("#viewersAdminList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
-        $("#viewersModList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
-        $("#viewersSubList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
-        $("#viewersDonatorList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
-        $("#viewersRegList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
-        $("#viewersViewerList").html("Refreshing Data <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersAdminList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersModList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersSubList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersDonatorList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersRegList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
+        $("#viewersViewerList").html("Daten aktualisieren <i class='fa fa-spinner fa-spin' aria-hidden='true'></i>");
     }
 
     /**

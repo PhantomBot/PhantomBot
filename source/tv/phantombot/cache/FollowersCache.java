@@ -81,7 +81,7 @@ public class FollowersCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("FollowersCache.run: Failed to initial sleep [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("FollowersCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -92,16 +92,16 @@ public class FollowersCache implements Runnable {
                     }
                 } catch (Exception ex) {
                     checkLastFail();
-                    com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("FollowersCache.run: Die Follower konnten nicht aktualisiert werden: " + ex.getMessage());
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("FollowersCache.run: Failed to update followers [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("FollowersCache.run: Die Follower konnten nicht aktualisiert werden [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
 
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("FollowersCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("FollowersCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }

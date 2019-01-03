@@ -21,30 +21,17 @@
  */
 package tv.phantombot.httpserver;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import tv.phantombot.event.EventBus;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 
 import com.sun.net.httpserver.HttpsServer;
 import java.security.KeyStore;
-import java.security.PrivateKey;
 import java.security.KeyManagementException;
-import java.security.cert.X509Certificate;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import javax.security.cert.CertificateExpiredException;
-import javax.security.cert.CertificateNotYetValidException;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -53,15 +40,13 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLContext;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpsExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
+import java.io.File;
 
-import org.json.JSONStringer;
 
 public class HTTPSServer {
     private HttpsServer server;
@@ -111,7 +96,7 @@ public class HTTPSServer {
                         params.setSSLParameters(defaultSSLParameters);
 
                     } catch (Exception ex) {
-                        System.out.println("Failed to create HTTPS port");
+                        System.out.println("HTTPS-Port konnte nicht erstellt werden.");
                     }
                 }
             });
@@ -130,7 +115,7 @@ public class HTTPSServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            if (PhantomBot.betap) {
+            if (new File("./web/beta-panel").isDirectory()) {
                 HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
                 betaPanelContext.setAuthenticator(auth);
             }
@@ -139,27 +124,27 @@ public class HTTPSServer {
             server.start();
         } catch (KeyManagementException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("HTTPSServer Failed to Load SSL Certificate");
+            throw new Exception("HTTPS-Server konnte SSL-Zertifikat nicht laden");
         } catch (BindException ex) {
-            com.gmt2001.Console.err.println("Failed to bind to port for HTTPS Server on port " + myPort);
-            com.gmt2001.Console.warn.println("Please make sure nothing is currently using port " + myPort + " on your system");
-            com.gmt2001.Console.warn.println("You can also change the baseport in the botlogin.txt file to a different value, such as " + (myPort + 1000));
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            com.gmt2001.Console.err.println("Verbindung zum Port für HTTPS-Server auf Port " + myPort + " konnte nicht hergestellt werden.");
+            com.gmt2001.Console.warn.println("Bitte stellen Sie sicher, dass auf Ihrem System derzeit nicht der Port " + myPort + " verwendet wird.");
+            com.gmt2001.Console.warn.println("Du kannst den Basis-Port in botlogin.txt auch auf einen anderen Wert ändern, z.B. " + (myPort + 1000));
+            throw new Exception("HTTPS-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("HTTPS-Server konnte nicht erstellt werden: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            throw new Exception("HTTP-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create HTTPS Server: " + ex.getMessage());
+            com.gmt2001.Console.err.println("HTTPS-Server konnte nicht erstellt werden: " + ex.getMessage());
             com.gmt2001.Console.err.logStackTrace(ex);
-            throw new Exception("Failed to Create HTTPSServer on Port " + myPort);
+            throw new Exception("HTTP-Server auf Port " + myPort+ " konnte nicht erstellt werden.");
         }
     }
 
     public void close() {
-        com.gmt2001.Console.out.println("HTTPS Server closing down on port " + serverPort + " with 5 second delay.");
+        com.gmt2001.Console.out.println("HTTPS-Server schließt Port " + serverPort + " mit 5 Sekunden Verzögerung.");
         server.stop(5);
-        com.gmt2001.Console.out.println("HTTPS Server stopped on port " + serverPort);
+        com.gmt2001.Console.out.println("HTTP-Server auf Port "+ serverPort +" gestoppt");
     }
 
     class YTPHandler implements HttpHandler {

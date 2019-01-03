@@ -89,7 +89,7 @@
                 html += "</table>";
 
                 if (!foundData) {
-                    html = "<i>No entries in cooldown table.</i>";
+                    html = "<i>Keine Einträge in der Abklingzeit-Tabelle.</i>";
                 }
                 $("#cooldownList").html(html);
 
@@ -164,7 +164,7 @@
         var input = $("#cooldownCmdInput").val();
         if (input.length > 0) {
             sendCommand("cooldown " + input);
-            $("#cooldownCmdInput").val("Submitted");
+            $("#cooldownCmdInput").val("Abgeschickt");
             setTimeout(function() { $("#cooldownCmdInput").val(""); doQuery(); }, 1000);
         }
     }
@@ -185,7 +185,7 @@
     setInterval(function() {
         var active = $("#tabs").tabs("option", "active");
         if (active == 4 && isConnected && !isInputFocus()) {
-            newPanelAlert('Refreshing Cooldown Data', 'success', 1000);
+            newPanelAlert('Aktualisierung der Abklingzeitdaten', 'success', 1000);
             doQuery();
         }
     }, 3e4);

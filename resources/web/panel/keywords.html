@@ -22,11 +22,11 @@
 
 <!-- Accordion object.  Each section is separated by an <h3 /> header and the content is to be enclosed in <div />.  -->
 <div id="keywordsAccordion">
-    <h3>Keywords</h3>
+    <h3>Schlüsselwörter</h3>
     <div>
     <div id="_keywordsPanelDisabled" />
     <div id="_keywordsPanel">
-        <button type="button" class="btn btn-primary inline pull-right" onclick="$.addKeywordnew()">Add Keyword</button>
+        <button type="button" class="btn btn-primary inline pull-right" onclick="$.addKeywordnew()">Schlüsselwort hinzufügen</button>
 
         <br/><br/>
         <div id="keywordsList" style="height: 250px; overflow: auto;" />
@@ -39,32 +39,32 @@
         <div class="modal-content" style="background: rgb(28, 28, 36); border-radius: 3px;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"> </button>
-                <h4 class="modal-title" id="keyword-modal-title">Edit Keyword</h4>
+                <h4 class="modal-title" id="keyword-modal-title">Schlüsselwort ändern</h4>
             </div>
 
             <div class="modal-body">
-                <lable><b>Keyword</b></lable>
+                <lable><b>Schlüsselwort</b></lable>
                 <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <textarea id="keyword-name" type="text" class="form-control" placeholder="Keyword" data-toggle="tooltip" 
-                    title="This is the keyword name." />
-                    <label><input type="checkbox" id="keyword-regex" data-toggle="tooltip" title="Check this box if you're using a regular expression."> Regex</label>
+                    <textarea id="keyword-name" type="text" class="form-control" placeholder="Schlüsselwort" data-toggle="tooltip"
+                    title="Das ist das Schlüsselwort." />
+                    <label><input type="checkbox" id="keyword-regex" data-toggle="tooltip" title="Aktiviere dieses Kontrollkästchen, wenn du einen regulären Ausdruck verwendest."> Regex</label>
                 </div>
 
-                <lable><b>Response</b></lable>
+                <lable><b>Antwort</b></lable>
                 <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <textarea id="keyword-response" type="text" class="form-control" placeholder="Message" data-toggle="tooltip" 
-                    title="This is the response of the keyword."/>
+                    <textarea id="keyword-response" type="text" class="form-control" placeholder="Nachricht" data-toggle="tooltip"
+                    title="Das ist die Antwort auf das Schlüsselwort"/>
                 </div>
 
-                <lable><b>Cooldown</b></lable>
+                <lable><b>Abklingzeit</b></lable>
                 <div class="form-group" onkeypress="return event.keyCode != 13">
-                    <input id="keyword-cooldown" type="number" min="5" max="0" class="form-control" placeholder="Coodlown" data-toggle="tooltip" 
-                    title="Cooldown of the keyword. Minimum is five seconds." />
+                    <input id="keyword-cooldown" type="number" min="5" max="0" class="form-control" placeholder="Abklingzeit" data-toggle="tooltip"
+                    title="Abklingzeit des Schlüsselwortes. Minimum sind 5 Sekunden." />
                 </div>
            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.updateKeyword()">Save</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$.updateKeyword()">Speichern</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
             </div>
         </div>
     </div>

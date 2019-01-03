@@ -84,7 +84,7 @@ public class ViewerListCache implements Runnable {
             try {
                 Thread.sleep(600 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("ViewerListCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("ViewerListCache::run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -142,10 +142,10 @@ public class ViewerListCache implements Runnable {
                 // Run the GC to clear memory,
                 System.gc();
             } else {
-                com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
+                com.gmt2001.Console.debug.println("Der Viewer-Cache konnte nicht aktualisiert werden: " + object);
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Failed to update: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Aktualisierung fehlgeschlagen: " + ex.getMessage());
         }
     }
 

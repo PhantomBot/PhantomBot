@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 (function() {
     var currentHostTarget = '',
         respond = getSetIniDbBoolean('settings', 'response_@chat', true),
@@ -135,14 +152,21 @@
             return;
         }
 
-        if (respond && (!action || message.startsWith('/w'))) {
+        if (respond && !action) {
             $.session.say(message);
         } else {
             if (respond && action) {
-                $.session.say('/me ' + message);
+                // If the message is a Twitch command, remove the /me.
+                if (message.startsWith('.') || message.startsWith('/')) {
+                    $.session.say(message);
+                } else {
+                    $.session.say('/me ' + message);
+                }
             }
             if (!respond) {
                 $.consoleLn('[MUTED] ' + message);
+                $.log.file('chat', '[MUTED] ' + $.botName.toLowerCase() + ': ' + message);
+                return;
             }
         }
         $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
@@ -161,17 +185,7 @@
 
         timeout = systemTime();
 
-        if (respond && (!action || message.startsWith('/w'))) {
-            $.session.say(message);
-        } else {
-            if (respond && action) {
-                $.session.say('/me ' + message);
-            }
-            if (!respond) {
-                $.consoleLn('[MUTED] ' + message);
-            }
-        }
-        $.log.file('chat', '' + $.botName.toLowerCase() + ': ' + message);
+        say(message);
     }
 
     /**
@@ -314,13 +328,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.log.error('Failed to use random.org: ' + request.exception);
+                    $.log.error('Fehler beim nutzen von random.org: ' + request.exception);
                 } else {
-                    $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Fehler beim nutzen von random.org: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.log.error('Failed to use random.org: ' + error);
+            $.log.error('Fehler beim nutzen von random.org: ' + error);
         }
 
         return randRange(min, max);
