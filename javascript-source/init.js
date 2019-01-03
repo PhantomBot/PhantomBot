@@ -314,7 +314,7 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
             }
         } else {
             for (i in hook.handlers) {
@@ -322,7 +322,7 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('(hook.call, ' + hookName + ', ' + hook.handlers[i].scriptName + ') ' + ex);
+                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
                     }
                 }
             }
@@ -956,6 +956,13 @@
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
+        });
+        
+        /*
+         * @event PubSubModerationDelete
+         */
+        $api.on($script, 'PubSubModerationDelete', function (event) {
+            callHook('PubSubModerationDelete', event, false);
         });
 
         /*
