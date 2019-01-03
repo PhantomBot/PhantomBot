@@ -19,7 +19,7 @@ package tv.phantombot.event.ytplayer;
 public class YTPlayerLoadPlaylistEvent extends YTPlayerEvent {
     private final String playlist;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} playlist
@@ -28,7 +28,7 @@ public class YTPlayerLoadPlaylistEvent extends YTPlayerEvent {
         this.playlist = playlist;
     }
 
-    /*
+    /**
      * Method that gets the playlist name.
      *
      * @return {String} playlist

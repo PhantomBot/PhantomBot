@@ -21,7 +21,7 @@ import tv.phantombot.twitch.irc.TwitchSession;
 public class IrcChannelJoinEvent extends IrcChannelEvent {
     private final String user;
 
-    /*
+    /**
      * Class constructor
      *
      * @param {TwitchSession} session
@@ -33,7 +33,7 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
         this.user = user;
     }
 
-    /*
+    /**
      * Class constructor
      *
      * @param {String}  user
@@ -44,7 +44,7 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
         this.user = user;
     }
 
-    /*
+    /**
      * Method that returns the user who joined the channel.
      *
      * @return {String} user

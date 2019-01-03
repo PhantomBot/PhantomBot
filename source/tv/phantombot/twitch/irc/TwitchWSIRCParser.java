@@ -64,7 +64,7 @@ public class TwitchWSIRCParser implements Runnable {
     private final String channelName;
     private final Thread runThread;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {WebSocket} webSocket
@@ -108,7 +108,7 @@ public class TwitchWSIRCParser implements Runnable {
         this.runThread.start();
     }
     
-    /*
+    /**
      * Method which is on a new thread that keeps track of gifted subscribers.
      */
     @Override
@@ -137,7 +137,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method that splits messages with new lines then parses them.
      *
      * @param {String} rawMessage
@@ -207,7 +207,7 @@ public class TwitchWSIRCParser implements Runnable {
         return badges;
     }
 
-    /*
+    /**
      * Method that parses a single line message.
      *
      * @param {String} rawMessage
@@ -275,7 +275,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method that handles parsing commands.
      *
      * @param {String} message
@@ -297,14 +297,14 @@ public class TwitchWSIRCParser implements Runnable {
         scriptEventManager.onEvent(new CommandEvent(username, command, arguments, tags));
     }
 
-    /*
+    /**
      * ----------------------------------------------------------------------
      * Event Handling Methods. The below methods are all referenced from the
      * parserMap object.
      * ----------------------------------------------------------------------
      */
 
-    /*
+    /**
      * Handles the 001 event from IRC.
      *
      * @param {String} message
@@ -327,7 +327,7 @@ public class TwitchWSIRCParser implements Runnable {
         eventBus.postAsync(new IrcJoinCompleteEvent(session));
     }
 
-    /*
+    /**
      * Handles the PRIVMSG event from IRC.
      *
      * @param {String} message
@@ -389,7 +389,7 @@ public class TwitchWSIRCParser implements Runnable {
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tags);
     }
 
-    /*
+    /**
      * Handles the CLEARCHAT event from IRC.
      *
      * @param {String} message
@@ -414,7 +414,7 @@ public class TwitchWSIRCParser implements Runnable {
         eventBus.postAsync(new IrcClearchatEvent(session, username, reason, duration));
     }
 
-    /*
+    /**
      * Handles the WHISPER event from IRC.
      *
      * @param {String} message
@@ -428,7 +428,7 @@ public class TwitchWSIRCParser implements Runnable {
         com.gmt2001.Console.out.println("[WHISPER] " + username + ": " + message);
     }
 
-    /*
+    /**
      * Handles the JOIN event from IRC.
      *
      * @param {String} message
@@ -442,7 +442,7 @@ public class TwitchWSIRCParser implements Runnable {
         com.gmt2001.Console.debug.println("User Joined Channel [" + username + " -> " + channelName + "]");
     }
 
-    /*
+    /**
      * Handles the PART event from IRC.
      *
      * @param {String} message
@@ -456,7 +456,7 @@ public class TwitchWSIRCParser implements Runnable {
         com.gmt2001.Console.debug.println("User Left Channel [" + username + " -> " + channelName + "]");
     }
 
-    /*
+    /**
      * Handles the NOTICE event from IRC.
      *
      * @param {String} message
@@ -483,7 +483,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
     }
 
-    /*
+    /**
      * Handles the USERNOTICE event from IRC.
      *
      * @param {String} message
@@ -532,7 +532,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
     }
 
-    /*
+    /**
      * Handles the USERSTATE event from IRC.
      *
      * @param {String} message

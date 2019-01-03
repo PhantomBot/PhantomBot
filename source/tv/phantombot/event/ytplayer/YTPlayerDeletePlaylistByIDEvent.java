@@ -19,7 +19,7 @@ package tv.phantombot.event.ytplayer;
 public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
     private final String youTubeID;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} youTubeID
@@ -28,7 +28,7 @@ public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
         this.youTubeID = youTubeID;
     }
 
-    /*
+    /**
      * Method that returns the YouTube song ID.
      *
      * @return {String} youTubeID

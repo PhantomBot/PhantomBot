@@ -23,7 +23,7 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent {
     private final String mode;
     private final boolean add;
 
-    /*
+    /**
      * Class constructor
      *
      * @param {TwitchSession} session
@@ -39,7 +39,7 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent {
         this.add = add;
     }
 
-    /*
+    /**
      * Method that returns the user whose mode changed
      *
      * @return {String} user
@@ -48,7 +48,7 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent {
         return this.user;
     }
 
-    /*
+    /**
      * Method that returns the user's mode.
      *
      * @return {String} mode
@@ -57,7 +57,7 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent {
         return this.mode;
     }
 
-    /*
+    /**
      * Method that returns if the user got OP or not.
      *
      * @return {boolean} add

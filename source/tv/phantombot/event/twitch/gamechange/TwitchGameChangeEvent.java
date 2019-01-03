@@ -21,7 +21,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public class TwitchGameChangeEvent extends TwitchEvent {
     private final String gameTitle;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} gameTitle
@@ -30,7 +30,7 @@ public class TwitchGameChangeEvent extends TwitchEvent {
         this.gameTitle = gameTitle;
     }
 
-    /*
+    /**
      * Method that returns the game name
      *
      * @return {String} gameTitle

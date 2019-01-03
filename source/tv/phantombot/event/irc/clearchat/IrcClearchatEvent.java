@@ -25,7 +25,7 @@ public class IrcClearchatEvent extends IrcEvent {
     private final String reason;
     private final String duration;
 
-    /*
+    /**
      * Class constructor
      *
      * @param {TwitchSession} session
@@ -41,7 +41,7 @@ public class IrcClearchatEvent extends IrcEvent {
         this.duration = duration;
     }
 
-    /*
+    /**
      * Method that returns the user who was timed-out
      *
      * @return {String} username
@@ -50,7 +50,7 @@ public class IrcClearchatEvent extends IrcEvent {
         return this.username;
     }
 
-    /*
+    /**
      * Method that returns the reason the user was timed-out
      *
      * @return {String} reason
@@ -59,7 +59,7 @@ public class IrcClearchatEvent extends IrcEvent {
         return this.reason;
     }
 
-    /*
+    /**
      * Method that returns the length the user was timed-out
      *
      * @return {String} duration

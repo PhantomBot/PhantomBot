@@ -33,7 +33,7 @@ public abstract class DiscordEvent extends Event {
     private final String channelId;
     private final String discrim;
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {IUser} user
@@ -50,7 +50,7 @@ public abstract class DiscordEvent extends Event {
         this.mention = user.mention();
     }
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {IUser}    user
@@ -68,7 +68,7 @@ public abstract class DiscordEvent extends Event {
         this.mention = user.mention();
     }
 
-    /*
+    /**
      * Method that returns the sender of the event with their discrim.
      *
      * @return {String}
@@ -77,7 +77,7 @@ public abstract class DiscordEvent extends Event {
         return this.sender.toLowerCase();
     }
 
-    /*
+    /**
      * Method that returns just the username of the event.
      *
      * @return {String}
@@ -86,7 +86,7 @@ public abstract class DiscordEvent extends Event {
         return this.username;
     }
 
-    /*
+    /**
      * Method that returns the mention string for this user.
      *
      * @return {String}
@@ -95,7 +95,7 @@ public abstract class DiscordEvent extends Event {
         return this.mention;
     }
 
-    /*
+    /**
      * Method that returns the channel name.
      *
      * @return {String}
@@ -104,7 +104,7 @@ public abstract class DiscordEvent extends Event {
         return this.channelName;
     }
 
-    /*
+    /**
      * Method that returns the channel ID.
      *
      * @return {String}
@@ -113,7 +113,7 @@ public abstract class DiscordEvent extends Event {
         return this.channelId;
     }
 
-    /*
+    /**
      * Method that returns the user's discriminator.
      *
      * @return {String}
@@ -122,7 +122,7 @@ public abstract class DiscordEvent extends Event {
         return this.discrim;
     }
 
-    /*
+    /**
      * Method that returns the user's ID.
      *
      * @return {String}
@@ -131,7 +131,7 @@ public abstract class DiscordEvent extends Event {
         return this.senderId;
     }
 
-    /*
+    /**
      * Method that returns the user's object for Discord4J.
      *
      * @return {IUser}
@@ -140,7 +140,7 @@ public abstract class DiscordEvent extends Event {
         return this.user;
     }
 
-    /*
+    /**
      * Method that returns the channel's object for Discord4J.
      *
      * @return {IChannel}

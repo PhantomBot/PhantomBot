@@ -23,7 +23,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
     private final String creator;
     private final String message;
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {String} username
@@ -36,7 +36,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
         this.message = message;
     }
 
-    /*
+    /**
      * Method that returns the username that the even was triggered for.
      *
      * @return {String} username
@@ -45,7 +45,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
         return this.username;
     }
 
-    /*
+    /**
      * Method that returns the creator for the event.
      *
      * @return {String} creator
@@ -54,7 +54,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
         return this.creator;
     }
 
-    /*
+    /**
      * Method that returns the message of the creator if one is given.
      *
      * @return {String} message
