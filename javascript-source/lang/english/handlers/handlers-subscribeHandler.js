@@ -41,7 +41,6 @@ $.lang.register('subscribehandler.resub.toggle.off', 'Resubscribers will no long
 $.lang.register('subscribehandler.giftsub.toggle.off', 'Subscriber gift will no longer be welcomed upon subscribing.');
 $.lang.register('subscribehandler.resub.toggle.on', 'Resubscribers will now be welcomed upon resubscribing.');
 $.lang.register('subscribehandler.giftsub.toggle.on', 'Subscriber gift will now be welcomed upon subscribing.');
-$.lang.register('subscribehandler.anongiftsub.toggle.on', 'Subscriber gift will now be welcomed upon subscribing.');
 $.lang.register('subscribehandler.sub.reward.set', 'Reward for subscribing set!');
 $.lang.register('subscribehandler.sub.reward.usage', 'Usage: !subscribereward (amount)');
 $.lang.register('subscribehandler.resub.reward.set', 'Reward for resubscribing set!');
