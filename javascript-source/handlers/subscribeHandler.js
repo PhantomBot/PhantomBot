@@ -20,7 +20,7 @@
  *
  * Register new subscribers and unsubscribers in the channel
  */
-(function() {
+(function () {
     var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
@@ -95,7 +95,7 @@
     /*
      * @event twitchSubscriber
      */
-    $.bind('twitchSubscriber', function(event) {
+    $.bind('twitchSubscriber', function (event) {
         var subscriber = event.getSubscriber(),
             tier = event.getPlan(),
             message = subMessage;
@@ -127,7 +127,7 @@
     /*
      * @event twitchPrimeSubscriber
      */
-    $.bind('twitchPrimeSubscriber', function(event) {
+    $.bind('twitchPrimeSubscriber', function (event) {
         var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
@@ -154,10 +154,10 @@
     /*
      * @event twitchReSubscriber
      */
-    $.bind('twitchReSubscriber', function(event) {
+    $.bind('twitchReSubscriber', function (event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
-            tier= event.getPlan(),
+            tier = event.getPlan(),
             message = reSubMessage,
             emotes = [];
 
@@ -250,7 +250,7 @@
     /*
      * @event twitchSubscriptionGift
      */
-    $.bind('twitchMassSubscriptionGifted', function(event) {
+    $.bind('twitchMassSubscriptionGifted', function (event) {
         var gifter = event.getUsername(),
             amount = event.getAmount(),
             tier = event.getPlan(),
@@ -358,7 +358,7 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argsString = event.getArguments(),
@@ -408,7 +408,7 @@
         if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
             giftAnonSubWelcomeToggle = !giftAnonSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', giftAnonSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')))
         }
 
         /*
@@ -426,7 +426,7 @@
         if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
             massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', massAnonGiftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')))
         }
 
         /*
@@ -643,7 +643,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', 1);
