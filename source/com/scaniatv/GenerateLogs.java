@@ -147,7 +147,7 @@ public class GenerateLogs {
     private static String getDate(boolean isGMT, boolean minusDay) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone((isGMT ? "GMT" : PhantomBot.timeZone)));
+        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone((isGMT ? "GMT" : PhantomBot.getTimeZone())));
         return (!minusDay ? dateFormat.format(new Date()) : dateFormat.format(new DateTime(new Date()).minusDays(1).toDate()));
     }
 }
