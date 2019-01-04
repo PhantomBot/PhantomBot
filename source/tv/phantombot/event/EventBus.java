@@ -68,7 +68,7 @@ public class EventBus {
      * @param {Event} event
      */
     public void post(Event event) {
-        if (PhantomBot.isInExitState) {
+        if (PhantomBot.isInExitState()) {
             return;
         }
 
@@ -81,7 +81,7 @@ public class EventBus {
      * @param {Event} event
      */
     public void postAsync(Event event) {
-        if (PhantomBot.isInExitState) {
+        if (PhantomBot.isInExitState()) {
             return;
         }
 

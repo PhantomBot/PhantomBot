@@ -74,7 +74,7 @@ public final class warn {
     }
 
     public static void printStackTrace(Throwable e) {
-        if (PhantomBot.enableDebugging) {
+        if (PhantomBot.getEnableDebugging()) {
             e.printStackTrace(System.err);
         }
         logStackTrace(e);
