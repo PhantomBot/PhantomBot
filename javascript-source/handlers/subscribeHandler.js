@@ -483,8 +483,7 @@
         }
 
         /*
-         * @commandpath giftanonsubmessage[message] - Set a message
-         for resubscribers.
+         * @commandpath giftanonsubmessage[message] - Set a message for anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubmessage')) {
             if (action === undefined) {
