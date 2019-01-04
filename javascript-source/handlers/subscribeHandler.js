@@ -282,9 +282,9 @@
     });
 
     /*
-     * @event TwitchAnonymousSubscriptionGift
+     * @event twitchAnonymousSubscriptionGift
      */
-    $.bind('TwitchAnonymousSubscriptionGift', function (event) {
+    $.bind('twitchAnonymousSubscriptionGift', function (event) {
         var recipient = event.getRecipient(),
             months = event.getMonths(),
             tier = event.getPlan(),
@@ -331,9 +331,9 @@
     });
 
     /*
-     * @event TwitchMassAnonymousSubscriptionGifted
+     * @event twitchMassAnonymousSubscriptionGifted
      */
-    $.bind('TwitchMassAnonymousSubscriptionGifted', function (event) {
+    $.bind('twitchMassAnonymousSubscriptionGifted', function (event) {
         var amount = event.getAmount(),
             tier = event.getPlan(),
             message = massAnonGiftSubMessage;
