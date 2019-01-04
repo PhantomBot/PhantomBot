@@ -195,8 +195,8 @@
             var t = message.match(/\([^)]+\)/)[0],
                 countup, time;
             countup = t.replace('(countup=', '').replace(')', '');
-            time = (Date.parse($.getLocalTime()) - Date.parse(countup, true));
-            message = $.replace(message, t, $.getCountString(time / 1000));
+            time = (Date.parse($.getLocalTime()) - Date.parse(countup));
+            message = $.replace(message, t, $.getCountString(time / 1000, true));
         }
 
         if (message.match(/\(downtime\)/g)) {
