@@ -417,7 +417,7 @@
         if (command.equalsIgnoreCase('massgiftsubwelcometoggle')) {
             massGiftSubWelcomeToggle = !massGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', massGiftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')))
         }
 
         /*
@@ -426,7 +426,7 @@
         if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
             massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', massAnonGiftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')))
         }
 
         /*
