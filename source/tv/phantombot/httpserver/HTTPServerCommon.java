@@ -138,11 +138,13 @@ public class HTTPServerCommon {
         String requestMethod = exchange.getRequestMethod();
 
         // Get any data from the body, although, we just discard it, this is required
-        InputStream inputStream = exchange.getRequestBody();
-        while (inputStream.read() != -1) {
-            inputStream.skip(0x10000);
+        if (!headers.containsKey("lang-path")) {
+            InputStream inputStream = exchange.getRequestBody();
+            while (inputStream.read() != -1) {
+                inputStream.skip(0x10000);
+            }
+            inputStream.close();
         }
-        inputStream.close();
 
         if (headers.containsKey("password")) {
             myPassword = headers.getFirst("password");
@@ -234,7 +236,7 @@ public class HTTPServerCommon {
 
         if (requestMethod.equals("PUT")) {
             if (myHdrUser.isEmpty() && headers.containsKey("lang-path")) {
-                handlePutRequestLang(headers.getFirst("lang-path"), headers.getFirst("lang-data"), exchange, hasPassword);
+                handlePutRequestLang(headers.getFirst("lang-path"), IOUtils.toString(exchange.getRequestBody(), "utf-8"), exchange, hasPassword);
             } else {
                 handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
             }
