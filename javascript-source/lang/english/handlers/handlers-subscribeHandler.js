@@ -62,3 +62,5 @@ $.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome
 $.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message) - Tag: (name)');
 $.lang.register('subscribehandler.resubemote.set', 'New resubscriber emote set!');
 $.lang.register('subscribehandler.resubemote.usage', 'Usage: !resubemote (emote name)');
+$.lang.register('subscribehandler.anonname.set', 'New anon name set!');
+$.lang.register('subscribehandler.anonname.usage', 'Usage: !anonname (anon name)');
