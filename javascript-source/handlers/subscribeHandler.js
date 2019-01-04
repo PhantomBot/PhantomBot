@@ -20,21 +20,21 @@
  *
  * Register new subscribers and unsubscribers in the channel
  */
-(function () {
+(function() {
     var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
         giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
-        giftAnonSubMessage = $.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An (name) viewer gifted (recipient) a subscription!'),
+        giftAnonSubMessage = $.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
         massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
-        massAnonGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An (name) viewer gifted (amount) subscriptions to random viewers!'),
+        massAnonGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         giftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', true),
         giftAnonSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', true),
         massGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', true),
-        giftAnonSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', true),
+        massAnonGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
         reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         giftSubReward = $.getSetIniDbNumber('subscribeHandler', 'giftSubReward', 0),
@@ -95,7 +95,7 @@
     /*
      * @event twitchSubscriber
      */
-    $.bind('twitchSubscriber', function (event) {
+    $.bind('twitchSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             tier = event.getPlan(),
             message = subMessage;
@@ -127,7 +127,7 @@
     /*
      * @event twitchPrimeSubscriber
      */
-    $.bind('twitchPrimeSubscriber', function (event) {
+    $.bind('twitchPrimeSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             message = primeSubMessage;
 
@@ -154,7 +154,7 @@
     /*
      * @event twitchReSubscriber
      */
-    $.bind('twitchReSubscriber', function (event) {
+    $.bind('twitchReSubscriber', function(event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
             tier = event.getPlan(),
@@ -197,7 +197,7 @@
     /*
      * @event twitchSubscriptionGift
      */
-    $.bind('twitchSubscriptionGift', function (event) {
+    $.bind('twitchSubscriptionGift', function(event) {
         var gifter = event.getUsername(),
             recipient = event.getRecipient(),
             months = event.getMonths(),
@@ -250,7 +250,7 @@
     /*
      * @event twitchSubscriptionGift
      */
-    $.bind('twitchMassSubscriptionGifted', function (event) {
+    $.bind('twitchMassSubscriptionGifted', function(event) {
         var gifter = event.getUsername(),
             amount = event.getAmount(),
             tier = event.getPlan(),
@@ -284,7 +284,7 @@
     /*
      * @event twitchAnonymousSubscriptionGift
      */
-    $.bind('twitchAnonymousSubscriptionGift', function (event) {
+    $.bind('twitchAnonymousSubscriptionGift', function(event) {
         var gifter = event.getUsername(),
             recipient = event.getRecipient(),
             months = event.getMonths(),
@@ -329,7 +329,7 @@
     /*
      * @event twitchMassAnonymousSubscriptionGifted
      */
-    $.bind('twitchMassAnonymousSubscriptionGifted', function (event) {
+    $.bind('twitchMassAnonymousSubscriptionGifted', function(event) {
         var gifter = event.getUsername(),
             amount = event.getAmount(),
             tier = event.getPlan(),
@@ -355,7 +355,7 @@
     /*
      * @event command
      */
-    $.bind('command', function (event) {
+    $.bind('command', function(event) {
         var sender = event.getSender(),
             command = event.getCommand(),
             argsString = event.getArguments(),
@@ -639,7 +639,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function () {
+    $.bind('initReady', function() {
         $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', 1);
