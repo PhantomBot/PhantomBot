@@ -188,15 +188,15 @@
                 countdown, time;
             countdown = t.replace('(countdown=', '').replace(')', '');
             time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
-            message = $.replace(message, t, $.getTimeString(time / 1000));
+            message = $.replace(message, t, $.getCountString(time / 1000, false));
         }
 
         if (message.match(/\(countup=[^)]+\)/g)) {
             var t = message.match(/\([^)]+\)/)[0],
                 countup, time;
             countup = t.replace('(countup=', '').replace(')', '');
-            time = (Date.parse($.getLocalTime()) - Date.parse(countup));
-            message = $.replace(message, t, $.getTimeString(time / 1000));
+            time = (Date.parse($.getLocalTime()) - Date.parse(countup, true));
+            message = $.replace(message, t, $.getCountString(time / 1000));
         }
 
         if (message.match(/\(downtime\)/g)) {
