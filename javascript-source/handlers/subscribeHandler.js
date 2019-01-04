@@ -313,11 +313,6 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
-            if (message.match(/\(customemote\)/)) {
-                for (i = 0; i < months; i++, emotes.push(customEmote));
-                message = $.replace(message, '(customemote)', emotes.join(' '));
-            }
-
             $.say(message);
 
             $.addSubUsersList(recipient);
