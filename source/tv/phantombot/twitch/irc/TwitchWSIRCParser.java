@@ -226,7 +226,7 @@ public class TwitchWSIRCParser implements Runnable {
             // The first tag should be badges.
             // So we should parse them into tags, since Twitch doesn't provide us this anymore.
             String[] keyValues = tagParts[0].split("=");
-            if (keyValues.length > 0) {
+            if (keyValues.length > 0 && keyValues[0].equals("badges")) {
                 tags.putAll(parseBadges(keyValues[1]));
             }
             
