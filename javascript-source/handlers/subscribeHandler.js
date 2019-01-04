@@ -497,7 +497,7 @@
         }
 
         /*
-         * @commandpath massgiftsubmessage [message] - Set a message for resubscribers.
+         * @commandpath massgiftsubmessage [message] - Set a message for gifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubmessage')) {
             if (action === undefined) {
@@ -511,7 +511,7 @@
         }
 
         /*
-         * @commandpath massanongiftsubmessage [message] - Set a message for resubscribers.
+         * @commandpath massanongiftsubmessage [message] - Set a message for mass anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('massanongiftsubmessage')) {
             if (action === undefined) {
