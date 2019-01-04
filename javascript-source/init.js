@@ -910,17 +910,17 @@
         });
         
         /*
-         * @event TwitchAnonymousSubscriptionGift
+         * @event twitchAnonymousSubscriptionGift
          */
-        $api.on($script, 'TwitchAnonymousSubscriptionGift', function (event) {
-            callHook('TwitchAnonymousSubscriptionGift', event, false);
+        $api.on($script, 'twitchAnonymousSubscriptionGift', function (event) {
+            callHook('twitchAnonymousSubscriptionGift', event, false);
         });
 
         /*
-         * @event TwitchMassAnonymousSubscriptionGifted
+         * @event twitchMassAnonymousSubscriptionGifted
          */
-        $api.on($script, 'TwitchMassAnonymousSubscriptionGifted', function (event) {
-            callHook('TwitchMassAnonymousSubscriptionGifted', event, false);
+        $api.on($script, 'twitchMassAnonymousSubscriptionGifted', function (event) {
+            callHook('twitchMassAnonymousSubscriptionGifted', event, false);
         });
 
         /*
