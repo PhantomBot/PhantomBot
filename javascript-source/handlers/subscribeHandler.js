@@ -418,7 +418,7 @@
         }
 
         /*
-         * @commandpath massanongiftsubwelcometoggle - Enable or disable subgifting alerts.
+         * @commandpath massanongiftsubwelcometoggle - Enable or disable mass anonymous subgifting alerts.
          */
         if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
             massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
