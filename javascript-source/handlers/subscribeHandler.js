@@ -400,7 +400,7 @@
         }
 
         /*
-         * @commandpath giftanonsubwelcometoggle - Enable or disable subgifting alerts.
+         * @commandpath giftanonsubwelcometoggle - Enable or disable anonymous subgifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
             giftAnonSubWelcomeToggle = !giftAnonSubWelcomeToggle;
