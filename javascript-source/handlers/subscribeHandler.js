@@ -610,8 +610,8 @@
                 return;
             }
 
-            anonNanme = action;
-            $.setIniDbString('subscribeHandler', 'anonNanme', anonNanme);
+            anonName = action;
+            $.setIniDbString('subscribeHandler', 'anonName', anonName);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonname.set'));
         }
 
