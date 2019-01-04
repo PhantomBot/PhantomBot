@@ -908,6 +908,20 @@
         $api.on($script, 'twitchMassSubscriptionGifted', function(event) {
             callHook('twitchMassSubscriptionGifted', event, false);
         });
+        
+        /*
+         * @event TwitchAnonymousSubscriptionGift
+         */
+        $api.on($script, 'TwitchAnonymousSubscriptionGift', function (event) {
+            callHook('TwitchAnonymousSubscriptionGift', event, false);
+        });
+
+        /*
+         * @event TwitchMassAnonymousSubscriptionGifted
+         */
+        $api.on($script, 'TwitchMassAnonymousSubscriptionGifted', function (event) {
+            callHook('TwitchMassAnonymousSubscriptionGifted', event, false);
+        });
 
         /*
          * @event twitchBits
