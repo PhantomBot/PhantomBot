@@ -21,8 +21,7 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function () {
-    var anonNanme = $.getSetIniDbString('subscribeHandler', 'anonName', 'Anonymous viewer'),
-        subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
+    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
         giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
@@ -52,7 +51,6 @@
      * @function updateSubscribeConfig
      */
     function updateSubscribeConfig() {
-        anonNanme = $.getIniDbString('subscribeHandler', 'anonName');
         subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
         primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage');
         reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
@@ -287,14 +285,15 @@
      * @event twitchAnonymousSubscriptionGift
      */
     $.bind('twitchAnonymousSubscriptionGift', function (event) {
-        var recipient = event.getRecipient(),
+        var gifter = event.getUsername(),
+            recipient = event.getRecipient(),
             months = event.getMonths(),
             tier = event.getPlan(),
             message = giftAnonSubMessage;
 
         if (giftAnonSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', anonName);
+                message = $.replace(message, '(name)', gifter);
             }
 
             if (message.match(/\(recipient\)/g)) {
@@ -331,13 +330,14 @@
      * @event twitchMassAnonymousSubscriptionGifted
      */
     $.bind('twitchMassAnonymousSubscriptionGifted', function (event) {
-        var amount = event.getAmount(),
+        var gifter = event.getUsername(),
+            amount = event.getAmount(),
             tier = event.getPlan(),
             message = massAnonGiftSubMessage;
 
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
             if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', anonName);
+                message = $.replace(message, '(name)', gifter);
             }
 
             if (message.match(/\(amount\)/g)) {
@@ -594,20 +594,6 @@
             $.setIniDbString('subscribeHandler', 'resubEmote', customEmote);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set'));
         }
-        
-        /*
-         * @commandpath anonname [name] - This will set the nae  for Anon users.
-         */
-        if (command.equalsIgnoreCase('anonname')) {
-            if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonname.usage'));
-                return;
-            }
-
-            anonName = action;
-            $.setIniDbString('subscribeHandler', 'anonName', anonName);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonname.set'));
-        }
 
         /*
          * @commandpath namesubplan [1|2|3] [name of plan] - Name a subscription plan, Twitch provides three tiers.
@@ -674,7 +660,6 @@
         $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'namesubplan', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'anonname', 1);
         announce = true;
     });
 
