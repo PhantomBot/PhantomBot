@@ -21,7 +21,7 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function () {
-    var anonNanme = $.getSetIniDbString('subscribeHandler', 'anonNanme', 'Anonymous viewer'),
+    var anonNanme = $.getSetIniDbString('subscribeHandler', 'anonName', 'Anonymous viewer'),
         subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
@@ -52,7 +52,7 @@
      * @function updateSubscribeConfig
      */
     function updateSubscribeConfig() {
-        anonNanme = $.getIniDbString('subscribeHandler', 'anonNanme');
+        anonNanme = $.getIniDbString('subscribeHandler', 'anonName');
         subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
         primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage');
         reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
