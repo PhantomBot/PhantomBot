@@ -58,6 +58,8 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
 
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 
@@ -365,6 +367,26 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
 
             EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, "10", "1000"));
+            return;
+        }
+        
+        /**
+         * @consolecommand massanongiftsubtest - Test a mass anonymous gift subscription.
+         */
+        if (message.equalsIgnoreCase("massanonsubgifttest")) {
+            String userName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Username = " + userName + ")");
+            EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent("10", "1000"));
+            return;
+        }
+
+        /**
+         * @consolecommand anonsubgifttest - Test an anonymous gift subscription
+         */
+        if (message.equalsIgnoreCase("anonsubgifttest")) {
+            String userName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ")");
+            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, "1", "1000"));
             return;
         }
 
