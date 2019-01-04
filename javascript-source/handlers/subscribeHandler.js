@@ -27,7 +27,7 @@
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
         giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
         giftAnonSubMessage = $.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', '(name) just gifted (recipient) a subscription!'),
-        massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
+        massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) gifted (recipient) a subscription!'),
         massAnonGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
