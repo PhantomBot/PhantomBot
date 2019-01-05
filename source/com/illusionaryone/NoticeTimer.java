@@ -198,6 +198,14 @@ public class NoticeTimer implements Runnable, Listener {
             return;
         }
 
+        /* Notices are reloading. This is not perfect. Race conditions could still occur. */
+        String isReloading = dataStore.GetString("noticeSettings", "", "isReloading");
+        if (isReloading != null) {
+            if (isReloading.equals("true")) {
+                return;
+            }
+        }
+
         /* Determine which type of notice timer is being used and call the proper function to handle. */
         String timerScheduled = dataStore.GetString("noticeSettings", "", "useScheduledTimer");
         if (timerScheduled == null) {
@@ -221,6 +229,8 @@ public class NoticeTimer implements Runnable, Listener {
      * Performs the main procesing of ordered timers.
      */
     private void processOrderedTimers() {
+        TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        String currentGameTitle = twitchCache.getGameTitle();
         DataStore dataStore = PhantomBot.instance().getDataStore();
         JSONObject noticeData = null;
         String message = "";
@@ -255,9 +265,6 @@ public class NoticeTimer implements Runnable, Listener {
         /* As the appropriate amount of time has passed, reset the chat line counter. */
         totalChatLines = 0;
 
-        /* Find the next notice to process. */
-        lastNoticeID++;
-
         /* Check to see if any notices even exist. */
         String[] noticeKeys = dataStore.GetKeyList("notices", "");
         if (noticeKeys == null) {
@@ -278,10 +285,19 @@ public class NoticeTimer implements Runnable, Listener {
             String noticeKey = noticeKeys[lastNoticeID];
             try {
                 noticeData = new JSONObject(dataStore.GetString("notices", "", noticeKey));
-                if (noticeData.getBoolean("enabled")) {
+                String gametitle = noticeData.getString("gametitle");
+
+                /* Use notices without game titles or game titles that match. */
+                if (gametitle == null || gametitle.length() == 0 && noticeData.getBoolean("enabled")) {
+                    message = noticeData.getString("message");
+                    foundEnabled = Boolean.TRUE;
+                } else if (gametitle.toLowerCase().equals(currentGameTitle.toLowerCase()) && noticeData.getBoolean("enabled")) {
                     message = noticeData.getString("message");
                     foundEnabled = Boolean.TRUE;
                 }
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.println("Found NULL data, table more than likely reloading. Will not handle notice.");
+                return;
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
             }
@@ -361,6 +377,9 @@ public class NoticeTimer implements Runnable, Listener {
         for (String noticeKey : noticeKeys) {
             try {
                 noticeData = new JSONObject(dataStore.GetString("notices", "", noticeKey));
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.println("Found NULL data, table more than likely reloading. Will not handle notice.");
+                return;
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
                 continue;
