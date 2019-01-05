@@ -421,5 +421,5 @@ $.lang.register('common.time.minutes', 'minutes');
 $.lang.register('common.time.second', 'second');
 $.lang.register('common.time.seconds', 'seconds');
 $.lang.register('common.time.and', ', and ');
-$.lang.register('common.time.nostart', 'looks like that hasn\'t started');
+$.lang.register('common.time.nostart', 'looks like that has not started');
 $.lang.register('common.time.expired', 'looks like that has expired');
