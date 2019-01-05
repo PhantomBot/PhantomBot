@@ -267,11 +267,19 @@
         }
 
         if (message.match(/\(random\)/g)) {
-            message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
+            try {
+                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
+            } catch (ex) {
+                message = $.replace(message, '(random)', $.username.resolve($.botName));
+            }
         }
 
         if (message.match(/\(randomrank\)/g)) {
-            message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)[0]));
+            try {
+                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)[0]));
+            } catch (ex) {
+                message = $.replace(message, '(randomrank)', $.resolveRank($.botName));
+            }
         }
 
         if (message.match(/\(pointname\)/g)) {
