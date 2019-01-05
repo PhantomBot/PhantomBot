@@ -437,7 +437,7 @@
                 }
                 var retval = $.twitter.updateStatus(args.splice(1).join(' ')) + '';
                 if (retval.equals('true')) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(0).join(' ')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(1).join(' ')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.failed'));
                 }
