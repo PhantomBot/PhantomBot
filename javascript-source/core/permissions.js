@@ -922,7 +922,6 @@
                 actionValue = actionValue.toLowerCase();
                 actionValue = actionValue.trim();
                 if (!isTwitchBot(actionValue)) {
-                    actionValue = actionValue.trim();
                     addTwitchBot(actionValue);
                     saveBotList();
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.added', actionValue));
@@ -940,12 +939,13 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.usage'));
             } else {
                 actionValue = actionValue.toLowerCase();
-                if (!isTwitchBot(actionValue)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.nouser', actionValue));
-                } else {
+                actionValue = actionValue.trim();
+                if (isTwitchBot(actionValue)) {
                     removeTwitchBot(actionValue);
                     saveBotList();
                     $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.removed', actionValue));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.nouser', actionValue));
                 }
             }
         }
