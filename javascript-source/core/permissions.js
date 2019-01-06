@@ -27,7 +27,6 @@
     var userGroups = [],
         modeOUsers = [],
         subUsers = [],
-        gwSubUsers = [],
         modListUsers = [],
         users = [],
         moderatorsCache = [],
