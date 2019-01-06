@@ -872,7 +872,9 @@
          * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
          */
         if (command.equalsIgnoreCase('reloadbots')) {
+            botList = [];
             cleanTwitchBots();
+            loadTwitchBots();
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.reloadbots'));
         }
 
