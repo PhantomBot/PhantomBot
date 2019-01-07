@@ -357,6 +357,14 @@ $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 off
 $.lang.register('permissions.grouppoints.set.online', 'Set permission $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set permission $1 to gain $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch.'); 
+$.lang.register('ignorelist', 'Current Ignored Bots: $1');
+$.lang.register('ignorelist.listtoolong', 'There are over $1 to list, I suggest checking the ./addons/ignorebots.txt');
+$.lang.register('ignoreadd.usage', 'Usage: !ignoreadd [username], to add a channel to the ignore list.');
+$.lang.register('ignoreadd.added', '$1 has been added to the ignorebots.txt file.');
+$.lang.register('ignoreadd.nouser', '$1 is already in the ignorebots.txt file.');
+$.lang.register('ignoreremove.usage', 'Usage: !ignoreremove [username], to remove a channel from the ignore list.');
+$.lang.register('ignoreremove.removed', '$1 has been removed from the ignorebots.txt file.');
+$.lang.register('ignoreremove.nouser', '$1 in not currently in the ignorebots.txt file.');
 $.lang.register('timesystem.uptime.offline', '$1 is currently offline.');
 $.lang.register('timesystem.uptime', '$1 has been live for $2!');
 $.lang.register('timesystem.add.error.negative', 'You can not give negative time.');

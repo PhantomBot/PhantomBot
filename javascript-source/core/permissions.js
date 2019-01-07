@@ -30,17 +30,31 @@
         modListUsers = [],
         users = [],
         moderatorsCache = [],
+        botList = [];
         lastJoinPart = $.systemTime(),
-        isUpdatingUsers = false,
-        twitchBots = $.readFile('./addons/ignorebots.txt');
+        isUpdatingUsers = false;
 
     /**
      * @function cleanTwitchBots
      */
     function cleanTwitchBots() {
+        var twitchBots = $.readFile('./addons/ignorebots.txt');
+        
         for (var i in twitchBots) {
             $.inidb.del('points', twitchBots[i].toLowerCase());
             $.inidb.del('time', twitchBots[i].toLowerCase());
+        }
+    }
+
+    /**
+     * @function loadTwitchBots
+     *
+     */
+    function loadTwitchBots() {
+        var twitchBots = $.readFile('./addons/ignorebots.txt');
+
+        for (var i = 0; i < twitchBots.length; i++) {
+            botList[twitchBots[i]] = true;
         }
     }
 
@@ -50,12 +64,36 @@
      * @returns {Boolean}
      */
     function isTwitchBot(username) {
-        for (var i in twitchBots) {
-            if (twitchBots[i].equalsIgnoreCase(username)) {
-                return true;
-            }
+        return botList[username] !== undefined;
+    }
+
+    /**
+     * @function removeTwitchBot
+     *
+     */
+    function removeTwitchBot(username) {
+        if (isTwitchBot(username)) {
+            delete botList[username];
         }
-        return false;
+    }
+    
+    /**
+     * @function addTwitchBot
+     *
+     */
+    function addTwitchBot(username) {
+        if (!isTwitchBot(username)) {
+            botList[username] = true;
+        }
+    }
+
+    /**
+     * @function savebotList
+     * 
+     */
+    function saveBotList() {
+        $.writeToFile(Object.keys(botList).join(String.fromCharCode(13, 10)), './addons/ignorebots.txt', false);
+        cleanTwitchBots();
     }
 
     /**
@@ -828,13 +866,15 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs();
+            actionValue = args[0];
 
         /*
          * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
          */
         if (command.equalsIgnoreCase('reloadbots')) {
-            twitchBots = $.readFile('./addons/ignorebots.txt');
+            botList = [];
             cleanTwitchBots();
+            loadTwitchBots();
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.reloadbots'));
         }
 
@@ -858,6 +898,56 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', tmp.length));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.mods', tmp.join(', ')));
+            }
+        }
+
+        /**
+         * @commandpath ignoreremove - List the bots from the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignorelist')) {
+            var tmp = Object.keys(botList);
+            if (tmp.length > 20) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignorelist.listtoolong', tmp.length));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignorelist', Object.keys(botList).join(', ')));
+            }
+        }
+
+        /**
+         * @commandpath ignoreadd - Add a bot to the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignoreadd')) {
+            if (!actionValue) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.usage'));
+            } else {
+                actionValue = actionValue.toLowerCase();
+                actionValue = actionValue.trim();
+                if (!isTwitchBot(actionValue)) {
+                    addTwitchBot(actionValue);
+                    saveBotList();
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.added', actionValue));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.nouser', actionValue));
+                }
+            }
+        }
+
+        /**
+         * @commandpath ignoreremove - Remove a bot from the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignoreremove')) {
+            if (!actionValue) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.usage'));
+            } else {
+                actionValue = actionValue.toLowerCase();
+                actionValue = actionValue.trim();
+                if (isTwitchBot(actionValue)) {
+                    removeTwitchBot(actionValue);
+                    saveBotList();
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.removed', actionValue));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.nouser', actionValue));
+                }
             }
         }
 
@@ -996,6 +1086,9 @@
         $.registerChatCommand('./core/permissions.js', 'users', 2);
         $.registerChatCommand('./core/permissions.js', 'mods', 2);
         $.registerChatCommand('./core/permissions.js', 'reloadbots', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignorelist', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignoreadd', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignoreremove', 1);
 
 
         /** Load groups and generate default groups if they don't exist */
@@ -1005,6 +1098,9 @@
 
         // Load the moderators cache. This needs to load after the privmsg check.
         setTimeout(loadModeratorsCache, 7e3);
+
+        // Load up data for Twitch bots.
+        loadTwitchBots();
 
         // Clean up data for Twitch bots.
         cleanTwitchBots();
@@ -1023,6 +1119,7 @@
 
     $.userExists = userExists;
     $.isBot = isBot;
+    $.isTwitchBot = isTwitchBot;
     $.isOwner = isOwner;
     $.isCaster = isCaster;
     $.isAdmin = isAdmin;
