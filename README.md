@@ -16,12 +16,15 @@ Dies ist der deutsche Fork von PhantomBot, wir übersetzten immer die neuste Ver
 
 Zusätzliche Funktionalität wird durch die Verwendung von [Community erstellten Modulen](https://community.phantombot.tv/c/custom-modules) ermöglicht.
 
+<u>**Bitte beachtet das die ursprünglichen Entwickler nur eingeschränkt Support für PhantomBotDE anbieten (können).**</u>
+
+## Links zum ursprünglichen englischen PhantomBot
 * [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
 * [Full Feature List](https://phantombot.tv/features "PhantomBot Features")
-* [Community Forums](https://community.phantombot.tv "PhantomBot Community Forums")
 * [Documentation & Installation Instructions](https://docs.phantombot.tv "Documenation and Installation Instructions")
 * [PhantomBot Blog](https://blog.phantombot.tv "PhantomBot Blog")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBot "PhantomBot Twitter")
+* [Community Forums](https://community.phantombot.tv "PhantomBot Community Forums")
 
 ## Wie kann ich folgen/mitmachen?
 
