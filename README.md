@@ -18,7 +18,7 @@ Zusätzliche Funktionalität wird durch die Verwendung von [Community erstellten
 
 <u>**Bitte beachtet das die ursprünglichen Entwickler nur eingeschränkt Support für PhantomBotDE anbieten (können).**</u>
 
-## Links zu ursprünglichen englischen PhantomBot
+## Links zum ursprünglichen englischen PhantomBot
 * [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
 * [Full Feature List](https://phantombot.tv/features "PhantomBot Features")
 * [Documentation & Installation Instructions](https://docs.phantombot.tv "Documenation and Installation Instructions")
