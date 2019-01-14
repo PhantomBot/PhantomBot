@@ -116,9 +116,7 @@
         } 
 
         if (isNaN(quoteId)) {
-            $.consoleLn("[DEBUG] Looking for quoteId that is NaN: "+quoteId);
             quoteId = $.getIniDbNumber('quotealiases', quoteId, false);
-            $.consoleLn("[DEBUG] Looked up quoteId: "+quoteId);
             if (quoteId === false) return [];
         }
 
