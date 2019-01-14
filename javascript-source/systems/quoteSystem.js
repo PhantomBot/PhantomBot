@@ -78,13 +78,13 @@
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
             aliases = $.inidb.GetKeyList('quotealiases', '');
-            
+
             $.inidb.setAutoCommit(false);
             for (i in quoteKeys) {
                 quotes.push($.inidb.get('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
             }
-            
+
             for (i in quotes) {
                 $.inidb.set('quotes', i, quotes[i]);
             }
@@ -94,7 +94,7 @@
                 if (aliasTarget == quoteId) $.inidb.del('quotealiases', aliases[i]);
                 if (aliasTarget > quoteId) $.inidb.set('quotealiases', aliases[i], aliasTarget-1);
             }
-            
+
             $.inidb.setAutoCommit(true);
             isDeleting = false;
             return (quotes.length ? quotes.length : 0);
@@ -110,18 +110,18 @@
      */
     function getQuote(quoteId) {
         var quote;
-        
+
         if (!quoteId) {
             quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
         } 
-        
+
         if (isNaN(quoteId)) {
             $.consoleLn("[DEBUG] Looking for quoteId that is NaN: "+quoteId);
             quoteId = $.getIniDbNumber('quotealiases', quoteId, false);
             $.consoleLn("[DEBUG] Looked up quoteId: "+quoteId);
             if (quoteId === false) return [];
         }
-        
+
         if ($.inidb.exists('quotes', quoteId)) {
             quote = JSON.parse($.inidb.get('quotes', quoteId));
             quote.push(quoteId);
@@ -324,7 +324,7 @@
 
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.found', matchingKeys.join(', ')));
         }
-        
+
         /**
          * @commandpath quoteaddalias [quoteId] [alias] - Adds an alias for a quote
          */
@@ -333,16 +333,16 @@
                 $.say($.whisperPrefix(sender) + 'Usage: !quoteaddalias [quoteId] [alias]');
                 return;
             }
-            
+
             if ($.getIniDbString('quotealiases',args[1])) {
                 $.say($.whisperPrefix(sender) + 'Alias "'+args[1]+'" already exists.');
                 return;
             }
-            
+
             $.setIniDbNumber('quotealiases',args[1],args[0]);
             $.say($.whisperPrefix(sender) + 'Added alias "'+args[1]+'" for quote ID '+args[0]);
         }
-        
+
         /**
          * @commandpath quotedelalias [alias] - Removes an alias
          */
@@ -351,12 +351,12 @@
                 $.say($.whisperPrefix(sender) + 'Usage: !quotedelalias [alias]');
                 return;
             }
-            
+
             if (!$.inidb.exists('quotealiases',args[0])) {
                 $.say($.whisperPrefix(sender) + 'Could not find alias "'+args[0]+'"');
                 return;
             }
-            
+
             $.inidb.del('quotealiases',args[0]);
             $.say($.whisperPrefix(sender) + 'Deleted alias "'+args[0]+'"');
         }
