@@ -328,17 +328,17 @@
          */
         if (command.equalsIgnoreCase('quoteaddalias')) {
             if (args.length<2||(isNaN(args[0])||String(args[1]).match(/^[0-9]+$/)!= null)) {
-                $.say($.whisperPrefix(sender) + 'Usage: !quoteaddalias [quoteId] [alias]');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.add.usage'));
                 return;
             }
 
             if ($.getIniDbString('quotealiases',args[1])) {
-                $.say($.whisperPrefix(sender) + 'Alias "'+args[1]+'" already exists.');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.add.duplicate', args[1]));
                 return;
             }
 
             $.setIniDbNumber('quotealiases',args[1],args[0]);
-            $.say($.whisperPrefix(sender) + 'Added alias "'+args[1]+'" for quote ID '+args[0]);
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.add.success', args[1], args[0]));
         }
 
         /**
@@ -346,17 +346,17 @@
          */
         if (command.equalsIgnoreCase('quotedelalias')) {
             if (!args[0]) {
-                $.say($.whisperPrefix(sender) + 'Usage: !quotedelalias [alias]');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.del.usage'));
                 return;
             }
 
             if (!$.inidb.exists('quotealiases',args[0])) {
-                $.say($.whisperPrefix(sender) + 'Could not find alias "'+args[0]+'"');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.del.404', args[0]));
                 return;
             }
 
             $.inidb.del('quotealiases',args[0]);
-            $.say($.whisperPrefix(sender) + 'Deleted alias "'+args[0]+'"');
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.aliases.del.success', args[0]));
         }
     });
 

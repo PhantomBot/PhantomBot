@@ -34,3 +34,9 @@ $.lang.register('quotesystem.quotemessage.success', 'Changed the message used fo
 $.lang.register('quotesystem.searchquote.usage', 'Usage: !searchquote [text] (Must provide at least 5 characters)');
 $.lang.register('quotesystem.searchquote.404', 'No matching quotes found.');
 $.lang.register('quotesystem.searchquote.found', 'Quote IDs with matches: $1');
+$.lang.register('quotesystem.aliases.add.usage', 'Usage: !quoteaddalias [quoteId] [alias]');
+$.lang.register('quotesystem.aliases.add.duplicate', 'Alias "$1" already exists.');
+$.lang.register('quotesystem.aliases.add.success', 'Added alias "$1" for quote ID $2.');
+$.lang.register('quotesystem.aliases.del.usage', 'Usage: !quotedelalias [alias]');
+$.lang.register('quotesystem.aliases.del.404', 'Could not find alias "$1".');
+$.lang.register('quotesystem.aliases.del.success', 'Deleted alias "$1".');
