@@ -18,7 +18,7 @@ package tv.phantombot.event.twitch.host;
 
 public class TwitchHostedEvent extends TwitchHostEvent {
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} hoster
@@ -27,7 +27,7 @@ public class TwitchHostedEvent extends TwitchHostEvent {
         super(hoster);
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} hoster

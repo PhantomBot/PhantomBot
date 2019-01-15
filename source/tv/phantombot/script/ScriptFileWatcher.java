@@ -27,7 +27,7 @@ public class ScriptFileWatcher implements Runnable {
     private final Thread thread;
     private boolean isKilled = false;
 
-    /*
+    /**
      * Method that returns this object.
      *
      * @return {Object}
@@ -36,7 +36,7 @@ public class ScriptFileWatcher implements Runnable {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor.
      */
     private ScriptFileWatcher() {
@@ -47,7 +47,7 @@ public class ScriptFileWatcher implements Runnable {
         this.thread.start();
     }
 
-    /*
+    /**
      * Method to add scripts to the array list.
      *
      * @param {Script} script
@@ -56,14 +56,14 @@ public class ScriptFileWatcher implements Runnable {
         scripts.add(script);
     }
 
-    /*
+    /**
      * Method to kill this instance.
      */
     public void kill() {
         this.isKilled = true;
     }
 
-    /*
+    /**
      * Method that runs on a new thread to reload scripts.
      */
     @SuppressWarnings("SleepWhileInLoop")

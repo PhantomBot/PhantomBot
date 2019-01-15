@@ -21,7 +21,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     private final String subscriber;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} subscriber
@@ -30,7 +30,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
         this.subscriber = subscriber;
     }
 
-    /*
+    /**
      * Method that returns the user who subscribed.
      *
      * @return {String} subscriber

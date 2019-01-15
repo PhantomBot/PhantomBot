@@ -19,7 +19,7 @@ package tv.phantombot.event.pubsub.moderation;
 public class PubSubModerationBanEvent extends PubSubModerationEvent {
     private final String reason;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username

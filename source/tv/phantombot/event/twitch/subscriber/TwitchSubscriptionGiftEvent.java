@@ -24,7 +24,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
     private final String months;
     private final String plan;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username
@@ -38,7 +38,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.plan = plan;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username
@@ -53,7 +53,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.plan = plan;
     }
 
-    /*
+    /**
      * Method that returns the gifted the subscription.
      *
      * @return {String} username
@@ -62,7 +62,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         return this.username;
     }
 
-    /*
+    /**
      * Method that returns the recipient.
      *
      * @return {String} recipient
@@ -71,7 +71,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         return this.recipient;
     }
 
-    /*
+    /**
      * Method that returns the months, can be 0.
      *
      * @return {String} months
@@ -80,7 +80,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         return (this.months == null) ? "1" : this.months;
     }
 
-    /*
+    /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
      * @return {String} plan

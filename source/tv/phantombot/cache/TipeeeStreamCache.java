@@ -42,7 +42,7 @@ public class TipeeeStreamCache implements Runnable {
     private Boolean killed = false;
     private int numfail = 0;
 
-    /*
+    /**
      * Used to call and start this instance.
      *
      * @param {String}  channel  Channel to run the cache for.
@@ -57,7 +57,7 @@ public class TipeeeStreamCache implements Runnable {
         return instance;
     }
 
-    /*
+    /**
      * Starts this class on a new thread.
      *
      * @param {String}  channel  Channel to run the cache for.
@@ -72,7 +72,7 @@ public class TipeeeStreamCache implements Runnable {
         this.updateThread.start();
     }
 
-    /*
+    /**
      * Checks if the donation has been cached.
      *
      * @return {Boolean}
@@ -81,7 +81,7 @@ public class TipeeeStreamCache implements Runnable {
         return cache.containsKey(donationID);
     }
 
-    /*
+    /**
      * Returns the current cache count (size/length),
      *
      * @return {Integer}
@@ -90,7 +90,7 @@ public class TipeeeStreamCache implements Runnable {
         return cache.size();
     }
 
-    /*
+    /**
      * Checks the amount of time we failed when calling the api to avoid abusing it.
      */
     private void checkLastFail() {
@@ -105,7 +105,7 @@ public class TipeeeStreamCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Starts the cache loop.
      */
     @Override
@@ -139,7 +139,7 @@ public class TipeeeStreamCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Updates the cache by calling the TipeeeStream API.
      */
     private void updateCache() throws Exception {
@@ -206,7 +206,7 @@ public class TipeeeStreamCache implements Runnable {
         this.cache = newCache;
     }
 
-    /*
+    /**
      * Sets the current cache.
      *
      * @param {Map}  Cache
@@ -215,7 +215,7 @@ public class TipeeeStreamCache implements Runnable {
         this.cache = cache;
     }
 
-    /*
+    /**
      * Returns the current cache.
      *
      * @return {Map} Current cache.
@@ -224,14 +224,14 @@ public class TipeeeStreamCache implements Runnable {
         return cache;
     }
 
-    /*
+    /**
      * Kills the current cache.
      */
     public void kill() {
         killed = true;
     }
 
-    /*
+    /**
      * Kills all the caches.
      */
     public static void killall() {
