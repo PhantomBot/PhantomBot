@@ -19,7 +19,7 @@ package tv.phantombot.event.ytplayer;
 public class YTPlayerDeleteSREvent extends YTPlayerEvent {
     private final String id;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} id
@@ -28,7 +28,7 @@ public class YTPlayerDeleteSREvent extends YTPlayerEvent {
         this.id = id;
     }
 
-    /*
+    /**
      * Method that returns the event ID.
      *
      * @return {String} id

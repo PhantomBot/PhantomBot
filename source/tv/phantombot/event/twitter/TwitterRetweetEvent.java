@@ -21,7 +21,7 @@ import tv.phantombot.event.Event;
 public class TwitterRetweetEvent extends Event {
     private final String[] userNameArray;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String[]} userNameArray
@@ -30,7 +30,7 @@ public class TwitterRetweetEvent extends Event {
         this.userNameArray = userNameArray;
     }
 
-    /*
+    /**
      * Method that returns the array of users.
      *
      * @return {String[]} userNameArray

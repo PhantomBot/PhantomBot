@@ -52,7 +52,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import tv.phantombot.discord.util.DiscordUtil;
 
 
-/*
+/**
  * Communicates with the Discord API.
  *
  * @author IllusionaryOne
@@ -65,7 +65,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IGuild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
-    /*
+    /**
      * Method to return this class object.
      *
      * @return {Object}
@@ -74,7 +74,7 @@ public class DiscordAPI extends DiscordUtil {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor
      */
     private DiscordAPI() {
@@ -83,7 +83,7 @@ public class DiscordAPI extends DiscordUtil {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
     
-    /*
+    /**
      * Enum list of our connection states.
      */
     public static enum ConnectionState {
@@ -93,7 +93,7 @@ public class DiscordAPI extends DiscordUtil {
         CANNOT_RECONNECT
     }
 
-    /*
+    /**
      * Method to connect to Discord.
      *
      * @param {String} token
@@ -107,7 +107,7 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to reconnect to Discord.
      */
     public boolean reconnect() {
@@ -123,7 +123,7 @@ public class DiscordAPI extends DiscordUtil {
         return false;
     }
     
-    /*
+    /** 
      * Mehtod that checks if we are still connected to Discord and reconnects if we are not. 
      */
     public ConnectionState checkConnectionStatus() {
@@ -142,7 +142,7 @@ public class DiscordAPI extends DiscordUtil {
         return ConnectionState.CONNECTED;
     }
 
-    /*
+    /**
      * Method that will return the current shard.
      *
      * @return {ShardImpl}
@@ -151,7 +151,7 @@ public class DiscordAPI extends DiscordUtil {
         return shard;
     }
 
-    /*
+    /**
      * Method that will return the current guild.
      *
      * @return {IGuild}
@@ -160,7 +160,7 @@ public class DiscordAPI extends DiscordUtil {
         return guild;
     }
 
-    /*
+    /**
      * Method that will return the current guild
      *
      * @return {IDiscordClient}
@@ -169,7 +169,7 @@ public class DiscordAPI extends DiscordUtil {
         return client;
     }
 
-    /*
+    /**
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
@@ -184,7 +184,7 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to parse commands.
      *
      * @param {String} message
@@ -202,7 +202,7 @@ public class DiscordAPI extends DiscordUtil {
         EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, command, arguments, isAdmin));
     }
 
-    /*
+    /**
      * Class to listen to events.
      */
     private class DiscordEventListener {

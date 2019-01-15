@@ -30,7 +30,7 @@ public class CommandEvent extends Event {
     private final Map<String, String> tags;
     private final String[] args;
 
-    /*
+    /**
      * Class constructor for this event without tags. Always send tags if you can.
      *
      * @param {String} sender
@@ -46,7 +46,7 @@ public class CommandEvent extends Event {
         this.tags = new HashMap<String, String>();
     }
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {String} sender
@@ -62,7 +62,7 @@ public class CommandEvent extends Event {
         this.tags = (tags == null ? new HashMap<String, String>() : tags);
     }
 
-    /*
+    /**
      * Method that parses the command arguments.
      *
      * @return {String[]}
@@ -92,7 +92,7 @@ public class CommandEvent extends Event {
         return tmpArgs.toArray(new String[tmpArgs.size()]);
     }
 
-    /*
+    /**
      * Method that will return the sender of this command.
      *
      * @return {String} sender
@@ -101,7 +101,7 @@ public class CommandEvent extends Event {
         return this.sender;
     }
 
-    /*
+    /**
      * Method that will return the command name.
      *
      * @return {String}
@@ -110,7 +110,7 @@ public class CommandEvent extends Event {
         return this.command.toLowerCase();
     }
 
-    /*
+    /**
      * Method that will return the string of arguments.
      *
      * @return {String} arguments
@@ -119,7 +119,7 @@ public class CommandEvent extends Event {
         return this.arguments;
     }
 
-    /*
+    /**
      * Method that will return the array of arguments.
      *
      * @return {String[]} args
@@ -128,7 +128,7 @@ public class CommandEvent extends Event {
         return this.args;
     }
 
-    /*
+    /**
      * Method that returns the IRCv3 tags in a map.
      *
      * @return {Map} tags
@@ -137,7 +137,7 @@ public class CommandEvent extends Event {
         return this.tags;
     }
 
-    /*
+    /**
      * Method that returns this object as a string.
      *
      * @return {String}

@@ -32,7 +32,7 @@ public class MessageQueue implements Runnable {
     private boolean isKilled = false;
     private int writes = 0;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} channelName
@@ -49,7 +49,7 @@ public class MessageQueue implements Runnable {
         
     }
 
-    /*
+    /**
      * Method that starts this queue.
      *
      * @param {TwitchSession} session
@@ -61,7 +61,7 @@ public class MessageQueue implements Runnable {
         this.thread.start();
     }
 
-    /*
+    /**
      * Method that sets if we are allowed to send messages.
      *
      * @param {boolean} isAllowedToSend
@@ -70,7 +70,7 @@ public class MessageQueue implements Runnable {
         this.isAllowedToSend = isAllowedToSend;
     }
 
-    /*
+    /**
      * Method that says if we are allowed to send messages.
      *
      * @return {boolean} isAllowedToSend
@@ -79,7 +79,7 @@ public class MessageQueue implements Runnable {
         return this.isAllowedToSend;
     }
 
-    /*
+    /**
      * Method that returns the amount of messages we've sent in 30 seconds.
      *
      * @return {int} writes
@@ -88,7 +88,7 @@ public class MessageQueue implements Runnable {
         return this.writes;
     }
 
-    /*
+    /**
      * Method that adds a message to the end of the queue.
      *
      * @param {String} message
@@ -97,7 +97,7 @@ public class MessageQueue implements Runnable {
         queue.add(new Message(message));
     }
 
-    /*
+    /**
      * Method that adds a message to the top of the queue.
      *
      * @param {String} message
@@ -106,7 +106,7 @@ public class MessageQueue implements Runnable {
         queue.addFirst(new Message(message, message.startsWith(".")));
     }
 
-    /*
+    /**
      * Method that handles sending messages to Twitch from our queue.
      */
     @Override
@@ -147,7 +147,7 @@ public class MessageQueue implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method that kills this instance.
      */
     public void kill() {

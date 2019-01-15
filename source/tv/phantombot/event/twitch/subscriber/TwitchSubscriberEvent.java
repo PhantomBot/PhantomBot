@@ -22,7 +22,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     private final String subscriber;
     private final String plan;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} subscriber
@@ -32,7 +32,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
         this.plan = null;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} subscriber
@@ -43,7 +43,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
         this.plan = plan;
     }
 
-    /*
+    /**
      * Method that returns the subscriber's name.
      *
      * @return {String} subscriber
@@ -52,7 +52,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
         return this.subscriber;
     }
 
-    /*
+    /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
      * @return {String} plan

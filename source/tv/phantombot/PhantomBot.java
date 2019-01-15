@@ -239,52 +239,52 @@ public final class PhantomBot implements Listener {
     private static final int EXIT_STATUS_OK = 0;
     private static final int EXIT_STATUS_ERROR = 1;
 
-    /*
+    /**
      * PhantomBot Instance.
      *
-     * @return  PhantomBot  The current instance of PhantomBot
+     * @return PhantomBot The current instance of PhantomBot
      */
     public static PhantomBot instance() {
         return instance;
     }
 
-    /*
+    /**
      * Current Repo Of PhantomBot.
      *
-     * @return  String  The current GitHub repository version of PhantomBot.
+     * @return String The current GitHub repository version of PhantomBot.
      */
     public String repoVersion() {
         return RepoVersion.getRepoVersion();
     }
 
-    /*
+    /**
      * Current Version Of PhantomBot.
      *
-     * @return  String  Display version of PhantomBot.
+     * @return String Display version of PhantomBot.
      */
     public String botVersion() {
         return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion();
     }
 
-    /*
+    /**
      * Used by the panel on the informations tab.
      *
-     * @return  String  PhantomBot information for the Panel.
+     * @return String PhantomBot information for the Panel.
      */
     public String getBotInfo() {
         return botVersion() + " (Revision: " + repoVersion() + ")";
     }
 
-    /*
+    /**
      * Current Build Revision
      *
-     * @return  String  The build revision of PhantomBot.
+     * @return String The build revision of PhantomBot.
      */
     public String botRevision() {
         return "Build Revision: " + repoVersion();
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot creator
@@ -293,7 +293,7 @@ public final class PhantomBot implements Listener {
         return "Creator: mast3rplan";
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot developers
@@ -302,7 +302,7 @@ public final class PhantomBot implements Listener {
         return "Developers: PhantomIndex, Kojitsari, ScaniaTV, Zackery (Zelakto) & IllusionaryOne";
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot website
@@ -311,7 +311,7 @@ public final class PhantomBot implements Listener {
         return "https://phantombot.tv/";
     }
 
-    /*
+    /**
      * Prints a message in the bot console.
      *
      * @param {Object} message
@@ -320,7 +320,7 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.out.println(message);
     }
 
-    /*
+    /**
      * Checks port availability.
      *
      * @param {int} port
@@ -349,16 +349,17 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /* Check to see if YouTube Key is configured.
+    /**
+     * Check to see if YouTube Key is configured.
      */
     public boolean isYouTubeKeyEmpty() {
         return youtubeKey.isEmpty();
     }
 
-    /*
+    /**
      * Constructor for PhantomBot object.
      *
-     * @param  Properties  Properties object which configures the PhantomBot instance.
+     * @param Properties Properties object which configures the PhantomBot instance.
      */
     public PhantomBot(Properties pbProperties) {
 
@@ -636,7 +637,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Tells you if the build is a nightly.
      *
      * @return {boolean}
@@ -645,7 +646,7 @@ public final class PhantomBot implements Listener {
         return RepoVersion.getNightlyBuild();
     }
 
-    /*
+    /**
      * Tells you if the build is a pre-release.
      *
      * @return {boolean}
@@ -654,7 +655,7 @@ public final class PhantomBot implements Listener {
         return RepoVersion.getPrereleaseBuild();
     }
 
-    /*
+    /**
      * Enables or disables the debug mode.
      *
      * @param {boolean} debug
@@ -665,7 +666,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.enableDebugging = debug;
     }
 
-    /*
+    /**
      * Enables or disables log only debug mode.
      *
      * @param {boolean} debug
@@ -677,7 +678,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.enableDebuggingLogOnly = debug;
     }
 
-    /*
+    /**
      * Tells you the bot name.
      *
      * @return {string} bot name
@@ -686,7 +687,7 @@ public final class PhantomBot implements Listener {
         return this.botName;
     }
 
-    /*
+    /**
      * Gives you the current data store
      *
      * @return {datastore} dataStore
@@ -695,7 +696,7 @@ public final class PhantomBot implements Listener {
         return this.dataStore;
     }
 
-    /*
+    /**
      * Tells you if the bot is exiting
      *
      * @return {boolean} exit
@@ -704,7 +705,7 @@ public final class PhantomBot implements Listener {
         return this.isExiting;
     }
 
-    /*
+    /**
      * Give's you the channel for that channelName.
      *
      * @return {channel}
@@ -713,7 +714,7 @@ public final class PhantomBot implements Listener {
         return this.channelName;
     }
 
-    /*
+    /**
      * Tells you if the discord token has been set.
      *
      * @return {boolean}
@@ -722,7 +723,7 @@ public final class PhantomBot implements Listener {
         return this.discordToken.isEmpty();
     }
 
-    /*
+    /**
      * Give's you the session for that channel.
      *
      * @return {session}
@@ -731,7 +732,7 @@ public final class PhantomBot implements Listener {
         return this.session;
     }
 
-    /*
+    /**
      * Method that returns the message limit
      *
      * @return {double} messageLimit
@@ -740,7 +741,7 @@ public final class PhantomBot implements Listener {
         return messageLimit;
     }
 
-    /*
+    /**
      * Give's you the message limit.
      *
      * @return {long} message limit
@@ -749,7 +750,7 @@ public final class PhantomBot implements Listener {
         return (long) ((30.0 / messageLimit) * 1000);
     }
 
-    /*
+    /**
      * Give's you the whisper limit. *Currently not used*
      *
      * @return {long} whisper limit
@@ -758,10 +759,10 @@ public final class PhantomBot implements Listener {
         return (long) ((60.0 / whisperLimit) * 1000);
     }
 
-    /*
+    /**
      * Helper method to see if a module is enabled.
      *
-     * @param  String  Module name to check for
+     * @param String Module name to check for
      * @return boolean If the module is enabled or not
      */
     public boolean checkModuleEnabled(String module) {
@@ -772,11 +773,11 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Checks if a value is true in the datastore.
      *
-     * @param String  Db table to check.
-     * @param String  Db key to check in that table.
+     * @param String Db table to check.
+     * @param String Db key to check in that table.
      */
     public boolean checkDataStore(String table, String key) {
         try {
@@ -786,7 +787,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Method that returns the basic bot info.
      *
      * @return {String}
@@ -795,17 +796,17 @@ public final class PhantomBot implements Listener {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
     }
-    
-    /*
+
+    /**
      * Method that gets the PhantomBot properties.
      *
-     * @return 
+     * @return
      */
     public Properties getProperties() {
         return this.pbProperties;
     }
 
-    /*
+    /**
      * Loads everything up.
      */
     private void init() {
@@ -1090,7 +1091,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Used for exiting the bot
      *
      */
@@ -1168,7 +1169,7 @@ public final class PhantomBot implements Listener {
         print(this.botName + " is exiting.");
     }
 
-    /*
+    /**
      * Connected to Twitch.
      *
      */
@@ -1228,7 +1229,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
     }
 
-    /*
+    /**
      * Get private messages from Twitch.
      *
      */
@@ -1255,7 +1256,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * user modes from twitch
      *
      */
@@ -1271,7 +1272,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * messages from Twitch chat
      *
      */
@@ -1282,7 +1283,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /* Handle commands */
+    /** Handle commands */
     public void handleCommand(String username, String command) {
         String arguments = "";
 
@@ -1295,7 +1296,7 @@ public final class PhantomBot implements Listener {
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
     }
 
-    /* Handle commands */
+    /** Handle commands */
     public void handleCommandSync(String username, String command) {
         String arguments = "";
 
@@ -1308,7 +1309,7 @@ public final class PhantomBot implements Listener {
         EventBus.instance().post(new CommandEvent(username, command, arguments));
     }
 
-    /* Load up main */
+    /** Load up main */
     public static void main(String[] args) throws IOException {
         // Move user files.
         moveUserConfig();
@@ -1365,7 +1366,7 @@ public final class PhantomBot implements Listener {
         
     }
 
-    /* gen a random string */
+    /** gen a random string */
     public static String generateRandomString(int length) {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
@@ -1379,7 +1380,7 @@ public final class PhantomBot implements Listener {
         return new String(randomBuffer);
     }
 
-    /*
+    /**
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
@@ -1410,7 +1411,7 @@ public final class PhantomBot implements Listener {
         }, 0, 24, TimeUnit.HOURS);
     }
 
-    /* Set the twitch cache */
+    /** Set the twitch cache */
     public void setTwitchCacheReady(String twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
@@ -1449,7 +1450,7 @@ public final class PhantomBot implements Listener {
         }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);
     }
 
-    /*
+    /**
      * Method that moves the db and botlogin into a new folder (config)
      */
     private static void moveUserConfig() {
@@ -1501,7 +1502,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Method to export a Java list to a csv file.
      *
      * @param {String[]} headers

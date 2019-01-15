@@ -28,7 +28,7 @@ import tv.phantombot.event.discord.DiscordEvent;
  */
 public abstract class DiscordReactionEvent extends DiscordEvent {
     
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {IUser} user
@@ -37,7 +37,7 @@ public abstract class DiscordReactionEvent extends DiscordEvent {
         super(user);
     }
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {IUser}    user

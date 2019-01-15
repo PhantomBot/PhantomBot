@@ -52,7 +52,7 @@ public class TwitchWSHostIRC {
     private final EventBus eventBus;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
 
-    /*
+    /**
      * Creates an instance for a Twitch WS Host IRC Session
      *
      * @param  channelName  Name of Twitch Channel for which this instance is created.
@@ -69,7 +69,7 @@ public class TwitchWSHostIRC {
         return instance;
     }
 
-    /*
+    /**
      * Constructor for TwitchWSHostIRC object.
      *
      * @param  channelName  Name of Twitch Channel for which this instance is created.
@@ -93,7 +93,7 @@ public class TwitchWSHostIRC {
         }
     }
 
-    /*
+    /**
      * Public data access to channelName
      *
      * @return  String  this.channelName
@@ -102,7 +102,7 @@ public class TwitchWSHostIRC {
         return this.channelName;
     }
 
-    /*
+    /**
      * Public data access to oAuth
      *
      * @return  String  this.oAuth
@@ -111,7 +111,7 @@ public class TwitchWSHostIRC {
         return this.oAuth;
     }
 
-    /*
+    /**
      * Public data access to eventBus
      *
      * @return  EventBus  this.eventBus
@@ -120,7 +120,7 @@ public class TwitchWSHostIRC {
         return this.eventBus;
     }
 
-    /*
+    /**
      * Exposes the connected status of the object.
      *
      * @return  boolean  Is connected
@@ -129,7 +129,7 @@ public class TwitchWSHostIRC {
         return twitchWSHostIRCWS.isConnected();
     }
 
-    /*
+    /**
      * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
@@ -157,7 +157,7 @@ public class TwitchWSHostIRC {
         }
     }
 
-    /*
+    /**
      * Class for handling the physical connection to Twitch WS-IRC for the Data Host Feed.
      */
     private class TwitchWSHostIRCWS extends WebSocketClient {
@@ -179,7 +179,7 @@ public class TwitchWSHostIRC {
         private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
         private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
 
-        /*
+        /**
          * Constructor for TwitchWSIRC object.
          *
          * @param  channel  Name of Twitch Channel for which this instance is created.
@@ -229,7 +229,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Sends a message to the websocket.
          *
          * @param {String} message
@@ -243,7 +243,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Exposes the connected status of the object.
          *
          * @return  boolean  Is connected
@@ -252,7 +252,7 @@ public class TwitchWSHostIRC {
             return connected;
         }
 
-        /*
+        /**
          * Connect via WSS. This provides a secure connection to Twitch.
          *
          * @return  boolean  true on success and false on failure
@@ -267,7 +267,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for connection opening to WS-IRC.  Calls send() directly to login to Twitch
          * IRC rather than sendAddQueue().
          *
@@ -279,7 +279,7 @@ public class TwitchWSHostIRC {
             send("NICK " + login);
         }
 
-        /*
+        /**
          * Callback for connection closed from WS-IRC.
          *
          * @param  int      Exit code
@@ -295,7 +295,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for incoming messages from WS-IRC.
          *
          * @param  String  Incoming message
@@ -387,7 +387,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for errors from WebSockets. Do not log the
          * ArrayIndexOutOfBoundsException, this is tossed by the API.
          *
@@ -400,7 +400,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Sends a PONG response to Twitch in reply to PING.
          */
         private void sendPong() {

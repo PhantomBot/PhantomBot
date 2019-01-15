@@ -241,9 +241,11 @@ public class HTTPServerCommon {
                 handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
             }
         }
+        handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
     }
 
-    /* Query List:
+    /**
+     * Query List:
      *
      * table=tableName&getKeys                             - Get list of keys.
      * table=tableName&getData=key                         - Get a specific row of data.

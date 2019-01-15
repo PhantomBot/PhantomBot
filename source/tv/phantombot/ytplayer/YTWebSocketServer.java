@@ -332,7 +332,12 @@ public class YTWebSocketServer extends WebSocketServer {
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
     }
 
-    //Method that queries the DB.
+    /**
+     * Method that queries the DB.
+     * @param webSocket
+     * @param id
+     * @param table
+     */
     public void handleDBQuery(WebSocket webSocket, String id, String table) {
         JSONStringer jsonObject = new JSONStringer();
 
