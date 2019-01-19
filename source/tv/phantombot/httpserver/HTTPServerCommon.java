@@ -241,7 +241,6 @@ public class HTTPServerCommon {
                 handlePutRequest(myHdrUser, myHdrMessage, exchange, hasPassword);
             }
         }
-        handleDBQuery(uriPath, uriQueryList, exchange, hasPassword);
     }
 
     /**
