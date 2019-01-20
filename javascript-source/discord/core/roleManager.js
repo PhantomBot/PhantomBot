@@ -31,25 +31,27 @@
      * @function roleUpdateCheck
      */
     function roleUpdateCheck() {
-        var users = $.inidb.GetKeyList('discordToTwitch', ''),
-            i;
+        if ($.discord.isConnected()) {
+            var users = $.inidb.GetKeyList('discordToTwitch', ''),
+                i;
 
-        // If both options are disabled, stop here.
-        if (autoSetPermissions === false && autoSetRanks === false) {
-            return;
-        }
-
-        // Create our default roles.
-        createRoles();
-
-        // Wait a bit to create the roles.
-        setTimeout(function() {
-            for (i in users) {
-                if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
-                    updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
-                }
+            // If both options are disabled, stop here.
+            if (autoSetPermissions === false && autoSetRanks === false) {
+                return;
             }
-        }, 5e3);
+
+            // Create our default roles.
+            createRoles();
+
+            // Wait a bit to create the roles.
+            setTimeout(function() {
+                for (i in users) {
+                    if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
+                        updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                    }
+                }
+            }, 5e3);
+        }
     }
 
     /*
