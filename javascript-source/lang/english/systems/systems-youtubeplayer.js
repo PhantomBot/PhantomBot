@@ -22,8 +22,8 @@ $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Request
 $.lang.register('ytplayer.console.client.connected', '[\u266B] YouTube Player is connected! [\u266B]');
 $.lang.register('ytplayer.console.client.disconnected', '[\u266B] YouTube Player is disconnected! [\u266B]');
 
-$.lang.register('ytplayer.songrequests.enabled', '[\u266B] Song requests are enabled! [\u266B]');
-$.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have been disabled! [\u266B]');
+$.lang.register('ytplayer.songrequests.enabled', '[\u266B] Song requests are open! [\u266B]');
+$.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have been closed! [\u266B]');
 
 $.lang.register('ytplayer.command.volume.get', 'Current YouTube Player Volume: $1');
 $.lang.register('ytplayer.command.volume.set', 'Set YouTube Player Volume: $1');
@@ -104,7 +104,7 @@ $.lang.register('ytplayer.command.nextsong.usage', 'Usage: !nextsong [index numb
 $.lang.register('ytplayer.command.nextsong.404', 'Song request queue is empty.');
 $.lang.register('ytplayer.command.nextsong.range.404', 'No songs found in that range.');
 
-$.lang.register('ytplayer.requestsong.error.maxrequests', 'Exceeds maximum concurrent requests');
+$.lang.register('ytplayer.requestsong.error.maximum.concurrent.requests', 'Only $1 request allowed in the queue at time');
 $.lang.register('ytplayer.requestsong.error.disabled', 'Song requests are disabled');
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');
 $.lang.register('ytplayer.requestsong.error.exists', 'Song is already in queue');
@@ -138,3 +138,18 @@ $.lang.register('ytplayer.command.skip.delay', 'Skip is not allowed for a moment
 $.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
 $.lang.register('ytplayer.command.votecount.negative', 'The number of votes needed must be positive!');
 $.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');
+
+// Custom 
+$.lang.register('ytplayer.requestsong.error.maximum.total.requests', 'Only $1 songs can be requested per stream per user');
+$.lang.register('ytplayer.command.songcount', 'Kent has played $1 songs');
+$.lang.register('ytplayer.command.requestcount', '$1 has had $2 request(s) played');
+
+$.lang.register('ytplayer.command.queuelimit.usage', 'Usage: !queuelimit [off | max requests]');
+$.lang.register('ytplayer.command.queuelimit.success', 'Maximum number of requests in the queue set to $1');
+$.lang.register('ytplayer.command.queuelimit.success.off', 'Queue limit has been turned off');
+
+$.lang.register('ytplayer.command.requestlimit.usage', 'Usage: !requestlimit [off | max requests]');
+$.lang.register('ytplayer.command.requestlimit.success', 'Maximum number of requests per stream set to $1');
+$.lang.register('ytplayer.command.requestlimit.success.off', 'Request limit has been turned off');
+
+$.lang.register('ytplayer.command.requestlimit.length', 'Please refrain from requesting songs that are at least $1 minutes long. If one is requested, it will get removed and you can request a shorter song!')

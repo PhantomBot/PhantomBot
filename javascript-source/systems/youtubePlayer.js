@@ -29,6 +29,7 @@
         baseFileOutputPath = $.getSetIniDbString('ytSettings', 'baseFileOutputPath', './addons/youtubePlayer/'),
         songRequestsEnabled = $.getSetIniDbBoolean('ytSettings', 'songRequestsEnabled', true),
         songRequestsMaxParallel = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxParallel', 1),
+        songRequestsMaxLimit = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxLimit', 2),
         songRequestsMaxSecondsforVideo = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo', (8 * 60)),
         stealRefund = $.getSetIniDbBoolean('ytSettings', 'stealRefund', false),
         voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 0),
@@ -60,12 +61,20 @@
      */
     function reloadyt() {
         songRequestsMaxParallel = $.getIniDbNumber('ytSettings', 'songRequestsMaxParallel');
+        songRequestsMaxLimit = $.getIniDbNumber('ytSettings', 'songRequestsMaxLimit');
         songRequestsMaxSecondsforVideo = $.getIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo');
         playlistDJname = $.getIniDbString('ytSettings', 'playlistDJname');
         announceInChat = $.getIniDbBoolean('ytSettings', 'announceInChat');
         stealRefund = $.getIniDbBoolean('ytSettings', 'stealRefund', false);
         voteCount = $.getIniDbNumber('ytSettings', 'voteCount', 0);
         playCCOnly = $.getIniDbBoolean('ytSettings', 'playCCOnly', false);
+        songRequestsMaxRequest = $.getIniDbNumber('ytSettings', 'songRequestsMaxRequest'),
+        
+        // Initialize song counter
+        $.inidb.set("songcounts", "totalsongs", 0);
+        
+        // Initialize user request played counter
+        $.inidb.RemoveFile("songcounts");
     };
 
     /**
@@ -818,9 +827,14 @@
          */
         this.requestSong = function(searchQuery, requestOwner) {
             var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
-            if (!$.isAdmin(requestOwner) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner))) {
+            if (!$.isAdmin(requestOwner) && !$.isMod(requestOwner) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner) || this.senderReachedTotalRequestsMax(requestOwner))) {
                 if (this.senderReachedRequestMax(requestOwner)) {
-                    requestFailReason = $.lang.get('ytplayer.requestsong.error.maxrequests');
+                    // User already has max allowed in the queue
+                    requestFailReason = $.lang.get('ytplayer.requestsong.error.maximum.concurrent.requests', songRequestsMaxParallel);
+                } else if (this.senderReachedTotalRequestsMax(requestOwner)) {
+                    // User has requested the max allowed per stream
+                    // Mods and owner are exempt
+                    requestFailReason = $.lang.get('ytplayer.requestsong.error.maximum.total.requests', songRequestsMaxLimit);
                 } else {
                     requestFailReason = $.lang.get('ytplayer.requestsong.error.disabled');
                 }
@@ -878,6 +892,17 @@
                 }
             }
             return (currentRequestCount >= songRequestsMaxParallel);
+        };
+        /**
+         * 
+         * @function senderReachedTotalRequestsMax Determines if the user has reached the 
+         * maximum number of requests per stream
+         * @param {type} sender
+         * @returns {boolean}
+         */
+        this.senderReachedTotalRequestsMax = function(sender) {
+            var totalUserRequests = $.inidb.get("songcounts", sender +"-request-counts");
+            return totalUserRequests > songRequestsMaxLimit;
         };
 
         /**
@@ -1265,6 +1290,13 @@
 
         if (state == playerStateEnum.ENDED) {
             if (currentPlaylist) {
+                // Increment song count
+                $.inidb.incr("songcounts", "totalsongs", 1);
+                
+                // Increment request count for user
+                var requestOwner = currentPlaylist.getCurrentVideo().getOwner();
+                $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
+                
                 currentPlaylist.nextVideo();
             }
         }
@@ -1568,6 +1600,25 @@
                 $.say($.lang.get('ytplayer.command.ytp.setrequestmax.success', songRequestsMaxParallel));
                 return;
             }
+            
+            /**/
+            
+            /**
+             * @commandpath songrequest limit [max concurrent requests] - Set the maximum of songrequests a user can make per stream
+             */
+            if (action.equalsIgnoreCase('limit')) {
+                if (!actionArgs[0] || isNaN(parseInt(actionArgs[0]))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setrequestmax.usage'));
+                    return;
+                }
+
+                songRequestsMaxParallel = parseInt(actionArgs[0]);
+                $.inidb.set('ytSettings', 'songRequestsMaxParallel', songRequestsMaxParallel);
+                $.say($.lang.get('ytplayer.command.ytp.setrequestmax.success', songRequestsMaxParallel));
+                return;
+            }
+            
+            /**/
 
             /**
              * @commandpath ytp setmaxvidlength [max video length in seconds] - Set the maximum length of a song that may be requested
@@ -1930,7 +1981,7 @@
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
          */
-        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
+        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('sr')) {         
             if ($.getIniDbBoolean('ytpBlacklist', sender, false)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklisted'));
                 return;
@@ -1941,6 +1992,10 @@
                 $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                 return;
             }
+            
+
+           
+            // TODO Add song request to Nightbot for public view
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
@@ -2075,6 +2130,100 @@
                 }
             }
         }
+        
+        /**
+         * @commandpath songcount
+         */
+        if (command.equalsIgnoreCase('songs')) {
+            var count = $.inidb.get("songcounts", "totalsongs");
+            
+            if (count === null) {
+                count = 0;
+            }
+            
+            $.say($.lang.get('ytplayer.command.songcount', count));
+        }
+        
+        /**
+         * @commandpath songcount
+         */
+        if (command.equalsIgnoreCase('requests')) {
+            var count = $.inidb.get("songcounts", sender + "-request-counts");
+            
+            if (count === null) {
+                count = 0;
+            }
+
+            $.say($.lang.get('ytplayer.command.requestcount', sender, count));
+        }
+        
+        /**
+         * @commandpath queuelimit [off|max concurrent requests] - Set the maximum number of requests a user can
+         * have in the queue at one time
+         */
+        if (command.equalsIgnoreCase('queuelimit')) {
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.queuelimit.usage'));
+                return;
+            }
+            
+            if (isNaN(parseInt(args[0])) && !args[0].equalsIgnoreCase('off')){
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.queuelimit.usage'));
+                return;
+            }
+            
+            var message;
+            if (args[0].equalsIgnoreCase('off')) {
+                songRequestsMaxParallel = 999;
+                message = $.lang.get('ytplayer.command.queuelimit.success.off');
+            } else {
+                songRequestsMaxParallel = parseInt(args[0]);
+                message = $.lang.get('ytplayer.command.queuelimit.success', songRequestsMaxParallel);
+            }
+
+            $.inidb.set('ytSettings', 'songRequestsMaxParallel', songRequestsMaxParallel);
+            $.say(message);
+            return;
+        }
+        
+        /**
+         * @commandpath requestlimit [off|max requests] - Set the maximum number of requests a user can have per stream
+         */
+        if (command.equalsIgnoreCase('requestlimit')) {
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.requestlimit.usage'));
+                return;
+            }
+            
+            if (isNaN(parseInt(args[0])) && !args[0].equalsIgnoreCase('off')){
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.requestlimit.usage'));
+                return;
+            }
+            
+            var message;
+            if (args[0].equalsIgnoreCase('off')) {
+                songRequestsMaxLimit = 999;
+                message = $.lang.get('ytplayer.command.requestlimit.success.off');
+            } else {
+                songRequestsMaxLimit = parseInt(args[0]);
+                message = $.lang.get('ytplayer.command.requestlimit.success', songRequestsMaxLimit);
+            }
+
+            $.inidb.set('ytSettings', 'songRequestsMaxLimit', songRequestsMaxLimit);
+            $.say(message);
+            return;
+        }
+        
+        if (command.equalsIgnoreCase('length')) {
+            var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
+            var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
+            
+            if (seconds === 0) {
+                seconds = "00";
+            }
+
+            $.say($.lang.get('ytplayer.command.requestlimit.length', minutes + ":" + seconds));
+        }
     });
 
     $.bind('initReady', function() {
@@ -2088,16 +2237,29 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'sr');
         $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'songs');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
+        
+        $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
+        
+        $.registerChatCommand('./systems/youtubePlayer.js', 'length');
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
 
         loadPanelPlaylist();
-        loadDefaultPl();
+        //loadDefaultPl();
+        
+        // Initialize song counter
+        $.inidb.set("songcounts", "totalsongs", 0);
+        
+        // Initialize user request played counter
+        $.inidb.RemoveFile("songcounts");
     });
 })();
