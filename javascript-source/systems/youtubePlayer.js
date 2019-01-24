@@ -855,7 +855,14 @@
             }
 
             if (this.videoLengthExceedsMax(youtubeVideo) && !$.isAdmin(requestOwner)) {
-                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS());
+                
+                var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
+                var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
+            
+                if (seconds === 0) {
+                    seconds = "00";
+                }
+                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS(), minutes + ":" + seconds);
                 return null;
             }
 
@@ -1297,10 +1304,17 @@
                 var requestOwner = currentPlaylist.getCurrentVideo().getOwner();
                 $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
                 
+                
+                // Record song title for history
+                var videoTitle = currentPlaylist.getCurrentVideo().getVideoTitle();
+                $.inidb.set("songhistory", videoTitle, $.getLocalTime());
+                
+                // Go to next song
                 currentPlaylist.nextVideo();
             }
         }
     });
+    
 
     /**
      * @event yTPlayerCurrentId
@@ -1992,10 +2006,7 @@
                 $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
                 return;
             }
-            
-
-           
-            // TODO Add song request to Nightbot for public view
+                     
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
@@ -2242,13 +2253,13 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+        
+        // Custom Commands
         $.registerChatCommand('./systems/youtubePlayer.js', 'songs');
         $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
-        
         $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
-        
-        $.registerChatCommand('./systems/youtubePlayer.js', 'length');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'length');        
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
