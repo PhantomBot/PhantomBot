@@ -1304,10 +1304,12 @@
                 var requestOwner = currentPlaylist.getCurrentVideo().getOwner();
                 $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
                 
-                
                 // Record song title for history
                 var videoTitle = currentPlaylist.getCurrentVideo().getVideoTitle();
                 $.inidb.set("songhistory", videoTitle, $.getLocalTime());
+                
+                // TODO Use HttpRequest or create a new class that can call the Google Sheets API to add rows for song
+                // Pass the song name, YouTube link, and requester
                 
                 // Go to next song
                 currentPlaylist.nextVideo();
@@ -1922,7 +1924,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.usage', command.toLowerCase()));
                 return;
             }
-
+            
             if (!currentPlaylist.jumpToSong(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.failed', args[0]));
             }
@@ -2242,7 +2244,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'findsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
