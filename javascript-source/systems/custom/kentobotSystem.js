@@ -39,6 +39,10 @@
             
             $.say($.lang.get('kentobot.reset.songs.success'));
         }
+        
+        // TODO Add command or functionality to reset bump reward
+        
+        // TODO Add command to set reward levels for DB
      });
              
     /**
