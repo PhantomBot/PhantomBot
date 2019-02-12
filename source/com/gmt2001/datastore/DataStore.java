@@ -57,6 +57,8 @@ public class DataStore {
         return new String[] { };
     }
 
+    public KeyValue[] GetKeyValueList(String fName, String section) { return null; }
+
     public String[] GetKeysByOrder(String fName) {
         return this.GetKeysByOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
     }

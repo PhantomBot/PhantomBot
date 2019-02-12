@@ -24,6 +24,7 @@
      */
     function drsTimer() {
         var keys,
+            entries,
             parts,
             apiStatus,
             commandValue,
@@ -112,20 +113,21 @@
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'points');
         $.log.event('DataRenderService: Points API status : ' + apiStatus);
 
-        keys = $.inidb.GetKeyList('time', '');
+        entries = $.inidb.GetKeyValueList('time', '');
         jsonStringer = new JSONStringer();
         ranksJsonStringer = new JSONStringer();
         jsonStringer.object().key('times').array();
         ranksJsonStringer.object().key('ranks').array();
-        for (var idx in keys) {
+        for (var idx in entries) {
+            var user = entries[idx].key, time = entries[idx].value;
             jsonStringer.object();
-            jsonStringer.key('user').value(keys[idx] + '');
-            jsonStringer.key('time').value($.inidb.get('time', keys[idx]));
+            jsonStringer.key('user').value(user);
+            jsonStringer.key('time').value(time);
             jsonStringer.endObject();
 
             ranksJsonStringer.object();
-            ranksJsonStringer.key('user').value(keys[idx] + '');
-            ranksJsonStringer.key('rank').value($.getRank(keys[idx]));
+            ranksJsonStringer.key('user').value(user);
+            ranksJsonStringer.key('rank').value($.getRank(user, parseInt(time)));
             ranksJsonStringer.endObject();
         }
         jsonStringer.endArray().endObject();
