@@ -115,11 +115,6 @@ public class HTTPSServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            if (new File("./web/beta-panel").isDirectory()) {
-                HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
-                betaPanelContext.setAuthenticator(auth);
-            }
-
             server.setExecutor(Executors.newCachedThreadPool());
             server.start();
         } catch (KeyManagementException ex) {
@@ -156,12 +151,6 @@ public class HTTPSServer {
     class PanelHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             HTTPServerCommon.handlePanel(exchange);
-        }
-    }
-
-    class BetaPanelHandler implements HttpHandler {
-        public void handle(HttpExchange exchange) throws IOException {
-            HTTPServerCommon.handleBetaPanel(exchange);
         }
     }
 

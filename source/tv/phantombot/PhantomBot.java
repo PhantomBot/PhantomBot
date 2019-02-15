@@ -1,4 +1,4 @@
-/*            
+/*
  * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -233,7 +233,7 @@ public final class PhantomBot implements Listener {
     private Boolean backupSQLiteAuto = false;
     private int backupSQLiteHourFrequency = 0;
     private int backupSQLiteKeepDays = 0;
-    
+
     // Error codes
     // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
     private static final int EXIT_STATUS_OK = 0;
@@ -508,7 +508,7 @@ public final class PhantomBot implements Listener {
         this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "true").equalsIgnoreCase("true");
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfrequency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
-        
+
         // Set the newSetup flag
         this.newSetup = this.pbProperties.getProperty("newSetup").equals("true");
 
@@ -977,12 +977,7 @@ public final class PhantomBot implements Listener {
             byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
 
             /* Write the data to that file */
-            Files.write(Paths.get("./web/panel/js/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-            // If betap write the file in that folder too.
-            if (new File("./web/beta-panel").isDirectory()) {
-            	Files.write(Paths.get("./web/beta-panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-            }
+            Files.write(Paths.get("./web/panel/js/utils/panelConfig.js"), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1333,9 +1328,9 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitOK();
             }
         }
-        
+
         Properties startProperties = ConfigurationManager.getConfiguration();
-        
+
         setStaticFields(startProperties);
 
         /* Start PhantomBot */
@@ -1363,7 +1358,7 @@ public final class PhantomBot implements Listener {
         if (reloadScripts)
             com.gmt2001.Console.out.println("Enabling Script Reloading");
         PhantomBot.reloadScripts = reloadScripts;
-        
+
     }
 
     /** gen a random string */
@@ -1543,21 +1538,21 @@ public final class PhantomBot implements Listener {
             }
         }
     }
-    
+
     /**
      * End PhantomBot with an error state
      */
     public static void exitError() {
         System.exit(EXIT_STATUS_ERROR);
     }
-    
+
     /**
      * End PhantomBot with an OK state
      */
     public static void exitOK() {
         System.exit(EXIT_STATUS_OK);
     }
-    
+
     public static Boolean getReloadScripts() {
         return reloadScripts;
     }
