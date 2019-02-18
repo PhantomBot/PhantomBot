@@ -443,6 +443,51 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    public KeyValue[] GetKeyValueList(String fName, String section) {
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new KeyValue[] {};
+    }
+
+    @Override
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
         return GetKeysByOrderInternal(fName, section, order, limit, offset, false);
     }
