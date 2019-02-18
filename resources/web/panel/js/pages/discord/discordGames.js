@@ -233,7 +233,7 @@ $(function() {
                             keys: ['winGainPercent', 'winRange', 'max', 'min'],
                             values: [winGain.val(), winRange.val(), max.val(), min.val()]
                         }, function() {
-                            socket.sendCommand('update_gambling_settings_cmd', 'reloadgamble', function() {
+                            socket.wsEvent('update_gambling_settings_cmd', './discord/games/gambling.js', '', [], function() {
                                 // Close the modal.
                                 $('#gambling-settings').modal('toggle');
                                 // Alert the user.
