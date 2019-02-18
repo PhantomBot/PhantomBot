@@ -54,8 +54,10 @@ $(function() {
     	    	}, function() {
     	    		// Update the scripts variables.
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {
-    	    			// Alert the user.
-    	    			toastr.success('Successfully updated the logs settings!');
+                        socket.sendCommand('moderation_reload_settings', 'reloadmoderation', function () {
+    	    			    // Alert the user.
+    	    			    toastr.success('Successfully updated the logs settings!');
+                        });
     	    		});
     	    	});
     	}
