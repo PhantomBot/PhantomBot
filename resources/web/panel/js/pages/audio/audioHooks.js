@@ -232,20 +232,22 @@ $(run = function() {
                     })), function() {
                         let commandPermission = $('#command-permission'),
                             commandCost = $('#command-cost'),
+                            commandReward = $('#command-reward'),
                             commandCooldown = $('#command-cooldown'),
                             commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
                             case helpers.handleInputNumber(commandCost):
+                            case helpers.handleInputNumber(commandReward):
                             case helpers.handleInputNumber(commandCooldown):
                                 break;
                             default:
                                // Save command information here and close the modal.
                                 socket.updateDBValues('custom_command_edit', {
-                                    tables: ['pricecom', 'permcom'],
-                                    keys: [command, command],
-                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true)]
+                                    tables: ['pricecom', 'permcom', 'paycom'],
+                                    keys: [command, command, command],
+                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), commandReward.val()]
                                 }, function() {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('audio_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
