@@ -576,10 +576,12 @@ $(function() {
                             keys: ['autoGreetEnabled', 'cooldown'],
                             values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5)]
                         }, function() {
-                            // Close the modal.
-                            $('#greeting-alert').modal('toggle');
-                            // Alert the user.
-                            toastr.success('Successfully updated greeting alert settings!');
+                            socket.sendCommand('alerts_update_greeting_settings_cmd', 'greetingspanelupdate', function() {
+                                // Close the modal.
+                                $('#greeting-alert').modal('toggle');
+                                // Alert the user.
+                                toastr.success('Successfully updated greeting alert settings!');
+                            });
                         });
                 }
             }).modal('toggle');
