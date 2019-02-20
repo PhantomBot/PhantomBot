@@ -195,7 +195,7 @@ $(run = function() {
                 // Get all the info about the command.
                 socket.getDBValues('audio_command_edit', {
                     tables: ['audioCommands', 'permcom', 'cooldown', 'pricecom', 'paycom'],
-                    keys: [command, command, command, command, command, command]
+                    keys: [command, command, command, command, command]
                 }, function(e) {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
 
