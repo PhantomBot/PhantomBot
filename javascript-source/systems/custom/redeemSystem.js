@@ -67,6 +67,24 @@
     //       
     //       
         }
+        
+        if (command.equalsIgnoreCase('bump')) {
+            // TODO Run Checks
+            // - if (user has song in queue)
+            // - if (user has not used a bump this stream)
+            // - if (user has enough points) - this may be configurable in the panel
+            // TODO Find position of users song in queue
+            // TODO Run !jumptosong [position in playlist]
+        }
+        
+        if (command.equalsIgnoreCase('learn')) {
+            // TODO Run Checks
+            // - if (user has not used a bump in x days)
+            // - if (user has enough points) - this may be configurable in the panel
+            // TODO Check that user has not used learn in x days (get from database)
+            // TODO Whisper YouTube link to Kent
+        }
+        
      });
              
     /**
@@ -80,5 +98,9 @@
 	// $.registerChatCommand('script', 'command', 'permission');
        
        $.registerChatCommand('./systems/custom/redeemSystem.js', 'redeem') ;
+       $.registerChatCommand('./systems/custom/redeemSystem.js', 'bump');
+       $.registerChatCommand('./systems/custom/redeemSystem.js', 'learn');
+       
+       
     });
  })();
