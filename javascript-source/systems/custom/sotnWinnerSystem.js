@@ -118,7 +118,7 @@
 	// These are also used for the permcom command.
 	// $.registerChatCommand('script', 'command', 'permission');
        
-       $.registerChatCommand('./systems/custom/sotnWinnerSystem.js', 'sotn', 2) ;
+//       $.registerChatCommand('./systems/custom/sotnWinnerSystem.js', 'sotn', 2) ;
     });
  })();
 
