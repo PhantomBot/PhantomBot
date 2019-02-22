@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="PhantomBot" basedir="." default="dist">
+<project name="KentoBot" basedir="." default="dist">
 
     <!--
 
@@ -24,7 +24,8 @@
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="1.0.2.2.4.2" />
+    <property name="version" value="2.4.2" />
+    <property name="kentobot.version" value="1.0.2"/>
     <property name="webpanel.version" value="1.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
