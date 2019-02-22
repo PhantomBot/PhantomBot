@@ -16,9 +16,9 @@
  */
 
 /**
- * youtubePlayer.js
+ * songrequestPlayer.js
  *
- * This is version 2 of the youtube player.
+ * Song request player created from the youtubePlayer.
  *
  */
 (function() {
@@ -2147,7 +2147,7 @@
         /**
          * @commandpath songcount
          */
-        if (command.equalsIgnoreCase('songcount')) {
+        if (command.equalsIgnoreCase('songs')) {
             var count = $.inidb.get("songcounts", "totalsongs");
             
             if (count === null) {
@@ -2240,28 +2240,28 @@
     });
 
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'findsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'sr');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'ytp', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'musicplayer', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'playlist', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'stealsong', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'jumptosong', 2);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'findsong', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'playsong', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'skipsong', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'reloadyt', 1);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'songrequest');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'sr');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'previoussong');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'currentsong');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'wrongsong');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'nextsong');
         
         // Custom Commands
-        $.registerChatCommand('./systems/youtubePlayer.js', 'songcount');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'length');        
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'songs');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'requests');
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'queuelimit', 2);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'requestlimit', 2);
+        $.registerChatCommand('./systems/custom/songRequestPlayer.js', 'length');        
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
