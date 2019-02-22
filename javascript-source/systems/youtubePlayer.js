@@ -2147,7 +2147,7 @@
         /**
          * @commandpath songcount
          */
-        if (command.equalsIgnoreCase('songs')) {
+        if (command.equalsIgnoreCase('songcount')) {
             var count = $.inidb.get("songcounts", "totalsongs");
             
             if (count === null) {
@@ -2257,7 +2257,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
         
         // Custom Commands
-        $.registerChatCommand('./systems/youtubePlayer.js', 'songs');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'songcount');
         $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
         $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
