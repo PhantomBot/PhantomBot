@@ -109,7 +109,7 @@
 
         if (message.match(/\(readfile/)) {
             if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                message = $.replace(message, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2)[0]);
+                message = $.replace(message, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2.replace(/\.\./g, ''))[0]);
             }
         }
 
@@ -117,7 +117,7 @@
             if (message.search(/\((readfilerand ([^)]+)\))/g) >= 0) {
                 var path = RegExp.$2;
                 var path2 = RegExp.$1;
-                var results = $.arrayShuffle($.readFile('./addons/' + path.trim()));
+                var results = $.arrayShuffle($.readFile('./addons/' + path.trim().replace(/\.\./g, '')));
                 message = $.replace(message, '(' + path2.trim(), $.randElement(results));
             }
         }
@@ -417,7 +417,7 @@
                 var file = message.match(/\(writefile (.+), (.+), (.+)\)/)[1],
                     append = (message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
                     string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
-                $.writeToFile(string, './addons/' + file, append);
+                $.writeToFile(string, './addons/' + file.replace(/\.\./g, ''), append);
             }
             message = $.replace(message, message.match(/\(writefile (.+), (.+), (.+)\)/)[0], '');
             if (message == '') {
