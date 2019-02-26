@@ -184,7 +184,7 @@
             <fileset dir="./resources" />
         </copy>
         <replaceregexp
-            file="${build.dir}/web/panel/js/panelUtils.js"
+            file="${build.dir}/web/panel/js/utils/helpers.js"
             match="PANEL_VERSION = &quot;(.*)&quot;;"
             replace="PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
