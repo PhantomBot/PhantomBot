@@ -1137,13 +1137,28 @@ public final class PhantomBot implements Listener {
 
         /* Check to see if web is enabled */
         if (webEnabled) {
-            print("Shutting down all web socket servers...");
+            print("Shutting down all web socket/http servers...");
             if (!useHttps) {
                 httpServer.close();
+                if (testPanelServer) {
+                    newPanelSocketServer.dispose();
+                } else {
+                    panelSocketServer.dispose();
+                }
+                if (musicEnabled) {
+                    youtubeSocketServer.dispose();
+                }
             } else {
                 httpsServer.close();
+                if (testPanelServer) {
+                    newPanelSocketServer.dispose();
+                } else {
+                    panelSocketSecureServer.dispose();
+                }
+                if (musicEnabled) {
+                    youtubeSocketSecureServer.dispose();
+                }
             }
-            youtubeSocketServer.dispose();
         }
 
         try {
