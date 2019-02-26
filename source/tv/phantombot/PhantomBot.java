@@ -1,4 +1,4 @@
-/*            
+/*
  * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -233,7 +233,7 @@ public final class PhantomBot implements Listener {
     private Boolean backupSQLiteAuto = false;
     private int backupSQLiteHourFrequency = 0;
     private int backupSQLiteKeepDays = 0;
-    
+
     // Error codes
     // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
     private static final int EXIT_STATUS_OK = 0;
@@ -508,7 +508,7 @@ public final class PhantomBot implements Listener {
         this.backupSQLiteAuto = this.pbProperties.getProperty("backupsqliteauto", "true").equalsIgnoreCase("true");
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfrequency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
-        
+
         // Set the newSetup flag
         this.newSetup = this.pbProperties.getProperty("newSetup").equals("true");
 
@@ -1142,13 +1142,28 @@ public final class PhantomBot implements Listener {
 
         /* Check to see if web is enabled */
         if (webEnabled) {
-            print("Shutting down all web socket servers...");
+            print("Shutting down all web socket/http servers...");
             if (!useHttps) {
                 httpServer.close();
+                if (testPanelServer) {
+                    newPanelSocketServer.dispose();
+                } else {
+                    panelSocketServer.dispose();
+                }
+                if (musicEnabled) {
+                    youtubeSocketServer.dispose();
+                }
             } else {
                 httpsServer.close();
+                if (testPanelServer) {
+                    newPanelSocketServer.dispose();
+                } else {
+                    panelSocketSecureServer.dispose();
+                }
+                if (musicEnabled) {
+                    youtubeSocketSecureServer.dispose();
+                }
             }
-            youtubeSocketServer.dispose();
         }
 
         try {
@@ -1333,9 +1348,9 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitOK();
             }
         }
-        
+
         Properties startProperties = ConfigurationManager.getConfiguration();
-        
+
         setStaticFields(startProperties);
 
         /* Start PhantomBot */
@@ -1363,7 +1378,7 @@ public final class PhantomBot implements Listener {
         if (reloadScripts)
             com.gmt2001.Console.out.println("Enabling Script Reloading");
         PhantomBot.reloadScripts = reloadScripts;
-        
+
     }
 
     /** gen a random string */
@@ -1543,21 +1558,21 @@ public final class PhantomBot implements Listener {
             }
         }
     }
-    
+
     /**
      * End PhantomBot with an error state
      */
     public static void exitError() {
         System.exit(EXIT_STATUS_ERROR);
     }
-    
+
     /**
      * End PhantomBot with an OK state
      */
     public static void exitOK() {
         System.exit(EXIT_STATUS_OK);
     }
-    
+
     public static Boolean getReloadScripts() {
         return reloadScripts;
     }
