@@ -37,7 +37,7 @@ public class ScriptEventManager implements Listener {
     private final List<String> classes = new ArrayList<String>();
     private boolean isKilled = false;
 
-    /*
+    /**
      * Method to get this instance.
      *
      * @return {Object}
@@ -46,7 +46,7 @@ public class ScriptEventManager implements Listener {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor.
      */
     private ScriptEventManager() {
@@ -60,7 +60,7 @@ public class ScriptEventManager implements Listener {
         }
     }
 
-    /*
+    /**
      * Method that handles events.
      *
      * @param {Event} event
@@ -82,7 +82,7 @@ public class ScriptEventManager implements Listener {
         }
     }
 
-    /*
+    /**
      * Method to see if an event exists, this is used from init.js.
      *
      * @param  {String} eventName
@@ -92,7 +92,7 @@ public class ScriptEventManager implements Listener {
         return events.containsKey((WordUtils.capitalize(eventName) + "Event"));
     }
 
-    /*
+    /**
      * Method to register event handlers.
      *
      * @param {String} eventName
@@ -118,7 +118,7 @@ public class ScriptEventManager implements Listener {
         }
     }
 
-    /*
+    /**
      * Method to unregister an event handler.
      *
      * @param {ScriptEventHandler} handler
@@ -136,14 +136,14 @@ public class ScriptEventManager implements Listener {
         }
     }
 
-    /*
+    /**
      * Method to kill this instance.
      */
     public void kill() {
         this.isKilled = true;
     }
 
-    /*
+    /**
      * Class for events.
      */
     private class EventHandler {

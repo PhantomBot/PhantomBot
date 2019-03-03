@@ -28,28 +28,16 @@ import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 
 import com.google.common.collect.Maps;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -64,7 +52,7 @@ public class TwitchWSHostIRC {
     private final EventBus eventBus;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
 
-    /*
+    /**
      * Creates an instance for a Twitch WS Host IRC Session
      *
      * @param  channelName  Name of Twitch Channel for which this instance is created.
@@ -81,7 +69,7 @@ public class TwitchWSHostIRC {
         return instance;
     }
 
-    /*
+    /**
      * Constructor for TwitchWSHostIRC object.
      *
      * @param  channelName  Name of Twitch Channel for which this instance is created.
@@ -97,15 +85,15 @@ public class TwitchWSHostIRC {
             twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
             if (!twitchWSHostIRCWS.connectWSS()) {
                 com.gmt2001.Console.err.println("Verbindung mit dem Twitch Data Host Feed ist fehlgeschlagen. Beende PhantomBot.");
-                System.exit(0);
+                PhantomBot.exitError();
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI fehlgeschlagen. Beende PhantomBot.");
-            System.exit(0);
+            PhantomBot.exitError();
         }
     }
 
-    /*
+    /**
      * Public data access to channelName
      *
      * @return  String  this.channelName
@@ -114,7 +102,7 @@ public class TwitchWSHostIRC {
         return this.channelName;
     }
 
-    /*
+    /**
      * Public data access to oAuth
      *
      * @return  String  this.oAuth
@@ -123,7 +111,7 @@ public class TwitchWSHostIRC {
         return this.oAuth;
     }
 
-    /*
+    /**
      * Public data access to eventBus
      *
      * @return  EventBus  this.eventBus
@@ -132,7 +120,7 @@ public class TwitchWSHostIRC {
         return this.eventBus;
     }
 
-    /*
+    /**
      * Exposes the connected status of the object.
      *
      * @return  boolean  Is connected
@@ -141,7 +129,7 @@ public class TwitchWSHostIRC {
         return twitchWSHostIRCWS.isConnected();
     }
 
-    /*
+    /**
      * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
@@ -157,7 +145,7 @@ public class TwitchWSHostIRC {
                     reconnected = twitchWSHostIRCWS.connectWSS();
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.println("Fehler beim Neuverbinden des Twitch Data Host Feed. Beende PhantomBot: " + ex.getMessage());
-                    System.exit(0);
+                    PhantomBot.exitError();
                 }
             } else {
                 try {
@@ -169,7 +157,7 @@ public class TwitchWSHostIRC {
         }
     }
 
-    /*
+    /**
      * Class for handling the physical connection to Twitch WS-IRC for the Data Host Feed.
      */
     private class TwitchWSHostIRCWS extends WebSocketClient {
@@ -191,7 +179,7 @@ public class TwitchWSHostIRC {
         private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
         private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
 
-        /*
+        /**
          * Constructor for TwitchWSIRC object.
          *
          * @param  channel  Name of Twitch Channel for which this instance is created.
@@ -241,11 +229,12 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Sends a message to the websocket.
          *
          * @param {String} message
          */
+        @Override
         public void send(String message) {
             try {
                 super.send(message);
@@ -254,7 +243,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Exposes the connected status of the object.
          *
          * @return  boolean  Is connected
@@ -263,7 +252,7 @@ public class TwitchWSHostIRC {
             return connected;
         }
 
-        /*
+        /**
          * Connect via WSS. This provides a secure connection to Twitch.
          *
          * @return  boolean  true on success and false on failure
@@ -278,7 +267,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for connection opening to WS-IRC.  Calls send() directly to login to Twitch
          * IRC rather than sendAddQueue().
          *
@@ -290,7 +279,7 @@ public class TwitchWSHostIRC {
             send("NICK " + login);
         }
 
-        /*
+        /**
          * Callback for connection closed from WS-IRC.
          *
          * @param  int      Exit code
@@ -306,7 +295,7 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for incoming messages from WS-IRC.
          *
          * @param  String  Incoming message
@@ -398,19 +387,20 @@ public class TwitchWSHostIRC {
             }
         }
 
-        /*
+        /**
          * Callback for errors from WebSockets. Do not log the
          * ArrayIndexOutOfBoundsException, this is tossed by the API.
          *
          * @param  Exception  Java Exception thrown from WebSockets API
          */
+        @Override
         public void onError(Exception ex) {
             if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
                 com.gmt2001.Console.debug.println("Twitch WS-IRC (Host Data) Exception: " + ex);
             }
         }
 
-        /*
+        /**
          * Sends a PONG response to Twitch in reply to PING.
          */
         private void sendPong() {

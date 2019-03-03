@@ -19,7 +19,7 @@ package tv.phantombot.event.console;
 public class ConsoleInputEvent extends ConsoleEvent {
     private final String message;
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {String} message
@@ -28,7 +28,7 @@ public class ConsoleInputEvent extends ConsoleEvent {
         this.message = message;
     }
 
-    /*
+    /**
      * Method that will return the message said in the console.
      *
      * @return {String} message
@@ -37,7 +37,7 @@ public class ConsoleInputEvent extends ConsoleEvent {
         return this.message;
     }
 
-    /*
+    /**
      * Method that returns this object as a string.
      *
      * @return {String}

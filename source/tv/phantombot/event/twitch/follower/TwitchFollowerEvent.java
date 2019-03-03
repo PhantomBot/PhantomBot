@@ -21,7 +21,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public abstract class TwitchFollowerEvent extends TwitchEvent {
     private final String follower;
 
-    /*
+    /**
      * Abstract constructor
      *
      * @param {String} follower
@@ -30,7 +30,7 @@ public abstract class TwitchFollowerEvent extends TwitchEvent {
         this.follower = follower;
     }
 
-    /*
+    /**
      * Method that returns the follower's username.
      *
      * @param {String} follower

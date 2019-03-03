@@ -18,7 +18,7 @@ package tv.phantombot.event.ytplayer;
 
 public class YTPlayerSkipSongEvent extends YTPlayerEvent {
 
-    /*
+    /**
      * Class constructor.
      */
     public YTPlayerSkipSongEvent() {

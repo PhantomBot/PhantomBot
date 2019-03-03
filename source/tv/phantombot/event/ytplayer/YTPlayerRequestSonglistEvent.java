@@ -18,7 +18,7 @@ package tv.phantombot.event.ytplayer;
 
 public class YTPlayerRequestSonglistEvent extends YTPlayerEvent {
 
-    /*
+    /**
      * Class constructor.
      */
     public YTPlayerRequestSonglistEvent() {

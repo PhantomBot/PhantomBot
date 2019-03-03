@@ -20,7 +20,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchOfflineEvent extends TwitchEvent {
 
-    /*
+    /**
      * Class constructor.
      */
     public TwitchOfflineEvent() {

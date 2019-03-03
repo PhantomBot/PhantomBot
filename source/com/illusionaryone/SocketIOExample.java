@@ -20,10 +20,6 @@ package com.illusionaryone;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.gamewisp.GameWispChangeEvent;
-import tv.phantombot.event.gamewisp.GameWispBenefitsEvent;
-import tv.phantombot.event.gamewisp.GameWispSubscribeEvent;
-import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
 
 import java.security.cert.CertificateException;
 
@@ -41,14 +37,16 @@ import io.socket.client.Socket;
 import org.json.JSONObject;
 
 /*
+ * This was the GameWisp Singularity Handler. Since GameWisp has shutdown, this code is being left
+ * as an example for Socket.IO websocket handling.
  * @author illusionaryone
  */
-public class SingularityAPI {
+public class SocketIOExample {
 
-    private static final SingularityAPI instance = new SingularityAPI();
+    private static final SocketIOExample instance = new SocketIOExample();
 
     private static final String apiURL = "https://singularity.gamewisp.com";
-    private static final String devKey = "d391637bb332e0b67d60388e2cac31dd93ad5bf";
+    private static final String devKey = "d391637bb332e0b67d60388e2ca5bf";
 
     private Socket webSocket;
 
@@ -57,11 +55,11 @@ public class SingularityAPI {
     private String AccessToken = "";
     private String SessionID = "";
 
-    public static SingularityAPI instance() {
+    public static SocketIOExample instance() {
         return instance;
     }
 
-    public void SingularityAPI() {
+    public void SocketIOExample() {
     }
 
     public void StartService() {
@@ -126,7 +124,7 @@ public class SingularityAPI {
                 @Override
                 public void call(Object... args) {
                     if (Authenticated) {
-                        if (PhantomBot.enableDebugging) {
+                        if (PhantomBot.getEnableDebugging()) {
                             com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Channel");
                         } else {
                             com.gmt2001.Console.out.println("SingularityWS (GameWisp): Connected and Ready for Requests");
@@ -161,7 +159,6 @@ public class SingularityAPI {
                     }
                     String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
                     int tier = jsonObject.getJSONObject("data").getJSONObject("tier").getInt("level");
-                    EventBus.instance().post(new GameWispSubscribeEvent(username, tier));
                 }
             });
 
@@ -187,7 +184,6 @@ public class SingularityAPI {
                     }
                     String username = jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").getString("twitch");
                     int months = jsonObject.getJSONObject("data").getInt("month_count");
-                    EventBus.instance().post(new GameWispAnniversaryEvent(username, months));
                 }
             });
 
@@ -213,7 +209,6 @@ public class SingularityAPI {
                     }
                     String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
                     int tier = jsonObject.getJSONObject("tier").getInt("level");
-                    EventBus.instance().post(new GameWispBenefitsEvent(username, tier));
                 }
             });
 
@@ -245,7 +240,6 @@ public class SingularityAPI {
                     }
                     String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
                     String status = jsonObject.getJSONObject("data").getString("status");
-                    EventBus.instance().post(new GameWispChangeEvent(username, status));
                 }
             });
 

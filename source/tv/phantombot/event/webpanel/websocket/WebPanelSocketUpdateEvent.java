@@ -22,7 +22,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     private final String arguments;
     private final String[] args;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String}   id
@@ -37,7 +37,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         this.args = args;
     }
 
-    /*
+    /**
      * Method that returns the socket event ID.
      *
      * @return {String} id

@@ -45,7 +45,7 @@ public class Script {
         this.file = file;
         this.lastModified = file.lastModified();
 
-        if (PhantomBot.reloadScripts) {
+        if (PhantomBot.getReloadScripts()) {
             ScriptFileWatcher.instance().addScript(this);
         } else {
             if (file.getPath().indexOf(System.getProperty("file.separator") + "lang" + System.getProperty("file.separator")) != -1) {
@@ -162,7 +162,7 @@ public class Script {
 
         /* Create Debugger Instance - this opens for only init.js */
         Main debugger = null;
-        if (PhantomBot.enableRhinoDebugger) {
+        if (PhantomBot.getEnableRhinoDebugger()) {
             if (file.getName().endsWith("init.js")) {
                 debugger = new Main(file.getName());
                 debugger.attachTo(ctxFactory);
@@ -170,7 +170,7 @@ public class Script {
         }
 
         context = ctxFactory.enterContext();
-        if (!PhantomBot.enableRhinoDebugger) {
+        if (!PhantomBot.getEnableRhinoDebugger()) {
             context.setOptimizationLevel(9);
         }
 
@@ -180,7 +180,7 @@ public class Script {
         scope.defineProperty("$script", this, 0);
 
         /* Configure debugger. */
-        if (PhantomBot.enableRhinoDebugger) {
+        if (PhantomBot.getEnableRhinoDebugger()) {
             if (file.getName().endsWith("init.js")) {
                 debugger.setBreakOnEnter(false);
                 debugger.setScope(scope);

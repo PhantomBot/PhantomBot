@@ -45,9 +45,9 @@ public class ScriptManager {
             } else {
                 com.gmt2001.Console.err.println("Fehler beim Laden des Moduls: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
-            if (!PhantomBot.reloadScripts) {
+            if (!PhantomBot.getReloadScripts()) {
                 com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Datei");
-                System.exit(0);
+                PhantomBot.exitError();
             }
             throw new IOException(ex.getMessage());
         }
@@ -73,9 +73,9 @@ public class ScriptManager {
             } else {
                 com.gmt2001.Console.err.println("Fehler beim Neuladen des Moduls: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
-            if (!PhantomBot.reloadScripts) {
+            if (!PhantomBot.getReloadScripts()) {
                 com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Dateie");
-                System.exit(0);
+                PhantomBot.exitError();
             }
             throw new IOException(ex.getMessage());
         }

@@ -18,7 +18,7 @@ package tv.phantombot.event.ytplayer;
 
 public class YTPlayerDisconnectEvent extends YTPlayerEvent {
 
-    /*
+    /**
      * Class constructor.
      */
     public YTPlayerDisconnectEvent() {
