@@ -18,6 +18,7 @@
 package tv.phantombot.event.discord;
 
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import tv.phantombot.event.Event;
@@ -25,6 +26,7 @@ import tv.phantombot.event.Event;
 public abstract class DiscordEvent extends Event {
     private final IUser user;
     private final IChannel channel;
+    private final IMessage message;
     private final String username;
     private final String channelName;
     private final String sender;
@@ -41,6 +43,7 @@ public abstract class DiscordEvent extends Event {
     protected DiscordEvent(IUser user) {
         this.user = user;
         this.channel = null;
+        this.message = null;
         this.channelName = null;
         this.channelId = null;
         this.username = user.getName();
@@ -59,6 +62,27 @@ public abstract class DiscordEvent extends Event {
     protected DiscordEvent(IUser user, IChannel channel) {
         this.user = user;
         this.channel = channel;
+        this.message = null;
+        this.channelName = channel.getName();
+        this.channelId = channel.getStringID();
+        this.username = user.getName();
+        this.discrim = user.getDiscriminator();
+        this.senderId = user.getStringID();
+        this.sender = (username + "#" + discrim);
+        this.mention = user.mention();
+    }
+    
+    /**
+     * Class constructor for this event.
+     *
+     * @param {IUser}    user
+     * @param {IChannel} channel
+     * @param {IMessage} message
+     */
+    protected DiscordEvent(IUser user, IChannel channel, IMessage message) {
+        this.user = user;
+        this.channel = channel;
+        this.message = message;
         this.channelName = channel.getName();
         this.channelId = channel.getStringID();
         this.username = user.getName();
@@ -102,6 +126,15 @@ public abstract class DiscordEvent extends Event {
      */
     public String getChannel() {
         return this.channelName;
+    }
+    
+    /**
+     * Method that gets the raw message.
+     * 
+     * @return {String}
+     */
+    public String getMessage() {
+        return this.message.getContent();
     }
 
     /**
@@ -147,5 +180,14 @@ public abstract class DiscordEvent extends Event {
      */
     public IChannel getDiscordChannel() {
         return this.channel;
+    }
+    
+    /**
+     * Method that returns the message object
+     * 
+     * @return {IMessage}
+     */
+    public IMessage getDiscordMessage() {
+        return this.message;
     }
 }
