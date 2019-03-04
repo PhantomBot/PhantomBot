@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord.util;
 
+import com.vdurmont.emoji.Emoji;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 import sx.blah.discord.handle.obj.Permissions;
@@ -41,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.File;
 
 import java.awt.Color;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.StatusType;
@@ -298,15 +300,38 @@ public class DiscordUtil {
      * Method that adds a reaction to a message.
      * 
      * @param message The message object
-     * @param reaction The reaction object
+     * @param emoji The reaction object
      */
-    public void addReaction(IMessage message, IReaction reaction) {
+    public void addReaction(IMessage message, ReactionEmoji emoji) {
         RequestBuffer.request(() -> {
             try {
-                if (message != null && reaction != null) {
-                    message.addReaction(reaction);
+                if (message != null && emoji != null) {
+                    message.addReaction(emoji);
                 } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-                    addReaction(message, reaction);
+                    addReaction(message, emoji);
+                } else {
+                    // Throw this if the message object is null.
+                    throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        }).get();
+    }
+    
+    /**
+     * Method that adds a reaction to a message.
+     * 
+     * @param message The message object
+     * @param emoji The reaction object
+     */
+    public void addReaction(IMessage message, Emoji emoji) {
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null && emoji != null) {
+                    message.addReaction(emoji);
+                } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
+                    addReaction(message, emoji);
                 } else {
                     // Throw this if the message object is null.
                     throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
@@ -321,11 +346,23 @@ public class DiscordUtil {
      * Method that adds multiple reactions to a message.
      * 
      * @param message The message object
-     * @param reactions The reaction objects
+     * @param emojis The reaction objects
      */
-    public void addReactions(IMessage message, IReaction[] reactions) {
-        for (IReaction reaction : reactions) {
-            addReaction(message, reaction);
+    public void addReactions(IMessage message, ReactionEmoji[] emojis) {
+        for (ReactionEmoji emoji : emojis) {
+            addReaction(message, emoji);
+        }
+    }
+    
+    /**
+     * Method that adds multiple reactions to a message.
+     * 
+     * @param message The message object
+     * @param emojis The reaction objects
+     */
+    public void addReactions(IMessage message, Emoji[] emojis) {
+        for (Emoji emoji : emojis) {
+            addReaction(message, emoji);
         }
     }
 
