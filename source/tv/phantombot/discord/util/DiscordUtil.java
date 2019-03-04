@@ -21,6 +21,7 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IRole;
 
@@ -40,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.File;
 
 import java.awt.Color;
+
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.StatusType;
 
@@ -291,6 +293,41 @@ public class DiscordUtil {
     public IMessage sendFile(String channelName, String fileLocation) {
         return sendFile(getChannel(channelName), "", fileLocation);
     }
+    
+    /**
+     * Method that adds a reaction to a message.
+     * 
+     * @param message The message object
+     * @param reaction The reaction object
+     */
+    public void addReaction(IMessage message, IReaction reaction) {
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null && reaction != null) {
+                    message.addReaction(reaction);
+                } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
+                    addReaction(message, reaction);
+                } else {
+                    // Throw this if the message object is null.
+                    throw new DiscordException("Failed to send file message due to the message or reaction being null.");
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        }).get();
+    }
+    
+    /**
+     * Method that adds multiple reactions to a message.
+     * 
+     * @param message The message object
+     * @param reactions The reaction objects
+     */
+    public void addReactions(IMessage message, IReaction[] reactions) {
+        for (IReaction reaction : reactions) {
+            addReaction(message, reaction);
+        }
+    }
 
     /**
      * Method to return a channel object by its name.
@@ -310,6 +347,7 @@ public class DiscordUtil {
                 return channel;
             }
         }
+
         return null;
     }
 
