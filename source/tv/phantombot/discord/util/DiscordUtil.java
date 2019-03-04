@@ -309,7 +309,7 @@ public class DiscordUtil {
                     addReaction(message, reaction);
                 } else {
                     // Throw this if the message object is null.
-                    throw new DiscordException("Failed to send file message due to the message or reaction being null.");
+                    throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
                 }
             } catch (MissingPermissionsException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
