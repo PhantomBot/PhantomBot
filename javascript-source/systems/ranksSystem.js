@@ -25,6 +25,7 @@
 
     var rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
         rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200),
+        time,
         ranksTimeTable;
 
     /**
