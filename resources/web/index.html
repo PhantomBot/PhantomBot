@@ -75,19 +75,6 @@
 
         <!-- Main content -->
         <div class="main">
-            <div class="launcher launcher-panelbeta" data-toggle="tooltip" data-placement="right" title="Click to launch the beta control panel." id="betapanel-tab">
-                <span id="middle">
-                    <i id="fontawesome" class="fas fa-cogs" aria-hidden="true"></i>
-
-                    <span>Launch PhantomBot BETA Control Panel</span>
-                </span>
-
-                <!-- Pad lock saying that this panel requires a password -->
-                <span class="launcher-lock">
-                    <i class="fas fa-lock"></i>
-                </span>
-            </div>
-
             <div class="launcher" data-toggle="tooltip" data-placement="right" title="Click to launch the control panel." id="panel-tab">
                 <span id="middle">
                     <i id="fontawesome" class="fas fa-desktop" aria-hidden="true"></i>
@@ -143,28 +130,6 @@
                 const getWindowUrl = function(path) {
                     return window.location.protocol + '//' + window.location.host + '/' + path;
                 };
-
-                // If the beta panel js folder exists, load the panel tab.
-                $.ajax({
-                    'type': 'GET',
-                    'url': '/beta-panel/js',
-                    'username': 'null',
-                    'password': 'null'
-                }).done(function(err, data) {
-                    // Generate beta panel tab.
-                    $('#betapanel-tab').wrapInner($('<a/>', {
-                        'href': getWindowUrl('beta-panel')
-                    }));
-                }).fail(function(err) {
-                    if (err.status === 401) {
-                        // Generate beta panel tab.
-                        $('#betapanel-tab').wrapInner($('<a/>', {
-                            'href': getWindowUrl('beta-panel')
-                        }));
-                    } else {
-                        $('#betapanel-tab').remove();
-                    }
-                })
 
                 // Generate panel tab.
                 $('#panel-tab').wrapInner($('<a/>', {

@@ -88,29 +88,6 @@ public class HTTPServerCommon {
         }
     }
 
-    public static void handleBetaPanel(HttpExchange exchange) throws IOException {
-        URI uriData = exchange.getRequestURI();
-        String uriPath = uriData.getPath();
-
-        // Get the Request Method (GET/PUT)
-        String requestMethod = exchange.getRequestMethod();
-
-        // Get any data from the body, although, we just discard it, this is required
-        InputStream inputStream = exchange.getRequestBody();
-        while (inputStream.read() != -1) {
-            inputStream.skip(0x10000);
-        }
-        inputStream.close();
-
-        if (requestMethod.equals("GET")) {
-            if (uriPath.equals("/beta-panel")) {
-                HTTPServerCommon.handleFile("/web/beta-panel/index.html", exchange, false, false);
-            } else {
-                HTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
-            }
-        }
-    }
-
     public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException {
         Boolean hasPassword = false;
         Boolean doRefresh = false;
@@ -452,13 +429,13 @@ public class HTTPServerCommon {
         sendHTMLError(400, jsonObject.toString(), exchange);
         return;
     }
-    
+
     /**
      * Method that handles getting the lang files list for the panel.
      * @param path
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
         if (needsPassword) {
@@ -467,23 +444,23 @@ public class HTTPServerCommon {
                 return;
             }
         }
-        
+
         if (path.isEmpty()) {
             // Get all lang files and their paths.
             String[] files = LangFileUpdater.getLangFiles();
-        
+
             // Send the files.W
             sendData("text/text", String.join("\n", files), exchange);
         } else {
             sendData("text/text", LangFileUpdater.getCustomLang(path), exchange);
         }
     }
-    
+
     /**
      * Method that handles searching for a game in our games list and sends it to the panel.
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleGamesList(HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
         if (needsPassword) {
@@ -492,10 +469,11 @@ public class HTTPServerCommon {
                 return;
             }
         }
-        
+
         String query= exchange.getRequestURI().getQuery();
         String[] queryData;
         String search = null;
+
         if (query != null) {
             queryData = query.split("&");
 
@@ -503,14 +481,13 @@ public class HTTPServerCommon {
                 search = queryData[1].split("=")[1].toLowerCase();
             }
         }
-        
-        
+
         if (search != null) {
             try {
-                String data = FileUtils.readFileToString(new File("./web/beta-panel/js/utils/gamesList.txt"), "utf-8");
+                String data = FileUtils.readFileToString(new File("./web/panel/js/utils/gamesList.txt"), "utf-8");
                 JSONStringer stringer = new JSONStringer();
                 String[] games = data.split("\n");
-                
+
                 // Create a new json array.
                 stringer.array();
                 for (String game : games) {
@@ -534,13 +511,13 @@ public class HTTPServerCommon {
             sendData("text/text", "[]", exchange);
         }
     }
-    
+
     /**
      * Method that handles files.
      * @param uriPath
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleFile(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
         if (needsPassword) {
@@ -701,7 +678,7 @@ public class HTTPServerCommon {
             sendHTMLError(403, "Access Denied.", exchange);
             return;
         }
-        
+
         LangFileUpdater.updateCustomLang(langData, langFile);
         sendHTMLError(200, "File Updated.", exchange);
     }
