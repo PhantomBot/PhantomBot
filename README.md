@@ -15,12 +15,14 @@ Additional functionality is enabled through the use of third-party modules.
 * [PhantomBot Blog](https://blog.phantombot.tv "PhantomBot Blog")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBot "PhantomBot Twitter")
 
+<!---
 ## Screenshots
 [![](https://i.zelakto.tv/images/YaDd.png)](https://i.zelakto.tv/images/Yu7W.png "PhantomBot Console")
 [![](https://i.zelakto.tv/images/YfFl.png)](https://i.zelakto.tv/images/YXyc.png "PhantomBot Control Panel")
 [![](https://i.zelakto.tv/images/Y5W4.png)](https://i.zelakto.tv/images/Y2qR.png "PhantomBot YouTube Player")
 [![](https://i.zelakto.tv/images/Y4mh.png)](https://i.zelakto.tv/images/YDNm.png "PhantomBot Public Playlist Queue")
 Click on the images to enlarge them.
+-->
 
 ## How can I follow along/contribute?
 
