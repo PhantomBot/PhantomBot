@@ -646,6 +646,15 @@ public class DiscordUtil {
     public void deleteRole(String roleName) {
         deleteRole(getRole(roleName));
     }
+    
+    /**
+     * Method that gets a list of guild roles.
+     * 
+     * @return 
+     */
+    public List<IRole> getGuildRoles() {
+        return DiscordAPI.getGuild().getRoles();
+    }
 
     /**
      * Method to check if someone is an administrator.
