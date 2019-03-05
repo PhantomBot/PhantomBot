@@ -485,15 +485,6 @@ $(function() {
                     } else {
                         helpers.isAuth = true;
                     }
-                    // Beta alert. To be removed later.
-                    if (localStorage.getItem('phantombot_beta_warning') !== 'true') {
-                        if (confirm('Hey there! \nThis panel is currently in its early development stages. ' +
-                            'Bugs and issues are to be expected. If you find any, please report them under the beta panel post of the forums! \n\nThank you.')) {
-                            localStorage.setItem('phantombot_beta_warning', 'true');
-                        } else {
-                            return;
-                        }
-                    }
 
                     // Load the main page.
                     $.loadPage('dashboard', 'dashboard.html');
