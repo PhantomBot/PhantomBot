@@ -271,11 +271,11 @@ $(function() {
                     default:
                         socket.updateDBValues('alerts_subscribe_update_settings', {
                             tables: ['subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                    				'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                    				'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
-            				keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
-                    				'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000',
-                    				'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle'],
+                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
+                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
+                            keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
+                                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000',
+                                    'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle'],
                             values: [subMsg.val(), primeSubMsg.val(), reSubMsg.val(), gifSubMsg.val(), subToggle, primeSubToggle, reSubToggle, gifSubToggle, subReward.val(), reSubReward.val(),
                                 gifSubReward.val(), reSubEmote.val(), tierOne.val(), tierTwo.val(), tierThree.val(), massGiftSubToggle, massGiftSubMsg.val(), massGiftSubReward.val(),
                                 anonGifSubMsg.val(), anonMassGiftSubMsg.val(), anonGifSubToggle, anonMassGiftSubToggle]
@@ -576,10 +576,12 @@ $(function() {
                             keys: ['autoGreetEnabled', 'cooldown'],
                             values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5)]
                         }, function() {
-                            // Close the modal.
-                            $('#greeting-alert').modal('toggle');
-                            // Alert the user.
-                            toastr.success('Successfully updated greeting alert settings!');
+                            socket.sendCommand('alerts_update_greeting_settings_cmd', 'greetingspanelupdate', function() {
+                                // Close the modal.
+                                $('#greeting-alert').modal('toggle');
+                                // Alert the user.
+                                toastr.success('Successfully updated greeting alert settings!');
+                            });
                         });
                 }
             }).modal('toggle');
@@ -589,35 +591,43 @@ $(function() {
     // StreamLabs settings.
     $('#donationHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_streamlabs_settings', {
-            tables: ['donations', 'donations', 'donations'],
-            keys: ['announce', 'reward', 'message']
+            tables: ['donations', 'donations', 'donations', 'donations', 'donations'],
+            keys: ['announce', 'reward', 'message', 'donationGroup', 'donationGroupMin']
         }, true, function(e) {
             helpers.getModal('streamlabs-alert', 'StreamLabs Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
-            /// Add the toggle for streamlabs alerts.
+            // Add the toggle for streamlabs alerts.
             .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (e.announce === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If StreamLabs tips should be posted in the chat.'))
             // Add the the text area for the tip message.
             .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.message,
                 'Message posted in the channel when someone tips with StreamLabs. Tags: (name), (amount), (points), (reward), (pointname), (currency), and (message)'))
             // Add the the box for the tip reward
-            .append(helpers.getInputGroup('streamlabs-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.')),
+            .append(helpers.getInputGroup('streamlabs-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.'))
+            // Add the toggle for streamlabs promotion.
+            .append(helpers.getDropdownGroup('streamlabs-promotion-toggle', 'Enable Promotion Reward', (e.donationGroup === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If StreamLabs tipers should be promoted to Donator rank.'))
+            // Add the the box for the tip reward
+            .append(helpers.getInputGroup('streamlabs-promotion', 'number', 'Tip Promotion Reward', '', e.donationGroupMin, 'Reward donator with a role.')),
             function() { // Callback once the user clicks save.
                 let tipToggle = $('#streamlabs-toggle').find(':selected').text() === 'Yes',
                     tipMessage = $('#streamlabs-message'),
-                    tipReward = $('#streamlabs-reward');
+                    tipReward = $('#streamlabs-reward'),
+                    tipPromotionToggle = $('#streamlabs-promotion-toggle').find(':selected').text() === 'Yes',
+                    tipPromotion = $('#streamlabs-promotion');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
                     case helpers.handleInputString(tipMessage):
                     case helpers.handleInputNumber(tipReward, 0):
+                    case helpers.handleInputNumber(tipPromotion, 1):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_streamlabs_settings', {
-                            tables: ['donations', 'donations', 'donations'],
-                            keys: ['announce', 'reward', 'message'],
-                            values: [tipToggle, tipReward.val(), tipMessage.val()]
+                            tables: ['donations', 'donations', 'donations', 'donations', 'donations'],
+                            keys: ['announce', 'reward', 'message', 'donationGroup', 'donationGroupMin'],
+                            values: [tipToggle, tipReward.val(), tipMessage.val(), tipPromotionToggle, tipPromotion.val()]
                         }, function() {
                             socket.sendCommand('alerts_update_streamlabs_settings_cmd', 'donationpanelupdate', function() {
                                 // Close the modal.
@@ -634,8 +644,8 @@ $(function() {
     // TipeeeStream settings.
     $('#tipeeeStreamHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_tipeeestream_settings', {
-            tables: ['tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler'],
-            keys: ['toggle', 'reward', 'message']
+            tables: ['tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler'],
+            keys: ['toggle', 'reward', 'message', 'group', 'groupMin']
         }, true, function(e) {
             helpers.getModal('tipeeestream-alert', 'TipeeeStream Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -647,22 +657,30 @@ $(function() {
             .append(helpers.getTextAreaGroup('tipeeestream-message', 'text', 'Tip Message', '', e.message,
                 'Message posted in the channel when someone tips with TipeeeStream. Tags: (name), (amount), (reward), (formattedamount), and (message)'))
             // Add the the box for the tip reward
-            .append(helpers.getInputGroup('tipeeestream-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.')),
+            .append(helpers.getInputGroup('tipeeestream-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.'))
+            // Add the toggle for tipeeestream promotion.
+            .append(helpers.getDropdownGroup('tipeeestream-promotion-toggle', 'Enable Promotion Reward', (e.group === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If TipeeeStream tipers should be promoted to Donator rank.'))
+            // Add the the box for the tip reward
+            .append(helpers.getInputGroup('tipeeestream-promotion', 'number', 'Tip Promotion Reward', '', e.groupMin, 'Reward donator with a role.')),
             function() { // Callback once the user clicks save.
                 let tipToggle = $('#tipeeestream-toggle').find(':selected').text() === 'Yes',
                     tipMessage = $('#tipeeestream-message'),
-                    tipReward = $('#tipeeestream-reward');
+                    tipReward = $('#tipeeestream-reward'),
+                    tipPromotionToggle = $('#tipeeestream-promotion-toggle').find(':selected').text() === 'Yes',
+                    tipPromotion = $('#tipeeestream-promotion');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
                     case helpers.handleInputString(tipMessage):
                     case helpers.handleInputNumber(tipReward, 0):
+                    case helpers.handleInputNumber(tipPromotion, 1):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_tipeeestream_settings', {
-                            tables: ['tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler'],
-                            keys: ['toggle', 'reward', 'message'],
-                            values: [tipToggle, tipReward.val(), tipMessage.val()]
+                            tables: ['tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler', 'tipeeeStreamHandler'],
+                            keys: ['toggle', 'reward', 'message', 'group', 'groupMin'],
+                            values: [tipToggle, tipReward.val(), tipMessage.val(), tipPromotionToggle, tipPromotion.val()]
                         }, function() {
                             socket.sendCommand('alerts_update_tipeeestream_settings_cmd', 'tipeeestreamreload', function() {
                                 // Close the modal.
@@ -679,8 +697,8 @@ $(function() {
     // StreamElements settings.
     $('#streamElementsHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_streamelements_settings', {
-            tables: ['streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler'],
-            keys: ['toggle', 'reward', 'message']
+            tables: ['streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler'],
+            keys: ['toggle', 'reward', 'message', 'group', 'groupMin']
         }, true, function(e) {
             helpers.getModal('streamelements-alert', 'StreamElements Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -692,22 +710,30 @@ $(function() {
             .append(helpers.getTextAreaGroup('streamelements-message', 'text', 'Tip Message', '', e.message,
                 'Message posted in the channel when someone tips with StreamElements. Tags: (name), (amount), (reward), (currency), and (message)'))
             // Add the the box for the tip reward
-            .append(helpers.getInputGroup('streamelements-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.')),
+            .append(helpers.getInputGroup('streamelements-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.'))
+            // Add the toggle for streamelements promotion.
+            .append(helpers.getDropdownGroup('streamelements-promotion-toggle', 'Enable Promotion Reward', (e.group === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If StreamElements tipers should be promoted to Donator rank.'))
+            // Add the the box for the tip reward
+            .append(helpers.getInputGroup('streamelements-promotion', 'number', 'Tip Promotion Reward', '', e.groupMin, 'Reward donator with a role.')),
             function() { // Callback once the user clicks save.
                 let tipToggle = $('#streamelements-toggle').find(':selected').text() === 'Yes',
                     tipMessage = $('#streamelements-message'),
-                    tipReward = $('#streamelements-reward');
+                    tipReward = $('#streamelements-reward'),
+                    tipPromotionToggle = $('#streamelements-promotion-toggle').find(':selected').text() === 'Yes',
+                    tipPromotion = $('#streamelements-promotion');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
                     case helpers.handleInputString(tipMessage):
                     case helpers.handleInputNumber(tipReward, 0):
+                    case helpers.handleInputNumber(tipPromotion, 1):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_streamelements_settings', {
-                            tables: ['streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler'],
-                            keys: ['toggle', 'reward', 'message'],
-                            values: [tipToggle, tipReward.val(), tipMessage.val()]
+                            tables: ['streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler', 'streamElementsHandler'],
+                            keys: ['toggle', 'reward', 'message', 'group', 'groupMin'],
+                            values: [tipToggle, tipReward.val(), tipMessage.val(), tipPromotionToggle, tipPromotion.val()]
                         }, function() {
                             socket.sendCommand('alerts_update_streamelements_settings_cmd', 'streamelementsreload', function() {
                                 // Close the modal.
