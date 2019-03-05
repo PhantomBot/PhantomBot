@@ -194,7 +194,7 @@ $(run = function() {
 
                 // Get all the info about the command.
                 socket.getDBValues('audio_command_edit', {
-                    tables: ['audioCommands', 'permcom', 'cooldown', 'pricecom'],
+                    tables: ['audioCommands', 'permcom', 'cooldown', 'pricecom', 'paycom'],
                     keys: [command, command, command, command, command]
                 }, function(e) {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
@@ -209,7 +209,7 @@ $(run = function() {
                     .append(helpers.getInputGroup('command-audio', 'text', 'Audio Hook', '', e.audioCommands, 'Audio to be played. This cannot be edited.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers']))
+                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Vips', 'Regulars', 'Viewers']))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -220,6 +220,9 @@ $(run = function() {
                             // Append input box for the command cost.
                             .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
                                 'Cost in points that will be taken from the user when running the command.'))
+                            // Append input box for the command reward.
+                            .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
+                                'Reward in points the user will be given when running the command.'))
                             // Append input box for the command cooldown.
                             .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '5', cooldownJson.seconds,
                                 'Cooldown of the command in seconds.')
@@ -229,20 +232,22 @@ $(run = function() {
                     })), function() {
                         let commandPermission = $('#command-permission'),
                             commandCost = $('#command-cost'),
+                            commandReward = $('#command-reward'),
                             commandCooldown = $('#command-cooldown'),
                             commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
                             case helpers.handleInputNumber(commandCost):
+                            case helpers.handleInputNumber(commandReward):
                             case helpers.handleInputNumber(commandCooldown):
                                 break;
                             default:
                                // Save command information here and close the modal.
                                 socket.updateDBValues('custom_command_edit', {
-                                    tables: ['pricecom', 'permcom'],
-                                    keys: [command, command],
-                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true)]
+                                    tables: ['pricecom', 'permcom', 'paycom'],
+                                    keys: [command, command, command],
+                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), commandReward.val()]
                                 }, function() {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('audio_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
@@ -383,7 +388,7 @@ $(function() {
             .append(helpers.getDropdownGroup('command-audio', 'Audio Hook', 'Select an Audio Hook', audioNames, 'Audio hook to be played when the command is ran.'))
             // Append a select option for the command permission.
             .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
-                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers'], 'Users who can run the command.'))
+                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Vips', 'Regulars', 'Viewers'], 'Users who can run the command.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -394,6 +399,9 @@ $(function() {
                     // Append input box for the command cost.
                     .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
                         'Cost in points that will be taken from the user when running the command.'))
+                    // Append input box for the command reward.
+                    .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
+                    'Reward in points the user will be given when running the command.'))
                     // Append input box for the command cooldown.
                     .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '0', '5',
                         'Cooldown of the command in seconds.')
@@ -405,6 +413,7 @@ $(function() {
                     commandAudio = $('#command-audio'),
                     commandPermission = $('#command-permission'),
                     commandCost = $('#command-cost'),
+                    commandReward = $('#command-reward'),
                     commandCooldown = $('#command-cooldown'),
                     commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
 
@@ -415,6 +424,7 @@ $(function() {
                 switch (false) {
                     case helpers.handleInputString(commandName):
                     case helpers.handleInputNumber(commandCost):
+                    case helpers.handleInputNumber(commandReward):
                     case helpers.handleInputNumber(commandCooldown):
                         break;
                     default:
@@ -431,9 +441,9 @@ $(function() {
 
                                 // Add the command.
                                 socket.updateDBValues('add_audio_command', {
-                                    tables: ['pricecom', 'permcom', 'audioCommands'],
-                                    keys: [commandName.val(), commandName.val(), commandName.val()],
-                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text()), commandAudio.val()]
+                                    tables: ['pricecom', 'permcom', 'paycom', 'audioCommands'],
+                                    keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
+                                    values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text()), commandReward.val(), commandAudio.val()]
                                 }, function() {
                                     socket.wsEvent('audio_command_add_cooldown_ws', './core/commandCoolDown.js', null,
                                         ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
