@@ -124,7 +124,7 @@ public class DiscordAPI extends DiscordUtil {
     }
     
     /** 
-     * Mehtod that checks if we are still connected to Discord and reconnects if we are not. 
+     * Method that checks if we are still connected to Discord and reconnects if we are not. 
      */
     public ConnectionState checkConnectionStatus() {
         if (!DiscordAPI.client.isLoggedIn() || !DiscordAPI.client.isReady()) {
@@ -189,8 +189,8 @@ public class DiscordAPI extends DiscordUtil {
      *
      * @param {String} message
      */
-    private void parseCommand(IUser user, IChannel channel, String message, boolean isAdmin) {
-        String command = message.substring(1);
+    private void parseCommand(IUser user, IChannel channel, IMessage message, boolean isAdmin) {
+        String command = message.getContent().substring(1);
         String arguments = "";
 
         if (command.indexOf(" ") != -1) {
@@ -199,7 +199,7 @@ public class DiscordAPI extends DiscordUtil {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, command, arguments, isAdmin));
+        EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, message, command, arguments, isAdmin));
     }
 
     /**
@@ -217,7 +217,7 @@ public class DiscordAPI extends DiscordUtil {
             service.scheduleAtFixedRate(() -> {
                 if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
                     if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
-                        com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
+                        com.gmt2001.Console.err.println("Connection with Discord was lost.");
                         com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
                     }
                 }
@@ -238,7 +238,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {
-                parseCommand(iUsername, iChannel, message, isAdmin);
+                parseCommand(iUsername, iChannel, iMessage, isAdmin);
             }
 
             EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUsername, iChannel, iMessage, isAdmin));
