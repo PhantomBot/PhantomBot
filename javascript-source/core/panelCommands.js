@@ -343,17 +343,6 @@
         }
 
         /*
-         * Reloads the gameWisp variables.
-         */
-        if (command.equalsIgnoreCase('gamewisppanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.updateGameWispDB();
-            return;
-        }
-
-        /*
          * Reloads the host variables.
          */
         if (command.equalsIgnoreCase('reloadhost')) {
@@ -523,7 +512,6 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadbits', 30);
             $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'gamewisppanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
             $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);

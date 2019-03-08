@@ -203,7 +203,7 @@ public class TwitchValidate {
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
         } catch (Exception ex) {
-            com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
+            com.gmt2001.Console.out.println("Twitch " + type + " OAUTH Token kann nicht überprüft werden.");
         }
     }
 
@@ -224,12 +224,12 @@ public class TwitchValidate {
             JSONObject requestObj = handleRequest(RequestType.GET, oAuthToken);
             if (requestObj.has("message")) {
                 if (requestObj.getString("message").equals("invalid access token")) {
-                    com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, " +
-                                                    "been disabled, or the Twitch API is experiencing issues.");
+                    com.gmt2001.Console.err.println("Twitch meldet, dass Ihr " + type + " OAUTH Token ungültig ist. Es kann abgelaufen " +
+                                                    "sein, deaktiviert worden sein oder die Twitch-API weist Probleme auf.");
                     return;
                 }
             }
-            com.gmt2001.Console.out.println("Validated Twitch " + type + " OAUTH Token.");
+            com.gmt2001.Console.out.println("Validiertes Twitch " + type + " OAUTH Token.");
         }
     }
 }

@@ -179,7 +179,7 @@ public class TwitchPubSub {
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
                 this.setSocket(sslSocketFactory.createSocket());
             } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchPubSubWS konnte sich nicht verbinden: " + ex.getMessage());
             }
         }
 

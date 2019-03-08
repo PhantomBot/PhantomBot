@@ -763,9 +763,9 @@
 
         <form role="form">
             <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Abonnement Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('subMessageInput', 'handlers/subscribeHandler.js', 'discordSettings', 'subMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="subMessageInput" placeholder="Abonnement Nachricht" data-toggle="tooltip" title="Lege eine Nachricht fest, falls jemand deinen Kanal abonniert. Verfügbare Tags: (name)"/>
+                <label>Abonnement Benachrichtigungsnachricht</label>
+                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('subMessageInput', 'handlers/subscribeHandler.js', 'discordSettings', 'subMessage')">Senden</button>
+                <input type="text" class="form-control" id="subMessageInput" placeholder="Abonnement Benachrichtigungsnachricht" data-toggle="tooltip" title="Setzt eine Nachricht, wenn dich jemand abonniert. Verfügbare Tags: (name)"/>
             </div>
         </form>
 
@@ -789,88 +789,7 @@
             <div class="form-group" onkeypress="return event.keyCode != 13">
                 <label>Benachrichtigungskanal</label>
                 <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('subChannelInput', 'handlers/subscribeHandler.js', 'discordSettings', 'subChannel')">Übermitteln</button>
-                <input type="text" class="form-control" id="subChannelInput" placeholder="Kanalname" data-toggle="tooltip" title="Lege den Kanal fest, indem die Ankündigungen für dieses Modul gemacht werden sollen."/>
-            </div>
-        </form>
-    </div>
-    </div>
-
-    <h3>GameWisp Benachrichtigungs Einstellungen</h3>
-    <div>
-    <div id="_discord_gameWispHandlerDisabled" />
-    <div id="_discord_gameWispHandler">
-        <table>
-            <tr class="textList">
-                <td>GameWisp Abonnenten Benachrichtigungen An/Aus</td>
-                <td style="width: 25px"><div id="gamewispSubToggleInput" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Aktivieren" class="button" onclick="$.updateDiscordTable('gamewispSubToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubToggle', 'true')">
-                        <i class="fa fa-circle" /></div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Deaktivieren" class="button" onclick="$.updateDiscordTable('gamewispSubToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubToggle', 'false')">
-                        <i class="fa fa-circle-o" /></div>
-                </td>
-            </tr>
-            <tr class="textList">
-                <td>GameWisp Hochstufungsbenachrichtigungen An/Aus</td>
-                <td style="width: 25px"><div id="gamewispTierToggleInput" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Aktivieren" class="button" onclick="$.updateDiscordTable('gamewispTierToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispTierToggle', 'true')">
-                        <i class="fa fa-circle" /></div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Deaktivieren" class="button" onclick="$.updateDiscordTable('gamewispTierToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispTierToggle', 'false')">
-                        <i class="fa fa-circle-o" /></div>
-                </td>
-            </tr>
-            <tr class="textList">
-                <td>GameWisp Re-Abonnementbenachrichtigungen An/Aus</td>
-                <td style="width: 25px"><div id="gamewispReSubToggleInput" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Aktivieren" class="button" onclick="$.updateDiscordTable('gamewispReSubToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispReSubToggle', 'true')">
-                        <i class="fa fa-circle" /></div>
-                </td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="Deaktivieren" class="button" onclick="$.updateDiscordTable('gamewispReSubToggleInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispReSubToggle', 'false')">
-                        <i class="fa fa-circle-o" /></div>
-                </td>
-            </tr>
-        </table>
-        <br>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Abonnement Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispSubMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gamewispSubMessageInput" placeholder="Abonnement Nachricht" data-toggle="tooltip"
-                title="Lege eine Nachricht fest, falls jemand deinen Kanal über GameWisp abonniert. Verfügbare Tags: (name) und (tier)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Re-Abonnement Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispReSubMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispReSubMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gamewispReSubMessageInput" placeholder="Hochstufungs Nachricht" data-toggle="tooltip"
-                title="Lege eine Nachricht fest, falls jemand sein/ihr Abonnement bei GameWisp erneuert. Verfügbare Tags: (name), (tier) und (months)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Hochstufungs Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispTierMessageInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispTierMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gamewispTierMessageInput" placeholder="Hochstufungs Nachricht" data-toggle="tooltip"
-                title="Lege eine Nachricht fest, falls jemand sein GameWisp Abonnement hochstuft. Verfügbare Tags: (name) und (tier)" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label>Benachrichtigungskanal</label>
-                <button type="button" class="btn btn-primary inline pull-right" onclick="$.updateDiscordTable('gamewispChannelInput', 'handlers/gamewispHandler.js', 'discordSettings', 'gamewispChannel')">Übermitteln</button>
-                <input type="text" class="form-control" id="gamewispChannelInput" placeholder="Kanalname" data-toggle="tooltip" title="Lege den Kanal fest, indem die Ankündigungen für dieses Modul gemacht werden sollen."/>
+                <input type="text" class="form-control" id="subChannelInput" placeholder="Benachrichtigungskanalname" data-toggle="tooltip" title="Stellen Sie den Kanal ein, in dem Ansagen für dieses Modul gemacht werden sollen."/>
             </div>
         </form>
     </div>

@@ -96,7 +96,7 @@ public class H2Store extends DataStore {
             connection = DriverManager.getConnection("jdbc:h2:./config/phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
             connection.setAutoCommit(true);
             if (firstConnection) {
-                com.gmt2001.Console.out.println("Connected to H2 Database");
+                com.gmt2001.Console.out.println("Verbunden mit der H2-Datenbank");
                 firstConnection = false;
             }
             return connection;
@@ -939,7 +939,7 @@ public class H2Store extends DataStore {
                 com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("MySQL commit was attempted too early, will perform later.");
+            com.gmt2001.Console.debug.println("Die MySQL-Übertragung wurde zu früh versucht, wird später ausgeführt.");
         }
     }
 

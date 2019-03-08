@@ -202,7 +202,7 @@ public class IniStore extends DataStore implements ActionListener {
                 }
 
                 if (n.length > 0) {
-                    com.gmt2001.Console.debug.println("Saving " + n.length + " files");
+                    com.gmt2001.Console.debug.println("Speichern von " + n.length + " Dateien");
                 }
 
                 for (Object n1 : n) {
@@ -222,10 +222,10 @@ public class IniStore extends DataStore implements ActionListener {
                 nextSave.setTime(new Date().getTime() + saveinterval);
 
                 if (n.length > 0) {
-                    com.gmt2001.Console.debug.println("Save complete");
+                    com.gmt2001.Console.debug.println("Vollständig speichern");
                 }
             } else {
-                com.gmt2001.Console.debug.println("Object null, nothing to save.");
+                com.gmt2001.Console.debug.println("Objekt null, nichts zu speichern.");
             }
         }
     }

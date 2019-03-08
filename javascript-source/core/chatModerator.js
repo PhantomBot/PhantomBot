@@ -335,16 +335,14 @@
      * @param {string} username
      * @param {number} time
      * @param {string} reason
+     * @param {map} tags
      */
-    function timeoutUserFor(username, time, reason) {
-        $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
-
-        var lastTimeout = setTimeout(function() {
-            if ($.getMessageWrites() < 50) {
-                $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
-            }
-            clearInterval(lastTimeout);
-        }, 500, 'scripts::core::chatModerator.js::timeout');
+    function timeoutUserFor(username, time, reason, tags) {
+        if (time == 0) {
+            $.session.sayNow('.delete ' + tags.get('id')); // Cannot send a reason/time with this.
+        } else {
+            $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
+        }
     }
 
     /*
@@ -354,18 +352,7 @@
      * @param {string} reason
      */
     function banUser(username, reason) {
-        var messageWrites = $.getMessageWrites();
-
-        if (messageWrites < 50) {
-            $.session.sayNow('.timeout ' + username + ' 600 ' + reason);
-
-            var banTimeout = setTimeout(function() {
-                $.session.sayNow('.ban ' + username + ' ' + reason);
-                clearInterval(banTimeout);
-            }, 500, 'scripts::core::chatModerator.js::ban');
-        } else {
-            $.session.sayNow('.ban ' + username + ' ' + reason);
-        }
+        $.session.sayNow('.ban ' + username + ' ' + reason);
     }
 
     /**
@@ -375,18 +362,19 @@
      * @param {number} warningT
      * @param {number} timeoutT
      * @param {string} reason
+     * @param {map} tags
      */
-    function timeout(username, warningT, timeoutT, reason) {
+    function timeout(username, warningT, timeoutT, reason, tags) {
         if (timeouts[username] !== undefined) {
             if (timeouts[username] > $.systemTime()) {
-                timeoutUserFor(username, timeoutT, reason);
+                timeoutUserFor(username, timeoutT, reason, tags);
                 warning = $.lang.get('chatmoderator.timeout');
             } else {
-                timeoutUserFor(username, warningT, reason);
+                timeoutUserFor(username, warningT, reason, tags);
                 warning = $.lang.get('chatmoderator.warning');
             }
         } else {
-            timeoutUserFor(username, warningT, reason);
+            timeoutUserFor(username, warningT, reason, tags);
             warning = $.lang.get('chatmoderator.warning');
         }
         timeouts[username] = ($.systemTime() + resetTime);
@@ -449,8 +437,9 @@
      *
      * @param {string} sender
      * @param {string} message
+     * @param {map} tags
      */
-    function checkBlackList(sender, event, message) {
+    function checkBlackList(sender, event, message, tags) {
         for (i in blackList) {
             if (blackList[i].isRegex) {
                 if (blackList[i].phrase.test(message)) {
@@ -463,7 +452,7 @@
                         warning = $.lang.get('chatmoderator.ban');
                         sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     } else {
-                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
                         warning = $.lang.get('chatmoderator.timeout');
                         sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     }
@@ -480,7 +469,7 @@
                         warning = $.lang.get('chatmoderator.ban');
                         sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     } else {
-                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason);
+                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
                         warning = $.lang.get('chatmoderator.timeout');
                         sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                     }
@@ -523,11 +512,12 @@
     function performModeration(event) {
         var sender = event.getSender(),
             message = event.getMessage().toLowerCase(),
-            messageLength = message.length();
+            messageLength = message.length(),
+            tags = event.getTags();
 
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isModv3(sender, tags)) {
             // Blacklist
-            if (checkBlackList(sender, event, message)) {
+            if (checkBlackList(sender, event, message, tags)) {
                 return;
             }
 
@@ -539,7 +529,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Links, timeoutTime.Links, silentTimeout.LinkMessage);
+                timeout(sender, warningTime.Links, timeoutTime.Links, silentTimeout.LinkMessage, tags);
                 sendMessage(sender, linksMessage, silentTimeout.Links);
                 $.patternDetector.logLastLink(event);
                 return;
@@ -552,7 +542,7 @@
                         return;
                     }
 
-                    timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.SymbolMessage);
+                    timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.SymbolMessage, tags);
                     sendMessage(sender, symbolsMessage, silentTimeout.Symbols);
                     return;
                 }
@@ -564,7 +554,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.SpamMessage);
+                timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.SpamMessage, tags);
                 sendMessage(sender, spamMessage, silentTimeout.Spam);
                 return;
             }
@@ -575,7 +565,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMessage);
+                timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMessage, tags);
                 sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
                 return;
             }
@@ -586,7 +576,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.FakePurge, timeoutTime.FakePurge, silentTimeout.FakePurgeMessage);
+                timeout(sender, warningTime.FakePurge, timeoutTime.FakePurge, silentTimeout.FakePurgeMessage, tags);
                 sendMessage(sender, fakePurgeMessage, silentTimeout.FakePurge);
                 return;
             }
@@ -597,7 +587,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.EmoteMessage);
+                timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.EmoteMessage, tags);
                 sendMessage(sender, emotesMessage, silentTimeout.Emotes);
                 return;
             }
@@ -609,7 +599,7 @@
                         return;
                     }
 
-                    timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage);
+                    timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage, tags);
                     sendMessage(sender, capsMessage, silentTimeout.Caps);
                     return;
                 }
@@ -621,7 +611,7 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage);
+                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage, tags);
                 sendMessage(sender, colorsMessage, silentTimeout.Colors);
                 return;
             }
@@ -641,7 +631,7 @@
                     spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                 }
                 if (spamTracker[sender].count >= spamTrackerLimit) {
-                    timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage);
+                    timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage, tags);
                     sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
                     delete spamTracker[sender];
                 }

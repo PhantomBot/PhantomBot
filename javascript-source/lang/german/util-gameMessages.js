@@ -195,14 +195,12 @@ $.lang.register('roll.lost.67', 'Was lief falsch? Was nicht? - es war einer dies
 
 // Win messages for the gambling (gambling.js) mini game, remove the /// to start using it.:
 
-$.lang.register('gamble.win.1', 'Na, biste jetzt stolz auf dich?');
-$.lang.register('gamble.win.2', 'Du machst mich wahnsinnig! Nimm endlich die Kartoffeln aus deinen Taschen und spiele wie ein Erwachsener.');
-$.lang.register('gamble.win.3', 'Deine bessere Hälfte muss ja echt hässlich sein bei so viel Glück im Spiel!');
-$.lang.register('gamble.win.4', 'ABER HALLO! Glückwunsch!');
+///$.lang.register('gamble.win.1', 'Cool message here');
+///$.lang.register('gamble.win.2', '');
+///$.lang.register('gamble.win.3', '');
 
 // Lose messages for the gambling (gambling.js) mini game, remove the /// to start using it.:
 
-$.lang.register('gamble.lost.1', 'Lass es, du wirst nicht besser!');
-$.lang.register('gamble.lost.2', 'Mann, Mann, Mann! Lass es einfach sein!');
-$.lang.register('gamble.lost.3', 'Sogar meine Oma spielt besser als du!');
-$.lang.register('gamble.lost.4', 'Oh Mann! So viel Pech ist selten! Du Glückspilz!');
+///$.lang.register('gamble.lost.1', 'Cool message here!');
+///$.lang.register('gamble.lost.2', '');
+///$.lang.register('gamble.lost.3', '');

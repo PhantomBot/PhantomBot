@@ -671,7 +671,7 @@ public final class PhantomBot implements Listener {
      */
     public static void setDebugging(Boolean debug) {
         if (debug)
-            com.gmt2001.Console.out.println("Debug Mode Enabled");
+            com.gmt2001.Console.out.println("Debug-Modus aktiviert");
         PhantomBot.enableDebugging = debug;
     }
 
@@ -682,7 +682,7 @@ public final class PhantomBot implements Listener {
      */
     public static void setDebuggingLogOnly(Boolean debug) {
         if (debug)
-            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
+            com.gmt2001.Console.out.println("Debug Log Only Mode aktiviert");
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
     }
@@ -1364,13 +1364,13 @@ public final class PhantomBot implements Listener {
 
     private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
         if(enableRhinoDebugger)
-            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+            com.gmt2001.Console.out.println("Rhino Debugger wird gestartet, wenn das System es unterstützt.");
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
     }
 
     private static void setReloadScripts(Boolean reloadScripts) {
         if (reloadScripts)
-            com.gmt2001.Console.out.println("Enabling Script Reloading");
+            com.gmt2001.Console.out.println("Aktivieren des Wiederladens von Skripten");
         PhantomBot.reloadScripts = reloadScripts;
 
     }

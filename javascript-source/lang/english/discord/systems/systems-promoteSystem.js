@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $.lang.register('discord.promotesystem.cmd.promote.usage', '!promote add [short bio] | delete - Add or delete yourself from being promoted.');
 $.lang.register('discord.promotesystem.cmd.promote.noselfmanage', 'No one is allowed to manage themselves, please speak to a moderator to be added or deleted.');
 $.lang.register('discord.promotesystem.cmd.promote.nochannels', 'Ask an admin to set a promote channel with !promote channel and/or !promote streamchannel');
@@ -55,6 +72,8 @@ $.lang.register('discord.promotesystem.livemsg.nowplaying', 'Now Playing');
 $.lang.register('discord.promotesystem.livemsg.streamtitle', 'Stream Title');
 $.lang.register('discord.promotesystem.livemsg.followers', 'Followers');
 $.lang.register('discord.promotesystem.livemsg.views', 'Views');
+$.lang.register('discord.promotesystem.livemsg.missingtitle', 'No Title Provided');
+$.lang.register('discord.promotesystem.livemsg.missinggame', 'No Game Provided');
 
 $.lang.register('discord.promotesystem.promotemsg.description', 'Be sure to follow and checkout $1');
 $.lang.register('discord.promotesystem.promotemsg.biography', 'Bio');

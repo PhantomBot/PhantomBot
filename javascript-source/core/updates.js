@@ -88,7 +88,6 @@
             './discord/handlers/twitterHandler.js',
             './discord/handlers/keywordHandler.js',
             './discord/handlers/streamHandler.js',
-            './discord/handlers/gamewispHandler.js',
             './discord/systems/greetingsSystem.js',
             './discord/commands/customCommands.js',
             './discord/games/8ball.js',
@@ -818,6 +817,16 @@
         $.inidb.set('updates', 'installedv2.4.1', 'true');
     }
 
+    /* version 2.4.2.1 updates */
+    if (!$.inidb.exists('updates', 'installedv2.4.2.1') || $.inidb.get('updates', 'installedv2.4.2.1') != 'true') {
+        $.consoleLn('Starting PhantomBot update 2.4.2.1 updates...');
+
+        $.inidb.del('modules', './discord/handlers/gamewispHandler.js');
+        $.inidb.del('modules', './handlers/gameWispHandler.js');
+
+        $.consoleLn('PhantomBot update 2.4.2.1 completed!');
+        $.inidb.set('updates', 'installedv2.4.2.1', 'true');
+    }
 
     /**
      * @function getTableContents

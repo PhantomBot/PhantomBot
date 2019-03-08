@@ -26,7 +26,7 @@ $.lang.register('bettingsystem.close.semi.success', 'Die Wette ist nun geschloss
 $.lang.register('bettingsystem.close.success.winners', 'Es haben $1 SpielerInnen die Wette gewonnen! Eine Gesamtsumme von $2 wurde ausgezahlt!');
 $.lang.register('bettingsystem.save.format', 'Titel: "$1", Optionen: "$2", Gesamt platzierte Wetteinsätze: $3, Gesamt platzierte Wetten: $4, Gewonnene Punkte: $5.');
 $.lang.register('bettingsystem.results', 'Aktuelle Wette: Titel: "$1", Optionen: "$2", Gesamtpunkte: $3, Gesamte Teilnehmer: $4');
-$.lang.register('bettingsystem.global.usage', 'Verwendung: !bet [open / close / save / saveformat / lookup / togglemessages / gain]');
+$.lang.register('bettingsystem.global.usage', 'Verwendung: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');
 $.lang.register('bettingsystem.bet.usage', 'Verwendung: !bet [Wetteinsatz] [Option]');
 $.lang.register('bettingsystem.bet.error.neg', 'Du kannst keinen negativen Wetteinsatz, $1, angeben!');
 $.lang.register('bettingsystem.bet.error.min', 'Der Mindesteinsatz beträgt $1.');

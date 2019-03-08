@@ -33,7 +33,7 @@
                 return;
             }
 
-            var tables = ['points', 'time', 'followed', 'subscribed', 'visited', 'group', 'panelchatuserstats', 'panelchatstats', 'gamewispsubs'],
+            var tables = ['points', 'time', 'followed', 'subscribed', 'visited', 'group', 'panelchatuserstats', 'panelchatstats'],
                 changed = 0,
                 i;
 

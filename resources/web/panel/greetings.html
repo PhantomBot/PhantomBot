@@ -488,94 +488,10 @@
                 <label for="bitsMinimum">Minimum</label>
                 <button type="button" class="btn btn-primary inline pull-right"
                         onclick="$.updateGreetingData('bitsMinimum', 'bitsSettings', 'minimum')">Übermitteln</button>
-                <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Höhe" data-toggle="tooltip" title="Lege die minimale Menge an Bits fest, bei denen der Alarm ausgelöst werden soll."/>
+                <input type="number" min="0" class="form-control" id="bitsMinimum" placeholder="Amount" data-toggle="tooltip" title="Legen Sie die minimale Anzahl von Bits fest, die ein Benutzer benötigt, bevor er die Benachrichtigung auslöst."/>
             </div>
         </form>
 
-    </div>
-    </div>
-
-
-    <h3>GameWisp Benachrichtigungs Einstellungen</h3>
-    <div>
-    <div id="_gwSubPanelDisabled" />
-    <div id="_gwSubPanel">
-        <table>
-            <tr class="textList">
-                <td>Abonnement Benachrichtigung An/Aus</td>
-                <td style="width: 25px"><div id="gameWispGreetings" /></td>
-                <td style="width: 25px">
-                    <div data-toggle="tooltip" title="An/Aus" class="button"
-                         onclick="$.toggleGreetings('gameWispSubHandler', 'showSubscribeMessage');"><i class="fa fa-refresh" />
-                     </div>
-                </td>
-            </tr>
-        </table>
-        <br>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubGreeting">Abonnement Nachrichten</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwSubGreetingInput', 'gameWispSubHandler', 'subscribeMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gwSubGreetingInput" placeholder="Begrüßungsnachricht"
-                       data-toggle="tooltip" title="Tags: (name) (tier) (reward)"/>
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubGreeting">Re-Abonnement Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwResubGreetingInput', 'gameWispSubHandler', 'reSubscribeMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gwResubGreetingInput" placeholder="Begrüßungsnachricht"
-                       data-toggle="tooltip" title="Tags: (name) (tier) (reward) (months)" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwTierupGreeting">Hochstufungs Nachricht</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwTierupGreetingInput', 'gameWispSubHandler', 'tierUpMessage')">Übermitteln</button>
-                <input type="text" class="form-control" id="gwTierupGreetingInput" placeholder="Begrüßungsnachricht"
-                       data-toggle="tooltip" title="Tags: (name) (tier)" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwSubReward">Abonnement Belohnung</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwSubRewardInput', 'gameWispSubHandler', 'subscribeReward')">Übermitteln</button>
-                <input type="number" min="0" class="form-control" id="gwSubRewardInput" placeholder="Punkte" />
-            </div>
-        </form>
-
-        <form role="form">
-            <div class="form-group" onkeypress="return event.keyCode != 13">
-                <label for="gwResubReward">Re-Abonnement Belohnung</label>
-                <button type="button" class="btn btn-primary inline pull-right"
-                        onclick="$.updateGreetingData('gwResubRewardInput', 'gameWispSubHandler', 'reSubscribeReward')">Übermitteln</button>
-                <input type="number" min="0" class="form-control" id="gwResubRewardInput" placeholder="Punkte" />
-            </div>
-        </form>
-    </div>
-    </div>
-
-    <h3>GameWisp Rang Vorteile</h3>
-    <div>
-    <div id="_gwTierPanelDisabled" />
-    <div id="_gwTierPanel">
-        <table style="background: transparent">
-            <tr>
-                <td> <strong>Songanfrage Vorteil</strong> <div id="gameWispSongRequests" style="height: 220px; overflow: auto;" /> </td>
-                <td> <strong>Abonnement Bonuspunkte Vorteil</strong> <div id="gameWispBonusPoints" style="height: 220px; overflow: auto;" /> </td>
-            </tr>
-            <tr>
-                <td> <strong>Re-Abonnement Bonuspunkte Vorteil</strong> <div id="gameWispSubBonusPoints" style="height: 220px; overflow: auto;" /> </td>
-            </tr>
-        </table>
     </div>
     </div>
 </div>

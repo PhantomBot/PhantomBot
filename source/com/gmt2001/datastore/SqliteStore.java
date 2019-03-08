@@ -1091,7 +1091,7 @@ public class SqliteStore extends DataStore {
                 connection.setAutoCommit(mode);
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
+            com.gmt2001.Console.debug.println("Die SQLite-Übertragung wurde zu früh versucht, wird später durchgeführt.");
         }
     }
 

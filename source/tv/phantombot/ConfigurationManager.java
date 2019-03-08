@@ -311,10 +311,10 @@ public class ConfigurationManager {
             do {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("2. Du brauchst nun einen OAuth-Token, damit der Bot chatten kann.\r\n");
-                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
-                com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
-                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
-                com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
+                com.gmt2001.Console.out.print("Bitte beachten Sie, dass dieser OAuth-Token generiert werden muss, während Sie im Twitch-Konto des Bot angemeldet sind.\r\n");
+                com.gmt2001.Console.out.print("Wenn du nicht als Bot angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Bot an.\r\n");
+                com.gmt2001.Console.out.print("Den OAuth-Token des Bot erhältst du hier: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Bitte gib den OAuth-Token des Bots ein: ");
 
                 startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
             } while (startProperties.getProperty(PROP_OAUTH, "").length() <= 0);
@@ -322,11 +322,11 @@ public class ConfigurationManager {
             // api oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
-                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
-                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
-                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
-                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                com.gmt2001.Console.out.print("3. Du brauchst nun deinen Channel OAuth-Token, damit der Bot deinen Titel und dein Spiel ändern kann.\r\n");
+                com.gmt2001.Console.out.print("Bitte beachten Sie, dass dieser OAuth-Token generiert werden muss, während Du in Deinem Caster-Konto angemeldet bist.\r\n");
+                com.gmt2001.Console.out.print("Wenn du nicht als Caster angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Caster an.\r\n");
+                com.gmt2001.Console.out.print("Hol dir deinen OAuth-Token hier: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Bitte gebe deinen OAuth-Token ein: ");
 
                 startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());
             } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
@@ -334,7 +334,7 @@ public class ConfigurationManager {
             // Channel name.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("4. Please enter the name of the Twitch channel the bot should join: ");
+                com.gmt2001.Console.out.print("4. Bitte gib den Namen des Twitch-Kanals ein, dem der Bot beitreten soll: ");
 
                 startProperties.setProperty(PROP_CHANNEL, System.console().readLine().trim());
             } while (startProperties.getProperty(PROP_CHANNEL, "").length() <= 0);
@@ -342,7 +342,7 @@ public class ConfigurationManager {
             // Panel username.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("5. Please enter a custom username for the web panel: ");
+                com.gmt2001.Console.out.print("5. Bitte gebe einen benutzerdefinierten Benutzernamen für das Web-Panel ein: ");
 
                 startProperties.setProperty(PROP_PANEL_USER, System.console().readLine().trim());
             } while (startProperties.getProperty(PROP_PANEL_USER, "").length() <= 0);
@@ -350,25 +350,25 @@ public class ConfigurationManager {
             // Panel password.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("6. Please enter a custom password for the web panel: ");
+                com.gmt2001.Console.out.print("6. Bitte gebe ein benutzerdefiniertes Passwort für das Web-Panel ein: ");
 
                 startProperties.setProperty(PROP_PANEL_PASSWORD, System.console().readLine().trim());
             } while (startProperties.getProperty(PROP_PANEL_PASSWORD, "").length() <= 0);
 
             com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("PhantomBot will launch in 10 seconds.\r\n");
-            com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/panel \r\n");
-            com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
-            com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
+            com.gmt2001.Console.out.print("PhantomBot wird in 10 Sekunden gestartet.\r\n");
+            com.gmt2001.Console.out.print("Wenn Du den Bot lokal betreiben möchtest, kannst Du hier auf das Control Panel zugreifen: http://localhost:25000/panel \r\n");
+            com.gmt2001.Console.out.print("Wenn Du den Bot auf einem Server betreibst, stelle sicher, dass Du die folgenden Ports öffnest: \r\n");
+            com.gmt2001.Console.out.print("25000, 25003 und 25004. Du musst 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können. \r\n");
 
             Thread.sleep(10000);
 
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("Der Standbymodus konnte nicht im Setup aktiviert werden: " + ex.getMessage());
             Thread.currentThread().interrupt();
         } catch (NullPointerException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
+            com.gmt2001.Console.out.println("[ERROR] PhantomBot konnte nicht eingerichtet werden. Wird beendet...");
             PhantomBot.exitError();
         }
     }

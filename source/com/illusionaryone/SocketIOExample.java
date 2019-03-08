@@ -111,7 +111,7 @@ public class SocketIOExample {
                     com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Authenticated");
                     JSONObject jsonObject = new JSONObject(args[0].toString());
                     if (!jsonObject.has("session")) {
-                        com.gmt2001.Console.err.println("SingularityWS (GameWisp): Missing Session in Authenticated Return JSON");
+                        com.gmt2001.Console.err.println("SingularityWS (GameWisp): Fehlende Sitzung in authentifizierter Rückgabe JSON");
                         Authenticated = false;
                         return;
                     }
@@ -131,7 +131,7 @@ public class SocketIOExample {
                         }
                         ChannelConnected = true;
                     } else {
-                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Channel; Missing Session ID; Unusable Session");
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Mit Kanal verbunden; Fehlende Sitzungs-ID; Nicht verwendbare Sitzung");
                         ChannelConnected = false;
                     }
                 }

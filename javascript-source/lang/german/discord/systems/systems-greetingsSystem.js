@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.greetingssystem.usage', 'Verwendung: !greetingssystem [jointoggle / parttoggle / joinmessage / partmessage / channel]');
+$.lang.register('discord.greetingssystem.usage', 'Verwendung: !greetingssystem [jointoggle / parttoggle / joinmessage / partmessage / joinrole / channel]');
 $.lang.register('discord.greetingssystem.join.toggle', 'Eintrittsbenachrichtigungen wurden $1!');
 $.lang.register('discord.greetingssystem.part.toggle', 'Austrittsbenachrichtigungen wurden $1!');
-$.lang.register('discord.greetingssystem.join.message.usage', 'Verwendung: !greetingssystem joinmessage [Nachricht] - Tags: (name) and (@name)');
+$.lang.register('discord.greetingssystem.join.message.usage', 'Verwendung: !greetingssystem joinmessage [Nachricht] - Tags: (name), (role), and (@name)');
 $.lang.register('discord.greetingssystem.join.message.set', 'Eintrittsbenachrichtigungsnachricht wurde festgelegt zu: $1.');
 $.lang.register('discord.greetingssystem.part.message.usage', 'Verwendung: !greetingssystem partmessage [Nachricht] - Tags: (name) and (@name)');
 $.lang.register('discord.greetingssystem.part.message.set', 'Austrittsbenachrichtigungsnachricht wurde festgelegt zu: $1.');

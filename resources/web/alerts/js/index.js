@@ -109,6 +109,26 @@ $(function() {
     }
 
     /*
+     * @function Handles the user interaction for the page.
+     */
+    function handleBrowserInteraction() {
+        const audio = new Audio();
+
+        // Try to play to see if we can interact.
+        audio.play().catch(function(err) {
+            // User need to interact with the page.
+            if (err.toString().startsWith('NotAllowedError')) {
+                $('.main-alert').append($('<button/>', {
+                    'html': 'Klicken mich, um Audio-Hooks zu aktivieren.',
+                    'style': 'top: 50%; position: absolute; font-size: 30px; font-weight: 30; cursor: pointer;'
+                }).on('click', function() {
+                    $(this).remove();
+                }));
+            }
+        });
+    }
+
+    /*
      * @function Handles the queue.
      */
     function handleQueue() {
@@ -187,7 +207,9 @@ $(function() {
                 isPlaying = false;
             });
             // Play the audio.
-            audio.play();
+            audio.play().catch(function(err) {
+                console.log(err);
+            });;
         } else {
             isPlaying = false;
         }
@@ -207,6 +229,7 @@ $(function() {
                 gifVolume = getOptionSetting('gif-default-volume', '0.8'),
                 gifFile = '',
                 gifCss = '',
+                gifText = '',
                 htmlObj,
                 audio;
 
@@ -229,6 +252,9 @@ $(function() {
                         case 3:
                             gifCss = value;
                             break;
+                        case 4:
+                            gifText = value;
+                            break;
                     }
                 });
             } else {
@@ -239,16 +265,31 @@ $(function() {
             if (gifFile.match(/\.(webm|mp4|ogg)$/) !== null) {
                 htmlObj = $('<video/>', {
                     'src': defaultPath + gifFile,
-                    'volume': gifVolume,
                     'autoplay': 'autoplay',
                     'style': gifCss
                 });
+
+                htmlObj.prop('volume', gifVolume);
             } else {
                 htmlObj = $('<img/>', {
                     'src': defaultPath + gifFile,
                     'style': gifCss
                 });
             }
+
+            // p obeject to hold custom gif alert text and style
+            textObj = $('<p/>', {
+                'style': gifCss
+            }).text(gifText);
+
+            // Append the custom text object to the page
+            $('#alert-text').append(textObj).fadeIn(1e2).delay(gifDuration)
+              .fadeOut(1e2, function() { //Remove the text with a fade out.
+                let t = $(this);
+
+                // Remove the p tag
+                t.find('p').remove();
+              });
 
             // Append a new the image.
             $('#alert').append(htmlObj).fadeIn(1e2, function() {
@@ -257,7 +298,9 @@ $(function() {
                 // Set the volume.
                 audio.volume = gifVolume;
                 // Play the sound.
-                audio.play();
+                audio.play().catch(function() {
+                    // Ignore.
+                });
             }).delay(gifDuration) // Wait this time before removing this image.
               .fadeOut(1e2, function() { // Remove the image with a fade out.
                 let t = $(this);
@@ -318,6 +361,8 @@ $(function() {
                 if (message.authresult !== undefined) {
                     if (message.authresult === 'true') {
                         printDebug('Erfolgreiche Authentifizierung mit dem Socket.', true);
+                        // Handle this.
+                        handleBrowserInteraction()
                     } else {
                         printDebug('Die Authentifizierung mit dem Socket ist fehlgeschlagen.', true);
                     }

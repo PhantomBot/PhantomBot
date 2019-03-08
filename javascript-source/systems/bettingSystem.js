@@ -331,7 +331,7 @@
             } else if (action.equalsIgnoreCase('save')) {
                 saveBets = !saveBets;
                 $.inidb.set('bettingSettings', 'save', saveBets);
-                $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.toggle.save', (save === true ? $.lang.get('bettingsystem.now') : $.lang.get('bettingsystem.not'))));
+                $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.toggle.save', (saveBets === true ? $.lang.get('bettingsystem.now') : $.lang.get('bettingsystem.not'))));
                 return;
 
                 /**

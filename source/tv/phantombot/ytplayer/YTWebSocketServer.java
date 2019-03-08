@@ -445,8 +445,8 @@ public class YTWebSocketServer extends WebSocketServer {
         webSocket.send(jsonObject.object().key("ytkeycheck").value(!PhantomBot.instance().isYouTubeKeyEmpty()).endObject().toString());
 
         if (PhantomBot.instance().isYouTubeKeyEmpty()) {
-            com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions on the " +
-                                            "PhantomBot Community Forum at: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
+            com.gmt2001.Console.err.println("Ein YouTube-API-Schlüssel wurde nicht konfiguriert. Bitte lesen Sie die Anweisungen " +
+                                            "auf dem PhantomBot Community Forum unter: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
         }
         return PhantomBot.instance().isYouTubeKeyEmpty();
     }

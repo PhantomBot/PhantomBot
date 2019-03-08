@@ -360,7 +360,14 @@
                 var views = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('views');
                 var banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
                 liveStreamers.push(twitchID);
-    
+
+                if (title === null) {
+                    title = $.lang.get('discord.promotesystem.livemsg.missingtitle');
+                }
+                if (game === null) {
+                    game = $.lang.get('discord.promotesystem.livemsg.missinggame');
+                }
+
                 if (!$.inidb.exists('promoteonline', twitchID)) {
                     if ($.systemTime() - $.getIniDbNumber('promoteonlinetime', twitchID, 0) >= (6e4 * 5)) {
                         $.inidb.set('promoteonlinetime', twitchID, $.systemTime());

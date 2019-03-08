@@ -20,12 +20,12 @@
  *
  * Command permissions for the registerCommand function:
  *  - 1 means only administrators can access the command.
- *	- 0 means everyone can access the command.
+ *  - 0 means everyone can access the command.
  *
  * Guidelines for merging thing on our repo for this module:
- * 	- Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
- * 	- To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
- * 	- Make sure to comment on every function what their name is and the parameters they require and if they return something.
+ *  - Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
+ *  - To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
+ *  - Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
     var embedReg = new RegExp(/\(embed\s([\s\d\w]+),\s([\w\W]+)\)/),
@@ -41,6 +41,16 @@
      */
     function userPrefix(username) {
         return (username + ', ');
+    }
+
+    /**
+     * @function isConnected
+     *
+     * @return {boolean}
+     */
+    function isConnected() {
+        return Packages.tv.phantombot.discord.DiscordAPI.client.isLoggedIn() &&
+        $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED
     }
 
     /**
@@ -271,6 +281,7 @@
     /* Export the function to the $.discord api. */
     /* There are the same functions twice in here - that's normal and wanted. */
     $.discord = {
+        isConnected: isConnected,
         getUserMention: getUserMention,
         userMention: getUserMention,
         removeGame: removeGame,

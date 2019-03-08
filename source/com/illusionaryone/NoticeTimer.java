@@ -296,10 +296,10 @@ public class NoticeTimer implements Runnable, Listener {
                     foundEnabled = Boolean.TRUE;
                 }
             } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.println("Found NULL data, table more than likely reloading. Will not handle notice.");
+                com.gmt2001.Console.err.println("NULL-Daten gefunden, Tabelle mehr als wahrscheinlich neu geladen. Wird nicht mit Hinweisen umgehen.");
                 return;
             } catch (JSONException ex) {
-                com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
+                com.gmt2001.Console.err.println("Hinweis: JSON Data Corrupt: Key [" + noticeKey + "]");
             }
 
             lastNoticeID++;
@@ -378,17 +378,17 @@ public class NoticeTimer implements Runnable, Listener {
             try {
                 noticeData = new JSONObject(dataStore.GetString("notices", "", noticeKey));
             } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.println("Found NULL data, table more than likely reloading. Will not handle notice.");
+                com.gmt2001.Console.err.println("NULL-Daten gefunden, Tabelle mehr als wahrscheinlich neu geladen. Wird nicht mit Hinweisen umgehen.");
                 return;
             } catch (JSONException ex) {
-                com.gmt2001.Console.err.println("Notice JSON Data Corrupt: Key [" + noticeKey + "]");
+                com.gmt2001.Console.err.println("Hinweis: JSON Data Corrupt: Key [" + noticeKey + "]");
                 continue;
             }
 
             if (!noticeData.has("id") || !noticeData.has("gametitle") || !noticeData.has("message") ||
                 !noticeData.has("enabled") || !noticeData.has("interval") || !noticeData.has("weight") ||
                 !noticeData.has("chatlines")) {
-                com.gmt2001.Console.err.println("Notice JSON Missing Data Member: Key [" + noticeKey + "]");
+                com.gmt2001.Console.err.println("Hinweis: JSON Missing Data Member: Key [" + noticeKey + "]");
                 continue;
             }
 

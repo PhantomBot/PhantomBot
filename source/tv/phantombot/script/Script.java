@@ -192,7 +192,7 @@ public class Script {
         try {
             context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
         } catch (FileNotFoundException ex) {
-            throw new IOException("File not found. This could be a caching issue, will retry.");
+            throw new IOException("Datei nicht gefunden. Dies könnte ein Caching-Problem sein, erneut versuchen.");
         } catch (EvaluatorException ex) {
             throw new IOException("JavaScript Error: " + ex.getMessage());
         } catch (Exception ex) {

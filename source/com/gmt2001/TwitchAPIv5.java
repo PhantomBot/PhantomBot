@@ -735,7 +735,7 @@ public class TwitchAPIv5 {
         String baseLink = base_url + "/channels/" + getIDFromChannel(channel) + "/follows";
         String nextLink = baseLink + "?limit=100";
 
-        com.gmt2001.Console.out.println("FixFollowedTable: Retrieving followers that exist in the time table, this may take some time.");
+        com.gmt2001.Console.out.println("FixFollowedTable: Das Abrufen von Followern, die in der Zeittabelle vorhanden sind, kann einige Zeit in Anspruch nehmen.");
 
         /* Perform the lookups. The initial lookup will return the next API endpoint
          * as a _cursor object. Use this to build the next query. We do this to prepare
@@ -764,7 +764,7 @@ public class TwitchAPIv5 {
         } while (jsonInput.getJSONArray("follows").length() > 0) ;
 
         dataStore.RenameFile("followed_fixtable", "followed");
-        com.gmt2001.Console.out.println("FixFollowedTable: Pulled followers into the followed table, loaded " + insertCtr + "/" + followerCount + " records.");
+        com.gmt2001.Console.out.println("FixFollowedTable: Ziehen von Followern in die folgende Tabelle, Laden von " + insertCtr + "/" + followerCount + " Datensätzen.");
     }
 
     /**
@@ -781,12 +781,12 @@ public class TwitchAPIv5 {
         /* Determine number of followers to determine if this should not execute unless forced. */
         JSONObject jsonInput = GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/follows?limit=1", false);
         if (!jsonInput.has("_total")) {
-            com.gmt2001.Console.err.println("Failed to pull follower count for FixFollowedTable");
+            com.gmt2001.Console.err.println("Die Anzahl der Nachfolger für FixFollowedTable konnte nicht gezogen werden.");
             return;
         }
         int followerCount = jsonInput.getInt("_total");
         if (followerCount > 10000 && !force) {
-            com.gmt2001.Console.out.println("Follower count is above 10,000 (" + followerCount + "). Not executing. You may force this.");
+            com.gmt2001.Console.out.println("Die Anzahl der Nachfolger liegt über 10.000 (" + followerCount + "). Nicht ausgeführt. Du kannst das erzwingen.");
             return;
         }
 
@@ -794,7 +794,7 @@ public class TwitchAPIv5 {
             FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(channel, dataStore, followerCount);
             new Thread(fixFollowedTableRunnable, "com.gmt2001.TwitchAPIv5::fixFollowedTable").start();
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
+            com.gmt2001.Console.err.println("Es ist nicht gelungen, den Thread für die Aktualisierung der folgenden Tabelle zu starten.");
         }
     }
 
