@@ -94,10 +94,10 @@ public class MySQLStore extends DataStore {
         try {
             connection = DriverManager.getConnection(db, user, pass);
             connection.setAutoCommit(getAutoCommitCtr() == 0);
-            com.gmt2001.Console.out.println("Connected to MySQL");
+            com.gmt2001.Console.out.println("Mit MySQL verbunden");
             return connection;
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.println("Failure to Connect to MySQL: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Keine Verbindung mit MySQL möglich: " + ex.getMessage());
             return null;
         }
     }
@@ -348,6 +348,53 @@ public class MySQLStore extends DataStore {
 
         return new String[] {
                };
+    }
+
+    @Override
+    public KeyValue[] GetKeyValueList(String fName, String section) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new KeyValue[] {};
     }
 
     @Override
@@ -852,7 +899,7 @@ public class MySQLStore extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            com.gmt2001.Console.out.println("    Indexing Table: " + tableName);
+            com.gmt2001.Console.out.println("    Indiziere Tabelle: " + tableName);
             try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
                 statement.execute();
             } catch (SQLException ex) {
@@ -878,7 +925,7 @@ public class MySQLStore extends DataStore {
                 com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("MySQL commit was attempted too early, will perform later.");
+            com.gmt2001.Console.debug.println("Die MySQL-Übertragung wurde zu früh versucht, wird später ausgeführt.");
         }
     }
 

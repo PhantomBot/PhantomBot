@@ -119,7 +119,7 @@
 
         if (s.match(/\(readfile/)) {
             if (s.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                s = $.replace(s, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2)[0]);
+                s = $.replace(s, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2.replace(/\.\./g, ''))[0]);
             }
         }
 
@@ -139,7 +139,7 @@
             var file = s.match(/\(writefile (.+), (.+), (.+)\)/)[1],
                 append = (s.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
                 string = s.match(/\(writefile (.+), (.+), (.+)\)/)[3];
-            $.writeToFile(string, './addons/' + file, append);
+            $.writeToFile(string, './addons/' + file.replace(/\.\./g, ''), append);
             return null;
         }
 
@@ -150,16 +150,6 @@
         if (s.match(/\(encodeurl ([\w\W]+)\)/)) {
             var m = s.match(/\(encodeurl ([\w\W]+)\)/);
             s = $.replace(s, m[0], encodeURI(m[1]));
-        }
-
-        if (s.match(/\(math (.*)\)/)) {
-            var mathStr = s.match(/\(math (.*)\)/)[1].replace(/\s/g, '');
-
-            if (mathStr.length === 0) {
-                return null;
-            }
-
-            s = $.replace(s, s.match(/\(math (.*)\)/)[0], String(eval(mathStr)));
         }
 
         if (s.match(reCustomAPIJson) || s.match(reCustomAPI)) {

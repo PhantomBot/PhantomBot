@@ -25,7 +25,7 @@ public class EmotesGetEvent extends EmotesEvent {
     private final JSONObject ffzEmotes;
     private final JSONObject ffzLocalEmotes;
 
-    /*
+    /**
      * Class constructor
      *
      * @param {JSONObject} twitchEmotes
@@ -42,7 +42,7 @@ public class EmotesGetEvent extends EmotesEvent {
         this.ffzLocalEmotes = ffzLocalEmotes;
     }
 
-    /*
+    /**
      * Method that returns the JSONObject emotes from Twitch.
      *
      * @param {JSONObject} twitchEmotes
@@ -51,7 +51,7 @@ public class EmotesGetEvent extends EmotesEvent {
         return this.twitchEmotes;
     }
 
-    /*
+    /**
      * Method that returns the JSONObject emotes from bttv.
      *
      * @param {JSONObject} bttvEmotes
@@ -60,7 +60,7 @@ public class EmotesGetEvent extends EmotesEvent {
         return this.bttvEmotes;
     }
 
-    /*
+    /**
      * Method that returns the JSONObject emotes from bttv local emotes.
      *
      * @param {JSONObject} bttvLocalEmotes
@@ -69,7 +69,7 @@ public class EmotesGetEvent extends EmotesEvent {
         return this.bttvLocalEmotes;
     }
 
-    /*
+    /**
      * Method that returns the JSONObject emotes from ffz.
      *
      * @param {JSONObject} ffzEmotes
@@ -78,7 +78,7 @@ public class EmotesGetEvent extends EmotesEvent {
         return this.ffzEmotes;
     }
 
-    /*
+    /**
      * Method that returns the JSONObject emotes from ffz local emotes.
      *
      * @param {JSONObject} ffzLocalEmotes

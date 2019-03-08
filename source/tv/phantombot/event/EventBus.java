@@ -28,14 +28,14 @@ public class EventBus {
     private static final EventBus instance = new EventBus();
     private static final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
 
-    /*
+    /**
      * Class constructor.
      */
     private EventBus() {
 
     }
 
-    /*
+    /**
      * Method that returns this instance
      *
      * @return {EventBus}
@@ -44,7 +44,7 @@ public class EventBus {
         return instance;
     }
 
-    /*
+    /**
      * Method that registers a listener with the bus.
      *
      * @param {Listener} listener
@@ -53,7 +53,7 @@ public class EventBus {
         bus.subscribe(listener);
     }
 
-    /*
+    /**
      * Method that removes a listener from the bus.
      *
      * @param {Listener} listener
@@ -62,26 +62,26 @@ public class EventBus {
         bus.unsubscribe(listener);
     }
 
-    /*
+    /**
      * Method that posts an event in sync.
      *
      * @param {Event} event
      */
     public void post(Event event) {
-        if (PhantomBot.isInExitState) {
+        if (PhantomBot.isInExitState()) {
             return;
         }
 
         bus.publish(event);
     }
 
-    /*
+    /**
      * Method that posts an event in async.
      *
      * @param {Event} event
      */
     public void postAsync(Event event) {
-        if (PhantomBot.isInExitState) {
+        if (PhantomBot.isInExitState()) {
             return;
         }
 

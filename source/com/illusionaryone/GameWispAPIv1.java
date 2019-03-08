@@ -109,7 +109,7 @@ public class GameWispAPIv1 {
 
         if (sAccessToken.length() == 0) {
             if (!noAccessWarning) {
-                com.gmt2001.Console.err.println("GameWispAPIv1: Attempting to use GameWisp API without key. Disabling the GameWisp module.");
+                com.gmt2001.Console.err.println("GameWispAPIv1: Versuch, die GameWisp-API ohne Schlüssel zu verwenden. Deaktivieren des GameWisp-Moduls.");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/gameWispHandler.js", "false");
                 noAccessWarning = true;
             }
@@ -227,13 +227,13 @@ public class GameWispAPIv1 {
             String newAccessToken = jsonObject.getString("access_token");
             String newRefreshToken = jsonObject.getString("refresh_token");
             String[] returnString = { newAccessToken, newRefreshToken };
-            com.gmt2001.Console.out.println("GameWispAPI: Refreshed GameWisp Token");
+            com.gmt2001.Console.out.println("GameWispAPI: Aktualisierter GameWisp Token");
 
             sAccessToken = newAccessToken;
             sRefreshToken = newRefreshToken;
             return returnString;
         } else {
-            com.gmt2001.Console.err.println("GameWispAPI: Error Refreshing Tokens! Keeping Current Tokens!");
+            com.gmt2001.Console.err.println("GameWispAPI: Fehler beim Aktualisieren des Token! Halten Sie die Token auf dem Laufenden!");
             com.gmt2001.Console.err.println("GameWispAPI: JSON: " + jsonObject.toString().substring(0, 100));
             String[] returnString = { sAccessToken, sRefreshToken };
             return returnString;

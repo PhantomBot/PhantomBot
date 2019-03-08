@@ -144,7 +144,7 @@ public class HTTPSServer {
     public void close() {
         com.gmt2001.Console.out.println("HTTPS-Server schließt Port " + serverPort + " mit 5 Sekunden Verzögerung.");
         server.stop(5);
-        com.gmt2001.Console.out.println("HTTP-Server auf Port "+ serverPort +" gestoppt");
+        com.gmt2001.Console.out.println("HTTP-Server auf Port " + serverPort +" gestoppt");
     }
 
     class YTPHandler implements HttpHandler {

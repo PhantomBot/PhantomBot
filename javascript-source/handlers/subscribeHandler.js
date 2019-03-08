@@ -25,12 +25,16 @@
         primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) hat dich über Twitch Prime abonniert!'),
         reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) hat dich für (months) Monate hintereinander abonniert!'),
         giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) hat (recipient) ein Abo geschenkt!'),
-        massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
+        giftAnonSubMessage = $.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', 'Ein anonymer Zuschauer hat ein Abonnement an (recipient) verschenkt!'),
+        massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) hat gerade (amount) Abonnements für zufällige Benutzer im Kanal verschenkt!'),
+        massAnonGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'Ein anonymer Zuschauer schenkte (amount) Abonnements an zufällige Zuschauer!'),
         subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
         primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
         reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
         giftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', true),
+        giftAnonSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', true),
         massGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', true),
+        massAnonGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', true),
         subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
         reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
         giftSubReward = $.getSetIniDbNumber('subscribeHandler', 'giftSubReward', 0),
@@ -51,12 +55,16 @@
         primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage');
         reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
         giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage');
+        giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage');
         massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage');
+        massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage');
         subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
         primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         giftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle');
+        giftAnonSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle');
         massGiftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle');
+        massAnonGiftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle');
         subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
         reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
         giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward');
@@ -89,6 +97,7 @@
      */
     $.bind('twitchSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
+            tier = event.getPlan(),
             message = subMessage;
 
         if (subWelcomeToggle === true && announce === true) {
@@ -101,12 +110,12 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
+                message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
             $.say(message);
             $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber, true);
+            $.restoreSubscriberStatus(subscriber);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
@@ -133,7 +142,7 @@
 
             $.say(message);
             $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber, true);
+            $.restoreSubscriberStatus(subscriber);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
             if (subReward > 0) {
@@ -148,6 +157,7 @@
     $.bind('twitchReSubscriber', function(event) {
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
+            tier = event.getPlan(),
             message = reSubMessage,
             emotes = [];
 
@@ -165,7 +175,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
+                message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
             if (message.match(/\(customemote\)/)) {
@@ -174,7 +184,7 @@
             }
             $.say(message);
             $.addSubUsersList(resubscriber);
-            $.restoreSubscriberStatus(resubscriber, true);
+            $.restoreSubscriberStatus(resubscriber);
             $.writeToFile(resubscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
             $.writeToFile(resubscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
             $.inidb.set('streamInfo', 'lastReSub', resubscriber);
@@ -212,7 +222,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
+                message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
             if (message.match(/\(customemote\)/)) {
@@ -223,7 +233,7 @@
             $.say(message);
 
             $.addSubUsersList(recipient);
-            $.restoreSubscriberStatus(recipient, true);
+            $.restoreSubscriberStatus(recipient);
 
             $.writeToFile(recipient + ' ', './addons/subscribeHandler/latestSub.txt', false);
 
@@ -260,7 +270,7 @@
             }
 
             if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(event.getPlan()));
+                message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
             $.say(message);
@@ -268,6 +278,77 @@
             if (massGiftSubReward > 0) {
                 $.inidb.incr('points', gifter, massGiftSubReward * parseInt(amount));
             }
+        }
+    });
+
+    /*
+     * @event twitchAnonymousSubscriptionGift
+     */
+    $.bind('twitchAnonymousSubscriptionGift', function(event) {
+        var gifter = event.getUsername(),
+            recipient = event.getRecipient(),
+            months = event.getMonths(),
+            tier = event.getPlan(),
+            message = giftAnonSubMessage;
+
+        if (giftAnonSubWelcomeToggle === true && announce === true) {
+            if (message.match(/\(name\)/g)) {
+                message = $.replace(message, '(name)', gifter);
+            }
+
+            if (message.match(/\(recipient\)/g)) {
+                message = $.replace(message, '(recipient)', recipient);
+            }
+
+            if (message.match(/\(months\)/g)) {
+                message = $.replace(message, '(months)', months);
+            }
+
+            if (message.match(/\(reward\)/g)) {
+                message = $.replace(message, '(reward)', String(subReward));
+            }
+
+            if (message.match(/\(plan\)/g)) {
+                message = $.replace(message, '(plan)', getPlanName(tier));
+            }
+
+            $.say(message);
+
+            $.addSubUsersList(recipient);
+            $.restoreSubscriberStatus(recipient);
+
+            $.writeToFile(recipient + ' ', './addons/subscribeHandler/latestSub.txt', false);
+
+            $.inidb.set('streamInfo', 'lastSub', recipient);
+            if (subReward > 0) {
+                $.inidb.incr('points', recipient, subReward);
+            }
+        }
+    });
+
+    /*
+     * @event twitchMassAnonymousSubscriptionGifted
+     */
+    $.bind('twitchMassAnonymousSubscriptionGifted', function(event) {
+        var gifter = event.getUsername(),
+            amount = event.getAmount(),
+            tier = event.getPlan(),
+            message = massAnonGiftSubMessage;
+
+        if (massAnonGiftSubWelcomeToggle === true && announce === true) {
+            if (message.match(/\(name\)/g)) {
+                message = $.replace(message, '(name)', gifter);
+            }
+
+            if (message.match(/\(amount\)/g)) {
+                message = $.replace(message, '(amount)', amount);
+            }
+
+            if (message.match(/\(plan\)/g)) {
+                message = $.replace(message, '(plan)', getPlanName(tier));
+            }
+
+            $.say(message);
         }
     });
 
@@ -319,12 +400,30 @@
         }
 
         /*
+         * @commandpath giftanonsubwelcometoggle - Enable or disable anonymous subgifting alerts.
+         */
+        if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
+            giftAnonSubWelcomeToggle = !giftAnonSubWelcomeToggle;
+            $.setIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', giftAnonSubWelcomeToggle);
+            $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')))
+        }
+
+        /*
          * @commandpath massgiftsubwelcometoggle - Enable or disable subgifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubwelcometoggle')) {
             massGiftSubWelcomeToggle = !massGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', massGiftSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')))
+        }
+
+        /*
+         * @commandpath massanongiftsubwelcometoggle - Enable or disable mass anonymous subgifting alerts.
+         */
+        if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
+            massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
+            $.setIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', massAnonGiftSubWelcomeToggle);
+            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')))
         }
 
         /*
@@ -384,17 +483,45 @@
         }
 
         /*
-         * @commandpath massgiftsubmessage [message] - Set a message for resubscribers.
+         * @commandpath giftanonsubmessage[message] - Set a message for anonymous gifting alerts.
+         */
+        if (command.equalsIgnoreCase('giftanonsubmessage')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.usage'));
+                return;
+            }
+
+            giftAnonSubMessage = argsString;
+            $.setIniDbString('subscribeHandler', 'giftAnonSubMessage', giftAnonSubMessage);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.set'));
+        }
+
+        /*
+         * @commandpath massgiftsubmessage [message] - Set a message for gifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubmessage')) {
             if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.usage'));
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.usage'));
                 return;
             }
 
             massGiftSubMessage = argsString;
             $.setIniDbString('subscribeHandler', 'massGiftSubMessage', massGiftSubMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.set'));
+        }
+
+        /*
+         * @commandpath massanongiftsubmessage [message] - Set a message for mass anonymous gifting alerts.
+         */
+        if (command.equalsIgnoreCase('massanongiftsubmessage')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.usage'));
+                return;
+            }
+
+            massAnonGiftSubMessage = argsString;
+            $.setIniDbString('subscribeHandler', 'massAnonGiftSubMessage', massAnonGiftSubMessage);
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.set'));
         }
 
         /**
@@ -518,7 +645,9 @@
         $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubwelcometoggle', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubwelcometoggle', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubwelcometoggle', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'subscribereward', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubscribereward', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubreward', 1);
@@ -527,7 +656,9 @@
         $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubmessage', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubmessage', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubmessage', 1);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'namesubplan', 1);
         announce = true;
     });

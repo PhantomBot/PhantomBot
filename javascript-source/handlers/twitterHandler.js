@@ -437,7 +437,7 @@
                 }
                 var retval = $.twitter.updateStatus(args.splice(1).join(' ')) + '';
                 if (retval.equals('true')) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(0).join(' ')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(1).join(' ')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.failed'));
                 }
@@ -504,8 +504,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.inuse', subCommandArg.toLowerCase()));
                     return;
                 }
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.success', $.getSetIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase())));
                 $.setIniDbString('twitter_mapping', sender, subCommandArg.toLowerCase());
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.register.success', subCommandArg.toLowerCase()));
                 return;
             }
 

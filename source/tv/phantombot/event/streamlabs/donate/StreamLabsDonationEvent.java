@@ -18,7 +18,7 @@ package tv.phantombot.event.streamlabs.donate;
 
 public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} jsonString

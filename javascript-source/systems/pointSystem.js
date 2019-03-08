@@ -202,12 +202,6 @@
                 }
             }
 
-            if ($.bot.isModuleEnabled('./handlers/gameWispHandler.js')) {
-                if ($.getTierData(username, 'bonuspoints') != 0) {
-                    amount += Math.floor(amount * ($.getTierData(username, 'bonuspoints') / 100));
-                }
-            }
-
             if (userCache[username] !== undefined) {
                 if (userCache[username] - lastPayout > 0) {
                     delete userCache[username];

@@ -114,6 +114,22 @@ $(function() {
     };
 
     /*
+     * @function Generates a load playlist modal
+     *
+     * @param  {String}   title
+     * @param  {String}   body
+     * @param  {Function} onClose
+     * @return {Object}
+     */
+    helpers.getErrorModal = (title, body, onClose) => {
+        return helpers.getModal('err-modal', title, 'Ok', $('<div/>', {
+            'class': 'form-group'
+        }).append($('<p/>', {
+            'text': body
+        })), onClose);
+    };
+
+    /*
      * @function Generates the settings modal
      *
      * @param  {Function} onClose
@@ -203,7 +219,18 @@ $(function() {
                 'title': 'Wie lang in Sekunden ein Song sein darf.',
                 'class': 'form-control',
                 'value': e.songRequestsMaxSecondsforVideo
-            }))), onClose).modal('toggle');
+            }))).append($('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'text': 'Vote Count'
+            })).append($('<input/>', {
+                'type': 'number',
+                'data-toggle': 'tooltip',
+                'id': 'vote-count',
+                'title': 'How many votes it takes to Skip.',
+                'class': 'form-control',
+                'value': e.voteCount
+            }))),onClose).modal('toggle');
         });
     };
 

@@ -20,7 +20,8 @@
 $(function() {
     var socket = new WebSocket((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPlayerPort()),
         listeners = [],
-        player = {};
+        player = {},
+        hasAPIKey = true;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -28,12 +29,24 @@ $(function() {
      * @param {Object} data
      */
     var sendToSocket = (data) => {
+        // Do not send any requests or any other data to the Core for processing if there is no key.
+        if (!hasAPIKey) {
+            return;
+        }
+
         try {
             socket.send(JSON.stringify(data));
         } catch (ex) {
             console.error('Failed to send message to socket: ' + ex.message);
         }
     };
+
+    /*
+     * @function to determine if an API key exists.
+     */
+    player.hasAPIKey = () => {
+        return hasAPIKey;
+    }
 
     /*
      * @function gets the playlist.
@@ -168,19 +181,6 @@ $(function() {
     };
 
     /*
-     * @function sends error code from YouTube Player
-     *
-     * @param {Number} status
-     */
-    player.sendError = (status) => {
-        sendToSocket({
-            status: {
-                errorcode: status
-            }
-        });
-    };
-
-    /*
      * @function updates the current song.
      *
      * @param {String} id
@@ -200,6 +200,19 @@ $(function() {
         sendToSocket({
             status: {
                 ready: true
+            }
+        });
+    };
+
+    /*
+     * @function sends error code from YouTube Player
+     *
+     * @param {Number} status
+     */
+    player.sendError = (status) => {
+        sendToSocket({
+            status: {
+                errorcode: status
             }
         });
     };
@@ -317,7 +330,20 @@ $(function() {
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === false) {
-                    console.error('Die Anmeldung mit dem Sockel ist fehlgeschlagen.');
+                    console.error('Failed to auth with the socket.');
+                }
+                return;
+            }
+
+            // Check to ensure that there is an API key.
+            if (message.ytkeycheck !== undefined) {
+                if (message.ytkeycheck === false) {
+                    hasAPIKey = false;
+                    console.error("Missing YouTube API Key.");
+                    toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
+                                 '<a href="https://community.phantombot.tv/t/acquire-youtube-api-key/222">here' +
+                                 '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
+                                 {timeOut: 0, extendedTimeOut: 0});
                 }
                 return;
             }

@@ -187,7 +187,9 @@ public class YTWebSocketServer extends WebSocketServer {
             sessionData.setPlayer(true);
             authResult(authenticated, webSocket);
             if (authenticated) {
-                EventBus.instance().postAsync(new YTPlayerConnectEvent());
+                if (!checkYouTubeKey(webSocket)) {
+                    EventBus.instance().postAsync(new YTPlayerConnectEvent());
+                }
             }
             return;
         }
@@ -330,7 +332,12 @@ public class YTWebSocketServer extends WebSocketServer {
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
     }
 
-    //Method that queries the DB.
+    /**
+     * Method that queries the DB.
+     * @param webSocket
+     * @param id
+     * @param table
+     */
     public void handleDBQuery(WebSocket webSocket, String id, String table) {
         JSONStringer jsonObject = new JSONStringer();
 
@@ -431,6 +438,17 @@ public class YTWebSocketServer extends WebSocketServer {
 
     public void setClientConnected(boolean clientConnected) {
         this.clientConnected = clientConnected;
+    }
+
+    private boolean checkYouTubeKey(WebSocket webSocket) {
+        JSONStringer jsonObject = new JSONStringer();
+        webSocket.send(jsonObject.object().key("ytkeycheck").value(!PhantomBot.instance().isYouTubeKeyEmpty()).endObject().toString());
+
+        if (PhantomBot.instance().isYouTubeKeyEmpty()) {
+            com.gmt2001.Console.err.println("Ein YouTube-API-Schlüssel wurde nicht konfiguriert. Bitte lesen Sie die Anweisungen " +
+                                            "auf dem PhantomBot Community Forum unter: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
+        }
+        return PhantomBot.instance().isYouTubeKeyEmpty();
     }
 
     // Class for storing Session data.

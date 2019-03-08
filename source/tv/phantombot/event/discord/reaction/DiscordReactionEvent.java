@@ -14,10 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.gamewisp;
 
-import tv.phantombot.event.Event;
+package tv.phantombot.event.discord.reaction;
 
-public abstract class GameWispEvent extends Event {
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IUser;
 
+import tv.phantombot.event.discord.DiscordEvent;
+
+/**
+ *
+ * @author ScaniaTV
+ */
+public abstract class DiscordReactionEvent extends DiscordEvent {
+    
+    /**
+     * Abstract constructor.
+     *
+     * @param {IUser} user
+     */
+    protected DiscordReactionEvent(IUser user) {
+        super(user);
+    }
+
+    /**
+     * Abstract constructor.
+     *
+     * @param {IUser}    user
+     * @param {IChannel} channel
+     */
+    protected DiscordReactionEvent(IUser user, IChannel channel) {
+        super(user, channel);
+    }
 }

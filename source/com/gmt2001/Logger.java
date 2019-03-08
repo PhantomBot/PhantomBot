@@ -172,13 +172,13 @@ public class Logger implements Runnable {
                 } catch (FileNotFoundException | SecurityException ex) {
                     ex.printStackTrace(System.err);
                 } catch (NullPointerException ex) {
-                    com.gmt2001.Console.err.println("Failed to log [NullPointerException]: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("Die Protokollierung von [NullPointerException] ist fehlgeschlagen: " + ex.getMessage());
                 }
             } else {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println("Failed to sleep while logging [InterruptedException]: " + ex.getMessage());
+                    com.gmt2001.Console.debug.println("Beim Protokollieren von [InterruptedException] konnte kein Standbymodus aktiviert werden: " + ex.getMessage());
                 }
             }
         }
@@ -226,13 +226,13 @@ public class Logger implements Runnable {
         try {
             this.queue.add(new LogItem(t, s));
         } catch (IllegalStateException ex) {
-            com.gmt2001.Console.err.println("Failed to add item to the log queue [IllegalStateException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Es konnte kein Element zur Log-Warteschlange hinzugefügt werden [IllegalStateException]: " + ex.getMessage());
         }
     }
 
     public String logTimestamp() {
         SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
+        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
         return datefmt.format(new Date());
     }
 }

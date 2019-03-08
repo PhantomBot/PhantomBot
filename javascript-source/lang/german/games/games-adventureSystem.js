@@ -84,32 +84,36 @@ $.lang.register('adventuresystem.stories.8.chapter.3', 'Verdammt, das war knapp!
 $.lang.register('adventuresystem.stories.9.title', 'Mutation');
 $.lang.register('adventuresystem.stories.9.chapter.1', 'Ich denke, wir haben sehr gute Chancen, eine sagenumwobene Kreatur in dieser Höhle zu finden... Sie ist das Resultat jahrelanger Forschung nach ewigem Leben. Lacht nicht, ICH MEINE ES TOT ERNST!');
 $.lang.register('adventuresystem.stories.9.chapter.2', '/me Als sich der mutige Feentrupp seinen Weg durch die Tunnel bahnt, hören sie ein leises Flattern hinter sich...');
-$.lang.register('adventuresystem.stories.9.chapter.3', 'Achtung! Es ist Fee Hindert, das lang verschollene Experiment! (caught) wurde(n) in die Dunkelheit gezogen und verschwand(en) auf nimmer Wiedersehen.');
+$.lang.register('adventuresystem.stories.9.chapter.3', 'Achtung! Es ist Amarylissell Lichterwind, das lang verschollene Experiment! (caught) wurde(n) in die Dunkelheit gezogen und verschwand(en) auf nimmer Wiedersehen.');
 $.lang.register('adventuresystem.stories.9.chapter.4', '(survivors), lasst uns hier verschwinden! Wir können es nicht mit ihr aufnehmen!');
 
 /*
- * Rules on writing your own adventure story:
+ * Wie du deine eigene Geschichte schreibst:
+ * - Die Geschichten werden automatisch aus der games-adventureSystem.js mit den Sequenz Nummern geladen. (adventuresystem.stories.[Nummer])
+ * - Bitte behaltet UNBEDINGT das unten stehende Format bei!
+ * - Du kannst so viele Geschichten haben wie du möchtest, wenn die Sequenznummern sich nicht wiederholen und in der richtigen Reihenfolge sind!
+ * - Jede Geschichte MUSS einen Titel haben!
+ * - Jede Geschichte kann eine unbegrenzte Anzahl an Kapiteln haben, wenn die Sequenznummern sich nicht wiederholen und in der richtigen Reihenfolge sind!
+ * - Die Geschichten werden Zufällig beim aktivieren des Abenteuers ausgewählt.
+ * - Es ist auch möglich, ein Abenteuer für ein Spezielles Spiel fest zu legen, solang man mindestens eine Geschichte ohne festes Spiel angelegt hat!
+ * - Bitte geht sicher das die Nummer der Geschichten fortlaufend sind!
+ * - $.lang.register('adventuresystem.stories.NUMMER.game', 'SPIEL NAME IN KLEINEN BUCHSTABEN');
  *
- * - Stories are automatically loaded from this file by their sequence number (adventuresystem.stories.[This number]).
- * - Keep the format of your story as shown above.
- * - There can be an unlimited number of stories, IF you keep their subsequence numbers 1, 2, 3, 4, 5...
- * - A story must have a title.
- * - A story can have an unlimited number of chapters, IF you keep their subsequence numbers 1, 2, 3, 4, 5...
- * - Stories are picked at random.
+ * Auf https://github.com/Locxion/pb_german_adventures findet ihr eine Sammlung von Deutschen Geschichten.
+ * Ein paar dieser Geschichten haben schon den Weg in diese Übersetzung gefunden.
+ * Solltest du eine neue Geschichte schreiben, reiche sie doch bitte auch dort ein, so das wir am Ende eine riesige Sammlung haben.
  *
- ** Game specific story how-to. You also need to make sure that you at least have ONE story that doesn't require a specific game.
- ** Please make sure that your story number also follow along. What I mean by that is it needs to start from 1 and go up. Same with the chapters.
- * - Add $.lang.register('adventuresystem.stories.NUMBER.game', 'GAME NAME IN LOWER CASE'); on top of the story chapter.
-
- * Example >
+ * Beispiel >
  * $.lang.register('adventuresystem.stories.5.game', 'programming');
  * $.lang.register('adventuresystem.stories.5.title', 'Talk Shows');
- * $.lang.register('adventuresystem.stories.5.chapter.1', 'random story...');
+ * $.lang.register('adventuresystem.stories.5.chapter.1', 'Zufällige Geschichte ...');
  *
- * Underneath is a template for your first custom story, just remove the preceding slashes.
- */
+ * Die Variable (caught) beschreibt Spieler die während der Geschichte geschnappt werden.
+ * Die Variable (survivors) beschreibt die Spieler die die Geschichte überleben.
+ * Ein Stück weiter unten findet ihr ein Template das ihr für neue Geschichten benutzen könnt. Einfach die // davor entfernen und XX durch die Geschichtennummer ersetzen!
+*/
 
-//$.lang.register('adventuresystem.stories.5.title', '');
-//$.lang.register('adventuresystem.stories.5.chapter.1', '');
-//$.lang.register('adventuresystem.stories.5.chapter.2', '');
-//$.lang.register('adventuresystem.stories.5.chapter.3', '');
+//$.lang.register('adventuresystem.stories.XX.title', '');
+//$.lang.register('adventuresystem.stories.XX.chapter.1', '');
+//$.lang.register('adventuresystem.stories.XX.chapter.2', '');
+//$.lang.register('adventuresystem.stories.XX.chapter.3', '');

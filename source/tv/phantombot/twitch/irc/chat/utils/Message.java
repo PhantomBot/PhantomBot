@@ -20,7 +20,7 @@ public class Message {
     private final String message;
     private final boolean hasPriority;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} message
@@ -30,7 +30,7 @@ public class Message {
         this.hasPriority = false;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} message
@@ -41,7 +41,7 @@ public class Message {
         this.hasPriority = hasPriority;
     }
 
-    /*
+    /**
      * Method that returns the message.
      *
      * @return {String} message
@@ -50,7 +50,7 @@ public class Message {
         return this.message;
     }
 
-    /*
+    /**
      * Method that returns if the message has priority.
      *
      * @return {boolean} hasPriority

@@ -67,10 +67,4 @@ WORKDIR "${BASEDIR}"
 
 EXPOSE 25000 25001 25002 25003 25004 25005
 
-CMD [ \
-        "java", \
-        "-Dinteractive", \
-        "-Dfile.encoding=UTF-8", \
-        "-jar", \
-        "PhantomBot.jar" \
-    ]
+CMD ["sh", "launch-service.sh"]

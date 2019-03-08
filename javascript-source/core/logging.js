@@ -28,7 +28,19 @@
             file: $.getSetIniDbBoolean('settings', 'log.file', true),
             event: $.getSetIniDbBoolean('settings', 'log.event', true),
             error: $.getSetIniDbBoolean('settings', 'log.error', true)
-        };
+        },
+        cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false),
+        cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+
+    /*
+     * @event webPanelSocketUpdate
+     */
+    $.bind('webPanelSocketUpdate', function(event) {
+        if (event.getScript().equalsIgnoreCase('./core/logging.js')) {
+            cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false);
+            cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+        }
+    });
 
     /*
      * function reloadLogs()
@@ -82,6 +94,21 @@
 
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT')));
         return dateFormat.format(new Date());
+    }
+
+    /*
+     * @function logCustomCommand
+     *
+     * @param {object} info
+     */
+    function logCustomCommand(info) {
+        var lines = Object.keys(info).map(function(key) {
+            return '**' + $.lang.get('discord.customcommandlogs.' + key) + '**: ' + info[key];
+        });
+        $.log.file('customCommands', lines.join('\r\n'));
+        if (!$.hasDiscordToken && cmdLogEnabled && cmdDiscordLogChannel) {
+            $.discordAPI.sendMessageEmbed(cmdDiscordLogChannel, 'blue', lines.join('\r\n\r\n'));
+        }
     }
 
     /*
@@ -373,4 +400,5 @@
     };
 
     $.reloadLogs = reloadLogs;
+    $.logCustomCommand = logCustomCommand;
 })();

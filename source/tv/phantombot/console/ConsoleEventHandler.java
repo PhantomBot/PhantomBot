@@ -46,8 +46,6 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
-import tv.phantombot.event.gamewisp.GameWispAnniversaryEvent;
-import tv.phantombot.event.gamewisp.GameWispSubscribeEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
@@ -55,10 +53,13 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
+import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
 
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 
@@ -100,7 +101,7 @@ public class ConsoleEventHandler implements Listener {
         // Split arguments of the message string.
         String[] argument = null;
         // Set the datastore.
-        DataStore dataStore = DataStore.instance();
+        DataStore dataStore = PhantomBot.instance().getDataStore();
 
         // If the message is null, or empty ignore everything below.
         if (message == null || message.isEmpty()) {
@@ -113,6 +114,31 @@ public class ConsoleEventHandler implements Listener {
             message = messageString.substring(0, messageString.indexOf(" "));
             arguments = messageString.substring(messageString.indexOf(" ") + 1);
             argument = arguments.split(" ");
+        }
+
+        /**
+         * @consolecommand raidtest - Tests the raid event.
+         */
+        if (message.equalsIgnoreCase("raidtest")) {
+            String raidName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Raid Event (Username = " + raidName + ", Viewers = 10)");
+            EventBus.instance().postAsync(new TwitchRaidEvent(raidName, "10"));
+            return;
+        }
+
+        /**
+         * @consolecommand checkytquota - This command checks the quota points used by YouTube.
+         */
+        if (message.equalsIgnoreCase("checkytquota")) {
+            String ytQuotaDate = dataStore.GetString("youtubePlayer", "", "quotaDate");
+            String ytQuotaPoints = dataStore.GetString("youtubePlayer", "", "quotaPoints");
+
+            if (ytQuotaDate == null || ytQuotaPoints == null) {
+                com.gmt2001.Console.out.println("No YouTube Quota Data Found.");
+            } else {
+                com.gmt2001.Console.out.println("YouTube Quota Date (US/Pacific): " + ytQuotaDate + " Points Used: " + ytQuotaPoints);
+            }
+            return;
         }
 
         /**
@@ -229,7 +255,7 @@ public class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("backupdb")) {
             com.gmt2001.Console.out.println("[CONSOLE] Führe backupdb aus");
             SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.timeZone));
+            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
             dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
@@ -255,13 +281,17 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand jointest - Sends 30 fake join events.
+         * @consolecommand jointest - Sends 30 fake join events or one specific user for testing.
          */
         if (message.equalsIgnoreCase("jointest")) {
             com.gmt2001.Console.out.println("[CONSOLE] Führe jointest aus");
 
-            for (int i = 0 ; i < 30; i++) {
-                EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
+            if (argument != null) {
+                EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), argument[0]));
+            } else {
+                for (int i = 0 ; i < 30; i++) {
+                    EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
+                }
             }
         }
 
@@ -341,6 +371,26 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
+         * @consolecommand massanongiftsubtest - Test a mass anonymous gift subscription.
+         */
+        if (message.equalsIgnoreCase("massanonsubgifttest")) {
+            String userName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Username = " + userName + ")");
+            EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent("10", "1000"));
+            return;
+        }
+
+        /**
+         * @consolecommand anonsubgifttest - Test an anonymous gift subscription
+         */
+        if (message.equalsIgnoreCase("anonsubgifttest")) {
+            String userName = PhantomBot.generateRandomString(8);
+            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ")");
+            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, "1", "1000"));
+            return;
+        }
+
+        /**
          * @consolecommand onlinetest - Sends a fake online event.
          */
         if (message.equalsIgnoreCase("onlinetest")) {
@@ -384,24 +434,6 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Führe hosttest " + randomUser + " aus");
 
             EventBus.instance().postAsync(new TwitchHostedEvent(randomUser));
-            return;
-        }
-
-        /**
-         * @consolecommand gamewispsubscribertest - Sends a fake gamewisp subscriber event.
-         */
-        if (message.equalsIgnoreCase("gamewispsubscribertest")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Führe gamewispsubscribertest aus");
-            EventBus.instance().postAsync(new GameWispSubscribeEvent(PhantomBot.instance().getBotName(), 1));
-            return;
-        }
-
-        /**
-         * @consolecommand gamewispresubscribertest - Sends a fake gamewisp re-subscriber event.
-         */
-        if (message.equalsIgnoreCase("gamewispresubscribertest")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Führe gamewispresubscribertest aus");
-            EventBus.instance().postAsync(new GameWispAnniversaryEvent(PhantomBot.instance().getBotName(), 2));
             return;
         }
 
@@ -493,7 +525,7 @@ public class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("exit")) {
             com.gmt2001.Console.out.println("[CONSOLE] Führe exit aus");
 
-            System.exit(0);
+            PhantomBot.exitOK();
             return;
         }
 
@@ -542,30 +574,6 @@ public class ConsoleEventHandler implements Listener {
                 PhantomBot.instance().getProperties().setProperty("datastore", dataStoreType);
 
                 com.gmt2001.Console.out.println("PhantomBot MySQL-Setup abgeschlossen, PhantomBot wird beendet.");
-                changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /**
-         * @consolecommand gamewispsetup - Sets up GameWisp.
-         */
-        if (message.equalsIgnoreCase("gamewispsetup")) {
-            try {
-                System.out.println("");
-                System.out.println("PhantomBot GameWisp-Setup.");
-                System.out.println("");
-
-                System.out.print("Bitte gebe deinen GameWisp OAuth-Key ein: ");
-                String gameWispOAuth = System.console().readLine().trim();
-                PhantomBot.instance().getProperties().setProperty("gamewispauth", gameWispOAuth);
-
-                System.out.print("Bitte gebe deinen GameWisp Refresh-Key ein: ");
-                String gameWispRefresh = System.console().readLine().trim();
-                PhantomBot.instance().getProperties().setProperty("gamewisprefresh", gameWispRefresh);
-
-                System.out.print("PhantomBot GameWisp-Setup abgeschlossen, PhantomBot wird beendet.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -666,7 +674,25 @@ public class ConsoleEventHandler implements Listener {
                 String twitterSecretToken = System.console().readLine().trim();
                 PhantomBot.instance().getProperties().setProperty("twitter_secret_token", twitterSecretToken);
 
-                System.out.println("PhantomBot Twitter-Setup abgeschlossen, PhantomBot wird beendet.");
+                com.gmt2001.Console.out.println("PhantomBot MySQL-Setup abgeschlossen, PhantomBot wird beendet.");
+                changed = true;
+            } catch (NullPointerException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        /**
+         * @consolecommand ytsetup - Sets up YouTube API Key
+         */
+        if (message.equalsIgnoreCase("ytsetup")) {
+            try {
+                System.out.println("");
+                System.out.println("PhantomBot YouTube API Key Setup");
+                System.out.println("");
+                System.out.println("Please enter the YouTube API key that you have acquired: ");
+                String youtubeKey = System.console().readLine().trim();
+                PhantomBot.instance().getProperties().setProperty("youtubekey", youtubeKey);
+                System.out.println("PhantomBot YouTube API key setup done, PhantomBot will exit.");
                 changed = true;
             } catch (NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -693,7 +719,7 @@ public class ConsoleEventHandler implements Listener {
                 com.gmt2001.Console.out.println("");
                 com.gmt2001.Console.out.println("Änderungen wurden gespeichert, PhantomBot wird nun beendet.");
                 com.gmt2001.Console.out.println("");
-                System.exit(0);
+                PhantomBot.exitOK();
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }

@@ -19,7 +19,7 @@ package tv.phantombot.event.ytplayer;
 public class YTPlayerCurrentIdEvent extends YTPlayerEvent {
     private final String id;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} id
@@ -28,7 +28,7 @@ public class YTPlayerCurrentIdEvent extends YTPlayerEvent {
         this.id = id;
     }
 
-    /*
+    /**
      * Method that returns the play ID event.
      *
      * @return {String} id

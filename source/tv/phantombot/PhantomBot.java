@@ -28,11 +28,9 @@ import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStoreConverter;
 
-import com.illusionaryone.GameWispAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.GoogleURLShortenerAPIv1;
 import com.illusionaryone.NoticeTimer;
-import com.illusionaryone.SingularityAPI;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.DataRenderServiceAPIv1;
@@ -42,7 +40,6 @@ import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv2;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -52,23 +49,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
-
 import java.net.ServerSocket;
-
 import java.security.SecureRandom;
 
 import java.text.SimpleDateFormat;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -105,12 +97,14 @@ import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.ytplayer.YTWebSocketServer;
 import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.console.ConsoleEventHandler;
+import tv.phantombot.scripts.core.Moderation;
 
 public final class PhantomBot implements Listener {
     /* Bot Information */
@@ -178,10 +172,6 @@ public final class PhantomBot implements Listener {
     private String streamElementsID = "";
     private int streamElementsLimit = 5;
 
-    /* GameWisp Information */
-    private String gameWispOAuth;
-    private String gameWispRefresh;
-
     /* Notice Timer and Handling */
     private NoticeTimer noticeTimer;
 
@@ -217,20 +207,20 @@ public final class PhantomBot implements Listener {
 
     /* PhantomBot Information */
     private static PhantomBot instance;
-    public static Boolean reloadScripts = false;
-    public static Boolean enableDebugging = false;
-    public static Boolean enableDebuggingLogOnly = false;
-    public static Boolean enableRhinoDebugger = false;
-    public static String timeZone = "GMT";
-    public static Boolean useMessageQueue = true;
-    public static Boolean twitch_tcp_nodelay = true;
-    public static Boolean isInExitState = false;
-    public Boolean isExiting = false;
+    private static Boolean reloadScripts = false;
+    private static Boolean enableDebugging = false;
+    private static Boolean enableDebuggingLogOnly = false;
+    private static Boolean enableRhinoDebugger = false;
+    private static String timeZone = "GMT";
+    private static Boolean useMessageQueue = true;
+    private static Boolean twitchTcpNodelay = true;
+    private static Boolean isInExitState = false;
+    private Boolean isExiting = false;
     private Boolean interactive;
     private Boolean resetLogin = false;
 
     /* Other Information */
-    private static Boolean newSetup = false;
+    private Boolean newSetup = false;
     private TwitchSession session;
     private String chanName;
     private Boolean timer = false;
@@ -244,52 +234,57 @@ public final class PhantomBot implements Listener {
     private int backupSQLiteHourFrequency = 0;
     private int backupSQLiteKeepDays = 0;
 
-    /*
+    // Error codes
+    // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
+    private static final int EXIT_STATUS_OK = 0;
+    private static final int EXIT_STATUS_ERROR = 1;
+
+    /**
      * PhantomBot Instance.
      *
-     * @return  PhantomBot  The current instance of PhantomBot
+     * @return PhantomBot The current instance of PhantomBot
      */
     public static PhantomBot instance() {
         return instance;
     }
 
-    /*
+    /**
      * Current Repo Of PhantomBot.
      *
-     * @return  String  The current GitHub repository version of PhantomBot.
+     * @return String The current GitHub repository version of PhantomBot.
      */
     public String repoVersion() {
         return RepoVersion.getRepoVersion();
     }
 
-    /*
+    /**
      * Current Version Of PhantomBot.
      *
-     * @return  String  Display version of PhantomBot.
+     * @return String Display version of PhantomBot.
      */
     public String botVersion() {
         return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion();
     }
 
-    /*
+    /**
      * Used by the panel on the informations tab.
      *
-     * @return  String  PhantomBot information for the Panel.
+     * @return String PhantomBot information for the Panel.
      */
     public String getBotInfo() {
         return botVersion() + " (Revision: " + repoVersion() + ")";
     }
 
-    /*
+    /**
      * Current Build Revision
      *
-     * @return  String  The build revision of PhantomBot.
+     * @return String The build revision of PhantomBot.
      */
     public String botRevision() {
         return "Build Revision: " + repoVersion();
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot creator
@@ -298,7 +293,7 @@ public final class PhantomBot implements Listener {
         return "Ersteller: mast3rplan";
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot developers
@@ -316,7 +311,7 @@ public final class PhantomBot implements Listener {
         return "Übersetzer: Lapotor, Vesturo";
     }
 
-    /*
+    /**
      * Only used on bot boot up for now.
      *
      * @return {string} bot website
@@ -325,7 +320,7 @@ public final class PhantomBot implements Listener {
         return "https://phantombot.tv/";
     }
 
-    /*
+    /**
      * Prints a message in the bot console.
      *
      * @param {Object} message
@@ -334,7 +329,7 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.out.println(message);
     }
 
-    /*
+    /**
      * Checks port availability.
      *
      * @param {int} port
@@ -349,7 +344,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.println("Stelle sicher, dass keine weitere Kopie von PhantomBot läuft.");
             com.gmt2001.Console.err.println("Wenn keine andere Kopie läuft, versuche, den Basisport in ./config/botlogin.txt zu ändern.");
             com.gmt2001.Console.err.println("PhantomBot wird nun beendet.");
-            System.exit(0);
+            PhantomBot.exitError();
         } finally {
             if (serverSocket != null) {
                 try {
@@ -357,16 +352,23 @@ public final class PhantomBot implements Listener {
                 } catch (IOException e) {
                     com.gmt2001.Console.err.println("Der Port kann zum Testen nicht geschlossen werden: " + port);
                     com.gmt2001.Console.err.println("PhantomBot wird nun beendet.");
-                    System.exit(0);
+                    PhantomBot.exitError();
                 }
             }
         }
     }
 
-    /*
+    /**
+     * Check to see if YouTube Key is configured.
+     */
+    public boolean isYouTubeKeyEmpty() {
+        return youtubeKey.isEmpty();
+    }
+
+    /**
      * Constructor for PhantomBot object.
      *
-     * @param  Properties  Properties object which configures the PhantomBot instance.
+     * @param Properties Properties object which configures the PhantomBot instance.
      */
     public PhantomBot(Properties pbProperties) {
 
@@ -379,7 +381,6 @@ public final class PhantomBot implements Listener {
         print(botRevision());
         print(getBotCreator());
         print(botDevelopers());
-        print(botTranslators());
         print(getWebSite());
         print("");
 
@@ -427,10 +428,6 @@ public final class PhantomBot implements Listener {
         /* Set the Discord variables */
         this.discordToken = this.pbProperties.getProperty("discord_token", "");
 
-        /* Set the GameWisp variables */
-        this.gameWispOAuth = this.pbProperties.getProperty("gamewispauth", "");
-        this.gameWispRefresh = this.pbProperties.getProperty("gamewisprefresh", "");
-
         /* Set the TwitchAlerts variables */
         this.twitchAlertsKey = this.pbProperties.getProperty("twitchalertskey", "");
         this.twitchAlertsLimit = Integer.parseInt(this.pbProperties.getProperty("twitchalertslimit", "5"));
@@ -467,13 +464,13 @@ public final class PhantomBot implements Listener {
             if (this.httpsFileName.equals("")) {
                 com.gmt2001.Console.err.println("HTTPS ist aktiviert, aber der Java Keystore (httpsFileName) ist nicht definiert.");
                 com.gmt2001.Console.err.println("PhantomBot wird beendet.");
-                System.exit(1);
+                PhantomBot.exitError();
             }
 
             if (!new File (httpsFileName).exists()) {
                 com.gmt2001.Console.err.println("HTTPS ist aktiviert, aber der Java Keystore (httpsFileName) ist nicht vorhanden: " + httpsFileName);
                 com.gmt2001.Console.err.println("PhantomBot wird beendet.");
-                System.exit(1);
+                PhantomBot.exitError();
             }
         }
 
@@ -490,7 +487,7 @@ public final class PhantomBot implements Listener {
         this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
-        PhantomBot.twitch_tcp_nodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
+        PhantomBot.twitchTcpNodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
 
 
         /*
@@ -521,6 +518,9 @@ public final class PhantomBot implements Listener {
         this.backupSQLiteHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupsqlitehourfrequency", "24"));
         this.backupSQLiteKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupsqlitekeepdays", "5"));
 
+        // Set the newSetup flag
+        this.newSetup = this.pbProperties.getProperty("newSetup").equals("true");
+
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
 
@@ -537,7 +537,7 @@ public final class PhantomBot implements Listener {
             /* Check to see if we can create a connection */
             if (dataStore.CreateConnection(this.mySqlConn, this.mySqlUser, this.mySqlPass) == null) {
                 print("Es konnte keine Verbindung mit dem MySQL-Server hergestellt werden. PhantomBot schaltet sich jetzt ab...");
-                System.exit(0);
+                PhantomBot.exitError();
             }
             /* Convert to MySql */
             if (IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
@@ -550,7 +550,7 @@ public final class PhantomBot implements Listener {
 
             if (dataStore.CreateConnection("", "", "") == null) {
                 print("Es konnte keine Verbindung mit der H2-Datenbank hergestellt werden. PhantomBot schaltet sich jetzt ab...");
-                System.exit(0);
+                PhantomBot.exitError();
             }
 
             if (SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
@@ -577,10 +577,14 @@ public final class PhantomBot implements Listener {
         /* Set the client Id in the Twitch api. */
         TwitchAPIv5.instance().SetClientID(this.clientId);
 
-        /* Set the oauth key in the Twitch api. */
+        /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+            TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
         }
+
+        /* Validate the chat OAUTH token. */
+        TwitchValidate.instance().validate(this.oauth, "CHAT (oauth)");
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
@@ -642,7 +646,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Tells you if the build is a nightly.
      *
      * @return {boolean}
@@ -651,7 +655,7 @@ public final class PhantomBot implements Listener {
         return RepoVersion.getNightlyBuild();
     }
 
-    /*
+    /**
      * Tells you if the build is a pre-release.
      *
      * @return {boolean}
@@ -660,26 +664,30 @@ public final class PhantomBot implements Listener {
         return RepoVersion.getPrereleaseBuild();
     }
 
-    /*
+    /**
      * Enables or disables the debug mode.
      *
      * @param {boolean} debug
      */
     public static void setDebugging(Boolean debug) {
+        if (debug)
+            com.gmt2001.Console.out.println("Debug-Modus aktiviert");
         PhantomBot.enableDebugging = debug;
     }
 
-    /*
+    /**
      * Enables or disables log only debug mode.
      *
      * @param {boolean} debug
      */
     public static void setDebuggingLogOnly(Boolean debug) {
+        if (debug)
+            com.gmt2001.Console.out.println("Debug Log Only Mode aktiviert");
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
     }
 
-    /*
+    /**
      * Tells you the bot name.
      *
      * @return {string} bot name
@@ -688,7 +696,7 @@ public final class PhantomBot implements Listener {
         return this.botName;
     }
 
-    /*
+    /**
      * Gives you the current data store
      *
      * @return {datastore} dataStore
@@ -697,7 +705,7 @@ public final class PhantomBot implements Listener {
         return this.dataStore;
     }
 
-    /*
+    /**
      * Tells you if the bot is exiting
      *
      * @return {boolean} exit
@@ -706,7 +714,7 @@ public final class PhantomBot implements Listener {
         return this.isExiting;
     }
 
-    /*
+    /**
      * Give's you the channel for that channelName.
      *
      * @return {channel}
@@ -715,7 +723,7 @@ public final class PhantomBot implements Listener {
         return this.channelName;
     }
 
-    /*
+    /**
      * Tells you if the discord token has been set.
      *
      * @return {boolean}
@@ -724,7 +732,7 @@ public final class PhantomBot implements Listener {
         return this.discordToken.isEmpty();
     }
 
-    /*
+    /**
      * Give's you the session for that channel.
      *
      * @return {session}
@@ -733,7 +741,7 @@ public final class PhantomBot implements Listener {
         return this.session;
     }
 
-    /*
+    /**
      * Method that returns the message limit
      *
      * @return {double} messageLimit
@@ -742,7 +750,7 @@ public final class PhantomBot implements Listener {
         return messageLimit;
     }
 
-    /*
+    /**
      * Give's you the message limit.
      *
      * @return {long} message limit
@@ -751,7 +759,7 @@ public final class PhantomBot implements Listener {
         return (long) ((30.0 / messageLimit) * 1000);
     }
 
-    /*
+    /**
      * Give's you the whisper limit. *Currently not used*
      *
      * @return {long} whisper limit
@@ -760,10 +768,10 @@ public final class PhantomBot implements Listener {
         return (long) ((60.0 / whisperLimit) * 1000);
     }
 
-    /*
+    /**
      * Helper method to see if a module is enabled.
      *
-     * @param  String  Module name to check for
+     * @param String Module name to check for
      * @return boolean If the module is enabled or not
      */
     public boolean checkModuleEnabled(String module) {
@@ -774,11 +782,11 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Checks if a value is true in the datastore.
      *
-     * @param String  Db table to check.
-     * @param String  Db key to check in that table.
+     * @param String Db table to check.
+     * @param String Db key to check in that table.
      */
     public boolean checkDataStore(String table, String key) {
         try {
@@ -788,7 +796,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Method that returns the basic bot info.
      *
      * @return {String}
@@ -798,7 +806,7 @@ public final class PhantomBot implements Listener {
                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
     }
 
-    /*
+    /**
      * Method that gets the PhantomBot properties.
      *
      * @return
@@ -807,7 +815,7 @@ public final class PhantomBot implements Listener {
         return this.pbProperties;
     }
 
-    /*
+    /**
      * Loads everything up.
      */
     private void init() {
@@ -871,19 +879,8 @@ public final class PhantomBot implements Listener {
                 }
             } catch (Exception ex) {
                 print("Es trat ein Fehler in einem der Socket-basierten Dienste auf, PhantomBot wird nun beendet.");
-                System.exit(0);
+                PhantomBot.exitError();
             }
-        }
-
-        /* Enable GameWisp if the oAuth is set */
-        if (!gameWispOAuth.isEmpty() && checkModuleEnabled("./handlers/gameWispHandler.js")) {
-            /* Set the oAuths */
-            GameWispAPIv1.instance().SetAccessToken(gameWispOAuth);
-            GameWispAPIv1.instance().SetRefreshToken(gameWispRefresh);
-            SingularityAPI.instance().setAccessToken(gameWispOAuth);
-            SingularityAPI.instance().StartService();
-            /* get a fresh token */
-            doRefreshGameWispToken();
         }
 
         /* Connect to Discord if the data is present. */
@@ -1039,6 +1036,7 @@ public final class PhantomBot implements Listener {
         EventBus.instance().register(ScriptEventManager.instance());
         /* Register the console event handler */
         EventBus.instance().register(ConsoleEventHandler.instance());
+        //EventBus.instance().register(tv.phantombot.scripts.core.Moderation.instance());
 
         /* Load the datastore config */
         dataStore.LoadConfig(dataStoreConfig);
@@ -1059,7 +1057,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
-        Script.global.defineProperty("gamewisp", GameWispAPIv1.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
@@ -1071,6 +1068,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("dataRenderServiceAPI", DataRenderServiceAPIv1.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
+        Script.global.defineProperty("moderation", Moderation.instance(), 0);
 
         /* open a new thread for when the bot is exiting */
         Thread thread = new Thread(() -> {
@@ -1102,7 +1100,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Used for exiting the bot
      *
      */
@@ -1180,7 +1178,7 @@ public final class PhantomBot implements Listener {
         print(this.botName + " wird beendet.");
     }
 
-    /*
+    /**
      * Connected to Twitch.
      *
      */
@@ -1240,7 +1238,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
     }
 
-    /*
+    /**
      * Get private messages from Twitch.
      *
      */
@@ -1267,7 +1265,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * user modes from twitch
      *
      */
@@ -1283,7 +1281,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * messages from Twitch chat
      *
      */
@@ -1294,7 +1292,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /* Handle commands */
+    /** Handle commands */
     public void handleCommand(String username, String command) {
         String arguments = "";
 
@@ -1307,7 +1305,7 @@ public final class PhantomBot implements Listener {
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
     }
 
-    /* Handle commands */
+    /** Handle commands */
     public void handleCommandSync(String username, String command) {
         String arguments = "";
 
@@ -1320,25 +1318,15 @@ public final class PhantomBot implements Listener {
         EventBus.instance().post(new CommandEvent(username, command, arguments));
     }
 
-    /* Load up main */
+    /** Load up main */
     public static void main(String[] args) throws IOException {
         // Move user files.
         moveUserConfig();
 
-        /* List of properties that must exist. */
-        String requiredProperties[] = new String[] { "oauth", "channel", "owner", "user" };
-        String requiredPropertiesErrorMessage = "";
-
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 1.8 || Float.valueOf(System.getProperty("java.specification.version")) >= (float) 1.9) {
             System.out.println("Java " + System.getProperty("java.version") + " erkannt. " + "PhantomBot benötigt Java 8. Java 9 und höher funktioniert NICHT.");
-            System.exit(1);
+            PhantomBot.exitError();
         }
-
-        /* Properties configuration */
-        Properties startProperties = new Properties();
-
-        /* Indicates that the botlogin.txt file should be overwritten/created. */
-        Boolean changed = false;
 
         /* Print the user dir */
         com.gmt2001.Console.out.println("Das Hauptverzeichnis ist: " + System.getProperty("user.dir"));
@@ -1351,325 +1339,43 @@ public final class PhantomBot implements Listener {
         if (args.length > 0) {
             if (args[0].equals("--version") || args[0].equals("-v")) {
                 com.gmt2001.Console.out.println("PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getRepoVersion() + ")");
-                System.exit(1);
+                PhantomBot.exitOK();
             }
         }
 
-        /* Load up the bot info from the bot login file */
-        try {
-            if (new File("./config/botlogin.txt").exists()) {
-                FileInputStream inputStream = new FileInputStream("./config/botlogin.txt");
-                startProperties.load(inputStream);
-                inputStream.close();
-            } else {
-                /* Fill in the Properties object with some default values. Note that some values are left
-                 * unset to be caught in the upcoming logic to enforce settings.
-                 */
-                startProperties.setProperty("baseport", "25000");
-                startProperties.setProperty("usehttps", "false");
-                startProperties.setProperty("webenable", "true");
-                startProperties.setProperty("msglimit30", "19.0");
-                startProperties.setProperty("musicenable", "true");
-                startProperties.setProperty("whisperlimit60", "60.0");
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-        /* Load up the bot info from the environment */
-        for (Entry<String, String> v : System.getenv().entrySet()) {
-            String Prefix = "PHANTOMBOT_";
-            String Key = v.getKey().toUpperCase();
-            String Value = v.getValue();
-            if (Key.startsWith(Prefix) && Prefix.length() < Key.length()) {
-                Key = Key.substring(Prefix.length()).toLowerCase();
-                startProperties.setProperty(Key, Value);
-            }
-        }
-        /* Check to enable debug mode */
-        if (startProperties.getProperty("debugon", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Debug-Modus aktiviert");
-            PhantomBot.enableDebugging = true;
-        }
-        /* Check to enable debug to File */
-        if (startProperties.getProperty("debuglog", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Debug Log Only Modus aktiviert");
-            PhantomBot.enableDebugging = true;
-            PhantomBot.enableDebuggingLogOnly = true;
-        }
-        /* Check to enable Script Reloading */
-        if (startProperties.getProperty("reloadscripts", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Skript-Reload aktiviert");
-            PhantomBot.reloadScripts = true;
-        }
-        /* Check to enable Rhino Debugger */
-        if (startProperties.getProperty("rhinodebugger", "false").equals("true")) {
-            com.gmt2001.Console.out.println("Rhino Debugger wird gestartet, wenn das System ihn unterstützt.");
-            PhantomBot.enableRhinoDebugger = true;
-        }
-        /* Check to see if there's a webOauth set */
-        if (startProperties.getProperty("webauth") == null) {
-            startProperties.setProperty("webauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("Es wurde ein neuer Webauth-Schlüssel für ./config/botlogin.txt generiert.");
-            changed = true;
-        }
-        /* Check to see if there's a webOAuthRO set */
-        if (startProperties.getProperty("webauthro") == null) {
-            startProperties.setProperty("webauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("Es wurde ein neuer schreibgeschützter Webauth-Schlüssel für ./config/botlogin.txt generiert.");
-            changed = true;
-        }
-        /* Check to see if there's a panelUsername set */
-        if (startProperties.getProperty("paneluser") == null) {
-            com.gmt2001.Console.debug.println("Kein Panel-Benutzername, Nutzung des Standardwerts von \"Panel\" für Control Panel und YouTube Player.");
-            startProperties.setProperty("paneluser", "panel");
-            changed = true;
-        }
-        /* Check to see if there's a panelPassword set */
-        if (startProperties.getProperty("panelpassword") == null) {
-            com.gmt2001.Console.debug.println("Kein Panel-Passwort, Nutzung des Standardwerts von \"Panel\" für Control Panel und YouTube Player.");
-            startProperties.setProperty("panelpassword", "panel");
-            changed = true;
-        }
-        /* Check to see if there's a youtubeOAuth set */
-        if (startProperties.getProperty("ytauth") == null) {
-            startProperties.setProperty("ytauth", generateWebAuth());
-            com.gmt2001.Console.debug.println("Es wurde ein neuer YouTube-Websocket-Schlüssel für ./config/botlogin.txt generiert.");
-            changed = true;
-        }
-        /* Check to see if there's a youtubeOAuthThro set */
-        if (startProperties.getProperty("ytauthro") == null) {
-            startProperties.setProperty("ytauthro", generateWebAuth());
-            com.gmt2001.Console.debug.println("Ein neuer schreibgeschützter Youtube-Websocket-Schlüssel wurde für ./config/botlogin.txt generiert.");
-            changed = true;
-        }
+        Properties startProperties = ConfigurationManager.getConfiguration();
 
-        /* Make a new botlogin with the botName, oauth or channel is not found */
-        if (startProperties.getProperty("user") == null || startProperties.getProperty("oauth") == null || startProperties.getProperty("channel") == null) {
-            try {
-
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Willkommen beim Einrichtungsvorgang für PhantomBot!\r\n");
-                com.gmt2001.Console.out.print("Wenn du irgendwelche Probleme hast, melde sie bitte in unserem Forum, twittere uns, oder schließe dich unserem Discord an!\r\n");
-                com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
-                com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
-                com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
-                com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
-                com.gmt2001.Console.out.print("\r\n");                
-
-                final String os = System.getProperty("os.name").toLowerCase();
-
-                // Detect Windows, MacOS, Linux or any other operating system.
-                if (os.startsWith("win")) {
-                	com.gmt2001.Console.out.print("PhantomBot hat festgestellt, das Ihr Gerät unter Windows läuft.\r\n");
-                	com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Windows: https://community.phantombot.tv/t/windows-setup-guide/");
-                } else if (os.startsWith("mac")) {
-                	com.gmt2001.Console.out.print("PhantomBot hat festgestellt, das Ihr Gerät unter macOS läuft.\r\n");
-                	com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für macOS: https://community.phantombot.tv/t/macos-setup-guide/");
-                } else {
-                	com.gmt2001.Console.out.print("PhantomBot hat festgestellt, das Ihr Gerät unter einer Linux Distro läuft.\r\n");
-                	com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
-                	com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
-                }
-
-                com.gmt2001.Console.out.print("\r\n\r\n\r\n");
-
-                // Bot name.
-                do {
-                    com.gmt2001.Console.out.print("1. Bitte gib den Twitch-Benutzernamen des Bots ein: ");
-
-                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
-                } while (startProperties.getProperty("user", "").length() <= 0);
-
-                // Twitch oauth.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("2. Du brauchst nun einen OAuth-Token, damit der Bot chatten kann.\r\n");
-                    com.gmt2001.Console.out.print("Bitte Beachte, dass dieser OAuth-Token generiert werden muss, während du im Twitch-Konto des Bot angemeldet bist.\r\n");
-                    com.gmt2001.Console.out.print("Wenn du nicht mit dem Bot angemeldet bist, gehe bitte auf https://twitch.tv/ und logge dich als Bot ein.\r\n");
-                    com.gmt2001.Console.out.print("Den OAuth-Token des Bot gibt es hier: https://twitchapps.com/tmi/\r\n");
-                    com.gmt2001.Console.out.print("Bitte gib den OAuth-Token des Bot ein: ");
-
-                    startProperties.setProperty("oauth", System.console().readLine().trim());
-                } while (startProperties.getProperty("oauth", "").length() <= 0);
-
-                // api oauth.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("3. Du brauchst nun deinen Kanal OAuth-Token, damit der Bot deinen Titel und dein Spiel ändern kann.\r\n");
-                    com.gmt2001.Console.out.print("Bitte Beachte, dass dieser OAuth-Token generiert werden muss, während du in deinem Caster-Konto angemeldet bist.\r\n");
-                    com.gmt2001.Console.out.print("Wenn Du nicht als Caster angemeldet bist, gehe bitte auf https://twitch.tv/ und melde Dich als Caster an.\r\n");
-                    com.gmt2001.Console.out.print("Hol dir deinen OAuth-Token hier: https://phantombot.tv/oauth/\r\n");
-                    com.gmt2001.Console.out.print("Bitte gib deinen OAuth-Token ein: ");
-
-                    startProperties.setProperty("apioauth", System.console().readLine().trim());
-                } while (startProperties.getProperty("apioauth", "").length() <= 0);
-
-                // Channel name.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("4. Bitte gib den Namen des Twitch-Kanals ein, dem der Bot beitreten soll: ");
-
-                    startProperties.setProperty("channel", System.console().readLine().trim());
-                } while (startProperties.getProperty("channel", "").length() <= 0);
-
-                // Panel username.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("5. Bitte gib einen eigenen Benutzernamen für das Webpanel ein: ");
-
-                    startProperties.setProperty("paneluser", System.console().readLine().trim());
-                } while (startProperties.getProperty("paneluser", "").length() <= 0);
-
-                // Panel password.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("6. Bitte gib ein Passwort für das Web-Panel ein: ");
-
-                    startProperties.setProperty("panelpassword", System.console().readLine().trim());
-                } while (startProperties.getProperty("panelpassword", "").length() <= 0);
-
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("PhantomBot wird in 10 Sekunden gestartet.\r\n");
-                com.gmt2001.Console.out.print("Wenn Du den Bot lokal hostest, kannst Du hier auf das Control Panel zugreifen: http://localhost:25000/panel \r\n");
-                com.gmt2001.Console.out.print("Wenn Du den Bot auf einem Server betreibst, stelle sicher, dass Du die folgenden Ports geöffnet hast: \r\n");
-                com.gmt2001.Console.out.print("25000, 25003, and 25004. Du musst 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können. \r\n");
-
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println("Warten im Setup fehlgeschlagen: " + ex.getMessage());
-                }
-
-                changed = true;
-                newSetup = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-                com.gmt2001.Console.out.println("[ERROR] PhantomBot konnte nicht eingerichtet werden. Wird beendet...");
-                System.exit(0);
-            }
-        }
-
-        /* Make sure the oauth has been set correctly */
-        if (startProperties.getProperty("oauth") != null) {
-            if (!startProperties.getProperty("oauth").startsWith("oauth") && !startProperties.getProperty("oauth").isEmpty()) {
-                startProperties.setProperty("oauth", "oauth:" + startProperties.getProperty("oauth"));
-                changed = true;
-            }
-        }
-
-        /* Make sure the apiOAuth has been set correctly */
-        if (startProperties.getProperty("apioauth") != null) {
-            if (!startProperties.getProperty("apioauth").startsWith("oauth") && !startProperties.getProperty("apioauth").isEmpty()) {
-                startProperties.setProperty("apioauth", "oauth:" + startProperties.getProperty("apioauth"));
-                changed = true;
-            }
-        }
-
-        /* Make sure the channelName does not have a # */
-        if (startProperties.getProperty("channel").startsWith("#")) {
-            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(1));
-            changed = true;
-        } else if (startProperties.getProperty("channel").contains(".tv")) {
-            startProperties.setProperty("channel", startProperties.getProperty("channel").substring(startProperties.getProperty("channel").indexOf(".tv/") + 4).replaceAll("/", ""));
-            changed = true;
-        }
-
-        /* Check for the owner after the channel check is done. */
-        if (startProperties.getProperty("owner") == null) {
-            if (startProperties.getProperty("channel") != null) {
-                if (!startProperties.getProperty("channel").isEmpty()) {
-                    startProperties.setProperty("owner", startProperties.getProperty("channel"));
-                    changed = true;
-                }
-            }
-        }
-
-        /* Iterate the properties and delete entries for anything that does not have a
-         * value.
-         */
-        for (String propertyKey : startProperties.stringPropertyNames()) {
-            if (startProperties.getProperty(propertyKey).isEmpty()) {
-                changed = true;
-                startProperties.remove(propertyKey);
-            }
-        }
-
-        /*
-         * Check for required settings.
-         */
-        for (String requiredProperty : requiredProperties) {
-            if (startProperties.getProperty(requiredProperty) == null) {
-                requiredPropertiesErrorMessage += requiredProperty + " ";
-            }
-        }
-
-        if (!requiredPropertiesErrorMessage.isEmpty()) {
-            com.gmt2001.Console.err.println();
-            com.gmt2001.Console.err.println("Fehlende erforderliche Attribute: " + requiredPropertiesErrorMessage);
-            com.gmt2001.Console.err.println("Beende PhantomBot");
-            System.exit(0);
-        }
-
-        /* Check to see if anything changed */
-        if (changed) {
-            Properties outputProperties = new Properties() {
-                @Override
-                public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<>(super.keySet()));
-                }
-            };
-
-            try {
-                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                    outputProperties.putAll(startProperties);
-                    outputProperties.store(outputStream, "PhantomBot Configuration File");
-                }
-            } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
+        setStaticFields(startProperties);
 
         /* Start PhantomBot */
         PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    public void updateGameWispTokens(String[] newTokens) {
-        Properties outputProperties = new Properties() {
-            @Override
-            public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<>(super.keySet()));
-            }
-        };
-
-        gameWispOAuth = newTokens[0];
-        gameWispRefresh = newTokens[1];
-
-        pbProperties.setProperty("gamewispauth", newTokens[0]);
-        pbProperties.setProperty("gamewisprefresh", newTokens[1]);
-
-        try {
-            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                outputProperties.putAll(pbProperties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-            }
-            print("GameWisp Token wurde aktualisiert.");
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("!!!! KRITISCH !!!! GameWisp Refresh Token konnten nicht in ./config/botlogin.txt aktualisiert werden! Manuell hinzufügen!");
-            com.gmt2001.Console.err.println("!!!! KRITISCH !!!! gamewispauth = " + newTokens[0] + " gamewisprefresh = " + newTokens[1]);
-        }
-
-        SingularityAPI.instance().setAccessToken(gameWispOAuth);
+    private static void setStaticFields(Properties startProperties) {
+        /* Check to enable debug mode */
+        PhantomBot.setDebugging(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGON, false));
+        /* Check to enable debug to File */
+        PhantomBot.setDebuggingLogOnly(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGLOG, false));
+        /* Check to enable Script Reloading */
+        PhantomBot.setReloadScripts(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RELOADSCRIPTS, false));
+        /* Check to enable Rhino Debugger */
+        PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
     }
 
-    /* gen a oauth */
-    private static String generateWebAuth() {
-        return generateRandomString(30);
+    private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
+        if(enableRhinoDebugger)
+            com.gmt2001.Console.out.println("Rhino Debugger wird gestartet, wenn das System es unterstützt.");
+        PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
     }
 
-    /* gen a random string */
+    private static void setReloadScripts(Boolean reloadScripts) {
+        if (reloadScripts)
+            com.gmt2001.Console.out.println("Aktivieren des Wiederladens von Skripten");
+        PhantomBot.reloadScripts = reloadScripts;
+
+    }
+
+    /** gen a random string */
     public static String generateRandomString(int length) {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
@@ -1683,34 +1389,7 @@ public final class PhantomBot implements Listener {
         return new String(randomBuffer);
     }
 
-    /*
-     * doRefreshGameWispToken
-     *
-     */
-    public void doRefreshGameWispToken() {
-
-        long curTime = System.currentTimeMillis() / 1000L;
-
-        if (!dataStore.exists("settings", "gameWispRefreshTime")) {
-            dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime));
-        }
-
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.PhantomBot::doRefreshGameWispToken");
-
-            long curTime1 = System.currentTimeMillis() / 1000L;
-            String lastRunStr = dataStore.GetString("settings", "", "gameWispRefreshTime");
-            long lastRun = Long.parseLong(lastRunStr);
-            if ((curTime1 - lastRun) > (10 * 24 * 60 * 60)) {
-                // 10 days, token expires every 35.
-                dataStore.set("settings", "gameWispRefreshTime", String.valueOf(curTime1));
-                updateGameWispTokens(GameWispAPIv1.instance().refreshToken());
-            }
-        }, 0, 1, TimeUnit.DAYS);
-    }
-
-    /*
+    /**
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
@@ -1741,7 +1420,7 @@ public final class PhantomBot implements Listener {
         }, 0, 24, TimeUnit.HOURS);
     }
 
-    /* Set the twitch cache */
+    /** Set the twitch cache */
     public void setTwitchCacheReady(String twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
@@ -1767,9 +1446,9 @@ public final class PhantomBot implements Listener {
             dataStore.backupSQLite3("phantombot.auto.backup." + timestamp + ".db");
 
             try {
-                Iterator dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
                 while (dirIterator.hasNext()) {
-                    File backupFile = (File) dirIterator.next();
+                    File backupFile = dirIterator.next();
                     if (FileUtils.isFileOlder(backupFile, (System.currentTimeMillis() - (long) (backupSQLiteKeepDays * 864e5)))) {
                         FileUtils.deleteQuietly(backupFile);
                     }
@@ -1780,7 +1459,7 @@ public final class PhantomBot implements Listener {
         }, 0, backupSQLiteHourFrequency, TimeUnit.HOURS);
     }
 
-    /*
+    /**
      * Method that moves the db and botlogin into a new folder (config)
      */
     private static void moveUserConfig() {
@@ -1832,7 +1511,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /*
+    /**
      * Method to export a Java list to a csv file.
      *
      * @param {String[]} headers
@@ -1872,5 +1551,51 @@ public final class PhantomBot implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * End PhantomBot with an error state
+     */
+    public static void exitError() {
+        System.exit(EXIT_STATUS_ERROR);
+    }
+
+    /**
+     * End PhantomBot with an OK state
+     */
+    public static void exitOK() {
+        System.exit(EXIT_STATUS_OK);
+    }
+
+    public static Boolean getReloadScripts() {
+        return reloadScripts;
+    }
+
+    public static Boolean getEnableDebugging() {
+        return enableDebugging;
+    }
+
+    public static Boolean getEnableDebuggingLogOnly() {
+        return enableDebuggingLogOnly;
+    }
+
+    public static Boolean getEnableRhinoDebugger() {
+        return enableRhinoDebugger;
+    }
+
+    public static String getTimeZone() {
+        return timeZone;
+    }
+
+    public static Boolean getUseMessageQueue() {
+        return useMessageQueue;
+    }
+
+    public static Boolean getTwitchTcpNodelay() {
+        return twitchTcpNodelay;
+    }
+
+    public static Boolean isInExitState() {
+        return isInExitState;
     }
 }

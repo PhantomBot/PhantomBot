@@ -230,7 +230,7 @@ public class TwitchAlertsAPIv1 {
      * @return pointsToAddObject
      */
     public JSONObject AddToAllPointsAPI(String channelName, int points) {
-        return readJsonFromUrl(sAPIURL + "/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&points=" + points);
+        return readJsonFromUrl(sAPIURL + "/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&value=" + points);
     }
 
     /*

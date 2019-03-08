@@ -18,7 +18,7 @@ package tv.phantombot.event.twitch.follower;
 
 public class TwitchFollowEvent extends TwitchFollowerEvent {
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} follower

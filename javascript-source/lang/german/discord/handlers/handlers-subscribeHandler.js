@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.subscribehandler.usage', 'Verwendung: !subscribehandler [submessage / primemessage / resubmessage / subtoggle / primetoggle / resubtoggle / channel]');
+$.lang.register('discord.subscribehandler.usage', 'Verwendung: !subscribehandler [giftsubmessage / submessage / primemessage / resubmessage / giftsubtoggle / subtoggle / primetoggle / resubtoggle / channel]');
 $.lang.register('discord.subscribehandler.sub.toggle', 'Abonnementbenachrichtigungen wurden $1!');
 $.lang.register('discord.subscribehandler.giftsub.toggle', 'Geschenk-Abonnentenankündigungen wurden  $1.');
 $.lang.register('discord.subscribehandler.prime.toggle', 'Twitch Prime Abonnements wurden $1!');

@@ -22,7 +22,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
     private final String[] joins;
     private final String[] parts;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {TwitchSession}  session
@@ -36,7 +36,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
         this.parts = parts;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String[]} joins
@@ -49,7 +49,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
         this.parts = parts;
     }
 
-    /*
+    /**
      * Method that returns the current array of users who joined the channel in the last 10 minutes.
      *
      * @return {String[]} joins
@@ -58,7 +58,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
         return this.joins;
     }
 
-    /*
+    /**
      * Method that returns the current array of users who left the channel in the last 10 minutes.
      *
      * @return {String[]} parts

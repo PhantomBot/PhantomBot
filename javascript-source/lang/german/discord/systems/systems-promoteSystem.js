@@ -72,6 +72,8 @@ $.lang.register('discord.promotesystem.livemsg.nowplaying', 'Spielt gerade');
 $.lang.register('discord.promotesystem.livemsg.streamtitle', 'Stream Titel');
 $.lang.register('discord.promotesystem.livemsg.followers', 'Follower');
 $.lang.register('discord.promotesystem.livemsg.views', 'Aufrufe');
+$.lang.register('discord.promotesystem.livemsg.missingtitle', 'Kein Titel angegeben');
+$.lang.register('discord.promotesystem.livemsg.missinggame', 'Kein Spiel vorhanden');
 
 $.lang.register('discord.promotesystem.promotemsg.description', 'Vergessen Sie nicht, $1 zu folgen und anzusehen. ');
 $.lang.register('discord.promotesystem.promotemsg.biography', 'Bio');

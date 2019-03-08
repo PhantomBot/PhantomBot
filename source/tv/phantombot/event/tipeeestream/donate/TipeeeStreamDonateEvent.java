@@ -21,7 +21,7 @@ import tv.phantombot.event.tipeeestream.TipeeeStreamEvent;
 public abstract class TipeeeStreamDonateEvent extends TipeeeStreamEvent {
     private final String jsonString;
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {String} jsonString
@@ -30,7 +30,7 @@ public abstract class TipeeeStreamDonateEvent extends TipeeeStreamEvent {
         this.jsonString = jsonString;
     }
 
-    /*
+    /**
      * Method that returns the donation's JSON string.
      *
      * @return {String} jsonString
@@ -39,7 +39,7 @@ public abstract class TipeeeStreamDonateEvent extends TipeeeStreamEvent {
         return this.jsonString;
     }
 
-    /*
+    /**
      * Method that converts the class into a string.
      *
      * @return {String}

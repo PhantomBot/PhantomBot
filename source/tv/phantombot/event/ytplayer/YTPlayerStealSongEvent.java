@@ -20,7 +20,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     private final String youTubeID;
     private final String requester;
 
-    /*
+    /**
      * Class constructor.
      */
     public YTPlayerStealSongEvent() {
@@ -28,7 +28,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
         this.requester = "";
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} youTubeID
@@ -39,7 +39,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
         this.requester = requester;
     }
 
-    /*
+    /**
      * Method that returns the YouTube ID.
      *
      * @return {String} youTubeID
@@ -48,7 +48,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
         return this.youTubeID;
     }
 
-    /*
+    /**
      * Method that returns requester.
      *
      * @return {String} requester

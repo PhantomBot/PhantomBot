@@ -61,7 +61,7 @@ public class TwitchPubSub {
     private Boolean reconAllowed = true;
     private Long lastReconnect = 0L;
 
-    /*
+    /**
      * This starts the PubSub instance.
      *
      * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
@@ -80,7 +80,7 @@ public class TwitchPubSub {
         return instance;
     }
 
-    /*
+    /**
      * Constructor for the PubSub class.
      *
      * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
@@ -100,11 +100,11 @@ public class TwitchPubSub {
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("TwitchPubSub Verbindungsfehler: " + ex.getMessage());
-            System.exit(0);
+            PhantomBot.exitError();
         }
     }
 
-    /*
+    /**
      * @event IrcChannelMessageEvent
      */
     public void ircChannelMessageEvent(IrcChannelMessageEvent event) {
@@ -114,7 +114,7 @@ public class TwitchPubSub {
         messageCache.put(event.getSender(), event.getMessage());
     }
 
-    /*
+    /**
      * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
      */
     @SuppressWarnings("SleepWhileInLoop")
@@ -130,7 +130,7 @@ public class TwitchPubSub {
                     reconnected = this.twitchPubSubWS.connectWSS(true);
                 } catch (URISyntaxException ex) {
                     com.gmt2001.Console.err.println("TwitchPubSub reconnect fehlgeschlagen: " + ex.getMessage());
-                    System.exit(0);
+                    PhantomBot.exitError();
                 }
             }
 
@@ -142,7 +142,7 @@ public class TwitchPubSub {
         }
     }
 
-    /*
+    /**
      * Private class for the websocket.
      */
     private class TwitchPubSubWS extends WebSocketClient {
@@ -154,7 +154,7 @@ public class TwitchPubSub {
         private final int botId;
         private final URI uri;
 
-        /*
+        /**
          * Constructor for the PubSubWS class.
          *
          * @param {string}  channel    Name of the channel to start the instance on. As of right now you can onyl start one instance.
@@ -179,18 +179,18 @@ public class TwitchPubSub {
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
                 this.setSocket(sslSocketFactory.createSocket());
             } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchPubSubWS konnte sich nicht verbinden: " + ex.getMessage());
             }
         }
 
-        /*
+        /**
          * Closes this class.
          */
         public void delete() {
             close();
         }
 
-        /*
+        /**
          * Creates a connection with the PubSub websocket.
          *
          * @param {boolean}  reconnect  Changes the console log message from connection to reconnecting.
@@ -228,7 +228,7 @@ public class TwitchPubSub {
             timer.purge();
         }
 
-        /*
+        /**
          * This function parses the message we get from PubSub. Since everything is sent in a jsonObject there is a bit of checks to do.
          *
          * @param {jsonObject}  message  Message we get from PubSub.
@@ -258,6 +258,10 @@ public class TwitchPubSub {
 
                             timeoutCache.put(data.getString("target_user_id"), System.currentTimeMillis() + 1500);
                             switch (action) {
+                            case "delete":
+                                this.log(args1 + "'s message was deleted by " + creator);
+                                EventBus.instance().postAsync(new PubSubModerationDeleteEvent(args1, creator, args2));
+                                break;
                             case "timeout":
                                 this.log(args1 + " has been timed out by " + creator + " for " + args2 + " seconds. " + (args3.length() == 0 ? "" : "Reason: " + args3));
                                 EventBus.instance().postAsync(new PubSubModerationTimeoutEvent(args1, creator, (messageCache.containsKey(args1.toLowerCase()) ? messageCache.get(args1.toLowerCase()) : ""), args3, args2));
@@ -296,7 +300,7 @@ public class TwitchPubSub {
             }
         }
 
-        /*
+        /**
          * Logs the messages we get from PubSub.
          *
          * @param {String}  message  Message that we will log.
@@ -307,7 +311,7 @@ public class TwitchPubSub {
             }
         }
 
-        /*
+        /**
          * Handles the event of when the socket opens, it also sends the login information and the topics we can to listen to.
          */
         @Override
@@ -328,7 +332,7 @@ public class TwitchPubSub {
             send(jsonObject.toString());
         }
 
-        /*
+        /**
          * Handles the event of when the socket closes, this will also attempt to reonnect to PubSub when it happens.
          *
          * @param {int}      code    The code of why the socket closed.
@@ -344,7 +348,7 @@ public class TwitchPubSub {
             twitchPubSub.reconnectWSS();
         }
 
-        /*
+        /**
          * Handles the error event we can get from the socket. It will also print it in the console.
          *
          * @param {Exception}  ex  Exception message that the socket sent.
@@ -356,7 +360,7 @@ public class TwitchPubSub {
             }
         }
 
-        /*
+        /**
          * Handles the event of when we get messages from the socket.
          *
          * @param {String}  message  Message the socket sent.

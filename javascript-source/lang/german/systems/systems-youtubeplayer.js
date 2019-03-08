@@ -90,7 +90,7 @@ $.lang.register('ytplayer.command.delrequest.usage', 'Verwendung: !ytp delreques
 $.lang.register('ytplayer.command.ytp.clearcache.warning', 'Dies entfernt alle im Cache befindlichen YouTube Player-IDs. Wenn Sie sicher sind, führen Sie jetzt !ytp clearcache aus.');
 $.lang.register('ytplayer.command.ytp.clearcache.success', 'Der YouTube Player ID-Cache wurde geleert.');
 
-$.lang.register('ytplayer.command.ytp.usage', 'Verwendung: !ytp [togglesongrequest | toggleanounce | delrequest | volume | togglerandom | setrequestmax | setmaxvidlength | votecount]');
+$.lang.register('ytplayer.command.ytp.usage', 'Verwendung: !ytp [togglecconly | togglesongrequest | toggleanounce | delrequest | pause | volume | togglerandom | setrequestmax | setmaxvidlength | votecount | resetdefaultlist | clearcache]');
 
 $.lang.register('ytplayer.command.wrongsong.success', 'Letzten Musikwunsch, [$1], entfernt.');
 $.lang.register('ytplayer.command.wrongsong.404', 'Keine Musiktitel gefunden!');

@@ -21,7 +21,7 @@ $.lang.register('twitter.reward.announcement', 'Retweet von $1! Belohnung von $2
 $.lang.register('twitter.usage', 'Verwendung: !twitter [lasttweet | lastmention | lastretweet | set | post | id]');
 $.lang.register('twitter.id', '$1 ist auf Twitter @$2 [twitter.com/$2]');
 $.lang.register('twitter.usage.id', '(!twitter usage für die Verwendung)');
-$.lang.register('twitter.set.usage', 'Verwendung: !twitter set [message | polldelay | poll | post | updatetimer]');
+$.lang.register('twitter.set.usage', 'Verwendung: !twitter set [message | polldelay | poll | post | updatetimer | reward]');
 $.lang.register('twitter.set.polldelay.usage', 'Verwendung: !twitter set polldelay [mentions | retweets | hometimeline | usertimeline]');
 $.lang.register('twitter.set.polldelay.minerror', 'Zu wenig für eine Abfrageverzögerung, Minimum ist, $1, für diese Einstellung.');
 $.lang.register('twitter.set.polldelay.mentions.usage', 'Verwendung: !twitter set polldelay mentions [Sekunden]. Minimum ist 60. Aktuell: $1.');

@@ -306,6 +306,9 @@
      * @info resets the raffle information
      */
     function clear() {
+        /* Clear the timer if there is one active. */
+        clearInterval(timeout);
+        clearInterval(interval);
         keyword = '';
         followMessage = '';
         timerMessage = '';

@@ -24,6 +24,8 @@ import sx.blah.discord.api.internal.ShardImpl;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.ClientBuilder;
 
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
@@ -39,16 +41,18 @@ import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
-import tv.phantombot.discord.util.DiscordUtil;
+import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
 import tv.phantombot.event.EventBus;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent;
 
 import tv.phantombot.discord.util.DiscordUtil;
 
-/*
+
+/**
  * Communicates with the Discord API.
  *
  * @author IllusionaryOne
@@ -61,7 +65,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IGuild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
-    /*
+    /**
      * Method to return this class object.
      *
      * @return {Object}
@@ -70,7 +74,7 @@ public class DiscordAPI extends DiscordUtil {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor
      */
     private DiscordAPI() {
@@ -79,7 +83,7 @@ public class DiscordAPI extends DiscordUtil {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    /*
+    /**
      * Enum list of our connection states.
      */
     public static enum ConnectionState {
@@ -89,7 +93,7 @@ public class DiscordAPI extends DiscordUtil {
         CANNOT_RECONNECT
     }
 
-    /*
+    /**
      * Method to connect to Discord.
      *
      * @param {String} token
@@ -103,7 +107,7 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to reconnect to Discord.
      */
     public boolean reconnect() {
@@ -119,7 +123,7 @@ public class DiscordAPI extends DiscordUtil {
         return false;
     }
 
-    /*
+    /**
      * Mehtod that checks if we are still connected to Discord and reconnects if we are not.
      */
     public ConnectionState checkConnectionStatus() {
@@ -138,7 +142,7 @@ public class DiscordAPI extends DiscordUtil {
         return ConnectionState.CONNECTED;
     }
 
-    /*
+    /**
      * Method that will return the current shard.
      *
      * @return {ShardImpl}
@@ -147,7 +151,7 @@ public class DiscordAPI extends DiscordUtil {
         return shard;
     }
 
-    /*
+    /**
      * Method that will return the current guild.
      *
      * @return {IGuild}
@@ -156,7 +160,7 @@ public class DiscordAPI extends DiscordUtil {
         return guild;
     }
 
-    /*
+    /**
      * Method that will return the current guild
      *
      * @return {IDiscordClient}
@@ -165,7 +169,7 @@ public class DiscordAPI extends DiscordUtil {
         return client;
     }
 
-    /*
+    /**
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
@@ -180,7 +184,7 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to parse commands.
      *
      * @param {String} message
@@ -198,7 +202,7 @@ public class DiscordAPI extends DiscordUtil {
         EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, command, arguments, isAdmin));
     }
 
-    /*
+    /**
      * Class to listen to events.
      */
     private class DiscordEventListener {
@@ -248,6 +252,16 @@ public class DiscordAPI extends DiscordUtil {
         @EventSubscriber
         public void onDiscordUserLeaveEvent(UserLeaveEvent event) {
             EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
+        }
+
+        @EventSubscriber
+        public void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.ADD));
+        }
+
+        @EventSubscriber
+        public void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
         }
     }
 }

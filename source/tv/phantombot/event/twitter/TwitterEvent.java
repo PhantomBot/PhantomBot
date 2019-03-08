@@ -22,7 +22,7 @@ public class TwitterEvent extends Event {
     private final String tweet;
     private final String mention;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} tweet
@@ -32,7 +32,7 @@ public class TwitterEvent extends Event {
         this.mention = null;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} tweet
@@ -43,7 +43,7 @@ public class TwitterEvent extends Event {
         this.mention = mention;
     }
 
-    /*
+    /**
      * Method that returns the Tweet.
      *
      * @return {String} tweet
@@ -52,7 +52,7 @@ public class TwitterEvent extends Event {
         return this.tweet;
     }
 
-    /*
+    /**
      * Method that returns the mention user.
      *
      * @return {String} mention

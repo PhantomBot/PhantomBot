@@ -96,7 +96,7 @@ public class H2Store extends DataStore {
             connection = DriverManager.getConnection("jdbc:h2:./config/phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
             connection.setAutoCommit(true);
             if (firstConnection) {
-                com.gmt2001.Console.out.println("Connected to H2 Database");
+                com.gmt2001.Console.out.println("Verbunden mit der H2-Datenbank");
                 firstConnection = false;
             }
             return connection;
@@ -358,6 +358,56 @@ public class H2Store extends DataStore {
         return new String[] {
                };
     }
+
+    @Override
+    public KeyValue[] GetKeyValueList(String fName, String section) {
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (FileExists(fName)) {
+            if (section.length() > 0) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } else {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                    statement.setQueryTimeout(10);
+
+                    try (ResultSet rs = statement.executeQuery()) {
+
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+
+
+                        while (rs.next()) {
+                            s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                        }
+
+                        return s.toArray(new KeyValue[s.size()]);
+                    }
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+
+        return new KeyValue[] {};
+    }
+
     @Override
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
         return GetKeysByOrderInternal(fName, section, order, limit, offset, false);
@@ -889,7 +939,7 @@ public class H2Store extends DataStore {
                 com.gmt2001.Console.debug.println(getAutoCommitCtr());
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("MySQL commit was attempted too early, will perform later.");
+            com.gmt2001.Console.debug.println("Die MySQL-Übertragung wurde zu früh versucht, wird später ausgeführt.");
         }
     }
 

@@ -20,7 +20,7 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
     private final String reason;
     private final String time;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username
@@ -35,7 +35,7 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
         this.time = time;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username
@@ -51,7 +51,7 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
         this.time = time;
     }
 
-    /*
+    /**
      * Method that returns the reason as to why the user was banned.
      *
      * @return {String} reason
@@ -60,7 +60,7 @@ public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
         return this.reason;
     }
 
-    /*
+    /**
      * Method that returns the length of the timeout.
      *
      * @return {String} time

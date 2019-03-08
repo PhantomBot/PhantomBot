@@ -27,12 +27,74 @@
     var userGroups = [],
         modeOUsers = [],
         subUsers = [],
-        gwSubUsers = [],
         modListUsers = [],
         users = [],
         moderatorsCache = [],
+        botList = [];
         lastJoinPart = $.systemTime(),
         isUpdatingUsers = false;
+
+    /**
+     * @function cleanTwitchBots
+     */
+    function cleanTwitchBots() {
+        var twitchBots = $.readFile('./addons/ignorebots.txt');
+
+        for (var i in twitchBots) {
+            $.inidb.del('points', twitchBots[i].toLowerCase());
+            $.inidb.del('time', twitchBots[i].toLowerCase());
+        }
+    }
+
+    /**
+     * @function loadTwitchBots
+     *
+     */
+    function loadTwitchBots() {
+        var twitchBots = $.readFile('./addons/ignorebots.txt');
+
+        for (var i = 0; i < twitchBots.length; i++) {
+            botList[twitchBots[i]] = true;
+        }
+    }
+
+    /**
+     * @function isTwitchBot
+     * @param {string} username
+     * @returns {Boolean}
+     */
+    function isTwitchBot(username) {
+        return botList[username] !== undefined;
+    }
+
+    /**
+     * @function removeTwitchBot
+     *
+     */
+    function removeTwitchBot(username) {
+        if (isTwitchBot(username)) {
+            delete botList[username];
+        }
+    }
+
+    /**
+     * @function addTwitchBot
+     *
+     */
+    function addTwitchBot(username) {
+        if (!isTwitchBot(username)) {
+            botList[username] = true;
+        }
+    }
+
+    /**
+     * @function savebotList
+     *
+     */
+    function saveBotList() {
+        $.writeToFile(Object.keys(botList).join(String.fromCharCode(13, 10)), './addons/ignorebots.txt', false);
+        cleanTwitchBots();
+    }
 
     /**
      * @function updateUsersObject
@@ -157,7 +219,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags !== null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
     }
 
     /**
@@ -165,19 +227,9 @@
      * @export $
      * @param {string} username
      * @returns {boolean}
-     * @info this also included gamewisp subs and twitch subs.
      */
     function isSub(username) {
-        return hasKey(subUsers, username, 0) || isGWSub(username.toLowerCase());
-    }
-
-    /**
-     * @function isGWSub
-     * @param {String}
-     * @returns {Boolean}
-     */
-    function isGWSub(username) {
-        return (username.toLowerCase() in gwSubUsers);
+        return hasKey(subUsers, username, 0);
     }
 
     /**
@@ -186,10 +238,9 @@
      * @param {string} username
      * @param {Object} tags
      * @returns {boolean}
-     * @info this also included gamewisp subs, and it will only check if the user is a sub with the tags.
      */
     function isSubv3(username, tags) {
-        return ((tags !== null && tags != '{}' && tags.get('subscriber').equals('1')) || gwSubUsers[username] !== undefined);
+        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1'));
     }
 
     /**
@@ -199,7 +250,7 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
-        return (tags !== null && tags != '{}' && tags.get('turbo').equals('1')) || false;
+        return (tags != null && tags != '{}' && tags.get('turbo').equals('1')) || false;
     }
 
     /**
@@ -213,13 +264,13 @@
     }
 
     /**
-     * @function isHoster
+     * @function isVIP
      * @export $
      * @param {string} username
      * @returns {boolean}
      */
-    function isHoster(username) {
-        return getUserGroupId(username.toLowerCase()) == 5;
+    function isVIP(username, tags) {
+        return (tags != null && tags != '{}' && tags.get('badges').indexOf('vip') !== -1) || getUserGroupId(username.toLowerCase()) == 5;
     }
 
     /**
@@ -379,36 +430,6 @@
     }
 
     /**
-     * @function getGWTier
-     * @export $
-     * @param username
-     */
-    function getGWTier(username) {
-        if (username.toLowerCase() in gwSubUsers) {
-            return gwSubUsers[username];
-        }
-        return 0;
-    }
-
-    /**
-     * @function addGWSubUsersList
-     * @export $
-     * @param username
-     */
-    function addGWSubUsersList(username, tier) {
-        gwSubUsers[username] = tier;
-    }
-
-    /**
-     * @function delGWSubUsersList
-     * @export $
-     * @param username
-     */
-    function delGWSubUsersList(username) {
-        delete gwSubUsers[username];
-    }
-
-    /**
      * @function addSubUsersList
      * @export $
      * @param username
@@ -486,44 +507,31 @@
     /**
      * @function restoreSubscriberStatus
      * @param username
-     * @param haveTwitchStatus
      */
-    function restoreSubscriberStatus(username, haveTwitchStatus) {
+    function restoreSubscriberStatus(username) {
         username = (username + '').toLowerCase();
 
         if (isMod(username) || isAdmin(username)) {
             return;
         }
 
-        if (haveTwitchStatus) {
-            if ($.getIniDbBoolean('subscribed', username, false) && !isTwitchSub(username)) {
-                $.setIniDbBoolean('subscribed', username, false);
-            } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
-                $.setIniDbBoolean('subscribed', username, true);
-            }
+        if ($.getIniDbBoolean('subscribed', username, false) && !isTwitchSub(username)) {
+            $.setIniDbBoolean('subscribed', username, false);
+        } else if (!$.getIniDbBoolean('subscribed', username, false) && isTwitchSub(username)) {
+            $.setIniDbBoolean('subscribed', username, true);
         }
 
-        if ($.getIniDbBoolean('gamewispsubs', username, false) && !isGWSub(username)) {
-            $.setIniDbBoolean('gamewispsubs', username, false);
-            $.inidb.set('gamewispsubs', username + '_tier', 1);
-        } else if (!$.getIniDbBoolean('gamewispsubs', username, false) && isGWSub(username)) {
-            $.setIniDbBoolean('gamewispsubs', username, true);
-            $.inidb.set('gamewispsubs', username + '_tier', getGWTier(username));
-        }
-
-        if ((isTwitchSub(username) || isGWSub(username)) && getUserGroupId(username) != 3) {
+        if (isTwitchSub(username) && getUserGroupId(username) != 3) {
             $.inidb.set('preSubGroup', username, getUserGroupId(username));
             setUserGroupByName(username, 'Subscriber');
         }
 
-        if (haveTwitchStatus) {
-            if ((!isTwitchSub(username) && !isGWSub(username)) && getUserGroupId(username) == 3) {
-                if ($.inidb.exists('preSubGroup', username)) {
-                    $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
-                    $.inidb.del('preSubGroup', username);
-                } else {
-                    $.inidb.set('group', username, 7);
-                }
+        if (!isTwitchSub(username) && getUserGroupId(username) == 3) {
+            if ($.inidb.exists('preSubGroup', username)) {
+                $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
+                $.inidb.del('preSubGroup', username);
+            } else {
+                $.inidb.set('group', username, 7);
             }
         }
     }
@@ -561,8 +569,8 @@
         $.getSetIniDbString('grouppointsoffline', 'Subscriber', '-1');
         $.getSetIniDbString('grouppoints', 'Donator', '-1');
         $.getSetIniDbString('grouppointsoffline', 'Donator', '-1');
-        $.getSetIniDbString('grouppoints', 'Hoster', '-1');
-        $.getSetIniDbString('grouppointsoffline', 'Hoster', '-1');
+        $.getSetIniDbString('grouppoints', 'VIP', '-1');
+        $.getSetIniDbString('grouppointsoffline', 'VIP', '-1');
         $.getSetIniDbString('grouppoints', 'Regular', '-1');
         $.getSetIniDbString('grouppointsoffline', 'Regular', '-1');
         $.getSetIniDbString('grouppoints', 'Viewer', '-1');
@@ -593,9 +601,9 @@
             userGroups[4] = 'Donator';
             $.inidb.set('groups', '4', 'Donator');
         }
-        if (!userGroups[5] || userGroups[5] != 'Hoster') {
-            userGroups[5] = 'Hoster';
-            $.inidb.set('groups', '5', 'Hoster');
+        if (!userGroups[5] || userGroups[5] != 'VIP') {
+            userGroups[5] = 'VIP';
+            $.inidb.set('groups', '5', 'VIP');
         }
         if (!userGroups[6] || userGroups[6] != 'Regular') {
             userGroups[6] = 'Regular';
@@ -635,7 +643,7 @@
                     }
                 }
 
-                $.restoreSubscriberStatus(parts[i], true);
+                $.restoreSubscriberStatus(parts[i]);
                 $.username.removeUser(parts[i]);
             }
 
@@ -647,11 +655,14 @@
                 // Cast the user as a string, because Rhino.
                 joins[i] = (joins[i] + '');
 
+                if (isTwitchBot(joins[i])) {
+                    continue;
+                }
+
                 if (!userExists(joins[i])) {
                     if (!$.user.isKnown(joins[i])) {
                         $.setIniDbBoolean('visited', joins[i], true);
                     }
-                    $.checkGameWispSub(joins[i]);
                     $.users.push([joins[i], now]);
                 }
             }
@@ -668,6 +679,10 @@
     $.bind('ircChannelJoin', function(event) {
         var username = event.getUser().toLowerCase();
 
+        if (isTwitchBot(username)) {
+            return;
+        }
+
         if (!isUpdatingUsers && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
@@ -676,7 +691,6 @@
             lastJoinPart = $.systemTime();
 
             users.push([username, $.systemTime()]);
-            $.checkGameWispSub(username);
         }
     });
 
@@ -686,13 +700,16 @@
     $.bind('ircChannelMessage', function(event) {
         var username = event.getSender().toLowerCase();
 
+        if (isTwitchBot(username)) {
+            return;
+        }
+
         if (!isUpdatingUsers && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
 
             users.push([username, $.systemTime()]);
-            $.checkGameWispSub(username);
         }
     });
 
@@ -704,15 +721,15 @@
             i;
 
         if (!isUpdatingUsers) {
-        	for (i in users) {
-        	    if (users[i][0].equals(username.toLowerCase())) {
-        	        users.splice(i, 1);
-        	        restoreSubscriberStatus(username.toLowerCase(), true);
+            for (i in users) {
+                if (users[i] !== undefined && users[i][0].equals(username.toLowerCase())) {
+                    users.splice(i, 1);
+                    restoreSubscriberStatus(username.toLowerCase());
 
-        	        // Remove this user's display name from the cache.
-        	        $.username.removeUser(username);
-        	    }
-        	}
+                    // Remove this user's display name from the cache.
+                    $.username.removeUser(username);
+                }
+            }
         }
     });
 
@@ -757,8 +774,18 @@
                     if (isSub(username)) {
                         $.inidb.set('group', username, '3'); // Subscriber, return to that group.
                     } else {
-                        $.inidb.set('group', username, '6'); // Assume user that was a mod was a regular.
+                        $.inidb.set('group', username, '7');
                     }
+                }
+            }
+        } else if (event.getMode().equalsIgnoreCase('vip')) {
+            if (event.getAdd().toString().equals('true')) {
+                if (getUserGroupId(username) < 5) {
+                    setUserGroupById(username, 5);
+                }
+            } else {
+                if (isVIP(username)) {
+                    setUserGroupById(username, 7);
                 }
             }
         }
@@ -770,7 +797,8 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase().trim(),
-            modMessageStart = 'the moderators of this room are: ',
+            modMessageStart = 'the moderators of this channel are: ',
+            vipMessageStart = 'VIPs for this channel are: ',
             keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
             spl,
@@ -779,7 +807,7 @@
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.indexOf(modMessageStart) > -1) {
                 spl = message.replace(modMessageStart, '').split(', ');
-                modListUsers = [];
+                var modListUsers = [];
 
                 for (i in keys) {
                     if ($.inidb.get('group', keys[i]).equalsIgnoreCase('2')) {
@@ -794,8 +822,24 @@
                     }
                 }
                 $.saveArray(modListUsers, 'addons/mods.txt', false);
-            }
-            if (message.indexOf('specialuser') > -1) {
+            } else if (message.indexOf(vipMessageStart) > -1) {
+                spl = message.replace(vipMessageStart, '').split(', ');
+                var vipUsers = [];
+
+                for (i in keys) {
+                    if ($.inidb.get('group', keys[i]).equalsIgnoreCase('5')) {
+                        $.inidb.del('group', keys[i]);
+                    }
+                }
+
+                for (i in spl) {
+                    vipUsers.push(spl[i]);
+                    if (!isMod(spl[i]) && !isAdmin(spl[i]) && !isBot(spl[i])) {
+                        $.inidb.set('group', spl[i], '5');
+                    }
+                }
+                $.saveArray(vipUsers, 'addons/vips.txt', false);
+            } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
                     for (i in subUsers) {
@@ -805,7 +849,7 @@
                         }
                     }
                     subUsers.push([spl[1], $.systemTime() + 1e4]);
-                    restoreSubscriberStatus(spl[1].toLowerCase(), true);
+                    restoreSubscriberStatus(spl[1].toLowerCase());
                     for (i in subUsers) {
                         subsTxtList.push(subUsers[i][0]);
                     }
@@ -822,6 +866,17 @@
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
             args = event.getArgs();
+            actionValue = args[0];
+
+        /*
+         * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
+         */
+        if (command.equalsIgnoreCase('reloadbots')) {
+            botList = [];
+            cleanTwitchBots();
+            loadTwitchBots();
+            $.say($.whisperPrefix(sender) + $.lang.get('permissions.reloadbots'));
+        }
 
         /**
          * @commandpath users - List users currently in the channel
@@ -843,6 +898,56 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', tmp.length));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.mods', tmp.join(', ')));
+            }
+        }
+
+        /**
+         * @commandpath ignoreremove - List the bots from the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignorelist')) {
+            var tmp = Object.keys(botList);
+            if (tmp.length > 20) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignorelist.listtoolong', tmp.length));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignorelist', Object.keys(botList).join(', ')));
+            }
+        }
+
+        /**
+         * @commandpath ignoreadd - Add a bot to the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignoreadd')) {
+            if (!actionValue) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.usage'));
+            } else {
+                actionValue = actionValue.toLowerCase();
+                actionValue = actionValue.trim();
+                if (!isTwitchBot(actionValue)) {
+                    addTwitchBot(actionValue);
+                    saveBotList();
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.added', actionValue));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.nouser', actionValue));
+                }
+            }
+        }
+
+        /**
+         * @commandpath ignoreremove - Remove a bot from the ignorebots.txt
+         */
+        if (command.equalsIgnoreCase('ignoreremove')) {
+            if (!actionValue) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.usage'));
+            } else {
+                actionValue = actionValue.toLowerCase();
+                actionValue = actionValue.trim();
+                if (isTwitchBot(actionValue)) {
+                    removeTwitchBot(actionValue);
+                    saveBotList();
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.removed', actionValue));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.nouser', actionValue));
+                }
             }
         }
 
@@ -980,6 +1085,11 @@
         $.registerChatCommand('./core/permissions.js', 'permissionpoints', 1);
         $.registerChatCommand('./core/permissions.js', 'users', 2);
         $.registerChatCommand('./core/permissions.js', 'mods', 2);
+        $.registerChatCommand('./core/permissions.js', 'reloadbots', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignorelist', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignoreadd', 1);
+        $.registerChatCommand('./core/permissions.js', 'ignoreremove', 1);
+
 
         /** Load groups and generate default groups if they don't exist */
         reloadGroups();
@@ -988,6 +1098,12 @@
 
         // Load the moderators cache. This needs to load after the privmsg check.
         setTimeout(loadModeratorsCache, 7e3);
+
+        // Load up data for Twitch bots.
+        loadTwitchBots();
+
+        // Clean up data for Twitch bots.
+        cleanTwitchBots();
     });
 
     /** Export functions to API */
@@ -1003,6 +1119,7 @@
 
     $.userExists = userExists;
     $.isBot = isBot;
+    $.isTwitchBot = isTwitchBot;
     $.isOwner = isOwner;
     $.isCaster = isCaster;
     $.isAdmin = isAdmin;
@@ -1014,7 +1131,7 @@
     $.isSubv3 = isSubv3;
     $.isTurbo = isTurbo;
     $.isDonator = isDonator;
-    $.isHoster = isHoster;
+    $.isVIP = isVIP;
     $.isReg = isReg;
     $.hasModeO = hasModeO;
     $.hasModList = hasModList;
@@ -1027,11 +1144,8 @@
     $.setUserGroupByName = setUserGroupByName;
     $.addSubUsersList = addSubUsersList;
     $.delSubUsersList = delSubUsersList;
-    $.restoreSubscriberStatus = restoreSubscriberStatus;
-    $.addGWSubUsersList = addGWSubUsersList;
-    $.delGWSubUsersList = delGWSubUsersList;
     $.addModeratorToCache = addModeratorToCache;
     $.removeModeratorFromCache = removeModeratorFromCache;
-    $.getGWTier = getGWTier;
     $.updateUsersObject = updateUsersObject;
+    $.restoreSubscriberStatus = restoreSubscriberStatus;
 })();

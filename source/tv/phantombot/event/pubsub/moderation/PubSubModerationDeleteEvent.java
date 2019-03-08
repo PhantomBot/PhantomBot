@@ -14,38 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.gamewisp;
+package tv.phantombot.event.pubsub.moderation;
 
-public class GameWispSubscribeEvent extends GameWispEvent {
-    private final String username;
-    private final int tier;
-
-    /*
-     * Class constructor
+public class PubSubModerationDeleteEvent extends PubSubModerationEvent {
+    /**
+     * Class constructor.
      *
      * @param {String} username
-     * @param {int}    tier
+     * @param {String} creator
+     * @param {String} message
      */
-    public GameWispSubscribeEvent(String username, int tier) {
-        this.username = username;
-        this.tier = tier;
-    }
-
-    /*
-     * Method that returns the subscriber's name.
-     *
-     * @return {String}
-     */
-    public String getUsername() {
-        return this.username;
-    }
-
-    /*
-     * Method that returns the user's tier.
-     *
-     * @return {int}
-     */
-    public int getTier() {
-        return this.tier;
+    public PubSubModerationDeleteEvent(String username, String creator, String message) {
+        super(username, creator, message);
     }
 }
