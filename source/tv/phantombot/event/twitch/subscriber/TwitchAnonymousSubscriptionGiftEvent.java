@@ -27,33 +27,32 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
     private final String recipient;
     private final String months;
     private final String plan;
-    
+
     /**
      * The class constructor.
-     * 
-     * @param username
+     *
      * @param recipient
-     * @param plan 
+     * @param plan
      */
-    public TwitchAnonymousSubscriptionGiftEvent(String username, String recipient, String plan) {
+    public TwitchAnonymousSubscriptionGiftEvent(String recipient, String plan) {
         this.recipient = recipient;
         this.months = null;
         this.plan = plan;
     }
-    
+
     /**
      * The class constructor.
-     * @param username
+     *
      * @param recipient
      * @param months
-     * @param plan 
+     * @param plan
      */
-    public TwitchAnonymousSubscriptionGiftEvent(String username, String recipient, String months, String plan) {
+    public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan) {
         this.recipient = recipient;
         this.months = months;
         this.plan = plan;
     }
-    
+
     /**
      * Method that returns the gifted the subscription.
      *

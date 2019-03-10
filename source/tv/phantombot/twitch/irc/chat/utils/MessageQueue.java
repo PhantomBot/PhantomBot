@@ -19,6 +19,7 @@ package tv.phantombot.twitch.irc.chat.utils;
 import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 
 import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.PhantomBot;
@@ -141,6 +142,9 @@ public class MessageQueue implements Runnable {
                     session.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
                     com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
                 }
+            } catch (WebsocketNotConnectedException ex) {
+                com.gmt2001.Console.err.println("Die Nachricht konnte nicht gesendet werden, da die Verbindung zum Twitch IRC getrennt wurde.");
+                session.reconnect();
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
