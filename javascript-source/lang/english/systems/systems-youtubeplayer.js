@@ -74,7 +74,7 @@ $.lang.register('ytplayer.command.findsong.failed', 'Cannot find song with a tit
 $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. Searches song requests if any exist, else current playlist, for first match.');
 
 $.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
-$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');
+$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue at position $2');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');
@@ -153,3 +153,8 @@ $.lang.register('ytplayer.command.requestlimit.success', 'Maximum number of requ
 $.lang.register('ytplayer.command.requestlimit.success.off', 'Request limit has been turned off');
 
 $.lang.register('ytplayer.command.requestlimit.length', 'Please refrain from requesting songs that are at least $1 minutes long. If one is requested, it will get removed and you can request a shorter song!')
+
+$.lang.register('ytplayer.command.queuemode.random.off', 'Playing song queue in order');
+$.lang.register('ytplayer.command.queuemode.random.on', 'Shuffling the queue');
+$.lang.register('ytplayer.command.queuemode.random.info', 'Shufflin it up tonight!  Throw in a song request with !sr');
+$.lang.register('ytplayer.command.queuemode.random.usage', 'Usage: !shuffle [off | on]');
