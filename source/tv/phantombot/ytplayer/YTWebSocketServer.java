@@ -66,6 +66,9 @@
  * // Return authorization result.
  * { "authresult" : true/false }
  *
+ * // Connection already opened for Player.
+ * { "secondconnection" : true/false }
+ *
  * // Instruct the Interface to play a song.
  * { "command" : { "play" : "YouTube ID", "duration" : "mm:ss", "title" : "Song Title", "requester" : "Username" } }
  *
@@ -180,9 +183,18 @@ public class YTWebSocketServer extends WebSocketServer {
             return;
         }
         sessionData = wsSessionMap.get(genSessionKey(webSocket));
-
+ 
         if (jsonObject.has("authenticate")) {
+            if (clientConnected) {
+                com.gmt2001.Console.err.println("YTWebSocketServer: Rejecting additional player connection.");
+                secondConnectionResult(webSocket);
+                sessionData.setPlayer(false);
+                webSocket.close();
+                return;
+            }
+
             authenticated = jsonObject.getString("authenticate").equals(authString);
+
             sessionData.setAuthenticated(authenticated);
             sessionData.setPlayer(true);
             authResult(authenticated, webSocket);
@@ -191,8 +203,10 @@ public class YTWebSocketServer extends WebSocketServer {
                     EventBus.instance().postAsync(new YTPlayerConnectEvent());
                 }
             }
+
             return;
         }
+
         if (jsonObject.has("readauth")) {
             authenticated = jsonObject.getString("readauth").equals(authStringRO);
             sessionData.setAuthenticated(authenticated);
@@ -410,6 +424,11 @@ public class YTWebSocketServer extends WebSocketServer {
     public void authResult(Boolean authenticated, WebSocket webSocket) {
         JSONStringer jsonObject = new JSONStringer();
         webSocket.send(jsonObject.object().key("authresult").value(authenticated).endObject().toString());
+    }
+
+    private void secondConnectionResult(WebSocket webSocket) {
+        JSONStringer jsonObject = new JSONStringer();
+        webSocket.send(jsonObject.object().key("secondconnection").value(true).endObject().toString());
     }
 
     public int getVolume() {

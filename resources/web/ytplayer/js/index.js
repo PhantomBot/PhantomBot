@@ -42,7 +42,7 @@ $(function() {
         // Show the page.
         $('#main').fadeIn(5e2);
 
-        if (!hasPlaylistData && player.hasAPIKey()) {
+        if (!hasPlaylistData && player.hasAPIKey() && !player.secondConnection) {
             toastr.error('Failed to load a playlist with songs.');
 
             // Create a fake progress slider.
@@ -55,7 +55,7 @@ $(function() {
             });
 
             // Error the to user.
-            helpers.getErrorModal('Playist Error', 'Failed to load a playlist with songs, please load a playlist.', () => {
+            helpers.getErrorModal('Playlist Error', 'Failed to load a playlist with songs, please load a playlist.', () => {
                 player.dbQuery('get_playlists', 'yt_playlists_registry', (results) => {
                     // Get the keys.
                     results = Object.keys(results);
