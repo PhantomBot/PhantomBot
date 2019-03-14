@@ -21,7 +21,8 @@ $(function() {
     var socket = new WebSocket((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPlayerPort()),
         listeners = [],
         player = {},
-        hasAPIKey = true;
+        hasAPIKey = true,
+        secondConnection = false;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -40,6 +41,13 @@ $(function() {
             console.error('Failed to send message to socket: ' + ex.message);
         }
     };
+
+    /*
+     * @function to determine is a second connection was detected.
+     */
+    player.secondConnection = () => {
+        return secondConnection;
+    }
 
     /*
      * @function to determine if an API key exists.
@@ -317,7 +325,11 @@ $(function() {
      */
     socket.onclose = (e) => {
         console.error('Connection lost with the websocket.');
-        toastr.error('Connection with WebSocket was lost. Refresh once reestablished.', '', {timeOut: 0});
+        if (secondConnection) {
+            toastr.error('PhantomBot has closed the WebSocket.', '', {timeOut: 0});
+        } else {
+            toastr.error('Connection with WebSocket was lost. Refresh once reestablished.', '', {timeOut: 0});
+        }
     };
 
     /*
@@ -326,6 +338,17 @@ $(function() {
     socket.onmessage = (e) => {
         try {
             let message = JSON.parse(e.data);
+
+            // Check this message here before doing anything else.
+            if (message.secondconnection !== undefined) {
+                if (message.secondconnection === true) {
+                    secondConnection = true;
+                    toastr.error('PhantomBot rejected the connection due to a player window already being open.', '',
+                                 {timeOut: 0, extendedTimeOut: 0});
+                    console.error('Only one instance allowed.');
+                }
+                return;
+            }
 
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
