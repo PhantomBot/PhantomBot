@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global currentVideo */
+
 /**
  * youtubePlayer.js
  *
@@ -729,12 +731,50 @@
                 return null;
             }
 
+            // TODO Add randomizer here
+            /*
+             * var length = currentPlaylist.getplaylistLength();
+               
+                var shuffleOn = $.inidb.GetBoolean('songplayer', '', 'shuffleQueue');
+                
+                $.say('Shuffle on? ' + shuffleOn);
+                $.say('Queue length :' + length);
+                
+                if (shuffleOn) {
+                    // Get a random song from the queue
+                    var nextSongIndex = Math.floor(Math.random() * length) + 1;                  
+                    $.say('Next song index is ' + nextSongIndex);
+                    currentPlaylist.jumpToSong(nextSongIndex);
+                    
+                    //connectedPlayerClient
+                } else {                
+                    // Go to next song in the queue
+                    
+                }
+             */
+
             exception = true;
             while (exception) {
                 previousVideo = currentVideo;
 
                 if (!requests.isEmpty()) {
-                    currentVideo = requests.poll();
+//                    $.say('DEBUG - Requests not empty, polling');
+                    
+                    var shuffleOn = $.getIniDbBoolean('songplayer', 'shuffleQueue', false);
+//                    $.say('DEBUG - Shuffle on? ' + shuffleOn);
+
+                    if (shuffleOn) {
+                        var queueLength = requests.size();
+//                        $.say('DEBUG - Queue Length: ' + queueLength);
+                        
+                        var playListIndex = Math.floor(Math.random() * queueLength);
+//                        $.say('DEBUG - Jumping to song: ' + queueLength);
+                        
+                        currentVideo = requests.jumpToSong(playListIndex);
+                        return;
+                    } else {
+                        currentVideo = requests.poll();
+                    }
                     exception = false;
                 } else {
                     if (defaultPlaylist.length == 0) {
@@ -746,6 +786,7 @@
 
                     try {
                         var playListIndex = defaultPlaylist.shift();
+
                         currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
                         exception = false
                     } catch (ex) {
@@ -755,6 +796,8 @@
 
                 }
             }
+
+//             $.say('DEBUG - Playing next song');
 
             connectedPlayerClient.play(currentVideo);
             this.updateCurrentSongFile(currentVideo);
@@ -1306,13 +1349,14 @@
                 
                 // Record song title for history
                 var videoTitle = currentPlaylist.getCurrentVideo().getVideoTitle();
-                $.inidb.set("songhistory", videoTitle, $.getLocalTime());
+                var videoId = currentPlaylist.getCurrentVideo().getVideoId()
+                $.inidb.set("songhistory", videoTitle + '|' + videoId, $.getLocalTime());
                 
                 // TODO Use HttpRequest or create a new class that can call the Google Sheets API to add rows for song
                 // Pass the song name, YouTube link, and requester
                 
-                // Go to next song
-                currentPlaylist.nextVideo();
+                // Commented out to prevent autoplay
+                //currentPlaylist.nextVideo();
             }
         }
     });
@@ -2012,7 +2056,7 @@
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), request.getVideoId()));
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount()));
                 connectedPlayerClient.pushSongList();
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()));
@@ -2237,6 +2281,21 @@
 
             $.say($.lang.get('ytplayer.command.requestlimit.length', minutes + ":" + seconds));
         }
+        
+        if (command.equalsIgnoreCase('shuffle')) {
+            if (!args[0]) {
+                $.say($.lang.get('ytplayer.command.queuemode.random.info'));
+                return;
+            }
+
+            if (args[0].equalsIgnoreCase('on')) {
+                $.setIniDbBoolean('songplayer', 'shuffleQueue', true);
+                $.say($.lang.get('ytplayer.command.queuemode.random.on'));
+            } else if (args[0].equalsIgnoreCase('off')) {
+                $.setIniDbBoolean('songplayer', 'shuffleQueue', false);
+                $.say($.lang.get('ytplayer.command.queuemode.random.off'));
+            }
+        }
     });
 
     $.bind('initReady', function() {
@@ -2261,7 +2320,8 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
         $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'length');        
+        $.registerChatCommand('./systems/youtubePlayer.js', 'length');
+        $.registerChatCommand('./systems/youtubePlayer.js', "shuffle", 0);
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
