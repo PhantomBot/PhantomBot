@@ -169,6 +169,7 @@
 
         $.say($.lang.get('bettingsystem.close.success.winners', winners.length, $.getPointsString(Math.floor(total)), option));
         $.inidb.set('bettingSettings', 'lastBet', winners.length + '___' + $.getPointsString(Math.floor(total)));
+        save();
         clear();
     }
 
@@ -214,7 +215,7 @@
      *
      */
     function clear() {
-        save();
+        clearInterval(timeout);
         bets = {};
         bet = {
             status: false,
@@ -230,6 +231,27 @@
             options: {},
             opt: []
         };
+        $.inidb.set('bettingPanel', 'isActive', 'false');
+    }
+
+    /*
+     * @function reset
+     * @info Resets the bet and gives points back.
+     *
+     * @param refund, if everyones points should be given back.
+     */
+    function reset(refund) {
+        if (refund) {
+            var betters = Object.keys(bets);
+
+            $.inidb.setAutoCommit(false);
+            for (var i = 0; i < betters.length; i++) {
+                $.inidb.incr('points', betters[i], bets[betters[i]].amount);
+            }
+            $.inidb.setAutoCommit(true);
+        }
+
+        clear();
     }
 
     /**
@@ -325,6 +347,10 @@
                 close(sender, (args[1] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
                 return;
 
+                // Used by panel.
+            } else if (action.equalsIgnoreCase('reset')) {
+                reset(subAction !== undefined && subAction.equalsIgnoreCase('-refund'));
+
                 /**
                  * @commandpath bet save - Toggle if bet results get saved or not after closing one.
                  */
@@ -413,6 +439,7 @@
         $.registerChatSubcommand('bet', 'results', 7);
         $.registerChatSubcommand('bet', 'open', 2);
         $.registerChatSubcommand('bet', 'close', 2);
+        $.registerChatSubcommand('bet', 'reset', 2);
         $.registerChatSubcommand('bet', 'save', 1);
         $.registerChatSubcommand('bet', 'saveformat', 1);
         $.registerChatSubcommand('bet', 'gain', 1);

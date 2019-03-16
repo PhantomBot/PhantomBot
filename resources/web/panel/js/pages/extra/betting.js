@@ -152,12 +152,21 @@ $(function() {
 
     // Reset bet button.
     $('#reset-betting').on('click', function() {
-        resetBet();
+        helpers.getModal('betting-reset', 'Reset Bet', 'Reset', $('<form/>', {
+            'role': 'form'
+        })
+        // Add refund option
+        .append(helpers.getCheckBox('bet-refund', false, 'Refund all bets',
+            'if everyone who placed a bet should get their points back.')),
+        function() {
+            resetBet();
 
-        if (isActive) {
-            socket.sendCommand('reset_end_bet_cmd', 'bet close', new Function());
-            isActive = false;
-        }
+            if (isActive) {
+                socket.sendCommand('reset_end_bet_cmd', 'bet reset' + ($('#bet-refund').prop('checked') === true ? ' -refund' : ''), new Function());
+                isActive = false;
+            }
+            $('#betting-reset').modal('toggle');
+        }).modal('toggle');
     });
 
     // Close bet button
