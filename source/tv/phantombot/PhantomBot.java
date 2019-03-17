@@ -208,6 +208,7 @@ public final class PhantomBot implements Listener {
     /* PhantomBot Information */
     private static PhantomBot instance;
     private static Boolean reloadScripts = false;
+    private static Boolean silentScriptsLoad = false;
     private static Boolean enableDebugging = false;
     private static Boolean enableDebuggingLogOnly = false;
     private static Boolean enableRhinoDebugger = false;
@@ -1359,6 +1360,8 @@ public final class PhantomBot implements Listener {
         PhantomBot.setDebuggingLogOnly(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGLOG, false));
         /* Check to enable Script Reloading */
         PhantomBot.setReloadScripts(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RELOADSCRIPTS, false));
+        /* Check to silence the loading of scripts at startup. */
+        PhantomBot.setSilentScriptsLoad(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_SILENTSCRIPTSLOAD, false));
         /* Check to enable Rhino Debugger */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
     }
@@ -1373,6 +1376,13 @@ public final class PhantomBot implements Listener {
         if (reloadScripts)
             com.gmt2001.Console.out.println("Enabling Script Reloading");
         PhantomBot.reloadScripts = reloadScripts;
+
+    }
+
+    private static void setSilentScriptsLoad(Boolean silentScriptsLoad) {
+        if (silentScriptsLoad)
+            com.gmt2001.Console.out.println("Enabling Silent Script Load");
+        PhantomBot.silentScriptsLoad = silentScriptsLoad;
 
     }
 
@@ -1570,6 +1580,10 @@ public final class PhantomBot implements Listener {
 
     public static Boolean getReloadScripts() {
         return reloadScripts;
+    }
+
+    public static Boolean getSilentScriptsLoad() {
+        return silentScriptsLoad;
     }
 
     public static Boolean getEnableDebugging() {
