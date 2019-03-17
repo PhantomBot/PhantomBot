@@ -333,48 +333,55 @@
      * @function init - Loads everything for the scripts.
      */
     function init() {
+        // Do not print a line to the console for each module (script) that is loaded.
+        var silentScriptsLoad = Packages.tv.phantombot.PhantomBot.getSilentScriptsLoad().toString().equals('true');
+
         // Generate JavaScript trampolines for Java functions.
         generateJavaTrampolines();
         // Register events.
         events();
 
+        if (silentScriptsLoad) {
+            consoleLn('Loading modules...');
+        }
+
         // Load all core modules.
-        loadScript('./core/misc.js');
-        loadScript('./core/jsTimers.js');
-        loadScript('./core/updates.js');
-        loadScript('./core/chatModerator.js');
-        loadScript('./core/fileSystem.js');
-        loadScript('./core/lang.js');
-        loadScript('./core/commandPause.js');
-        loadScript('./core/logging.js');
-        loadScript('./core/commandRegister.js');
-        loadScript('./core/whisper.js');
-        loadScript('./core/commandCoolDown.js');
-        loadScript('./core/keywordCoolDown.js');
-        loadScript('./core/gameMessages.js');
-        loadScript('./core/patternDetector.js');
-        loadScript('./core/permissions.js');
-        loadScript('./core/streamInfo.js');
-        loadScript('./core/timeSystem.js');
-        loadScript('./core/initCommands.js');
-        loadScript('./core/panelCommands.js');
+        loadScript('./core/misc.js', false, silentScriptsLoad);
+        loadScript('./core/jsTimers.js', false, silentScriptsLoad);
+        loadScript('./core/updates.js', false, silentScriptsLoad);
+        loadScript('./core/chatModerator.js', false, silentScriptsLoad);
+        loadScript('./core/fileSystem.js', false, silentScriptsLoad);
+        loadScript('./core/lang.js', false, silentScriptsLoad);
+        loadScript('./core/commandPause.js', false, silentScriptsLoad);
+        loadScript('./core/logging.js', false, silentScriptsLoad);
+        loadScript('./core/commandRegister.js', false, silentScriptsLoad);
+        loadScript('./core/whisper.js', false, silentScriptsLoad);
+        loadScript('./core/commandCoolDown.js', false, silentScriptsLoad);
+        loadScript('./core/keywordCoolDown.js', false, silentScriptsLoad);
+        loadScript('./core/gameMessages.js', false, silentScriptsLoad);
+        loadScript('./core/patternDetector.js', false, silentScriptsLoad);
+        loadScript('./core/permissions.js', false, silentScriptsLoad);
+        loadScript('./core/streamInfo.js', false, silentScriptsLoad);
+        loadScript('./core/timeSystem.js', false, silentScriptsLoad);
+        loadScript('./core/initCommands.js', false, silentScriptsLoad);
+        loadScript('./core/panelCommands.js', false, silentScriptsLoad);
 
         // Load all the other modules.
-        loadScriptRecursive('.');
+        loadScriptRecursive('.', silentScriptsLoad);
 
         // Load Discord modules if need be.
         if (!$.hasDiscordToken) {
-            loadScript('./discord/core/misc.js');
-            loadScript('./discord/core/accountLink.js');
-            loadScript('./discord/core/patternDetector.js');
-            loadScript('./discord/core/moderation.js');
-            loadScript('./discord/core/registerCommand.js');
-            loadScript('./discord/core/accountLink.js');
-            loadScript('./discord/core/commandCooldown.js');
-            loadScript('./discord/core/roleManager.js');
+            loadScript('./discord/core/misc.js', false, silentScriptsLoad);
+            loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
+            loadScript('./discord/core/patternDetector.js', false, silentScriptsLoad);
+            loadScript('./discord/core/moderation.js', false, silentScriptsLoad);
+            loadScript('./discord/core/registerCommand.js', false, silentScriptsLoad);
+            loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
+            loadScript('./discord/core/commandCooldown.js', false, silentScriptsLoad);
+            loadScript('./discord/core/roleManager.js', false, silentScriptsLoad);
 
             // Load the other discord modules
-            loadScriptRecursive('./discord');
+            loadScriptRecursive('./discord', silentScriptsLoad);
             // Mark that we are using Discord.
             // This is used by the new panel.
             $.inidb.set('panelData', 'hasDiscord', 'true');
@@ -385,6 +392,9 @@
         // Load new panel handler.
         loadScript('./core/panelHandler.js', false, true);
 
+        if (silentScriptsLoad) {
+            consoleLn('Modules have been loaded.');
+        }
         $.log.event('Bot modules loaded. Initializing main functions...');
 
         // Register custom commands.
