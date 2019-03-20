@@ -51,6 +51,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 
 import tv.phantombot.discord.util.DiscordUtil;
 
+import tv.phantombot.PhantomBot;
+
 
 /**
  * Communicates with the Discord API.
@@ -215,7 +217,7 @@ public class DiscordAPI extends DiscordUtil {
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.scheduleAtFixedRate(() -> {
-                if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
+                if (reconnectState != ConnectionState.CANNOT_RECONNECT && !PhantomBot.instance().isExiting()) {
                     if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
                         com.gmt2001.Console.err.println("Connection with Discord was lost.");
                         com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
