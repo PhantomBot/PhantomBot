@@ -231,12 +231,14 @@ public class NewPanelSocketServer {
      * @param errorMessage The error message from the socket server.
      */
     public void serverError(String errorMessage) {
-        com.gmt2001.Console.err.println("WebSocket Server Error, will attempt to restart server. Error: " + errorMessage);
-        try {
-            start();
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("PhantomBot is Exiting...");
-            PhantomBot.exitError();
+        if (!PhantomBot.instance().isExiting()) {
+            com.gmt2001.Console.err.println("WebSocket Server Error, will attempt to restart server. Error: " + errorMessage);
+            try {
+                start();
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.println("PhantomBot is Exiting...");
+                PhantomBot.exitError();
+            }
         }
     }
 
