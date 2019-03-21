@@ -37,7 +37,7 @@ $(run = function() {
                     'class': 'btn btn-xs btn-danger',
                     'style': 'float: right',
                     'data-toggle': 'tooltip',
-                    'title': 'This will reset the user\'s permission back to viewer. Viewers aren\'t shown in this list',
+                    'title': 'Dies setzt die Berechtigung des Benutzers wieder auf den Zuschauer zurück. Zuschauer werden in dieser Liste nicht angezeigt.',
                     'data-username': results[i].key,
                     'html': $('<i/>', {
                         'class': 'fa fa-trash'
@@ -72,9 +72,9 @@ $(run = function() {
                 { 'width': '45%', 'targets': 0 }
             ],
             'columns': [
-                { 'title': 'User' },
-                { 'title': 'Permission' },
-                { 'title': 'Actions' }
+                { 'title': 'Benutzer' },
+                { 'title': 'Berechtigung' },
+                { 'title': 'Aktionen' }
             ]
         });
 
@@ -85,8 +85,8 @@ $(run = function() {
                 t = $(this);
 
             // Ask the user if he wants to reset the user's permission.
-            helpers.getConfirmDeleteModal('user_permission_modal_remove', 'Are you sure you want to reset ' + username + '\'s permissions to Viewer?', false,
-                username + '\'s permissions have been reset to Viewer!', function() {
+            helpers.getConfirmDeleteModal('user_permission_modal_remove', 'Sind Sie sicher, dass Sie die Berechtigung von ' + username + ' auf Zuschauer zurücksetzen möchten?', false,
+                'Die Berechtigung von ' + username + ' wurde auf Zuschauer zurückgesetzt!', function() {
                 // Delete all information about the alias.
                 socket.removeDBValue('permission_remove', 'group', username, function() {
                     socket.sendCommand('permission_remove_cmd', 'permissionsetuser ' + username + ' 7', function() {
@@ -105,13 +105,13 @@ $(run = function() {
                 t = $(this);
 
             socket.getDBValue('permission_user_get', 'group', username, function(e) {
-                helpers.getModal('edit-user-perm', 'Edit User Permission', 'Save', $('<form/>', {
+                helpers.getModal('edit-user-perm', 'Benutzerrechte bearbeiten', 'Speichern', $('<form/>', {
                     'role': 'form'
                 })
                 // Append user name.
-                .append(helpers.getInputGroup('user-name', 'text', 'Username', '', username, 'Name of the user. This cannot be edited.', true))
+                .append(helpers.getInputGroup('user-name', 'text', 'Benutzername', '', username, 'Name des Benutzers. Dieser kann nicht bearbeitet werden.', true))
                 // Append the group.
-                .append(helpers.getDropdownGroup('user-permission', 'Permission', helpers.getGroupNameById(e.group),
+                .append(helpers.getDropdownGroup('user-permission', 'Berechtigung', helpers.getGroupNameById(e.group),
                     ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars'])),
                 // callback once the user hits save.
                 function() {
@@ -124,7 +124,7 @@ $(run = function() {
                             // Close the modal.
                             $('#edit-user-perm').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully updated permissions for user ' + username);
+                            toastr.success('Berechtigungen für ' + username + ' erfolgreich aktualisiert.');
                         });
                     });
                 }).modal('toggle');
@@ -137,13 +137,13 @@ $(run = function() {
 $(function() {
     // Add user permission button.
     $('#add-permissions-button').on('click', function() {
-        helpers.getModal('add-user-perm', 'Set User Permission', 'Save', $('<form/>', {
+        helpers.getModal('add-user-perm', 'Benutzerrechte festlegen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append user name.
-        .append(helpers.getInputGroup('user-name', 'text', 'Username', 'PhantomBot', '', 'Name of the user to set the permissions on.'))
+        .append(helpers.getInputGroup('user-name', 'text', 'Benutzername', 'PhantomBotDE', '', 'Name des Benutzers, auf den die Berechtigung angewendet werden sollen.'))
         // Append the group.
-        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars'])),
+        .append(helpers.getDropdownGroup('user-permission', 'Berechtigung', 'Regulars', ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars'])),
         // callback once the user hits save.
         function() {
             let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text()),
@@ -161,7 +161,7 @@ $(function() {
                             // Close the modal.
                             $('#add-user-perm').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully added permissions for user ' + username.val());
+                            toastr.success('Berechtigungen für ' + username.val() + ' erfolgreich hinzugefügt!');
                         });
                     });
             }

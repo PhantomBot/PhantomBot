@@ -112,25 +112,25 @@ $(function() {
     helpers.getEventMessage = function(event) {
         switch (event.type.toLowerCase()) {
             case 'subscriber':
-                return (event.username + ' just subscribed!');
+                return (event.username + ' hat dich gerade abonniert!');
             case 'prime subscriber':
-                return (event.username + ' just subscribed with Twitch Prime!');
+                return (event.username + ' hat dich gerade mit Twitch Prime abonniert!');
             case 'resubscriber':
-                return (event.username + ' just resubscribed for ' + event.months + ' months in a row!');
+                return (event.username + ' hat dich den ' + event.months + 'ten Monate in Folge abboniert!');
             case 'follower':
-                return (event.username + ' just followed!');
+                return (event.username + ' folgt dir jetzt!');
             case 'bits':
-                return (event.username + ' just cheered ' + event.amount + ' bits!');
+                return (event.username + ' hat ' + event.amount + ' Bits gecheered!');
             case 'host':
-                return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
+                return (event.username + ' hostet dich derzeit mit' + event.viewers + ' Zuschauern!');
             case 'auto-host':
-                return (event.username + ' just auto-hosted with ' + event.viewers + ' viewers!');
+                return (event.username + ' hostet dich automatisch derzeit mit ' + event.viewers + ' Zuschauern!');
             case 'tip': // To be added soon.
                 break;
             case 'raid':
-                return (event.username + ' raided for ' + event.viewers + ' viewers!');
+                return (event.username + ' überfällt dich mit ' + event.viewers + ' Zuschauern!');
             case 'gifted subscription':
-                return (event.username + ' gifted a subscription to ' + event.recipient + '!');
+                return (event.username + ' hat ' + event.recipient + ' ein Abonnement geschenkt!');
         }
     };
 
@@ -186,7 +186,7 @@ $(function() {
                 // Append text saying the form cannot be empty.
                 obj.after($('<p/>', {
                     'class': 'help-block',
-                    'text': 'You cannot leave this field empty.'
+                    'text': 'Du kannst dieses Feld nicht leer lassen.'
                 }));
                 let btn = obj.closest('form').find('button');
                 if (btn.data('candisable') !== undefined) {
@@ -235,7 +235,7 @@ $(function() {
                 // Append text saying the form cannot be empty.
                 obj.after($('<p/>', {
                     'class': 'help-block',
-                    'text': 'Please enter a number that is greater or equal to ' + min + (max !== undefined ? ' and less or equal than ' + newMax + '' : '') + '.'
+                    'text': 'Bitte geben Sie eine Zahl ein, die größer oder gleich ' + min + (max !== undefined ? 'und kleiner oder gleich ' + newMax + '' : '') + 'ist.'
                 }));
                 let btn = obj.closest('form').find('button');
                 if (btn.data('candisable') !== undefined) {
@@ -284,7 +284,7 @@ $(function() {
                 // Append text saying the form cannot be empty.
                 obj.after($('<p/>', {
                     'class': 'help-block',
-                    'text': 'Please enter a valid date (mm/dd/yyyy or dd/mm/yyyy).'
+                    'text': 'Bitte geben Sie ein gültiges Datum ein (mm/dd/yyyy oder dd/mm/yyyy).'
                 }));
                 let btn = obj.closest('form').find('button');
                 if (btn.data('candisable') !== undefined) {
@@ -479,10 +479,10 @@ $(function() {
             $('#' + id).remove();
         }).on('show.bs.collapse', function() {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-            $(this).find('.collapse-btn').html('Hide Advanced');
+            $(this).find('.collapse-btn').html('Erweitertes ausblenden');
         }).on('hide.bs.collapse', function() {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-            $(this).find('.collapse-btn').html('Show Advanced');
+            $(this).find('.collapse-btn').html('Erweitertes anzeigen');
         });
     };
 
@@ -677,7 +677,7 @@ $(function() {
     helpers.getConfirmDeleteModal = function(id, title, hasBodyMsg, closeMessage, onClose) {
         swal({
             'title': title,
-            'text': (hasBodyMsg ? 'Once removed, it be will gone forever.' : ''),
+            'text': (hasBodyMsg ? 'Einmal entfernt, wird es für immer weg sein.' : ''),
             'icon': 'warning',
             'reverseButtons': true,
             'buttons': {
@@ -946,7 +946,7 @@ $(function() {
         if (version !== null) {
             if ($('#notifications-total').data('isset') === false) {
                 // Send a warning to the user.
-                toastr.warning('New update available for PhantomBot!', {
+                toastr.warning('Neues Update für PhantomBotDE verfügbar!', {
                     'timeOut': 2000
                 });
 
@@ -962,21 +962,21 @@ $(function() {
                             'role': 'form'
                         })
                         .append($('<p/>', {
-                            'html': 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
-                            'You can view the changes of this version ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
-                            'You can grab your own copy of version ' + version + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
-                            '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://community.phantombot.tv/t/how-to-update-phantombot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>'
+                            'html': 'Die Version ' + version + ' von PhantomBotDE ist ab sofort zum Download verfügbar! <br>' +
+                            'Die Änderungen dieser Version können Sie ' +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://github.com/PhantomBotDE/PhantomBotDE/releases/' + version).append('hier einsehen.')[0].outerHTML + ' <br>' +
+                            'Du kannst dir ' +
+                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('hier')[0].outerHTML + ' deine eigene Kopie der Version ' + version + '\' von PhantomBot besorgen. \<br>' +
+                            '<b>Bitte lesen Sie in ' +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://community.phantombot.tv/t/how-to-update-phantombot').append('dieser Anleitung')[0].outerHTML +
+                                ' nach, wie Sie PhantomBotDE richtig aktualisieren können.</b>'
                         })), function() {
                             $('#pb-update').modal('toggle');
                         }).modal('toggle');
                     }
                 }).append($('<i/>', {
                     'class': 'fa fa-warning text-yellow'
-                })).append('Update available')))
+                })).append('Update verfügbar')))
             }
         }
     };

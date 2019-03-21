@@ -104,7 +104,7 @@ $(function() {
                 default:
                     socket.sendCommand('open_traffle_cmd', 'traffle open ' + maxTicket.val() + ' ' + regLuck.val() + ' ' +  subLuck.val() + ' ' + cost.val() + ' ' + elegibility, function() {
                         // Alert the user.
-                        toastr.success('Successfully opened the ticket raffle!');
+                        toastr.success('Die Ticketverlosung wurde erfolgreich eröffnet!');
                         // Update the button.
                         $('#ticket-open-or-close-raffle').html($('<i/>', {
                             'class': 'fa fa-lock'
@@ -114,7 +114,7 @@ $(function() {
         } else {
             socket.sendCommandSync('close_traffle_cmd', 'traffle close', function() {
                 // Alert the user.
-                toastr.success('Successfully closed the ticket raffle!');
+                toastr.success('Die Ticketverlosung wurde erfolgreich beendet!');
                 // Reload to remove the winner.
                 helpers.temp.loadRaffleList();
                 // Update the button.
@@ -129,7 +129,7 @@ $(function() {
     $('#ticket-draw-raffle').on('click', function() {
         socket.sendCommandSync('draw_rraffle_cmd', 'traffle draw', function() {
             // Alert the user.
-            toastr.success('Successfully drew a winner!');
+            toastr.success('Ein Gewinner wurde erfolgreich gezogen!');
             // Reload to remove the winner.
             helpers.temp.loadRaffleList();
         });
@@ -149,7 +149,7 @@ $(function() {
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function() {
-            toastr.success('Successfully reset the ticket raffle!');
+            toastr.success('Die Ticketverlosung erfolgreich zurücksetzen!');
         });
     });
 
@@ -159,7 +159,7 @@ $(function() {
             tables: ['settings', 'settings', 'settings'],
             keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval']
         }, true, function(e) {
-            helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
+            helpers.getModal('traffle-settings-modal', 'Ticketverlosungseinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -168,26 +168,26 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Timed Message Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Zeitgesteuerte Nachrichteneinstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Append interval box for the message
-                .append(helpers.getInputGroup('msg-timer', 'number', 'Message Interval (Minutes)', '', e['traffleMessageInterval'],
-                    'How often the raffle message is said in chat while a raffle is active.'))
+                .append(helpers.getInputGroup('msg-timer', 'number', 'Nachrichtenintervall (Minuten)', '', e['traffleMessageInterval'],
+                    'Wie oft die Verlosungsnachricht in den Chat gesendet werden soll, während eine Verlosung aktiv ist.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Raffle Message', '', e['traffleMessage'],
-                    'What message is said at every interval while the raffle is active. Tags: (amount) and (entries)'))))
+                .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Verlosungsnachricht', '', e['traffleMessage'],
+                    'Die Nachricht wird in jedem Intervall gesendet, während die Verlosung aktiv ist. Tags: (amount) und (entries)'))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings',  $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Zusätzliche Einstellungen',  $('<form/>', {
                     'role': 'form'
                 })
             // Add toggle for warning messages.
-                .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['tRaffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))))),
+                .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['tRaffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn Warnmeldungen in den Chat gesendet werden sollen, wenn ein Benutzer bereits eingetragen ist oder nicht genügend Punkte hat.'))))),
             function() {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
-                    warningMsg = $('#warning-msg').find(':selected').text() === 'Yes';
+                    warningMsg = $('#warning-msg').find(':selected').text() === 'Ja';
 
                 switch (false) {
                     case helpers.handleInputNumber(raffleTimer):
@@ -203,7 +203,7 @@ $(function() {
                                 // Close the modal.
                                 $('#traffle-settings-modal').modal('toggle');
                                 // Warn the user.
-                                toastr.success('Successfully updated ticket raffle settings!');
+                                toastr.success('Ticket-Verlosungseinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

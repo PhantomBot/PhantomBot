@@ -25,19 +25,19 @@ $(function() {
 			'response_@chat', 'response_action', 'whisperMode']
 	}, true, function(e) {
 		// Update log event toggle.
-		$('#logging-events').val((e['log.event'] === 'true' ? 'Yes' : 'No'));
+		$('#logging-events').val((e['log.event'] === 'true' ? 'Ja' : 'Nein'));
 		// Update log error toggle.
-		$('#logging-errors').val((e['log.error'] === 'true' ? 'Yes' : 'No'));
+		$('#logging-errors').val((e['log.error'] === 'true' ? 'Ja' : 'Nein'));
 		// Update log chat toggle.
-		$('#logging-chat').val((e['log.file'] === 'true' ? 'Yes' : 'No'));
+		$('#logging-chat').val((e['log.file'] === 'true' ? 'Ja' : 'Nein'));
 		// Update log keep days.
 		$('#log-days').val(e.log_rotate_days);
 		// Set mute mode.
-		$('#bot-mute-mode').val((e['response_@chat'] === 'true' ? 'No' : 'Yes'));
+		$('#bot-mute-mode').val((e['response_@chat'] === 'true' ? 'Nein' : 'Ja'));
 		// Set action mode.
-		$('#bot-action-mode').val((e['response_action'] === 'true' ? 'Yes' : 'No'));
+		$('#bot-action-mode').val((e['response_action'] === 'true' ? 'Ja' : 'Nein'));
 		// Set whisper mode.
-		$('#bot-whisper-mode').val((e['whisperMode'] === 'true' ? 'Yes' : 'No'));
+		$('#bot-whisper-mode').val((e['whisperMode'] === 'true' ? 'Ja' : 'Nein'));
 	});
 });
 
@@ -45,12 +45,12 @@ $(function() {
 $(function() {
 	// Save button
 	$('#bot-logging-save').on('click', function() {
-		let logEvents = $('#logging-events').find(':selected').text() === 'Yes',
-			logErrors = $('#logging-errors').find(':selected').text() === 'Yes',
-			logChat = $('#logging-chat').find(':selected').text() === 'Yes',
-			muteMode = $('#bot-mute-mode').find(':selected').text() !== 'Yes',
-			actionMode = $('#bot-action-mode').find(':selected').text() === 'Yes',
-			whisperMode = $('#bot-whisper-mode').find(':selected').text() === 'Yes',
+		let logEvents = $('#logging-events').find(':selected').text() === 'Ja',
+			logErrors = $('#logging-errors').find(':selected').text() === 'Ja',
+			logChat = $('#logging-chat').find(':selected').text() === 'Ja',
+			muteMode = $('#bot-mute-mode').find(':selected').text() !== 'Ja',
+			actionMode = $('#bot-action-mode').find(':selected').text() === 'Ja',
+			whisperMode = $('#bot-whisper-mode').find(':selected').text() === 'Ja',
 			logDays = $('#log-days');
 
 		switch (false) {

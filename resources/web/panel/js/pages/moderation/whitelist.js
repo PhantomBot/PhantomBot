@@ -64,7 +64,7 @@ $(run = function() {
             ],
             'columns': [
                 { 'title': 'Whitelist' },
-                { 'title': 'Actions' }
+                { 'title': 'Aktionen' }
             ]
         });
 
@@ -74,8 +74,8 @@ $(run = function() {
                 row = $(this).parents('tr');
 
             // Ask the user if he wants to delete the blacklist.
-            helpers.getConfirmDeleteModal('blacklist_modal_remove', 'Are you sure you want to remove this whitelist?', true,
-                'The whitelist has been successfully removed!', function() { // Callback if the user clicks delete.
+            helpers.getConfirmDeleteModal('blacklist_modal_remove', 'Sind Sie sicher, dass Sie dies von der Whitelist entfernen möchten?', true,
+                'Dies wurde von der Whitelist erfolgreich entfernt!', function() { // Callback if the user clicks delete.
                 // Delete all information about the alias.
                 socket.removeDBValue('whitelist_remove', 'whiteList', whitelist, function() {
                     socket.sendCommand('whitelist_remove_cmd', 'reloadmod', function() {
@@ -91,11 +91,11 @@ $(run = function() {
             let whitelist = $(this).data('whitelist'),
                 t = $(this);
 
-            helpers.getModal('edit-whitelist', 'Edit Whitelist', 'Save', $('<form/>', {
+            helpers.getModal('edit-whitelist', 'Whitelist bearbeiten', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append box for the whitelist.
-            .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', '', whitelist, 'Url that is whitelisted.')), function() {
+            .append(helpers.getInputGroup('whitelist-name', 'text', 'URL', '', whitelist, 'URL, die auf der Whitelist stehen soll.')), function() {
                 let w = $('#whitelist-name');
 
                 // Handle each input to make sure they have a value.
@@ -114,7 +114,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-whitelist').modal('hide');
                                     // Alert the user.
-                                    toastr.success('Successfully edited whitelist!');
+                                    toastr.success('Whitelist erfolgreich bearbeitet!');
                                 });
                             });
                         });
@@ -132,7 +132,7 @@ $(function() {
             'role': 'form'
         })
         // Append box for the whitelist.
-        .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', 'https://phantombot.tv', '', 'Url that will be whitelisted.')), function() {
+        .append(helpers.getInputGroup('whitelist-name', 'text', 'URL', 'https://phantombot.dev', '', 'URL, die auf die Whitelist gesetzt werden soll.')), function() {
             let whitelist = $('#whitelist-name');
 
             // Handle each input to make sure they have a value.
@@ -149,7 +149,7 @@ $(function() {
                             // Close the modal.
                             $('#add-whitelist').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully added whitelist!');
+                            toastr.success('Whitelist erfolgreich hinzugefügt!');
                         });
                     });
             }

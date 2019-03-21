@@ -109,7 +109,7 @@ $(function() {
     // Settings button.
     $('#settings-deaths-button').on('click', function() {
         // Create custom modal for this module.
-        helpers.getModal('death-settings', 'Death Counter Settings', 'Save', $('<form/>', {
+        helpers.getModal('death-settings', 'Death Counter Einstellungen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Main div for the browser source link.
@@ -132,7 +132,7 @@ $(function() {
             'value': window.location.protocol + '//' + window.location.host + '/addons/deathctr/deathctr.txt?refresh=true&webauth=' + getAuth(),
             'style': 'color: transparent !important; text-shadow: 0 0 5px hsla(0, 0%, 100%, .5);',
             'data-toggle': 'tooltip',
-            'title': 'Clicking this box will show the link. DO NOT share this link with anyone as it has sensitive information.',
+            'title': 'Wenn Sie auf dieses Feld klicken, wird der Link angezeigt. Geben Sie diesen Link NICHT an Dritte weiter, da er sensible Informationen enthält.',
             'click': function() {
                 // Reset styles.
                 $(this).prop('style', '');
@@ -152,8 +152,8 @@ $(function() {
             })
         }))))
         // Append box with current deaths.
-        .append(helpers.getInputGroup('deaths-t', 'number', 'Death Total', '',
-            $('#death-number').html().replace(/,/g, ''), 'How many deaths to set on the counter.')),
+        .append(helpers.getInputGroup('deaths-t', 'number', 'Tode gesamt', '',
+            $('#death-number').html().replace(/,/g, ''), 'Wie viele Tode sollen auf den Zähler gesetzt werden.')),
         function() { // callback.
             let deaths = $('#deaths-t');
 
@@ -170,7 +170,7 @@ $(function() {
                             // Close the modal.
                             $('#death-settings').modal('toggle');
                             // Alert the user.
-                            toastr.success('Successfully updated death counter settings!');
+                            toastr.success('Todeszählereinstellungen erfolgreich aktualisiert!');
                         });
                     });
             }

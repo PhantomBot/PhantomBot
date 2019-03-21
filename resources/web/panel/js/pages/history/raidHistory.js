@@ -48,11 +48,11 @@ $(function() {
     			{ 'width': '20%', 'targets': 0 }
     		],
 			'columns': [
-				{ 'title': 'Username' },
-				{ 'title': 'Last Raid', 'orderData': [1] },
-				{ 'title': 'Viewers' },
-				{ 'title': 'Total Raids' },
-				{ 'title': 'Total Viewers' }
+				{ 'title': 'Benutzername' },
+				{ 'title': 'Letzter Raid', 'orderData': [1] },
+				{ 'title': 'Zuschauer' },
+				{ 'title': 'Gesamte Raids' },
+				{ 'title': 'Gesamte Zuschauer' }
 			]
 		});
 	});
@@ -88,11 +88,11 @@ $(function() {
                 { 'width': '20%', 'targets': 0 }
             ],
             'columns': [
-                { 'title': 'Username' },
-                { 'title': 'Last Raid', 'orderData': [1] },
-                { 'title': 'Viewers' },
-                { 'title': 'Total Raids' },
-                { 'title': 'Total Viewers' }
+                { 'title': 'Benutzername' },
+                { 'title': 'Letzter Raid', 'orderData': [1] },
+                { 'title': 'Zuschauer' },
+                { 'title': 'Gesamte Raids' },
+                { 'title': 'Gesamte Viewers' }
             ]
         });
     });

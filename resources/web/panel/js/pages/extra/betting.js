@@ -125,7 +125,7 @@ $(function() {
             // Update the chart.
             chart.update();
             // Alert the user.
-            toastr.success('Successfully reset the bet.');
+            toastr.success('Die Wette wurde erfolgreich zurückgesetzt.');
 
             // Callback if possible.
             if (typeof callback === 'function') {
@@ -166,11 +166,11 @@ $(function() {
             'role': 'form'
         })
         // Append options.
-        .append(helpers.getInputGroup('bet-winning', 'text', 'Winning Option', 'Option that won the bet. Leave this empty to just close the bet and pick a winning option later.', '',
-            'Option that won the bet. Leave this empty to just close the bet and pick a winning option later.')),
+        .append(helpers.getInputGroup('bet-winning', 'text', 'Gewinnoption', 'Option, die die Wette gewonnen hat. Lassen Sie dieses Feld leer, um den Einsatz einfach zu schließen und später eine Gewinnoption auszuwählen.', '',
+            'Option, die die Wette gewonnen hat. Lassen Sie dieses Feld leer, um den Einsatz einfach zu schließen und später eine Gewinnoption auszuwählen.')),
         function() {
             socket.sendCommand('close_bet_cmd', 'bet close ' + $('#bet-winning').val(), function() {
-                toastr.success('Successfully closed the bet.');
+                toastr.success('Die Wette wurde erfolgreich beendet.');
                 $('#betting-close').modal('toggle');
             });
         }).modal('toggle');
@@ -178,23 +178,23 @@ $(function() {
 
     // Open bet button.
     $('#open-betting').on('click', function() {
-        helpers.getModal('betting-open', 'Open Bet', 'Open', $('<form/>', {
+        helpers.getModal('betting-open', 'Wette eröffnen', 'Öffnen', $('<form/>', {
             'role': 'form'
         })
         // Append bet title.
-        .append(helpers.getTextAreaGroup('bet-title', 'text', 'Title', 'Which team is going to win?', '', 'Title of the bet.'))
+        .append(helpers.getTextAreaGroup('bet-title', 'text', 'Titel', 'Welches Team wird gewinnen?', '', 'Titel der Wette.'))
         // Append options.
-        .append(helpers.getInputGroup('bet-options', 'text', 'Options', 'Red, Blue', '',
-            'Options to be betted on. Each option should be seperated with a comma and space.'))
+        .append(helpers.getInputGroup('bet-options', 'text', 'Optionen', 'Rot, Blau', '',
+            'Optionen, auf die gesetzt werden soll. Jede Option sollte durch ein Komma und ein Leerzeichen getrennt werden.'))
         // Append min bet.
-        .append(helpers.getInputGroup('bet-min', 'number', 'Minimum Bet', '', '1',
-            'What is the minimum amount of points users can bet on an option.'))
+        .append(helpers.getInputGroup('bet-min', 'number', 'Mindesteinsatz', '', '1',
+            'Wie hoch ist der Mindesteinsatz an Punkten, den Benutzer auf eine Option setzen können?'))
         // Append max bet.
-        .append(helpers.getInputGroup('bet-max', 'number', 'Maximum Bet', '', '0',
-            'What is the maximum amount of points users can bet on an option. 0 removes the limit.'))
+        .append(helpers.getInputGroup('bet-max', 'number', 'Maximaleinsatz', '', '0',
+            'Wie hoch ist der Maximaleinsatz von Punkten, die Benutzer auf eine Option setzen können? 0 entfernt das Limit.'))
         // Append min bet.
-        .append(helpers.getInputGroup('bet-timer', 'number', 'Timer (Minutes)', '', '0',
-            'Timer in minutes of how long the bet will be opened for. 0 means until closed.')),
+        .append(helpers.getInputGroup('bet-timer', 'number', 'Timer (Minuten)', '', '0',
+            'Timer in Minuten, wie lange die Wette geöffnet sein soll. 0 bedeutet bis zum Schließen.')),
         function() {
             let title = $('#bet-title'),
                 options = $('#bet-options'),
@@ -213,7 +213,7 @@ $(function() {
                     socket.sendCommandSync('bet_open_cmd', 'bet open "' + title.val() + '" "' + options.val() + '" ' +
                         minBet.val() + ' ' + maxBet.val() + ' ' + timer.val(), function() {
                             // Alert the user.
-                            toastr.success('Successfully opened the bet!');
+                            toastr.success('Die Wette wurde erfolgreich eröffnet!');
                             // Close the modal.
                             $('#betting-open').modal('toggle');
                             // Update the chart.
@@ -229,24 +229,24 @@ $(function() {
             tables: ['bettingSettings', 'bettingSettings', 'bettingSettings', 'bettingSettings'],
             keys: ['gain', 'save', 'format', 'warningMessages']
         }, true, function(e) {
-            helpers.getModal('betting-settings', 'Bet Settings', 'Save', $('<form/>', {
+            helpers.getModal('betting-settings', 'Wetteinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append a select option for the save option
-            .append(helpers.getDropdownGroup('save-bets', 'Save Bets', (e.save === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If past bets should be saved.'))
+            .append(helpers.getDropdownGroup('save-bets', 'Wetten speichern', (e.save === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn frühere Wetten gespeichert werden sollen.'))
             // Append a select option for the warning messages
-            .append(helpers.getDropdownGroup('warning-bets', 'Warning Messages', (e.warningMessages === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If warning messages should be said in chat when users bet.'))
+            .append(helpers.getDropdownGroup('warning-bets', 'Warnmeldungen', (e.warningMessages === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn Warnmeldungen in den Chat gesendet werden sollen, wenn Benutzer wetten.'))
             // Save format
-            .append(helpers.getInputGroup('bet-format', 'text', 'Save Format', '', e.format,
-                'In which date format should bets be saved.'))
+            .append(helpers.getInputGroup('bet-format', 'text', 'Format speichern', '', e.format,
+                'In welchem Datumsformat sollen die Wetten gespeichert werden.'))
             // Save format
-            .append(helpers.getInputGroup('bet-gain', 'text', 'Winning Gain (Percent)', '', e.gain,
-                'The percent of points the user gets from the entire amount of points betted on the winning option. The amount betted is always returned.')),
+            .append(helpers.getInputGroup('bet-gain', 'text', 'Gewinnsteigerung (Prozent)', '', e.gain,
+                'Der Prozentsatz der Punkte, den der Benutzer von der gesamten Anzahl der Punkte erhält, die auf die Gewinnoption gesetzt wurden. Der eingesetzte Betrag wird immer zurückgegeben.')),
             function() {
-                let saveBets = $('#save-bets').find(':selected').text() === 'Yes',
-                    warningMessages = $('#warning-bets').find(':selected').text() === 'Yes',
+                let saveBets = $('#save-bets').find(':selected').text() === 'Ja',
+                    warningMessages = $('#warning-bets').find(':selected').text() === 'Ja',
                     gain = $('#bet-gain'),
                     format = $('#bet-format');
 
@@ -262,7 +262,7 @@ $(function() {
                         }, function() {
                             socket.sendCommand('bet_settings_update_cmd', 'reloadbet', function() {
                                 // Alert user.
-                                toastr.success('Successfully updated bet settings!');
+                                toastr.success('Wetteinstellungen erfolgreich aktualisiert!');
                                 // Close modal.
                                 $('#betting-settings').modal('toggle');
                             })

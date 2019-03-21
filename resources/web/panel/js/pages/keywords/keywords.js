@@ -74,9 +74,9 @@ $(run = function() {
                     { 'width': '35%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Keyword' },
-                    { 'title': 'Response' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Schlüsselwort' },
+                    { 'title': 'Antwort' },
+                    { 'title': 'Aktion' }
                 ]
             });
 
@@ -85,8 +85,8 @@ $(run = function() {
                 let keyword = $(this).data('keyword'),
                     row = $(this).parents('tr');
 
-                helpers.getConfirmDeleteModal('keyword_modal_remove', 'Are you sure you want to remove the keyword "' + keyword + '"?', true,
-                    'You\'ve successfully removed the keyword "' + keyword + '"!', function() {
+                helpers.getConfirmDeleteModal('keyword_modal_remove', 'Sind Sie sicher, dass Sie das Schlüsselwort "' + keyword + '" entfernen möchten?', true,
+                    'Du hast das Schlüsselwort "' + keyword + '" erfolgreich entfernt!', function() {
                     // Delete all of the info about the keyword.
                     socket.removeDBValues('rm_keyword', {
                         tables: ['keywords', 'coolkey'],
@@ -112,16 +112,16 @@ $(run = function() {
                     e.keywords = JSON.parse(e.keywords);
 
                     // Get advance modal from our util functions in /utils/helpers.js
-                    helpers.getAdvanceModal('edit-keyword', 'Edit Keyword', 'Save', $('<form/>', {
+                    helpers.getAdvanceModal('edit-keyword', 'Schlüsselwort bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append a text box for keyword
-                    .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Keyword', '',
-                        e.keywords.keyword.replace('regex:', ''), 'Keyword that can trigger a response.', true)
+                    .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Schlüsselwort', '',
+                        e.keywords.keyword.replace('regex:', ''), 'Schlüsselwort, das eine Antwort auslösen soll.', true)
                         // Append checkbox for if the keyword is regex.
-                        .append(helpers.getCheckBox('keyword-regex', e.keywords.isRegex, 'Regex', 'If the keyword is using regex.')))
+                        .append(helpers.getCheckBox('keyword-regex', e.keywords.isRegex, 'Regex', 'Wenn das Schlüsselwort regex verwendet.')))
                     // Append a text box for the keyword response.
-                    .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Response', '', e.keywords.response, 'Response of the keyword.'))
+                    .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort', '', e.keywords.response, 'Antwort des Schlüsselwortes.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -130,11 +130,11 @@ $(run = function() {
                                 'role': 'form'
                             })
                             // Append input box for keyword cooldown
-                            .append(helpers.getInputGroup('cooldown-count', 'number', 'Cooldown (Seconds)', '',
-                                helpers.getDefaultIfNullOrUndefined(e.coolkey, 5), 'The cooldown of the keyword in seconds. Minimum is 5 seconds.'))
+                            .append(helpers.getInputGroup('cooldown-count', 'number', 'Abklingzeit (Sekunden)', '',
+                                helpers.getDefaultIfNullOrUndefined(e.coolkey, 5), 'Die Abklingzeit des Schlüsselwortes in Sekunden. Das Minimum beträgt 5 Sekunden.'))
                             // Append input box for keyword count
-                            .append(helpers.getInputGroup('keyword-count', 'number', 'Count', '',
-                                helpers.getDefaultIfNullOrUndefined(e.keywords.count, 0), 'Count of the keyword. This increases when the keyword has the variable (keywordcount).'))
+                            .append(helpers.getInputGroup('keyword-count', 'number', 'Anzahl', '',
+                                helpers.getDefaultIfNullOrUndefined(e.keywords.count, 0), 'Anzahl des Schlüsselwortes. Diese erhöht sich, wenn das Schlüsselwort die Variable hat (keywordcount).'))
                     })), function() {
                         let keywordKey = $('#keyword-keyword'),
                             keywordResponse = $('#keyword-response'),
@@ -174,7 +174,7 @@ $(run = function() {
                                             // Close the modal.
                                             $('#edit-keyword').modal('hide');
                                             // Alert the user.
-                                            toastr.success('Successfully edited the keyword!');
+                                            toastr.success('Schlüsselwort erfolgreich bearbeitet!');
                                         });
                                     });
                                 });
@@ -198,16 +198,16 @@ $(function() {
     // Add keyword button.
     $('#keywordadd-button').on('click', function() {
         // Get advance modal from our util functions in /utils/helpers.js
-        helpers.getAdvanceModal('add-keyword', 'Add Keyword', 'Save', $('<form/>', {
+        helpers.getAdvanceModal('add-keyword', 'Schlüsselwort hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append a text box for keyword
-        .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Keyword', 'PhantomBot', '', 'Keyword that can trigger a response.', true)
+        .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Schlüsselwort', 'PhantomBotDE', '', 'Schlüsselwort, das eine Antwort auslösen kann.', true)
             // Append checkbox for if the keyword is regex.
-            .append(helpers.getCheckBox('keyword-regex', false, 'Regex', 'If the keyword is using regex.')))
+            .append(helpers.getCheckBox('keyword-regex', false, 'Regex', 'Wenn das Schlüsselwort regex verwendet.')))
         // Append a text box for the keyword response.
-        .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Response',
-            'Checkout PhantomBot, it\'s a great free and open source bot!', '', 'Response of the keyword.'))
+        .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort',
+            'Schaue Dir PhantomBotDE an, es ist ein großartiger kostenloser und Open-Source-Bot!', '', 'Antwort des Schlüsselwortes.'))
         // Add an advance section that can be opened with a button toggle.
         .append($('<div/>', {
             'class': 'collapse',
@@ -216,11 +216,11 @@ $(function() {
                     'role': 'form'
                 })
                 // Append input box for keyword cooldown
-                .append(helpers.getInputGroup('cooldown-count', 'number', 'Cooldown (Seconds)', '', '5',
-                    'The cooldown of the keyword in seconds. Minimum is 5 seconds.'))
+                .append(helpers.getInputGroup('cooldown-count', 'number', 'Abklingzeit (Sekunden)', '', '5',
+                    'Die Abklingzeit des Keywords in Sekunden. Das Minimum beträgt 5 Sekunden.'))
                 // Append input box for keyword count
-                .append(helpers.getInputGroup('keyword-count', 'number', 'Count', '', '0',
-                    'Count of the keyword. This increases when the keyword has the variable (keywordcount).'))
+                .append(helpers.getInputGroup('keyword-count', 'number', 'Anzahl', '', '0',
+                    'Zähler des Schlüsselwortes. Dieser erhöht sich, wenn das Schlüsselwort die Variable hat (keywordcount).'))
         })), function() {
             let keywordKey = $('#keyword-keyword'),
                 keywordResponse = $('#keyword-response'),
@@ -256,7 +256,7 @@ $(function() {
                             // Close the modal.
                             $('#add-keyword').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully added the keyword!');
+                            toastr.success('Schlüsselwort erfolgreich hinzugefügt!');
                         });
                     });
             }

@@ -39,9 +39,9 @@ $(function() {
     			{ 'width': '35%', 'targets': 0 }
     		],
 			'columns': [
-				{ 'title': 'Username' },
-				{ 'title': 'Date', 'orderData': [1] },
-				{ 'title': 'Viewers' }
+				{ 'title': 'Benutzername' },
+				{ 'title': 'Datum', 'orderData': [1] },
+				{ 'title': 'Zuschauer' }
 			]
 		});
 	});

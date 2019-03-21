@@ -25,11 +25,11 @@ $(run = function() {
         // Set the bot timezone.
         $('#loyalty-timezone').val((e.timezone === null ? 'GMT' : e.timezone));
         // Auto add time when offline.
-        $('#time-offline').val((e.keepTimeWhenOffline === 'true' ? 'Yes' : 'No'));
+        $('#time-offline').val((e.keepTimeWhenOffline === 'true' ? 'Ja' : 'Nein'));
         // Auto promote users.
-        $('#time-promote').val((e.timeLevel === 'true' ? 'Yes' : 'No'));
+        $('#time-promote').val((e.timeLevel === 'true' ? 'Ja' : 'Nein'));
         // Auto promote chat notice
-        $('#time-promote-notice').val((e.timeLevelWarning === 'true' ? 'Yes' : 'No'));
+        $('#time-promote-notice').val((e.timeLevelWarning === 'true' ? 'Ja' : 'Nein'));
         // Time to be promoted.
         $('#loyalty-promotion').val(e.timePromoteHours);
         // Top list amount.
@@ -44,7 +44,7 @@ $(function() {
         // Reload all.
         run();
         // Alert the user.
-        toastr.success('Successfully updated the top 100 table.');
+        toastr.success('Top-100-Tabelle erfolgreich aktualisiert.');
     });
 
     // Get user time button.
@@ -72,7 +72,7 @@ $(function() {
                 // Save user time.
                 socket.updateDBValue('time_update_user', 'time', username.val().toLowerCase(), time.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully updated user time!');
+                    toastr.success('Benutzerzeit erfolgreich aktualisiert!');
 
                     // Reset box values.
                     username.val('');
@@ -84,9 +84,9 @@ $(function() {
     // Save time settings.
     $('#loyalty-save-all').on('click', function() {
         let timeZone = $('#loyalty-timezone'),
-            countOfflineTime = $('#time-offline').find(':selected').text() === 'Yes',
-            timePromote = $('#time-promote').find(':selected').text() === 'Yes',
-            timePromoteNotice = $('#time-promote-notice').find(':selected').text() === 'Yes',
+            countOfflineTime = $('#time-offline').find(':selected').text() === 'Ja',
+            timePromote = $('#time-promote').find(':selected').text() === 'Ja',
+            timePromoteNotice = $('#time-promote-notice').find(':selected').text() === 'Ja',
             regHours = $('#loyalty-promotion'),
             timeTop = $('#loyalty-top');
 
@@ -104,7 +104,7 @@ $(function() {
                     values: [timePromote, timePromoteNotice, countOfflineTime, regHours.val(), (parseInt(timeTop.val()) > 15 ? 15 : timeTop.val()), timeZone.val()]
                 }, function() {
                     socket.sendCommand('update_time_settings_cmd', 'reloadtop', function() {
-                        toastr.success('Successfully updated time settings!');
+                        toastr.success('Zeiteinstellungen erfolgreich aktualisiert!');
                     });
                 });
         }

@@ -71,9 +71,9 @@ $(run = function() {
                     { 'width': '15%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Command' },
-                    { 'title': 'Response' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Befehl' },
+                    { 'title': 'Antwort' },
+                    { 'title': 'Aktion' }
                 ]
             });
 
@@ -83,8 +83,8 @@ $(run = function() {
                     row = $(this).parents('tr');
 
                 // Ask the user if he want to remove the command.
-                helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Are you sure you want to remove command !' + command + '?', true,
-                    'The command !' + command + ' has been successfully removed!', function() {
+                helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Sind Sie sicher, dass Sie den Befehl !' + command + ' entfernen möchten?', true,
+                    'Der Befehl !' + command + ' wurde erfolgreich entfernt!', function() {
                     socket.removeDBValues('rm_discord_command', {
                         tables: ['discordCommands', 'discordPermcom', 'discordCooldown', 'discordChannelcom', 'discordPricecom', 'discordAliascom'],
                         keys: [command, command, command, command, command, command]
@@ -110,13 +110,13 @@ $(run = function() {
                     let cooldownJson = (e.discordCooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.discordCooldown));
 
                     // Get advance modal from our util functions in /utils/helpers.js
-                    helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
+                    helpers.getAdvanceModal('edit-command', 'Befehl Bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append input box for the command name. This one is disabled.
-                    .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+                    .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '', '!' + command, 'Name des Befehls. Dieser kann nicht bearbeitet werden.', true))
                     // Append a text box for the command response.
-                    .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', e.discordCommands, 'Response of the command.'))
+                    .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', '', e.discordCommands, 'Antwort des Befehls.'))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getDiscordGroupNameById(e.discordPermcom),
                         ['Administrators', 'Everyone']))
@@ -128,20 +128,20 @@ $(run = function() {
                                 'role': 'form'
                             })
                             // Append input box for the command cost.
-                            .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
-                                'Cost in points that will be taken from the user when running the command.'))
+                            .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
+                                'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
                             // Append input box for the command channel.
-                            .append(helpers.getInputGroup('command-channel', 'text', 'Channel', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
-                                'Channel you want this command to work in. Seperate with a space and comma for multiple. If left empty, the command will work in all channels.'))
+                            .append(helpers.getInputGroup('command-channel', 'text', 'Kanal', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
+                                'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.'))
                             // Append input box for the command alias.
                             .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
-                                'Another command name that will also trigger this command.'))
+                                'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
                             // Append input box for the command cooldown.
-                            .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '0', helpers.getDefaultIfNullOrUndefined(cooldownJson.seconds, '0'),
-                                'Cooldown of the command in seconds.')
+                            .append(helpers.getInputGroup('command-cooldown', 'number', 'Abklingzeit (Sekunden)', '0', helpers.getDefaultIfNullOrUndefined(cooldownJson.seconds, '0'),
+                                'Abklingzeit des Befehls in Sekunden.')
                                 // Append checkbox for if the cooldown is global or per-user.
                                 .append(helpers.getCheckBox('command-cooldown-global', cooldownJson.isGlobal === 'true', 'Global',
-                                    'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                                    'Wenn diese Option aktiviert ist, wird die Abklingzeit auf alle Personen im Kanal angewendet. Wenn diese Option nicht aktiviert ist pro Benutzer angewendet.')))
                             // Callback function to be called once we hit the save button on the modal.
                     })), function() {
                         let commandName = $('#command-name'),
@@ -187,7 +187,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-command').modal('hide');
                                     // Tell the user the command was added.
-                                    toastr.success('Successfully edited command !' + commandName.val());
+                                    toastr.success('Befehl erfolgreich bearbeitet !' + commandName.val());
 
                                     // I hate doing this, but the logic is fucked anyways.
                                     helpers.setTimeout(function() {
@@ -218,13 +218,13 @@ $(function() {
     // Add command button.
     $('#discord-addcom-button').on('click', function() {
         // Get advance modal from our util functions in /utils/helpers.js
-        helpers.getAdvanceModal('add-command', 'Add Command', 'Save', $('<form/>', {
+        helpers.getAdvanceModal('add-command', 'Befehl hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append input box for the command name.
-        .append(helpers.getInputGroup('command-name', 'text', 'Command', '!example'))
+        .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '!beispiel'))
         // Append a text box for the command response.
-        .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', 'Response example!'))
+        .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', 'Antwort Beispiel!'))
         // Append a select option for the command permission.
         .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Everyone',
             ['Administrators', 'Everyone']))
@@ -236,20 +236,20 @@ $(function() {
                     'role': 'form'
                 })
                 // Append input box for the command cost.
-                .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
-                    'Cost in points that will be taken from the user when running the command.'))
+                .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', '0',
+                    'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
                 // Append input box for the command channel.
-                .append(helpers.getInputGroup('command-channel', 'text', 'Channel', '#commands', '',
-                    'Channel you want this command to work in. Seperate with a space and comma for multiple. If left empty, the command will work in all channels.'))
+                .append(helpers.getInputGroup('command-channel', 'text', 'Kanal', '#commands', '',
+                    'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.'))
                 // Append input box for the command alias.
                 .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', '',
-                    'Another command name that will also trigger this command.'))
+                    'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
                 // Append input box for the command cooldown.
-                .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '0', '5',
+                .append(helpers.getInputGroup('command-cooldown', 'number', 'Abklingzeit (Sekunden)', '0', '5',
                     'Cooldown of the command in seconds.')
                     // Append checkbox for if the cooldown is global or per-user.
                     .append(helpers.getCheckBox('command-cooldown-global', true, 'Global',
-                        'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                        'Wenn diese Option aktiviert ist, wird die Abklingzeit auf alle Personen im Kanal angewendet. Wenn diese Option nicht aktiviert ist pro Benutzer angewendet.')))
                 // Callback function to be called once we hit the save button on the modal.
         })), function() {
             let commandName = $('#command-name'),
@@ -276,7 +276,7 @@ $(function() {
                     socket.getDBValue('custom_command_exists', 'discordPermcom', commandName.val(), function(e) {
                         // If the command exists we stop here.
                         if (e.discordPermcom !== null) {
-                            toastr.error('Failed to add command as it already exists.');
+                            toastr.error('Der Befehl konnte nicht hinzugefügt werden, da er bereits existiert.');
                             return;
                         }
 
@@ -303,7 +303,7 @@ $(function() {
                             // Close the modal.
                             $('#add-command').modal('hide');
                             // Tell the user the command was added.
-                            toastr.success('Successfully added command !' + commandName.val());
+                            toastr.success('Befehl erfolgreich hinzugefügt !' + commandName.val());
 
                             // I hate doing this, but the logic is fucked anyways.
                             helpers.setTimeout(function() {

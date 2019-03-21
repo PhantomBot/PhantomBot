@@ -85,9 +85,9 @@ $(function() {
     // Title update
     $('#raffle-req').on('change', function() {
         if ($(this).val() === '-usetime') {
-            $('#raffle-cost-title').html('Minimum Time (Minutes)');
+            $('#raffle-cost-title').html('Minimale Zeit (Minuten)');
         } else {
-            $('#raffle-cost-title').html('Cost');
+            $('#raffle-cost-title').html('Kosten');
         }
     })
 
@@ -120,7 +120,7 @@ $(function() {
                             socket.sendCommand('open_raffle_cmd', 'raffle open ' + cost.val() + ' ' + keyword.val() +
                                 ' ' + timer.val() + ' ' +  costType + ' ' + elegibility, function() {
                                 // Alert the user.
-                                toastr.success('Successfully opened the raffle!');
+                                toastr.success('Die Verlosung wurde erfolgreich eröffnet!');
                                 // Update the button.
                                 $('#open-or-close-raffle').html($('<i/>', {
                                     'class': 'fa fa-lock'
@@ -132,7 +132,7 @@ $(function() {
         } else {
             socket.sendCommandSync('close_raffle_cmd', 'raffle close', function() {
                 // Alert the user.
-                toastr.success('Successfully closed the raffle!');
+                toastr.success('Die Verlosung wurde erfolgreich beendet!');
                 // Reload to remove the winner.
                 helpers.temp.loadRaffleList();
                 // Update the button.
@@ -147,7 +147,7 @@ $(function() {
     $('#draw-raffle').on('click', function() {
         socket.sendCommandSync('draw_raffle_cmd', 'raffle draw', function() {
             // Alert the user.
-            toastr.success('Successfully drew a winner!');
+            toastr.success('Ein Gewinner wurde erfolgreich gezogen!');
             // Reload to remove the winner.
             helpers.temp.loadRaffleList();
         });
@@ -158,7 +158,7 @@ $(function() {
         // Reset values.
         $('#raffle-keyword').val('');
         $('#raffle-cost, #raffle-timer').val('0');
-        $('#raffle-cost-title').html('Cost');
+        $('#raffle-cost-title').html('Kosten');
         $('#raffle-req').val('-usepoints');
         $('#raffle-reg, #raffle-sub').val('1');
         $('#raffle-table').find('tr:gt(0)').remove();
@@ -169,7 +169,7 @@ $(function() {
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_raffle_cmd', 'raffle reset', function() {
-            toastr.success('Successfully reset the raffle!');
+            toastr.success('Die Verlosung wurde erfolgreich zurückgesetzt!');
         });
     });
 
@@ -179,7 +179,7 @@ $(function() {
             tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
             keys: ['raffleMSGToggle', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval']
         }, true, function(e) {
-            helpers.getModal('raffle-settings-modal', 'Raffle Settings', 'Save', $('<form/>', {
+            helpers.getModal('raffle-settings-modal', 'Verlosungseinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -188,34 +188,34 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Timed Message Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Zeitgesteuerte Nachrichteneinstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Append interval box for the message
-                .append(helpers.getInputGroup('msg-timer', 'number', 'Message Interval (Minutes)', '', e['raffleMessageInterval'],
-                    'How often the raffle message is said in chat while a raffle is active.'))
+                .append(helpers.getInputGroup('msg-timer', 'number', 'Nachrichtenintervall (Minuten)', '', e['raffleMessageInterval'],
+                    'Wie oft die Verlosungsnachricht in den Chat gesendet werden soll, während eine Verlosung aktiv ist.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Raffle Message', '', e['raffleMessage'],
-                    'What message is said at every interval while the raffle is active. Tags: (keyword) and (entries)'))))
+                .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Verlosungsnachricht', '', e['raffleMessage'],
+                    'Die Nachricht wird in jedem Intervall gesendet, während die Verlosung aktiv ist. Tags: (keyword) und (entries)'))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings',  $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Zusätzliche Einstellungen',  $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for warning messages.
-                .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['raffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
+                .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['raffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn Warnmeldungen im Chat gesendet werden sollen, wenn ein Benutzer bereits eingetragen ist oder nicht genügend Punkte hat.'))
                 // Add toggle for repicks
-                .append(helpers.getDropdownGroup('draw-toggle', 'Allow Multiple Draws', (e['noRepickSame'] === 'false' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a user can be drawn multiple times for one raffle.'))
+                .append(helpers.getDropdownGroup('draw-toggle', 'Mehrere Ziehungen zulassen', (e['noRepickSame'] === 'false' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn ein Benutzer mehrmals für eine Verlosung gezogen werden kann.'))
                 // Add toggle for repicks
-                .append(helpers.getDropdownGroup('whisper-toggle', 'Whisper The Winner', (e['raffleWhisperWinner'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If the winner of the raffle should get a whisper saying they won.'))))),
+                .append(helpers.getDropdownGroup('whisper-toggle', 'Dem Gewinner flüstern', (e['raffleWhisperWinner'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn der Gewinner der Verlosung ein Flüsternachricht bekommen soll, dass er gewonnen hat.'))))),
             function() {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
-                    warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
-                    drawToggle = $('#draw-toggle').find(':selected').text() !== 'Yes',
-                    whisperWinner = $('#whisper-toggle').find(':selected').text() === 'Yes';
+                    warningMsg = $('#warning-msg').find(':selected').text() === 'Ja',
+                    drawToggle = $('#draw-toggle').find(':selected').text() !== 'Ja',
+                    whisperWinner = $('#whisper-toggle').find(':selected').text() === 'Ja';
 
                 switch (false) {
                     case helpers.handleInputNumber(raffleTimer):
@@ -231,7 +231,7 @@ $(function() {
                                 // Close the modal.
                                 $('#raffle-settings-modal').modal('toggle');
                                 // Warn the user.
-                                toastr.success('Successfully updated raffle settings!');
+                                toastr.success('Verlosungseinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

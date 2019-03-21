@@ -87,7 +87,7 @@ $(function() {
                 // Save user points.
                 socket.updateDBValue('points_update_user', 'points', username.val().toLowerCase(), points.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully updated user points!');
+                    toastr.success('Benutzerpunkte erfolgreich aktualisiert!');
 
                     // Reset box values.
                     username.val('');
@@ -110,7 +110,7 @@ $(function() {
                 // Set penalty.
                 socket.sendCommand('set_penalty_user', 'penalty ' + username.val().toLowerCase() + ' ' + time.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully set penalty on user!');
+                    toastr.success('Strafe für Benutzer erfolgreich festgelegt!');
 
                     // Reset box values.
                     username.val('');
@@ -133,7 +133,7 @@ $(function() {
                 // Set bonus.
                 socket.sendCommand('set_bonus_all', 'pointsbonuspanel ' + amount.val() + ' ' + time.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully set the points bonus!');
+                    toastr.success('Punktebonus erfolgreich gesetzt!');
 
                     // Reset box values.
                     amount.val('');
@@ -154,7 +154,7 @@ $(function() {
                 // Set bonus.
                 socket.sendCommand('main_it_rain_all', 'makeitrain ' + amount.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully made it rain!');
+                    toastr.success('Es hat erfolgreich geregnet!');
 
                     // Reset box values.
                     amount.val('');
@@ -174,7 +174,7 @@ $(function() {
                 // Set bonus.
                 socket.sendCommand('set_give_all', 'pointsallpanel ' + amount.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully gave everyone points!');
+                    toastr.success('Hat allen erfolgreich Punkte gegeben!');
 
                     // Reset box values.
                     amount.val('');
@@ -194,7 +194,7 @@ $(function() {
                 // Set bonus.
                 socket.sendCommand('set_give_all', 'pointstakepanel ' + amount.val(), function() {
                     // Alert the user.
-                    toastr.success('Successfully took points from everyone!');
+                    toastr.success('Erfolgreich Punkte von allen genommen!');
 
                     // Reset box values.
                     amount.val('');
@@ -206,7 +206,7 @@ $(function() {
     $('#currency-reload').on('click', function() {
         // Reload all.
         run();
-        toastr.success('Successfully updated the top 100 table.');
+        toastr.success('Erfolgreiche Aktualisierung der Top-100-Tabelle.');
     });
 
     // Save all points settings.
@@ -243,7 +243,7 @@ $(function() {
                         values: [pointsOnlinePay.val(), pointsOfflinePay.val(), pointsOnlineInt.val(), pointsOfflineInt.val(), pointsActive.val(), pointsSingle.val(), pointsMultiple.val(), pointsMessage.val(), (parseInt(topList.val()) > 15 ? '15': topList.val())]
                     }, function() {
                         socket.sendCommand('update_points_settings_cmd', 'reloadpoints', function() {
-                            toastr.success('Successfully updated points settings!');
+                            toastr.success('Punkte-Einstellungen erfolgreich aktualisiert!');
                         });
                     });
             }
@@ -287,7 +287,7 @@ $(function() {
                     keys: ['Caster', 'Administrator', 'Moderator', 'Subscriber', 'Donator', 'Regular', 'Viewer'],
                     values: temp
                 }, function() {
-                    toastr.success('Successfully updated advanced points settings!');
+                    toastr.success('Erweiterte Punkte-Einstellungen erfolgreich aktualisiert!');
                 });
             });
         }

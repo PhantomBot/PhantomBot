@@ -60,7 +60,7 @@ $(function() {
         // Update the channels.
         socket.updateDBValue('update_multi_channels', 'dualStreamCommand', 'otherChannels', channels, function() {
             socket.sendCommand('update_multi_channels_cmd', 'reloadmulti', function() {
-                toastr.success('Successfully updated the multi channels!');
+                toastr.success('Multikanäle erfolgreich aktualisiert!');
             });
         });
     });
@@ -85,20 +85,20 @@ $(function() {
             tables: ['dualStreamCommand', 'dualStreamCommand', 'dualStreamCommand'],
             keys: ['timerToggle', 'timerInterval', 'reqMessages']
         }, true, function(e) {
-            helpers.getModal('dualstream-settings', 'Dual Stream Settings', 'Save', $('<form/>', {
+            helpers.getModal('dualstream-settings', 'Dual Stream Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append a select option for the toggle.
-            .append(helpers.getDropdownGroup('multi-toggle', 'Enable Multi Timer',
-                (e.timerToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No']))
+            .append(helpers.getDropdownGroup('multi-toggle', 'Multi-Timer aktivieren',
+                (e.timerToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein']))
             // Timer interval.
-            .append(helpers.getInputGroup('multi-interval', 'text', 'Timer Interval (Minutes)',
-                '', e.timerInterval, 'How often to post the multi link in the channel.'))
+            .append(helpers.getInputGroup('multi-interval', 'text', 'Timer-Intervall (Minuten)',
+                '', e.timerInterval, 'Wie oft soll der Multi-Link in den Kanal gesendet werden?'))
             // Req messages.
-            .append(helpers.getInputGroup('multi-req', 'text', 'Required Messages',
-                '', e.reqMessages, 'How many messages along with the timer required to trigger the multi link.')),
+            .append(helpers.getInputGroup('multi-req', 'text', 'Erforderliche Nachrichten',
+                '', e.reqMessages, 'Wie viele Nachrichten, zusammen mit dem Timer, werden benötigt, um die Multi-Link Nachricht zu senden.')),
             function() { // Callback for when the user clicks save.
-                let timerToggle = $('#multi-toggle').find(':selected').text() === 'Yes',
+                let timerToggle = $('#multi-toggle').find(':selected').text() === 'Ja',
                     timerInterval = $('#multi-interval'),
                     timerReq = $('#multi-req');
 
@@ -116,7 +116,7 @@ $(function() {
                                 // Close the modal.
                                 $('#dualstream-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated multi settings!');
+                                toastr.success('Multi-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

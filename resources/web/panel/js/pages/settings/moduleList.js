@@ -59,7 +59,7 @@ $(run = function() {
                     'type': 'button',
                     'class': 'btn btn-xs btn-' + (twitchModules[i].status ? 'success' : 'warning'),
                     'data-toggle': 'tooltip',
-                    'title': (twitchModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.') ,
+                    'title': (twitchModules[i].status ? 'Klick hier, um das Modul zu deaktivieren.' : 'Klick hier, um das Modul zu aktivieren.') ,
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'data-mtoggle': twitchModules[i].status,
@@ -87,8 +87,8 @@ $(run = function() {
                 { 'className': 'default-table', 'orderable': false, 'targets': 1 },
             ],
             'columns': [
-                { 'title': 'Module' },
-                { 'title': 'Actions' }
+                { 'title': 'Modul' },
+                { 'title': 'Aktionen' }
             ]
         });
 
@@ -98,8 +98,8 @@ $(run = function() {
                 row = $(this).parents('tr');
 
             // Ask the user if he want to remove the module.
-            helpers.getConfirmDeleteModal('rm_module_cmd_modal', 'Are you sure that you want to remove module "' + module + '"?', true,
-                    'The module "' + module + '"" has been successfully removed!', function() {
+            helpers.getConfirmDeleteModal('rm_module_cmd_modal', 'Sind Sie sicher, dass Sie das Modul "' + module + '" entfernen wollen?', true,
+                    'Das Modul "' + module + '" wurde erfolgreich entfernt!', function() {
                 socket.removeDBValue('rm_twitch_module', 'modules', module, function() {
                     // Remove the table row.
                     table.row(row).remove().draw(false);
@@ -114,15 +114,15 @@ $(run = function() {
                 btn = $(this);
 
             socket.sendCommand('module_toggle_cmd', 'module ' + (!toggle ? 'enablesilent ' : 'disablesilent ') + module, function() {
-                toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the module.');
+                toastr.success('Das Modul wurde erfolgreich ' + (!toggle ? 'aktiviert' : 'deaktiviert'));
 
                 // Update the button.
                 if (toggle) {
                     btn.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
-                    btn.prop('title', 'Click to enable the module.').tooltip('fixTitle').tooltip('show');
+                    btn.prop('title', 'Klick hier, um das Modul zu aktivieren.').tooltip('fixTitle').tooltip('show');
                 } else {
                     btn.removeClass('btn-warning').addClass('btn-success').find('i').removeClass('fa-check').addClass('fa-close');
-                    btn.prop('title', 'Click to disable the module.').tooltip('fixTitle').tooltip('show');
+                    btn.prop('title', 'Klick hier, um das Modul zu deaktivieren.').tooltip('fixTitle').tooltip('show');
                 }
                 btn.data('mtoggle', !toggle);
             });
@@ -148,7 +148,7 @@ $(run = function() {
                         'type': 'button',
                         'class': 'btn btn-xs btn-danger',
                         'data-toggle': 'tooltip',
-                        'title': 'Delete the module if it no longer exists.',
+                        'title': 'Löschen Sie das Modul, wenn es nicht mehr existiert.',
                         'style': 'float: right',
                         'data-module': discordModules[i].module,
                         'html': $('<i/>', {
@@ -158,7 +158,7 @@ $(run = function() {
                         'type': 'button',
                         'class': 'btn btn-xs btn-' + (discordModules[i].status ? 'success' : 'warning'),
                         'data-toggle': 'tooltip',
-                        'title': (discordModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.') ,
+                        'title': (discordModules[i].status ? 'Klick hier, um das Modul zu deaktivieren.' : 'Klick hier, um das Modul zu aktivieren.') ,
                         'style': 'float: right',
                         'data-module': discordModules[i].module,
                         'data-mtoggle': discordModules[i].status,
@@ -186,8 +186,8 @@ $(run = function() {
                     { 'className': 'default-table', 'orderable': false, 'targets': 1 },
                 ],
                 'columns': [
-                    { 'title': 'Module' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Modul' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -197,8 +197,8 @@ $(run = function() {
                     row = $(this).parents('tr');
 
                 // Ask the user if he want to remove the module.
-                helpers.getConfirmDeleteModal('rm_module_cmd_modal', 'Are you sure that you want to remove module "' + module + '"?', true,
-                        'The module "' + module + '"" has been successfully removed!', function() {
+                helpers.getConfirmDeleteModal('rm_module_cmd_modal', 'Sind Sie sicher, dass Sie das Modul "' + module + '" entfernen wollen?', true,
+                        'Das Modul "' + module + '" wurde erfolgreich entfernt!', function() {
                     socket.removeDBValue('rm_discord_module', 'modules', module, function() {
                         // Remove the table row.
                         table.row(row).remove().draw(false);
@@ -213,15 +213,15 @@ $(run = function() {
                     btn = $(this);
 
                 socket.sendCommand('module_toggle_cmd', 'module ' + (!toggle ? 'enablesilent ' : 'disablesilent ') + module, function() {
-                    toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the module.');
+                    toastr.success('Das Modul wurde erfolgreich ' + (!toggle ? 'aktiviert.' : 'deaktiviert.'));
 
                     // Update the button.
                     if (toggle) {
                         btn.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
-                        btn.prop('title', 'Click to enable the module.').tooltip('fixTitle').tooltip('show');
+                        btn.prop('title', 'Klick hier, um das Modul zu aktivieren.').tooltip('fixTitle').tooltip('show');
                     } else {
                         btn.removeClass('btn-warning').addClass('btn-success').find('i').removeClass('fa-check').addClass('fa-close');
-                        btn.prop('title', 'Click to disable the module.').tooltip('fixTitle').tooltip('show');
+                        btn.prop('title', 'Klick hier, um das Modul zu deaktivieren.').tooltip('fixTitle').tooltip('show');
                     }
                     btn.data('mtoggle', !toggle);
                 });

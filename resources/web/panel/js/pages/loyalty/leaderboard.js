@@ -48,13 +48,13 @@ $(function() {
             ],
             'columns': [
                 { 'title': 'Position' },
-                { 'title': 'Username' },
-                { 'title': 'Currency' }
+                { 'title': 'Benutzername' },
+                { 'title': 'Punkte' }
             ]
         });
 
         // Set the title again in case this is a reload.
-        $('#currency-top-title').html('Top 100 Currency');
+        $('#currency-top-title').html('Top 100 Punkte');
     });
 
     // Get top time.
@@ -90,14 +90,14 @@ $(function() {
             ],
             'columns': [
                 { 'title': 'Position' },
-                { 'title': 'Username' },
-                { 'title': 'Time (Seconds)' },
-                { 'title': 'Time (Hours)' }
+                { 'title': 'Benutzername' },
+                { 'title': 'Zeit (Sekunden)' },
+                { 'title': 'Zeit (Stunden)' }
             ]
         });
 
         // Set the title again in case this is a reload.
-        $('#loyalty-top-title').html('Top 100 Loyalty');
+        $('#loyalty-top-title').html('Top 100 Loyalität');
     });
 });
 
@@ -114,7 +114,7 @@ $(function() {
 
         // Only allow more data to be loaded once the last click was fully loaded.
         if (currencyOffset === dataCount) {
-            toastr.success('Loading more users into the currency table.');
+            toastr.success('Laden von mehr Benutzern in die Punkte-Tabelle.');
 
             // Get the next 100 users.
             socket.getDBTableValuesByOrder('points_top_get_order_btn', 'points', 100, (currencyOffset + 100), 'DESC', true, function(results) {
@@ -129,10 +129,10 @@ $(function() {
                 // Add the rows.
                 table.rows.add(tableData).draw(false);
                 // Edit the title.
-                $('#currency-top-title').html('Top ' + helpers.parseNumber(currencyOffset) + ' Currency');
+                $('#currency-top-title').html('Top ' + helpers.parseNumber(currencyOffset) + ' Punkte');
             });
         } else {
-            toastr.error('Cannot load more points since there are currently some being loaded.');
+            toastr.error('Es können nicht mehr Punkte geladen werden, da derzeit einige geladen werden.');
         }
     });
 
@@ -144,7 +144,7 @@ $(function() {
 
         // Only allow more data to be loaded once the last click was fully loaded.
         if (loyaltyOffset === dataCount) {
-            toastr.success('Loading more users into the loyalty table.');
+            toastr.success('Laden von mehr Benutzern in die Loyalitätstabelle.');
 
             // Get the next 100 users.
             socket.getDBTableValuesByOrder('time_top_get_order_btn', 'time', 100, (loyaltyOffset + 100), 'DESC', true, function(results) {
@@ -160,10 +160,10 @@ $(function() {
                 // Add the rows.
                 table.rows.add(tableData).draw(false);
                 // Edit the title.
-                $('#loyalty-top-title').html('Top ' + helpers.parseNumber(loyaltyOffset) + ' Loyalty');
+                $('#loyalty-top-title').html('Top ' + helpers.parseNumber(loyaltyOffset) + ' Loyalität');
             });
         } else {
-            toastr.error('Cannot load more time since there are currently some being loaded.');
+            toastr.error('Kann nicht mehr Zeiten laden, da derzeit einige geladen werden.');
         }
     });
 });

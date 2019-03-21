@@ -54,7 +54,7 @@ $(function() {
             // Toggle the settings button.
             $('#' + name.replace('Toggle', 'Settings')).prop('disabled', !checked);
             // Alert the user.
-            toastr.success('Successfully ' + (checked ? 'enabled' : 'disabled') + ' the game module!');
+            toastr.success('Das Spielmodul wurde erfolgreich ' + (checked ? 'aktiviert' : 'deaktiviert') + '!');
         });
     });
 
@@ -65,34 +65,34 @@ $(function() {
                     'adventureSettings', 'adventureSettings'],
             keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce']
         }, true, function(e) {
-            helpers.getModal('adventure-settings', 'Adventure Settings', 'Save', $('<form/>', {
+            helpers.getModal('adventure-settings', 'Abenteuer-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle the entry messages.
-            .append(helpers.getDropdownGroup('entry-messages', 'Enable Adventure Entry Messages', (e.enterMessage === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said when a user joins the adventure.'))
+            .append(helpers.getDropdownGroup('entry-messages', 'Abenteuer-Eintrittsnachrichten aktivieren', (e.enterMessage === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Soll eine Nachricht gesendet werden, wenn ein Benutzer dem Abenteuer beitritt?'))
             // Add the toggle the entry messages.
-            .append(helpers.getDropdownGroup('user-messages', 'Enable Adventure Warning Messages', (e.warningMessage === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message when a user already entered should be displayed in chat.'))
+            .append(helpers.getDropdownGroup('user-messages', 'Abenteuer-Warnmeldungen aktivieren', (e.warningMessage === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Soll eine Nachricht gesendet werden, wenn ein Benutzer bereits eingetragen ist?'))
             // Add the toggle the cooldown message.
-            .append(helpers.getDropdownGroup('cooldown-message', 'Enable Adventure Off Cooldown Message', (e.coolDownAnnounce === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said when the adventure is no longer on cooldown.'))
+            .append(helpers.getDropdownGroup('cooldown-message', 'Abklingnachricht für Abenteuer aktivieren', (e.coolDownAnnounce === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn eine Nachricht gesendet werden soll, wenn das Abenteuer nicht mehr abklingt.'))
             // Add the the box for the join time.
-            .append(helpers.getInputGroup('join-time', 'number', 'Adventure Join Time (Seconds)', '', e.joinTime, 'How long in seconds users have to join the adventure.'))
+            .append(helpers.getInputGroup('join-time', 'number', 'Abenteuer Teilnahmezeit (Sekunden)', '', e.joinTime, 'Wie lange, in Sekunden, können Benutzer an dem Abenteuer teilnehmen.'))
             // Add the the box for the cooldown.
-            .append(helpers.getInputGroup('cooldown-time', 'number', 'Adventure Cooldown (Seconds)', '', e.coolDown,
-                'How long users have to wait in seconds before starting a new adventure after one is over.'))
+            .append(helpers.getInputGroup('cooldown-time', 'number', 'Abenteuer Abklingzeit (Sekunden)', '', e.coolDown,
+                'Wie lange Benutzer in Sekunden warten müssen, bevor sie ein neues Abenteuer beginnen, nachdem eines vorbei ist.'))
             // Add the the box for gain.
-            .append(helpers.getInputGroup('gain', 'number', 'Adventure Gain Percent', '', e.gainPercent,
-                'How many points a user will get based on the amount they joined with. The join amount is always given back.'))
+            .append(helpers.getInputGroup('gain', 'number', 'Abenteuer Gewinnprozentsatz', '', e.gainPercent,
+                'Wie viele Punkte ein Benutzer erhält, basierend auf dem Betrag, mit dem er sich registriert hat. Der Beitrittsbetrag wird immer zurückgezahlt.'))
             // Add the the box for min bet.
-            .append(helpers.getInputGroup('min-bet', 'number', 'Adventure Minimum Bet', '', e.minBet, 'The minimum amount of points a user can join an adventure with.'))
+            .append(helpers.getInputGroup('min-bet', 'number', 'Abenteuer-Mindest Einsatz', '', e.minBet, 'Die Mindestpunktzahl, mit der ein Benutzer einem Abenteuer beitreten kann.'))
             // Add the the box for max bet.
-            .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.')),
+            .append(helpers.getInputGroup('max-bet', 'number', 'Maximaler Abenteuer-Einsatz', '', e.maxBet, 'Die maximale Anzahl von Punkten, mit denen ein Benutzer einem Abenteuer beitreten kann.')),
             function() { // Callback once the user clicks save.
-                let entryMessages = $('#entry-messages').find(':selected').text() === 'Yes',
-                    userMessages = $('#user-messages').find(':selected').text() === 'Yes',
-                    cooldownMessage = $('#cooldown-message').find(':selected').text() === 'Yes',
+                let entryMessages = $('#entry-messages').find(':selected').text() === 'Ja',
+                    userMessages = $('#user-messages').find(':selected').text() === 'Ja',
+                    cooldownMessage = $('#cooldown-message').find(':selected').text() === 'Ja',
                     joinTime = $('#join-time'),
                     cooldownTime = $('#cooldown-time'),
                     gainPercent = $('#gain'),
@@ -119,7 +119,7 @@ $(function() {
                                 // Close the modal.
                                 $('#adventure-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the adventure settings!');
+                                toastr.success('Abenteuer-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -130,11 +130,11 @@ $(function() {
     // Roulette settings.
     $('#rouletteSettings').on('click', function() {
         socket.getDBValue('get_roulette_settings', 'roulette', 'timeoutTime', function(e) {
-            helpers.getModal('roulette-settings', 'Roulette Settings', 'Save', $('<form/>', {
+            helpers.getModal('roulette-settings', 'Roulette-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the box timeout time
-            .append(helpers.getInputGroup('timeout-time', 'number', 'Roulette Timeout Time (Seconds)', '', e.roulette, 'How long in seconds a user gets timed-out when losing.')),
+            .append(helpers.getInputGroup('timeout-time', 'number', 'Roulette Timeout Zeit (Sekunden)', '', e.roulette, 'Wie lange in Sekunden ein Benutzer beim Verlieren ein Timeout erhält.')),
             function() { // Callback once the user clicks save.
                 let timeoutTime = $('#timeout-time');
 
@@ -147,7 +147,7 @@ $(function() {
                                 // Close the modal.
                                 $('#roulette-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the roulette settings!');
+                                toastr.success('Roulette-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -162,7 +162,7 @@ $(function() {
                     'slotmachineemotes', 'slotmachineemotes'],
             keys: ['prizes_0', 'prizes_1', 'prizes_2', 'prizes_3', 'prizes_4', 'emote_0', 'emote_1', 'emote_2', 'emote_3', 'emote_4']
         }, true, function(e) {
-            helpers.getModal('slotmachine-game', 'Slot Machine Settings', 'Save', $('<form/>', {
+            helpers.getModal('slotmachine-game', 'Slot Machine Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -171,33 +171,33 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Reward Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Belohnungseinstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the reward 1 slot.
-                .append(helpers.getInputGroup('reward-1', 'number', 'Slot Reward One', '', e.prizes_0, 'Reward for the first slot.'))
+                .append(helpers.getInputGroup('reward-1', 'number', 'Slot Eins Belohnung', '', e.prizes_0, 'Belohnung für den ersten Slot.'))
                 // Add the reward 2 slot.
-                .append(helpers.getInputGroup('reward-2', 'number', 'Slot Reward Two', '', e.prizes_1, 'Reward for the second slot.'))
+                .append(helpers.getInputGroup('reward-2', 'number', 'Slot Zwei Belohnung', '', e.prizes_1, 'Belohnung für den zweiten Slot.'))
                 // Add the reward 3 slot.
-                .append(helpers.getInputGroup('reward-3', 'number', 'Slot Reward Three', '', e.prizes_2, 'Reward for the third slot.'))
+                .append(helpers.getInputGroup('reward-3', 'number', 'Slot Drei Belohnung', '', e.prizes_2, 'Belohnung für den dritten Slot.'))
                 // Add the reward 4 slot.
-                .append(helpers.getInputGroup('reward-4', 'number', 'Slot Reward Four', '', e.prizes_3, 'Reward for the forth slot.'))
+                .append(helpers.getInputGroup('reward-4', 'number', 'Slot Vier Belohnung', '', e.prizes_3, 'Belohnung für den vierten Slot.'))
                 // Add the reward 5 slot.
-                .append(helpers.getInputGroup('reward-5', 'number', 'Slot Reward Five', '', e.prizes_4, 'Reward for the fifth slot.'))))
+                .append(helpers.getInputGroup('reward-5', 'number', 'Slot Fünf Belohnung', '', e.prizes_4, 'Belohnung für den fünften Slot.'))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Emote Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Emote-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the emote 1 slot.
-                .append(helpers.getInputGroup('emote-1', 'text', 'Slot Emote One', '', e.emote_0, 'Emote for the first slot.'))
+                .append(helpers.getInputGroup('emote-1', 'text', 'Slot Eins Emote', '', e.emote_0, 'Emote für den ersten Slot.'))
                 // Add the emote 2 slot.
-                .append(helpers.getInputGroup('emote-2', 'text', 'Slot Emote Two', '', e.emote_1, 'Emote for the second slot.'))
+                .append(helpers.getInputGroup('emote-2', 'text', 'Slot Zwei Emote', '', e.emote_1, 'Emote für den zweiten Slot.'))
                 // Add the emote 3 slot.
-                .append(helpers.getInputGroup('emote-3', 'text', 'Slot Emote Three', '', e.emote_2, 'Emote for the third slot.'))
+                .append(helpers.getInputGroup('emote-3', 'text', 'Slot Drei Emote', '', e.emote_2, 'Emote für den dritten Slot.'))
                 // Add the emote 4 slot.
-                .append(helpers.getInputGroup('emote-4', 'text', 'Slot Emote Four', '', e.emote_3, 'Emote for the forth slot.'))
+                .append(helpers.getInputGroup('emote-4', 'text', 'Slot Vier Emote', '', e.emote_3, 'Emote für den vierten Slot.'))
                 // Add the emote 5 slot.
-                .append(helpers.getInputGroup('emote-5', 'text', 'Slot Emote Five', '', e.emote_4, 'Emote for the fifth slot.'))))),
+                .append(helpers.getInputGroup('emote-5', 'text', 'Slot Fünf Emote', '', e.emote_4, 'Emote für den fünften Slot.'))))),
             function() { // Callback for when the user clicks save.
                 let values = [];
 
@@ -231,7 +231,7 @@ $(function() {
                     // Close the modal.
                     $('#slotmachine-game').modal('toggle');
                     // Alert the user.
-                    toastr.success('Successfully updated the slot machine settings!');
+                    toastr.success('Slot-Maschinen-Einstellungen erfolgreich aktualisiert!');
                 });
             }).modal('toggle');
         });
@@ -243,21 +243,21 @@ $(function() {
             tables: ['rollprizes', 'rollprizes', 'rollprizes', 'rollprizes', 'rollprizes', 'rollprizes'],
             keys: ['prizes_0', 'prizes_1', 'prizes_2', 'prizes_3', 'prizes_4', 'prizes_5']
         }, true, function(e) {
-            helpers.getModal('roll-settings', 'Dice Roll Settings', 'Save', $('<form/>', {
+            helpers.getModal('roll-settings', 'Würfelwurf Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the reward 1.
-            .append(helpers.getInputGroup('reward-1', 'number', 'Double 1s Reward', '', e.prizes_0, 'Reward for rolling double 1s.'))
+            .append(helpers.getInputGroup('reward-1', 'number', 'Doppelte 1er-Belohnung', '', e.prizes_0, 'Belohnung für den Wurf von doppelten 1ern.'))
             // Add the reward 2.
-            .append(helpers.getInputGroup('reward-2', 'number', 'Double 2s Reward', '', e.prizes_1, 'Reward for rolling double 2s.'))
+            .append(helpers.getInputGroup('reward-2', 'number', 'Doppelte 2er-Belohnung', '', e.prizes_1, 'Belohnung für den Wurf von doppelten 2ern.'))
             // Add the reward 3.
-            .append(helpers.getInputGroup('reward-3', 'number', 'Double 3s Reward', '', e.prizes_2, 'Reward for rolling double 3s.'))
+            .append(helpers.getInputGroup('reward-3', 'number', 'Doppelte 3er-Belohnung', '', e.prizes_2, 'Belohnung für den Wurf von doppelten 3ern.'))
             // Add the reward 4.
-            .append(helpers.getInputGroup('reward-4', 'number', 'Double 4s Reward', '', e.prizes_3, 'Reward for rolling double 4s.'))
+            .append(helpers.getInputGroup('reward-4', 'number', 'Doppelte 4er-Belohnung', '', e.prizes_3, 'Belohnung für den Wurf von doppelten 4ern.'))
             // Add the reward 5.
-            .append(helpers.getInputGroup('reward-5', 'number', 'Double 5s Reward', '', e.prizes_4, 'Reward for rolling double 5s.'))
+            .append(helpers.getInputGroup('reward-5', 'number', 'Doppelte 5er-Belohnung', '', e.prizes_4, 'Belohnung für den Wurf von doppelten 5ern.'))
             // Add the reward 6.
-            .append(helpers.getInputGroup('reward-6', 'number', 'Double 6s Reward', '', e.prizes_5, 'Reward for rolling double 6s.')),
+            .append(helpers.getInputGroup('reward-6', 'number', 'Doppelte 6er-Belohnung', '', e.prizes_5, 'Belohnung für den Wurf von doppelten 6ern.')),
             function() { // Callback for when the user clicks save.
                 let values = [];
 
@@ -280,7 +280,7 @@ $(function() {
                     // Close the modal.
                     $('#roll-settings').modal('toggle');
                     // Alert the user.
-                    toastr.success('Successfully updated the dice roll settings!');
+                    toastr.success('Würfelwurf-Einstellungen erfolgreich aktualisiert!');
                 });
             }).modal('toggle');
         });
@@ -292,20 +292,20 @@ $(function() {
             tables: ['gambling', 'gambling', 'gambling', 'gambling'],
             keys: ['winGainPercent', 'winRange', 'max', 'min']
         }, true, function(e) {
-            helpers.getModal('gambling-settings', 'Gambling Settings', 'Save', $('<form/>', {
+            helpers.getModal('gambling-settings', 'Glücksspieleinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the gambling gain percent.
-            .append(helpers.getInputGroup('gambling-gain', 'number', 'Gambling Gain Percent', '', e.winGainPercent,
-                'How many points are given based on what the user gambled. The gambled amount is always given back.'))
+            .append(helpers.getInputGroup('gambling-gain', 'number', 'Prozentsatz der Gewinnspanne', '', e.winGainPercent,
+                'Wie viele Punkte werden vergeben, je nachdem, was der Benutzer gesetzt hat. Der gesetzte Betrag wird immer zurückgegeben.'))
             // Add the gambling win range.
-            .append(helpers.getInputGroup('gambling-range', 'number', 'Gambling Winning Range', '', e.winRange,
-                'The winning range of the gambling game. Anything gambled below this number will be a lost. Maximum is 100.'))
+            .append(helpers.getInputGroup('gambling-range', 'number', 'Gewinnspanne für Glücksspiele', '', e.winRange,
+                'Die Gewinnspanne des Glücksspiels. Alles, was unter dieser Zahl gespielt wird, ist verloren. Das Maximum ist 100.'))
             // Add the gambling max.
-            .append(helpers.getInputGroup('gambling-max', 'number', 'Gambling Maximum Amount', '', e.max,
+            .append(helpers.getInputGroup('gambling-max', 'number', 'Maximaler Glücksspieleinsatz', '', e.max,
                 'The maximum amount of points that can be gambled at once.'))
             // Add the gambling min.
-            .append(helpers.getInputGroup('gambling-min', 'number', 'Gambling Minimum Amount', '', e.min,
+            .append(helpers.getInputGroup('gambling-min', 'number', 'Mindesteinsatz von Glücksspielen', '', e.min,
                 'The minimum amount of points that can be gambled at once.')),
             function() { // Callback once the user clicks save.
                 let winGain = $('#gambling-gain'),
@@ -329,7 +329,7 @@ $(function() {
                                 // Close the modal.
                                 $('#gambling-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated gambling settings!');
+                                toastr.success('Glücksspiel-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -340,12 +340,12 @@ $(function() {
     // Kill settings.
     $('#killCommandSettings').on('click', function() {
         socket.getDBValue('get_kill_settings', 'settings', 'killTimeoutTime', function(e) {
-            helpers.getModal('killcmd-settings', 'Kill Command Settings', 'Save', $('<form/>', {
+            helpers.getModal('killcmd-settings', 'Einstellungen des Kill-Befehls', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the kill timeout.
-            .append(helpers.getInputGroup('kill-timeout', 'number', 'Kill Timeout Time (Seconds)', '', e.settings,
-                'How long the user will get timed-out if they get cought by the cops.')),
+            .append(helpers.getInputGroup('kill-timeout', 'number', 'Kill Timeout-Zeit (Sekunden)', '', e.settings,
+                'Wie lange der Benutzer einen Timeout bekommt, wenn er von der Polizei erwischt wird.')),
             function() { // Callback once the user clicks save.
                 let killTimeout = $('#kill-timeout');
 
@@ -358,7 +358,7 @@ $(function() {
                                 // Close the modal.
                                 $('#killcmd-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the kill command settings!');
+                                toastr.success('Kill-Befehlseinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -369,21 +369,21 @@ $(function() {
     // Random command settings.
     $('#randomSettings').on('click', function() {
         socket.getDBValue('get_random_settings', 'randomSettings', 'pg13toggle', function(e) {
-            helpers.getModal('random-settings', 'Random Command Settings', 'Save', $('<form/>', {
+            helpers.getModal('random-settings', 'Random Befehlseinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle the entry messages.
-            .append(helpers.getDropdownGroup('pg-mode', 'Enable PG13 Mode', (e.randomSettings === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If the random command should have PG13 phrases.')),
+            .append(helpers.getDropdownGroup('pg-mode', 'FSK12-Modus aktivieren', (e.randomSettings === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn der Random-Befehl FSK12-Sätze haben soll.')),
             function() { // Callback once the user clicks save.
-                let toggle = $('#pg-mode').find(':selected').text() === 'Yes';
+                let toggle = $('#pg-mode').find(':selected').text() === 'Ja';
 
                 socket.updateDBValue('update_random_settings', 'randomSettings', 'pg13toggle', toggle, function() {
                     socket.wsEvent('update_random_settings_ws', './games/random.js', null, [], function() {
                         // Close the modal.
                         $('#random-settings').modal('toggle');
                         // Alert the user.
-                        toastr.success('Successfully updated the random command settings!');
+                        toastr.success('Random Befehlseinstellungen erfolgreich aktualisiert!');
                     });
                 });
             }).modal('toggle');

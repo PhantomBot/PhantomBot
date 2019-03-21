@@ -82,10 +82,10 @@ $(run = function() {
                     { 'width': '25%', 'targets': 1 }
                 ],
                 'columns': [
-                    { 'title': 'Date' },
+                    { 'title': 'Datum' },
                     { 'title': 'URL' },
-                    { 'title': 'Comment' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Kommentar' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -95,8 +95,8 @@ $(run = function() {
                     row = $(this).parents('tr');
 
                 // Ask the user if he wants to delete the highlight.
-                helpers.getConfirmDeleteModal('highlight_modal_remove', 'Are you sure you want to remove this highlight?', true,
-                    'The highlight has been successfully removed!', function() { // Callback if the user clicks delete.
+                helpers.getConfirmDeleteModal('highlight_modal_remove', 'Bist du sicher, dass du dieses Highlight entfernen möchten?', true,
+                    'Das Highlight wurde erfolgreich entfernt!', function() { // Callback if the user clicks delete.
                     // Remove the highlight.
                     socket.removeDBValue('highlight_remove', 'highlights', key, function() {
                         // Remove the table row.
@@ -113,12 +113,12 @@ $(run = function() {
                 socket.getDBValue('get_highlight_edit', 'highlights', key, function(e) {
                     let spl = e.highlights.replace(/\s/, '').split(': ');
 
-                    helpers.getModal('edit-highlight', 'Edit Highlight', 'Save', $('<form/>', {
+                    helpers.getModal('edit-highlight', 'Highlight bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append highlight text box.
                     .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', '', spl[1],
-                        'Comment to give to the current highlight.', false)),
+                        'Kommentar, der dem aktuellen Highlight gegeben werden soll.', false)),
                     function() {
                         let highlight = $('#highlight-text');
 
@@ -134,7 +134,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-highlight').modal('toggle');
                                     // Alert the user.
-                                    toastr.success('Successfully edited the highlight.');
+                                    toastr.success('Highlight erfolgreich bearbeitet.');
                                 });
                         }
                     }).modal('toggle');
@@ -156,20 +156,20 @@ $(function() {
     // Delete all highlights button.
     $('#delete-highlights-button').on('click', function() {
         // Ask the user if he want to remove all highlights.
-        helpers.getConfirmDeleteModal('highlights_modal_remove', 'Are you sure you want to remove all highlights?', false,
-            'Successfully remove all highlights!', function() {
+        helpers.getConfirmDeleteModal('highlights_modal_remove', 'Bist du sicher, dass du alle Highlights entfernen willst?', false,
+            'Alle Highlights erfolgreich entfernen!', function() {
             socket.sendCommandSync('rm_all_highlights_cmd', 'clearhighlightspanel', run);
         });
     });
 
     // Add highlight.
     $('#add-highlight-button').on('click', function() {
-        helpers.getModal('add-highlight', 'Add Highlight', 'Save', $('<form/>', {
+        helpers.getModal('add-highlight', 'Highlight hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append highlight text box.
         .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', 'PogChamp moment.', '',
-            'Comment to give to the current highlight. This only works while the stream is online.', false)),
+            'Kommentar, der dem aktuellen Highlight gegeben werden soll. Dies funktioniert nur, wenn der Stream online ist.', false)),
         function() { // Callback for when the user clicks save.
             let highlight = $('#highlight-text');
 
@@ -178,7 +178,7 @@ $(function() {
                     break;
                 default:
                     socket.sendCommandSync('add_highlight_cmd', 'highlight ' + highlight.val(), function() {
-                        toastr.success('Successfully created a new highlight!');
+                        toastr.success('Erfolgreich ein neues Highlight geschaffen!');
                     });
             }
         }).modal('toggle');

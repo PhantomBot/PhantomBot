@@ -25,15 +25,15 @@ $(run = function() {
             'pricecomMods', 'modCooldown', 'defaultCooldownTime']
     }, true, function(e) {
         // Set cost message.
-        $('#cmd-cost-messages').val((e.priceComMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-cost-messages').val((e.priceComMsgEnabled === 'true' ? 'Ja' : 'Nein'));
         // Set permission message.
-        $('#cmd-perm-messages').val((e.permComMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-perm-messages').val((e.permComMsgEnabled === 'true' ? 'Ja' : 'Nein'));
         // Set cooldown message.
-        $('#cmd-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Ja' : 'Nein'));
         // Set cost for mods.
-        $('#pricecom-mods').val((e.pricecomMods === 'true' ? 'No' : 'Yes'));
+        $('#pricecom-mods').val((e.pricecomMods === 'true' ? 'Nein' : 'Ja'));
         // Set cooldown for mods.
-        $('#cooldown-mods').val((e.modCooldown === 'true' ? 'No' : 'Yes'));
+        $('#cooldown-mods').val((e.modCooldown === 'true' ? 'Nein' : 'Ja'));
         // Set global cooldown.
         $('#global-cooldown').val(e.defaultCooldownTime);
     });
@@ -43,11 +43,11 @@ $(run = function() {
 $(function() {
     // Save button.
     $('#cmd-save-btn').on('click', function() {
-        let cmdCostMessage = $('#cmd-cost-messages').find(':selected').text() === 'Yes',
-            cmdPermMessage = $('#cmd-perm-messages').find(':selected').text() === 'Yes',
-            cmdCooldownMessage = $('#cmd-cooldown-messages').find(':selected').text() === 'Yes',
-            priceComMods = $('#pricecom-mods').find(':selected').text() !== 'Yes',
-            cooldownMods = $('#cooldown-mods').find(':selected').text() !== 'Yes',
+        let cmdCostMessage = $('#cmd-cost-messages').find(':selected').text() === 'Ja',
+            cmdPermMessage = $('#cmd-perm-messages').find(':selected').text() === 'Ja',
+            cmdCooldownMessage = $('#cmd-cooldown-messages').find(':selected').text() === 'Ja',
+            priceComMods = $('#pricecom-mods').find(':selected').text() !== 'Ja',
+            cooldownMods = $('#cooldown-mods').find(':selected').text() !== 'Ja',
             globalTime = $('#global-cooldown');
 
         switch (false) {
@@ -63,7 +63,7 @@ $(function() {
                         priceComMods, cooldownMods, globalTime.val()]
                 }, function() {
                     socket.wsEvent('update_cmd_settings_ws', './core/commandCoolDown.js', null, ['update'], function() {
-                        toastr.success('Successfully update command settings!');
+                        toastr.success('Befehlseinstellungen erfolgreich aktualisiert!');
                     });
                 });
         }

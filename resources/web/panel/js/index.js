@@ -57,7 +57,7 @@ $(function() {
         if (callbacks[id] !== undefined) {
             helpers.logError('Callback with id "' + id + '" exists already. Aborting update.', helpers.LOG_TYPE.FORCE);
         } else {
-            helpers.log('Created callback with id ' + id, helpers.LOG_TYPE.DEBUG);
+            helpers.log('Callback mit der ID ' + id + ' erstellt', helpers.LOG_TYPE.DEBUG);
 
             callbacks[id] = {
                 await: (tables.length === 0 ? 1 : tables.length),
@@ -85,7 +85,7 @@ $(function() {
      */
     socket.addListener = function(listener_id, callback) {
         if (listeners[listener_id] === undefined) {
-            helpers.log('Added listener with id ' + id);
+            helpers.log('Listener mit ID ' + id + ' hinzugefügt');
             listeners[listener_id] = function(e) {
                 try {
                     callback(e);
@@ -444,7 +444,7 @@ $(function() {
      * @function Called when the socket opens.
      */
     webSocket.onopen = function() {
-        helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
+        helpers.log('Verbindung mit dem Websocket hergestellt.', helpers.LOG_TYPE.FORCE);
         // Restart Pace.
         Pace.restart();
         // Remove all alerts.
@@ -469,7 +469,7 @@ $(function() {
      */
     webSocket.onmessage = function(e) {
         try {
-            helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
+            helpers.log('Nachricht vom Socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
 
             let message = JSON.parse(e.data);
 
@@ -530,11 +530,11 @@ $(function() {
                         // Run the function and send the query data with it.
                         callback.func(callback.queryData);
                         // Log this.
-                        helpers.log('Called callback with id: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
+                        helpers.log('Callback mit ID aufgerufen: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
                         // Remove the callback from the array.
                         delete callbacks[message.query_id];
                     } else {
-                        helpers.log('Awaiting for data (' + callback.await + ' left) before calling callback with id: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
+                        helpers.log('Warten auf Daten (' + callback.await + ' übrig) vor dem Aufruf des Callbacks mit ID: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
                     }
                 } else if (listener !== undefined) {
                     // Call the listener.

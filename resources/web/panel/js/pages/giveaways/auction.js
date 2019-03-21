@@ -88,7 +88,7 @@ $(function() {
                     socket.sendCommandSync('auction_command_permisison_update', 'permcomsilent bid ' + helpers.getGroupIdByName(commandLevel, true), function() {
                         socket.sendCommand('auction_open_cmd', 'auction open ' + incre.val() + ' ' + minBet.val() + ' ' + timer.val(), function() {
                             // Alert the user.
-                            toastr.success('Successfully opened the auction!');
+                            toastr.success('Die Auktion wurde erfolgreich eröffnet!');
                             // Update the button.
                             $('#open-or-close-auction').html($('<i/>', {
                                 'class': 'fa fa-lock'
@@ -99,7 +99,7 @@ $(function() {
         } else {
             socket.sendCommandSync('close_auction_cmd', 'auction close', function() {
                 // Alert the user.
-                toastr.success('Successfully closed the auction!');
+                toastr.success('Die Auktion wurde erfolgreich beendet!');
                 // Reload to remove the winner.
                 helpers.temp.updateStats();
                 // Update the button.
@@ -113,14 +113,14 @@ $(function() {
     // Warn auction.
     $('#warn-auction').on('click', function() {
         socket.sendCommand('auction_warn_cmd', 'auction warn', function() {
-            toastr.success('Warning users that the auction is about to close.');
+            toastr.success('Warnt die Benutzer, dass die Auktion kurz vor dem Ende steht.');
         });
     });
 
     // Warn reset.
     $('#reset-auction').on('click', function() {
         socket.sendCommand('auction_reset_cmd', 'auction reset', function() {
-            toastr.success('The auction has been reset.');
+            toastr.success('Die Auktion wurde zurückgesetzt.');
 
             $('#open-or-close-auction').html($('<i/>', {
                 'class': 'fa fa-unlock-alt'

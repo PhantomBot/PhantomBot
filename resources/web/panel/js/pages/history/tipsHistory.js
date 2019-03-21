@@ -80,10 +80,10 @@ $(function() {
     			{ 'width': '30%', 'targets': 0 }
     		],
 			'columns': [
-				{ 'title': 'Username' },
-				{ 'title': 'Date', 'orderData': [1] },
-				{ 'title': 'Amount' },
-				{ 'title': 'Tipping Service' }
+				{ 'title': 'Benutzername' },
+				{ 'title': 'Datum', 'orderData': [1] },
+				{ 'title': 'Betrag' },
+				{ 'title': 'Spenden-Service' }
 			]
 		});
 	});

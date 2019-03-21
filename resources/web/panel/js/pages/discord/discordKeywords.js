@@ -72,9 +72,9 @@ $(run = function() {
                     { 'width': '35%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Keyword' },
-                    { 'title': 'Response' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Schlüsselwort' },
+                    { 'title': 'Antwort' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -84,8 +84,8 @@ $(run = function() {
                     row = $(this).parents('tr');
 
                 // Ask the user if he want to remove the command.
-                helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Are you sure you want to remove this keyword?', true,
-                    'The keyword has been successfully removed!', function() {
+                helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Sind Sie sicher, dass Sie dieses Schlüsselwort entfernen möchten?', true,
+                    'Das Schlüsselwort wurde erfolgreich entfernt!', function() {
                     socket.removeDBValue('discord_keyword_remove', 'discordKeywords', keyword, function() {
                         // Remove the table row.
                         table.row(row).remove().draw(false);
@@ -99,13 +99,13 @@ $(run = function() {
                     t = $(this);
 
                 socket.getDBValue('keyword_discord_name_get', 'discordKeywords', keyword, function(e) {
-                    helpers.getModal('edit-keyword', 'Edit Keyword', 'Save', $('<form/>', {
+                    helpers.getModal('edit-keyword', 'Schlüsselwort bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append keyword.
-                    .append(helpers.getInputGroup('keyword-name', 'text', 'Keyword', '', keyword, 'The keyword to trigger the response. This cannot be edited.', true))
+                    .append(helpers.getInputGroup('keyword-name', 'text', 'Schlüsselwort', '', keyword, 'Das Schlüsselwort, um die Antwort auszulösen. Dieses kann nicht bearbeitet werden.', true))
                     // Append response.
-                    .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Response', '', e.discordKeywords, 'Keyword response.')), function() {
+                    .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort', '', e.discordKeywords, 'Schlüsselwort-Antwort.')), function() {
                         const keyword = $('#keyword-name'),
                             response = $('#keyword-response');
 
@@ -120,7 +120,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-keyword').modal('hide');
                                     // Alert the user.
-                                    toastr.success('Successfully edited the keyword!');
+                                    toastr.success('Schlüsselwort erfolgreich bearbeitet!');
                                 });
                         }
                     }).modal('toggle');
@@ -145,9 +145,9 @@ $(function() {
             'role': 'form'
         })
         // Append keyword.
-        .append(helpers.getInputGroup('keyword-name', 'text', 'Keyword', 'hi', '', 'Keyword that will trigger the response. Regex is allowed.'))
+        .append(helpers.getInputGroup('keyword-name', 'text', 'Schlüsselwort', 'hi', '', 'Schlüsselwort, das die Antwort auslöst. Regex ist erlaubt.'))
         // Append response.
-        .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Response', 'Hi there!', '', 'Response of the keyword.')), function() {// Callback once we click the save button.
+        .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort', 'Hi there!', '', 'Antwort des Schlüsselwortes.')), function() {// Callback once we click the save button.
             const keyword = $('#keyword-name'),
                 response = $('#keyword-response');
 
@@ -163,7 +163,7 @@ $(function() {
                         // Close the modal.
                         $('#add-keyword').modal('hide');
                         // Alert the user.
-                        toastr.success('Successfully added the keyword!');
+                        toastr.success('Das Schlüsselwort wurde erfolgreich hinzugefügt!');
                     });
             }
         }).modal('toggle');

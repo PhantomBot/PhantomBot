@@ -50,7 +50,7 @@ $(function() {
         // Update the db with the new toggle.
         socket.updateDBValue('moderation_update_filter', 'chatModerator', $(this).data('filter'), $(this).is(':checked'), function() {
             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
-                toastr.success('Filter toggle successfully updated!');
+                toastr.success('Filtermodus erfolgreich aktualisiert!');
             });
         });
     });
@@ -65,19 +65,19 @@ $(function() {
             keys: ['linksMessage', 'linkPermitTime', 'subscribersModerateLinks', 'regularsModerateLinks', 'silentTimeoutLinks', 'silentLinkMessage', 'warningTimeLinks', 'timeoutTimeLinks']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('link-settings', 'Link Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('link-settings', 'Link-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.linksMessage, 'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.linksMessage, 'Nachricht, die im Chat angezeigt wird, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLinks === 'true', 'Silent', 'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLinks === 'true', 'Stumm', 'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLinks,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeLinks,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLinks,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeLinks,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -87,21 +87,21 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentLinkMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentLinkMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for the permit time.
-                .append(helpers.getInputGroup('permit-time', 'number', 'Permit Duration', '0', e.linkPermitTime,
-                    'How long in seconds a user has to post a link when permitted.'))
+                .append(helpers.getInputGroup('permit-time', 'number', 'Genehmigungsdauer', '0', e.linkPermitTime,
+                    'Wie lange in Sekunden ein Benutzer einen Link posten darf, wenn es ihm erlaubt ist.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLinks !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLinks !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauer erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLinks !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLinks !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -134,7 +134,7 @@ $(function() {
                                 // Hide modal
                                 $('#link-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the link filter settings!');
+                                toastr.success('Link-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -152,19 +152,19 @@ $(function() {
                     'regularsModerateCaps', 'silentTimeoutCaps', 'silentCapMessage', 'warningTimeCaps', 'timeoutTimeCaps']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('caps-settings', 'Caps Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('caps-settings', 'Caps-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.capsMessage, 'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.capsMessage, 'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutCaps === 'true', 'Silent', 'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutCaps === 'true', 'Stumm', 'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeCaps,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeCaps,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeCaps,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeCaps,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -174,24 +174,24 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentCapMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentCapMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for amount of caps required before checking.
-                .append(helpers.getInputGroup('caps-trigger-amount', 'number', 'Caps Trigger Amount', '0', e.capsTriggerLength,
-                    'Amount of caps required in the message before checking for caps.'))
+                .append(helpers.getInputGroup('caps-trigger-amount', 'number', 'Caps Auslöser Betrag', '0', e.capsTriggerLength,
+                    'Anzahl von Caps, die in der Nachricht benötigt wird, bevor auf Caps geprüft wird.'))
                 // Append input box for the max caps percent
-                .append(helpers.getInputGroup('caps-amount', 'number', 'Caps Limit Percent', '0', e.capsLimitPercent,
-                    'Maximum amount in percent of caps allowed in a message.'))
+                .append(helpers.getInputGroup('caps-amount', 'number', 'Höchstgrenze für Caps in Prozent', '0', e.capsLimitPercent,
+                    'Maximale Menge in Prozent der in einer Nachricht erlaubten Caps.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateCaps !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateCaps !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauer erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateCaps !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateCaps !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -227,7 +227,7 @@ $(function() {
                                 // Hide modal
                                 $('#caps-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the caps filter settings!');
+                                toastr.success('Caps-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -245,19 +245,19 @@ $(function() {
                     'subscribersModerateSymbols', 'regularsModerateSymbols', 'silentTimeoutSymbols', 'silentSymbolsMessage', 'warningTimeSymbols', 'timeoutTimeSymbols']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('symbols-settings', 'Symbols Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('symbols-settings', 'Symboleinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.symbolsMessage, 'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.symbolsMessage, 'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSymbols === 'true', 'Silent', 'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSymbols === 'true', 'Stumm', 'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSymbols,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeSymbols,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSymbols,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeSymbols,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -267,27 +267,27 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentSymbolsMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentSymbolsMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for amount of symbols required before checking.
-                .append(helpers.getInputGroup('symbols-trigger-amount', 'number', 'Symbols Trigger Amount', '0', e.symbolsTriggerLength,
-                    'Amount of symbols required in the message before checking for symbols.'))
+                .append(helpers.getInputGroup('symbols-trigger-amount', 'number', 'Symbole Auslöser Betrag', '0', e.symbolsTriggerLength,
+                    'Anzahl der Symbole, die in einer Nachricht benötigt werden, bevor nach Symbolen geprüft wird.'))
                 // Append input box for the max symbols percent.
-                .append(helpers.getInputGroup('symbols-amount', 'number', 'Symbols Limit Percent', '0', e.symbolsLimitPercent,
-                    'Maximum amount in percent of symbols allowed in a message.'))
+                .append(helpers.getInputGroup('symbols-amount', 'number', 'Symbole Grenzwert in Prozent', '0', e.symbolsLimitPercent,
+                    'Maximale Anzahl in Prozent der Symbole, die in einer Nachricht erlaubt sind.'))
                 // Append input box for the max groupped symbols.
-                .append(helpers.getInputGroup('symbols-amount-group', 'number', 'Symbols Group Limit', '0', e.symbolsGroupLimit,
-                    'Maximum amount of groupped symbols allowed.'))
+                .append(helpers.getInputGroup('symbols-amount-group', 'number', 'Gruppengrenze für Symbole', '0', e.symbolsGroupLimit,
+                    'Maximal zulässige Anzahl von Symbolen in Gruppen.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSymbols !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSymbols !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauern erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSymbols !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSymbols !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -325,7 +325,7 @@ $(function() {
                                 // Hide modal
                                 $('#symbols-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the symbols filter settings!');
+                                toastr.success('Symbol-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -343,21 +343,21 @@ $(function() {
                     'silentTimeoutSpam', 'silentSpamMessage', 'warningTimeSpam', 'timeoutTimeSpam']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('spam-settings', 'Spam Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('spam-settings', 'Spam-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.spamMessage,
-                'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.spamMessage,
+                'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpam === 'true', 'Silent',
-                'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpam === 'true', 'Stumm',
+                'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpam,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeSpam,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpam,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeSpam,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -367,21 +367,21 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentSpamMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout grund', '', e.silentSpamMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for amount of caps required before checking.
-                .append(helpers.getInputGroup('spam-amount', 'number', 'Spam Limit', '0', e.spamLimit,
-                    'Amount of repeating characters allowed in a message.'))
+                .append(helpers.getInputGroup('spam-amount', 'number', 'Spam-Limit', '0', e.spamLimit,
+                    'Anzahl der zulässigen sich wiederholenden Zeichen in einer Nachricht.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpam !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpam !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauer erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpam !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpam !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -415,7 +415,7 @@ $(function() {
                                 // Hide modal
                                 $('#spam-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the spam filter settings!');
+                                toastr.success('Spam-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -433,21 +433,21 @@ $(function() {
                     'regularsModerateEmotes', 'silentTimeoutEmotes', 'silentEmoteMessage', 'warningTimeEmotes', 'timeoutTimeEmotes']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('emotes-settings', 'Emotes Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('emotes-settings', 'Emotes-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.emotesMessage,
-                'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.emotesMessage,
+                'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutEmotes === 'true', 'Silent',
-                'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutEmotes === 'true', 'Stumm',
+                'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeEmotes,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeEmotes,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeEmotes,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeEmotes,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -457,21 +457,21 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentEmoteMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentEmoteMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for amount of caps required before checking.
-                .append(helpers.getInputGroup('emote-amount', 'number', 'Emote Limit', '0', e.emotesLimit,
-                    'Amount of emotes allowed in a message.'))
+                .append(helpers.getInputGroup('emote-amount', 'number', 'Emote-Limit', '0', e.emotesLimit,
+                    'Anzahl der erlaubten Emotes in einer Nachricht.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateEmotes !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateEmotes !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauer erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateEmotes !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateEmotes !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -505,7 +505,7 @@ $(function() {
                                 // Hide modal
                                 $('#emotes-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the emotes filter settings!');
+                                toastr.success('Emotes-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -523,21 +523,21 @@ $(function() {
                     'silentTimeoutColors', 'silentColorMessage', 'warningTimeColors', 'timeoutTimeColors']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('me-settings', 'Me Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('me-settings', 'Me Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.colorsMessage,
-                'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.colorsMessage,
+                'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutColors === 'true', 'Silent',
-                'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutColors === 'true', 'Stumm',
+                'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeColors,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeColors,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeColors,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeColors,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -547,18 +547,18 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentColorMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentColorMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateColors !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateColors !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauern erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateColors !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateColors !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -589,7 +589,7 @@ $(function() {
                                 // Hide modal
                                 $('#me-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the me filter settings!');
+                                toastr.success('me-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -607,21 +607,21 @@ $(function() {
                     'regularsModerateLongMsg', 'silentTimeoutLongMsg', 'silentLongMessage', 'warningTimeLongMsg', 'timeoutTimeLongMsg']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('msglen-settings', 'Paragraph Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('msglen-settings', 'Absatzeinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.longMessageMessage,
-                'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.longMessageMessage,
+                'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLongMsg === 'true', 'Silent',
-                'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLongMsg === 'true', 'Stumm',
+                'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLongMsg,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeLongMsg,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLongMsg,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeLongMsg,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -631,21 +631,21 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentLongMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentLongMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for max amount of chars allowed in a message
-                .append(helpers.getInputGroup('msg-limit', 'number', 'Message Charcater Limit', '0', e.longMessageLimit,
-                    'Amount of characters allowed in a message.'))
+                .append(helpers.getInputGroup('msg-limit', 'number', 'Nachrichtenzeichenbegrenzung', '0', e.longMessageLimit,
+                    'Anzahl der Zeichen, die in einer Nachricht erlaubt sind.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLongMsg !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLongMsg !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauern erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLongMsg !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLongMsg !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -679,7 +679,7 @@ $(function() {
                                 // Hide modal
                                 $('#msglen-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the message length filter settings!');
+                                toastr.success('Nachrichtenlängen-Filter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -696,19 +696,19 @@ $(function() {
                     'silentTimeoutFakePurge', 'silentFakePurgeMessage', 'warningTimeFakePurge', 'timeoutTimeFakePurge']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('purges-settings', 'Fake Purge Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('purges-settings', 'Fake Purge Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.fakePurgeMessage, 'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.fakePurgeMessage, 'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutFakePurge === 'true', 'Silent', 'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutFakePurge === 'true', 'Stumm', 'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeFakePurge,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeFakePurge,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeFakePurge,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeFakePurge,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -718,18 +718,18 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentFakePurgeMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentFakePurgeMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateFakePurge !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateFakePurge !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauern erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateFakePurge !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateFakePurge !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -760,7 +760,7 @@ $(function() {
                                 // Hide modal
                                 $('#purges-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the fake purge filter settings!');
+                                toastr.success('Fake Purge Filtereinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -778,21 +778,21 @@ $(function() {
                     'regularsModerateSpamTracker', 'silentTimeoutSpamTracker', 'silentSpamTrackerMessage', 'warningTimeSpamTracker', 'timeoutTimeSpamTracker']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
-            helpers.getAdvanceModal('tracker-settings', 'User Moderation Settings', 'Save', $('<form/>', {
+            helpers.getAdvanceModal('tracker-settings', 'Benutzermoderationseinstellungen', 'Save', $('<form/>', {
                 'role': 'form'
             })
             // Append input box for the command name. This one is disabled.
-            .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.spamTrackerMessage,
-                'Message said in chat when a user gets timed-out.')
+            .append(helpers.getInputGroup('timeout-message', 'text', 'Warnmeldung', '', e.spamTrackerMessage,
+                'Nachricht, die in den Chat gesendet werden soll, wenn ein Benutzer einen Timeout erhält.')
             // Append checkbox for if this message should be enabled.
-            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpamTracker === 'true', 'Silent',
-                'If the warning message should be said or not.')))
+            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpamTracker === 'true', 'Stumm',
+                'Ob die Warnmeldung gesendet werden soll oder nicht.')))
             // Append input box for the warning time.
-            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpamTracker,
-                'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warndauer (Sekunden)', '0', e.warningTimeSpamTracker,
+                'Wie lange in Sekunden der Benutzer bei seinem ersten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Append input box for the timeout time.
-            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpamTracker,
-                'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+            .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Dauer (Sekunden)', '0', e.timeoutTimeSpamTracker,
+                'Wie lange in Sekunden der Benutzer bei seinem letzten Vergehen einen Timeout erhält. 0 Sekunden löschen nur die letzte Nachricht.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -802,24 +802,24 @@ $(function() {
                     'role': 'form'
                 })
                 // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Reason', '', e.silentSpamTrackerMessage,
-                    'Message shown to all moderators when the user gets timed-out.'))
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentSpamTrackerMessage,
+                    'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                 // Append input box for the seconds reset time of the message caching of user.
-                .append(helpers.getInputGroup('track-time', 'number', 'Message Reset Time', '0', e.spamTrackerTime,
-                    'How long until the message count the user has sent resets.'))
+                .append(helpers.getInputGroup('track-time', 'number', 'Nachrichten-Reset-Zeit', '0', e.spamTrackerTime,
+                    'Wie lange bis die Anzahl der Nachrichten, die der Benutzer gesendet hat, zurückgesetzt wird.'))
                 // Append input box for the amount of messages the user can send in the reset time.
-                .append(helpers.getInputGroup('track-limit', 'number', 'Message Limit', '0', e.spamTrackerLimit,
-                    'How many messages users can send in the reset time period.'))
+                .append(helpers.getInputGroup('track-limit', 'number', 'Nachrichtenlimit', '0', e.spamTrackerLimit,
+                    'Wie viele Nachrichten Benutzer im Reset-Zeitraum senden können.'))
                 // Add group for toggles.
                 .append($('<div/>', {
                     'class': 'form-group'
                 })
                 // Tooltip to toggle for regulars to bypass this filter.
-                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpamTracker !== 'true', 'Exclude Regulars',
-                    'If regulars should be allowed to bypass this filter.'))
+                .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpamTracker !== 'true', 'Stammzuschauer ausschließen',
+                    'Wenn Stammzuschauern erlaubt sein soll, diesen Filter zu umgehen.'))
                 // Tooltip to toggle for subs to bypass this filter.
-                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpamTracker !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpamTracker !== 'true', 'Abonnenten ausschließen',
+                    'Wenn es den Abonnenten erlaubt sein soll, diesen Filter zu umgehen.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -855,7 +855,7 @@ $(function() {
                                 // Hide modal
                                 $('#tracker-settings').modal('hide');
                                 // Let the user know.
-                                toastr.success('Successfully updated the user moderation filter settings!');
+                                toastr.success('Benutzer-Moderationsfilter-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

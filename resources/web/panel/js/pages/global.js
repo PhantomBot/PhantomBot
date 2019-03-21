@@ -35,7 +35,7 @@ $(function() {
             'password': 'out'
         }).done(function() {
             // Nothing should happen here.
-            alert('Failed to log out.');
+            alert('Abmeldung fehlgeschlagen.');
         }).fail(function() {
             // We logged out. We want a 401, this means the old password was dumped (The good one).
             window.location = '/';
@@ -70,7 +70,7 @@ $(function() {
 
             // This timer is global and will never get killed.
             setInterval(function() {
-                helpers.log('Running bot version check.', helpers.LOG_TYPE.INFO);
+                helpers.log('Überprüfung der Bot-Version.', helpers.LOG_TYPE.INFO);
 
                 socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function(e) {
                     if (e.settings !== null) {

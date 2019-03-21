@@ -303,20 +303,20 @@ $(function() {
             tables: ['discordSettings', 'discordSettings', 'discordSettings'],
             keys: ['clipsToggle', 'clipsMessage', 'clipsChannel']
         }, true, function(e) {
-            helpers.getModal('clip-alert', 'Clip Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('clip-alert', 'Clip-Alarmeinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for clip alerts.
-            .append(helpers.getDropdownGroup('clip-toggle', 'Enable Clip Alerts', (e.clipsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said in the channel when someone creates a clip.'))
+            .append(helpers.getDropdownGroup('clip-toggle', 'Clip-Alarme aktivieren', (e.clipsToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn eine Nachricht im Channel gesendet werden soll, wenn jemand einen Clip erstellt.'))
             // Add the text area for the clips message.
-            .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Message', '', e.clipsMessage,
-                'Message said when someone creates a clip. Tags: (name), (embedurl) - to be used as the entire message, and (url)', false))
+            .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Nachricht', '', e.clipsMessage,
+                'Die Nachricht wird gesendet, wenn jemand einen Clip erstellt. Tags: (Name), (embedurl) - wird als gesamte Nachricht verwendet, und (url)', false))
             // Add the text area for the clips channel.
-            .append(helpers.getInputGroup('clip-channel', 'text', 'Alert Channel', '#alerts', e.clipsChannel,
-                'The channel where clips will be posted.')),
+            .append(helpers.getInputGroup('clip-channel', 'text', 'Alarm Channel', '#alerts', e.clipsChannel,
+                'Der Kanal, in dem die Clips gepostet werden.')),
             function() { // Callback once the user clicks save.
-                let clipToggle = $('#clip-toggle').find(':selected').text() === 'Yes',
+                let clipToggle = $('#clip-toggle').find(':selected').text() === 'Ja',
                     clipMsg = $('#clip-message'),
                     clipsChan = $('#clip-channel');
 
@@ -334,7 +334,7 @@ $(function() {
                                 // Close the modal.
                                 $('#clip-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated Clip alert settings!');
+                                toastr.success('Clip-Alarmeinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -350,7 +350,7 @@ $(function() {
             keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage', 'gameToggle',
                 'gameMessage', 'botGameToggle', 'onlineChannel']
         }, true, function(e) {
-            helpers.getModal('stream-alert', 'Stream Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('stream-alert', 'Stream-Alarmeinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -359,52 +359,52 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Online Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Online-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
             	// Add the toggle for onine alerts.
-            	.append(helpers.getDropdownGroup('online-toggle', 'Enable Online Alerts', (e.onlineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+            	.append(helpers.getDropdownGroup('online-toggle', 'Online-Alarme aktivieren', (e.onlineToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
                 	'If a message should be said in the channel when you go live on Twitch.'))
             	// Add the toggle for one alerts.
-            	.append(helpers.getDropdownGroup('online-status', 'Enable Bot Status', (e.botGameToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                	'Show your bot as streaming when you go live.'))
+            	.append(helpers.getDropdownGroup('online-status', 'Bot-Status aktivieren', (e.botGameToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                	'Wenn Sie live gehen, zeigen Sie Ihren Bot als Streaming.'))
             	// Add the text area for the online message.
-            	.append(helpers.getTextAreaGroup('online-message', 'text', 'Online Message', '', e.onlineMessage,
-                	'Message said when you go live. This message is in an embed style. Tags: (name)', false))))
+            	.append(helpers.getTextAreaGroup('online-message', 'text', 'Online Nachricht', '', e.onlineMessage,
+                	'Die Nachricht wird gesendet, wenn Sie live gehen. Diese Nachricht ist in einem Embed-Stil. Tags: (name)', false))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Offline Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Offline-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
             	// Add the toggle for offline alerts.
-            	.append(helpers.getDropdownGroup('offline-toggle', 'Enable Offline Alerts', (e.offlineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                	'If a message should be said in the channel when you go offline on Twitch.'))
+            	.append(helpers.getDropdownGroup('offline-toggle', 'Offline-Alarme aktivieren', (e.offlineToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                	'Wenn eine Nachricht im Channel gesendet werden soll, wenn Sie offline gehen, auf Twitch.'))
             	// Add the text area for the offline message.
-            	.append(helpers.getTextAreaGroup('offline-message', 'text', 'Offline Message', '', e.offlineMessage,
-                	'Message said when you go offline. This message is in an embed style. Tags: (name)', false))))
+            	.append(helpers.getTextAreaGroup('offline-message', 'text', 'Offline Nachricht', '', e.offlineMessage,
+                	'Die Nachricht wird gesendet, wenn Sie offline gehen. Diese Nachricht ist in einem Embed-Stil. Tags: (name)', false))))
             // Append third collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-3', 'Game Change Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-3', 'Spielwechsel-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
             	// Add the toggle for offline alerts.
-            	.append(helpers.getDropdownGroup('game-toggle', 'Enable Game Change Alerts', (e.gameToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                	'If a message should be said in the channel when you switch games on Twitch.'))
+            	.append(helpers.getDropdownGroup('game-toggle', 'Spieländerungsalarme aktivieren', (e.gameToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                	'Wenn eine Nachricht im Channel gesendet werden soll, wenn Sie das Spiel auf Twitch wechseln.'))
             	// Add the text area for the offline message.
-            	.append(helpers.getTextAreaGroup('game-message', 'text', 'Game Change Message', '', e.gameMessage,
-                	'Message said when you change games on Twitch. Tags: (name)', false))))
+            	.append(helpers.getTextAreaGroup('game-message', 'text', 'Spielwechsel Nachricht', '', e.gameMessage,
+                	'Die Nachricht wird gesendet, wenn Sie das Spiel auf Twitch wechseln. Tags: (name)', false))))
             // Append forth collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-4', 'Alert Channel Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-4', 'Alarmkanal-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add channel box.
-                .append(helpers.getInputGroup('channel-alert', 'text', 'Alert Channel', '#alerts', e.onlineChannel,
-                    'Channel where all alerts should go too.'))))),
+                .append(helpers.getInputGroup('channel-alert', 'text', 'Alarm Kanal', '#alerts', e.onlineChannel,
+                    'Kanal, in dem alle Alarme gesendet werden sollen.'))))),
             function() {
-            	let onlineToggle = $('#online-toggle').find(':selected').text() === 'Yes',
-            		statusToggle = $('#online-status').find(':selected').text() === 'Yes',
+            	let onlineToggle = $('#online-toggle').find(':selected').text() === 'Ja',
+            		statusToggle = $('#online-status').find(':selected').text() === 'Ja',
             		onlineMessage = $('#online-message'),
-            		offlineToggle = $('#offline-toggle').find(':selected').text() === 'Yes',
+            		offlineToggle = $('#offline-toggle').find(':selected').text() === 'Ja',
             		offlineMessage = $('#offline-message'),
-            		gameToggle = $('#game-toggle').find(':selected').text() === 'Yes',
+            		gameToggle = $('#game-toggle').find(':selected').text() === 'Ja',
             		gameMessage = $('#game-message'),
             		channel = $('#channel-alert');
 
@@ -426,7 +426,7 @@ $(function() {
                                 // Close the modal.
                                 $('#stream-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated stream alert settings!');
+                                toastr.success('Stream-Alarmeinstellungen wurden erfolgreich aktualisiert!');
                             });
             			});
             	}
@@ -442,7 +442,7 @@ $(function() {
             keys: ['joinToggle', 'partToggle', 'joinMessage', 'partMessage', 'greetingsChannel',
                 'greetingsDefaultGroup']
         }, true, function(e) {
-            helpers.getModal('greeting-alert', 'Greetings Settings', 'Save', $('<form/>', {
+            helpers.getModal('greeting-alert', 'Einstellungen für Begrüßungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -451,35 +451,35 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Join Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Beitrittseinstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the toggle for alert
-                .append(helpers.getDropdownGroup('join-toggle', 'Enable Join Messages', (e.joinToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone joins your Discord.'))
+                .append(helpers.getDropdownGroup('join-toggle', 'Beitrittsnachrichten aktivieren\n', (e.joinToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn eine Nachricht im Channel gesendet werden soll, wenn jemand deinem Discord beitritt.'))
                 // Add a box for the join role.
-                .append(helpers.getInputGroup('join-role', 'text', 'Join Role', 'Newbie', e.greetingsDefaultGroup,
-                    'Default role applied to new users who join your Discord.'))
+                .append(helpers.getInputGroup('join-role', 'text', 'Beitrittsrolle', 'Newbie', e.greetingsDefaultGroup,
+                    'Die Standardrolle wird neuen Benutzern zugewiesen, die deinem Discord beitreten.'))
                 // Add the text area for the message.
-                .append(helpers.getTextAreaGroup('join-message', 'text', 'Join Message', '', e.joinMessage,
-                    'Message said when someone joins your Discord. Tags: (name) and (@name)', false))))
+                .append(helpers.getTextAreaGroup('join-message', 'text', 'Beitrittsnachricht', '', e.joinMessage,
+                    'Die Nachricht wird gesendet, wenn jemand deinem Discord beitritt. Tags: (name) und (@name)', false))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Part Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Verlassen-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the toggle for part alerts.
-                .append(helpers.getDropdownGroup('part-toggle', 'Enable Part Messages', (e.partToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone leaves your Discord.'))
+                .append(helpers.getDropdownGroup('part-toggle', 'Verlassen-Nachrichten aktivieren', (e.partToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Wenn eine Nachricht in den Kanal gesendet werden soll, wenn jemand deine Discord verlässt.'))
                 // Add the text area for the part message.
-                .append(helpers.getTextAreaGroup('part-message', 'text', 'Part Message', '', e.partMessage,
-                    'Message said when someone leaves your Discord. Tags: (name) and (@name)', false))))
+                .append(helpers.getTextAreaGroup('part-message', 'text', 'Verlassen-Nachricht', '', e.partMessage,
+                    'Die Nachricht wird gesendet, wenn jemand deinen Discord verlässt. Tags: (name) und (@name)', false))))
             // Append third collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-3', 'Alert Channel Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-3', 'Alarmkanal-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add channel box.
-                .append(helpers.getInputGroup('channel-alert', 'text', 'Alert Channel', '#alerts', e.greetingsChannel,
-                    'Channel where all alerts should go too.'))))),
+                .append(helpers.getInputGroup('channel-alert', 'text', 'Alarmkanal', '#alerts', e.greetingsChannel,
+                    'Kanal, in den alle Alarme gesendet werden sollen.'))))),
             function() {
                 let joinToggle = $('#join-toggle').find(':selected').text() === 'Yes',
                     partToggle = $('#part-toggle').find(':selected').text() === 'Yes',
@@ -506,7 +506,7 @@ $(function() {
                                 // Close the modal.
                                 $('#greeting-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated greetings alert settings!');
+                                toastr.success('Alarm-Einstellungen für Begrüßungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -520,20 +520,20 @@ $(function() {
             tables: ['discordSettings', 'discordSettings', 'discordSettings'],
             keys: ['streamlabsToggle', 'streamlabsMessage', 'streamlabsChannel']
         }, true, function(e) {
-            helpers.getModal('streamlabs-alert', 'StreamLabs Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('streamlabs-alert', 'StreamLabs Alarmeinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for follow alerts.
-            .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (e.streamlabsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said in the channel when someone tips.'))
+            .append(helpers.getDropdownGroup('streamlabs-toggle', 'StreamLabs-Alarme aktivieren', (e.streamlabsToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn eine Nachricht in den Kanal gesendet werden soll, wenn jemand spendet.'))
             // Add the the text area for the follow message.
-            .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.streamlabsMessage,
-                'Message said when someone tips the channel. Tag: (name), (amount), (currency), and (message)', false))
+            .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Spendennachricht', '', e.streamlabsMessage,
+                'Die Nachricht wird gesendet, wenn jemand dem Kanal spendet. Tag: (name), (amount), (currency) und (message)', false))
             // Add the the box for the reward.
-            .append(helpers.getInputGroup('streamlabs-channel', 'text', 'Alert Channel', '#alerts', e.streamlabsChannel,
-                'Channel where all alerts should go too.')),
+            .append(helpers.getInputGroup('streamlabs-channel', 'text', 'Alarmkanal', '#alerts', e.streamlabsChannel,
+                'Kanal, in den alle Alarme gesendet werden sollen.')),
             function() { // Callback once the user clicks save.
-                let streamLabsToggle = $('#streamlabs-toggle').find(':selected').text() === 'Yes',
+                let streamLabsToggle = $('#streamlabs-toggle').find(':selected').text() === 'Ja',
                     streamLabsMessage = $('#streamlabs-message'),
                     streamLabsChannel = $('#streamlabs-channel');
 
@@ -553,7 +553,7 @@ $(function() {
                                 // Close the modal.
                                 $('#streamlabs-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the StreamLabs alert settings!');
+                                toastr.success('StreamLabs Alarmeinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -567,20 +567,20 @@ $(function() {
             tables: ['discordSettings', 'discordSettings', 'discordSettings'],
             keys: ['tipeeestreamToggle', 'tipeeestreamMessage', 'tipeeestreamChannel']
         }, true, function(e) {
-            helpers.getModal('tipeeestream-alert', 'TipeeeStream Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('tipeeestream-alert', 'TipeeeStream Alarm-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for follow alerts.
-            .append(helpers.getDropdownGroup('tipeeestream-toggle', 'Enable TipeeeStream Alerts', (e.tipeeestreamToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said in the channel when someone tips.'))
+            .append(helpers.getDropdownGroup('tipeeestream-toggle', 'TipeeeStream-Alarme aktivieren', (e.tipeeestreamToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn eine Nachricht in den Kanal gesendet werden soll, wenn jemand spendet.'))
             // Add the the text area for the follow message.
-            .append(helpers.getTextAreaGroup('tipeeestream-message', 'text', 'Tip Message', '', e.tipeeestreamMessage,
-                'Message said when someone tips the channel. Tag: (name), (amount), (currency), and (message)', false))
+            .append(helpers.getTextAreaGroup('tipeeestream-message', 'text', 'Spendennachricht', '', e.tipeeestreamMessage,
+                'Die Nachricht wird gesendet, wenn jemand dem Kanal spendet. Tag: (name), (amount), (currency) und (message)', false))
             // Add the the box for the reward.
-            .append(helpers.getInputGroup('tipeeestream-channel', 'text', 'Alert Channel', '#alerts', e.tipeeestreamChannel,
-                'Channel where all alerts should go too.')),
+            .append(helpers.getInputGroup('tipeeestream-channel', 'text', 'Alarmkanal', '#alerts', e.tipeeestreamChannel,
+                'Kanal, in den alle Alarme gesendet werden sollen.')),
             function() { // Callback once the user clicks save.
-                let tipeeeStreamToggle = $('#tipeeestream-toggle').find(':selected').text() === 'Yes',
+                let tipeeeStreamToggle = $('#tipeeestream-toggle').find(':selected').text() === 'Ja',
                     tipeeeStreamMessage = $('#tipeeestream-message'),
                     tipeeeStreamChannel = $('#tipeeestream-channel');
 
@@ -600,7 +600,7 @@ $(function() {
                                 // Close the modal.
                                 $('#tipeeestream-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the TipeeeStream alert settings!');
+                                toastr.success('TipeeeStream-Alarmeinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -614,20 +614,20 @@ $(function() {
             tables: ['discordSettings', 'discordSettings', 'discordSettings'],
             keys: ['streamelementsToggle', 'streamelementsMessage', 'streamelementsChannel']
         }, true, function(e) {
-            helpers.getModal('streamelements-alert', 'StreamElements Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('streamelements-alert', 'StreamElements Alarm-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for follow alerts.
-            .append(helpers.getDropdownGroup('streamelements-toggle', 'Enable StreamElements Alerts', (e.streamelementsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If a message should be said in the channel when someone tips.'))
+            .append(helpers.getDropdownGroup('streamelements-toggle', 'StreamElements-Alarme aktivieren', (e.streamelementsToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn eine Nachricht in den Kanal gesendet werden soll, wenn jemand spendet.'))
             // Add the the text area for the follow message.
-            .append(helpers.getTextAreaGroup('streamelements-message', 'text', 'Tip Message', '', e.streamelementsMessage,
-                'Message said when someone tips the channel. Tag: (name), (amount), (currency), and (message)', false))
+            .append(helpers.getTextAreaGroup('streamelements-message', 'text', 'Spendennachricht', '', e.streamelementsMessage,
+                'Die Nachricht wird gesendet, wenn jemand dem Kanal einen spendet. Tag: (name), (amount), (currency) und (message)', false))
             // Add the the box for the reward.
-            .append(helpers.getInputGroup('streamelements-channel', 'text', 'Alert Channel', '#alerts', e.streamelementsChannel,
-                'Channel where all alerts should go too.')),
+            .append(helpers.getInputGroup('streamelements-channel', 'text', 'Alarmkanal', '#alerts', e.streamelementsChannel,
+                'Kanal, in den alle Alarme gesendet werden sollen.')),
             function() { // Callback once the user clicks save.
-                let streamElementsToggle = $('#streamelements-toggle').find(':selected').text() === 'Yes',
+                let streamElementsToggle = $('#streamelements-toggle').find(':selected').text() === 'Ja',
                     streamElementsMessage = $('#streamelements-message'),
                     streamElementsChannel = $('#streamelements-channel');
 
@@ -647,7 +647,7 @@ $(function() {
                                 // Close the modal.
                                 $('#streamelements-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the StreamElements alert settings!');
+                                toastr.success('StreamElements-Alarmeinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }
@@ -661,17 +661,17 @@ $(function() {
             tables: ['discordSettings', 'discordSettings'],
             keys: ['twitterToggle', 'twitterChannel']
         }, true, function(e) {
-            helpers.getModal('twitter-alert', 'Twitter Alert Settings', 'Save', $('<form/>', {
+            helpers.getModal('twitter-alert', 'Twitter Alarm-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for follow alerts.
-            .append(helpers.getDropdownGroup('twitter-toggle', 'Enable Twitter Alerts', (e.twitterToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If your Tweets should be posted in Discord. Please note that the Twitch Twitter module needs to be setup for this to work.'))
+            .append(helpers.getDropdownGroup('twitter-toggle', 'Twitter-Alarme aktivieren', (e.twitterToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn deine Tweets in Discord gepostet werden sollen. Bitte beachte, dass das Twitch Twitter-Modul eingerichtet sein muss, damit dies funktioniert.'))
             // Add the the box for the reward.
-            .append(helpers.getInputGroup('twitter-channel', 'text', 'Alert Channel', '#alerts', e.twitterChannel,
-                'Channel where all alerts should go too.')),
+            .append(helpers.getInputGroup('twitter-channel', 'text', 'Alarmkanal', '#alerts', e.twitterChannel,
+                'Kanal, in den alle Alarme gesendet werden sollen.')),
             function() { // Callback once the user clicks save.
-                let twitterToggle = $('#twitter-toggle').find(':selected').text() === 'Yes',
+                let twitterToggle = $('#twitter-toggle').find(':selected').text() === 'Ja',
                     twitterChannel = $('#twitter-channel');
 
                 // Make sure everything has been filled it correctly.
@@ -689,7 +689,7 @@ $(function() {
                                 // Close the modal.
                                 $('#twitter-alert').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated the Twitter alert settings!');
+                                toastr.success('Twitter-Alarmeinstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

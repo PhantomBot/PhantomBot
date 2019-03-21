@@ -24,11 +24,11 @@ $(function() {
             'url': '/get-lang?webauth=' + getAuth(),
             'type': 'GET',
             'success': function(data) {
-                helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
+                helpers.getModal('edit-lang', 'Lang-Datei laden', 'Bearbeiten', $('<form/>', {
                     'role': 'form'
                 })
                 // Add select box.
-                .append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', data.split('\n'))), function() {
+                .append(helpers.getDropdownGroup('file-to-load', 'Lang-Date: ', 'Datei auswählen', data.split('\n'))), function() {
                     currentLang = $('#file-to-load').find(':selected').text();
 
                     $.ajax({
@@ -41,7 +41,7 @@ $(function() {
                             // Load the file
                             loadLang(JSON.parse(data));
                             // Alert the user.
-                            toastr.success('Successfully loaded the file!');
+                            toastr.success('Die Datei wurde erfolgreich geladen!');
                             // Close the modal.
                             $('#edit-lang').modal('toggle');
                             // Enable the insert and save buttons.
@@ -56,13 +56,13 @@ $(function() {
 
     // Add line button.
     $('#add-line-button').on('click', function() {
-        helpers.getModal('add-lang', 'Add Lang Entry', 'Add', $('<form/>', {
+        helpers.getModal('add-lang', 'Lang-Eintrag hinzufügen', 'Hinzufügen', $('<form/>', {
             'role': 'form'
         })
         // ID for the lang.
         .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', 'module.name.id'))
         // Resonse for the lang.
-        .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', 'Response example!')), function() {
+        .append(helpers.getTextAreaGroup('lang-response', 'text', 'Antwort', 'Antwort beispiel!')), function() {
             const table = $('#langTable').DataTable(),
                 langId = $('#lang-id'),
                 langRes = $('#lang-response');
@@ -103,7 +103,7 @@ $(function() {
                     // Close the modal.
                     $('#add-lang').modal('toggle');
                     // Alert the user.
-                    toastr.success('Successfully added the lang entry.');
+                    toastr.success('Lang-Eintrag erfolgreich hinzugefügt.');
             }
         }).modal('toggle');
     });
@@ -136,9 +136,9 @@ $(function() {
             'data': JSON.stringify(dataObj),
             'success': function(data, text, xhr) {
                 if (xhr.status === 200) {
-                    toastr.success('Successfully saved the lang!');
+                    toastr.success('Lang erfolgreich gespeichert!');
                 } else {
-                    toastr.success('Faled to save the lang.');
+                    toastr.success('Die lang konnte nicht gespeichert werden.');
                 }
             }
         });
@@ -198,8 +198,8 @@ $(function() {
             ],
             'columns': [
                 { 'title': 'Lang ID' },
-                { 'title': 'Response' },
-                { 'title': 'Actions' }
+                { 'title': 'Antwort' },
+                { 'title': 'Aktionen' }
             ]
         });
 
@@ -209,8 +209,8 @@ $(function() {
                 id = $(this).data('id');
 
             // Ask the user if he wants to delete the lang.
-            helpers.getConfirmDeleteModal('lang_modal_remove', 'Are you sure you want to remove this lang entry?', true,
-                'The land entry has been successfully removed!', function() { // Callback if the user clicks delete.
+            helpers.getConfirmDeleteModal('lang_modal_remove', 'Bist du sicher, dass du diesen Lang-Eintrag entfernen möchtest?', true,
+                'Der Lang-Eintrag wurde erfolgreich entfernt!', function() { // Callback if the user clicks delete.
                 // Remove the table row.
                 table.row(row).remove().draw(false);
             });
@@ -220,13 +220,13 @@ $(function() {
         table.on('click', '.btn-warning', function() {
             const t = $(this);
 
-            helpers.getModal('edit-lang', 'Edit Lang Entry', 'Edit', $('<form/>', {
+            helpers.getModal('edit-lang', 'Lang-Eintrag bearbeiten', 'Bearbeiten', $('<form/>', {
                 'role': 'form'
             })
             // ID for the lang.
-            .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', '', t.data('id'), 'The ID of this lang.'))
+            .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', '', t.data('id'), 'Die ID dieser lang.'))
             // Resonse for the lang.
-            .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', '', t.data('response').replace(/\\'/g, '\''), 'The response of this lang.')), function() {
+            .append(helpers.getTextAreaGroup('lang-response', 'text', 'Antwort', '', t.data('response').replace(/\\'/g, '\''), 'Die Antwort dieser lang.')), function() {
                 let id = $('#lang-id'),
                     response = $('#lang-response');
 
@@ -266,7 +266,7 @@ $(function() {
                         ]).draw(false);
 
                         // Alert the user.
-                        toastr.success('Successfully updated the lang response!');
+                        toastr.success('lang Antwort erfolgreich aktualisiert!');
 
                         // Close the modal.
                         $('#edit-lang').modal('toggle');

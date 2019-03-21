@@ -72,9 +72,9 @@ $(run = function() {
                     { 'width': '45%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Hours' },
-                    { 'title': 'Rank' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Stunden' },
+                    { 'title': 'Rang' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -85,8 +85,8 @@ $(run = function() {
                     rankName = row.find('td:eq(1)').text();
 
                 // Ask if the user wants to remove the rank.
-                helpers.getConfirmDeleteModal('global_rank_modal_remove', 'Are you sure you want to remove the "' + rankName + '" rank?', true,
-                    'You\'ve successfully removed the "' + rankName + '" rank!', function() {
+                helpers.getConfirmDeleteModal('global_rank_modal_remove', 'Bist du sicher, dass du den "' + rankName + '"-Rang entfernen willst?', true,
+                    'Du hast den "' + rankName + '"-Rang erfolgreich entfernt?', function() {
                     // Delete the rank
                     socket.removeDBValue('rm_global_rank', 'ranksMapping', rankHours, function() {
                         // Reload the rank table in the bot.
@@ -105,13 +105,13 @@ $(run = function() {
 
                 // Get the rank info.
                 socket.getDBValue('rank_get_name', 'ranksMapping', rank, function(e) {
-                    helpers.getModal('edit-rank', 'Edit Rank', 'Save', $('<form/>', {
+                    helpers.getModal('edit-rank', 'Rang bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Rank name
-                    .append(helpers.getInputGroup('rank-name', 'text', 'Rank', '', e.ranksMapping, 'Name of the rank.'))
+                    .append(helpers.getInputGroup('rank-name', 'text', 'Rang', '', e.ranksMapping, 'Name des Ranges.'))
                     // Rank hours
-                    .append(helpers.getInputGroup('rank-hours', 'number', 'Hours', '', rank, 'Number of hours before a user gets this rank.')), function() {// Callback once we click the save button.
+                    .append(helpers.getInputGroup('rank-hours', 'number', 'Stunden', '', rank, 'Anzahl der Stunden, bevor ein Benutzer diesen Rang erhält.')), function() {// Callback once we click the save button.
                         let rankName = $('#rank-name'),
                             rankHours = $('#rank-hours');
 
@@ -136,7 +136,7 @@ $(run = function() {
                                             // Close the modal.
                                             $('#edit-rank').modal('hide');
                                             // Alert the user.
-                                            toastr.success('Successfully edited the rank!');
+                                            toastr.success('Rang erfolgreich bearbeitet!');
                                         });
                                     });
                                 });
@@ -157,13 +157,13 @@ $(function() {
 
     // Add rank button.
     $('#add-rank-button').on('click', function() {
-        helpers.getModal('add-rank', 'Add Rank', 'Save', $('<form/>', {
+        helpers.getModal('add-rank', 'Rang hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append alias name.
-        .append(helpers.getInputGroup('rank-name', 'text', 'Rank', 'VIP', '', 'Name of the rank.'))
+        .append(helpers.getInputGroup('rank-name', 'text', 'Rang', 'VIP', '', 'Name des Ranges.'))
         // Append alias.
-        .append(helpers.getInputGroup('rank-hours', 'number', 'Hours', '5', '', 'Number of hours before a user gets this rank.')), function() {// Callback once we click the save button.
+        .append(helpers.getInputGroup('rank-hours', 'number', 'Stunden', '5', '', 'Anzahl der Stunden, bevor ein Benutzer diesen Rang erhält.')), function() {// Callback once we click the save button.
             let rankName = $('#rank-name'),
                 rankHours = $('#rank-hours');
 
@@ -182,7 +182,7 @@ $(function() {
                             // Close the modal.
                             $('#add-rank').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully added the rank!');
+                            toastr.success('Rang erfolgreich hinzugefügt!');
                         });
                     });
             }

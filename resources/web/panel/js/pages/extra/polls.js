@@ -126,7 +126,7 @@ $(function() {
             // Update the chart.
             chart.update();
             // Alert the user.
-            toastr.success('Successfully reset the poll.');
+            toastr.success('Die Umfrage wurde erfolgreich zurückgesetzt.');
 
             // Callback if possible.
             if (typeof callback === 'function') {
@@ -168,26 +168,26 @@ $(function() {
             // Mark as not acive.
             isActive = false;
             // Alert the user.
-            toastr.success('Successfully ended the poll.');
+            toastr.success('Die Umfrage wurde erfolgreich beendet.');
         });
     });
 
     // Open poll button.
     $('#open-poll').on('click', function() {
-        helpers.getModal('poll-open', 'Open Poll', 'Open', $('<form/>', {
+        helpers.getModal('poll-open', 'Umfrage öffnen', 'Öffnen', $('<form/>', {
             'role': 'form'
         })
         // Append poll title.
-        .append(helpers.getTextAreaGroup('poll-title', 'text', 'Title', 'What is your favorite color?', '', 'Title of the poll.'))
+        .append(helpers.getTextAreaGroup('poll-title', 'text', 'Titel', 'Was ist deine Lieblingsfarbe?', '', 'Titel der Umfrage.'))
         // Append options.
-        .append(helpers.getInputGroup('poll-options', 'text', 'Options', 'Red, Green, Blue', '',
-            'Options to be voted on. Each option should be seperated with a comma and space.'))
+        .append(helpers.getInputGroup('poll-options', 'text', 'Optionen', 'Rot, Grün, Blau', '',
+            'Optionen, über die abgestimmt werden soll. Jede Option sollte durch ein Komma und ein Leerzeichen getrennt werden.'))
         // Append timer.
-        .append(helpers.getInputGroup('poll-timer', 'number', 'Timer (Seconds)', '', '0',
-            'How long in seconds the poll will be opened for. Default is until closed.'))
+        .append(helpers.getInputGroup('poll-timer', 'number', 'Timer (Sekunden)', '', '0',
+            'Wie lange in Sekunden die Umfrage geöffnet bleiben soll. Die Standardeinstellung ist bis zum Schließen.'))
         // Append min votes.
-        .append(helpers.getInputGroup('poll-votes', 'number', 'Minimum Votes', '', '1',
-            'How many votes it takes to choose a winning option. Default is one.')),
+        .append(helpers.getInputGroup('poll-votes', 'number', 'Mindestanzahl der Stimmen', '', '1',
+            'Wie viele Stimmen es braucht, um eine Gewinnoption zu wählen. Der Standardwert ist eine.')),
         function() { // callback function.
             let title = $('#poll-title'),
                 options = $('#poll-options'),
@@ -209,7 +209,7 @@ $(function() {
                         // Close the modal.
                         $('#poll-open').modal('toggle');
                         // Alert the user.
-                        toastr.success('Successfully opened the poll!');
+                        toastr.success('Umfrage erfolgreich eröffnet!');
                     });
             }
         }).modal('toggle');

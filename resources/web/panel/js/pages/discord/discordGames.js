@@ -55,7 +55,7 @@ $(function() {
             // Toggle the settings button.
             $('#' + name.replace('Toggle', 'Settings')).prop('disabled', !checked);
             // Alert the user.
-            toastr.success('Successfully ' + (checked ? 'enabled' : 'disabled') + ' the game module!');
+            toastr.success('Das Spielmodul wurde erfolgreich ' + (checked ? 'aktiviert' : 'deaktiviert') + '!');
         });
     });
 
@@ -66,21 +66,21 @@ $(function() {
                     'discordRollReward', 'discordRollReward', 'discordRollReward'],
             keys: ['rewards_0', 'rewards_1', 'rewards_2', 'rewards_3', 'rewards_4', 'rewards_5']
         }, true, function(e) {
-            helpers.getModal('roll-settings', 'Dice Roll Settings', 'Save', $('<form/>', {
+            helpers.getModal('roll-settings', 'Würfelwurf Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the reward 1.
-            .append(helpers.getInputGroup('reward-1', 'number', 'Double 1s Reward', '', e.rewards_0, 'Reward for rolling double 1s.'))
+            .append(helpers.getInputGroup('reward-1', 'number', 'Doppelte 1er Belohnung', '', e.rewards_0, 'Belohnung für den Wurf von doppelten 1er.'))
             // Add the reward 2.
-            .append(helpers.getInputGroup('reward-2', 'number', 'Double 2s Reward', '', e.rewards_1, 'Reward for rolling double 2s.'))
+            .append(helpers.getInputGroup('reward-2', 'number', 'Doppelte 2er Belohnung', '', e.rewards_1, 'Belohnung für den Wurf von doppelten 2er.'))
             // Add the reward 3.
-            .append(helpers.getInputGroup('reward-3', 'number', 'Double 3s Reward', '', e.rewards_2, 'Reward for rolling double 3s.'))
+            .append(helpers.getInputGroup('reward-3', 'number', 'Doppelte 3er Belohnung', '', e.rewards_2, 'Belohnung für den Wurf von doppelten 3er.'))
             // Add the reward 4.
-            .append(helpers.getInputGroup('reward-4', 'number', 'Double 4s Reward', '', e.rewards_3, 'Reward for rolling double 4s.'))
+            .append(helpers.getInputGroup('reward-4', 'number', 'Doppelte 4er Belohnung', '', e.rewards_3, 'Belohnung für den Wurf von doppelten 4er.'))
             // Add the reward 5.
-            .append(helpers.getInputGroup('reward-5', 'number', 'Double 5s Reward', '', e.rewards_4, 'Reward for rolling double 5s.'))
+            .append(helpers.getInputGroup('reward-5', 'number', 'Doppelte 5er Belohnung', '', e.rewards_4, 'Belohnung für den Wurf von doppelten 5er.'))
             // Add the reward 6.
-            .append(helpers.getInputGroup('reward-6', 'number', 'Double 6s Reward', '', e.rewards_5, 'Reward for rolling double 6s.')),
+            .append(helpers.getInputGroup('reward-6', 'number', 'Doppelte 6er Belohnung', '', e.rewards_5, 'Belohnung für den Wurf von doppelten 6er.')),
             function() { // Callback for when the user clicks save.
                 let values = [];
 
@@ -104,7 +104,7 @@ $(function() {
                     // Close the modal.
                     $('#roll-settings').modal('toggle');
                     // Alert the user.
-                    toastr.success('Successfully updated the dice roll settings!');
+                    toastr.success('Würfelwurf-Einstellungen erfolgreich aktualisiert!');
                 });
             }).modal('toggle');
         });
@@ -118,7 +118,7 @@ $(function() {
                     'discordSlotMachineEmojis', 'discordSlotMachineEmojis'],
             keys: ['reward_0', 'reward_1', 'reward_2', 'reward_3', 'reward_4', 'emoji_0', 'emoji_1', 'emoji_2', 'emoji_3', 'emoji_4']
         }, true, function(e) {
-            helpers.getModal('slotmachine-game', 'Slot Machine Settings', 'Save', $('<form/>', {
+            helpers.getModal('slotmachine-game', 'Slot Machine Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.
@@ -127,33 +127,33 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Reward Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'Belohnungseinstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the reward 1 slot.
-                .append(helpers.getInputGroup('reward-1', 'number', 'Slot Reward One', '', e.reward_0, 'Reward for the first slot.'))
+                .append(helpers.getInputGroup('reward-1', 'number', 'Slot Eins Belohnung', '', e.reward_0, 'Belohnung für den ersten Slot.'))
                 // Add the reward 2 slot.
-                .append(helpers.getInputGroup('reward-2', 'number', 'Slot Reward Two', '', e.reward_1, 'Reward for the second slot.'))
+                .append(helpers.getInputGroup('reward-2', 'number', 'Slot Zwei Belohnung', '', e.reward_1, 'Belohnung für den zweiten Slot.'))
                 // Add the reward 3 slot.
-                .append(helpers.getInputGroup('reward-3', 'number', 'Slot Reward Three', '', e.reward_2, 'Reward for the third slot.'))
+                .append(helpers.getInputGroup('reward-3', 'number', 'Slot Drei Belohnung', '', e.reward_2, 'Belohnung für den dritten Slot.'))
                 // Add the reward 4 slot.
-                .append(helpers.getInputGroup('reward-4', 'number', 'Slot Reward Four', '', e.reward_3, 'Reward for the forth slot.'))
+                .append(helpers.getInputGroup('reward-4', 'number', 'Slot Vier Belohnung', '', e.reward_3, 'Belohnung für den vierten Slot.'))
                 // Add the reward 5 slot.
-                .append(helpers.getInputGroup('reward-5', 'number', 'Slot Reward Five', '', e.reward_4, 'Reward for the fifth slot.'))))
+                .append(helpers.getInputGroup('reward-5', 'number', 'Slot Fünf Belohnung', '', e.reward_4, 'Belohnung für den fünften Slot.'))))
             // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Emoji Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-2', 'Emoji-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the emoji 1 slot.
-                .append(helpers.getInputGroup('emoji-1', 'text', 'Slot emoji One', '', e.emoji_0, 'emoji for the first slot.'))
+                .append(helpers.getInputGroup('emoji-1', 'text', 'Slot Eins Emoji', '', e.emoji_0, 'Emoji für den ersten Slot.'))
                 // Add the emoji 2 slot.
-                .append(helpers.getInputGroup('emoji-2', 'text', 'Slot emoji Two', '', e.emoji_1, 'emoji for the second slot.'))
+                .append(helpers.getInputGroup('emoji-2', 'text', 'Slot Zwei Emoji', '', e.emoji_1, 'Emoji für den zweiten Slot.'))
                 // Add the emoji 3 slot.
-                .append(helpers.getInputGroup('emoji-3', 'text', 'Slot emoji Three', '', e.emoji_2, 'emoji for the third slot.'))
+                .append(helpers.getInputGroup('emoji-3', 'text', 'Slot Drei Emoji', '', e.emoji_2, 'Emoji für den dritten Slot.'))
                 // Add the emoji 4 slot.
-                .append(helpers.getInputGroup('emoji-4', 'text', 'Slot emoji Four', '', e.emoji_3, 'emoji for the forth slot.'))
+                .append(helpers.getInputGroup('emoji-4', 'text', 'Slot Vier Emoji', '', e.emoji_3, 'Emoji für den vierten Slot.'))
                 // Add the emoji 5 slot.
-                .append(helpers.getInputGroup('emoji-5', 'text', 'Slot emoji Five', '', e.emoji_4, 'emoji for the fifth slot.'))))),
+                .append(helpers.getInputGroup('emoji-5', 'text', 'Slot Fünf Emoji', '', e.emoji_4, 'Emoji für den fünften Slot.'))))),
             function() { // Callback for when the user clicks save.
                 let values = [];
 
@@ -188,7 +188,7 @@ $(function() {
                     // Close the modal.
                     $('#slotmachine-game').modal('toggle');
                     // Alert the user.
-                    toastr.success('Successfully updated the slot machine settings!');
+                    toastr.success('Slot Machine Einstellungen erfolgreich aktualisiert!');
                 });
             }).modal('toggle');
         });
@@ -200,21 +200,21 @@ $(function() {
             tables: ['discordGambling', 'discordGambling', 'discordGambling', 'discordGambling'],
             keys: ['winGainPercent', 'winRange', 'max', 'min']
         }, true, function(e) {
-            helpers.getModal('gambling-settings', 'Gambling Settings', 'Save', $('<form/>', {
+            helpers.getModal('gambling-settings', 'Glücksspieleinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the gambling gain percent.
-            .append(helpers.getInputGroup('gambling-gain', 'number', 'Gambling Gain Percent', '', e.winGainPercent,
-                'How many points are given based on what the user gambled. The gambled amount is always given back.'))
+            .append(helpers.getInputGroup('gambling-gain', 'number', 'Prozentsatz der Gewinnspanne', '', e.winGainPercent,
+                'Wie viele Punkte werden vergeben, je nachdem, was der Benutzer gespielt hat. Der gespielte Betrag wird immer zurückgegeben.'))
             // Add the gambling win range.
-            .append(helpers.getInputGroup('gambling-range', 'number', 'Gambling Winning Range', '', e.winRange,
-                'The winning range of the gambling game. Anything gambled below this number will be a lost. Maximum is 100.'))
+            .append(helpers.getInputGroup('gambling-range', 'number', 'Gewinnspanne für Glücksspiele', '', e.winRange,
+                'Die Gewinnspanne des Glücksspiels. Alles, was unter dieser Zahl gespielt wird, ist verloren. Das Maximum ist 100.'))
             // Add the gambling max.
-            .append(helpers.getInputGroup('gambling-max', 'number', 'Gambling Maximum Amount', '', e.max,
-                'The maximum amount of points that can be gambled at once.'))
+            .append(helpers.getInputGroup('gambling-max', 'number', 'Glücksspielbetrag', '', e.max,
+                'Die maximale Anzahl von Punkten, die auf einmal gespielt werden können.'))
             // Add the gambling min.
-            .append(helpers.getInputGroup('gambling-min', 'number', 'Gambling Minimum Amount', '', e.min,
-                'The minimum amount of points that can be gambled at once.')),
+            .append(helpers.getInputGroup('gambling-min', 'number', 'Mindestbetrag für Glücksspiele', '', e.min,
+                'Die Mindestpunktzahl, die auf einmal gespielt werden kann.')),
             function() { // Callback once the user clicks save.
                 let winGain = $('#gambling-gain'),
                     winRange = $('#gambling-range'),
@@ -237,7 +237,7 @@ $(function() {
                                 // Close the modal.
                                 $('#gambling-settings').modal('toggle');
                                 // Alert the user.
-                                toastr.success('Successfully updated gambling settings!');
+                                toastr.success('Glücksspiel-Einstellungen erfolgreich aktualisiert!');
                             });
                         });
                 }

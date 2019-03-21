@@ -23,11 +23,11 @@ $(function() {
         keys: ['modLogs', 'cbenniToggle', 'customCommandLogs', 'modLogChannel']
     }, true, function(e) {
         // Mod toggle.
-        $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Yes' : 'No'));
+        $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Ja' : 'Nein'));
         // Cbenni toggle.
-        $('#twitch-mod-logviewer').val((e['cbenniToggle'] === 'true' ? 'Yes' : 'No'));
+        $('#twitch-mod-logviewer').val((e['cbenniToggle'] === 'true' ? 'Ja' : 'Nein'));
         // Commands toggle.
-        $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
+        $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Ja' : 'Nein'));
         // Log channels
         $('#twitch-mod-channel, #twitch-command-channel').val((e['modLogChannel'] == null ? '' : e['modLogChannel']));
     });
@@ -37,9 +37,9 @@ $(function() {
 $(function() {
     // Save button.
     $('#discord-logging-save').on('click', function() {
-    	let moderationLogs = $('#twitch-mod-log').find(':selected').text() === 'Yes',
-    		moderationCBenni = $('#twitch-mod-logviewer').find(':selected').text() === 'Yes',
-    		customCommandLog = $('#twitch-command-log').find(':selected').text() === 'Yes',
+    	let moderationLogs = $('#twitch-mod-log').find(':selected').text() === 'Ja',
+    		moderationCBenni = $('#twitch-mod-logviewer').find(':selected').text() === 'Ja',
+    		customCommandLog = $('#twitch-command-log').find(':selected').text() === 'Ja',
     		logChannel = $('#twitch-mod-channel');
 
     	// Make sure all settings are entered corretly.
@@ -56,7 +56,7 @@ $(function() {
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {
                         socket.sendCommand('moderation_reload_settings', 'reloadmoderation', function () {
     	    			    // Alert the user.
-    	    			    toastr.success('Successfully updated the logs settings!');
+    	    			    toastr.success('Protokoll-Einstellungen erfolgreich aktualisiert!');
                         });
     	    		});
     	    	});

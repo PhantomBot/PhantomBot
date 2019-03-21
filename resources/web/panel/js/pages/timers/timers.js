@@ -75,9 +75,9 @@ $(run = function() {
                     { 'width': '3%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Id' },
-                    { 'title': 'Message' },
-                    { 'title': 'Actions' }
+                    { 'title': 'ID' },
+                    { 'title': 'Nachricht' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -86,8 +86,8 @@ $(run = function() {
                 let timerId = $(this).data('notice');
 
                 // Ask the user if he want to remove the timer.
-                helpers.getConfirmDeleteModal('timer_modal_remove', 'Are you sure you want to remove timer with ID ' + timerId + '?', true,
-                    'You\'ve successfully removed timer with ID ' + timerId + '!', function() {
+                helpers.getConfirmDeleteModal('timer_modal_remove', 'Sind Sie sicher, dass Du den Timer mit der ID ' + timerId + ' entfernen möchten?', true,
+                    'Du hast den Timer mit der ID ' + timerId + ' erfolgreich entfernt!', function() {
                     // Remove the timer
                     socket.sendCommand('notice_remove_cmd', 'notice removesilent ' + timerId, function() {
                         // Reload the table.
@@ -102,11 +102,11 @@ $(run = function() {
                     t = $(this);
 
                 socket.getDBValue('notice_get_edit', 'notices', 'message_' + notice, function(e) {
-                    helpers.getModal('edit-timer', 'Edit Timer', 'Save', $('<form/>', {
+                    helpers.getModal('edit-timer', 'Timer bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append timer text.
-                    .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer Message', '', e.notices, 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
+                    .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer-Nachricht', '', e.notices, 'Nachricht dieses Timers. Verwenden Sie das Präfix "command:" und dann den Namen des Befehls, um einen Befehl auszuführen.')),
                     // Callback once the user clicks save.
                     function() {// Callback once we click the save button.
                         let noticeText = $('#notice-text');
@@ -123,7 +123,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-timer').modal('hide');
                                     // Alert the user.
-                                    toastr.success('Successfully edited the timer!');
+                                    toastr.success('Timer erfolgreich bearbeitet!');
                                 });
                         }
                     }).modal('toggle');

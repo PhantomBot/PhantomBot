@@ -72,9 +72,9 @@ $(run = function() {
                     { 'width': '45%', 'targets': 0 }
                 ],
                 'columns': [
-                    { 'title': 'Username' },
-                    { 'title': 'Rank' },
-                    { 'title': 'Actions' }
+                    { 'title': 'Benutzername' },
+                    { 'title': 'Rang' },
+                    { 'title': 'Aktionen' }
                 ]
             });
 
@@ -83,8 +83,8 @@ $(run = function() {
                 let username = $(this).data('user'),
                     row = $(this).parents('tr');
 
-                helpers.getConfirmDeleteModal('custom_rank_modal_remove', 'Are you sure you want to remove ' + username + '\'s custom rank?', true,
-                    'You\'ve successfully removed ' + username + '\'s custom rank!', function() {
+                helpers.getConfirmDeleteModal('custom_rank_modal_remove', 'Bist du sicher, dass du den persönlichen Rang von ' + username + ' entfernen willst?', true,
+                    'Du hast erfolgreich den persönlichen Rang von ' + username + ' entfernt!', function() {
                     // Delete the rank
                     socket.removeDBValue('rm_custom_rank', 'viewerRanks', username, function() {
                         // Remove the table row.
@@ -100,13 +100,13 @@ $(run = function() {
 
                 // Get the rank info.
                 socket.getDBValue('rank_get_name', 'viewerRanks', user, function(e) {
-                    helpers.getModal('edit-set-rank', 'Edit User Rank', 'Save', $('<form/>', {
+                    helpers.getModal('edit-set-rank', 'Benutzerrang bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append alias name.
-                    .append(helpers.getInputGroup('rank-user', 'text', 'Username', '', user, 'Name of the user for the rank to be set on.'))
+                    .append(helpers.getInputGroup('rank-user', 'text', 'Benutzer', '', user, 'Name des Benutzers, für den der Rang gesetzt werden soll.'))
                     // Append alias.
-                    .append(helpers.getInputGroup('rank-name', 'text', 'Rank', '', e.viewerRanks, 'Rank name to give to the user')), function() {// Callback once we click the save button.
+                    .append(helpers.getInputGroup('rank-name', 'text', 'Rang', '', e.viewerRanks, 'Rangname, der dem Benutzer gegeben werden soll.')), function() {// Callback once we click the save button.
                         let rankUser = $('#rank-user'),
                             rankName = $('#rank-name');
 
@@ -126,7 +126,7 @@ $(run = function() {
                                         // Close the modal.
                                         $('#edit-set-rank').modal('hide');
                                         // Alert the user.
-                                        toastr.success('Successfully edited the user rank!');
+                                        toastr.success('Benutzerrang erfolgreich bearbeitet!');
                                     });
                                 });
                         }
@@ -147,13 +147,13 @@ $(function() {
 
     // Add user rank button.
     $('#rank-user-button').on('click', function() {
-        helpers.getModal('set-rank', 'Set User Rank', 'Save', $('<form/>', {
+        helpers.getModal('set-rank', 'Benutzerrang festlegen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append alias name.
-        .append(helpers.getInputGroup('rank-user', 'text', 'Username', 'PhantomBot', '', 'Name of the user for the rank to be set on.'))
+        .append(helpers.getInputGroup('rank-user', 'text', 'Benutzer', 'PhantomBotDE', '', 'Name des Benutzers, für den der Rang gesetzt werden soll.'))
         // Append alias.
-        .append(helpers.getInputGroup('rank-name', 'text', 'Rank', 'Bot', '', 'Rank name to give to the user.')), function() {// Callback once we click the save button.
+        .append(helpers.getInputGroup('rank-name', 'text', 'Rang', 'Bot', '', 'Rangname, der dem Benutzer gegeben werden soll.')), function() {// Callback once we click the save button.
             let rankUser = $('#rank-user'),
                 rankName = $('#rank-name');
 
@@ -170,7 +170,7 @@ $(function() {
                         // Close the modal.
                         $('#set-rank').modal('hide');
                         // Alert the user.
-                        toastr.success('Successfully added the rank to the user!');
+                        toastr.success('Dem Benutzer wurde erfolgreich der Rang hinzugefügt!');
                     });
             }
         }).modal('toggle');
@@ -182,13 +182,13 @@ $(function() {
             tables: ['settings', 'settings'],
             keys: ['rankEligableTime', 'rankEligableCost']
         }, true, function(e) {
-            helpers.getModal('settings-rank', 'Rank Settings', 'Save', $('<form/>', {
+            helpers.getModal('settings-rank', 'Rangeinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append alias name.
-            .append(helpers.getInputGroup('rank-cost', 'number', 'Rank Cost', '', e.rankEligableCost, 'How much a custom rank will cost for a user.'))
+            .append(helpers.getInputGroup('rank-cost', 'number', 'Rangkosten', '', e.rankEligableCost, 'Wie viel ein persönlicher Rang den Benutzer kostet.'))
             // Append alias.
-            .append(helpers.getInputGroup('rank-time', 'number', 'Rank Hours', '', e.rankEligableTime, 'How many hours a user needs before they can buy a custom rank.')), function() {// Callback once we click the save button.
+            .append(helpers.getInputGroup('rank-time', 'number', 'Rangstunden', '', e.rankEligableTime, 'Wie viele Stunden ein Benutzer benötigt, bevor er einen persönlichen Rang kaufen kann.')), function() {// Callback once we click the save button.
                 let rankCost = $('#rank-cost'),
                     rankTime = $('#rank-time');
 
@@ -207,7 +207,7 @@ $(function() {
                             // Close the modal.
                             $('#settings-rank').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully updated rank settings');
+                            toastr.success('Rang-Einstellungen erfolgreich aktualisiert.');
                         });
                 }
             }).modal('toggle');

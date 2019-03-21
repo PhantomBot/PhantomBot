@@ -153,7 +153,7 @@ $(function() {
                     socket.sendCommand('queue_permisison_update', 'permcomsilent joinqueue ' + helpers.getGroupIdByName(permission, true), function() {
                         socket.updateDBValue('queue_command_cost', 'pricecom', 'joinqueue', cost.val(), function() {
                             socket.wsEvent('queue_open_ws', QUEUE_SCRIPT, null, ['open', size.val(), title.val()], function() {
-                                toastr.success('Successfully opened the queue!');
+                                toastr.success('Warteschlange erfolgreich eröffnet!');
                                 // Update the button.
                                 $('#open-or-close-queue').html($('<i/>', {
                                     'class': 'fa fa-lock'
@@ -164,7 +164,7 @@ $(function() {
             }
         } else {
             socket.wsEvent('close_queue_ws', QUEUE_SCRIPT, null, ['close'], function() {
-                toastr.success('Successfully closed the queue!');
+                toastr.success('Warteschlange erfolgreich geschlossen!');
                 clearQueueInput();
                 // Update the button.
                 $('#open-or-close-queue').html($('<i/>', {
@@ -177,7 +177,7 @@ $(function() {
     // Clear queue command.
     $('#reset-queue').on('click', function() {
         socket.wsEvent('clear_queue_ws', QUEUE_SCRIPT, null, ['clear'], function() {
-            toastr.success('Successfully cleared the queue!');
+            toastr.success('Warteschlange erfolgreich geleert!');
             clearQueueInput();
             helpers.temp.updateQueueList();
         });
@@ -185,11 +185,11 @@ $(function() {
 
     // Draw users command.
     $('#draw-queue').on('click', function() {
-        helpers.getModal('queue-draw-users', 'Draw Users', 'Draw', $('<form/>', {
+        helpers.getModal('queue-draw-users', 'Benutzer ziehen', 'Ziehen', $('<form/>', {
             'role': 'form'
         })
         // Append amount to draw
-        .append(helpers.getInputGroup('draw-amount', 'number', 'Number of Users to Pick', '', '1', 'The amount of users to be drawn from the queue.')),
+        .append(helpers.getInputGroup('draw-amount', 'number', 'Anzahl der zu wählenden Benutzer', '', '1', 'Die Anzahl der Benutzer, die aus der Warteschlange gezogen werden sollen.')),
         // Callback.
         function() {
             let amount = $('#draw-amount');
@@ -200,7 +200,7 @@ $(function() {
                 default:
                     socket.wsEvent('draw_queue_users', QUEUE_SCRIPT, null, ['pick', amount.val()], function() {
                         // Alert the user.
-                        toastr.success('Drew ' + amount.val() + ' users from the queue!');
+                        toastr.success(amount.val() + ' Benutzer aus der Warteschlange gezogen!');
                         // Update the list.
                         helpers.temp.updateQueueList();
                         // Close the modal.

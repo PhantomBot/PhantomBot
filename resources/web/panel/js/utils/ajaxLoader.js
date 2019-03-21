@@ -38,7 +38,7 @@ $(function() {
                 'async': true,
                 'src': 'panel/js/pages/global.js'
             }));
-            helpers.log('Page shown', helpers.LOG_TYPE.DEBUG);
+            helpers.log('Seite angezeigt', helpers.LOG_TYPE.DEBUG);
         }
     }
 
@@ -51,7 +51,7 @@ $(function() {
     function loadPage(folder, page, href) {
         // Make sure the href isn't blank, then load the page.
         if (page !== '') {
-            helpers.log('Starting ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
+            helpers.log('Starten einer Ajax-Anfrage für die Seite: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
             // Start pace loading.
             if (href === undefined) {
                 Pace.stop();
@@ -80,7 +80,7 @@ $(function() {
                         // Update URL.
                         window.history.pushState(null, '', '/panel');
                     }
-                    helpers.log('Completed ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
+                    helpers.log('Ajax-Anfrage für Seite abgeschlossen: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
                 },
                 error: function(err) {
                     helpers.logError('Failed to load page (' + page + ') => ' + err.statusText, helpers.LOG_TYPE.FORCE);

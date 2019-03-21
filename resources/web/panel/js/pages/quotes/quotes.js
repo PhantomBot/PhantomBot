@@ -81,12 +81,12 @@ $(run = function() {
                     { 'width': '45%', 'targets': 4 }
                 ],
                 'columns': [
-                    { 'title': 'Id' },
-                    { 'title': 'Created On', 'orderData': [1] },
-                    { 'title': 'Username' },
-                    { 'title': 'Game' },
-                    { 'title': 'Quote' },
-                    { 'title': 'Action' }
+                    { 'title': 'ID' },
+                    { 'title': 'Erstellt am', 'orderData': [1] },
+                    { 'title': 'Benutzername' },
+                    { 'title': 'Spiel' },
+                    { 'title': 'Zitat' },
+                    { 'title': 'Aktion' }
                 ]
             });
 
@@ -95,8 +95,8 @@ $(run = function() {
                 let quoteId = $(this).data('quote');
 
                 // Ask the user if the wants to remove the quote.
-                helpers.getConfirmDeleteModal('quote_modal_remove', 'Are you sure you want to remove quote with ID ' + quoteId + '?', true,
-                    'You\'ve successfully removed quote with ID ' + quoteId + '!', function() {
+                helpers.getConfirmDeleteModal('quote_modal_remove', 'Sind Sie sicher, dass Sie das Zitat mit der ID ' + quoteId + ' entfernen möchten?', true,
+                    'Du hast erfolgreich das Zitat mit der ID ' + quoteId + ' entfernt!', function() {
                     // Delete the quote.
                     socket.sendCommandSync('rm_quote_cmd', 'delquotesilent ' + quoteId, function() {
                         // Reload the table.
@@ -114,17 +114,17 @@ $(run = function() {
                 socket.getDBValue('edit_quote_get', 'quotes', quote, function(e) {
                     let data = JSON.parse(e.quotes);
 
-                    helpers.getModal('edit-quote', 'Edit Quote', 'Save', $('<form/>', {
+                    helpers.getModal('edit-quote', 'Zitat bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append quote date.
-                    .append(helpers.getInputGroup('quote-date', 'text', 'Created On', '', helpers.getPaddedDateString(new Date(data[2]).toLocaleDateString()), 'Date the quote was created on.'))
+                    .append(helpers.getInputGroup('quote-date', 'text', 'Erstellt am', '', helpers.getPaddedDateString(new Date(data[2]).toLocaleDateString()), 'Datum, an dem das Zitat erstellt wurde.'))
                     // Append quote creator
-                    .append(helpers.getInputGroup('quote-user', 'text', 'Created By', '', data[0], 'The user who created the quote.'))
+                    .append(helpers.getInputGroup('quote-user', 'text', 'Erstellt von', '', data[0], 'Der Benutzer, der das Zitat erstellt hat.'))
                     // Append quote game
-                    .append(helpers.getInputGroup('quote-game', 'text', 'Game', '', data[3], 'Game being played when the quote was created.'))
+                    .append(helpers.getInputGroup('quote-game', 'text', 'Spiel', '', data[3], 'Das Spiel das gespielt wurde, als das Zitat verfasst wurde.'))
                     // Append quote
-                    .append(helpers.getTextAreaGroup('quote-quote', 'text', 'Quote', '', data[1], 'Quote text.', false)), function() {// Callback once we click the save button.
+                    .append(helpers.getTextAreaGroup('quote-quote', 'text', 'Zitat', '', data[1], 'Zitattext.', false)), function() {// Callback once we click the save button.
                         let quoteDate = $('#quote-date'),
                             quoteUser = $('#quote-user'),
                             quoteGame = $('#quote-game'),
@@ -156,7 +156,7 @@ $(run = function() {
                                     // Close the modal.
                                     $('#edit-quote').modal('hide');
                                     // Alert the user.
-                                    toastr.success('Successfully edited the quote!');
+                                    toastr.success('Zitat erfolgreich bearbeitet!');
                                 });
                         }
                     }).modal('toggle');
@@ -176,11 +176,11 @@ $(function() {
 
     // Add quote button.
     $('#add-quote-button').on('click', function() {
-        helpers.getModal('add-quote', 'Add Quote', 'Save', $('<form/>', {
+        helpers.getModal('add-quote', 'Zitat hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Quote input.
-        .append(helpers.getTextAreaGroup('quote-quote', 'text', 'Quote', 'PhantomBot is great!', '', 'Quote text.', false)), function() {// Callback once we click the save button.
+        .append(helpers.getTextAreaGroup('quote-quote', 'text', 'Zitat', 'PhantomBotDE ist Klasse!', '', 'Zitattext.', false)), function() {// Callback once we click the save button.
             let quoteQuote = $('#quote-quote');
 
             // Handle each input to make sure they have a value.
@@ -195,7 +195,7 @@ $(function() {
                         // Close the modal.
                         $('#add-quote').modal('hide');
                         // Alert the user.
-                        toastr.success('Successfully added quote!');
+                        toastr.success('Zitat erfolgreich hinzugefügt!');
                     });
             }
         }).modal('toggle');
@@ -204,11 +204,12 @@ $(function() {
     // Quotes settings button.
     $('#quote-settings-button').on('click', function() {
         socket.getDBValue('get_quote_settings', 'settings', 'quoteMessage', function(e) {
-            helpers.getModal('quote-settings', 'Quote Settings', 'Save', $('<form/>', {
+            helpers.getModal('quote-settings', 'Zitier-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Quote input.
-            .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)", by (user) ((date))'), 'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)')), function() {// Callback once we click the save button.
+            .append(helpers.getInputGroup('quote-msg', 'text', 'Zitat Antwort', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)" von (user) ((date))'),
+                'Nachricht, die in den Chat gesendet werden soll, wenn jemand den Zitat-Befehl verwendet. Tags: (id), (quote), (user), (game) und (date)')), function() {// Callback once we click the save button.
                 let quoteMsg = $('#quote-msg');
 
                 // Handle each input to make sure they have a value.
@@ -221,7 +222,7 @@ $(function() {
                             // Close the modal.
                             $('#quote-settings').modal('hide');
                             // Alert the user.
-                            toastr.success('Successfully saved quote settings!');
+                            toastr.success('Zitat-Einstellungen erfolgreich gespeichert!');
                         });
                 }
             }).modal('toggle');
