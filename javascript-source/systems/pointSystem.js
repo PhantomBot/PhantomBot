@@ -433,7 +433,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -469,7 +469,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -498,7 +498,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -772,7 +772,7 @@
             // Replace everything that is not \w
             action = $.user.sanitize(action);
 
-            if (!$.user.isKnown(action)) {
+            if (!$.user.isKnown(action) || $.isTwitchBot(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.404'));
                 return;
             }
