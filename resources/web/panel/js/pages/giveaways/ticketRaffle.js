@@ -87,7 +87,7 @@ $(function() {
 
     // Open/close raffle button.
     $('#ticket-open-or-close-raffle').on('click', function() {
-        if ($(this)[0].innerText.trim() === 'Open') {
+        if ($(this)[0].innerText.trim() === 'Öffnen') {
             const cost = $('#ticket-raffle-cost'),
                 maxTicket = $('#ticket-raffle-max'),
                 elegibility = $('#ticket-raffle-perm').val(),
@@ -120,7 +120,7 @@ $(function() {
                 // Update the button.
                 $('#ticket-open-or-close-raffle').html($('<i/>', {
                     'class': 'fa fa-unlock-alt'
-                })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
             });
         }
     });
@@ -145,7 +145,7 @@ $(function() {
 
         $('#ticket-open-or-close-raffle').html($('<i/>', {
             'class': 'fa fa-unlock-alt'
-        })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+        })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function() {

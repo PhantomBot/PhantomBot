@@ -138,7 +138,7 @@ $(function() {
 
     // Queue open/close button.
     $('#open-or-close-queue').on('click', function() {
-        if ($(this)[0].innerText.trim() === 'Open') {
+        if ($(this)[0].innerText.trim() === 'Öffnen') {
             let title = $('#queue-title'),
                 cost = $('#queue-cost'),
                 size = $('#queue-size'),
@@ -169,7 +169,7 @@ $(function() {
                 // Update the button.
                 $('#open-or-close-queue').html($('<i/>', {
                     'class': 'fa fa-unlock-alt'
-                })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
             });
         }
     });

@@ -72,7 +72,7 @@ $(function() {
 
     // Open/Close button.
     $('#open-or-close-auction').on('click', function() {
-        if ($(this)[0].innerText.trim() === 'Open') {
+        if ($(this)[0].innerText.trim() === 'Öffnen') {
             const commandLevel = $('#auction-perm').find(':selected').text(),
                 minBet = $('#auction-bet'),
                 incre = $('#auction-inc'),
@@ -105,7 +105,7 @@ $(function() {
                 // Update the button.
                 $('#open-or-close-auction').html($('<i/>', {
                     'class': 'fa fa-unlock-alt'
-                })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
             });
         }
     });
@@ -124,7 +124,7 @@ $(function() {
 
             $('#open-or-close-auction').html($('<i/>', {
                 'class': 'fa fa-unlock-alt'
-            })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+            })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
         });
     });
 });
