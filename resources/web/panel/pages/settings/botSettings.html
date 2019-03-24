@@ -17,11 +17,11 @@
     <!-- Header -->
     <section class="content-header">
         <!-- Page title.-->
-        <h1>Bot Settings</h1>
+        <h1>Bot-Einstellungen</h1>
 
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li>Settings</li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
+            <li>Einstellungen</li>
             <li class="active">Bot</li>
         </ol>
     </section>
@@ -30,8 +30,8 @@
     <section class="content">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#bot_logging" data-toggle="tab">Logging</a></li>
-                <li><a href="#bot_out" data-toggle="tab">Message Output</a></li>
+                <li class="active"><a href="#bot_logging" data-toggle="tab">Protokollierung</a></li>
+                <li><a href="#bot_out" data-toggle="tab">Nachrichtenausgabe</a></li>
             </ul>
 
             <div class="tab-content">
@@ -39,42 +39,42 @@
                 <div class="tab-pane active" id="bot_logging">
                     <div class="form-group">
                         <!-- Log events toggle. -->
-                        <label>Log Events</label>
+                        <label>Ereignisse protokollieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="logging-events" style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Log errors toggle. -->
                     <div class="form-group">
-                        <label>Log Errors</label>
+                        <label>Fehler protokollieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="logging-errors" style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Log chat toggle. -->
                     <div class="form-group">
-                        <label>Log Chat</label>
+                        <label>Chat protokollieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="logging-chat" style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Logs keep days. -->
                     <div class="form-group">
-                        <label>Days to Keep Logs</label>
+                        <label>Tage zur Aufbewahrung der Protokolle</label>
                         <input type="number" class="form-control" id="log-days" placeholder="15" data-toggle="tooltip"
-                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                            title="Wie lange in Tagen, um Protokolle aufzubewahren. 0 bedeutet, dass Protokolle niemals gelöscht werden."/>
                     </div>
                 </div>
 
@@ -82,36 +82,36 @@
                 <div class="tab-pane" id="bot_out">
                     <!-- Whisper mode. -->
                     <div class="form-group">
-                        <label>Enable Whisper Mode</label>
+                        <label>Flüstermodus aktivieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="bot-whisper-mode" style="cursor: pointer;" data-toggle="tooltip"
-                                title="Send all responses in whispers except for custom commands.">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Senden Sie alle Antworten als Flüsternachricht, mit Ausnahme von eigenen Befehlen.">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Action mode. -->
                     <div class="form-group">
-                        <label>Enable Action Mode</label>
+                        <label>Aktionsmodus aktivieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="bot-action-mode" style="cursor: pointer;" data-toggle="tooltip"
-                                title="Send all bot messages using colored text with /me.">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Senden Sie alle Bot-Nachrichten als farbigen Text mit /me.">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Mute mode. -->
                     <div class="form-group">
-                        <label>Mute Bot Replies</label>
+                        <label>Bot-Antworten stumm schalten</label>
                         <div class="dropdown">
                             <select class="form-control" id="bot-mute-mode" style="cursor: pointer;" data-toggle="tooltip"
-                                title="Mute all bot replies except for timeouts.">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Alle Bot-Antworten mit Ausnahme von Timeouts werden stumm geschaltet.">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
 
                 <!-- Box footer -->
                 <div class="box-footer" style="padding-right: 0px; padding-bottom: 0px;">
-                    <button type="button" class="btn btn-primary pull-right" id="bot-logging-save"> Save</button>
+                    <button type="button" class="btn btn-primary pull-right" id="bot-logging-save"> Speichern</button>
                 </div>
             </div>
         </div>

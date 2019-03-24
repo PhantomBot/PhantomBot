@@ -18,7 +18,7 @@
     <section class="content-header">
         <h1>Dashboard</h1>
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
             <li class="active">Dashboard</li>
         </ol>
     </section>
@@ -29,7 +29,7 @@
         <div class="row">
             <!-- Uptime Box -->
             <div class="col-lg-3 col-xs-6">
-                <div class="small-box bg-red" id="bg-uptime" data-toggle="tooltip" title="How long the current broadcast has been live for.">
+                <div class="small-box bg-red" id="bg-uptime" data-toggle="tooltip" title="Wie lange ist der aktuelle Stream schon live.">
                     <div class="inner">
                         <h3 id="dashboard-uptime">Offline</h3>
                         <p>Uptime</p>
@@ -42,10 +42,10 @@
 
             <!-- Views Box -->
             <div class="col-lg-3 col-xs-6">
-                <div class="small-box bg-teal" data-toggle="tooltip" title="The number of people who have viewed your channel. Click the number to hide.">
+                <div class="small-box bg-teal" data-toggle="tooltip" title="Die Anzahl der Personen, die deinen Kanal angesehen haben. Klick auf die Nummer, um sie auszublenden.">
                     <div class="inner">
                         <h3 id="dashboard-views" style="cursor: pointer;">0</h3>
-                        <p>Views</p>
+                        <p>Aufrufe</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-eye"></i>
@@ -55,7 +55,7 @@
 
             <!-- Followers Box -->
             <div class="col-lg-3 col-xs-6">
-                <div class="small-box bg-purple" data-toggle="tooltip" title="The number of followers the channel currently has. Click the number to hide.">
+                <div class="small-box bg-purple" data-toggle="tooltip" title="Die Anzahl der Follower, die der Kanal aktuell hat. Klick auf die Nummer, um sie auszublenden.">
                     <div class="inner">
                         <h3 id="dashboard-followers" style="cursor: pointer;">0</h3>
                         <p>Followers</p>
@@ -68,10 +68,10 @@
 
             <!-- Viewers Box -->
             <div class="col-lg-3 col-xs-6">
-                <div class="small-box bg-yellow" data-toggle="tooltip" title="The number of people currently watching the broadcast. Click the number to hide.">
+                <div class="small-box bg-yellow" data-toggle="tooltip" title="Die Anzahl der Personen, die derzeit den Stream sehen. Klick auf die Nummer, um sie auszublenden.">
                     <div class="inner">
                         <h3 id="dashboard-viewers" style="cursor: pointer;">0</h3>
-                        <p>Viewers</p>
+                        <p>Zuschauer</p>
                     </div>
                     <div class="icon icon-override">
                         <i class="fa fa-users"></i>
@@ -85,7 +85,7 @@
             <section class="col-lg-7">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Recent Events</h3>
+                        <h3 class="box-title">Aktuelle Ereignisse</h3>
                     </div>
                     <form role="form">
                         <!-- Box content -->
@@ -118,21 +118,21 @@
             <section class="col-lg-5">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Stream Information</h3>
+                        <h3 class="box-title">Stream-Informationen</h3>
                     </div>
                     <form role="form">
                         <!-- Box content -->
                         <div class="box-body">
                             <!-- Stream Title Input -->
                             <div class="form-group">
-                                <label>Title</label>
-                                <input type="text" class="form-control" id="stream-title" placeholder="Title This Broadcast" data-str="text" data-toggle="tooltip" title="The current stream title">
+                                <label>Titel</label>
+                                <input type="text" class="form-control" id="stream-title" placeholder="Titel dieses Streams" data-str="text" data-toggle="tooltip" title="Der aktuelle Stream-Titel">
                             </div>
 
                             <!-- Stream Game Input -->
                             <div class="form-group">
-                                <label>Game</label>
-                                <input type="text" class="form-control" id="stream-game" placeholder="Search for a Game or Category" data-str="text" data-toggle="tooltip" title="The current stream game">
+                                <label>Spiel</label>
+                                <input type="text" class="form-control" id="stream-game" placeholder="Nach einem Spiel oder einer Kategorie suchen" data-str="text" data-toggle="tooltip" title="Das aktuelle Stream-Spiele">
                             </div>
                         </div>
                         <!-- Footer of the box -->
@@ -145,22 +145,22 @@
                 <!-- Quick action box -->
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Quick Actions</h3>
+                        <h3 class="box-title">Schnelle Aktionen</h3>
                     </div>
                     <form role="form">
                         <!-- Box content -->
                         <div class="box-body">
                             <!-- Permit user -->
                             <div class="form-group">
-                                <label>User Action</label>
+                                <label>Benutzeraktion</label>
                                 <div class="input-group input-group-md">
-                                    <input type="text" class="form-control" id="user-action-user" placeholder="Username" data-toggle="tooltip" title="Enter a username.">
+                                    <input type="text" class="form-control" id="user-action-user" placeholder="Benutzername" data-toggle="tooltip" title="Gib einen Benutzernamen ein.">
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Actions
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Aktionen
                                             <span class="fa fa-caret-down"></span>
                                         </button>
                                         <ul class="dropdown-menu pull-right">
-                                            <li class="user-action"><a href="#">Permit</a></li>
+                                            <li class="user-action"><a href="#">Erlaubnis</a></li>
                                             <li class="user-action"><a href="#">Shoutout</a></li>
                                             <li class="user-action"><a href="#">Raid</a></li>
                                             <li class="user-action"><a href="#">Host</a></li>
@@ -171,7 +171,7 @@
 
                             <!-- Run command -->
                             <div class="form-group">
-                                <label>Run Command</label>
+                                <label>Befehl Ausführen</label>
                                 <select class="form-control select2 select2-hidden-accessible" id="custom-command-run" style="width: 100%;" aria-hidden="true">
                                     <option></option>
                                 </select>

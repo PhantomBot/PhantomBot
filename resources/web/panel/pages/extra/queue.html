@@ -22,7 +22,7 @@
     <!-- Header -->
     <section class="content-header">
         <!-- Page title and switch toggle. -->
-        <h1>Queue
+        <h1>Warteschlange
             <label class="switch" data-toggle="tooltip" title="Module toggle">
                 <input type="checkbox" id="queueModuleToggle" checked="true">
                 <span class="slider round"></span>
@@ -30,9 +30,9 @@
         </h1>
 
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
             <li>Extra</li>
-            <li class="active">Queue</li>
+            <li class="active">Warteschlange</li>
         </ol>
     </section>
 
@@ -43,7 +43,7 @@
             <div class="col-md-3" id="queueTable">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Queue List</h3>
+                        <h3 class="box-title">Warteschlangen Liste</h3>
                     </div>
 
                     <form role="form" id="queueListModule">
@@ -53,9 +53,9 @@
                                 <table class="table table-hover table-custom" id="queue-table" style="width: 100%;">
                                     <tr>
                                         <th style="width: 5%;">#</th>
-                                        <th style="width: 42.5%;">Username</th>
+                                        <th style="width: 42.5%;">Benutzername</th>
                                         <th style="width: 42.5%;">Gamertag</th>
-                                        <th style="width: 10%; text-align: right; padding-right: 16px;">Action</th>
+                                        <th style="width: 10%; text-align: right; padding-right: 16px;">Aktionen</th>
                                     </tr>
                                 </table>
                             </div>
@@ -68,7 +68,7 @@
             <div class="col-md-6">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Queue Options</h3>
+                        <h3 class="box-title">Warteschlangenoptionen</h3>
                     </div>
 
                     <form role="form" id="queueModule">
@@ -76,21 +76,21 @@
                         <div class="box-body" style="padding-bottom: 150px;">
                             <!-- Queue title -->
                             <div class="form-group">
-                                <lable>Title</lable>
+                                <lable>Titel</lable>
                                 <input type="text" class="form-control" id="queue-title" placeholder="Title of the queue"
-                                    data-toggle="tooltip" title="Title of the queue."/>
+                                    data-toggle="tooltip" title="Titel der Warteschlange."/>
                             </div>
 
                             <!-- Queue cost -->
                             <div class="form-group">
-                                <lable>Cost</lable>
-                                <input type="number" class="form-control" id="queue-cost" value="0" data-toggle="tooltip" title="Cost to join the queue."/>
+                                <lable>Kosten</lable>
+                                <input type="number" class="form-control" id="queue-cost" value="0" data-toggle="tooltip" title="Kosten für den Beitritt zur Warteschlange."/>
                             </div>
 
                             <!-- Queue max size -->
                             <div class="form-group">
                                 <lable>Max Size</lable>
-                                <input type="number" class="form-control" id="queue-size" value="0" data-toggle="tooltip" title="Max size of the queue. 0 is unlimited."/>
+                                <input type="number" class="form-control" id="queue-size" value="0" data-toggle="tooltip" title="Maximale Größe der Warteschlange. 0 ist unbegrenzt."/>
                             </div>
 
                             <!-- Queue permission -->
@@ -112,9 +112,9 @@
                         <!-- Footer with buttons -->
                         <div class="box-footer">
                             <div class="btn-toolbar pull-right">
-                                <button class="btn btn-success" type="button" id="open-or-close-queue"><i class="fa fa-unlock-alt"></i>&nbsp; Open</button>
-                                <button class="btn btn-primary" type="button" id="draw-queue"><i class="fa fa-trophy"></i>&nbsp; Draw</button>
-                                <button class="btn btn-danger" type="button" id="reset-queue"><i class="fa fa-trash"></i>&nbsp; Reset</button>
+                                <button class="btn btn-success" type="button" id="open-or-close-queue"><i class="fa fa-unlock-alt"></i>&nbsp; Öffnen</button>
+                                <button class="btn btn-primary" type="button" id="draw-queue"><i class="fa fa-trophy"></i>&nbsp; Ziehen</button>
+                                <button class="btn btn-danger" type="button" id="reset-queue"><i class="fa fa-trash"></i>&nbsp; Zurücksetzen</button>
                             </div>
                         </div>
                     </form>

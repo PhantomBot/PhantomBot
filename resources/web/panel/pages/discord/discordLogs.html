@@ -17,12 +17,12 @@
     <!-- Header -->
     <section class="content-header">
         <!-- Page title.-->
-        <h1>Discord Logging</h1>
+        <h1>Discord Protokollierung</h1>
 
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
             <li>Discord</li>
-            <li class="active">Logging</li>
+            <li class="active">Protokollierung</li>
         </ol>
     </section>
 
@@ -31,64 +31,64 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#discord_logs_pubsub" data-toggle="tab">Twitch Moderation</a></li>
-                <li><a href="#discord_logs_cmds" data-toggle="tab">Twitch Commands</a></li>
+                <li><a href="#discord_logs_cmds" data-toggle="tab">Twitch-Befehle</a></li>
             </ul>
 
             <div class="tab-content">
                 <!-- Twitch Moderation -->
                 <div class="tab-pane active" id="discord_logs_pubsub">
                     <div class="form-group">
-                        <label>Enable Twitch Moderation Logs</label>
+                        <label>Twitch Moderationsprotokolle aktivieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="twitch-mod-log" data-toggle="tooltip"
-                                title="Enables the moderation logs for the bot. A restart is required after enabling." style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Aktiviert die Moderationsprotokolle für den Bot. Nach der Freigabe ist ein Neustart erforderlich." style="cursor: pointer;">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Include <a href="https://cbenni.com/" target="_blank">Logviewer</a> Link</label>
+                        <label><a href="https://cbenni.com/" target="_blank">Logviewer-Link</a> einbinden</label>
                         <div class="dropdown">
                             <select class="form-control" id="twitch-mod-logviewer" data-toggle="tooltip"
-                                title="Include a link from Cbenni's Logviewer in the Discord log." style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Füge einen Link von Cbenni's Logviewer in das Discord-Log ein." style="cursor: pointer;">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Logging Channel</label>
+                        <label>Protokollierungskanal</label>
                         <input type="text" class="form-control" id="twitch-mod-channel" placeholder="#logs" data-toggle="tooltip"
-                            title="Which channel to post the moderation logs to."/>
+                            title="In welchen Kanal sollen die Moderationsprotokolle gepostet werden?"/>
                     </div>
                 </div>
 
                 <!-- Twitch Commands -->
                 <div class="tab-pane" id="discord_logs_cmds">
                     <div class="form-group">
-                        <label>Enable Twitch Command Logs</label>
+                        <label>Twitch Befehlsprotokolle aktivieren</label>
                         <div class="dropdown">
                             <select class="form-control" id="twitch-command-log" data-toggle="tooltip"
-                                title="Enables the logging for command edit, removing, and adding for Twitch." style="cursor: pointer;">
-                                <option>Yes</option>
-                                <option>No</option>
+                                title="Aktiviert die Protokollierung für das Bearbeiten, Entfernen und Hinzufügen von Befehlen für Twitch." style="cursor: pointer;">
+                                <option>Ja</option>
+                                <option>Nein</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Logging Channel</label>
+                        <label>Protokollierungskanal</label>
                         <input type="text" class="form-control" id="twitch-command-channel" placeholder="#logs" data-toggle="tooltip"
-                            title="Which channel to post the command logs to. Currently the same as the moderation log one." disabled="true"/>
+                            title="In welchen Kanal sollen die Befehlsprotokolle gepostet werden? Derzeit das gleiche wie das Moderationsprotokoll." disabled="true"/>
                     </div>
                 </div>
 
                 <!-- Box footer -->
                 <div class="box-footer" style="padding-right: 0px; padding-bottom: 0px;">
-                    <button type="button" class="btn btn-primary pull-right" id="discord-logging-save"> Save</button>
+                    <button type="button" class="btn btn-primary pull-right" id="discord-logging-save"> Speichern</button>
                 </div>
             </div>
         </div>

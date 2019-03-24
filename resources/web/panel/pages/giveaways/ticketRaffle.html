@@ -22,7 +22,7 @@
     <!-- Header -->
     <section class="content-header">
         <!-- Page title and switch toggle. -->
-        <h1>Ticket Raffle
+        <h1>Ticketverlosung
             <label class="switch" data-toggle="tooltip" title="Module toggle">
                 <input type="checkbox" id="ticketRaffleModuleToggle" checked="true">
                 <span class="slider round"></span>
@@ -30,9 +30,9 @@
         </h1>
 
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
             <li>Giveaways</li>
-            <li class="active">Ticket Raffle</li>
+            <li class="active">Ticketverlosung</li>
         </ol>
     </section>
 
@@ -43,7 +43,7 @@
             <div class="col-md-3" id="ticketRaffleTable">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Ticket Raffle List</h3>
+                        <h3 class="box-title">Ticket-Verlosungsliste</h3>
                     </div>
 
                     <form role="form" id="ticketRaffleListModule">
@@ -52,7 +52,7 @@
                             <div id="raffle-list">
                                 <table class="table table-hover table-custom" id="ticket-raffle-table" style="width: 100%;">
                                     <tr>
-                                        <th style="width: 80%;">Username</th>
+                                        <th style="width: 80%;">Benutzername</th>
                                         <th style="width: 20%;">Tickets</th>
                                     </tr>
                                 </table>
@@ -66,9 +66,9 @@
             <div class="col-md-6">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Ticket Raffle Options</h3>
+                        <h3 class="box-title">Ticket-Verlosungsoptionen</h3>
                         <span class="pull-right">
-                            <a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="Ticket Raffle settings" id="ticket-raffle-settings">
+                            <a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="Ticket-Verlosungseinstellungen" id="ticket-raffle-settings">
                                 <i class="fa fa-gears"></i>
                             </a>
                         </span>
@@ -79,14 +79,14 @@
                         <div class="box-body" style="padding-bottom: 90px;">
                             <!-- Command -->
                             <div class="form-group">
-                                <lable>Command</lable>
+                                <lable>Befehl</lable>
                                 <input type="text" class="form-control" value="!tickets"
-                                    data-toggle="tooltip" title="Command used to buy tickets. This cannot be changed." disabled/>
+                                    data-toggle="tooltip" title="Befehl, mit dem Tickets gekauft werden können. Dieser kann nicht geändert werden." disabled/>
                             </div>
 
                             <!-- Eligibility -->
                             <div class="form-group">
-                                <lable>Eligibility</lable>
+                                <lable>Berechtigung</lable>
                                 <select class="form-control" id="ticket-raffle-perm">
                                     <option value="-followers">Followers</option>
                                     <option selected="selected" value="">Everyone</option>
@@ -95,39 +95,39 @@
 
                             <!-- Ticket cost -->
                             <div class="form-group">
-                                <lable>Ticket Cost</lable>
+                                <lable>Ticket Kosten</lable>
                                 <input type="text" class="form-control" id="ticket-raffle-cost" value="1"
-                                    data-toggle="tooltip" title="How much each ticket cost."/>
+                                    data-toggle="tooltip" title="Wie viel kostet jedes Ticket?"/>
                             </div>
 
                             <!-- Maximum tickets -->
                             <div class="form-group">
-                                <lable>Maximum Allowed Tickets</lable>
+                                <lable>Maximal zulässige Tickets</lable>
                                 <input type="text" class="form-control" id="ticket-raffle-max" value="100"
-                                    data-toggle="tooltip" title="How many tickets users are allowed to buy."/>
+                                    data-toggle="tooltip" title="Wie viele Tickets dürfen Benutzer kaufen?"/>
                             </div>
 
                             <!-- Regular luck -->
                             <div class="form-group">
-                                <lable>Regulars Ticket Multiplier</lable>
+                                <lable>Stammzuschauer Ticket Multiplikator</lable>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-reg" value="1"
-                                    data-toggle="tooltip" title="Ticket multiplier for regulars. Multiplies the number of tickets the users buys with this number."/>
+                                    data-toggle="tooltip" title="Ticket-Multiplikator für Stammzuschauer. Multipliziert die Anzahl der Tickets, die die Benutzer kaufen, mit dieser Nummer."/>
                             </div>
 
                             <!-- Subscriber luck -->
                             <div class="form-group">
-                                <lable>Subscribers Ticket Multiplier</lable>
+                                <lable>Abonnenten Ticket-Multiplikator</lable>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-sub" value="1"
-                                    data-toggle="tooltip" title="Ticket multiplier for susbcribers. Multiplies the number of tickets the users buys with this number."/>
+                                    data-toggle="tooltip" title="Ticket-Multiplikator für Abonnenten. Multipliziert die Anzahl der Tickets, die die Benutzer kaufen, mit dieser Nummer."/>
                             </div>
                         </div>
 
                         <!-- Footer with buttons -->
                         <div class="box-footer">
                             <div class="btn-toolbar pull-right">
-                                <button class="btn btn-success" type="button" id="ticket-open-or-close-raffle"><i class="fa fa-unlock-alt"></i>&nbsp; Open</button>
-                                <button class="btn btn-primary" type="button" id="ticket-draw-raffle"><i class="fa fa-trophy"></i>&nbsp; Draw</button>
-                                <button class="btn btn-danger" type="button" id="ticket-reset-raffle"><i class="fa fa-trash"></i>&nbsp; Reset</button>
+                                <button class="btn btn-success" type="button" id="ticket-open-or-close-raffle"><i class="fa fa-unlock-alt"></i>&nbsp; Öffnen</button>
+                                <button class="btn btn-primary" type="button" id="ticket-draw-raffle"><i class="fa fa-trophy"></i>&nbsp; Ziehen</button>
+                                <button class="btn btn-danger" type="button" id="ticket-reset-raffle"><i class="fa fa-trash"></i>&nbsp; Zurücksetzen</button>
                             </div>
                         </div>
                     </form>

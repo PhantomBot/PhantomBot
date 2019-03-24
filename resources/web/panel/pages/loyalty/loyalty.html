@@ -17,11 +17,11 @@
 <main>
     <!-- Header -->
     <section class="content-header">
-        <h1>Loyalty</h1>
+        <h1>Loyalität</h1>
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li>Loyalty</li>
-            <li class="active">Loyalty</li>
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
+            <li>Loyalität</li>
+            <li class="active">Loyalität</li>
         </ol>
     </section>
 
@@ -35,24 +35,24 @@
                     <div class="col-md-12">
                        <div class="box box-solid">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Loyalty Settings</h3>
+                                <h3 class="box-title">Loyalitätseinstellungen</h3>
                             </div>
                             <form role="form">
                               <!-- Box content -->
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <lable>Configure Time Zone (<a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank">list</a>)</lable>
+                                        <lable>Zeitzone konfigurieren (<a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank">Liste</a>)</lable>
                                         <input type="text" class="form-control" id="loyalty-timezone" data-toggle="tooltip"
-                                            title="Timezone the bot should use when calculating time."/>
+                                            title="Zeitzone, die der Bot für die Berechnung der Zeit verwenden soll."/>
                                     </div>
 
                                     <!-- Add offline time to user -->
                                     <div class="form-group">
-                                        <lable>Accumulate User Time Offline</lable>
+                                        <lable>Benutzerzeit offline sammeln</lable>
                                         <div class="dropdown">
                                             <select class="form-control" id="time-offline" style="cursor: pointer;">
-                                                <option>Yes</option>
-                                                <option>No</option>
+                                                <option>Ja</option>
+                                                <option>Nein</option>
                                             </select>
                                         </div>
                                     </div>
@@ -61,11 +61,11 @@
                                         <!-- Auto add users to regulars -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Auto Promote Users to Regulars</lable>
+                                                <lable>Automatische Beförderung zu Stammzuschauern</lable>
                                                 <div class="dropdown">
                                                     <select class="form-control" id="time-promote" style="cursor: pointer;">
-                                                        <option>Yes</option>
-                                                        <option>No</option>
+                                                        <option>Ja</option>
+                                                        <option>Nein</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -74,11 +74,11 @@
                                         <!-- Say something in chat when auto promoted. -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Announce in Chat When Auto Promotion</lable>
+                                                <lable>Ankündigung im Chat bei automatischer Promotion</lable>
                                                 <div class="dropdown">
                                                     <select class="form-control" id="time-promote-notice" style="cursor: pointer;">
-                                                        <option>Yes</option>
-                                                        <option>No</option>
+                                                        <option>Ja</option>
+                                                        <option>Nein</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -89,18 +89,18 @@
                                         <!-- Regular promotion hours -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Regular Promotion (Hours)</lable>
+                                                <lable>Stammzuschauer Beförderung (Stunden)</lable>
                                                 <input type="number" class="form-control" id="loyalty-promotion" placeholder="15" data-toggle="tooltip"
-                                                    title="How many hours it takes before a user gets promoted to a regular."/>
+                                                    title="Wie viele Stunden es dauert, bis ein Benutzer zu einem Stammzuschauer befördert wird."/>
                                             </div>
                                         </div>
 
                                         <!-- Top list.-->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Top Time List Amount</lable>
+                                                <lable>Top-Zeitlisten-Betrag</lable>
                                                 <input type="number" class="form-control" id="loyalty-top" max="15" data-toggle="tooltip"
-                                                    title="How many users will show up in the !toptime command. Max is 15 users."/>
+                                                    title="Wie viele Benutzer werden im Befehl !toptime angezeigt. Max ist 15 Benutzer."/>
                                             </div>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
 
                                 <!-- Box footer -->
                                 <div class="box-footer">
-                                    <button type="button" class="btn btn-primary pull-right" id="loyalty-save-all"> Save</button>
+                                    <button type="button" class="btn btn-primary pull-right" id="loyalty-save-all"> Speichern</button>
                                 </div>
                             </form>
                         </div>
@@ -122,25 +122,25 @@
                     <div class="col-md-12">
                         <div class="box box-solid">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Loyalty Manager</h3>
+                                <h3 class="box-title">Loyalitätsmanager</h3>
                             </div>
                             <form role="form">
                                 <!-- Box content -->
                                 <div class="box-body">
                                     <!-- Username -->
                                     <div class="form-group">
-                                        <lable>Username</lable>
-                                        <input type="text" class="form-control" id="time-username" placeholder="PhantomBot"  data-toggle="tooltip" title="Username to edit the time for.">
+                                        <lable>Benutzername</lable>
+                                        <input type="text" class="form-control" id="time-username" placeholder="PhantomBotDE"  data-toggle="tooltip" title="Benutzername, für den die Zeit bearbeitet werden soll.">
                                     </div>
 
                                     <!-- Number of points -->
                                     <div class="form-group">
-                                        <lable>Time (Seconds)</lable>
+                                        <lable>Zeit (Sekunden)</lable>
                                         <div class="input-group input-group-md">
-                                            <input type="number" class="form-control" id="time-username-time" placeholder="0" data-toggle="tooltip" title="Amount of time the user will have.">
+                                            <input type="number" class="form-control" id="time-username-time" placeholder="0" data-toggle="tooltip" title="Zeit, die der Benutzer hat.">
                                             <span class="input-group-btn">
                                                 <button type="button" class="btn btn-success btn-flat" id="time-get-user" data-toggle="tooltip"
-                                                    title="Get the user's time if they have any.">Get</button>
+                                                    title="Erhalten Sie die Zeit des Benutzers, wenn er welche hat.">Holen</button>
                                             </span>
                                         </div>
                                     </div>
@@ -148,7 +148,7 @@
 
                                 <!-- Box footer -->
                                 <div class="box-footer">
-                                    <button type="button" class="btn btn-primary pull-right" id="time-save-user" data-toggle="tooltip" title="Save the user's time."> Save</button>
+                                    <button type="button" class="btn btn-primary pull-right" id="time-save-user" data-toggle="tooltip" title="Save the user's time."> Speichern</button>
                                 </div>
                             </form>
                         </div>

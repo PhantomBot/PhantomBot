@@ -22,7 +22,7 @@
     <!-- Tell IE to use the latest render engine -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Main title -->
-    <title>PhantomBot Dashboard</title>
+    <title>PhantomBotDE Dashboard</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Font Awesome -->
@@ -64,13 +64,13 @@
                 <!-- Logo -->
                 <div class="logo">
                     <span class="logo-mini"><b>P</b>B</span>
-                    <span class="logo-lg"><b>Phantom</b>Bot</span>
+                    <span class="logo-lg"><b>Phantom</b>BotDE</span>
                 </div>
 
                 <!-- Sidebar toggle -->
                 <nav class="navbar navbar-static-top">
                     <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only">Navigation umschalten</span>
                     </a>
 
                     <!-- Panel settings -->
@@ -82,7 +82,7 @@
                                     <span class="label label-warning" id="notifications-amount" style="display: none;">1</span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li class="header">You have <span id="notifications-total" data-isset="false">0</span> notification(s)</li>
+                                    <li class="header">Du hast <span id="notifications-total" data-isset="false">0</span> Benachrichtigung(en)</li>
                                     <li>
                                         <ul class="menu" id="notifications-menu-ul">
                                             <!-- New notifications added in JavaScript. -->
@@ -96,7 +96,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <img src="panel/img/logo.png" class="user-image">
 
-                                    <span class="hidden-xs" id="main-name">PhantomBot</span>
+                                    <span class="hidden-xs" id="main-name">PhantomBotDE</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
@@ -104,13 +104,13 @@
                                         <img src="panel/img/logo.png" class="img-circle">
 
                                         <p class="panel-admin" id="second-name">
-                                            PhantomBot
+                                            PhantomBotDE
                                         </p>
                                     </li>
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
                                         <div class="pull-right">
-                                          <a href="#" class="btn btn-primary btn-flat" id="sign-out-btn">Sign out</a>
+                                          <a href="#" class="btn btn-primary btn-flat" id="sign-out-btn">Ausloggen</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -132,7 +132,7 @@
 
                     <ul class="sidebar-menu" data-widget="tree">
                         <!-- Devider -->
-                        <li class="header">MAIN NAVIGATION</li>
+                        <li class="header">HAUPTMENÜ</li>
 
                         <!-- Main dashboard tab -->
                         <li class="treeview active">
@@ -144,15 +144,15 @@
                         <!-- Commands tab -->
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-exclamation" style="padding-left: 3px;"></i> <span> Commands</span>
+                                <i class="fa fa-exclamation" style="padding-left: 3px;"></i> <span> Befehle</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#custom.html" data-folder="commands"><i class="fa fa-circle-o"></i> Custom</a></li>
-                                <li><a href="#aliases.html" data-folder="commands"><i class="fa fa-circle-o"></i> Aliases</a></li>
-                                <li><a href="#default.html" data-folder="commands"><i class="fa fa-circle-o"></i> Default</a></li>
+                                <li><a href="#custom.html" data-folder="commands"><i class="fa fa-circle-o"></i> Benutzerdefinierte</a></li>
+                                <li><a href="#aliases.html" data-folder="commands"><i class="fa fa-circle-o"></i> Aliase</a></li>
+                                <li><a href="#default.html" data-folder="commands"><i class="fa fa-circle-o"></i> Standard</a></li>
                             </ul>
                         </li>
 
@@ -165,7 +165,7 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#filters.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Filters</a></li>
+                                <li><a href="#filters.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Filter</a></li>
                                 <li><a href="#whitelist.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Whitelist</a></li>
                                 <li><a href="#blacklist.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Blacklist</a></li>
                             </ul>
@@ -174,21 +174,21 @@
                         <!-- Permission tab -->
                         <li class="treeview">
                             <a href="#permissions.html" data-folder="permissions">
-                                <i class="fa fa-lock"></i> <span> Permissions</span>
+                                <i class="fa fa-lock"></i> <span> Berechtigungen</span>
                             </a>
                         </li>
 
                         <!-- Timers tab -->
                         <li class="treeview">
                             <a href="#timers.html" data-folder="timers">
-                                <i class="fa fa-clock-o"></i> <span> Timers</span>
+                                <i class="fa fa-clock-o"></i> <span> Timer</span>
                             </a>
                         </li>
 
                         <!-- Alerts tab -->
                         <li class="treeview">
                             <a href="#alerts.html" data-folder="alerts">
-                                <i class="fa fa-bullhorn"></i> <span> Alerts</span>
+                                <i class="fa fa-bullhorn"></i> <span> Alarme</span>
                             </a>
                         </li>
 
@@ -209,50 +209,50 @@
                         <!-- Loyalty tab -->
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-star"></i> <span> Loyalty</span>
+                                <i class="fa fa-star"></i> <span> Loyalität</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#currency.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Currency</a></li>
-                                <li><a href="#loyalty.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Loyalty</a></li>
-                                <li><a href="#leaderboard.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Leaderboard</a></li>
+                                <li><a href="#currency.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Währung</a></li>
+                                <li><a href="#loyalty.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Loyalität</a></li>
+                                <li><a href="#leaderboard.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Rangliste</a></li>
                             </ul>
                         </li>
 
                         <!-- Ranking tab -->
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-user"></i> <span> Ranking</span>
+                                <i class="fa fa-user"></i> <span> Ränge</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="#globalRanks.html" data-folder="ranking"><i class="fa fa-circle-o"></i> Global</a></li>
-                                <li><a href="#customRanks.html" data-folder="ranking"><i class="fa fa-circle-o"></i> Custom</a></li>
+                                <li><a href="#customRanks.html" data-folder="ranking"><i class="fa fa-circle-o"></i> Persönliche</a></li>
                             </ul>
                         </li>
 
                         <!-- Quotes tab -->
                         <li class="treeview">
                             <a href="#quotes.html" data-folder="quotes">
-                                <i class="fa fa-quote-right"></i> <span> Quotes</span>
+                                <i class="fa fa-quote-right"></i> <span> Zitate</span>
                             </a>
                         </li>
 
                         <!-- Keywords tab -->
                         <li class="treeview">
                             <a href="#keywords.html" data-folder="keywords">
-                                <i class="fa fa-key"></i> <span> Keywords</span>
+                                <i class="fa fa-key"></i> <span> Schlüsselwörter</span>
                             </a>
                         </li>
 
                         <!-- Games tab -->
                         <li class="treeview">
                             <a href="#games.html" data-folder="games">
-                                <i class="fa fa-gamepad"></i> <span> Games</span>
+                                <i class="fa fa-gamepad"></i> <span> Spiele</span>
                             </a>
                         </li>
 
@@ -265,9 +265,9 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#raffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Raffle</a></li>
-                                <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Ticket Raffle</a></li>
-                                <li><a href="#auction.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Auction</a></li>
+                                <li><a href="#raffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Gewinnspiel</a></li>
+                                <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Ticket-Gewinnspiel</a></li>
+                                <li><a href="#auction.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Auktion</a></li>
                             </ul>
                         </li>
 
@@ -281,14 +281,14 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li class="treeview">
-                                    <a href="#"><i class="fa fa-circle-o"></i> Commands
+                                    <a href="#"><i class="fa fa-circle-o"></i> Befehle
                                         <span class="pull-right-container">
                                             <i class="fa fa-angle-left pull-right"></i>
                                         </span>
                                      </a>
                                     <ul class="treeview-menu">
-                                        <li><a href="#discordCustomCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Custom</a></li>
-                                        <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Default</a></li>
+                                        <li><a href="#discordCustomCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Benutzerdefinierte</a></li>
+                                        <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Standard</a></li>
                                     </ul>
                                 </li>
 
@@ -297,23 +297,23 @@
                                 allow a "blacklist" of users. -->
                                 <!-- <li><a href="#discordPromotion.html" data-folder="discord"><i class="fa fa-circle-o"></i> Promotion</a></li> -->
 
-                                <li><a href="#discordAlerts.html" data-folder="discord"><i class="fa fa-circle-o"></i> Alerts</a></li>
-                                <li><a href="#discordLogs.html" data-folder="discord"><i class="fa fa-circle-o"></i> Logging</a></li>
-                                <li><a href="#discordKeywords.html" data-folder="discord"><i class="fa fa-circle-o"></i> Keywords</a></li>
-                                <li><a href="#discordGames.html" data-folder="discord"><i class="fa fa-circle-o"></i> Games</a></li>
+                                <li><a href="#discordAlerts.html" data-folder="discord"><i class="fa fa-circle-o"></i> Alarme</a></li>
+                                <li><a href="#discordLogs.html" data-folder="discord"><i class="fa fa-circle-o"></i> Protokollierung</a></li>
+                                <li><a href="#discordKeywords.html" data-folder="discord"><i class="fa fa-circle-o"></i> Schlüsselwörter</a></li>
+                                <li><a href="#discordGames.html" data-folder="discord"><i class="fa fa-circle-o"></i> Spiele</a></li>
                             </ul>
                         </li>
 
                         <!-- Hisotry tab -->
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-history"></i> <span> History</span>
+                                <i class="fa fa-history"></i> <span> Historie</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#tipsHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Tips</a></li>
+                                <li><a href="#tipsHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Spenden</a></li>
                                 <li><a href="#hostHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Hosts</a></li>
                                 <li><a href="#raidHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Raids</a></li>
                             </ul>
@@ -329,11 +329,11 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="#dualstream.html" data-folder="extra"><i class="fa fa-circle-o"></i> Dual Stream</a></li>
-                                <li><a href="#deathcounter.html" data-folder="extra"><i class="fa fa-circle-o"></i> Death Counter</a></li>
-                                <li><a href="#highlights.html" data-folder="extra"><i class="fa fa-circle-o"></i> Highlights</a></li>
-                                <li><a href="#betting.html" data-folder="extra"><i class="fa fa-circle-o"></i> Betting</a></li>
-                                <li><a href="#polls.html" data-folder="extra"><i class="fa fa-circle-o"></i> Polls</a></li>
-                                <li><a href="#queue.html" data-folder="extra"><i class="fa fa-circle-o"></i> Queue</a></li>
+                                <li><a href="#deathcounter.html" data-folder="extra"><i class="fa fa-circle-o"></i> Todeszähler</a></li>
+                                <li><a href="#highlights.html" data-folder="extra"><i class="fa fa-circle-o"></i> Höhepunkte</a></li>
+                                <li><a href="#betting.html" data-folder="extra"><i class="fa fa-circle-o"></i> Wetten</a></li>
+                                <li><a href="#polls.html" data-folder="extra"><i class="fa fa-circle-o"></i> Umfragen</a></li>
+                                <li><a href="#queue.html" data-folder="extra"><i class="fa fa-circle-o"></i> Warteschlange</a></li>
                             </ul>
                         </li>
 
@@ -355,26 +355,26 @@
                         <!-- Settings tab -->
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-cog"></i> <span> Settings</span>
+                                <i class="fa fa-cog"></i> <span> Einstellungen</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="#botSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Bot</a></li>
-                                <li><a href="#commandSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Commands</a></li>
-                                <li><a href="#moduleList.html" data-folder="settings"><i class="fa fa-circle-o"></i> Modules</a></li>
-                                <li><a href="#localization.html" data-folder="settings"><i class="fa fa-circle-o"></i> Localization</a></li>
+                                <li><a href="#commandSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Befehle</a></li>
+                                <li><a href="#moduleList.html" data-folder="settings"><i class="fa fa-circle-o"></i> Module</a></li>
+                                <li><a href="#localization.html" data-folder="settings"><i class="fa fa-circle-o"></i> Übersetzung</a></li>
                             </ul>
                         </li>
 
                         <!-- Devider -->
-                        <li class="header">HELP &#38; SUPPORT</li>
+                        <li class="header">HILFE &#38; SUPPORT</li>
 
                         <!-- Help tab -->
                         <li class="treeview">
                             <a href="#help.html" data-folder="help">
-                                <i class="fa fa-life-ring"></i> <span>Help</span>
+                                <i class="fa fa-life-ring"></i> <span>Hilfe</span>
                             </a>
                         </li>
                     </ul>
@@ -410,7 +410,7 @@
             <div class="tab-content">
                 <!-- First tab. -->
                 <div id="main-side-tab" class="tab-pane active">
-                    <h4 class="control-sidebar-heading">Layout Options</h4>
+                    <h4 class="control-sidebar-heading">Layout-Optionen</h4>
 
                     <div class="form-group">
                         <label class="control-sidebar-subheading">
@@ -421,16 +421,16 @@
                                     <label></label>
                                 </div>
                             </div>
-                             Dark Mode
+                             Nachtmodus
                         </label>
 
-                        <p>Activate the panel's dark mode.</p>
+                        <p>Aktiviere den Nachtmodus des Panels.</p>
                     </div>
                 </div>
 
                 <!-- Middle tab -->
                 <div id="second-side-tab" class="tab-pane">
-                    <h4 class="control-sidebar-heading">Dashboard Page</h4>
+                    <h4 class="control-sidebar-heading">Dashboard-Seite</h4>
 
                     <div class="form-group">
                         <label class="control-sidebar-subheading">
@@ -441,10 +441,10 @@
                                     <label></label>
                                 </div>
                             </div>
-                            Show Twitch Chat
+                            Zeige Twitch Chat
                         </label>
 
-                        <p>Show or hide Twitch chat.</p>
+                        <p>Zeige oder verbirg den Twitch-Chat.</p>
                     </div>
 
                     <div class="form-group">
@@ -456,10 +456,10 @@
                                     <label></label>
                                 </div>
                             </div>
-                            Show Twitch Player
+                            Twitch Player anzeigen
                         </label>
 
-                        <p>Show or hide the player.</p>
+                        <p>Zeigt oder verbirgt den Player.</p>
                     </div>
 
                     <div class="form-group">
@@ -471,16 +471,16 @@
                                     <label></label>
                                 </div>
                             </div>
-                            Reverse Sort Events
+                            Ereignisse umgekehrt sortieren
                         </label>
 
-                        <p>Show events in reverse order.</p>
+                        <p>Zeige Ereignisse in umgekehrter Reihenfolge an.</p>
                     </div>
                 </div>
 
                 <!-- Last tab -->
                 <div id="third-side-tab" class="tab-pane">
-                    <h4 class="control-sidebar-heading">General Settings</h4>
+                    <h4 class="control-sidebar-heading">Allgemeine Einstellungen</h4>
 
                     <div class="form-group">
 
