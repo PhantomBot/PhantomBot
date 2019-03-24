@@ -47,4 +47,4 @@ else
     echo "You don't have Java installed! Download it from https://www.java.com/en/download/"
 fi
 
-java -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar
+java -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBotDE.jar

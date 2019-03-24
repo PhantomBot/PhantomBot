@@ -24,8 +24,10 @@
     <!-- To specify a Pre-Release Build run as ant -Dbuildtype=prerelease_build -->
 
     <property environment="env" />
-    <property name="version" value="2.4.2.1" />
-    <property name="webpanel.version" value="1.1" />
+    <!-- Please see this for version numbers: https://semver.org/ -->
+    <property name="version" value="3.0.0-alpha.2" />
+    <!-- Please see this for version numbers: https://semver.org/ -->
+    <property name="webpanel.version" value="1.0.0" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
     <property name="build" location="build" />
@@ -95,21 +97,21 @@
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="repoVersion = &quot;(.*)&quot;;"
-            replace="repoVersion = &quot;${repository.version}&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="repoVersion = &quot;(.*)&quot;;"
+                replace="repoVersion = &quot;${repository.version}&quot;;" />
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="buildType = &quot;(.*)&quot;;"
-            replace="buildType = &quot;${build_type}&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="buildType = &quot;(.*)&quot;;"
+                replace="buildType = &quot;${build_type}&quot;;" />
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="phantomBotVersion = &quot;(.*)&quot;;"
-            replace="phantomBotVersion = &quot;${version}&quot;;" />
-            <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="panelVersion = &quot;(.*)&quot;;"
-            replace="panelVersion = &quot;${webpanel.version}&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="phantomBotVersion = &quot;(.*)&quot;;"
+                replace="phantomBotVersion = &quot;${version}&quot;;" />
+        <replaceregexp
+                file="source/tv/phantombot/RepoVersion.java"
+                match="panelVersion = &quot;(.*)&quot;;"
+                replace="panelVersion = &quot;${webpanel.version}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -137,21 +139,21 @@
 
     <target name="post.compile">
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="repoVersion = &quot;(.*)&quot;;"
-            replace="repoVersion = &quot;@repository.version@&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="repoVersion = &quot;(.*)&quot;;"
+                replace="repoVersion = &quot;@repository.version@&quot;;" />
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="buildType = &quot;(.*)&quot;;"
-            replace="buildType = &quot;@buildtype@&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="buildType = &quot;(.*)&quot;;"
+                replace="buildType = &quot;@buildtype@&quot;;" />
         <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="phantomBotVersion = &quot;(.*)&quot;;"
-            replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
-            <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="panelVersion = &quot;(.*)&quot;;"
-            replace="panelVersion = &quot;@webpanel.version@&quot;;" />
+                file="source/tv/phantombot/RepoVersion.java"
+                match="phantomBotVersion = &quot;(.*)&quot;;"
+                replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
+        <replaceregexp
+                file="source/tv/phantombot/RepoVersion.java"
+                match="panelVersion = &quot;(.*)&quot;;"
+                replace="panelVersion = &quot;@webpanel.version@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
@@ -184,9 +186,9 @@
             <fileset dir="./resources" />
         </copy>
         <replaceregexp
-            file="${build.dir}/web/panel/js/panelUtils.js"
-            match="PANEL_VERSION = &quot;(.*)&quot;;"
-            replace="PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
+                file="${build.dir}/web/panel/js/utils/helpers.js"
+                match="helpers\.PANEL_VERSION = &quot;(.*)&quot;;"
+                replace="helpers\.PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
         <copy todir="${version.folder}">
             <fileset dir="${build.dir}" />
