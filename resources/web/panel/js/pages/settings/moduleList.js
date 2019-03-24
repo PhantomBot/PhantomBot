@@ -80,6 +80,9 @@ $(run = function() {
         // Create table.
         let table = $('#twitchModuleTable').DataTable({
             'searching': true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+            },
             'autoWidth': false,
             'lengthChange': true,
             'data': twitchTable,
@@ -179,6 +182,9 @@ $(run = function() {
             // Create table.
             let table = $('#discordModuleTable').DataTable({
                 'searching': true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                },
                 'autoWidth': false,
                 'lengthChange': true,
                 'data': discordTable,

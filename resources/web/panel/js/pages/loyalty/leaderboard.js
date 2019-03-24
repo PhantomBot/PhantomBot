@@ -39,6 +39,9 @@ $(function() {
         // Create table.
         $('#leaderboard-points').DataTable({
             'searching': true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+            },
             'autoWidth': false,
             'lengthChange': false,
             'data': tableData,
@@ -80,6 +83,9 @@ $(function() {
         // Create table.
         $('#leaderboard-time').DataTable({
             'searching': true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+            },
             'autoWidth': false,
             'lengthChange': false,
             'data': tableData,
@@ -108,7 +114,10 @@ $(function() {
 
     // On load more points button.
     $('#currency-load-more').on('click', function() {
-        let table = $('#leaderboard-points').DataTable(),
+        let table = $('#leaderboard-points').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                }}),
             dataCount = table.rows().count(),
             tableData = [];
 
@@ -138,7 +147,11 @@ $(function() {
 
     // On load more time button.
     $('#loyalty-load-more').on('click', function() {
-        let table = $('#leaderboard-time').DataTable(),
+        let table = $('#leaderboard-time').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                }
+            }),
             dataCount = table.rows().count(),
             tableData = [];
 

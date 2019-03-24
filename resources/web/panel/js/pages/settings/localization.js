@@ -63,7 +63,10 @@ $(function() {
         .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', 'module.name.id'))
         // Resonse for the lang.
         .append(helpers.getTextAreaGroup('lang-response', 'text', 'Antwort', 'Antwort beispiel!')), function() {
-            const table = $('#langTable').DataTable(),
+            const table = $('#langTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                    }}),
                 langId = $('#lang-id'),
                 langRes = $('#lang-response');
 
@@ -110,7 +113,10 @@ $(function() {
 
     // Save button
     $('#save-button').on('click', function() {
-        const datas = $('#langTable').DataTable().rows().data(),
+        const datas = $('#langTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                },}).rows().data(),
             dataObj = [];
 
         for (let i = 0; i < datas.length; i++) {

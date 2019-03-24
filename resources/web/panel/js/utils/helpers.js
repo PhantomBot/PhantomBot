@@ -464,7 +464,7 @@ $(function() {
             })
         }).append($('<span/>', {
             'class': 'collapse-btn',
-            'html': 'Show Advanced'
+            'html': 'Erweitertes anzeigen'
         }))).append($('<button/>', {
             'class': 'btn btn-primary',
             'type': 'button',

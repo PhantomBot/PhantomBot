@@ -33,6 +33,9 @@ $(function() {
 		// Create table.
 		$('#hostHistoryTable').DataTable({
 			'searching': true,
+			"language": {
+				"url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+			},
 			'autoWidth': false,
 			'data': hosts,
 			'columnDefs': [

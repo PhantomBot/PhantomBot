@@ -74,6 +74,9 @@ $(function() {
 		// Create table.
 		$('#tipsHistoryTable').DataTable({
 			'searching': true,
+			"language": {
+				"url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+			},
 			'autoWidth': false,
 			'data': tips,
 			'columnDefs': [

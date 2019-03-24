@@ -64,6 +64,9 @@ $(run = function() {
             // Create table.
             let table = $('#ranksTable').DataTable({
                 'searching': true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
+                },
                 'autoWidth': false,
                 'lengthChange': false,
                 'data': tableData,
