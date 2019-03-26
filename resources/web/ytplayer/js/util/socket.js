@@ -299,7 +299,7 @@ $(function() {
      * @function is called when the socket opens.
      */
     socket.onopen = (e) => {
-        console.info('Verbindung mit dem Websocket hergestellt.');
+        console.info('Connection established with the websocket.');
 
         // Send the auth to the bot.
         sendToSocket({
@@ -316,8 +316,8 @@ $(function() {
      * @function the socket calls when it closes
      */
     socket.onclose = (e) => {
-        console.error('Verbindung mit dem Websocket verloren.');
-        toastr.error('Die Verbindung mit WebSocket wurde unterbrochen.  Aktualisieren Sie das Programm, sobald sie wiederhergestellt wurde.', '', {timeOut: 0});
+        console.error('Connection lost with the websocket.');
+        toastr.error('Connection with WebSocket was lost. Refresh once reestablished.', '', {timeOut: 0});
     };
 
     /*
@@ -379,7 +379,7 @@ $(function() {
                 }
             }
         } catch (ex) {
-            console.error('Es ist nicht gelungen, die Nachricht vom Socket zu verarbeiten: ' + ex.message);
+            console.error('Failed to parse message from socket: ' + ex.message);
         }
     }
 

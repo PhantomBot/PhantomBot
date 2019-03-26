@@ -1,0 +1,125 @@
+<!--
+    Copyright (C) 2016-2018 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title.-->
+        <h1>Befehlseinstellungen</h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
+            <li>Einstellungen</li>
+            <li class="active">Befehle</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#cmd_settings_messages" data-toggle="tab">Warnmeldungen</a></li>
+                <li><a href="#cmd_settings_mods" data-toggle="tab">Moderator Ausnahmen</a></li>
+                <li><a href="#cmd_settings_cooldown" data-toggle="tab">Abklingzeit</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Command Messages -->
+                <div class="tab-pane active" id="cmd_settings_messages">
+                    <div class="form-group">
+                        <!-- Pricecom toggle. -->
+                        <lable>Kostenmeldungen aktivieren</lable>
+                        <div class="dropdown">
+                            <select class="form-control" id="cmd-cost-messages" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Wenn eine Nachricht in einen Chat gesendet werden soll, wenn ein Benutzer versucht, einen Befehl zu verwenden, für den er keine Punkte hat.">
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Permcom toggle. -->
+                        <lable>Berechtigungsmeldungen aktivieren</lable>
+                        <div class="dropdown">
+                            <select class="form-control" id="cmd-perm-messages" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Wenn eine Nachricht in einen Chat gesendet werden soll, wenn ein Benutzer versucht, einen Befehl zu verwenden, für den er keine Berechtigung hat.">
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Permcom toggle. -->
+                        <lable>Abkling-Meldungen aktivieren</lable>
+                        <div class="dropdown">
+                            <select class="form-control" id="cmd-cooldown-messages" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Wenn eine Nachricht in einen Chat gesendet werden soll, wenn ein Benutzer versucht, einen Befehl zu verwenden, der noch in der Abklingzeit ist.">
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Moderators Exeptions. -->
+                <div class="tab-pane" id="cmd_settings_mods">
+                    <div class="form-group">
+                        <!-- Pricecom mods toggle. -->
+                        <lable>Moderatoren von den Kommandokosten ausnehmen</lable>
+                        <div class="dropdown">
+                            <select class="form-control" id="pricecom-mods" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Wenn Moderatoren auch für kostenpflichtige Befehle bezahlen sollten. Bot-Administratoren werden immer ignoriert.">
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Cooldown for mods. -->
+                        <lable>Befreien Sie Moderatoren von der Abklingzeit der Befehle.</lable>
+                        <div class="dropdown">
+                            <select class="form-control" id="cooldown-mods" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Wenn Moderatoren auch Befehlsabklingzeiten haben sollten.">
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Cooldown -->
+                <div class="tab-pane" id="cmd_settings_cooldown">
+                    <!-- Logs keep days. -->
+                    <div class="form-group">
+                        <lable>Globale Abklingzeit (Sekunden)</lable>
+                        <input type="number" class="form-control" id="global-cooldown" data-toggle="tooltip"
+                            title="Die Abklingzeit wird an Befehle vergeben, die keine individuelle Abklingzeit haben. Das Minimum beträgt 5 Sekunden."/>
+                    </div>
+                </div>
+
+                <!-- Box footer -->
+                <div class="box-footer" style="padding-right: 0px; padding-bottom: 0px;">
+                    <button type="button" class="btn btn-primary pull-right" id="cmd-save-btn"> Speichern</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- moduleList -->
+    <script src="panel/js/pages/settings/commandSettings.js"></script>
+</main>

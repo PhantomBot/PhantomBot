@@ -236,7 +236,7 @@ public class NewPanelSocketServer {
             start();
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("PhantomBot wird beendet...");
-            System.exit(0);
+            PhantomBot.exitError();
         }
     }
 

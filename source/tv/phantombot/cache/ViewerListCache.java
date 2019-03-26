@@ -89,7 +89,7 @@ public class ViewerListCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method that updates the cache.
      */
     private void updateCache() throws Exception {

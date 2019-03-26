@@ -22,6 +22,7 @@ import sx.blah.discord.handle.obj.IChannel;
 
 import java.util.LinkedList;
 import java.util.List;
+import sx.blah.discord.handle.obj.IMessage;
 
 public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final String arguments;
@@ -38,8 +39,8 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      * @param {String}   arguments
      * @param {boolean}  isAdmin
      */
-    public DiscordChannelCommandEvent(IUser user, IChannel channel, String command, String arguments, boolean isAdmin) {
-        super(user, channel);
+    public DiscordChannelCommandEvent(IUser user, IChannel channel, IMessage message, String command, String arguments, boolean isAdmin) {
+        super(user, channel, message);
 
         this.command = command;
         this.arguments = arguments;

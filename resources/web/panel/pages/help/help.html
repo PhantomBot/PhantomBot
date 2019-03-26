@@ -1,0 +1,142 @@
+<!--
+    Copyright (C) 2016-2018 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Hilfe</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Startseite</a></li>
+            <li class="active">Hilfe</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PhantomBotDE Informationen</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <p><b>PhantomBotDE Version: </b><span id="panel-bot-version">Error</span></p>
+                            <p><b>Operating System: </b><span id="panel-os-version">Error</span></p>
+                            <p><b>Java Version: </b><span id="panel-java-version">Error</span></p>
+                            <p><b>PhantomBotDE License: </b><a href="https://github.com/PhantomBotDE/PhantomBotDE/blob/master/LICENSE" target="_blank">GNU General Public License v3.0</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Informationen zum Bedienfeld</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <!-- This is the version we give the panel -->
+                            <p><b>Panel Version:</b> <span id="panel-version-number">Error</span></p>
+                            <!-- This is the template name, this is static -->
+                            <p><b>Panel Template: </b><a href="https://adminlte.io" target="_blank">AdminLTE</a></p>
+                            <!-- We never update the template, so this is a static version -->
+                            <p><b>Template Version: </b>2.4.0</p>
+                            <!-- AdminLTE's license. -->
+                            <p><b>AdminLTE License: </b><a href="https://github.com/almasaeed2010/AdminLTE/blob/master/LICENSE" target="_blank">MIT License</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PhantomBotDE</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>
+                            Solltest du die Arbeit die wir jedes mal wieder in diese Übersetzung hineinstecken wertschätzen würden wir uns über eine kleine <a href="https://paypal.me/lapotor">Spende</a> freuen.
+                        </p>
+                        <table class="table-responsive table">
+                            <tr>
+                                <th></th>
+                                <th>Version</th>
+                            </tr>
+                            <tr>
+                                <th>PhantomBot</th>
+                                <td><a href="https://github.com/PhantomBot/PhantomBot/releases/latest"><img alt="GitHub release"
+                                                                                                            src="https://img.shields.io/github/release/PhantomBot/PhantomBot.svg?style=for-the-badge"></a></td>
+                            </tr>
+                            <tr>
+                                <th>PhantomBotDE</th>
+                                <td><a href="https://github.com/PhantomBotDE/PhantomBotDE/releases/latest"><img alt="GitHub release"
+                                                                                                                src="https://img.shields.io/github/release/PhantomBotDE/PhantomBotDE.svg?style=for-the-badge"></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="box-header with-border">
+                        <h4>Links</h4>
+                    </div>
+                    <div class="box-body">
+                        <ul class="list-unstyled" style="margin-left: 0.5rem;">
+                            <li class="h4"><a href="https://github.com/PhantomBotDE/PhantomBotDE"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a></li>
+                            <li class="h4"><a href="https://paypal.me/lapotor"><i class="fa fa-paypal" aria-hidden="true"></i> Spenden</a></li>
+                            <li class="h4"><a href="https://www.transifex.com/lapotor/phantombot/"><i class="fa fa-list" aria-hidden="true"></i> Help translating</a></li>
+                            <li class="h4"><a href="https://discord.gg/hBJMXCe"><i class="fa fa-comments" aria-hidden="true"></i> Discord</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Forumssuche</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <div style="text-align: center;">
+                                <h3>Suche im PhantomBot Forum</h3>
+                                <p>Dies führt eine schnelle Suche im <a href="https://community.phantombot.tv" target="_blank">PhantomBot Community Forum</a> durch!</p>
+
+                                <form role="form">
+                                    <div class="input-group" style="width: 50%; margin: 0 auto; text-align: left;">
+                                        <input type="text" class="form-control" placeholder="Search" id="forum-search-text" onkeypress="return event.which !== 13">
+
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-primary btn-flat" id="forum-search"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- help.js -->
+    <script src="panel/js/pages/help/help.js"></script>
+</main>

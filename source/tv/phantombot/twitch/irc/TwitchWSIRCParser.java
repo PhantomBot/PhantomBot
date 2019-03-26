@@ -102,12 +102,12 @@ public class TwitchWSIRCParser implements Runnable {
 
         // USERNOTICE event from Twitch.
         parserMap.put("USERNOTICE", (TwitchWSIRCCommand) this::onUserNotice);
-        
+
         // Start a new thread for events.
         this.runThread = new Thread(this);
         this.runThread.start();
     }
-    
+
     /**
      * Method which is on a new thread that keeps track of gifted subscribers.
      */
@@ -116,7 +116,7 @@ public class TwitchWSIRCParser implements Runnable {
         while (true) {
             try {
                 Map<String, String> tags = giftedSubscriptionEvents.take();
-                
+
                 if (bulkSubscriberGifters.containsKey(tags.get("login"))) {
                     SubscriberBulkGifter gifter = bulkSubscriberGifters.get(tags.get("login"));
                     if (gifter.getCurrentSubscriptionGifted() < gifter.getSubscritpionsGifted()) {
@@ -126,9 +126,9 @@ public class TwitchWSIRCParser implements Runnable {
                     }
                 } else {
                     if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                        scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(tags.get("msg-param-recipient-user-name"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan")));
+                        scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
                     } else {
-                        scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan")));
+                        scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
                     }
                 }
             } catch (InterruptedException ex) {
@@ -470,13 +470,13 @@ public class TwitchWSIRCParser implements Runnable {
             com.gmt2001.Console.out.println("Bitte beachten Sie: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
             com.gmt2001.Console.out.println("Exiting PhantomBot.");
             com.gmt2001.Console.out.println();
-            System.exit(0);
-        } else if (message.equals("Invalid NICK")) { //DON'T CHANGE
+            PhantomBot.exitError();
+        } else if (message.equals("Invalid NICK")) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Ungültiger Bot-Name von Twitch gemeldet. Überprüfen Sie die Einstellung 'user=' in der Datei botlogin.txt");
             com.gmt2001.Console.out.println("Beende PhantomBotDE.");
             com.gmt2001.Console.out.println();
-            System.exit(0);
+            PhantomBot.exitError();
         } else {
             eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
             com.gmt2001.Console.debug.println("Nachricht von jtv (NOTICE): " + message);
@@ -511,7 +511,7 @@ public class TwitchWSIRCParser implements Runnable {
                 // This will be when a user gifts a sub to a user that already is subscribed.
             } else if (tags.get("msg-id").equalsIgnoreCase("submysterygift")) {
                 bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count")), false));
-            
+
                 // Send event for this.
                 if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
                     scriptEventManager.onEvent(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));

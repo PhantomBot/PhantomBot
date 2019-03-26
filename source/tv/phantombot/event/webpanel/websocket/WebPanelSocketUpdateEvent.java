@@ -46,7 +46,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         return this.id;
     }
 
-    /*
+    /**
      * Method that returns the script location and name.
      *
      * @return {String} script
@@ -55,7 +55,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         return this.script;
     }
 
-    /*
+    /**
      * Method that returns the arguments string.
      *
      * @return {String} arguments
@@ -64,7 +64,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         return this.arguments;
     }
 
-    /*
+    /**
      * Method that returns the arguments array.
      *
      * @return {String[]} args

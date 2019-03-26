@@ -64,11 +64,6 @@ public class HTTPServer {
             ytContext.setAuthenticator(auth);
             panelContext.setAuthenticator(auth);
 
-            if (new File("./web/beta-panel").isDirectory()) {
-                HttpContext betaPanelContext = server.createContext("/beta-panel", new BetaPanelHandler());
-                betaPanelContext.setAuthenticator(auth);
-            }
-
             server.start();
         } catch (BindException ex) {
             com.gmt2001.Console.err.println("Verbindung zum Port für HTTP-Server auf Port " + myPort + " konnte nicht hergestellt werden.");
@@ -101,12 +96,6 @@ public class HTTPServer {
     class PanelHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             HTTPServerCommon.handlePanel(exchange);
-        }
-    }
-
-    class BetaPanelHandler implements HttpHandler {
-        public void handle(HttpExchange exchange) throws IOException {
-            HTTPServerCommon.handleBetaPanel(exchange);
         }
     }
 

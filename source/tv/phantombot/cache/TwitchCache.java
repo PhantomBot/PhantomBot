@@ -348,14 +348,14 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("logo") && !streamObj.isNull("logo")) {
                     logoLink = streamObj.getString("logo");
                     this.logoLink = logoLink;
-                    if (new File("./web/beta-panel").isDirectory()) {
-                        ImgDownload.downloadHTTPTo(logoLink, "./web/beta-panel/img/logo.png");
+                    if (new File("./web/panel").isDirectory()) {
+                        ImgDownload.downloadHTTPTo(logoLink, "./web/panel/img/logo.png");
                     }
                 }
 
                 // Get the display name.
-                if (new File("./web/beta-panel").isDirectory() && streamObj.has("display_name") && !streamObj.isNull("display_name")) {
-                    File file = new File("./web/beta-panel/js/utils/panelConfig.js");
+                if (new File("./web/panel").isDirectory() && streamObj.has("display_name") && !streamObj.isNull("display_name")) {
+                    File file = new File("./web/panel/js/utils/panelConfig.js");
                     if (file.exists()) {
                         // Read the file.
                         String fileContent = FileUtils.readFileToString(file, "utf-8");

@@ -2,7 +2,7 @@
 # <img alt="PhantomBotDE" src="/.github/logo.png" width="600px"/>
 
 [![Build Status](https://img.shields.io/travis/PhantomBotDE/PhantomBotDE.svg?style=popout)](https://travis-ci.org/PhantomBotDE/PhantomBotDE)
-[![Discord](https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield)](https://discord.gg/Xdh5SRY)
+[![Discord](https://discordapp.com/api/guilds/551872508563816522/widget.png?style=shield)](https://discord.gg/hBJMXCe)
 
 | Versionen | |
 |--------------|---|
