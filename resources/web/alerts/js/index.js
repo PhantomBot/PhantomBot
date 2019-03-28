@@ -434,7 +434,7 @@ $(function() {
                 } else
 
                     // Queue all events and process them one at-a-time.
-                    if (message.alert_image !== undefined || message.audio_panel_hook !== undefined) {
+                    if (message.alert_image !== undefined || message.text_to_speak !== undefined || message.audio_panel_hook !== undefined) {
                         queue.push(message);
                     }
 
