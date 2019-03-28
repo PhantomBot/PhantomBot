@@ -120,7 +120,7 @@ public class MessageQueue implements Runnable {
             try {
                 // Get the next message in the queue.
                 Message message = queue.take();
-
+                
                 // Set the time we got the message.
                 long time = System.currentTimeMillis();
 
