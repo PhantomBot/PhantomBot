@@ -139,7 +139,7 @@ $(function() {
 				break;
 			default:
 			responsiveVoice.speak(textTest.val(), textVoice, {volume: textVolume.val(), rate: textRate.val(), pitch: textPitch.val()});
-			toastr.success('Successfully updated text to speak settings!');
+			toastr.success('Successfully tested current speak settings!');
 		}
 	});
 });
