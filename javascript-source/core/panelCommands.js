@@ -489,6 +489,17 @@
             $.reloadLogs();
             return;
         }
+        
+        /*
+         * Reloads the speak variables.
+         */
+        if (command.equalsIgnoreCase('reloadspeak')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.reloadSpeak();
+            return;
+        }
     });
 
     $.bind('initReady', function() {
@@ -526,6 +537,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadspeak', 30);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
