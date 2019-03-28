@@ -140,8 +140,13 @@ $(function() {
             isPlaying = true;
             if (event.alert_image !== undefined) {
                 handleGifAlert(event);
-            } else {
+            } else if (event.audio_panel_hook !== undefined) {
                 handleAudioHook(event);
+            } else if (event.text_to_speak !== undefined) {
+                handleTTSHook(event);
+            } else {
+                // Mark as done playing.
+                isPlaying = false;
             }
             queue.splice(0, 1);
         }
@@ -210,6 +215,66 @@ $(function() {
             audio.play().catch(function(err) {
                 console.log(err);
             });;
+        } else {
+            isPlaying = false;
+        }
+    }
+    
+    /*
+     * @function Handles text to speech hooks.
+     *
+     * @param {Object} event
+     */
+    function handleTTSHook(json) {
+        // Make sure we can allow audio hooks.
+        if (getOptionSetting('allow-audio-hooks', 'true') === 'true') {
+            let textData = json.text_to_speak,
+                textVolume = 1.00, 
+                textRate = 1.00, 
+                textPitch = 1.00,
+                textVoice = responsiveVoice.setDefaultVoice("US English Female");
+
+            // If a comma is found, that means there are custom settings.
+            if (textData.indexOf(',') !== -1) {
+                let textSettingParts = textData.split(',');
+
+                // Loop through each setting and set it if found.
+                textSettingParts.forEach(function(value, index) {
+                    switch (index) {
+                        case 0:
+                            textToSpeak = value.trim();
+                            break;
+                        case 1:
+                            textVoice = value.trim();
+                            break;
+                        case 2:
+                            textVolume = value.trim();
+                            break;
+                        case 3:
+                            textRate = value.trim();
+                            break;
+                        case 4:
+                            textPitch = value.trim();
+                            break;
+                    }
+                });
+            } else {
+                textToSpeak = textData;
+            }
+
+            //Pass text to window object.
+            if(responsiveVoice.voiceSupport()) {
+                if (responsiveVoice.getResponsiveVoice(textVoice) !== null) {
+                    responsiveVoice.speak(textToSpeak, textVoice, {volume: textVolume, rate: textRate, pitch: textPitch});
+                } else {
+                    printDebug('[Error] The selected voice is not compatible!', true);
+                }
+            }
+
+            // Mark as done playing.
+            if(!responsiveVoice.isPlaying()) {
+                isPlaying = false;
+            }
         } else {
             isPlaying = false;
         }
