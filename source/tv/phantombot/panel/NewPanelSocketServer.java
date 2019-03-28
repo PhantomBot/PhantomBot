@@ -843,10 +843,10 @@ public class NewPanelSocketServer {
      *
      * @param textToSpeck the text and setting for the system to speak.
      */
-    public void triggerTextToSpeak(String textToSpeck) {
+    public void triggerTextToSpeak(String textToSpeak) {
         JSONStringer jsonObject = new JSONStringer();
-        jsonObject.object().key("text_to_speak").value(textToSpeck).endObject();
-        debugMsg("triggerTextToSpeak(" + textToSpeck + ")");
+        jsonObject.object().key("text_to_speak").value(textToSpeak).endObject();
+        debugMsg("triggerTextToSpeak(" + textToSpeak + ")");
         sendToAll(jsonObject.toString());
     }
 
