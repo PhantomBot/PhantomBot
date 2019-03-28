@@ -116,6 +116,52 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Output mode -->
+                <div class="tab-pane" id="text_speak">
+                    <!-- Text Voice. -->
+                    <div class="form-group">
+                        <label>Text Voice</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="text-speak-voices" style="cursor: pointer;" data-toggle="tooltip"
+                                title="The voice in which the main text to speak command uses.">
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Text Volume. -->
+                    <div class="form-group">
+                        <label>Text Volume</label>
+                        <input type="number" class="form-control" id="text-speak-volume" placeholder="1.00" data-toggle="tooltip"
+                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                    </div>
+
+                    <!-- Text Rate. -->
+                    <div class="form-group">
+                        <label>Text Rate</label>
+                        <input type="number" class="form-control" id="text-speak-rate" placeholder="1.00" data-toggle="tooltip"
+                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                    </div>
+
+                    <!-- Text Pitch. -->
+                    <div class="form-group">
+                        <label>Text Pitch</label>
+                        <input type="number" class="form-control" id="text-speak-pitch" placeholder="1.00" data-toggle="tooltip"
+                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                    </div>
+
+                    <!-- Text Pitch. -->
+                    <div class="form-group">
+                        <label>Test Message</label>
+                        <input type="text" class="form-control" id="text-speak-testmessage" placeholder="Hello World" data-toggle="tooltip"
+                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                    </div>
+
+                    <!-- Box footer -->
+                    <div style="position: relative; top: 10px;">
+                        <button type="button" class="btn btn-primary pull-left" id="text-speak-test"> Test</button>
+                    </div>                    
+                </div>
 
                 <!-- Box footer -->
                 <div class="box-footer" style="padding-right: 0px; padding-bottom: 0px;">
