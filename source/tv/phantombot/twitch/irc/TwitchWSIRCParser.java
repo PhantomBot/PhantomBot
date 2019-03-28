@@ -223,18 +223,15 @@ public class TwitchWSIRCParser implements Runnable {
         if (messageParts[0].startsWith("@")) {
             String[] tagParts = messageParts[0].substring(1).split(";");
 
-            // The first tag should be badges.
-            // So we should parse them into tags, since Twitch doesn't provide us this anymore.
-            String[] keyValues = tagParts[0].split("=");
-            if (keyValues.length > 1 && keyValues[0].equals("badges")) {
-                tags.putAll(parseBadges(keyValues[1]));
-            }
-
             // We want to skip the first element which are badges, since they are parsed already.
-            for (int i = 1; i < tagParts.length; i++) {
-                keyValues = tagParts[i].split("=");
+            for (int i = 0; i < tagParts.length; i++) {
+                String[] keyValues = tagParts[i].split("=");
                 if (keyValues.length > 0) {
-                    tags.putIfAbsent(keyValues[0], (keyValues.length == 1 ? "" : keyValues[1]));
+                    if (keyValues[0].equals("badges")) {
+                        tags.putAll(parseBadges((keyValues.length == 1 ? "" : keyValues[1])));
+                    } else {
+                        tags.putIfAbsent(keyValues[0], (keyValues.length == 1 ? "" : keyValues[1]));
+                    }
                 }
             }
 
