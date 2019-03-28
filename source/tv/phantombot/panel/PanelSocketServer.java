@@ -823,10 +823,10 @@ public class PanelSocketServer extends WebSocketServer {
      *
      * @param textToSpeck the text and setting for the system to speak.
      */
-    public void triggerTextToSpeak(String textToSpeak) {
+    public void triggerTextToSpeak(String textToSpeck) {
         JSONStringer jsonObject = new JSONStringer();
-        jsonObject.object().key("text_to_speak").value(textToSpeak).endObject();
-        debugMsg("triggerTextToSpeak(" + textToSpeak + ")");
+        jsonObject.object().key("text_to_speak").value(textToSpeck).endObject();
+        debugMsg("triggerTextToSpeak(" + textToSpeck + ")");
         sendToAll(jsonObject.toString());
     }
 
