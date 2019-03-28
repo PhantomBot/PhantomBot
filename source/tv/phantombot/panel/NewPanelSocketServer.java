@@ -837,6 +837,18 @@ public class NewPanelSocketServer {
         debugMsg("alertImage(" + imageInfo +")");
         sendToAll(jsonObject.toString());
     }
+    
+    /**
+     * Performs a trigger in the Audio Panel, requesting an text to speak clip to be played.
+     *
+     * @param textToSpeck the text and setting for the system to speak.
+     */
+    public void triggerTextToSpeak(String textToSpeck) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("text_to_speak").value(textToSpeck).endObject();
+        debugMsg("triggerTextToSpeak(" + textToSpeck + ")");
+        sendToAll(jsonObject.toString());
+    }
 
     /**
      * Executes an event directly.
