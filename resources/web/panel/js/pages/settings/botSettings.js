@@ -76,21 +76,20 @@ $(function() {
 });
 
 // Function that handles text to speak.
-$(function() {
+$(function () {
     socket.getDBValues('get_text_speak_settings', {
         tables: ['speakSettings', 'speakSettings', 'speakSettings', 'speakSettings'],
         keys: ['textVoice', 'textVolume', 'textRate', 'textPitch']
-    }, true, function(e) {
+    }, true, function (e) {
         // Update textVoice.
-        var voicelist = responsiveVoice.getVoices();
-    
-        var group = $('<optgroup label="Select Voice"></optgroup>');
-        group.append('<option value="' + e.textVoice + '">' + e.textVoice + '</option>');
-        voicelist.forEach(function(obj) {
-            group.append('<option value="' + obj.name + '">' + obj.name + '</option>');
-    
-        $('#text-speak-voices').append(group);
-        });
+        let voicelist = responsiveVoice.getVoices();
+
+        let voiceNames = [];
+        for (let i = 0; i < voicelist.length; i++) {
+            voiceNames.push(voicelist[i].name);
+        }
+
+        $('#text-speak-voices').append(helpers.getDropdownGroup('text-voice', 'Text Voice', e.textVoice, voiceNames, 'Audio hook to be played when the command is ran.'));
         // Update textVolume.
         $('#text-speak-volume').val(e.textVolume);
         // Update textRate.
@@ -99,12 +98,12 @@ $(function() {
         $('#text-speak-pitch').val(e.textPitch);
     });
 
-    $('#text-speak-save').on('click', function() {
+    $('#text-speak-save').on('click', function () {
         let textVoice = $('#text-speak-voices').find(':selected').text(),
             textVolume = $('#text-speak-volume'),
             textRate = $('#text-speak-rate'),
             textPitch = $('#text-speak-pitch');
-        
+
         switch (false) {
             case helpers.handleInputNumber(textVolume):
             case helpers.handleInputNumber(textRate):
@@ -113,32 +112,13 @@ $(function() {
             default:
                 socket.updateDBValues('update_text_speak_settings', {
                     tables: ['speakSettings', 'speakSettings', 'speakSettings', 'speakSettings'],
-        keys: ['textVoice', 'textVolume', 'textRate', 'textPitch'],
+                    keys: ['textVoice', 'textVolume', 'textRate', 'textPitch'],
                     values: [textVoice, textVolume.val(), textRate.val(), textPitch.val()]
-                }, function() {
-                    socket.sendCommand('update_text_speak_settings_cmd', 'reloadspeak', function() {
+                }, function () {
+                    socket.sendCommand('update_text_speak_settings_cmd', 'reloadspeak', function () {
                         toastr.success('Successfully updated text to speak settings!');
                     });
                 });
-        }
-    });
-
-    $('#text-speak-test').on('click', function() {
-        let textVoice = $('#text-speak-voices').find(':selected').text(),
-            textVolume = $('#text-speak-volume'),
-            textRate = $('#text-speak-rate'),
-            textPitch = $('#text-speak-pitch'),
-            textTest = $('#text-speak-testmessage');
-        
-        switch (false) {
-            case helpers.handleInputNumber(textVolume):
-            case helpers.handleInputNumber(textRate):
-            case helpers.handleInputNumber(textPitch):
-            case helpers.handleInputString(textTest):
-                break;
-            default:
-            responsiveVoice.speak(textTest.val(), textVoice, {volume: textVolume.val(), rate: textRate.val(), pitch: textPitch.val()});
-            toastr.success('Successfully updated text to speak settings!');
         }
     });
 });
