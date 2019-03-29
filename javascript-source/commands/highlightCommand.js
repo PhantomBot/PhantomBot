@@ -55,12 +55,12 @@
                 return;
             }
 
-            uptime = $.getStreamUptime($.channelName);
+            uptime = $.getStreamUptimeSeconds($.channelName);
             twitchVODtime = $.makeTwitchVODTime(uptime);
             vodJsonObj = JSON.parse(vodJsonStr);
             vodURL = vodJsonObj.videos[0].url + twitchVODtime;
 
-            var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60),
+            var streamUptimeMinutes = parseInt(uptime / 60),
                 hours = parseInt(streamUptimeMinutes / 60),
                 minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
                 timestamp = hours + ':' + minutes,
