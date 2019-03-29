@@ -89,13 +89,14 @@ $(function () {
             voiceNames.push(voicelist[i].name);
         }
 
-        $('#text-speak-voices').append(helpers.getDropdownGroup('text-voice', 'Text Voice', e.textVoice, voiceNames, 'Audio hook to be played when the command is ran.'));
-        // Update textVolume.
-        $('#text-speak-volume').val(e.textVolume);
-        // Update textRate.
-        $('#text-speak-rate').val(e.textRate);
-        // Update textPitch.
-        $('#text-speak-pitch').val(e.textPitch);
+        $('#text_speak')
+            .append(helpers.getDropdownGroup('text-speak-voices', 'Text Voice', e.textVoice, voiceNames, 'Audio hook to be played when the command is ran.'))
+            // Update textVolume.
+            .append(helpers.getInputGroup('text-speak-volume', 'text', 'Text Volume', '1.00', e.textVolume, 'The volume for the text to speak. 0 means muted.', false))
+            // Update textRate.
+            .append(helpers.getInputGroup('text-speak-rate', 'text', 'Text Tate', '1.00', e.textRate, 'The rate for the text to speak.', false))
+            // Update textPitch.
+            .append(helpers.getInputGroup('text-speak-pitch', 'text', 'Text Pitch', '1.00', e.textPitch, 'The pitch for the text to speak.', false));
     });
 
     $('#text-speak-save').on('click', function () {
