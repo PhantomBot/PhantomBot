@@ -23,9 +23,10 @@
      * @function drsTimer
      */
     function drsTimer() {
-        var entries,
+        var keys,
             parts,
             apiStatus,
+            commandValue,
             commandHelpData = {},
             commandHelpFileData,
             lastTime = parseInt($.getSetIniDbNumber('datarenderservice', 'last_time', 0)),
@@ -54,21 +55,21 @@
             commandHelpData[parts[0]] = parts[1];
         }
 
-        entries = $.inidb.GetKeyValueList('command', '');
+        keys = $.inidb.GetKeyList('command', '');
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('commands').array();
-        for (var idx in entries) {
-            var command = entries[idx].key, commandValue = entries[idx].value;
-            if (!$.inidb.exists('disabledCommands', command)) {
+        for (var idx in keys) {
+            if (!$.inidb.exists('disabledCommands', keys[idx])) {
                 jsonStringer.object();
-                jsonStringer.key('command').value(command);
+                jsonStringer.key('command').value(keys[idx] + '');
 
-                if (commandHelpData[command] === undefined) {
+                if (commandHelpData[keys[idx]] === undefined) {
                     jsonStringer.key('help').value('');
                 } else {
-                    jsonStringer.key('help').value(commandHelpData[command]);
+                    jsonStringer.key('help').value(commandHelpData[keys[idx]]);
                 }
 
+                commandValue = String($.inidb.get('command', keys[idx]));
                 if (commandValue.match(reCustomAPI)) {
                     commandValue = commandValue.replace(reCustomAPI, '(customapi)');
                 }
@@ -83,13 +84,13 @@
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'commands');
         $.log.event('DataRenderService: Commands API status : ' + apiStatus);
 
-        entries = $.inidb.GetKeyValueList('quotes', '');
+        keys = $.inidb.GetKeyList('quotes', '');
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('quotes').array();
-        for (var idx in entries) {
-            var quoteObj = JSON.parse(entries[idx].value);
+        for (var idx in keys) {
+            var quoteObj = JSON.parse($.inidb.get('quotes', keys[idx]));
             jsonStringer.object();
-            jsonStringer.key('id').value(parseInt(entries[idx].key));
+            jsonStringer.key('id').value(parseInt(keys[idx]));
             jsonStringer.key('user').value(quoteObj[0] + '');
             jsonStringer.key('quote').value(quoteObj[1] + '');
             jsonStringer.endObject();
@@ -98,34 +99,33 @@
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'quotes');
         $.log.event('DataRenderService: Quotes API status : ' + apiStatus);
 
-        entries = $.inidb.GetKeyValueList('points', '');
+        keys = $.inidb.GetKeyList('points', '');
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('pointsName').value($.pointNameMultiple).key('points').array();
-        for (var idx in entries) {
+        for (var idx in keys) {
             jsonStringer.object();
-            jsonStringer.key('user').value(entries[idx].key);
-            jsonStringer.key('points').value(entries[idx].value);
+            jsonStringer.key('user').value(keys[idx] + '');
+            jsonStringer.key('points').value($.inidb.get('points', keys[idx]));
             jsonStringer.endObject();
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'points');
         $.log.event('DataRenderService: Points API status : ' + apiStatus);
 
-        entries = $.inidb.GetKeyValueList('time', '');
+        keys = $.inidb.GetKeyList('time', '');
         jsonStringer = new JSONStringer();
         ranksJsonStringer = new JSONStringer();
         jsonStringer.object().key('times').array();
         ranksJsonStringer.object().key('ranks').array();
-        for (var idx in entries) {
-            var user = entries[idx].key, time = entries[idx].value;
+        for (var idx in keys) {
             jsonStringer.object();
-            jsonStringer.key('user').value(user);
-            jsonStringer.key('time').value(time);
+            jsonStringer.key('user').value(keys[idx] + '');
+            jsonStringer.key('time').value($.inidb.get('time', keys[idx]));
             jsonStringer.endObject();
 
             ranksJsonStringer.object();
-            ranksJsonStringer.key('user').value(user);
-            ranksJsonStringer.key('rank').value($.getRank(user, parseInt(time)));
+            ranksJsonStringer.key('user').value(keys[idx] + '');
+            ranksJsonStringer.key('rank').value($.getRank(keys[idx]));
             ranksJsonStringer.endObject();
         }
         jsonStringer.endArray().endObject();
