@@ -58,7 +58,9 @@
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('commands').array();
         for (var idx in entries) {
-            var command = entries[idx].key, commandValue = entries[idx].value;
+            // commandValue is a Java string, but needs to be a JS string for the replace() calls
+            // below to work, so we cast it explicitly here.
+            var command = entries[idx].key, commandValue = String(entries[idx].value);
             if (!$.inidb.exists('disabledCommands', command)) {
                 jsonStringer.object();
                 jsonStringer.key('command').value(command);
