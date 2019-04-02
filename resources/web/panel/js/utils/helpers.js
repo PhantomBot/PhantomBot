@@ -327,7 +327,7 @@ $(function() {
             }
             localStorage.setItem(id, 'true');
         } else {
-            obj.html('Hidden');
+            obj.html('Versteckt');
             localStorage.setItem(id, 'false');
         }
     };
