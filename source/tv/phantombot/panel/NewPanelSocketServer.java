@@ -113,6 +113,10 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
@@ -189,8 +193,9 @@ public class NewPanelSocketServer {
                 clientError(client, errorMessage);
             }
         });
-    }
 
+        doPingHandler();
+    }
 
     /**
      * Starts the created WebsocketServer
@@ -282,6 +287,11 @@ public class NewPanelSocketServer {
         String     dataString;
         String     uniqueID;
         int        dataInt;
+
+        /* If a PONG is received, ignore it. */
+        if (jsonString.equals("PONG")) {
+            return;
+        }
 
         try {
             jsonObject = new JSONObject(jsonString);
@@ -432,6 +442,15 @@ public class NewPanelSocketServer {
                 com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         }
+    }
+
+    /**
+     * Returns a PONG to a client.
+     *
+     * @param webSocket The WebSocket which sent the PING.
+     */
+    private void handlePing(IWebsocketClient webSocket) {
+        webSocket.send("PONG");
     }
 
     /**
@@ -890,6 +909,17 @@ public class NewPanelSocketServer {
      */
     private static String genSessionKey(IWebsocketClient webSocket) {
         return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
+    }
+
+    /**
+     * Timer that sends PINGs to the clients.
+     */
+    private void doPingHandler() {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("tv.phantombot.panel.NewPanelSocketServer::doPingHandler");
+            sendToAll("PING");
+        }, 0, 2, TimeUnit.MINUTES);
     }
 
     /**
