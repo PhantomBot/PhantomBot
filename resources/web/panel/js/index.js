@@ -471,6 +471,11 @@ $(function() {
         try {
             helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
 
+            if (e.data === 'PING') {
+                webSocket.send('PONG');
+                return;
+            }
+
             let message = JSON.parse(e.data);
 
             // Check this message here before doing anything else.
