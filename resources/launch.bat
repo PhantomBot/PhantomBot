@@ -27,6 +27,7 @@ IF %ERRORLEVEL% NEQ 0 (
     pause
     exit
 )
-java -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar %1
+SET mypath=%~dp0
+java -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "%mypath%PhantomBot.jar" %1
 endlocal
 pause
