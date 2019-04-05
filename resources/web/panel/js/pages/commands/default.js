@@ -120,7 +120,7 @@ $(function() {
                     .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers']))
+                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
