@@ -76,6 +76,7 @@
             $.registerChatSubcommand(newName, 'add', 1);
             $.registerChatSubcommand(newName, 'give', 1);
             $.registerChatSubcommand(newName, 'take', 1);
+            $.registerChatSubcommand(newName, 'remove', 1);
             $.registerChatSubcommand(newName, 'set', 1);
             $.registerChatSubcommand(newName, 'all', 1);
             $.registerChatSubcommand(newName, 'takeall', 1);
