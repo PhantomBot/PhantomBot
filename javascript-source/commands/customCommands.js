@@ -436,17 +436,18 @@
         }
 
         if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
-$.consoleLn('(customapi) -> ' + message);
             message = apiTags(event, message);
         }
 
-        if (message.match('\n')) {
-            var splitMessage = message.split('\n');
+        if (message !== null) {
+            if (message.match('\n')) {
+                var splitMessage = message.split('\n');
 
-            for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
-                $.say(splitMessage[i]);
+                for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
+                    $.say(splitMessage[i]);
+                }
+                return null;
             }
-            return null;
         }
 
         return message;
