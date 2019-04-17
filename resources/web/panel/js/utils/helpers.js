@@ -800,8 +800,8 @@ $(function() {
             case 'donators':
             case 'donator':
                 return (asString ? '4' : 4);
-            case 'hosters':
-            case 'hoster':
+            case 'vips':
+            case 'vip':
                 return (asString ? '5' : 5);
             case 'regulars':
             case 'regular':
@@ -847,7 +847,7 @@ $(function() {
             case '4':
                 return 'Donators';
             case '5':
-                return 'Hosters';
+                return 'VIPs';
             case '6':
                 return 'Regulars';
             default:
