@@ -194,47 +194,8 @@
             <fileset dir="${build.dir}" />
         </copy>
     </target>
-    
-    <target depends="compile.src.test,post.compile,git.revision" name="jar.test">
-        <jar destfile="${build.dir}/${ant.project.name}.jar">
-            <fileset dir="${classes}" />
-            <manifest>
-                <attribute name="Bundle-Name" value="${ant.project.name}" />
-                <attribute name="Bundle-Version" value="${version}" />
-                <attribute name="Bundle-Revision" value="${git.revision}" />
-                <attribute name="Bundle-Date" value="${NOW}" />
-                <attribute name="Implementation-Title" value="${ant.project.name}" />
-                <attribute name="Implementation-Version" value="${version}" />
-                <attribute name="Implementation-Revision" value="${git.revision}" />
-                <attribute name="Implementation-URL" value="https://phantombot.tv" />
-                <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
-            </manifest>
-        </jar>
 
-        <mkdir dir="${lib.dir}" />
-        <copy todir="${lib.dir}">
-            <fileset dir="./libraries" />
-        </copy>
-        <echo level="info" message="staging javascript-source into resources." />
-        <copy todir="./resources/scripts">
-            <fileset dir="./javascript-source" />
-        </copy>
-        <echo level="info" message="staging lib folder into resources." />
-        <copy todir="${res.dir}">
-            <fileset dir="./resources" />
-        </copy>
-        <replaceregexp
-            file="${build.dir}/web/panel/js/utils/helpers.js"
-            match="helpers\.PANEL_VERSION = &quot;(.*)&quot;;"
-            replace="helpers\.PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
-        <echo level="info" message="staging files into distribution folder." />
-        <copy todir="${version.folder}">
-            <fileset dir="${build.dir}" />
-        </copy>
-    </target>
-
-    <target name="test" depends="jar.test" />
+    <target depends="compile.src.test,post.compile" name="test"/>
 
     <target name="run" depends="jar">
         <java fork="true" classname="tv.phantombot.PhantomBot" dir="${build.dir}">
