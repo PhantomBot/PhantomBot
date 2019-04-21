@@ -264,7 +264,7 @@ public class HTTPServerCommon {
             }
 
             if (keyValue[0].equals("table")) {
-                if (keyValue[1] == null) {
+                if (keyValue.length == 1 || keyValue[1].length() == 0) {
                     sendHTMLError(400, "Bad Request", exchange);
                     return;
                 }
@@ -275,11 +275,9 @@ public class HTTPServerCommon {
                 }
                 dbTable = keyValue[1];
             } else if (keyValue[0].equals("section")) {
-                if (keyValue[1] == null) {
-                    sendHTMLError(400, "Bad Request", exchange);
-                    return;
+                if (keyValue.length > 1 && keyValue[1].length() > 0) {
+                    dbSection = keyValue[1];
                 }
-                dbSection = keyValue[1];
             } else {
                 // All other commands need the table.
                 if (dbTable == null) {
