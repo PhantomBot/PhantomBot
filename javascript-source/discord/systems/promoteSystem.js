@@ -360,7 +360,11 @@
                 var views = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('views');
                 var banner = null;
                 if (jsonStreams.getJSONObject(i).getJSONObject('channel').has('profile_banner')) {
-                    banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                    if (jsonStreams.getJSONObject(i).getJSONObject('channel').isNull('profile_banner')) {
+                        banner = null; 
+                    } else {
+                        banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                    }
                 }
                 liveStreamers.push(twitchID);
 
@@ -386,7 +390,7 @@
                             embedBuilder.appendField($.lang.get('discord.promotesystem.livemsg.followers'), followers, true)
                                         .appendField($.lang.get('discord.promotesystem.livemsg.views'), views, true);
                         }
-                        if (banner != null && showBanner) {
+                        if (banner !== null && showBanner) {
                             embedBuilder.withImage(banner)
                         }
      
