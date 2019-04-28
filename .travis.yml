@@ -1,5 +1,6 @@
 language: java
-install: ant deps
+before_install:
+  - sudo apt-get -y install ant
 jdk:
   - openjdk8
 notifications:
