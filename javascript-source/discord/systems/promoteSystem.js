@@ -358,7 +358,10 @@
                 var twitchName = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('display_name');
                 var followers = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('followers');
                 var views = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('views');
-                var banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                var banner = null;
+                if (jsonStreams.getJSONObject(i).getJSONObject('channel').has('profile_banner')) {
+                    banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                }
                 liveStreamers.push(twitchID);
 
                 if (title === null) {
