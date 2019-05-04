@@ -380,11 +380,9 @@
 
         if (message.match(/\(hours\)/g)) {
             var args = event.getArgs(),
-                channel = $.channelName,
                 sender = event.getSender();
 
             if (args.length > 0) sender = args[0].replace('@','');
-            if (args.length > 1) channel = args[1].replace('@','');
      
             message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
         }
