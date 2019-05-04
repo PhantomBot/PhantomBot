@@ -330,6 +330,29 @@
     }
 
     /**
+     * @function getFollowDate
+     * @export $
+     * @param username
+     * @param channelName
+     */
+    function getFollowDate(sender, username, channelName) {
+        username = $.user.sanitize(username);
+        channelName = $.user.sanitize(channelName);
+
+        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+
+        if (user.getInt('_http') === 404) {
+            return $.lang.get('followhandler.follow.age.datefmt.404');
+        }
+
+        var date = new Date(user.getString('created_at')),
+            dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
+            dateFinal = dateFormat.format(date);
+
+        return dateFinal;
+    }
+
+    /**
      * @function getFollowAge
      * @export $
      * @param username
@@ -498,6 +521,7 @@
     $.updateStatus = updateStatus;
     $.updateCommunity = updateCommunity;
     $.getFollowAge = getFollowAge;
+    $.getFollowDate = getFollowDate;
     $.getChannelAge = getChannelAge;
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;
