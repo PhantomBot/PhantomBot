@@ -29,7 +29,7 @@ import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStoreConverter;
 
 import com.illusionaryone.GitHubAPIv3;
-import com.illusionaryone.GoogleURLShortenerAPIv1;
+import com.illusionaryone.BitlyAPIv4;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
@@ -1043,7 +1043,7 @@ public final class PhantomBot implements Listener {
         }
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("shortenURL", GoogleURLShortenerAPIv1.instance(), 0);
+        Script.global.defineProperty("shortenURL", BitlyAPIv4.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
