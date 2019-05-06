@@ -583,7 +583,7 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
         }
         
-        /* Set the StreamElements JWT token. */
+        /* Set the Bitly token. */
         if (!BitlyAPIKey.isEmpty() && !BitlyGUID.isEmpty()) {
             BitlyAPIv4.instance().setAPIKey(BitlyAPIKey);
             BitlyAPIv4.instance().setGUID(BitlyGUID);
