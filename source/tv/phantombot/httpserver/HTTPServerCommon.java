@@ -241,6 +241,7 @@ public class HTTPServerCommon {
         JSONStringer jsonObject = new JSONStringer();
         String[] keyValue;
         String   dbTable = null;
+        String   dbSection = "";
         Boolean  dbExists;
 
         if (!hasPassword) {
@@ -263,7 +264,7 @@ public class HTTPServerCommon {
             }
 
             if (keyValue[0].equals("table")) {
-                if (keyValue[1] == null) {
+                if (keyValue.length == 1 || keyValue[1].length() == 0) {
                     sendHTMLError(400, "Bad Request", exchange);
                     return;
                 }
@@ -273,6 +274,10 @@ public class HTTPServerCommon {
                     return;
                 }
                 dbTable = keyValue[1];
+            } else if (keyValue[0].equals("section")) {
+                if (keyValue.length > 1 && keyValue[1].length() > 0) {
+                    dbSection = keyValue[1];
+                }
             } else {
                 // All other commands need the table.
                 if (dbTable == null) {
@@ -299,7 +304,7 @@ public class HTTPServerCommon {
             // { "table" : { "table_name": "tableName", "key" : "keyString", "keyExists": true } }
             if (keyValue[0].equals("keyExists")) {
                 if (keyValue.length > 1) {
-                    dbExists = PhantomBot.instance().getDataStore().exists(dbTable, keyValue[1]);
+                    dbExists = PhantomBot.instance().getDataStore().HasKey(dbTable, dbSection, keyValue[1]);
                     jsonObject.object().key("table");
                     jsonObject.object();
                     jsonObject.key("table_name").value(dbTable);
@@ -320,7 +325,7 @@ public class HTTPServerCommon {
             // { "table" : { "table_name": "tableName", "key" : "keyString", "value": "valueString" } }
             if (keyValue[0].equals("getData")) {
                 if (keyValue.length > 1) {
-                    String dbString = PhantomBot.instance().getDataStore().GetString(dbTable, "", keyValue[1]);
+                    String dbString = PhantomBot.instance().getDataStore().GetString(dbTable, dbSection, keyValue[1]);
                     jsonObject.object().key("table");
                     jsonObject.object();
                     jsonObject.key("table_name").value(dbTable);
@@ -345,7 +350,7 @@ public class HTTPServerCommon {
                 jsonObject.key("table_name").value(dbTable);
                 jsonObject.key("keylist").array();
 
-                String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, "");
+                String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, dbSection);
 
                 for (String dbKey : dbKeys) {
                     jsonObject.object();
@@ -376,7 +381,7 @@ public class HTTPServerCommon {
                 jsonObject.key("results").array();
 
                 if (keyValue[0].equals("getAllRows")) {
-                    dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, "");
+                    dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, dbSection);
                 } else {
                     for (String sortOptions : uriQueryList) {
                         String[] sortOption = sortOptions.split("=");
@@ -403,9 +408,9 @@ public class HTTPServerCommon {
                     }
 
                     if (keyValue[0].equals("getSortedRows")) {
-                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(dbTable, "", sortOrder, sortLimit, sortOffset);
+                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(dbTable, dbSection, sortOrder, sortLimit, sortOffset);
                     } else {
-                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrderValue(dbTable, "", sortOrder, sortLimit, sortOffset);
+                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrderValue(dbTable, dbSection, sortOrder, sortLimit, sortOffset);
                     }
 
                 }
@@ -413,7 +418,7 @@ public class HTTPServerCommon {
                 for (String dbKey : dbKeys) {
                     jsonObject.object();
                     jsonObject.key("key").value(dbKey);
-                    jsonObject.key("value").value(PhantomBot.instance().getDataStore().GetString(dbTable, "", dbKey));
+                    jsonObject.key("value").value(PhantomBot.instance().getDataStore().GetString(dbTable, dbSection, dbKey));
                     jsonObject.endObject();
                 }
                 jsonObject.endArray();
