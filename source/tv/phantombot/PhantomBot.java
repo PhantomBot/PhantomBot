@@ -1063,7 +1063,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("isNightly", isNightly(), 0);
         Script.global.defineProperty("isPrerelease", isPrerelease(), 0);
         Script.global.defineProperty("version", botVersion(), 0);
-        Script.global.defineProperty("repo", repoVersion(), 0);
         Script.global.defineProperty("changed", newSetup, 0);
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
