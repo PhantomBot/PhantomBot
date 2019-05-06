@@ -110,6 +110,8 @@ public class BitlyAPIv4 {
 
             if (urlConn.getResponseCode() == 200) {
                 inputStream = urlConn.getInputStream();
+            } else if (urlConn.getResponseCode() == 201) {
+                inputStream = urlConn.getInputStream();
             } else {
                 inputStream = urlConn.getErrorStream();
             }
@@ -178,8 +180,8 @@ public class BitlyAPIv4 {
      */
     public String getShortURL(String longURL) {
         JSONObject jsonObject = readJsonFromUrl(sAPIURL, longURL);
-        if (jsonObject.has("id")) {
-            return jsonObject.getString("id");
+        if (jsonObject.has("link")) {
+            return jsonObject.getString("link");
         }
         return longURL;
     }
