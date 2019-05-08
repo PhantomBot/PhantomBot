@@ -21,7 +21,7 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -220,6 +220,10 @@
             message = $.replace(message, '(senderrank)', $.resolveRank(event.getSender()));
         }
 
+        if (message.match(/\(senderrankonly\)/g)) {
+            message = $.replace(message, '(senderrankonly)', $.getRank(event.getSender()));
+        }
+
         if (message.match(/\(@sender\)/g)) {
             message = $.replace(message, '(@sender)', $.userPrefix(event.getSender(), true));
         }
@@ -361,6 +365,26 @@
             } else {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
             }
+        }
+
+        if (message.match(/\(followdate\)/g)) {
+            var args = event.getArgs(),
+                channel = $.channelName,
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+            if (args.length > 1) channel = args[1].replace('@','');
+     
+            message = $.replace(message, '(followdate)', $.getFollowDate(event.getSender(), sender, channel));
+        }
+
+        if (message.match(/\(hours\)/g)) {
+            var args = event.getArgs(),
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+     
+            message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
         }
 
         if (message.match(/\(followage\)/g)) {
