@@ -326,9 +326,7 @@
          * @commandpath unhost - Will unhost the channel that is being hosted. Make sure to add your bot as a channel editor on your Twitch dashboard for this to work.
          */
         if (command.equalsIgnoreCase('unhost')) {
-            if (action !== undefined) {
-                $.say('.unhost');
-            }
+            $.say('.unhost');
         }
     });
 
