@@ -158,6 +158,10 @@ public final class PhantomBot implements Listener {
     private String twitterConsumerSecret;
     private String twitterConsumerToken;
     private Boolean twitterAuthenticated;
+    
+    /* Bitly Information */
+    private String BitlyAPIKey = "";
+    private String BitlyGUID = "";
 
     /* TwitchAlerts Information */
     private String twitchAlertsKey = "";
@@ -432,6 +436,10 @@ public final class PhantomBot implements Listener {
         this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
         this.streamElementsID = this.pbProperties.getProperty("streamelementsid", "");
         this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
+        
+        /* Set the Bitly variables */
+        this.BitlyAPIKey = this.pbProperties.getProperty("bitlyapikey", "");
+        this.BitlyGUID = this.pbProperties.getProperty("bitlyguid", "");
 
         /* Set the PhantomBot Commands API variables */
         this.dataRenderServiceAPIToken = this.pbProperties.getProperty("datarenderservicetoken", "");
@@ -573,6 +581,12 @@ public final class PhantomBot implements Listener {
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
             TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
+        }
+        
+        /* Set the Bitly token. */
+        if (!BitlyAPIKey.isEmpty() && !BitlyGUID.isEmpty()) {
+            BitlyAPIv4.instance().setAPIKey(BitlyAPIKey);
+            BitlyAPIv4.instance().setGUID(BitlyGUID);
         }
 
         /* Validate the chat OAUTH token. */
