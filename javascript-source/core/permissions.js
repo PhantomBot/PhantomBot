@@ -798,7 +798,8 @@
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase().trim(),
             modMessageStart = 'the moderators of this channel are: ',
-            vipMessageStart = 'VIPs for this channel are: ',
+            vipMessageStart = 'the vips of this channel are: ',
+            novipMessageStart = 'this channel does not have any vips',
             keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
             spl,
@@ -839,6 +840,13 @@
                     }
                 }
                 $.saveArray(vipUsers, 'addons/vips.txt', false);
+            }  else if (message.indexOf(novipMessageStart) > -1) {
+                for (i in keys) {
+                    if ($.inidb.get('group', keys[i]).equalsIgnoreCase('5')) {
+                        $.inidb.del('group', keys[i]);
+                    }
+                }
+                $.deleteFile('addons/vips.txt', true);
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
