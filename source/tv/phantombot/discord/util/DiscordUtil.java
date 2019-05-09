@@ -474,6 +474,23 @@ public class DiscordUtil {
         }
         return null;
     }
+    
+    /**
+     * Method that returns a role by its ID.
+     * 
+     * @param id
+     * @return 
+     */
+    public IRole getRoleByID(String id) {
+       List<IRole> roles = DiscordAPI.getClient().getRoles();
+
+        for (IRole role : roles) {
+            if (role.getStringID().equalsIgnoreCase(id)) {
+                return role;
+            }
+        }
+        return null; 
+    }
 
     /**
      * Method to get an array of role objects by a string of role names.
