@@ -27,16 +27,16 @@
      * @function startCommercialTimer
      */
     function startCommercialTimer() {
+        lastCommercial = $.systemTime();
+        
         interval = setInterval(function() {
-            lastCommercial = $.systemTime();
-            
             if (commercialTimer && $.bot.isModuleEnabled('./systems/commercialSystem.js')) {
                 if ((lastCommercial + (commercialInterval * 6e4)) <= $.systemTime()) {
                     if ($.isOnline($.channelName)) {
-                        $.twitch.RunCommercial($.channelName, commercialLength);
+                        var result = $.twitch.RunCommercial($.channelName, commercialLength);
                         lastCommercial = $.systemTime();
                         
-                        if (commercialMessage.length() > 0) {
+                        if (commercialMessage.length() > 0 && result.getInt("_http") !== 422) {
                             $.say(commercialMessage);
                         }
                     }
