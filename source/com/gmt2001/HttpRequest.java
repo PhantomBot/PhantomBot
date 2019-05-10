@@ -56,6 +56,11 @@ public class HttpRequest {
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
 
+            if (u.getUserInfo() != null) {
+                String basicAuth = "Basic " + new String(new Base64().encode(u.getUserInfo().getBytes()));
+                h.setRequestProperty("Authorization", basicAuth);
+            }
+
             headers.entrySet().stream().forEach((e) -> {
                 h.addRequestProperty(e.getKey(), e.getValue());
             });
