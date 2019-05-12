@@ -174,5 +174,38 @@
             startCommercialTimer();
         }
     });
+
+    /**
+     * @event webPanelSocketUpdate
+     */
+    $.bind('webPanelSocketUpdate', function(event) {
+        if (event.getScript().equalsIgnoreCase('./systems/commercialSystem.js')) {
+            var action = event.getArgs()[0];
+
+            if (action.equalsIgnoreCase('setautotimer')) {
+                var msg = '';
+
+                if (event.getArgs().length > 3) {
+                    msg = event.getArgs().slice(3).join(' ');
+                }
+
+                $.inidb.set('commercialSettings', 'length', event.getArgs()[2]);
+                $.inidb.set('commercialSettings', 'interval', event.getArgs()[1]);
+                $.inidb.set('commercialSettings', 'message', msg);
+                $.inidb.set('commercialSettings', 'commercialtimer', true.toString());
+
+                commercialLength = parseInt(event.getArgs()[2]);
+                commercialInterval = parseInt(event.getArgs()[1]);
+                commercialMessage = msg;
+                commercialTimer = true;
+
+                startCommercialTimer();
+            } else if (action.equalsIgnoreCase('autotimeroff')) {
+                $.inidb.set('commercialSettings', 'commercialtimer', false.toString());
+                commercialTimer = false;
+                clearInterval(interval);
+            }
+        }
+    });
 })();
 
