@@ -22,8 +22,8 @@ var canScroll = true;
 $(function() {
     // Query our panel settings first.
     socket.getDBValues('panel_get_settings', {
-        tables: ['panelData', 'panelData'],
-        keys: ['isDark', 'isReverseSortEvents']
+        tables: ['panelData', 'panelData', 'modules'],
+        keys: ['isDark', 'isReverseSortEvents', './systems/commercialSystem.js']
     }, true, function(e) {
         helpers.isDark = e.isDark === 'true';
         helpers.isReverseSortEvents = e.isReverseSortEvents === 'true';
@@ -34,6 +34,11 @@ $(function() {
         $('#dark-mode-toggle').prop('checked', helpers.isDark);
         // Update event toggle.
         $('#toggle-reverse-events').prop('checked', helpers.isReverseSortEvents);
+
+        // Disable isntant commercials if the module is disabled
+        if (e['./systems/commercialSystem.js'] !== 'true') {
+            $('#grp-instant-commercial').addClass('hidden');
+        }
 
         // Query recent events.
         socket.getDBValue('dashboard_get_events', 'panelData', 'data', function(e) {
