@@ -155,7 +155,7 @@
                     lastCommercial = $.systemTime();
                     
                     if (args.length < 2 || !args[1].equalsIgnoreCase("silent")) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.run', args[0]));
+                        $.say($.lang.get('commercialsystem.run', args[0]));
                     }
                 }
             }
