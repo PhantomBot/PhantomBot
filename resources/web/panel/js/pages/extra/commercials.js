@@ -44,8 +44,8 @@ $(function() {
     const COMMERCIAL_SCRIPT = './systems/commercialSystem.js';
 
     // Toggle for the module.
-    $('#commercialModuleToggle').on('change', function() {
-        // Toggle the timer
+    $('#commercialsModuleToggle').on('change', function() {
+        // Toggle the module
         socket.sendCommandSync('commercial_module_toggle_cmd',
             'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/commercialSystem.js', run);
     });
