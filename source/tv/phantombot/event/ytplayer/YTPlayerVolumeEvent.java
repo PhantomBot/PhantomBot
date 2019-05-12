@@ -19,7 +19,7 @@ package tv.phantombot.event.ytplayer;
 public class YTPlayerVolumeEvent extends YTPlayerEvent {
     private final int volume;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {int} volume
@@ -28,7 +28,7 @@ public class YTPlayerVolumeEvent extends YTPlayerEvent {
         this.volume = volume;
     }
 
-    /*
+    /**
      * Method that returns the volume level.
      *
      * @return {int} volume

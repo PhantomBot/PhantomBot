@@ -120,6 +120,10 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
@@ -151,6 +155,7 @@ public class PanelSocketServer extends WebSocketServer {
         this.authStringRO = authStringRO;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        doPingHandler();
     }
 
     /**
@@ -219,6 +224,11 @@ public class PanelSocketServer extends WebSocketServer {
         String     dataString;
         String     uniqueID;
         int        dataInt;
+
+        /* If a PONG is received, ignore it. */
+        if (jsonString.equals("PONG")) {
+            return;
+        }
 
         try {
             jsonObject = new JSONObject(jsonString);
@@ -851,6 +861,17 @@ public class PanelSocketServer extends WebSocketServer {
 
         jsonObject.object().key("query_id").value(id).endObject();
         webSocket.send(jsonObject.toString());
+    }
+
+    /**
+     * Timer that sends PINGs to the clients.
+     */
+    private void doPingHandler() {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("tv.phantombot.panel.NewPanelSocketServer::doPingHandler");
+            sendToAll("PING");
+        }, 0, 2, TimeUnit.MINUTES);
     }
 
     /**

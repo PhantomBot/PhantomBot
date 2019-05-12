@@ -22,7 +22,7 @@ public class TwitchRaidEvent extends TwitchEvent {
     private final String username;
     private final String viewers;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} username
@@ -33,7 +33,7 @@ public class TwitchRaidEvent extends TwitchEvent {
         this.viewers = viewers;
     }
 
-    /*
+    /**
      * Method that returns the username who hosted.
      *
      * @return {String} username
@@ -42,7 +42,7 @@ public class TwitchRaidEvent extends TwitchEvent {
         return this.username;
     }
 
-    /*
+    /**
      * Method that returns the amount of users who raided.
      *
      * @return {String} viewers

@@ -79,11 +79,11 @@
      * @return {Boolean}
      */
     function isSpecial(command) {
-        return command == 'bet' || command == 'tickets' || command == 'bid' || command == 'adventure' || command == $.raffleCommand;
+        return command == 'bet' || command == 'tickets' || command == 'bid' || command == 'adventure' || command == 'vote' || command == $.raffleCommand;
     }
 
     /*
-     * @function get 
+     * @function get
      *
      * @export $.coolDown
      * @param  {String}  command
@@ -126,7 +126,7 @@
     }
 
     /*
-     * @function getSecs 
+     * @function getSecs
      *
      * @export $.coolDown
      * @param  {String}  command
@@ -160,7 +160,7 @@
     }
 
     /*
-     * @function set 
+     * @function set
      *
      * @export $.coolDown
      * @param  {String}  command
@@ -171,7 +171,7 @@
      * @return {Number}
      */
     function set(command, hasCooldown, seconds, isMod, username) {
-        seconds = ((parseInt(seconds) * 1e3) + $.systemTime());
+        seconds = (seconds > 0 ? ((parseInt(seconds) * 1e3) + $.systemTime()) : 0);
 
         if (hasCooldown) {
             if (username === undefined) {

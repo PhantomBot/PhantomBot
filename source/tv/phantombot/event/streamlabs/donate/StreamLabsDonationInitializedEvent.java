@@ -20,7 +20,7 @@ import tv.phantombot.event.streamlabs.StreamLabsEvent;
 
 public class StreamLabsDonationInitializedEvent extends StreamLabsEvent {
 
-    /*
+    /**
      * Class constructor.
      */
     public StreamLabsDonationInitializedEvent() {

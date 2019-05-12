@@ -22,7 +22,7 @@ import tv.phantombot.twitch.irc.TwitchSession;
 
 public abstract class IrcCompleteEvent extends IrcEvent {
 
-    /*
+    /**
      * Class constructor
      *
      * @param {TwitchSession} session

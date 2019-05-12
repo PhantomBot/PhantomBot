@@ -113,7 +113,10 @@ public class Permissions implements Listener {
         }
     }
     
-    // A handler event for IrcChannelUsersUpdateEvent.
+    /**
+     * A handler event for IrcChannelUsersUpdateEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircChannelUsersUpdateEvent(IrcChannelUsersUpdateEvent event) {
         /*ConcurrentMap<String, User> usersMap = new ConcurrentHashMap<>();
@@ -128,31 +131,46 @@ public class Permissions implements Listener {
         this.users = usersMap;*/
     }
     
-    // A handler event for IrcChannelJoinEvent.
+    /**
+     * A handler event for IrcChannelJoinEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircChannelJoinEvent(IrcChannelJoinEvent event) {
         addUser(event.getUser());
     }
     
-    // A handler event for IrcChannelLeaveEvent.
+    /**
+     * A handler event for IrcChannelLeaveEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircChannelLeaveEvent(IrcChannelLeaveEvent event) {
         removeUser(event.getUser());
     }
     
-    // A handler event for IrcChannelUserModeEvent.
+    /**
+     * A handler event for IrcChannelUserModeEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircChannelUserModeEvent(IrcChannelUserModeEvent event) {
         
     }
     
-    // A handler event for IrcPrivateMessageEvent.
+    /**
+     * A handler event for IrcPrivateMessageEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircPrivateMessageEvent(IrcPrivateMessageEvent event) {
         
     }
     
-    // A handler event for IrcChannelMessageEvent.
+    /**
+     * A handler event for IrcChannelMessageEvent.
+     * @param event
+     */
     @Handler
     private synchronized void ircChannelMessageEvent(IrcChannelMessageEvent event) {
         addUser(event.getSender());

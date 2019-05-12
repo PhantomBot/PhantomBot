@@ -21,7 +21,7 @@ import tv.phantombot.event.streamlabs.StreamLabsEvent;
 public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
     private final String jsonString;
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {String} jsonString
@@ -30,7 +30,7 @@ public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
         this.jsonString = jsonString;
     }
 
-    /*
+    /**
      * Method that returns the donation's JSON string.
      *
      * @return {String} jsonString
@@ -39,7 +39,7 @@ public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
         return this.jsonString;
     }
 
-    /*
+    /**
      * Method that converts the class into a string.
      *
      * @return {String}

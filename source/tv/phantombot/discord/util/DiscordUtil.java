@@ -16,11 +16,13 @@
  */
 package tv.phantombot.discord.util;
 
+import com.vdurmont.emoji.Emoji;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IRole;
 
@@ -40,12 +42,14 @@ import java.io.FileNotFoundException;
 import java.io.File;
 
 import java.awt.Color;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
+
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.StatusType;
 
 import tv.phantombot.discord.DiscordAPI;
 
-/*
+/**
  * Has all of the methods to work with Discord4J.
  *
  * @author IllusionaryOne
@@ -53,7 +57,7 @@ import tv.phantombot.discord.DiscordAPI;
  */
 public class DiscordUtil {
     
-    /*
+    /**
      * Method that removes the # in the channel name.
      *
      * @param  {String} channelName
@@ -68,7 +72,7 @@ public class DiscordUtil {
         }
     }
     
-    /*
+    /**
      * Method to send a message to a channel.
      *
      * @param  {IChannel} channel
@@ -95,7 +99,7 @@ public class DiscordUtil {
         }).get();
     }
 
-    /*
+    /**
      * Method to send a message to a channel.
      *
      * @param  {String} channelName
@@ -106,7 +110,7 @@ public class DiscordUtil {
         return sendMessage(getChannel(channelName), message);
     }
 
-    /*
+    /**
      * Method to send private messages to a user.
      *
      * @param {IUser}  user
@@ -131,7 +135,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to send private messages to a user.
      *
      * @param {String} userName
@@ -141,7 +145,7 @@ public class DiscordUtil {
         sendPrivateMessage(getUser(userName), message);
     }
 
-    /*
+    /**
      * Method to send embed messages.
      *
      * @param  {IChannel}     channel
@@ -168,7 +172,7 @@ public class DiscordUtil {
         }).get();
     }
 
-    /*
+    /**
      * Method to send embed messages.
      *
      * @param  {String} channelName
@@ -179,7 +183,7 @@ public class DiscordUtil {
         return sendMessageEmbed(getChannel(channelName), builder);
     }
 
-    /*
+    /**
      * Method to send embed messages.
      *
      * @param  {IChannel} channel
@@ -209,7 +213,7 @@ public class DiscordUtil {
         }).get();
     }
 
-    /*
+    /**
      * Method to send embed messages.
      *
      * @param {String} channelName
@@ -221,7 +225,7 @@ public class DiscordUtil {
         return sendMessageEmbed(getChannel(channelName), color, message);
     }
 
-    /*
+    /**
      * Method to send a file to a channel.
      *
      * @param  {IChannel} channel
@@ -258,7 +262,7 @@ public class DiscordUtil {
         }).get();
     }
 
-    /*
+    /**
      * Method to send a file to a channel.
      *
      * @param  {String} channelName
@@ -270,7 +274,7 @@ public class DiscordUtil {
         return sendFile(getChannel(channelName), message, fileLocation);
     }
 
-    /*
+    /**
      * Method to send a file to a channel.
      *
      * @param  {String} channelName
@@ -281,7 +285,7 @@ public class DiscordUtil {
         return sendFile(channel, "", fileLocation);
     }
     
-    /*
+    /**
      * Method to send a file to a channel.
      *
      * @param  {String} channelName
@@ -291,8 +295,78 @@ public class DiscordUtil {
     public IMessage sendFile(String channelName, String fileLocation) {
         return sendFile(getChannel(channelName), "", fileLocation);
     }
+    
+    /**
+     * Method that adds a reaction to a message.
+     * 
+     * @param message The message object
+     * @param emoji The reaction object
+     */
+    public void addReaction(IMessage message, ReactionEmoji emoji) {
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null && emoji != null) {
+                    message.addReaction(emoji);
+                } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
+                    addReaction(message, emoji);
+                } else {
+                    // Throw this if the message object is null.
+                    throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        }).get();
+    }
+    
+    /**
+     * Method that adds a reaction to a message.
+     * 
+     * @param message The message object
+     * @param emoji The reaction object
+     */
+    public void addReaction(IMessage message, Emoji emoji) {
+        RequestBuffer.request(() -> {
+            try {
+                if (message != null && emoji != null) {
+                    message.addReaction(emoji);
+                } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
+                    addReaction(message, emoji);
+                } else {
+                    // Throw this if the message object is null.
+                    throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
+                }
+            } catch (MissingPermissionsException | DiscordException ex) {
+                com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+            }
+        }).get();
+    }
+    
+    /**
+     * Method that adds multiple reactions to a message.
+     * 
+     * @param message The message object
+     * @param emojis The reaction objects
+     */
+    public void addReactions(IMessage message, ReactionEmoji[] emojis) {
+        for (ReactionEmoji emoji : emojis) {
+            addReaction(message, emoji);
+        }
+    }
+    
+    /**
+     * Method that adds multiple reactions to a message.
+     * 
+     * @param message The message object
+     * @param emojis The reaction objects
+     */
+    public void addReactions(IMessage message, Emoji[] emojis) {
+        for (Emoji emoji : emojis) {
+            addReaction(message, emoji);
+        }
+    }
 
-    /*
+    /**
      * Method to return a channel object by its name.
      *
      * @param  {String} channelName
@@ -310,10 +384,11 @@ public class DiscordUtil {
                 return channel;
             }
         }
+
         return null;
     }
 
-    /*
+    /**
      * Method to return a channel object by its ID.
      *
      * @param  {String} channelId
@@ -330,7 +405,7 @@ public class DiscordUtil {
         return null;
     }
 
-    /*
+    /**
      * Method to return a user object by its name.
      *
      * @param  {String} userName
@@ -347,7 +422,7 @@ public class DiscordUtil {
         return null;
     }
 
-    /*
+    /**
      * Method to return a user object by its id.
      *
      * @param  {Long} userId
@@ -364,7 +439,7 @@ public class DiscordUtil {
         return null;
     }
 
-    /*
+    /**
      * Method to return a user object by its name and its discriminator.
      *
      * @param  {String} userName
@@ -383,7 +458,7 @@ public class DiscordUtil {
         return null;
     }
 
-    /*
+    /**
      * Method to return a role object by its name.
      *
      * @param  {String} roleName
@@ -399,8 +474,25 @@ public class DiscordUtil {
         }
         return null;
     }
+    
+    /**
+     * Method that returns a role by its ID.
+     * 
+     * @param id
+     * @return 
+     */
+    public IRole getRoleByID(String id) {
+       List<IRole> roles = DiscordAPI.getClient().getRoles();
 
-    /*
+        for (IRole role : roles) {
+            if (role.getStringID().equalsIgnoreCase(id)) {
+                return role;
+            }
+        }
+        return null; 
+    }
+
+    /**
      * Method to get an array of role objects by a string of role names.
      *
      * @param  {String[]} roles
@@ -415,7 +507,7 @@ public class DiscordUtil {
         return list;
     }
 
-    /*
+    /**
      * Method to get a list of a user's roles.
      *
      * @param  {IUser} user
@@ -427,7 +519,7 @@ public class DiscordUtil {
         return (roles.size() < 1 ? new IRole[0] : roles.toArray(new IRole[roles.size()]));
     }
 
-    /*
+    /**
      * Method to get a list of a user's roles.
      *
      * @param  {String} userId
@@ -437,7 +529,7 @@ public class DiscordUtil {
         return getUserRoles(getUserById(Long.parseUnsignedLong(userId)));
     }
 
-    /*
+    /**
      * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
      * @param {IUser}   user
@@ -455,7 +547,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to edit roles on a user, multiple can be set at once to replace the current ones.
      *
      * @param {String}  userId
@@ -465,7 +557,7 @@ public class DiscordUtil {
         editUserRoles(getUserById(Long.parseUnsignedLong(userId)), roles);
     }
 
-    /*
+    /**
      * Method to set a role on a user.
      *
      * @param {IRole} role
@@ -483,7 +575,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to set a role on a user.
      *
      * @param {String} roleName
@@ -493,7 +585,7 @@ public class DiscordUtil {
         addRole(getRole(roleName), getUser(userName));
     }
 
-    /*
+    /**
      * Method to set a role on a user.
      *
      * @param {String} roleName
@@ -503,7 +595,7 @@ public class DiscordUtil {
         addRole(getRole(roleName), user);
     }
 
-    /*
+    /**
      * Method to remove a role on a user.
      *
      * @param {IRole} role
@@ -521,7 +613,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to remove a role on a user.
      *
      * @param {String} roleName
@@ -531,7 +623,7 @@ public class DiscordUtil {
         removeRole(getRole(roleName), getUser(userName));
     }
 
-    /*
+    /**
      * Method to create a new role.
      *
      * @param {String} roleName
@@ -546,7 +638,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to delete a role.
      *
      * @param {IRole} role
@@ -563,7 +655,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to delete a role.
      *
      * @param {String} roleName
@@ -571,8 +663,17 @@ public class DiscordUtil {
     public void deleteRole(String roleName) {
         deleteRole(getRole(roleName));
     }
+    
+    /**
+     * Method that gets a list of guild roles.
+     * 
+     * @return 
+     */
+    public List<IRole> getGuildRoles() {
+        return DiscordAPI.getGuild().getRoles();
+    }
 
-    /*
+    /**
      * Method to check if someone is an administrator.
      *
      * @param  {IUser} user
@@ -582,7 +683,7 @@ public class DiscordUtil {
         return (user != null ? user.getPermissionsForGuild(DiscordAPI.getGuild()).contains(Permissions.ADMINISTRATOR) : false);
     }
 
-    /*
+    /**
      * Method to check if someone is an administrator.
      *
      * @param  {String} userName
@@ -592,7 +693,7 @@ public class DiscordUtil {
         return isAdministrator(getUser(userName));
     }
 
-    /*
+    /**
      * Method to bulk delete messages from a channel.
      *
      * @param {IChannel} channel
@@ -620,7 +721,7 @@ public class DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to bulk delete messages from a channel.
      *
      * @param {String} channelName
@@ -630,7 +731,7 @@ public class DiscordUtil {
         bulkDelete(getChannel(channelName), amount);
     }
 
-    /*
+    /**
      * Method to bulk delete messages from a channel.
      *
      * @param {IChannel} channel
@@ -651,7 +752,7 @@ public class DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to bulk delete messages from a channel.
      *
      * @param {String} channelName
@@ -661,7 +762,7 @@ public class DiscordUtil {
         bulkDeleteMessages(getChannel(channelName), messages);
     }
 
-    /*
+    /**
      * Method to delete a message.
      *
      * @param {IMessage} message
@@ -678,7 +779,7 @@ public class DiscordUtil {
         });
     }
 
-    /*
+    /**
      * Method to set the current game.
      *
      * @param {String} game
@@ -687,7 +788,7 @@ public class DiscordUtil {
         DiscordAPI.getShard().changePresence(StatusType.ONLINE, ActivityType.PLAYING, game);
     }
 
-    /*
+    /**
      * Method to set the current game and stream.
      *
      * @param {String} game
@@ -697,7 +798,7 @@ public class DiscordUtil {
         DiscordAPI.getShard().changeStreamingPresence(StatusType.ONLINE, game, url);
     }
 
-    /*
+    /**
      * Method to remove the current game or reset the streaming status.
      *
      */
@@ -705,14 +806,14 @@ public class DiscordUtil {
         DiscordAPI.getShard().changePresence(StatusType.ONLINE, ActivityType.PLAYING, null);
     }
 
-    /*
+    /**
      * Method that gets all server members
      */
     public List<IUser> getUsers() {
         return DiscordAPI.getClient().getUsers();
     }
 
-    /*
+    /**
      * Method to get a color object.
      *
      * @param  {String} color

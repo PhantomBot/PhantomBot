@@ -36,13 +36,20 @@
             $.say($.lang.get('sticks.drop.message', drops));
         }
         
+        if (command.equalsIgnoreCase('rip')) {
+            $.inidb.incr("sticks", "breaks" , 1);
+            
+            var breaks = $.inidb.get("sticks", "breaks");
+            $.say($.lang.get('sticks.breaks.message', breaks));
+        }
+        
         if (command.equalsIgnoreCase('drops')) {
             var drops = $.inidb.get("sticks", "drops");
             if (drops === null) {
                 drops = 0;
             }
             
-            $.say($.lang.get('sticks.drop.message', drops));
+            $.say($.lang.get('sticks.drops.message', drops));
         }
         
         if (command.equalsIgnoreCase('breaks')) {
@@ -85,9 +92,10 @@
 	// These are also used for the permcom command.
 	// $.registerChatCommand('script', 'command', 'permission');
        
-       $.registerChatCommand('./systems/custom/stickSystem.js', 'drops') ;
-       $.registerChatCommand('./systems/custom/stickSystem.js', 'oops', 2) ;
-       $.registerChatCommand('./systems/custom/stickSystem.js', 'breaks', 2) ;
-       $.registerChatCommand('./systems/custom/stickSystem.js', 'setsticks', 2) ;
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'drops');
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'breaks');
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'setsticks', 2);
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'oops', 2);
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'rip', 2);
     });
  })();

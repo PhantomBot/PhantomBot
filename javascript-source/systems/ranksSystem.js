@@ -25,6 +25,7 @@
 
     var rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
         rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200),
+        time,
         ranksTimeTable;
 
     /**
@@ -58,6 +59,7 @@
      * @function hasRank
      * @export $
      * @param {string} username
+     * @param {int} time (optional) Time for the user in seconds. If not set, read from the DB.
      * @returns {boolean}
      */
     function hasRank(username) {
@@ -78,7 +80,10 @@
             return false;
         }
 
-        userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
+        if (time === undefined) {
+          time = parseInt($.inidb.get('time', username));
+        }
+        userTime = parseInt(time / 3600);
         if (isNaN(userTime)) {
             userTime = 0;
         }
@@ -96,15 +101,16 @@
      * @function getRank
      * @export $
      * @param {string} username
+     * @param {int} time (optional) Time for the user in seconds. If not set, read from the DB.
      * @returns {string}
      */
-    function getRank(username) {
+    function getRank(username, time) {
         var userTime,
             userLevel;
 
         username = username.toLowerCase();
 
-        if (!hasRank(username)) {
+        if (!hasRank(username, time)) {
             return '';
         }
 
@@ -115,7 +121,10 @@
 
         // Return System Rank
         userLevel = -1;
-        userTime = parseInt(parseInt($.inidb.get('time', username)) / 3600);
+        if (time === undefined) {
+          time = parseInt($.inidb.get('time', username));
+        }
+        userTime = parseInt(time / 3600);
         if (isNaN(userTime)) {
             userTime = 0;
         }

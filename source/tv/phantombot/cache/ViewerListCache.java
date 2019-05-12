@@ -35,7 +35,7 @@ public class ViewerListCache implements Runnable {
     private List<String> cache = new ArrayList<String>();
     private boolean isKilled = false;
 
-    /*
+    /**
      * Method to get this instance.
      *
      * @param  {String} channelName
@@ -49,7 +49,7 @@ public class ViewerListCache implements Runnable {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param  {String} channelName
@@ -64,7 +64,7 @@ public class ViewerListCache implements Runnable {
         this.thread.start();
     }
 
-    /*
+    /**
      * Method that updates the cache every 10 minutes.
      */
     @Override
@@ -89,7 +89,7 @@ public class ViewerListCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method that updates the cache.
      */
     private void updateCache() throws Exception {
@@ -149,7 +149,7 @@ public class ViewerListCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Method to check if a user is in the cache.
      *
      * @param  {String} username
@@ -159,7 +159,7 @@ public class ViewerListCache implements Runnable {
         return (!this.cache.isEmpty() ? this.cache.contains(username) : true);
     }
 
-    /*
+    /**
      * Method to add users to the cache.
      *
      * @param  {String} username
@@ -168,7 +168,7 @@ public class ViewerListCache implements Runnable {
         this.cache.add(username);
     }
 
-    /*
+    /**
      * Method to kill this cache.
      */
     public void kill() {

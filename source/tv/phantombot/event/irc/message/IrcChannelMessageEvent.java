@@ -22,7 +22,7 @@ import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcChannelMessageEvent extends IrcMessageEvent {
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {TwitchSession} session
@@ -33,7 +33,7 @@ public class IrcChannelMessageEvent extends IrcMessageEvent {
         super(session, sender, message);
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {TwitchSession} session

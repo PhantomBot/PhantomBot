@@ -22,11 +22,9 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
 public class DiscordChannelMessageEvent extends DiscordChannelEvent {
-    private final IMessage message;
-    private final String messageContent;
     private final boolean isAdmin;
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {IUser}    user
@@ -35,23 +33,12 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
      * @param {boolean}  isAdmin
      */
     public DiscordChannelMessageEvent(IUser user, IChannel channel, IMessage message, boolean isAdmin) {
-        super(user, channel);
-
-        this.message = message;
-        this.messageContent = message.getContent();
+        super(user, channel, message);
+        
         this.isAdmin = isAdmin;
     }
 
-    /*
-     * Method that returns the message from the user.
-     *
-     * @return {String} messageContent
-     */
-    public String getMessage() {
-        return this.messageContent;
-    }
-
-    /*
+    /**
      * Method that returns if the user a admin in the server.
      *
      * @return {boolean} isAdmin
@@ -60,22 +47,13 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
         return this.isAdmin;
     }
 
-    /*
-     * Method that returns the message object for Discord4J.
-     *
-     * @return {IMessage} message
-     */
-    public IMessage getDiscordMessage() {
-        return this.message;
-    }
-
-    /*
+    /**
      * Method that returns this object as a string.
      *
      * @return {String}
      */
     @Override
     public String toString() {
-        return "DiscordChannelMessageEvent -> { messageContent: [" + this.messageContent + "] isAdmin: [" + this.isAdmin + "] }";
+        return "DiscordChannelMessageEvent -> { isAdmin: [" + this.isAdmin + "] }";
     }
 }

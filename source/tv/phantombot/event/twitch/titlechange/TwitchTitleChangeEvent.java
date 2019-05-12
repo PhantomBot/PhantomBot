@@ -21,7 +21,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public class TwitchTitleChangeEvent extends TwitchEvent {
     private final String streamTitle;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} streamTitle
@@ -30,7 +30,7 @@ public class TwitchTitleChangeEvent extends TwitchEvent {
         this.streamTitle = streamTitle;
     }
 
-    /*
+    /**
      * Method that returns the stream name
      *
      * @return {String} streamTitle

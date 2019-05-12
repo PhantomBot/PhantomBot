@@ -51,8 +51,10 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 
 import tv.phantombot.discord.util.DiscordUtil;
 
+import tv.phantombot.PhantomBot;
 
-/*
+
+/**
  * Communicates with the Discord API.
  *
  * @author IllusionaryOne
@@ -65,7 +67,7 @@ public class DiscordAPI extends DiscordUtil {
     private static IGuild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
 
-    /*
+    /**
      * Method to return this class object.
      *
      * @return {Object}
@@ -74,7 +76,7 @@ public class DiscordAPI extends DiscordUtil {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor
      */
     private DiscordAPI() {
@@ -83,7 +85,7 @@ public class DiscordAPI extends DiscordUtil {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
     
-    /*
+    /**
      * Enum list of our connection states.
      */
     public static enum ConnectionState {
@@ -93,7 +95,7 @@ public class DiscordAPI extends DiscordUtil {
         CANNOT_RECONNECT
     }
 
-    /*
+    /**
      * Method to connect to Discord.
      *
      * @param {String} token
@@ -107,7 +109,7 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to reconnect to Discord.
      */
     public boolean reconnect() {
@@ -123,8 +125,8 @@ public class DiscordAPI extends DiscordUtil {
         return false;
     }
     
-    /*
-     * Mehtod that checks if we are still connected to Discord and reconnects if we are not. 
+    /** 
+     * Method that checks if we are still connected to Discord and reconnects if we are not. 
      */
     public ConnectionState checkConnectionStatus() {
         if (!DiscordAPI.client.isLoggedIn() || !DiscordAPI.client.isReady()) {
@@ -142,7 +144,7 @@ public class DiscordAPI extends DiscordUtil {
         return ConnectionState.CONNECTED;
     }
 
-    /*
+    /**
      * Method that will return the current shard.
      *
      * @return {ShardImpl}
@@ -151,7 +153,7 @@ public class DiscordAPI extends DiscordUtil {
         return shard;
     }
 
-    /*
+    /**
      * Method that will return the current guild.
      *
      * @return {IGuild}
@@ -160,7 +162,7 @@ public class DiscordAPI extends DiscordUtil {
         return guild;
     }
 
-    /*
+    /**
      * Method that will return the current guild
      *
      * @return {IDiscordClient}
@@ -169,7 +171,7 @@ public class DiscordAPI extends DiscordUtil {
         return client;
     }
 
-    /*
+    /**
      * Method to set the guild and shard objects.
      */
     private void setGuildAndShard() {
@@ -184,13 +186,13 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
-    /*
+    /**
      * Method to parse commands.
      *
      * @param {String} message
      */
-    private void parseCommand(IUser user, IChannel channel, String message, boolean isAdmin) {
-        String command = message.substring(1);
+    private void parseCommand(IUser user, IChannel channel, IMessage message, boolean isAdmin) {
+        String command = message.getContent().substring(1);
         String arguments = "";
 
         if (command.indexOf(" ") != -1) {
@@ -199,10 +201,10 @@ public class DiscordAPI extends DiscordUtil {
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
 
-        EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, command, arguments, isAdmin));
+        EventBus.instance().postAsync(new DiscordChannelCommandEvent(user, channel, message, command, arguments, isAdmin));
     }
 
-    /*
+    /**
      * Class to listen to events.
      */
     private class DiscordEventListener {
@@ -215,9 +217,9 @@ public class DiscordAPI extends DiscordUtil {
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.scheduleAtFixedRate(() -> {
-                if (reconnectState != ConnectionState.CANNOT_RECONNECT) {
+                if (reconnectState != ConnectionState.CANNOT_RECONNECT && !PhantomBot.instance().isExiting()) {
                     if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
-                        com.gmt2001.Console.err.println("Connection with Discord was disconnected.");
+                        com.gmt2001.Console.err.println("Connection with Discord was lost.");
                         com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
                     }
                 }
@@ -238,7 +240,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {
-                parseCommand(iUsername, iChannel, message, isAdmin);
+                parseCommand(iUsername, iChannel, iMessage, isAdmin);
             }
 
             EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUsername, iChannel, iMessage, isAdmin));
