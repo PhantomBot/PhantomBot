@@ -37,6 +37,22 @@ public abstract class DiscordEvent extends Event {
 
     /**
      * Class constructor for this event.
+     */
+    protected DiscordEvent() {
+        this.user = null;
+        this.channel = null;
+        this.message = null;
+        this.channelName = null;
+        this.channelId = null;
+        this.username = null;
+        this.discrim = null;
+        this.senderId = null;
+        this.sender = null;
+        this.mention = null;
+    }
+    
+    /**
+     * Class constructor for this event.
      *
      * @param {IUser} user
      */
