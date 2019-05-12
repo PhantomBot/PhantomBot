@@ -2356,7 +2356,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'length');
-        $.registerChatCommand('./systems/youtubePlayer.js', "shuffle", 0);
+        $.registerChatCommand('./systems/youtubePlayer.js', "shuffle", 2);
         $.registerChatCommand('./systems/youtubePlayer.js', "position");
         $.registerChatCommand('./systems/youtubePlayer.js', "queuesize");
 

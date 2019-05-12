@@ -40,7 +40,7 @@
             $.inidb.incr("sticks", "breaks" , 1);
             
             var breaks = $.inidb.get("sticks", "breaks");
-            $.say($.lang.get('sticks.drop.message', drops));
+            $.say($.lang.get('sticks.breaks.message', breaks));
         }
         
         if (command.equalsIgnoreCase('drops')) {
@@ -49,7 +49,7 @@
                 drops = 0;
             }
             
-            $.say($.lang.get('sticks.breaks.message', drops));
+            $.say($.lang.get('sticks.drops.message', drops));
         }
         
         if (command.equalsIgnoreCase('breaks')) {
