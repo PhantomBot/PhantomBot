@@ -113,8 +113,13 @@
                             $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.bad-parm'));
                             return;
                         }
-                        
-                        argsString = args.slice(3).join(' ');
+
+                        argsString = '';
+
+                        if (args.length > 3) {
+                            argsString = args.slice(3).join(' ');
+                        }
+
                         $.inidb.set('commercialSettings', 'length', args[2]);
                         $.inidb.set('commercialSettings', 'interval', args[1]);
                         $.inidb.set('commercialSettings', 'message', argsString);
