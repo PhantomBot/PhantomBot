@@ -157,17 +157,17 @@
         }
     });
 
-    // Set the interval to run commercials
-    if (commercialTimer) {
-        startCommercialTimer();
-    }
-
     /**
      * @event initReady
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/commercialSystem.js', 'commercial', 2);
         $.registerChatSubcommand('commercial', 'autotimer', 1);
+
+        // Set the interval to run commercials
+        if (commercialTimer) {
+            startCommercialTimer();
+        }
     });
 })();
 
