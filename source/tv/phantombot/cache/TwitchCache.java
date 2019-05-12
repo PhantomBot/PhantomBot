@@ -51,7 +51,7 @@ import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 
-/*
+/**
  * TwitchCache Class
  *
  * This class keeps track of certain Twitch information such as if the channel is online or not
@@ -78,7 +78,7 @@ public class TwitchCache implements Runnable {
     private int viewerCount = 0;
     private int views = 0;
 
-    /*
+    /**
      * Creates an instance for a channel.
      *
      * @param   channel      Name of the Twitch Channel for which this instance is created.
@@ -94,7 +94,7 @@ public class TwitchCache implements Runnable {
         return instance;
     }
 
-    /*
+    /**
      * Constructor for TwitchCache object.
      *
      * @param  channel  Name of the Twitch Channel for which this object is created.
@@ -114,7 +114,7 @@ public class TwitchCache implements Runnable {
         updateThread.start();
     }
 
-    /*
+    /**
      * Thread run instance.  This is the main loop for the thread that is created to manage
      * retrieving data from the Twitch API.  This loop runs every 30 seconds, querying data
      * from Twitch.
@@ -172,7 +172,7 @@ public class TwitchCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Polls the Clips endppint, trying to find the most recent clip.  Note that because Twitch
      * reports by the viewcount, and has a limit of 100 clips, it is possible to miss the most
      * recent clip until it has views.
@@ -225,7 +225,7 @@ public class TwitchCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Polls the Twitch API and updates the database cache with information.  This method also
      * sends events when appropriate.
      */
@@ -348,14 +348,14 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("logo") && !streamObj.isNull("logo")) {
                     logoLink = streamObj.getString("logo");
                     this.logoLink = logoLink;
-                    if (new File("./web/beta-panel").isDirectory()) {
-                        ImgDownload.downloadHTTPTo(logoLink, "./web/beta-panel/img/logo.png");
+                    if (new File("./web/panel").isDirectory()) {
+                        ImgDownload.downloadHTTPTo(logoLink, "./web/panel/img/logo.png");
                     }
                 }
-                
+
                 // Get the display name.
-                if (new File("./web/beta-panel").isDirectory() && streamObj.has("display_name") && !streamObj.isNull("display_name")) {
-                    File file = new File("./web/beta-panel/js/utils/panelConfig.js");
+                if (new File("./web/panel").isDirectory() && streamObj.has("display_name") && !streamObj.isNull("display_name")) {
+                    File file = new File("./web/panel/js/utils/panelConfig.js");
                     if (file.exists()) {
                         // Read the file.
                         String fileContent = FileUtils.readFileToString(file, "utf-8");
@@ -428,14 +428,14 @@ public class TwitchCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Returns if the channel is online or not.
      */
     public Boolean isStreamOnline() {
         return this.isOnline;
     }
 
-    /*
+    /**
      * Returns a String representation of true/false to indicate if the stream is online or not.
      */
     public String isStreamOnlineString() {
@@ -445,28 +445,28 @@ public class TwitchCache implements Runnable {
         return new String("false");
     }
 
-    /*
+    /**
      * Returns the uptime of the channel in seconds.
      */
     public long getStreamUptimeSeconds() {
         return this.streamUptimeSeconds;
     }
 
-    /*
+    /**
      * Returns the stream created_at date from Twitch.
      */
     public String getStreamCreatedAt() {
         return this.streamCreatedAt;
     }
 
-    /*
+    /**
      * Returns the name of the game being played in the channel.
      */
     public String getGameTitle() {
         return this.gameTitle;
     }
 
-    /*
+    /**
      * Sets the game title.  Useful for when !game is used.
      */
     public void setGameTitle(String gameTitle) {
@@ -475,14 +475,14 @@ public class TwitchCache implements Runnable {
         EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
     }
 
-    /*
+    /**
      * Returns the title (status) of the stream.
      */
     public String getStreamStatus() {
         return this.streamTitle;
     }
 
-    /*
+    /**
      * Sets the title (status) of the stream.  Useful for when !title is used.
      */
     public void setStreamStatus(String streamTitle) {
@@ -491,56 +491,56 @@ public class TwitchCache implements Runnable {
         EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
     }
 
-    /*
+    /**
      * Returns the preview link.
      */
     public String getPreviewLink() {
         return this.previewLink;
     }
 
-    /*
+    /**
      * Returns the logo link.
      */
     public String getLogoLink() {
         return this.logoLink;
     }
 
-    /*
+    /**
      * Returns the viewer count.
      */
     public int getViewerCount() {
         return this.viewerCount;
     }
 
-    /*
+    /**
      * Returns the views count.
      */
     public int getViews() {
         return this.views;
     }
 
-    /*
+    /**
      * Set the communities
      */
     public void setCommunities(String[] communities) {
         this.communities = communities;
     }
 
-    /*
+    /**
      * Returns an array of communities if set.
      */
     public String[] getCommunities() {
         return this.communities;
     }
 
-    /*
+    /**
      * Destroys the current instance of the TwitchCache object.
      */
     public void kill() {
         killed = true;
     }
 
-    /*
+    /**
      * Destroys all instances of the TwitchCache object.
      */
     public static void killall() {
@@ -549,7 +549,7 @@ public class TwitchCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Gets a string from the database. Simply a wrapper around the PhantomBot instance.
      *
      * @param   String  The database key to search for in the streamInfo table.
@@ -559,7 +559,7 @@ public class TwitchCache implements Runnable {
         return PhantomBot.instance().getDataStore().GetString("streamInfo", "", dbKey);
     }
 
-    /*
+    /**
      * Sets a string into the database.  Simply a wrapper around the PhantomBot instance.
      *
      * @param   String  The database key to use for inserting the value into the streamInfo table.

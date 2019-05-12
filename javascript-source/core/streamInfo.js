@@ -330,6 +330,29 @@
     }
 
     /**
+     * @function getFollowDate
+     * @export $
+     * @param username
+     * @param channelName
+     */
+    function getFollowDate(sender, username, channelName) {
+        username = $.user.sanitize(username);
+        channelName = $.user.sanitize(channelName);
+
+        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+
+        if (user.getInt('_http') === 404) {
+            return $.lang.get('followhandler.follow.age.datefmt.404');
+        }
+
+        var date = new Date(user.getString('created_at')),
+            dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
+            dateFinal = dateFormat.format(date);
+
+        return dateFinal;
+    }
+
+    /**
      * @function getFollowAge
      * @export $
      * @param username
@@ -379,7 +402,7 @@
         if (days > 0) {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
         } else {
-            $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal));
+            $.say($.lang.get('common.get.age', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal));
         }
     }
 
@@ -498,6 +521,7 @@
     $.updateStatus = updateStatus;
     $.updateCommunity = updateCommunity;
     $.getFollowAge = getFollowAge;
+    $.getFollowDate = getFollowDate;
     $.getChannelAge = getChannelAge;
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;

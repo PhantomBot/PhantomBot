@@ -24,7 +24,7 @@
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitterAPI;
-import com.illusionaryone.GoogleURLShortenerAPIv1;
+import com.illusionaryone.BitlyAPIv4;
 
 import com.google.common.collect.Maps;
 
@@ -43,7 +43,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitter.TwitterEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 
-/*
+/**
  * TwitterCache Class
  *
  * This class is responsible for calling the Twitter API within specified amounts of time, taking
@@ -57,7 +57,7 @@ public class TwitterCache implements Runnable {
     private final Thread updateThread;
     private boolean killed = false;
 
-    /*
+    /**
      * Creates an instance for a channel.
      *
      * @param   channel       Name of the Twitch Channel for which this instance is created.
@@ -73,7 +73,7 @@ public class TwitterCache implements Runnable {
         return instance;
     }
 
-    /*
+    /**
      * Constructor for TwitterCache object.
      *
      * @param  channel  Name of the Twitch Channel for which this object is created.
@@ -93,7 +93,7 @@ public class TwitterCache implements Runnable {
         updateThread.start();
     }
 
-    /*
+    /**
      * Thread run instance.  This is the main loop for the thread that is created to manage
      * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the
      * method to update data from Twitter.  That method checks against limits.
@@ -128,7 +128,7 @@ public class TwitterCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Polls the Twitter API and updates the database cache with information.  This method also
      * sends events to chat when appropriate.
      */
@@ -204,7 +204,7 @@ public class TwitterCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Handles retweets with the Twitter API.
      *
      * @param  long     The last time this API was polled.
@@ -227,7 +227,7 @@ public class TwitterCache implements Runnable {
         long twitterID = statuses.get(0).getId();
 
         /* Poll latest retweet. */
-        String tweet = "[RT] " + statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = "[RT] " + statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
         updateDBString("last_retweets", tweet);
         EventBus.instance().post(new TwitterEvent(tweet));
 
@@ -235,7 +235,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastid_retweets", twitterID);
     }
 
-    /*
+    /**
      * Handles retweet rewards with the Twitter API.  Due to the getRetweets() API call only
      * allowing 75 calls in 15 minutes, this call will run only once every five minutes and
      * is not configurable in the bot.  Since we pull all retweets every 5 minutes, and that
@@ -281,7 +281,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastid_retweets_reward", twitterID);
     }
 
-    /*
+    /**
      * Handles mentions with the Twitter API.
      *
      * @param  long  The last time this API was polled.
@@ -302,7 +302,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
         String name = statuses.get(0).getUser().getScreenName();
 
         updateDBLong("lastid_mentions", twitterID);
@@ -310,7 +310,7 @@ public class TwitterCache implements Runnable {
         EventBus.instance().post(new TwitterEvent(tweet, name));
     }
 
-    /*
+    /**
      * Handles the home timeline with the Twitter API.
      *
      * @param  long  The last time this API was polled.
@@ -331,14 +331,14 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
         EventBus.instance().post(new TwitterEvent(tweet));
     }
 
-    /*
+    /**
      * Handles the user timeline with the Twitter API.
      *
      * @param  long  The last time this API was polled.
@@ -359,14 +359,14 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + GoogleURLShortenerAPIv1.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
 
         updateDBLong("lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
         EventBus.instance().post(new TwitterEvent(tweet));
     }
 
-    /*
+    /**
      * Checks the database for a boolean string and returns true/false as such.
      *
      * @param   String   Database key to inspect.
@@ -383,7 +383,7 @@ public class TwitterCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Checks the database for data and returns a long.
      *
      * @param   String   Database key to inspect.
@@ -407,7 +407,7 @@ public class TwitterCache implements Runnable {
         }
     }
 
-    /*
+    /**
      * Places a long into the database.
      *
      * @param  String  Database key to insert into.
@@ -417,7 +417,7 @@ public class TwitterCache implements Runnable {
         PhantomBot.instance().getDataStore().SetString("twitter", "", dbKey, Long.toString(dbValue));
     }
 
-    /*
+    /**
      * Places a string into the database.
      *
      * @param  String  Database key to insert into.
@@ -427,14 +427,14 @@ public class TwitterCache implements Runnable {
         PhantomBot.instance().getDataStore().SetString("twitter", "", dbKey, dbValue);
     }
 
-    /*
+    /**
      * Destroys the current instance of the TwitterCache object.
      */
     public void kill() {
         killed = true;
     }
 
-    /*
+    /**
      * Destroys all instances of the TwitterCache object.
      */
     public static void killall() {

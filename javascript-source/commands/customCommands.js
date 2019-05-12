@@ -17,11 +17,11 @@
 
 (function() {
     // Pre-build regular expressions.
-    var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&\-]+)\)/), // URL[1]
+    var reCustomAPI = new RegExp(/\(customapi\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(runcode .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -109,7 +109,7 @@
 
         if (message.match(/\(readfile/)) {
             if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                message = $.replace(message, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2)[0]);
+                message = $.replace(message, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2.replace(/\.\./g, ''))[0]);
             }
         }
 
@@ -117,7 +117,7 @@
             if (message.search(/\((readfilerand ([^)]+)\))/g) >= 0) {
                 var path = RegExp.$2;
                 var path2 = RegExp.$1;
-                var results = $.arrayShuffle($.readFile('./addons/' + path.trim()));
+                var results = $.arrayShuffle($.readFile('./addons/' + path.trim().replace(/\.\./g, '')));
                 message = $.replace(message, '(' + path2.trim(), $.randElement(results));
             }
         }
@@ -126,20 +126,9 @@
             message = $.replace(message, '(adminonlyedit)', '');
         }
 
-        if (message.match(/\(runcode/)) {
-            var code = message.match(/\(runcode (.*)\)/)[1];
-
-            try {
-                eval(code);
-            } catch (ex) {
-                $.log.error('Failed to run custom code: ' + ex.message);
-            }
-            return null;
-        }
-
         if (message.match(/\(pointtouser\)/)) {
             if (event.getArgs()[0] !== undefined) {
-                message = $.replace(message, '(pointtouser)', (event.getArguments().split(' ')[0] + ' -> '));
+                message = $.replace(message, '(pointtouser)', (String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '') + ' -> '));
             } else {
                 message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
             }
@@ -231,6 +220,10 @@
             message = $.replace(message, '(senderrank)', $.resolveRank(event.getSender()));
         }
 
+        if (message.match(/\(senderrankonly\)/g)) {
+            message = $.replace(message, '(senderrankonly)', $.getRank(event.getSender()));
+        }
+
         if (message.match(/\(@sender\)/g)) {
             message = $.replace(message, '(@sender)', $.userPrefix(event.getSender(), true));
         }
@@ -320,7 +313,7 @@
         }
 
         if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-z0-9_@]/ig, '')));
+            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '')));
         }
 
         if (message.match(/\(echo\)/g)) {
@@ -337,8 +330,8 @@
 
         if (message.match(/\(code=/g)) {
             var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                length = message.substr(6).replace(')', '');
-            text = '',
+                length = message.substr(6).replace(')', ''),
+                text = '',
                 i;
 
             for (i = 0; i < length; i++) {
@@ -372,6 +365,26 @@
             } else {
                 message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
             }
+        }
+
+        if (message.match(/\(followdate\)/g)) {
+            var args = event.getArgs(),
+                channel = $.channelName,
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+            if (args.length > 1) channel = args[1].replace('@','');
+     
+            message = $.replace(message, '(followdate)', $.getFollowDate(event.getSender(), sender, channel));
+        }
+
+        if (message.match(/\(hours\)/g)) {
+            var args = event.getArgs(),
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+     
+            message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
         }
 
         if (message.match(/\(followage\)/g)) {
@@ -423,22 +436,12 @@
             return null;
         }
 
-        if (message.match(/\(math (.*)\)/)) {
-            var mathStr = message.match(/\(math (.*)\)/)[1].replace(/\s/g, '');
-
-            if (mathStr.length === 0) {
-                return null;
-            }
-
-            message = $.replace(message, message.match(/\(math (.*)\)/)[0], String(eval(mathStr)));
-        }
-
         if (message.match(/\(writefile .+\)/)) {
             if (message.match(/\(writefile (.+), (.+), (.+)\)/)) {
                 var file = message.match(/\(writefile (.+), (.+), (.+)\)/)[1],
                     append = (message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
                     string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
-                $.writeToFile(string, './addons/' + file, append);
+                $.writeToFile(string, './addons/' + file.replace(/\.\./g, ''), append);
             }
             message = $.replace(message, message.match(/\(writefile (.+), (.+), (.+)\)/)[0], '');
             if (message == '') {
@@ -460,13 +463,15 @@
             message = apiTags(event, message);
         }
 
-        if (message.match('\n')) {
-            var splitMessage = message.split('\n');
+        if (message !== null) {
+            if (message.match('\n')) {
+                var splitMessage = message.split('\n');
 
-            for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
-                $.say(splitMessage[i]);
+                for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
+                    $.say(splitMessage[i]);
+                }
+                return null;
             }
-            return null;
         }
 
         return message;

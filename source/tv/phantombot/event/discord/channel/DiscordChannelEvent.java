@@ -18,13 +18,14 @@
 package tv.phantombot.event.discord.channel;
 
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 import tv.phantombot.event.discord.DiscordEvent;
 
 public abstract class DiscordChannelEvent extends DiscordEvent {
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {IUser} user
@@ -33,7 +34,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
         super(user);
     }
 
-    /*
+    /**
      * Abstract constructor.
      *
      * @param {IUser}    user
@@ -41,5 +42,16 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
      */
     protected DiscordChannelEvent(IUser user, IChannel channel) {
         super(user, channel);
+    }
+    
+    /**
+     * Abstract constructor.
+     *
+     * @param {IUser}    user
+     * @param {IChannel} channel
+     * @param {IMessage} message
+     */
+    protected DiscordChannelEvent(IUser user, IChannel channel, IMessage message) {
+        super(user, channel, message);
     }
 }

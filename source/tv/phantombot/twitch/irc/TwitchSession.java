@@ -31,7 +31,7 @@ public class TwitchSession extends MessageQueue {
     private TwitchWSIRC twitchWSIRC;
     private long lastReconnect = 0;
 
-    /*
+    /**
      * Method that return this instance.
      *
      * @param  {String} channelName
@@ -46,7 +46,7 @@ public class TwitchSession extends MessageQueue {
         return instance;
     }
 
-    /*
+    /**
      * Class constructor.
      *
      * @param  {String} channelName
@@ -61,7 +61,7 @@ public class TwitchSession extends MessageQueue {
         this.oAuth = oAuth;
     }
 
-    /*
+    /**
      * Method that returns the channel name
      *
      * @return {String} channelName
@@ -70,7 +70,7 @@ public class TwitchSession extends MessageQueue {
         return this.channelName;
     }
 
-    /*
+    /**
      * Method that returns the bot name.
      *
      * @return {String} botName
@@ -79,7 +79,7 @@ public class TwitchSession extends MessageQueue {
         return this.botName;
     }
 
-    /*
+    /**
      * Method that sends a raw message to the socket.
      *
      * @param {String} message
@@ -92,7 +92,7 @@ public class TwitchSession extends MessageQueue {
         }
     }
 
-    /*
+    /**
      * Method that sends channel message.
      *
      * @param {String} message
@@ -101,14 +101,14 @@ public class TwitchSession extends MessageQueue {
         sendRaw("PRIVMSG #" + getChannelName() + " :" + message);
     }
 
-    /*
+    /**
      * Method that will do the moderation check of the bot.
      */
     public void getModerationStatus() {
        send(".mods");
     }
 
-    /*
+    /**
      * Method that creates a connection with Twitch.
      */
     public TwitchSession connect() {
@@ -127,7 +127,7 @@ public class TwitchSession extends MessageQueue {
         return this;
     }
 
-    /*
+    /**
      * Method that handles reconnecting with Twitch.
      */
     @SuppressWarnings("SleepWhileInLoop")
@@ -162,7 +162,7 @@ public class TwitchSession extends MessageQueue {
         }
     }
 
-    /*
+    /**
      * Method that stops everyting for TwitchWSIRC, there's no going back after this.
      */
     public void close() {

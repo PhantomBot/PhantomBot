@@ -18,7 +18,7 @@ package tv.phantombot.event.tipeeestream.donate;
 
 public class TipeeeStreamDonationEvent extends TipeeeStreamDonateEvent {
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} jsonString

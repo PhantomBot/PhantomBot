@@ -25,29 +25,11 @@
     /*
      * @function makeTwitchVODTime
      *
-     * @param  twitchUptime
+     * @param  twitchUptime - Number of seconds stream has been up.
      * @return twitchVODTime
      */
     function makeTwitchVODTime(twitchUptime) {
-        var hours,
-            minutes,
-            seconds;
-
-        /* Uptime contains hours, run regular expression match as such. */
-        if (twitchUptime.indexOf('hours') !== -1) {
-            match = twitchUptime.match(/(\d+) hours, (\d+) minutes, and (\d+) seconds/);
-            return '?t=' + match[1] + 'h' + match[2] + 'm' + match[3] + 's';
-
-            /* Uptime contains minutes, but not hours, run regular expression match as such. */
-        } else if (twitchUptime.indexOf('minutes') !== -1) {
-            match = twitchUptime.match(/(\d+) minutes, and (\d+) seconds/);
-            return '?t=' + match[1] + 'm' + match[2] + 's';
-
-            /* Uptime only contains seconds, run regular expression match as such. */
-        } else {
-            match = twitchUptime.match(/(\d+) seconds/);
-            return '?t=' + match[1] + 's';
-        }
+        return '?t=' + twitchUptime + 's';
     }
 
     /*

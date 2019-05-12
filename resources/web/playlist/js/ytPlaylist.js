@@ -100,32 +100,35 @@ connection.onmessage = function(e) {
 
 function handleNewSong(title, duration, requester, id) {
     debugMsg('handleNewSong(' + title + ', ' + duration + ', ' + requester + ')');
-    $('#currentSongTable').html('<tr><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>' +
-                                '<tr><td>' + title + '</td><td>' + requester + '</td><td>' + duration + '</td><td>' + id + '</td></tr>');
+    $('#currentSongTable').html(
+    	'<tr><th>Song Title</th><th>Requester</th><th>Duration</th></tr>' +
+    	'<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>');
 }
 
 function handlePlayList(d) {
     debugMsg('handlePlayList(' + d + ')');
     $('#playlistTableTitle').html('Current Playlist: ' + d['playlistname']);
-    var tableData = '<tr><th>Song Title</th><th>Duration</th><th>YouTube ID</th></tr>';
+    var tableData = '<tr><th>Song Title</th></tr>';
     for (var i in d['playlist']) {
         var id = d['playlist'][i]['song'];
         var title = d['playlist'][i]['title'];
-        var duration = d['playlist'][i]['duration'];
-        tableData += '<tr><td>' + title + '</td><td>' + duration + '</td><td>' + id + '</td></tr>';
+        //var requester = d['playlist'][i]['requester'];
+        
+        tableData += '<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td></tr>';
     }
     $('#playlistTable').html(tableData);
 }
 
 function handleSongList(d) {
     debugMsg('handleSongList(' + d + ')');
-    var tableData = '<tr><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>';
+    var tableData = '<tr><th>Position</th><th>Song Title</th><th>Requester</th><th>Duration</th></tr>';
     for (var i in d['songlist']) {
+        var playerIndex = parseInt(i, 10) + 1;
         var id = d['songlist'][i]['song'];
         var title = d['songlist'][i]['title'];
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
-        tableData += '<tr><td>' + title + '</td><td>' + requester + '</td><td>' + duration + '</td><td>' + id + '</td></tr>';
+        tableData += '<tr><td>' + playerIndex + '</td><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>';
     }
     $('#songTable').html(tableData);
 }

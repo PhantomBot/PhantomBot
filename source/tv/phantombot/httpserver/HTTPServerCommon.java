@@ -88,29 +88,6 @@ public class HTTPServerCommon {
         }
     }
 
-    public static void handleBetaPanel(HttpExchange exchange) throws IOException {
-        URI uriData = exchange.getRequestURI();
-        String uriPath = uriData.getPath();
-
-        // Get the Request Method (GET/PUT)
-        String requestMethod = exchange.getRequestMethod();
-
-        // Get any data from the body, although, we just discard it, this is required
-        InputStream inputStream = exchange.getRequestBody();
-        while (inputStream.read() != -1) {
-            inputStream.skip(0x10000);
-        }
-        inputStream.close();
-
-        if (requestMethod.equals("GET")) {
-            if (uriPath.equals("/beta-panel")) {
-                HTTPServerCommon.handleFile("/web/beta-panel/index.html", exchange, false, false);
-            } else {
-                HTTPServerCommon.handleFile("/web/" + uriPath, exchange, false, false);
-            }
-        }
-    }
-
     public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException {
         Boolean hasPassword = false;
         Boolean doRefresh = false;
@@ -219,6 +196,8 @@ public class HTTPServerCommon {
                 handleFile("/web/index.html", exchange, hasPassword, false);
             } else if (uriPath.equals("/alerts")) {
                 handleFile("/web/alerts/index.html", exchange, hasPassword, false);
+            } else if (uriPath.equals("/obs/poll-chart")) {
+                handleFile("/web/obs/poll-chart/index.html", exchange, hasPassword, false);
             } else if (uriPath.startsWith("/config/audio-hooks")) {
                 handleFile(uriPath, exchange, hasPassword, false);
             } else if (uriPath.startsWith("/config/gif-alerts")) {
@@ -243,7 +222,8 @@ public class HTTPServerCommon {
         }
     }
 
-    /* Query List:
+    /**
+     * Query List:
      *
      * table=tableName&getKeys                             - Get list of keys.
      * table=tableName&getData=key                         - Get a specific row of data.
@@ -263,6 +243,7 @@ public class HTTPServerCommon {
         JSONStringer jsonObject = new JSONStringer();
         String[] keyValue;
         String   dbTable = null;
+        String   dbSection = "";
         Boolean  dbExists;
 
         if (!hasPassword) {
@@ -285,7 +266,7 @@ public class HTTPServerCommon {
             }
 
             if (keyValue[0].equals("table")) {
-                if (keyValue[1] == null) {
+                if (keyValue.length == 1 || keyValue[1].length() == 0) {
                     sendHTMLError(400, "Bad Request", exchange);
                     return;
                 }
@@ -295,6 +276,10 @@ public class HTTPServerCommon {
                     return;
                 }
                 dbTable = keyValue[1];
+            } else if (keyValue[0].equals("section")) {
+                if (keyValue.length > 1 && keyValue[1].length() > 0) {
+                    dbSection = keyValue[1];
+                }
             } else {
                 // All other commands need the table.
                 if (dbTable == null) {
@@ -321,7 +306,7 @@ public class HTTPServerCommon {
             // { "table" : { "table_name": "tableName", "key" : "keyString", "keyExists": true } }
             if (keyValue[0].equals("keyExists")) {
                 if (keyValue.length > 1) {
-                    dbExists = PhantomBot.instance().getDataStore().exists(dbTable, keyValue[1]);
+                    dbExists = PhantomBot.instance().getDataStore().HasKey(dbTable, dbSection, keyValue[1]);
                     jsonObject.object().key("table");
                     jsonObject.object();
                     jsonObject.key("table_name").value(dbTable);
@@ -342,7 +327,7 @@ public class HTTPServerCommon {
             // { "table" : { "table_name": "tableName", "key" : "keyString", "value": "valueString" } }
             if (keyValue[0].equals("getData")) {
                 if (keyValue.length > 1) {
-                    String dbString = PhantomBot.instance().getDataStore().GetString(dbTable, "", keyValue[1]);
+                    String dbString = PhantomBot.instance().getDataStore().GetString(dbTable, dbSection, keyValue[1]);
                     jsonObject.object().key("table");
                     jsonObject.object();
                     jsonObject.key("table_name").value(dbTable);
@@ -367,7 +352,7 @@ public class HTTPServerCommon {
                 jsonObject.key("table_name").value(dbTable);
                 jsonObject.key("keylist").array();
 
-                String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, "");
+                String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, dbSection);
 
                 for (String dbKey : dbKeys) {
                     jsonObject.object();
@@ -398,7 +383,7 @@ public class HTTPServerCommon {
                 jsonObject.key("results").array();
 
                 if (keyValue[0].equals("getAllRows")) {
-                    dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, "");
+                    dbKeys = PhantomBot.instance().getDataStore().GetKeyList(dbTable, dbSection);
                 } else {
                     for (String sortOptions : uriQueryList) {
                         String[] sortOption = sortOptions.split("=");
@@ -425,9 +410,9 @@ public class HTTPServerCommon {
                     }
 
                     if (keyValue[0].equals("getSortedRows")) {
-                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(dbTable, "", sortOrder, sortLimit, sortOffset);
+                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrder(dbTable, dbSection, sortOrder, sortLimit, sortOffset);
                     } else {
-                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrderValue(dbTable, "", sortOrder, sortLimit, sortOffset);
+                        dbKeys = PhantomBot.instance().getDataStore().GetKeysByOrderValue(dbTable, dbSection, sortOrder, sortLimit, sortOffset);
                     }
 
                 }
@@ -435,7 +420,7 @@ public class HTTPServerCommon {
                 for (String dbKey : dbKeys) {
                     jsonObject.object();
                     jsonObject.key("key").value(dbKey);
-                    jsonObject.key("value").value(PhantomBot.instance().getDataStore().GetString(dbTable, "", dbKey));
+                    jsonObject.key("value").value(PhantomBot.instance().getDataStore().GetString(dbTable, dbSection, dbKey));
                     jsonObject.endObject();
                 }
                 jsonObject.endArray();
@@ -451,13 +436,13 @@ public class HTTPServerCommon {
         sendHTMLError(400, jsonObject.toString(), exchange);
         return;
     }
-    
+
     /**
      * Method that handles getting the lang files list for the panel.
      * @param path
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
         if (needsPassword) {
@@ -466,23 +451,23 @@ public class HTTPServerCommon {
                 return;
             }
         }
-        
+
         if (path.isEmpty()) {
             // Get all lang files and their paths.
             String[] files = LangFileUpdater.getLangFiles();
-        
+
             // Send the files.W
             sendData("text/text", String.join("\n", files), exchange);
         } else {
             sendData("text/text", LangFileUpdater.getCustomLang(path), exchange);
         }
     }
-    
+
     /**
      * Method that handles searching for a game in our games list and sends it to the panel.
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleGamesList(HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
         if (needsPassword) {
@@ -491,10 +476,11 @@ public class HTTPServerCommon {
                 return;
             }
         }
-        
+
         String query= exchange.getRequestURI().getQuery();
         String[] queryData;
         String search = null;
+
         if (query != null) {
             queryData = query.split("&");
 
@@ -502,14 +488,13 @@ public class HTTPServerCommon {
                 search = queryData[1].split("=")[1].toLowerCase();
             }
         }
-        
-        
+
         if (search != null) {
             try {
-                String data = FileUtils.readFileToString(new File("./web/beta-panel/js/utils/gamesList.txt"), "utf-8");
+                String data = FileUtils.readFileToString(new File("./web/panel/js/utils/gamesList.txt"), "utf-8");
                 JSONStringer stringer = new JSONStringer();
                 String[] games = data.split("\n");
-                
+
                 // Create a new json array.
                 stringer.array();
                 for (String game : games) {
@@ -533,13 +518,13 @@ public class HTTPServerCommon {
             sendData("text/text", "[]", exchange);
         }
     }
-    
+
     /**
      * Method that handles files.
      * @param uriPath
      * @param exchange
      * @param hasPassword
-     * @param needsPassword 
+     * @param needsPassword
      */
     private static void handleFile(String uriPath, HttpExchange exchange, Boolean hasPassword, Boolean needsPassword) {
         if (needsPassword) {
@@ -700,7 +685,7 @@ public class HTTPServerCommon {
             sendHTMLError(403, "Access Denied.", exchange);
             return;
         }
-        
+
         LangFileUpdater.updateCustomLang(langData, langFile);
         sendHTMLError(200, "File Updated.", exchange);
     }

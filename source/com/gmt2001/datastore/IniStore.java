@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.Timer;
 import org.apache.commons.io.FileUtils;
@@ -321,6 +322,20 @@ public class IniStore extends DataStore implements ActionListener {
         }
 
         return s;
+    }
+
+    @Override
+    public KeyValue[] GetKeyValueList(String fName, String section) {
+        fName = validatefName(fName);
+
+        if (!LoadFile(fName, false)) {
+            return new KeyValue[] {};
+        }
+
+        section = validateSection(section);
+
+        Set<Map.Entry<String, String>> entries = files.get(fName).data.get(section).entrySet();
+        return entries.stream().map(i -> new KeyValue(i.getKey(), i.getValue())).toArray(KeyValue[]::new);
     }
 
     @Override

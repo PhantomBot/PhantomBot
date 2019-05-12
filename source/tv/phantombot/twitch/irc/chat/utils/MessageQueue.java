@@ -19,6 +19,7 @@ package tv.phantombot.twitch.irc.chat.utils;
 import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 
 import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.PhantomBot;
@@ -32,7 +33,7 @@ public class MessageQueue implements Runnable {
     private boolean isKilled = false;
     private int writes = 0;
 
-    /*
+    /**
      * Class constructor.
      *
      * @param {String} channelName
@@ -49,7 +50,7 @@ public class MessageQueue implements Runnable {
         
     }
 
-    /*
+    /**
      * Method that starts this queue.
      *
      * @param {TwitchSession} session
@@ -61,7 +62,7 @@ public class MessageQueue implements Runnable {
         this.thread.start();
     }
 
-    /*
+    /**
      * Method that sets if we are allowed to send messages.
      *
      * @param {boolean} isAllowedToSend
@@ -70,7 +71,7 @@ public class MessageQueue implements Runnable {
         this.isAllowedToSend = isAllowedToSend;
     }
 
-    /*
+    /**
      * Method that says if we are allowed to send messages.
      *
      * @return {boolean} isAllowedToSend
@@ -79,7 +80,7 @@ public class MessageQueue implements Runnable {
         return this.isAllowedToSend;
     }
 
-    /*
+    /**
      * Method that returns the amount of messages we've sent in 30 seconds.
      *
      * @return {int} writes
@@ -88,7 +89,7 @@ public class MessageQueue implements Runnable {
         return this.writes;
     }
 
-    /*
+    /**
      * Method that adds a message to the end of the queue.
      *
      * @param {String} message
@@ -97,7 +98,7 @@ public class MessageQueue implements Runnable {
         queue.add(new Message(message));
     }
 
-    /*
+    /**
      * Method that adds a message to the top of the queue.
      *
      * @param {String} message
@@ -106,7 +107,7 @@ public class MessageQueue implements Runnable {
         queue.addFirst(new Message(message, message.startsWith(".")));
     }
 
-    /*
+    /**
      * Method that handles sending messages to Twitch from our queue.
      */
     @Override
@@ -119,7 +120,7 @@ public class MessageQueue implements Runnable {
             try {
                 // Get the next message in the queue.
                 Message message = queue.take();
-
+                
                 // Set the time we got the message.
                 long time = System.currentTimeMillis();
 
@@ -141,13 +142,16 @@ public class MessageQueue implements Runnable {
                     session.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
                     com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
                 }
+            } catch (WebsocketNotConnectedException ex) {
+                com.gmt2001.Console.err.println("Failed to send message due to being disconnected from Twitch IRC.");
+                session.reconnect();
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
     }
 
-    /*
+    /**
      * Method that kills this instance.
      */
     public void kill() {

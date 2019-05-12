@@ -22,6 +22,7 @@ import sx.blah.discord.handle.obj.IChannel;
 
 import java.util.LinkedList;
 import java.util.List;
+import sx.blah.discord.handle.obj.IMessage;
 
 public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final String arguments;
@@ -29,7 +30,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final String[] args;
     private String command;
 
-    /*
+    /**
      * Class constructor for this event.
      *
      * @param {IUser}    user
@@ -38,8 +39,8 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      * @param {String}   arguments
      * @param {boolean}  isAdmin
      */
-    public DiscordChannelCommandEvent(IUser user, IChannel channel, String command, String arguments, boolean isAdmin) {
-        super(user, channel);
+    public DiscordChannelCommandEvent(IUser user, IChannel channel, IMessage message, String command, String arguments, boolean isAdmin) {
+        super(user, channel, message);
 
         this.command = command;
         this.arguments = arguments;
@@ -47,7 +48,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         this.args = parse();
     }
 
-    /*
+    /**
      * Method that parses the command arguments.
      *
      * @return {String[]}
@@ -77,7 +78,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return tempArgs.toArray(new String[tempArgs.size()]);
     }
 
-    /*
+    /**
      * Method that sets the command for this class. Mostly used for aliases.
      *
      * @return {String} command
@@ -87,7 +88,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return this.command;
     }
 
-    /*
+    /**
      * Method that returns the command.
      *
      * @return {String} command
@@ -96,7 +97,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return this.command.toLowerCase();
     }
 
-    /*
+    /**
      * Method that returns the string of arguments.
      *
      * @return {String} arguments
@@ -105,7 +106,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return this.arguments;
     }
 
-    /*
+    /**
      * Method that returns the array of arguments
      *
      * @return {String[]} args
@@ -114,7 +115,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return this.args;
     }
 
-    /*
+    /**
      * Method that returns if the user a admin in the server.
      *
      * @retrun {boolean}
@@ -123,7 +124,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
         return this.isAdmin;
     }
 
-    /*
+    /**
      * Method that returns this object as a string.
      *
      * @return {String}
