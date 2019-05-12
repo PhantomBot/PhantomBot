@@ -305,6 +305,13 @@ $(function() {
         });
     });
 
+    // Handle running a commercial.
+    $('#dashboard-btn-instant-commercial').on('click', function() {
+        socket.sendCommand('instant_commercial', 'commercial ' + $('#instant-commercial-length').val() + ($('#instant-commercial-silent').is(':checked') ? ' silent' : ''), function() {
+            toastr.success('Successfully ran a commercial!');
+        });
+    });
+
     // Mouse hover/leave event log.
     $('.event-log').on('mouseenter mouseleave', function(event) {
         canScroll = event.type === 'mouseleave';
