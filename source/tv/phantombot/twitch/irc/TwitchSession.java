@@ -19,6 +19,7 @@ package tv.phantombot.twitch.irc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.irc.TwitchWSIRC;
 
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
@@ -137,7 +138,7 @@ public class TwitchSession extends MessageQueue {
         // Variable that will break the reconnect loop.
         boolean reconnected = false;
 
-        while (!reconnected) {
+        while (!reconnected && !PhantomBot.instance().isExiting()) {
             if (lastReconnect + 10000 <= System.currentTimeMillis()) {
                 lastReconnect = System.currentTimeMillis();
                 try {
