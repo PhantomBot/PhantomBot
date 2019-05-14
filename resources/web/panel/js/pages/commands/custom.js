@@ -75,7 +75,7 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 2 },
+                    { 'className': 'default-table w65px', 'orderable': false, 'targets': 2 },
                     { 'width': '15%', 'targets': 0 }
                 ],
                 'columns': [
@@ -207,8 +207,8 @@ $(run = function() {
                 let command = $(this).data('command'),
                     t = $(this);
 
-                // Get advance modal from our util functions in /utils/helpers.js
-                helpers.getAdvanceModal('token-command', 'Set Command Token', 'Save', $('<form/>', {
+                // Get modal from our util functions in /utils/helpers.js
+                helpers.getModal('token-command', 'Set Command Token', 'Save', $('<form/>', {
                     'role': 'form'
                 })
                 .append('This dialog stores a user/pass or API key to be replaced into a (customapi) tag.\n\
@@ -220,7 +220,7 @@ $(run = function() {
                 // Append input box for the command name. This one is disabled.
                 .append(helpers.getInputGroup('command-tname', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
                 // Append a text box for the command token.
-                .append(helpers.getnputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function() {
+                .append(helpers.getInputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function() {
                     let commandName = $('#command-tname'),
                         commandToken = $('#command-token');
 
