@@ -49,6 +49,8 @@ $.lang.register('customcommands.404.no.commands', 'There are no custom commands,
 $.lang.register('customcommands.cmds', 'Current custom commands: $1');
 $.lang.register('customcommands.edit.usage', 'Usage: !editcom (command) (message)');
 $.lang.register('customcommands.edit.success', 'Command !$1 has been edited!');
+$.lang.register('customcommands.token.usage', 'Usage: !tokencom (command) (token) -- WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!');
+$.lang.register('customcommands.token.success', 'Token set for command !$1! Make sure you put a (token) subtag in the customapi url for this command in the spot you want it to appear');
 $.lang.register('customcommands.touser.offline', 'Sorry, but $1 appears to be offline!');
 $.lang.register('customcommands.customapi.404', 'The !$1 command requires parameters.');
 $.lang.register('customcommands.customapijson.err', '!$1: An error occurred processing the API.');

@@ -614,6 +614,10 @@
 
         // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
         if ((regExCheck = message.match(reCustomAPI))) {
+            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
+                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
+            }
+            
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -634,6 +638,10 @@
         // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
         // API seems like overkill.  Even 9 does, to be honest.
         if ((regExCheck = message.match(reCustomAPIJson))) {
+            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
+                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
+            }
+            
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -938,6 +946,42 @@
             $.registerChatCommand('./commands/customCommands.js', action, 7);
             $.inidb.set('command', action, argsString);
             customCommands[action] = argsString;
+            return;
+        }
+
+        /*
+         * @commandpath tokencom [command] [token] - Stores a user/pass or API key to be replaced into a (customapi) tag. WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!
+         */
+        if (command.equalsIgnoreCase('tokencom')) {
+            if (action === undefined || subAction === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.usage'));
+                return;
+            }
+
+            action = action.replace('!', '').toLowerCase();
+            argsString = args.slice(1).join(' ');
+            
+            var silent = false;
+            if (action.startsWith('silent@')) {
+                silent = true;
+                action = action.substr(7);
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
+                return;
+            } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
+                }
+                return;
+            }
+
+            if (!silent) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.success', action));
+            }
+            
+            $.inidb.SetString('commandtoken', '', action, argsString);
             return;
         }
 
@@ -1371,6 +1415,7 @@
         $.registerChatCommand('./commands/customCommands.js', 'delalias', 2);
         $.registerChatCommand('./commands/customCommands.js', 'delcom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'editcom', 2);
+        $.registerChatCommand('./commands/customCommands.js', 'tokencom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'permcom', 1);
         $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
         $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);
