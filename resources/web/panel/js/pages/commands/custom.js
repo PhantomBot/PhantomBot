@@ -49,14 +49,6 @@ $(run = function() {
                         'html': $('<i/>', {
                             'class': 'fa fa-edit'
                         })
-                    })).append($('<button/>', {
-                        'type': 'button',
-                        'class': 'btn btn-xs btn-info',
-                        'style': 'float: right',
-                        'data-command': results[i].key,
-                        'html': $('<i/>', {
-                            'class': 'fa fa-unlock-alt'
-                        })
                     })).html()
                 ]);
             }
@@ -200,47 +192,6 @@ $(run = function() {
                         }
                     }).modal('toggle');
                 });
-            });
-
-            // On token button.
-            table.on('click', '.btn-info', function() {
-                let command = $(this).data('command'),
-                    t = $(this);
-
-                // Get advance modal from our util functions in /utils/helpers.js
-                helpers.getAdvanceModal('token-command', 'Set Command Token', 'Save', $('<form/>', {
-                    'role': 'form'
-                })
-                .append('This dialog stores a user/pass or API key to be replaced into a (customapi) tag.\n\
-                <br /> NOTE: This is only useful if you place a (token) subtag into the URL of a (customapi) or (customapijson) command tag.\n\
-                <br /> Example (using the bot\s chat commands for demonstration purposes):\n\
-                <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!addcom myapicommand (customapi http://(token)@example.com/myapi)\n\
-                <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!tokencom myapicommand myuser:mypass\n\
-                <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>The command now effectively calls http://myuser:mypass@example.com/myapi while reducing exposure of your user/pass</i>')
-                // Append input box for the command name. This one is disabled.
-                .append(helpers.getInputGroup('command-tname', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
-                // Append a text box for the command token.
-                .append(helpers.getnputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function() {
-                    let commandName = $('#command-tname'),
-                        commandToken = $('#command-token');
-
-                    // Remove the ! and spaces.
-                    commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
-
-                    // Handle each input to make sure they have a value.
-                    switch (false) {
-                        case helpers.handleInputString(commandName):
-                            break;
-                        default:
-                        // Update command token.
-                        socket.sendCommand('command_settoken_cmd', 'tokencom silent@' + commandName.val() + ' ' + commandToken.val(), function() {
-                            // Close the modal.
-                            $('#token-command').modal('hide');
-                            // Tell the user the command was edited.
-                            toastr.success('Successfully changed token for command !' + commandName.val());
-                        });
-                    }
-                }).modal('toggle');
             });
         });
     });
