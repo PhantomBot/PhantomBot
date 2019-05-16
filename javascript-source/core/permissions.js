@@ -39,7 +39,7 @@
      */
     function cleanTwitchBots() {
         var twitchBots = $.readFile('./addons/ignorebots.txt');
-        
+
         for (var i in twitchBots) {
             $.inidb.del('points', twitchBots[i].toLowerCase());
             $.inidb.del('time', twitchBots[i].toLowerCase());
@@ -76,7 +76,7 @@
             delete botList[username];
         }
     }
-    
+
     /**
      * @function addTwitchBot
      *
@@ -89,7 +89,7 @@
 
     /**
      * @function savebotList
-     * 
+     *
      */
     function saveBotList() {
         $.writeToFile(Object.keys(botList).join(String.fromCharCode(13, 10)), './addons/ignorebots.txt', false);
@@ -840,7 +840,7 @@
                     }
                 }
                 $.saveArray(vipUsers, 'addons/vips.txt', false);
-            }  else if (message.indexOf(novipMessageStart) > -1) {
+            } else if (message.indexOf(novipMessageStart) > -1) {
                 for (i in keys) {
                     if ($.inidb.get('group', keys[i]).equalsIgnoreCase('5')) {
                         $.inidb.del('group', keys[i]);

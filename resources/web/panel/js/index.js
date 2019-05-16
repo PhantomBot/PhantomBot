@@ -539,7 +539,7 @@ $(function() {
             }
         } catch (ex) {
             // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-            helpers.logError('Failed to parse message from socket: ' + ex.stack, helpers.LOG_TYPE.FORCE);
+            helpers.logError('Failed to parse message from socket: ' + ex.stack + '\n\n' + e.data, helpers.LOG_TYPE.FORCE);
         }
     };
 

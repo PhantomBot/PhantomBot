@@ -592,6 +592,70 @@ $(function() {
     };
 
     /*
+     * @function Generates a multi-select dropdown.
+     *
+     * @param  {String} id
+     * @param  {String} title
+     * @param  {String} def
+     * @param  {Array}  options [
+        {
+            'title': 'Some title',
+            'options': [
+                {
+                    'name': 'option name',
+                    'selected': 'true'
+                },
+                ...
+            ]
+        },
+        ...
+     ]
+     * @param  {String} toolTip
+     * @return {Object}
+     */
+    helpers.getMultiDropdownGroup = function(id, title, options, toolTip) {
+        return  $('<div/>', {
+            'class': 'form-group'
+        }).append($('<lable/>', {
+            'html': $('<b/>', {
+                'text': title
+            })
+        })).append($('<div/>', {
+            'class': 'dropdown',
+            'data-toggle': 'tooltip',
+            'title': toolTip
+        }).append($('<select/>', {
+            'class': 'form-control select2 select2-hidden-accessible',
+            'multiple': 'multiple',
+            'id': id,
+            'style': 'width: 100%; cursor: pointer;'
+        }).append(options.map(function(option) {
+            let selected = option.selected;
+            let roles = option.options;
+            let group = $('<optgroup/>', {
+                'label': option.title
+            });
+
+            for (let i = 0; i < roles.length; i++) {
+                let o = $('<option/>', {
+                    'html': roles[i].name,
+                    'id': roles[i]._id
+                });
+
+                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
+                    o.attr('selected', 'selected');
+                } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
+                    o.attr('selected', 'selected');
+                }
+
+                group.append(o);
+            }
+
+            return group;
+        }))));
+    };
+
+    /*
      * @function gets a checkbox
      *
      * @param  {String}  id
@@ -819,13 +883,15 @@ $(function() {
      * @return {Number}
      */
     helpers.getDiscordGroupIdByName = function(name, asString) {
-        switch (name.toLowerCase()) {
+        /*switch (name.toLowerCase()) {
             case 'administrators':
             case 'administrator':
                 return (asString ? '1' : 1);
             default:
                 return (asString ? '0' : 0);
-        }
+        }*/
+
+        return 'null';
     };
 
     /*
@@ -847,7 +913,7 @@ $(function() {
             case '4':
                 return 'Donators';
             case '5':
-                return 'VIPs';
+                return 'vips';
             case '6':
                 return 'Regulars';
             default:
@@ -858,16 +924,36 @@ $(function() {
     /*
      * @function Gets the group name by its ID.
      *
-     * @param  {String} id
+     * @param  {String} j
      * @return {Number}
      */
-    helpers.getDiscordGroupNameById = function(id) {
-        switch (id.toString()) {
-            case '1':
-                return 'Administrators';
-            default:
-                return 'Everyone';
+    helpers.getDiscordGroupNameById = function(j) {
+        let json = JSON.parse(j);
+        let roles = [];
+        let perms = [];
+
+        for (let i = 0; i < json.roles.length; i++) {
+            if (json.roles[i].selected == 'true')
+                roles.push(json.roles[i].name);
         }
+
+        if (roles.length === 0) {
+            roles.push('None');
+        }
+
+        for (let i = 0; i < json.permissions.length; i++) {
+            if (json.permissions[i].selected == 'true')
+                perms.push(json.permissions[i].name);
+        }
+
+        if (perms.length === 0) {
+            perms.push('None');
+        }
+
+        return {
+            roles: roles,
+            perms: perms
+        };
     };
 
     /*
