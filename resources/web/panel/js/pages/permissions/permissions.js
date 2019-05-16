@@ -112,7 +112,7 @@ $(run = function() {
                 .append(helpers.getInputGroup('user-name', 'text', 'Username', '', username, 'Name of the user. This cannot be edited.', true))
                 // Append the group.
                 .append(helpers.getDropdownGroup('user-permission', 'Permission', helpers.getGroupNameById(e.group),
-                    ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars'])),
+                    ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars'])),
                 // callback once the user hits save.
                 function() {
                     let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text());
@@ -143,7 +143,7 @@ $(function() {
         // Append user name.
         .append(helpers.getInputGroup('user-name', 'text', 'Username', 'PhantomBot', '', 'Name of the user to set the permissions on.'))
         // Append the group.
-        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars'])),
+        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars'])),
         // callback once the user hits save.
         function() {
             let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text()),

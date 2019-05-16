@@ -33,7 +33,7 @@ $(function() {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "1.0.0";
+    helpers.PANEL_VERSION = "NONE";
 
     /*
      * @function adds commas to thousands.
@@ -864,8 +864,8 @@ $(function() {
             case 'donators':
             case 'donator':
                 return (asString ? '4' : 4);
-            case 'hosters':
-            case 'hoster':
+            case 'vips':
+            case 'vip':
                 return (asString ? '5' : 5);
             case 'regulars':
             case 'regular':
@@ -913,7 +913,7 @@ $(function() {
             case '4':
                 return 'Donators';
             case '5':
-                return 'Hosters';
+                return 'vips';
             case '6':
                 return 'Regulars';
             default:
