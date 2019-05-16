@@ -314,9 +314,9 @@
             var perms = JSON.parse($.inidb.get('discordPermcom', commands[i]));
 
             if (perms.roles.indexOf((event.getRoleID() + '')) > -1) {
-                perms.roles.splice(perms.roles.indexOf((event.getRoleID() + '')), i);
+                perms.roles.splice(perms.roles.indexOf((event.getRoleID() + '')), 1);
                 $.discord.setCommandPermission(commands[i], perms);
-                $.inidb.set('discordPermcom', commands[i], JSON.parse(perms));
+                $.inidb.set('discordPermcom', commands[i], JSON.stringify(perms));
                 break;
             }
         }
