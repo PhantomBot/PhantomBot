@@ -75,6 +75,7 @@ $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. 
 
 $.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
 $.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue at position $2.  It should play $3');
+$.lang.register('ytplayer.command.songrequest.success.shuffle', 'Your song "$1" has been added to the queue');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');
@@ -158,3 +159,7 @@ $.lang.register('ytplayer.command.position.none', 'You do not have any requests 
 $.lang.register('ytplayer.command.queue.size', 'There are $1 requests currently in the queue');
 
 $.lang.register('ytplayer.queue.empty', 'The queue is empty');
+$.lang.register('ytplayer.command.position.shuffle.on', 'Now shuffling the queue');
+$.lang.register('ytplayer.command.position.shuffle.off', 'Now playing the queue in order');
+$.lang.register('ytplayer.command.position.shuffle', 'The queue is in shuffle mode');
+$.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not in shuffle mode. Usage: !shuffle [on|off]');
