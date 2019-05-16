@@ -150,7 +150,6 @@ $(run = function() {
                             case helpers.handleInputNumber(keywordCount):
                                 break;
                             default:
-                                keywordKey.val(keywordKey.val().toLowerCase());
 
                                 // Remove the old keyword.
                                 socket.removeDBValue('edit_keyword_rm', 'keywords', keyword, function() {
@@ -236,7 +235,6 @@ $(function() {
                 case helpers.handleInputNumber(keywordCount):
                     break;
                 default:
-                    keywordKey.val(keywordKey.val().toLowerCase());
 
                     // Update the values.
                     socket.updateDBValues('add_keyword', {

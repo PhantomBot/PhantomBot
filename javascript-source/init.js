@@ -533,6 +533,7 @@
         $api.on($script, 'discordChannelCommand', function(event) {
             var username = event.getUsername(),
                 command = event.getCommand(),
+                user = event.getDiscordUser(),
                 channel = event.getDiscordChannel(),
                 channelName = event.getChannel(),
                 channelId = event.getChannelId(),
@@ -548,7 +549,24 @@
                 command = event.setCommand($.discord.getCommandAlias(command));
             }
 
-            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+            // Check permissions.
+            var perm = $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''));
+            var hasPerms = false;
+
+            // If more permissions are added, we'll have to use a loop here.
+            if (perm.permissions[0].selected.equals('true') && isAdmin == true) {
+                hasPerms = true;
+            } else {
+                for (var i = 0; i < perm.roles.length; i++) {
+                    if (user.hasRole($.discordAPI.getRoleByID(perm.roles[i])) == true) {
+                        hasPerms = true;
+                        break;
+                    }
+                }
+            }
+
+            // No permissions, return.
+            if (!hasPerms) {
                 return;
             }
 
@@ -574,6 +592,28 @@
             if ($.discord.getCommandCost(command) > 0) {
                 $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
+        });
+
+        /*
+         * @event discordReady
+         */
+        $api.on($script, 'discordReady', function(event) {
+            var roles = $.discordAPI.getGuildRoles();
+            var perms = {
+                roles: []
+            };
+
+            for (var i = 0; i < roles.size(); i++) {
+                perms.roles.push({
+                    'name' : roles.get(i).getName() + '',
+                    '_id': roles.get(i).getStringID() + '',
+                    'selected': 'false'
+                });
+            }
+
+            $.inidb.set('discordPermsObj', 'obj', JSON.stringify(perms));
+
+            callHook('discordReady', event, false);
         });
 
         /*
@@ -918,7 +958,7 @@
         $api.on($script, 'twitchMassSubscriptionGifted', function(event) {
             callHook('twitchMassSubscriptionGifted', event, false);
         });
-        
+
         /*
          * @event twitchAnonymousSubscriptionGift
          */
@@ -976,12 +1016,33 @@
         });
 
         /*
+         * @event discordRoleCreated
+         */
+        $api.on($script, 'discordRoleCreated', function(event) {
+            callHook('discordRoleCreated', event, false);
+        });
+
+        /*
+         * @event discordRoleUpdated
+         */
+        $api.on($script, 'discordRoleUpdated', function(event) {
+            callHook('discordRoleUpdated', event, false);
+        });
+
+        /*
+         * @event discordRoleDeleted
+         */
+        $api.on($script, 'discordRoleDeleted', function(event) {
+            callHook('discordRoleDeleted', event, false);
+        });
+
+        /*
          * @event webPanelSocketUpdate
          */
         $api.on($script, 'webPanelSocketUpdate', function(event) {
             callHook('webPanelSocketUpdate', event, false);
         });
-        
+
         /*
          * @event PubSubModerationDelete
          */
