@@ -266,6 +266,65 @@
     });
 
     /**
+     * @event discordRoleCreated
+     */
+    $.bind('discordRoleCreated', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+
+        permObj.roles.push({
+            'name': event.getDiscordRole().getName() + '',
+            '_id': event.getRoleID() + '',
+            'selected': 'false'
+        });
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
+     * @event discordRoleUpdated
+     */
+    $.bind('discordRoleUpdated', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+
+        for (var i = 0; i < permObj.roles.length; i++) {
+            if (permObj.roles[i]._id.equals(event.getRoleID() + '')) {
+                permObj.roles[i].name = event.getDiscordRole().getName() + '';
+                break;
+            }
+        }
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
+     * @event discordRoleDeleted
+     */
+    $.bind('discordRoleDeleted', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+        var commands = $.inidb.GetKeyList('discordPermcom', '');
+
+        for (var i = 0; i < permObj.roles.length; i++) {
+            if (permObj.roles[i]._id.equals(event.getRoleID() + '')) {
+                permObj.roles.splice(i, 1);
+                break;
+            }
+        }
+
+        for (var i = 0; i < commands.length; i++) {
+            var perms = JSON.parse($.inidb.get('discordPermcom', commands[i]));
+
+            if (perms.roles.indexOf((event.getRoleID() + '')) > -1) {
+                perms.roles.splice(perms.roles.indexOf((event.getRoleID() + '')), i);
+                $.discord.setCommandPermission(commands[i], perms);
+                $.inidb.set('discordPermcom', commands[i], JSON.parse(perms));
+                break;
+            }
+        }
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {
