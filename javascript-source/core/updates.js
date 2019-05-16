@@ -830,37 +830,37 @@
 
     /* version 3.0.1 updates */
     if (!$.inidb.exists('updates', 'installedv3.0.1') || $.inidb.get('updates', 'installedv3.0.1') != 'true') {
-    	$.consoleLn('Starting PhantomBot update 3.0.1 updates...');
+        $.consoleLn('Starting PhantomBot update 3.0.1 updates...');
 
-    	if (!$.hasDiscordToken) {
-        	while (!$.inidb.exists('discordPermsObj', 'obj')) {
-            	try {
-                	java.lang.Thread.sleep(1000);
-           		} catch (ex) {
-                	$.log.error('Failed to run update as Discord is not yet connected, please restart PhantomBot...');
-                	return;
-            	}
-        	}
+        if (!$.hasDiscordToken) {
+            while (!$.inidb.exists('discordPermsObj', 'obj')) {
+                try {
+                    java.lang.Thread.sleep(1000);
+                } catch (ex) {
+                    $.log.error('Failed to run update as Discord is not yet connected, please restart PhantomBot...');
+                    return;
+                }
+            }
 
-    		var discordCommandPermissions = $.inidb.GetKeyList('discordPermcom', '');
-    		var everyoneRoleID = 0;
-    		var discordRoles = $.discordAPI.getGuildRoles();
+            var discordCommandPermissions = $.inidb.GetKeyList('discordPermcom', '');
+            var everyoneRoleID = 0;
+            var discordRoles = $.discordAPI.getGuildRoles();
 
-    		for (var i = 0; i < discordRoles.size(); i++) {
-    			if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
-    				everyoneRoleID = discordRoles.get(i).getStringID();
-    				break;
-    			}
-    		}
+            for (var i = 0; i < discordRoles.size(); i++) {
+                if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
+                    everyoneRoleID = discordRoles.get(i).getStringID();
+                    break;
+                }
+            }
 
-    		for (var i = 0; i < discordCommandPermissions.length; i++) {
-    			var permission = $.inidb.get('discordPermcom', discordCommandPermissions[i]);
-    			var permissionsObj = {
-    				'roles': [], // Array of string IDs.
-    				'permissions': [] // Array of objects.
-    			};
+            for (var i = 0; i < discordCommandPermissions.length; i++) {
+                var permission = $.inidb.get('discordPermcom', discordCommandPermissions[i]);
+                var permissionsObj = {
+                    'roles': [], // Array of string IDs.
+                    'permissions': [] // Array of objects.
+                };
 
-    			if ((permission + '').equals('0')) {
+                if ((permission + '').equals('0')) {
                     permissionsObj.roles.push(everyoneRoleID + '');
                 }
 
@@ -869,11 +869,11 @@
                     'selected': ((permission + '').equals('1') + '')
                 });
 
-    			$.inidb.set('discordPermcom', discordCommandPermissions[i], JSON.stringify(permissionsObj));
-    		}
-    	}
+                $.inidb.set('discordPermcom', discordCommandPermissions[i], JSON.stringify(permissionsObj));
+            }
+        }
 
-    	$.consoleLn('PhantomBot update 3.0.1 completed!');
+        $.consoleLn('PhantomBot update 3.0.1 completed!');
         $.inidb.set('updates', 'installedv3.0.1', 'true');
     }
 
