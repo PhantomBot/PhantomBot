@@ -23,13 +23,13 @@ import sx.blah.discord.handle.obj.IRole;
  *
  * @author ScaniaTV
  */
-public class DiscordRoleDeletedEvent extends DiscordRoleEvent {
+public class DiscordRoleUpdatedEvent extends DiscordRoleEvent {
     /**
      * Class constructor.
      * 
      * @param role
      */
-    public DiscordRoleDeletedEvent(IRole role) {
+    public DiscordRoleUpdatedEvent(IRole role) {
         // Not proper, fix this later.
         super(role);
     }
