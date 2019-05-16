@@ -18,7 +18,6 @@
 package tv.phantombot.event.discord.role;
 
 import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
 
 /**
  *
