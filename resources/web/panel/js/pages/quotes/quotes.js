@@ -118,7 +118,7 @@ $(run = function() {
                         'role': 'form'
                     })
                     // Append quote date.
-                    .append(helpers.getInputGroup('quote-date', 'text', 'Created On', '', helpers.getPaddedDateString(new Date(parseInt(data[2])).toLocaleDateString()), 'Date the quote was created on.'))
+                    .append(helpers.getInputGroup('quote-date', 'text', 'Created On', '', helpers.getPaddedDateString(new Date(data[2]).toLocaleDateString()), 'Date the quote was created on.'))
                     // Append quote creator
                     .append(helpers.getInputGroup('quote-user', 'text', 'Created By', '', data[0], 'The user who created the quote.'))
                     // Append quote game

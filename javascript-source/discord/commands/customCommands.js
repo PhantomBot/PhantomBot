@@ -407,32 +407,6 @@
         }
 
         /**
-         * @discordcommandpath permcom [command] [permission] - Sets a permission on that command. Either 0 which is everyone or 1 is administrators.
-         */
-        if (command.equalsIgnoreCase('permcom')) {
-            if (action === undefined || subAction === undefined) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.permcom.usage'));
-                return;
-            }
-
-            action = action.replace('!', '').toLowerCase();
-
-            if (!$.discord.commandExists(action)) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.permcom.404'));
-                return;
-            }
-
-            if (subAction != 1 && subAction != 0) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.permcom.syntax.error'));
-                return;
-            }
-
-            $.inidb.set('discordPermcom', action, subAction);
-            $.discord.setCommandPermission(action, subAction);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.permcom.success', action, subAction));
-        }
-
-        /**
          * @discordcommandpath channelcom [command] [channel / --global / --list] - Makes a command only work in that channel, spectate  the channels with a comma and space for multiple, use --global as the channel to make the command global again.
          */
         if (command.equalsIgnoreCase('channelcom')) {
@@ -587,7 +561,6 @@
         $.discord.registerCommand('./discord/commands/customCommands.js', 'addcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'delcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'editcom', 1);
-        $.discord.registerCommand('./discord/commands/customCommands.js', 'permcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'coolcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'channelcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'pricecom', 1);
