@@ -1,3 +1,10 @@
+/*!
+ *   AdminLTE v2.4.0
+ *   Author: Almsaeed Studio
+ *   Website: Almsaeed Studio <https://adminlte.io>
+ *   License: Open source - MIT
+ *           Please visit http://opensource.org/licenses/MIT for more information
+ */
 html,
 body {
     height: 100%;
@@ -3031,8 +3038,6 @@ input#stream-game {}
 .nav-tabs-custom>.nav-tabs>li>a:hover {
     background: transparent;
     margin: 0;
-    nt;
-    */ border-right-color: #424242;
 }
 
 .nav-tabs-custom>.nav-tabs>li>a:hover {
@@ -5809,30 +5814,35 @@ table.text-center th {
 }
 
 .select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: #ddd;
+    background-color: #525252;
 }
 
 .select2-container--default .select2-results__option[aria-selected=true],
 .select2-container--default .select2-results__option[aria-selected=true]:hover {
-    color: #444;
+    color: white !important;
 }
 
 .select2-container--default .select2-selection--multiple {
-    border: 1px solid #d2d6de;
+    border: 1px solid #d2d6de !important;
     border-radius: 0;
 }
 
 .select2-container--default .select2-selection--multiple:focus {
-    border-color: #3c8dbc;
+    border-color: #d2d6de !important;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
     border-color: #d2d6de;
 }
 
+.select2-container--default .select2-selection--multiple {
+    background-color: #2e2e2e !important;
+    border: 1px solid rgba(70,70,70,.15)!important;
+}
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #3c8dbc;
-    border-color: #367fa9;
+    background-color: #6441a5 !important;
+    border-color: #6441a5;
     padding: 1px 10px;
     color: #fff;
 }
