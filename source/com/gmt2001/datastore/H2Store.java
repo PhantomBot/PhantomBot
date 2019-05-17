@@ -64,27 +64,21 @@ public class H2Store extends DataStore {
         return "DESC";
     }
 
+    @SuppressWarnings("UseSpecificCatch")
     private String sanitizeLimit(String limit) {
         try {
             int intValue = Integer.parseInt(limit);
             return String.valueOf(intValue);
-        } catch (NumberFormatException ex) {
-            return String.valueOf(Integer.MAX_VALUE);
-        } catch (NullPointerException ex) {
-            return String.valueOf(Integer.MAX_VALUE);
         } catch (Exception ex) {
             return String.valueOf(Integer.MAX_VALUE);
         }
     }
 
+    @SuppressWarnings("UseSpecificCatch")
     private String sanitizeOffset(String offset) {
         try {
             int intValue = Integer.parseInt(offset);
             return String.valueOf(intValue);
-        } catch (NumberFormatException ex) {
-            return "0";
-        } catch (NullPointerException ex) {
-            return "0";
         } catch (Exception ex) {
             return "0";
         }
@@ -118,6 +112,7 @@ public class H2Store extends DataStore {
     }
 
     @Override
+    @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
         super.finalize();
 
@@ -267,7 +262,7 @@ public class H2Store extends DataStore {
 
             DatabaseMetaData md = connection.getMetaData();
             try (ResultSet rs = md.getTables(null, null, "PHANTOMBOT_%", null)) {
-                ArrayList<String> s = new ArrayList<String>();
+                ArrayList<String> s = new ArrayList<>();
                 while (rs.next()) {
                     s.add(rs.getString(3).substring(11));
                 }
@@ -293,7 +288,7 @@ public class H2Store extends DataStore {
 
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
-                    ArrayList<String> s = new ArrayList<String>();
+                    ArrayList<String> s = new ArrayList<>();
 
                     while (rs.next()) {
                         s.add(rs.getString("section"));
@@ -317,14 +312,14 @@ public class H2Store extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -341,7 +336,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -366,14 +361,14 @@ public class H2Store extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+                        ArrayList<KeyValue> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -390,7 +385,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+                        ArrayList<KeyValue> s = new ArrayList<>();
 
 
                         while (rs.next()) {
@@ -428,7 +423,7 @@ public class H2Store extends DataStore {
         offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 if (isNumber) {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
@@ -440,7 +435,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -462,7 +457,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -499,7 +494,7 @@ public class H2Store extends DataStore {
         offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 if (isNumber) {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
@@ -511,7 +506,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -533,7 +528,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -558,14 +553,14 @@ public class H2Store extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -581,7 +576,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -607,14 +602,14 @@ public class H2Store extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -630,7 +625,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, search);
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -659,14 +654,14 @@ public class H2Store extends DataStore {
         offset = sanitizeOffset(offset);
 
         if (FileExists(fName)) {
-            if (section.length() > 0) {
+            if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -682,7 +677,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -711,7 +706,7 @@ public class H2Store extends DataStore {
             return false;
         }
 
-        if (section.length() > 0) {
+        if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
@@ -756,7 +751,7 @@ public class H2Store extends DataStore {
             return result;
         }
 
-        if (section.length() > 0) {
+        if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
@@ -803,7 +798,7 @@ public class H2Store extends DataStore {
             return result;
         }
 
-        if (section.length() > 0) {
+        if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
