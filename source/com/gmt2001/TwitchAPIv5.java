@@ -463,26 +463,28 @@ public class TwitchAPIv5 {
     }
 
     /**
-     * Runs a commercial
+     * Runs a commercial. Will fail if channel is not partnered, a commercial has been run in the last 8 minutes, or stream is offline
      *
      * @param channel
-     * @param length (30, 60, 90)
-     * @return
+     * @param length (30, 60, 90, 120, 150, 180)
+     * @return jsonObj.getInt("_http") == 422 if length is invalid or the channel is currently ineligible to run a commercial due to restrictions listed in the method description
      */
     public JSONObject RunCommercial(String channel, int length) {
         return RunCommercial(channel, length, this.oauth);
     }
 
     /**
-     * Runs a commercial
+     * Runs a commercial. Will fail if channel is not partnered, a commercial has been run in the last 8 minutes, or stream is offline
      *
      * @param channel
-     * @param length (30, 60, 90)
+     * @param length (30, 60, 90, 120, 150, 180)
      * @param oauth
-     * @return
+     * @return jsonObj.getInt("_http") == 422 if length is invalid or the channel is currently ineligible to run a commercial due to restrictions listed in the method description
      */
     public JSONObject RunCommercial(String channel, int length, String oauth) {
-        return GetData(request_type.POST, base_url + "/channels/" + getIDFromChannel(channel) + "/commercial", "length=" + length, oauth, false);
+        JSONObject j = new JSONObject("{}");
+        j.put("length", length);
+        return GetData(request_type.POST, base_url + "/channels/" + getIDFromChannel(channel) + "/commercial", j.toString(), oauth, true);
     }
 
     /**
