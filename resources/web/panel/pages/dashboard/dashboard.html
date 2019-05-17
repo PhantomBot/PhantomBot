@@ -176,6 +176,33 @@
                                     <option></option>
                                 </select>
                             </div>
+                            
+                            <!-- Run commercial -->
+                            <div class="form-group" id="grp-instant-commercial">
+                                <label>Run Commercial</label>
+                                <div class="input-group input-group-md">
+                                    <select class="form-control select2" id="instant-commercial-length" data-toggle="tooltip" title="Commercial length, in seconds.">
+                                        <option selected="selected">30</option>
+                                        <option>60</option>
+                                        <option>90</option>
+                                        <option>120</option>
+                                        <option>150</option>
+                                        <option>180</option>
+                                    </select>
+                                    <span class="input-group-addon" style="border: 0;">
+                                        <div class="pretty p-icon">
+                                            <input id="instant-commercial-silent" type="checkbox" data-toggle="tooltip" title="If checked, the bot won't announce the commercial in chat.">
+                                            <div class="state p-default">
+                                                <i class="icon fa fa-check"></i>
+                                                <label>Silent</label>
+                                            </div>
+                                        </div>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-instant-commercial" data-candisable="true">Run</button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
