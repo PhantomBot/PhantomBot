@@ -286,11 +286,11 @@ public class DataStore {
     }
 
     public boolean exists(String fName, String key) {
-        return HasKey(fName, "", key);
+        return HasKey(fName, null, key);
     }
 
     public String get(String fName, String key) {
-        return GetString(fName, "", key);
+        return GetString(fName, null, key);
     }
 
     public void set(String fName, String key, String value) {
