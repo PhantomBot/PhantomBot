@@ -239,12 +239,11 @@ public class HTTPServerCommon {
      * table=tableName&getSortedRowsByValue&limit=n
      * table=tableName&getSortedRowsByValue&offset=n
      */
-    @SuppressWarnings("null")
     private static void handleDBQuery(String uriPath, String[] uriQueryList, HttpExchange exchange, Boolean hasPassword) {
         JSONStringer jsonObject = new JSONStringer();
         String[] keyValue;
         String   dbTable = null;
-        String   dbSection = "";
+        String   dbSection = null;
         Boolean  dbExists;
 
         if (!hasPassword) {
@@ -280,10 +279,8 @@ public class HTTPServerCommon {
             } else if (keyValue[0].equals("section")) {
                 if (keyValue.length > 1 && keyValue[1].length() > 0) {
                     dbSection = keyValue[1];
-                }
-                
-                if (dbSection.equalsIgnoreCase("null")) {
-                    dbSection = null;
+                } else {
+                    dbSection = "";
                 }
             } else {
                 // All other commands need the table.
