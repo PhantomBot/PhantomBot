@@ -493,9 +493,9 @@ public class TwitchWSIRCParser implements Runnable {
                 scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan")));
             } else if (tags.get("msg-id").equalsIgnoreCase("sub")) {
                 if (tags.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login")));
+                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan")));
+                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months")));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
                 giftedSubscriptionEvents.add(tags);
