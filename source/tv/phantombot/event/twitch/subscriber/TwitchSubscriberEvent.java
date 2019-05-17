@@ -21,6 +21,7 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public class TwitchSubscriberEvent extends TwitchEvent {
     private final String subscriber;
     private final String plan;
+    private final String months;
 
     /**
      * Class constructor.
@@ -30,6 +31,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     public TwitchSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
         this.plan = null;
+        this.months = null;
     }
 
     /**
@@ -41,6 +43,20 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     public TwitchSubscriberEvent(String subscriber, String plan) {
         this.subscriber = subscriber;
         this.plan = plan;
+        this.months = null;
+    }
+
+    /**
+     * Class constructor.
+     *
+     * @param {String} subscriber
+     * @param {String} plan
+     * @param {String} months
+     */
+    public TwitchSubscriberEvent(String subscriber, String plan, String months) {
+        this.subscriber = subscriber;
+        this.plan = plan;
+        this.months = months;
     }
 
     /**
@@ -59,5 +75,14 @@ public class TwitchSubscriberEvent extends TwitchEvent {
      */
     public String getPlan() {
         return this.plan;
+    }
+
+    /**
+     * Method that returns the cumulative months.
+     *
+     * @return {String} months
+     */
+    public String getMonths() {
+        return this.months;
     }
 }
