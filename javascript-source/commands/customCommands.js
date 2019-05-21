@@ -953,7 +953,7 @@
          * @commandpath tokencom [command] [token] - Stores a user/pass or API key to be replaced into a (customapi) tag. WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!
          */
         if (command.equalsIgnoreCase('tokencom')) {
-            if (action === undefined || subAction === undefined) {
+            if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.usage'));
                 return;
             }
@@ -981,7 +981,11 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.success', action));
             }
             
-            $.inidb.SetString('commandtoken', '', action, argsString);
+            if (argsString.length() === 0) {
+                $.inidb.RemoveKey('commandtoken', '', action);
+            } else {
+                $.inidb.SetString('commandtoken', '', action, argsString);
+            }
             return;
         }
 
