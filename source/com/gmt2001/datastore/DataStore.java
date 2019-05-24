@@ -178,7 +178,6 @@ public class DataStore {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     public long GetLong(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
 
@@ -195,7 +194,6 @@ public class DataStore {
         SetString(fName, section, key, sval);
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     public int GetInteger(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
 
@@ -212,7 +210,6 @@ public class DataStore {
         SetString(fName, section, key, sval);
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     public float GetFloat(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
 
@@ -229,7 +226,6 @@ public class DataStore {
         SetString(fName, section, key, sval);
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     public double GetDouble(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
 
