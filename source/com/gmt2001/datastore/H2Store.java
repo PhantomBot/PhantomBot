@@ -64,21 +64,27 @@ public class H2Store extends DataStore {
         return "DESC";
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     private String sanitizeLimit(String limit) {
         try {
             int intValue = Integer.parseInt(limit);
             return String.valueOf(intValue);
+        } catch (NumberFormatException ex) {
+            return String.valueOf(Integer.MAX_VALUE);
+        } catch (NullPointerException ex) {
+            return String.valueOf(Integer.MAX_VALUE);
         } catch (Exception ex) {
             return String.valueOf(Integer.MAX_VALUE);
         }
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     private String sanitizeOffset(String offset) {
         try {
             int intValue = Integer.parseInt(offset);
             return String.valueOf(intValue);
+        } catch (NumberFormatException ex) {
+            return "0";
+        } catch (NullPointerException ex) {
+            return "0";
         } catch (Exception ex) {
             return "0";
         }
@@ -112,7 +118,6 @@ public class H2Store extends DataStore {
     }
 
     @Override
-    @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
         super.finalize();
 
@@ -262,7 +267,7 @@ public class H2Store extends DataStore {
 
             DatabaseMetaData md = connection.getMetaData();
             try (ResultSet rs = md.getTables(null, null, "PHANTOMBOT_%", null)) {
-                ArrayList<String> s = new ArrayList<>();
+                ArrayList<String> s = new ArrayList<String>();
                 while (rs.next()) {
                     s.add(rs.getString(3).substring(11));
                 }
@@ -288,7 +293,7 @@ public class H2Store extends DataStore {
 
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
-                    ArrayList<String> s = new ArrayList<>();
+                    ArrayList<String> s = new ArrayList<String>();
 
                     while (rs.next()) {
                         s.add(rs.getString("section"));
@@ -319,7 +324,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -336,7 +341,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -368,7 +373,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<>();
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -385,7 +390,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<>();
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
 
 
                         while (rs.next()) {
@@ -435,7 +440,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -457,7 +462,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -506,7 +511,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -528,7 +533,7 @@ public class H2Store extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -560,7 +565,7 @@ public class H2Store extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -576,7 +581,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -609,7 +614,7 @@ public class H2Store extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -625,7 +630,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, search);
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -661,7 +666,7 @@ public class H2Store extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -677,7 +682,7 @@ public class H2Store extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
