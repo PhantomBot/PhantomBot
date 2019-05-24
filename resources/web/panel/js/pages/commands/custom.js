@@ -110,6 +110,12 @@ $(run = function() {
                 }, function(e) {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
 
+                    let tokenLink = '';
+                    
+                    if (e.command.match(/\(customapi/gi) !== null) {
+                        tokenLink = '<a href="#" onclick="tokenEditModal(\'' + command + '\');">Add/Edit Command Token</a>';
+                    }
+
                     // Get advance modal from our util functions in /utils/helpers.js
                     helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
                         'role': 'form'
@@ -128,6 +134,7 @@ $(run = function() {
                         'html': $('<form/>', {
                                 'role': 'form'
                             })
+                            .append(tokenLink)
                             // Append input box for the command cost.
                             .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
                                 'Cost in points that will be taken from the user when running the command.'))
@@ -292,4 +299,42 @@ $(function() {
             }
         }).modal('toggle');
     });
+    
+    // On token button.
+    tokenEditModal =  function(command) {
+        // Get modal from our util functions in /utils/helpers.js
+        helpers.getModal('token-command', 'Set Command Token', 'Save', $('<form/>', {
+            'role': 'form'
+        })
+        .append('This dialog stores a user/pass or API key to be replaced into a (customapi) tag.\n\
+        <br /> NOTE: This is only useful if you place a (token) subtag into the URL of a (customapi) or (customapijson) command tag.\n\
+        <br /> Example (using the bot\s chat commands for demonstration purposes):\n\
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!addcom myapicommand (customapi http://(token)@example.com/myapi)\n\
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!tokencom myapicommand myuser:mypass\n\
+        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>The command now effectively calls http://myuser:mypass@example.com/myapi while reducing exposure of your user/pass</i>')
+        // Append input box for the command name. This one is disabled.
+        .append(helpers.getInputGroup('command-tname', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+        // Append a text box for the command token.
+        .append(helpers.getInputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function() {
+            let commandName = $('#command-tname'),
+                commandToken = $('#command-token');
+
+            // Remove the ! and spaces.
+            commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
+
+            // Handle each input to make sure they have a value.
+            switch (false) {
+                case helpers.handleInputString(commandName):
+                    break;
+                default:
+                // Update command token.
+                socket.sendCommand('command_settoken_cmd', 'tokencom silent@' + commandName.val() + ' ' + commandToken.val(), function() {
+                    // Close the modal.
+                    $('#token-command').modal('hide');
+                    // Tell the user the command was edited.
+                    toastr.success('Successfully changed token for command !' + commandName.val());
+                });
+            }
+        }).modal('toggle');
+    };
 });
