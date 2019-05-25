@@ -133,6 +133,9 @@ public class MySQLStore extends DataStore {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
                 connection = CreateConnection(db, user, pass);
+                try (Statement statement = connection.createStatement()) {
+                    statement.execute("SET SESSION sql_mode = CONCAT(@@SESSION.sql_mode, ',', 'ANSI_QUOTES');");
+                }
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
