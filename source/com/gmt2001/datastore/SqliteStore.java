@@ -225,13 +225,13 @@ public class SqliteStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
+                statement.executeUpdate("CREATE TABLE \"phantombot_" + fName + "\" (section string, variable string, value string);");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             if (use_indexes) {
-                try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (variable);")) {
+                try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS \"" + fName + "_idx\" on \"phantombot_" + fName + "\" (variable);")) {
                     statement.execute();
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
@@ -248,7 +248,7 @@ public class SqliteStore extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -267,7 +267,7 @@ public class SqliteStore extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.executeUpdate();
@@ -288,7 +288,7 @@ public class SqliteStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("DROP TABLE phantombot_" + fName + ";");
+                statement.executeUpdate("DROP TABLE \"phantombot_" + fName + "\";");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -311,7 +311,7 @@ public class SqliteStore extends DataStore {
 
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
-            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+            statement.executeUpdate("ALTER TABLE \"phantombot_" + fNameSource + "\" RENAME TO \"phantombot_" + fNameDest + "\";");
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -373,7 +373,7 @@ public class SqliteStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
+                try (ResultSet rs = statement.executeQuery("SELECT section FROM \"phantombot_" + fName + "\" GROUP BY section;")) {
 
                     ArrayList<String> s = new ArrayList<String>();
 
@@ -401,7 +401,7 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
@@ -419,7 +419,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -448,7 +448,7 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
@@ -465,7 +465,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM \"phantombot_" + fName + "\";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -507,9 +507,9 @@ public class SqliteStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -530,9 +530,9 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -577,9 +577,9 @@ public class SqliteStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
 
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
@@ -601,9 +601,9 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -637,7 +637,7 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND value LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -654,7 +654,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE value LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
@@ -687,7 +687,7 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -704,7 +704,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
@@ -740,7 +740,7 @@ public class SqliteStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -757,7 +757,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
@@ -793,7 +793,7 @@ public class SqliteStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -808,7 +808,7 @@ public class SqliteStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
@@ -840,7 +840,7 @@ public class SqliteStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND value=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, value);
@@ -855,7 +855,7 @@ public class SqliteStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE value=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, value);
 
@@ -888,7 +888,7 @@ public class SqliteStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -903,7 +903,7 @@ public class SqliteStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
@@ -946,7 +946,7 @@ public class SqliteStore extends DataStore {
         try {
             if (insertMap.size() > 0) {
                 int idx = 0;
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO \"phantombot_" + fName + "\" (value, section, variable) values(?, ?, ?);")) {
                     statement.setQueryTimeout(10);
                     for (String key : insertMap.keySet()) {
                         statement.setString(1, insertMap.get(key));
@@ -966,7 +966,7 @@ public class SqliteStore extends DataStore {
             }
             if (updateMap.size() > 0) {
                 int idx = 0;
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE \"phantombot_" + fName + "\" SET value=? WHERE section=? and variable=?;")) {
                     statement.setQueryTimeout(10);
                     for (String key : updateMap.keySet()) {
                         statement.setString(1, updateMap.get(key));
@@ -1003,7 +1003,7 @@ public class SqliteStore extends DataStore {
 
         try {
             if (HasKey(fName, section, key)) {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE \"phantombot_" + fName + "\" SET value=? WHERE section=? AND variable=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, value);
                     statement.setString(2, section);
@@ -1011,7 +1011,7 @@ public class SqliteStore extends DataStore {
                     statement.executeUpdate();
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO \"phantombot_" + fName + "\" values(?, ?, ?);")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, key);
@@ -1034,7 +1034,7 @@ public class SqliteStore extends DataStore {
         AddFile(fName);
 
         try {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO \"phantombot_" + fName + "\" values(?, ?, ?);")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -1052,7 +1052,7 @@ public class SqliteStore extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
+            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS \"" + tableName + "_idx\" on \"phantombot_" + tableName + "\" (variable);")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -1066,7 +1066,7 @@ public class SqliteStore extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            try (PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx")) {
+            try (PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS \"" + tableName + "_idx\"")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

@@ -152,7 +152,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (variable(191)));");
+                statement.executeUpdate("CREATE TABLE \"phantombot_" + fName + "\" (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (variable(191)));");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -166,7 +166,7 @@ public class MySQLStore extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -184,7 +184,7 @@ public class MySQLStore extends DataStore {
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.executeUpdate();
@@ -204,7 +204,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("DROP TABLE phantombot_" + fName + ";");
+                statement.executeUpdate("DROP TABLE \"phantombot_" + fName + "\";");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -226,7 +226,7 @@ public class MySQLStore extends DataStore {
 
         try (Statement statement = connection.createStatement()) {
             statement.setQueryTimeout(10);
-            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+            statement.executeUpdate("ALTER TABLE \"phantombot_" + fNameSource + "\" RENAME TO \"phantombot_" + fNameDest + "\";");
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -285,7 +285,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
+                try (ResultSet rs = statement.executeQuery("SELECT section FROM \"phantombot_" + fName + "\" GROUP BY section;")) {
 
                     ArrayList<String> s = new ArrayList<String>();
 
@@ -312,7 +312,7 @@ public class MySQLStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
@@ -330,7 +330,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -361,7 +361,7 @@ public class MySQLStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM \"phantombot_" + fName + "\" WHERE section=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
@@ -378,7 +378,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM \"phantombot_" + fName + "\";")) {
                     statement.setQueryTimeout(10);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -421,9 +421,9 @@ public class MySQLStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as UNSIGNED) " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY CAST(variable as UNSIGNED) " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY variable " + order + "  LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -444,9 +444,9 @@ public class MySQLStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CASE(variable as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY CASE(variable as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -493,9 +493,9 @@ public class MySQLStore extends DataStore {
         if (FileExists(fName)) {
             if (section.length() > 0) {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -516,9 +516,9 @@ public class MySQLStore extends DataStore {
                 }
             } else {
                 if (isNumber) {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY CAST(value as UNSIGNED) " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 } else {
-                    statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                    statementStr = "SELECT variable FROM \"phantombot_" + fName + "\" ORDER BY value " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
                     statement.setQueryTimeout(10);
@@ -551,7 +551,7 @@ public class MySQLStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND value LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -568,7 +568,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE value LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
@@ -600,7 +600,7 @@ public class MySQLStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND variable LIKE ?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -617,7 +617,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE '%?%';")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE variable LIKE '%?%';")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, search);
 
@@ -652,7 +652,7 @@ public class MySQLStore extends DataStore {
 
         if (FileExists(fName)) {
             if (section.length() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
@@ -669,7 +669,7 @@ public class MySQLStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
@@ -704,7 +704,7 @@ public class MySQLStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -719,7 +719,7 @@ public class MySQLStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
@@ -750,7 +750,7 @@ public class MySQLStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE section=? AND value=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, value);
@@ -765,7 +765,7 @@ public class MySQLStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM \"phantombot_" + fName + "\" WHERE value=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, value);
 
@@ -797,7 +797,7 @@ public class MySQLStore extends DataStore {
         }
 
         if (section.length() > 0) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE section=? AND variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -812,7 +812,7 @@ public class MySQLStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM \"phantombot_" + fName + "\" WHERE variable=?;")) {
                 statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
@@ -840,7 +840,7 @@ public class MySQLStore extends DataStore {
         setAutoCommit(false);
 
         try {
-            try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+            try (PreparedStatement statement = connection.prepareStatement("REPLACE INTO \"phantombot_" + fName + "\" (value, section, variable) values(?, ?, ?);")) {
                 statement.setQueryTimeout(10);
                 for (int idx = 0; idx < keys.length; idx++) {
                     statement.setString(1, values[idx]);
@@ -875,7 +875,7 @@ public class MySQLStore extends DataStore {
 
         try {
             if (HasKey(fName, section, key)) {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE \"phantombot_" + fName + "\" SET value=? WHERE section=? AND variable=?;")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, value);
                     statement.setString(2, section);
@@ -883,7 +883,7 @@ public class MySQLStore extends DataStore {
                     statement.executeUpdate();
                 }
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO \"phantombot_" + fName + "\" values(?, ?, ?);")) {
                     statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, key);
@@ -903,7 +903,7 @@ public class MySQLStore extends DataStore {
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
             com.gmt2001.Console.out.println("    Indexing Table: " + tableName);
-            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
+            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS \"" + tableName + "_idx\" on \"phantombot_" + tableName + "\" (variable);")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
