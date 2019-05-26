@@ -29,6 +29,8 @@
 $(function() {
     var cluster = null,
         timer = null;
+        
+    
 
     /*
      * @function Loads the player page.
@@ -587,7 +589,13 @@ $(function() {
     $('#playlist-shuffle-button').on('click', () => {
         player.shufflePlaylist();
     });
-
+    
+    // Queue shuffle button.
+    $('#queue-shuffle-button').on('click', () => {
+        player.shuffleQueue();
+        toastr.info('Toggling shuffle mode');
+    });
+    
     // Enable global tooltips.
     $('body').tooltip({
         selector: '[data-toggle="tooltip"]',

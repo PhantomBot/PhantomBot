@@ -152,6 +152,16 @@ $(function() {
             command: 'togglerandom'
         });
     };
+    
+    /*
+     * @function Toggles shuffle on the queue
+     */
+    player.shuffleQueue = () => {
+        // Update the data.
+        sendToSocket({
+            command: 'toggleshuffle'
+        });
+    };
 
     /*
      * @function loads a new playlist
@@ -405,6 +415,8 @@ $(function() {
             console.error('Failed to parse message from socket: ' + ex.message);
         }
     }
+    
+    
 
     // Make the player object global.
     window.player = player;

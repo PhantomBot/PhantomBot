@@ -24,6 +24,7 @@
 (function() {
     var playlistDbPrefix = 'ytPlaylist_',
         randomizePlaylist = $.getSetIniDbBoolean('ytSettings', 'randomizePlaylist', false),
+        shuffleQueue = $.getSetIniDbBoolean('ytSettings', 'shuffleQueue', false),
         announceInChat = $.getSetIniDbBoolean('ytSettings', 'announceInChat', false),
         activePlaylistname = $.getSetIniDbString('ytSettings', 'activePlaylistname', 'default'),
         baseFileOutputPath = $.getSetIniDbString('ytSettings', 'baseFileOutputPath', './addons/youtubePlayer/'),
@@ -38,7 +39,6 @@
         skipCount,
         lastSkipTime = 0,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName),
-        shuffleMode = $.getSetIniDbBoolean('ytSettings', 'shuffleMode', false),
 
         /* enum for player status */
         playerStateEnum = {
@@ -1106,9 +1106,11 @@
         this.play = function(youtubeVideo) {
             // Increment song count
             $.inidb.incr("songcounts", "totalsongs", 1);
+            
+          //  $.say("Owner - " + youtubeVideo.getOwner());
 
             // Increment request count for user
-            var requestOwner = currentPlaylist.getCurrentVideo().getOwner();
+            var requestOwner = youtubeVideo.getOwner();
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
             client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
@@ -1166,6 +1168,16 @@
     });
 
     /**
+     * @event yTQueueRandomize
+     */
+    $.bind('yTPlayerRandomize', function(event) {
+        var EventBus = Packages.tv.phantombot.event.EventBus,
+            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+
+        EventBus.instance().post(new CommandEvent($.botName, 'ytp', 'toggleshuffle'));
+    });
+
+    /**
      * @event yTPlayerDeletePlaylistByID
      */
     $.bind('yTPlayerDeletePlaylistByID', function(event) {
@@ -1191,7 +1203,7 @@
             retval;
 
         if (youTubeID.length > 1) {
-            retval = currentPlaylist.addToPlaylist(new YoutubeVideo(youTubeID, $.ownerName));
+            retval = currentPlaylist.addToPlaylist(new YoutubeVideo(youTubeID, refundUser));
         } else {
             refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
             retval = currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
@@ -1717,6 +1729,26 @@
                     return;
                 }
             }
+            
+            /**
+             * @commandpath ytp toggleshuffle - Shuffle the song request queue.
+             */
+            if (action.equalsIgnoreCase('toggleshuffle')) {
+                shuffleQueue = !shuffleQueue;
+
+                $.setIniDbBoolean('ytSettings', 'shuffleQueue', shuffleQueue);
+
+                if (shuffleQueue) {
+                    $.say($.lang.get('ytplayer.command.position.shuffle.on'));
+                } else {
+                    $.say($.lang.get('ytplayer.command.position.shuffle.off'));
+                }
+                if (connectedPlayerClient) {
+                    connectedPlayerClient.pushPlayList();
+                }
+
+                return;
+            }
         }
 
         /**
@@ -2018,9 +2050,8 @@
                 var queueLengthInSeconds = 0;
                 var req;
                 var playTime; 
-
-                var shuffle = $.getIniDbBoolean('ytSettings', 'shuffleMode', false);
-                if (!shuffle) {
+                
+                if (!shuffleQueue) {
                     if (currentPlaylist.getRequestsCount() == 1) {
                         playTime = "next!";
                     } else {
@@ -2259,45 +2290,25 @@
         }
         
         if (command.equalsIgnoreCase('shuffle')) {
-            var shuffleOn = $.getIniDbBoolean('ytSettings', 'shuffleMode', false);
+            if (shuffleQueue) {
+                var requests = currentPlaylist.getRequestList();
+                var numberOfRequests = currentPlaylist.getRequestsCount();
 
-            if (args[0] != null) {
-                if (args[0].equalsIgnoreCase('on')) {
-                    $.setIniDbBoolean('ytSettings', 'shuffleMode', true);
-                    $.say($.lang.get('ytplayer.command.position.shuffle.on'));
-                } else if (args[0].equalsIgnoreCase('off')) {
-                    $.setIniDbBoolean('ytSettings', 'shuffleMode', false);
-                    $.say($.lang.get('ytplayer.command.position.shuffle.off'));
-                } else if (args[0].equalsIgnoreCase('status')) {
-                    if (shuffleOn) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle.on'));
-                    } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle.off'));
-                    }
+                if (numberOfRequests == 0) {
+                   $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
                 }
-                
-                return;
+
+                var random = Math.floor(Math.random() * (+numberOfRequests - +0)) + +0; 
+                var request = currentPlaylist.getRequestAtIndex(random);
+
+                $.say($.lang.get('ytplayer.command.shuffle', (random + 1), request.getVideoTitle(), request.getOwner()));
             } else {
-                if (shuffleOn) {
-                    var requests = currentPlaylist.getRequestList();
-                    var numberOfRequests = currentPlaylist.getRequestsCount();
-
-                    if (numberOfRequests == 0) {
-                       $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
-                    }
-
-                    var random = Math.floor(Math.random() * (+numberOfRequests - +0)) + +0; 
-                    var request = currentPlaylist.getRequestAtIndex(random);
-
-                    $.say($.lang.get('ytplayer.command.shuffle', (random + 1), request.getVideoTitle(), request.getOwner()));
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle.disabled'));
-                }
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle.disabled'));
             }
         }
         
         if (command.equalsIgnoreCase('position')) {
-            if($.getSetIniDbBoolean('ytSettings', 'shuffleMode', false)) {
+            if(shuffleQueue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle'));
                 return;
             }
@@ -2368,8 +2379,8 @@
     }
 
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 2);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);

@@ -291,6 +291,8 @@ public class YTWebSocketServer extends WebSocketServer {
         } else if (jsonObject.has("command") && sessionData.isPlayer()) {
             if (jsonObject.getString("command").equals("togglerandom")) {
                 EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
+            } else if (jsonObject.getString("command").equals("toggleshuffle")) {
+                EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
             } else if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else if (jsonObject.getString("command").equals("stealsong")) {

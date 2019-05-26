@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-$.lang.register('sticks.drop.message', 'Kent has dropped $1 sticks on stream so far. LUL');
+$.lang.register('sticks.drops.message', 'Kent has dropped $1 sticks on stream so far. LUL');
 $.lang.register('sticks.breaks.message', 'Kent has broken $1 sticks on stream so far. rip');
 
 $.lang.register('sticks.set.usage', '$1 Usage: !setsticks [drops|breaks] <count>');

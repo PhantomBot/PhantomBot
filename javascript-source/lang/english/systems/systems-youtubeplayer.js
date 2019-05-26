@@ -162,4 +162,4 @@ $.lang.register('ytplayer.queue.empty', 'The queue is empty');
 $.lang.register('ytplayer.command.position.shuffle.on', 'Now shuffling the queue');
 $.lang.register('ytplayer.command.position.shuffle.off', 'Now playing the queue in order');
 $.lang.register('ytplayer.command.position.shuffle', 'The queue is in shuffle mode');
-$.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not in shuffle mode. Usage: !shuffle [on|off]');
+$.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not in shuffle mode. Usage: !musicplayer toggleshuffle');
