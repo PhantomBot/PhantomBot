@@ -33,7 +33,7 @@
             $.inidb.incr("sticks", "drops" , 1);
             
             var drops = $.inidb.get("sticks", "drops");
-            $.say($.lang.get('sticks.drop.message', drops));
+            $.say($.lang.get('sticks.drops.message', drops));
         }
         
         if (command.equalsIgnoreCase('rip')) {

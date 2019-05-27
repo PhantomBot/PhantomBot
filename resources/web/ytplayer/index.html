@@ -163,7 +163,41 @@
                             </table>
                         </div>
                     </div>
-
+                    <!-- Playlist -->
+                    <div class="playlist-section">
+                        <!-- Header with buttons -->
+                        <div class="queue-section-title">Playlist <span id="playlist-name"></span>
+                            <div class="btn-group btn-group-justified header-button">
+                                <!-- Add song to playlist button -->
+                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-add-song-button" data-toggle="tooltip" title="Add song">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <!-- Shuffle button -->
+                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
+                                    <i class="fas fa-random"></i>
+                                </button>
+                                <!-- Load playlist button -->
+                                <button type="button" class="btn btn-secondary btn-sm" id="load-playlist-button" data-toggle="tooltip" title="Load playlist">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Devider -->
+                        <div class="devider"></div>
+                        <!-- Playlist section bottom panel -->
+                        <div class="playlist-table" id="playlist-table-id">
+                            <table id="playlist-table-content" style="width: 100%; overflow: scroll;">
+                            	<tbody id="playlist-content">
+                               		<tr>
+                               		    <th style="width: 5%;">#</th>
+                               		    <th style="width: 70%;">Song</th>
+                               		    <th style="width: 15%;">Duration</th>
+                               		    <th style="width: 10%;">Actions</th>
+                               		</tr>
+                               	</tbody>
+                            </table>
+                        </div>
+                    </div>
                     <!-- Playlist -->
                     
                 </section>
