@@ -2510,6 +2510,11 @@
                 currentPlaylist.removeUserSong(requester);
                 currentPlaylist.addToQueue(existingRequest, newPosition);
                 connectedPlayerClient.pushSongList();
+                
+                if (newPosition == 0) {
+                    newPosition = 1;
+                }
+                
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.success', requester, newPosition));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.none', requester));
