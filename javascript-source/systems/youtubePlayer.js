@@ -1118,7 +1118,7 @@
             var requestOwner = youtubeVideo.getOwner();
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
-            saveSongHistory(String($.username.resolve(sender)), youtubeVideo.getVideoTitle());
+            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle());
             
             client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
         };
