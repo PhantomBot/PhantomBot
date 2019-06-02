@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('ytplayer.client.404', 'The YouTube Player is currently not being used, and song requests are disabled!');
+$.lang.register('ytplayer.client.404', 'The music player is currently not being used, and song requests are closed!');
 $.lang.register('ytplayer.playlist.404', 'Cannot find playlist [$1]');
 $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Requester: $2');
 
@@ -163,3 +163,15 @@ $.lang.register('ytplayer.command.position.shuffle.on', 'Now shuffling the queue
 $.lang.register('ytplayer.command.position.shuffle.off', 'Now playing the queue in order');
 $.lang.register('ytplayer.command.position.shuffle', 'The queue is in shuffle mode');
 $.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not in shuffle mode. Usage: !musicplayer toggleshuffle');
+
+$.lang.register('ytplayer.command.edit.usage', 'Usage: !edit [YouTube ID | YouTube link | search string]');
+$.lang.register('ytplayer.command.edit.success', 'Your request has been changed to "$1"');
+$.lang.register('ytplayer.command.edit.404', 'You do not have a song in the queue');
+
+$.lang.register('ytplayer.command.bump.usage', 'Usage: !bump [user]');
+$.lang.register('ytplayer.command.bump.success', 'Your song has been bumped to the top of the queue and will be played next');
+
+$.lang.register('ytplayer.command.move.usage', 'Usage: !move [user] [position]');
+$.lang.register('ytplayer.command.move.success', '$1\'s song has been moved to position $2');
+$.lang.register('ytplayer.command.move.none', '$1 does not have a song in the queue');
+$.lang.register('ytplayer.command.move.404', '$1 does not have a song in the queue');

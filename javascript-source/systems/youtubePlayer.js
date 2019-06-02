@@ -344,7 +344,8 @@
             playListDbId = playlistDbPrefix + playlistName,
             defaultPlaylist = [], // @type { Integer[] }
             defaultPlaylistReadOnly = [], // @type { Integer[] }
-            requests = new java.util.concurrent.ConcurrentLinkedQueue, // @type { YoutubeVideo[] }
+            //requests = new java.util.concurrent.ConcurrentLinkedQueue, // @type { YoutubeVideo[] }
+            requests = new Packages.kentobot.songrequest.SongQueue,  // @type { YoutubeVideo[] }
             requestFailReason = '';
 
         this.playlistName = playlistName;
@@ -920,7 +921,7 @@
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
             $.writeToFile(
-                youtubeVideo.getVideoTitle() + ' ',
+                youtubeVideo.getVideoTitle() + ' -- Requested by ' + youtubeVideo.getOwner() + ' ',
                 baseFileOutputPath + 'currentsong.txt',
                 false
             );
@@ -982,6 +983,10 @@
         this.preparePlaylist(this.playlistName);
         if (loadDefault) {
             this.loadPlaylistKeys();
+        }
+        
+        this.addToQueue = function(youtubeVideo, position) {
+            requests.addAtPosition(youtubeVideo, position);
         }
 
         /** END CONTRUCTOR PlayList() */
@@ -1113,7 +1118,21 @@
             var requestOwner = youtubeVideo.getOwner();
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
+            saveSongHistory(String($.username.resolve(sender)), youtubeVideo.getVideoTitle());
+            
             client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
+        };
+        
+        function saveSongHistory(username, song) {
+            var newKey = $.inidb.GetKeyList('history', '').length;
+
+            if ($.inidb.exists('history', newKey)) {
+                newKey++;
+            }
+            
+            song = String(song).replace(/"/g, '\'\'');
+            $.inidb.set('history', newKey, JSON.stringify([username, song, $.systemTime()]));
+            return newKey;
         };
 
         /**
@@ -2347,6 +2366,156 @@
         if (command.equalsIgnoreCase('queuesize')) {
             $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.queue.size', currentPlaylist.getRequestsCount()));
         }
+        
+        if (command.equalsIgnoreCase('edit')) {
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.edit.usage'));
+                return;
+            }
+            
+            var requestsList = currentPlaylist.getRequestList();
+ 
+            if (requestsList.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
+                return;
+            }
+            
+            var i, requestFound = false;
+            var existingRequest;
+            for (i = 0; i < requestsList.length; i++) {
+                existingRequest = requestsList[i];
+
+                if (existingRequest.getOwner() == sender) {
+                    requestFound = true;
+                    break;
+                }
+            }
+            
+            if (!requestFound) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.none'));
+                return;
+            }
+                         
+            // Find the new song
+            var newRequest;
+            try {
+                newRequest = new YoutubeVideo(args[0], sender);
+            } catch (ex) {
+                requestFailReason = $.lang.get('ytplayer.requestsong.error.yterror', ex);
+                $.log.error("YoutubeVideo::exception: " + ex);
+                return;
+            }
+
+            // Make sure new request follows rules
+            if (currentPlaylist.videoExistsInRequests(newRequest)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.requestsong.error.exists'));
+                return;
+            }
+
+            if (currentPlaylist.videoLengthExceedsMax(newRequest)) {
+                var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
+                var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
+
+                if (seconds === 0) {
+                    seconds = "00";
+                }
+                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', newRequest.getVideoLengthMMSS(), minutes + ":" + seconds);
+                
+                $.say($.whisperPrefix(sender) + requestFailReason);
+                return;
+            }
+
+            var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
+            for (var i in keys) {
+                if (newRequest.getVideoTitle().toLowerCase().includes(keys[i])) {
+                    requestFailReason = $.lang.get('ytplayer.blacklist.404');
+                    
+                    $.say($.whisperPrefix(sender) + requestFailReason);
+                    return;
+                }
+            }
+            
+            currentPlaylist.removeUserSong(sender);
+            currentPlaylist.addToQueue(newRequest, i);
+            connectedPlayerClient.pushSongList();
+            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.edit.success', newRequest.getVideoTitle()));
+        }
+        
+        if (command.equalsIgnoreCase('promote')) {
+            if (!args[0]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.bump.usage'));
+                return;
+            }
+
+            var bumper = args[0];
+            var requestsList = currentPlaylist.getRequestList();
+
+            if (requestsList.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
+                return;
+            }
+
+            var i, requestFound = false;
+            var existingRequest;
+            for (i = 0; i < requestsList.length; i++) {
+                existingRequest = requestsList[i];
+
+                if (existingRequest.getOwner().equalsIgnoreCase(bumper)) {
+                    requestFound = true;
+                    break;
+                }
+            }
+
+            if (requestFound) {
+                currentPlaylist.removeUserSong(bumper);
+                currentPlaylist.addToQueue(existingRequest, 0);
+                connectedPlayerClient.pushSongList();
+                $.say($.whisperPrefix(bumper) + $.lang.get('ytplayer.command.bump.success'));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.none', bumper));
+            }
+        }
+        
+        if (command.equalsIgnoreCase('move')) {
+            if (!args[1]) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.usage'));
+                return;
+            }
+
+            var requester = args[0];
+            var newPosition = args[1];
+            if (newPosition != 0) {
+                newPosition = newPosition - 1;
+            }
+            
+            var requestsList = currentPlaylist.getRequestList();
+
+            if (requestsList.length == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
+                return;
+            }
+
+            var i, requestFound = false;
+            var existingRequest;
+            for (i = 0; i < requestsList.length; i++) {
+                existingRequest = requestsList[i];
+
+                if (existingRequest.getOwner().equalsIgnoreCase(requester)) {
+                    requestFound = true;
+                    break;
+                }
+            }
+
+            if (requestFound) {
+                currentPlaylist.removeUserSong(requester);
+                currentPlaylist.addToQueue(existingRequest, newPosition);
+                connectedPlayerClient.pushSongList();
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.success', requester, newPosition));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.none', requester));
+                return;
+            }
+        }
     });
     
     function secondsToTimestamp(timeInSeconds) {
@@ -2407,6 +2576,9 @@
         $.registerChatCommand('./systems/youtubePlayer.js', "shuffle", 2);
         $.registerChatCommand('./systems/youtubePlayer.js', "position");
         $.registerChatCommand('./systems/youtubePlayer.js', "queuesize");
+        $.registerChatCommand('./systems/youtubePlayer.js', "edit");
+        $.registerChatCommand('./systems/youtubePlayer.js', "promote", 2);
+        $.registerChatCommand('./systems/youtubePlayer.js', "move", 2);
 
         loadPanelPlaylist();
         loadDefaultPl();
@@ -2418,3 +2590,4 @@
         $.inidb.RemoveFile("songcounts");
     });
 })();
+
