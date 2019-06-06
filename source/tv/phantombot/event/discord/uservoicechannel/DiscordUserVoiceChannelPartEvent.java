@@ -17,6 +17,7 @@
 package tv.phantombot.event.discord.uservoicechannel;
 
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 
 public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEvent {
 
@@ -28,4 +29,15 @@ public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEve
     public DiscordUserVoiceChannelPartEvent(IUser user) {
         super(user);
     }
+
+    /**
+     * Class constructor.
+     *
+     * @param {IUser}    user
+     * @param {IVoiceChannel} voicechannel
+     */
+    public DiscordUserVoiceChannelPartEvent(IUser user, IVoiceChannel voicechannel) {
+        super(user, voicechannel);
+    }
+
 }
