@@ -125,8 +125,8 @@ public abstract class DiscordEvent extends Event {
         this.channel = null;
         this.voicechannel = voicechannel;
         this.message = null;
-        this.channelName = null;
-        this.channelId = null;
+        this.channelName = voicechannel.getName();
+        this.channelId = voicechannel.getStringID();
         this.username = user.getName();
         this.discrim = user.getDiscriminator();
         this.senderId = user.getStringID();
