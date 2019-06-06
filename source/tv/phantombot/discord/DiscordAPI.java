@@ -297,12 +297,14 @@ public class DiscordAPI extends DiscordUtil {
 
         @EventSubscriber
         public void onDiscordUserVoiceChannelJoinEvent(UserVoiceChannelJoinEvent event) {
-            EventBus.instance().postAsync(new DiscordUserVoiceChannelJoinEvent(event.getUser()));
+System.out.println("Join " + event.getUser().getName() + " " + event.getVoiceChannel().getName());
+            EventBus.instance().postAsync(new DiscordUserVoiceChannelJoinEvent(event.getUser(), event.getVoiceChannel()));
         }
           
         @EventSubscriber
         public void onDiscordUserVoiceChannelLeaveEvent(UserVoiceChannelLeaveEvent event) {
-            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getUser()));
+System.out.println("Part " + event.getUser().getName() + " " + event.getVoiceChannel().getName());
+            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getUser(), event.getVoiceChannel()));
         }
     }
 }
