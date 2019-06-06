@@ -18,6 +18,7 @@
 package tv.phantombot.event.discord;
 
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -25,6 +26,7 @@ import tv.phantombot.event.Event;
 
 public abstract class DiscordEvent extends Event {
     private final IUser user;
+    private final IVoiceChannel voicechannel;
     private final IChannel channel;
     private final IMessage message;
     private final String username;
@@ -49,6 +51,7 @@ public abstract class DiscordEvent extends Event {
         this.senderId = null;
         this.sender = null;
         this.mention = null;
+        this.voicechannel = null;
     }
     
     /**
@@ -62,6 +65,7 @@ public abstract class DiscordEvent extends Event {
         this.message = null;
         this.channelName = null;
         this.channelId = null;
+        this.voicechannel = null;
         this.username = user.getName();
         this.discrim = user.getDiscriminator();
         this.senderId = user.getStringID();
@@ -78,6 +82,7 @@ public abstract class DiscordEvent extends Event {
     protected DiscordEvent(IUser user, IChannel channel) {
         this.user = user;
         this.channel = channel;
+        this.voicechannel = null;
         this.message = null;
         this.channelName = channel.getName();
         this.channelId = channel.getStringID();
@@ -98,9 +103,30 @@ public abstract class DiscordEvent extends Event {
     protected DiscordEvent(IUser user, IChannel channel, IMessage message) {
         this.user = user;
         this.channel = channel;
+        this.voicechannel = null;
         this.message = message;
         this.channelName = channel.getName();
         this.channelId = channel.getStringID();
+        this.username = user.getName();
+        this.discrim = user.getDiscriminator();
+        this.senderId = user.getStringID();
+        this.sender = (username + "#" + discrim);
+        this.mention = user.mention();
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param {IUser}    user
+     * @param {IVoiceChannel} channel
+     */
+    protected DiscordEvent(IUser user, IVoiceChannel voicechannel) {
+        this.user = user;
+        this.channel = null;
+        this.voicechannel = voicechannel;
+        this.message = null;
+        this.channelName = null;
+        this.channelId = null;
         this.username = user.getName();
         this.discrim = user.getDiscriminator();
         this.senderId = user.getStringID();

@@ -29,6 +29,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelLeaveEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
@@ -41,12 +43,15 @@ import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
+import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelJoinEvent;
+import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartEvent;
 import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
 import tv.phantombot.event.EventBus;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleDeleteEvent;
@@ -288,6 +293,16 @@ public class DiscordAPI extends DiscordUtil {
         @EventSubscriber
         public void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
             EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
+        }
+
+        @EventSubscriber
+        public void onDiscordUserVoiceChannelJoinEvent(UserVoiceChannelJoinEvent event) {
+            EventBus.instance().postAsync(new DiscordUserVoiceChannelJoinEvent(event.getUser()));
+        }
+          
+        @EventSubscriber
+        public void onDiscordUserVoiceChannelLeaveEvent(UserVoiceChannelLeaveEvent event) {
+            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getUser()));
         }
     }
 }
