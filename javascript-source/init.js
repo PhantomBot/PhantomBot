@@ -1009,6 +1009,20 @@
         });
 
         /*
+         * @event discordUserVoiceChannelJoin
+         */
+        $api.on($script, 'discordUserVoiceChannelJoin', function(event) {
+            callHook('discordUserVoiceChannelJoin', event, false);
+        });
+
+        /*
+         * @event discordUserVoiceChannelPart
+         */
+        $api.on($script, 'discordUserVoiceChannelPart', function(event) {
+            callHook('discordUserVoiceChannelPart', event, false);
+        });
+
+        /*
          * @event discordMessageReaction
          */
         $api.on($script, 'discordMessageReaction', function(event) {
