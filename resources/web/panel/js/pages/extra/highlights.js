@@ -180,6 +180,7 @@ $(function() {
                     socket.sendCommandSync('add_highlight_cmd', 'highlight ' + highlight.val(), function() {
                         toastr.success('Successfully created a new highlight!');
                     });
+                    $('#add-highlight').modal('toggle');
             }
         }).modal('toggle');
     });
