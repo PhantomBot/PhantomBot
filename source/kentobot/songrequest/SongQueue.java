@@ -5,12 +5,12 @@
  */
 package kentobot.songrequest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -18,9 +18,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class SongQueue implements Queue {
 
-    private List<Object> queue = new CopyOnWriteArrayList<Object>();
+    private List<Object> queue = new ArrayList<Object>();
     
-    public boolean add(Object e) {
+    public synchronized boolean add(Object e) {
         if (e == null) {
             throw new NullPointerException("Specified element is null");
         }
@@ -28,7 +28,7 @@ public class SongQueue implements Queue {
         return queue.add(e);
     }
 
-    public boolean offer(Object e) {
+    public synchronized boolean offer(Object e) {
         if (e == null) {
             throw new NullPointerException("Specified element is null");
         }
@@ -36,7 +36,7 @@ public class SongQueue implements Queue {
         return queue.add(e);
     }
 
-    public Object remove() {
+    public synchronized Object remove() {
         if (queue.isEmpty()) {
             throw new NoSuchElementException("The queue is empty");
         }
@@ -46,7 +46,7 @@ public class SongQueue implements Queue {
         return obj;
     }
 
-    public Object poll() {
+    public synchronized Object poll() {
        if (queue.isEmpty()) {
            return null;
        }
@@ -57,7 +57,7 @@ public class SongQueue implements Queue {
        return obj;
     }
 
-    public Object element() {
+    public synchronized Object element() {
         if (queue.isEmpty()) {
             throw new NoSuchElementException("The queue is empty");
         }
@@ -65,7 +65,7 @@ public class SongQueue implements Queue {
         return queue.get(0);
     }
 
-    public Object peek() {
+    public synchronized Object peek() {
         if (queue.isEmpty()) {
             return null;
         }
@@ -73,55 +73,55 @@ public class SongQueue implements Queue {
         return queue.get(0);
     }
     
-    public int size() {
+    public synchronized int size() {
         return queue.size();
     }
     
-    public Object[] toArray() {
+    public synchronized Object[] toArray() {
         return queue.toArray();
     }
     
-    public void clear() {
+    public synchronized void clear() {
         queue.clear();
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return queue.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public synchronized boolean contains(Object o) {
         return queue.contains(o);
     }
 
-    public Iterator iterator() {
+    public synchronized Iterator iterator() {
         return queue.iterator();
     }
 
-    public Object[] toArray(Object[] a) {
+    public synchronized Object[] toArray(Object[] a) {
         return queue.toArray(a);
     }
 
-    public boolean remove(Object o) {
+    public synchronized boolean remove(Object o) {
         return queue.remove(o);
     }
 
-    public boolean containsAll(Collection c) {
+    public synchronized boolean containsAll(Collection c) {
         return queue.containsAll(c);
     }
 
-    public boolean addAll(Collection c) {
+    public synchronized boolean addAll(Collection c) {
         return queue.addAll(c);
     }
 
-    public boolean removeAll(Collection c) {
+    public synchronized boolean removeAll(Collection c) {
         return queue.removeAll(c);
     }
 
-    public boolean retainAll(Collection c) {
+    public synchronized boolean retainAll(Collection c) {
         return queue.retainAll(c);
     }
     
-    public void addAtPosition(Object e, int position) {
+    public synchronized void addAtPosition(Object e, int position) {
         if (e == null) {
             throw new NullPointerException("Specified element is null");
         }
@@ -129,7 +129,7 @@ public class SongQueue implements Queue {
         queue.add(position, e);
     }
     
-    public void moveToFront(Object e) {
+    public synchronized void moveToFront(Object e) {
         addAtPosition(e, 0);
     }
 }
