@@ -255,6 +255,9 @@ $(function() {
                         case 4:
                             gifText = value;
                             break;
+                        default:
+                            gifText = gifText + ',' + value;
+                            break;
                     }
                 });
             } else {
