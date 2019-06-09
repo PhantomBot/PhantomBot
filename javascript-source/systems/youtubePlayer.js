@@ -1118,7 +1118,7 @@
             var requestOwner = youtubeVideo.getOwner();
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
-            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle());
+//            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle());
             
             client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
         };
@@ -2481,13 +2481,17 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.usage'));
                 return;
             }
-
+          
             var requester = args[0];
             var newPosition = args[1];
-            if (newPosition != 0) {
-                newPosition = newPosition - 1;
-            }
             
+            if (newPosition > currentPlaylist.getRequestsCount()) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.error.length', currentPlaylist.getRequestsCount()));  
+                return;
+            }
+
+            var newQueuePosition = newPosition - 1;
+
             var requestsList = currentPlaylist.getRequestList();
 
             if (requestsList.length == 0) {
@@ -2508,12 +2512,8 @@
 
             if (requestFound) {
                 currentPlaylist.removeUserSong(requester);
-                currentPlaylist.addToQueue(existingRequest, newPosition);
+                currentPlaylist.addToQueue(existingRequest, newQueuePosition);
                 connectedPlayerClient.pushSongList();
-                
-                if (newPosition == 0) {
-                    newPosition = 1;
-                }
                 
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.success', requester, newPosition));
             } else {
