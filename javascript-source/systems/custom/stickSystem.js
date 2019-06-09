@@ -93,7 +93,7 @@
 	// $.registerChatCommand('script', 'command', 'permission');
        
        $.registerChatCommand('./systems/custom/stickSystem.js', 'drops');
-       $.registerChatCommand('./systems/custom/stickSystem.js', 'breaks');
+       $.registerChatCommand('./systems/custom/stickSystem.js', 'breaks', 7);
        $.registerChatCommand('./systems/custom/stickSystem.js', 'setsticks', 2);
        $.registerChatCommand('./systems/custom/stickSystem.js', 'oops', 2);
        $.registerChatCommand('./systems/custom/stickSystem.js', 'rip', 2);
