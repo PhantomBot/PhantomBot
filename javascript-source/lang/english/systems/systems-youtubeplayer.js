@@ -175,3 +175,4 @@ $.lang.register('ytplayer.command.move.usage', 'Usage: !move [user] [position]')
 $.lang.register('ytplayer.command.move.success', '$1\'s song has been moved to position $2');
 $.lang.register('ytplayer.command.move.none', '$1 does not have a song in the queue');
 $.lang.register('ytplayer.command.move.404', '$1 does not have a song in the queue');
+$.lang.register('ytplayer.command.move.error.length', 'Invalid song position - the queue only has $1 songs')
