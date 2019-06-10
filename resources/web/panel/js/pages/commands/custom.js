@@ -110,10 +110,19 @@ $(run = function() {
                 }, function(e) {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
 
-                    let tokenLink = '';
+                    let tokenButton = '';
                     
                     if (e.command.match(/\(customapi/gi) !== null) {
-                        tokenLink = '<a href="#" onclick="tokenEditModal(\'' + command + '\');">Add/Edit Command Token</a>';
+                        tokenButton = $('<button/>', {
+                            'type': 'button',
+                            'class': 'btn',
+                            'style': 'float: right; position: relative; bottom: 6px;',
+                            'data-command': command,
+                            'click': function() {
+                                tokenEditModal($(this).data('command'));
+                            },
+                            'text': 'Add/Edit Command Token'
+                        });
                     }
 
                     // Get advance modal from our util functions in /utils/helpers.js
@@ -124,6 +133,7 @@ $(run = function() {
                     .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
                     // Append a text box for the command response.
                     .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', e.command, 'Response of the command. Use enter for multiple chat lines maximum is 5.'))
+                    .append(tokenButton)
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
                         ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
@@ -134,7 +144,6 @@ $(run = function() {
                         'html': $('<form/>', {
                                 'role': 'form'
                             })
-                            .append(tokenLink)
                             // Append input box for the command cost.
                             .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
                                 'Cost in points that will be taken from the user when running the command.'))
