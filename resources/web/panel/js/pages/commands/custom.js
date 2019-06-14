@@ -87,8 +87,8 @@ $(run = function() {
                     'The command !' + command + ' has been successfully removed!', function() {
                     // Delete all information about the command.
                     socket.removeDBValues('custom_command_remove', {
-                        tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom'],
-                        keys: [command, command, command, command, command, command]
+                        tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom', 'commandtoken'],
+                        keys: [command, command, command, command, command, command, command]
                     }, function() {
                         socket.wsEvent('custom_command_remove_ws', './commands/customCommands.js', null, ['remove', String(command)], function() {
                             // Remove the table row.
