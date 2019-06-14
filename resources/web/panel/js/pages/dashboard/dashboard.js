@@ -38,6 +38,11 @@ $(function() {
         // Disable isntant commercials if the module is disabled
         if (e['./systems/commercialSystem.js'] !== 'true') {
             $('#grp-instant-commercial').addClass('hidden');
+        } else {
+            $('#instant-commercial-length').select2({
+                    width: '100%'
+            });
+            $('#select2-instant-commercial-length-container').parent().tooltip();
         }
 
         // Query recent events.
