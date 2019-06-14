@@ -1024,6 +1024,7 @@
             $.inidb.del('permcom', action);
             $.inidb.del('pricecom', action);
             $.inidb.del('aliases', action);
+            $.inidb.del('commandtoken', action);
             $.unregisterChatCommand(action);
             delete customCommands[action];
             return;
