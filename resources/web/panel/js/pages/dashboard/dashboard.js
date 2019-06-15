@@ -40,9 +40,9 @@ $(function() {
             $('#grp-instant-commercial').addClass('hidden');
         } else {
             $('#instant-commercial-length').select2({
+                    placeholder: 'Commercial length, in seconds.',
                     width: '100%'
-            });
-            $('#select2-instant-commercial-length-container').parent().tooltip();
+            }).tooltip('disable');
         }
 
         // Query recent events.
