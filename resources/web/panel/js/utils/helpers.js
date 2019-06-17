@@ -385,6 +385,7 @@ $(function() {
     helpers.getModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
+            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -415,7 +416,9 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('hidden.bs.modal', function() {
+        }))))).on('shown.bs.modal', function() {
+            $('#' + id).focus();
+        }).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         });
     };
@@ -433,6 +436,7 @@ $(function() {
     helpers.getAdvanceModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
+            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -475,7 +479,9 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('hidden.bs.modal', function() {
+        }))))).on('shown.bs.modal', function() {
+            $('#' + id).focus();
+        }).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         }).on('show.bs.collapse', function() {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
