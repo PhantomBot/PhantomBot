@@ -857,9 +857,7 @@ $(function() {
      * @return {Boolean}
      */
     helpers.handleModuleLoadUp = function(id, toggle, swit) {
-        helpers.getModuleStatus(id, toggle, swit);
-
-        return true;
+        return helpers.getModuleStatus(id, toggle, swit);
     };
 
     /*
