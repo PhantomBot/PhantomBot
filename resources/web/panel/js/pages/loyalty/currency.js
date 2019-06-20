@@ -19,6 +19,11 @@
 $(run = function() {
     // Get module status.
     socket.getDBValue('get_points_module_status', 'modules', './systems/pointSystem.js', function(e) {
+        // If the module is off, don't load any data.
+        if (!helpers.getModuleStatus('pointsModule', e.modules)) {
+            return;
+        }
+
         // Get points settings.
         socket.getDBValues('get_points_settings', {
             tables: ['pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'settings'],
@@ -62,6 +67,12 @@ $(run = function() {
 
 // Function that handlers the loading of events.
 $(function() {
+    // Module toggle.
+    $('#pointsModuleToggle').on('change', function() {
+        // Enable the module then query the data.
+        socket.sendCommand('points_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/pointSystem.js', run);
+    });
+
     // Get user points button.
     $('#points-get-user').on('click', function() {
         let username = $('#points-username').val().toLowerCase();
