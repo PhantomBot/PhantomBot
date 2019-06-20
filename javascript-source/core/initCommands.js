@@ -243,7 +243,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', module.getModuleName()));
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketRaffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {
@@ -309,7 +309,7 @@
                     $.bot.modules[module.scriptName].isEnabled = false;
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketRaffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {

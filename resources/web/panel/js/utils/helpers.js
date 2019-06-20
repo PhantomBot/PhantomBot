@@ -385,7 +385,6 @@ $(function() {
     helpers.getModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
-            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -416,9 +415,7 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function() {
-            $('#' + id).focus();
-        }).on('hidden.bs.modal', function() {
+        }))))).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         });
     };
@@ -436,7 +433,6 @@ $(function() {
     helpers.getAdvanceModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
-            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -479,9 +475,7 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function() {
-            $('#' + id).focus();
-        }).on('hidden.bs.modal', function() {
+        }))))).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         }).on('show.bs.collapse', function() {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
@@ -827,9 +821,11 @@ $(function() {
         if (typeof id === 'object') {
             for (let i = 0; i < id.length; i++) {
                 if (toggle === 'false') {
-                    $('#' + id[i]).slideUp(helpers.DELAY_MS);
+                    //$('#' + id[i]).slideUp(helpers.DELAY_MS);
+                    $('#' + id[i] + ' *').prop('disabled', true);
                 } else {
-                    $('#' + id[i]).slideDown(helpers.DELAY_MS);
+                    //$('#' + id[i]).slideDown(helpers.DELAY_MS);
+                    $('#' + id[i] + ' *').prop('disabled', false);
                 }
             }
             // Handle the switch toggle
@@ -837,13 +833,27 @@ $(function() {
         } else {
             if (toggle === 'false') {
                 $('#' + id + 'Toggle').prop('checked', false);
-                $('#' + id).slideUp(helpers.DELAY_MS);
+                //$('#' + id).slideUp(helpers.DELAY_MS);
+                $('#' + id + ' *').prop('disabled', true);
             } else {
                 $('#' + id + 'Toggle').prop('checked', true);
-                $('#' + id).slideDown(helpers.DELAY_MS);
+                //$('#' + id).slideDown(helpers.DELAY_MS);
+                $('#' + id + ' *').prop('disabled', false);
             }
         }
         return toggle === 'true';
+    };
+
+    /*
+     * @function Same as the function above but doesn't return anything but false.
+     *
+     * @param  {String}|{Array} id
+     * @return {Boolean}
+     */
+    helpers.handleModuleLoadUp = function(id, toggle, swit) {
+        helpers.getModuleStatus(id, toggle, swit);
+
+        return false;
     };
 
     /*
