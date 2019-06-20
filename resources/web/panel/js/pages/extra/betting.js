@@ -294,7 +294,7 @@ $(function() {
 // Handles the module toggle.
 $(run = function() {
     socket.getDBValue('betting_module_status', 'modules', './systems/bettingSystem.js', function(e) {
-        if (!helpers.getModuleStatus('bettingSystemModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('bettingSystemModule', e.modules)) {
             // Remove the chat.
             $('#twitch-chat-betting').find('iframe').remove();
             return;

@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('quotes_module_toggle', 'modules', './systems/quoteSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('quotesModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('quotesModule', e.modules)) {
             return;
         }
 

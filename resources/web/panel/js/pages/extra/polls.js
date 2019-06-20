@@ -228,7 +228,7 @@ $(function() {
 // Handles the module toggle.
 $(run = function() {
     socket.getDBValue('poll_module_status', 'modules', './systems/pollSystem.js', function(e) {
-        if (!helpers.getModuleStatus('pollSystemModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('pollSystemModule', e.modules)) {
             // Remove the chat.
             $('#twitch-chat-poll').find('iframe').remove();
             return;

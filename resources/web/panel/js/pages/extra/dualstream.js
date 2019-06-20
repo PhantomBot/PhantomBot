@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('dual_stream_command_module', 'modules', './commands/dualstreamCommand.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('dualStreamModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('dualStreamModule', e.modules)) {
             return;
         }
 

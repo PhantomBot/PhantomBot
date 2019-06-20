@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('notice_module_toggle', 'modules', './systems/noticeSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('noticesModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('noticesModule', e.modules)) {
             return;
         }
 

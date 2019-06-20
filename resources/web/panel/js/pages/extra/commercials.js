@@ -22,7 +22,7 @@ $(run = function() {
         tables: ['modules', 'commercialSettings', 'commercialSettings', 'commercialSettings', 'commercialSettings'],
         keys: ['./systems/commercialSystem.js', 'commercialtimer', 'length', 'interval', 'message']
     }, true, function(e) {
-        if (!helpers.getModuleStatus('commercialsModule', e['./systems/commercialSystem.js'], 'commercialsModuleToggle')) {
+        if (!helpers.handleModuleLoadUp('commercialsModule', e['./systems/commercialSystem.js'], 'commercialsModuleToggle')) {
             return;
         }
 

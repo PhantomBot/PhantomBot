@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('custom_command_module', 'modules', './commands/customCommands.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('customCommandsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('customCommandsModule', e.modules)) {
             return;
         }
         // Query custom commands.

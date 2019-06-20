@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('death_counter_module', 'modules', './commands/deathctrCommand.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('deathCounterModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('deathCounterModule', e.modules)) {
             return;
         }
 
