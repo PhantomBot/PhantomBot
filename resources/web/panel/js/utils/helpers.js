@@ -154,7 +154,7 @@ $(function() {
             case 'bits':
                 return 'background-color: #6441a5;';
             case 'host':
-                return 'background-color: #ed1c2a;';
+                return 'background-color: #ed4c1c;';
             case 'auto-host':
                 return 'background-color: #ffff00; color: #000000;';
             case 'tip': // To be added soon.
