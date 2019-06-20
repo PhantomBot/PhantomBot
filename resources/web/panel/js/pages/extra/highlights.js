@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('highlight_command_module', 'modules', './commands/highlightCommand.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('highlightsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('highlightsModule', e.modules)) {
             return;
         }
 

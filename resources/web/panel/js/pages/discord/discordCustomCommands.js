@@ -19,7 +19,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('discord_custom_command_module', 'modules', './discord/commands/customCommands.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('discordCustomCommandsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('discordCustomCommandsModule', e.modules)) {
             return;
         }
 

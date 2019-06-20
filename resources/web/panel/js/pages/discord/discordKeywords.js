@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('discord_keyword_module', 'modules', './discord/handlers/keywordHandler.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('discordKeywordsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('discordKeywordsModule', e.modules)) {
             return;
         }
 

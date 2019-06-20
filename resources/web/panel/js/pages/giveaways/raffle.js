@@ -21,7 +21,7 @@ $(run = function() {
         tables: ['modules', 'raffleSettings'],
         keys: ['./systems/raffleSystem.js', 'isActive']
     }, true, function(e) {
-        if (!helpers.getModuleStatus(['raffleListModule', 'raffleModal'], e['./systems/raffleSystem.js'], 'raffleModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['raffleListModule', 'raffleModal'], e['./systems/raffleSystem.js'], 'raffleModuleToggle')) {
             // Remove the chat.
             $('#raffle-chat').find('iframe').remove();
             return;

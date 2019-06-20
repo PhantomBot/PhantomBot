@@ -21,7 +21,7 @@ $(run = function() {
         tables: ['modules', 'auctionSettings'],
         keys: ['./systems/auctionSystem.js', 'isActive']
     }, true, function(e) {
-        if (!helpers.getModuleStatus(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
             // Remove the chat.
             $('#twitch-chat-auction').find('iframe').remove();
             return;

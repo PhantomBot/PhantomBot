@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('keyword_module', 'modules', './handlers/keywordHandler.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('keywordModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('keywordModule', e.modules)) {
             return;
         }
 

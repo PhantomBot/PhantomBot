@@ -23,7 +23,7 @@ $(run = function() {
         keys: ['./systems/queueSystem.js', 'isActive']
     }, true, function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus(['queueModule', 'queueListModule'], e['./systems/queueSystem.js'], 'queueModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['queueModule', 'queueListModule'], e['./systems/queueSystem.js'], 'queueModuleToggle')) {
             // Remove the chat.
             $('#queue-chat').find('iframe').remove();
             return;

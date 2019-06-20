@@ -20,7 +20,7 @@ $(run = function() {
     // Get module status.
     socket.getDBValue('get_points_module_status', 'modules', './systems/pointSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('pointsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('pointsModule', e.modules)) {
             return;
         }
 

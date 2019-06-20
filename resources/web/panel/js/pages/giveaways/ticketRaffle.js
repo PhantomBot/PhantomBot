@@ -20,7 +20,7 @@ $(run = function() {
         tables: ['modules', 'traffleSettings'],
         keys: ['./systems/ticketraffleSystem.js', 'isActive']
     }, true, function(e) {
-        if (!helpers.getModuleStatus(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
             // Remove the chat.
             $('#ticket-raffle-chat').find('iframe').remove();
             return;

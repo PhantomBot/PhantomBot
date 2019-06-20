@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('ranks_module_toggle', 'modules', './systems/ranksSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('ranksModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('ranksModule', e.modules)) {
             return;
         }
 

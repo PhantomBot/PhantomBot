@@ -851,7 +851,7 @@ $(function() {
     };
 
     /*
-     * @function Same as the function above but doesn't return anything but false.
+     * @function Same as the function above but doesn't return anything but true.
      *
      * @param  {String}|{Array} id
      * @return {Boolean}
@@ -859,7 +859,7 @@ $(function() {
     helpers.handleModuleLoadUp = function(id, toggle, swit) {
         helpers.getModuleStatus(id, toggle, swit);
 
-        return false;
+        return true;
     };
 
     /*
