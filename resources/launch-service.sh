@@ -26,7 +26,18 @@
 
 unset DISPLAY
 
-if [[ $(uname) -eq "Darwin" ]]; then
+if [[ $(uname -m) == "arm"* ]] && [[ $(java -version 2>&1) == *"OpenJDK"* ]]; then
+    echo "It appears you are using a Raspberry Pi with OpenJDK."
+    echo "OpenJDK causes fatal errors and unexpected behavior on Raspberry Pi devices."
+    echo "Please switch to Oracle JDK".
+    echo
+    echo "Commands for Raspbian:"
+    echo "  apt-get install oracle-java8-jdk"
+    echo "  update-alternatives --config java"
+    echo
+    echo "When you issue the update-alternatives command, select Oracle JDK"
+    exit 1
+elif [[ $(uname) -eq "Darwin" ]]; then
     SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do
         DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -45,6 +56,7 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
     echo "You don't have Java installed! Download it from https://www.java.com/en/download/"
+    exit 1
 fi
 
 java -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar
