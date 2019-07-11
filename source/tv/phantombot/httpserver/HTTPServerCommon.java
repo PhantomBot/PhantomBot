@@ -742,6 +742,8 @@ public class HTTPServerCommon {
     private static String inferContentType(String path) {
         if (path.endsWith(".html") || path.endsWith(".htm")) {
             return "text/html";
+        } else if (path.endsWith(".js")) {
+            return "application/javascript";
         } else if (path.endsWith(".css")) {
             return "text/css";
         } else if (path.endsWith(".png")) {
