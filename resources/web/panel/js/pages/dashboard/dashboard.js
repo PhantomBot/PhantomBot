@@ -38,6 +38,11 @@ $(function() {
         // Disable isntant commercials if the module is disabled
         if (e['./systems/commercialSystem.js'] !== 'true') {
             $('#grp-instant-commercial').addClass('hidden');
+        } else {
+            $('#instant-commercial-length').select2({
+                placeholder: 'Commercial length, in seconds.',
+                width: '100%'
+            }).tooltip('disable');
         }
 
         // Query recent events.
@@ -312,6 +317,10 @@ $(function() {
 
     // Handle running a commercial.
     $('#dashboard-btn-instant-commercial').on('click', function() {
+        if ($('#instant-commercial-length').val() === "") {
+            toastr.error('Please select a commercial length');
+            return;
+        }
         socket.sendCommand('instant_commercial', 'commercial ' + $('#instant-commercial-length').val() + ($('#instant-commercial-silent').is(':checked') ? ' silent' : ''), function() {
             toastr.success('Successfully ran a commercial!');
         });
