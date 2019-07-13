@@ -18,7 +18,7 @@ import java.util.Queue;
  */
 public class SongQueue implements Queue {
 
-    private List<Object> queue = new ArrayList<Object>();
+    private static List<Object> queue = new ArrayList<Object>();
     
     public synchronized boolean add(Object e) {
         if (e == null) {
