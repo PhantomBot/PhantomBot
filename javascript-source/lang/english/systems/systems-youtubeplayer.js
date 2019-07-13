@@ -96,6 +96,7 @@ $.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglecconly | toggl
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');
 $.lang.register('ytplayer.command.wrongsong.user.success', 'Removed last requested song from $1: [$2]');
+$.lang.register('ytplayer.command.wrongsong.index.success', 'Removed song at position $1: [$2]');
 $.lang.register('ytplayer.command.wrongsong.usage', 'Usage: !wrongsong [user] [username]. Without [user] deletes your last request.');
 
 $.lang.register('ytplayer.command.nextsong.single', 'Next Song: $1');
@@ -167,6 +168,7 @@ $.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not 
 $.lang.register('ytplayer.command.edit.usage', 'Usage: !edit [YouTube ID | YouTube link | search string]');
 $.lang.register('ytplayer.command.edit.success', 'Your request has been changed to "$1"');
 $.lang.register('ytplayer.command.edit.404', 'You do not have a song in the queue');
+$.lang.register('ytplayer.command.edit.closed', 'Requests are closed and your request could not be changed');
 
 $.lang.register('ytplayer.command.bump.usage', 'Usage: !bump [user]');
 $.lang.register('ytplayer.command.bump.success', 'Your song has been bumped to the top of the queue and will be played next');
