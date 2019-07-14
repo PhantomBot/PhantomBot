@@ -1148,12 +1148,12 @@
             // Increment request count for user
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
-//            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle());
+           saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoId());
             
-            client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
+           client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
         };
         
-        function saveSongHistory(username, song) {
+        function saveSongHistory(username, song, youtubeId) {
             var newKey = $.inidb.GetKeyList('history', '').length;
 
             if ($.inidb.exists('history', newKey)) {
@@ -1161,7 +1161,9 @@
             }
             
             song = String(song).replace(/"/g, '\'\'');
-            $.inidb.set('history', newKey, JSON.stringify([username, song, $.systemTime()]));
+            youtubeId = String(youtubeId).replace(/"/g, '\'\'');
+            
+            $.inidb.set('history', newKey, JSON.stringify([username, song, $.systemTime(), youtubeId]));
             return newKey;
         };
 
