@@ -1154,7 +1154,7 @@
         };
         
         function saveSongHistory(username, song, youtubeId) {
-            var newKey = $.inidb.GetKeyList('history', '').length;
+            var newKey = $.inidb.GetKeyList('songhistory', '').length;
 
             if ($.inidb.exists('history', newKey)) {
                 newKey++;
@@ -1163,7 +1163,7 @@
             song = String(song).replace(/"/g, '\'\'');
             youtubeId = String(youtubeId).replace(/"/g, '\'\'');
             
-            $.inidb.set('history', newKey, JSON.stringify([username, song, $.systemTime(), youtubeId]));
+            $.inidb.set('songhistory', newKey, JSON.stringify([username, song, $.systemTime(), youtubeId]));
             return newKey;
         };
 
