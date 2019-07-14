@@ -39,8 +39,7 @@
         skipCount,
         lastSkipTime = 0,
         playlistDJname = $.getSetIniDbString('ytSettings', 'playlistDJname', $.botName),
-        lastPlayed = new java.util.concurrent.ConcurrentLinkedQueue,
-
+        
         /* enum for player status */
         playerStateEnum = {
             NEWPAUSE: -3,
@@ -347,7 +346,7 @@
             defaultPlaylistReadOnly = [], // @type { Integer[] }
             //requests = new java.util.concurrent.ConcurrentLinkedQueue, // @type { YoutubeVideo[] }
             requests = new Packages.kentobot.songrequest.SongQueue,  // @type { YoutubeVideo[] }
-            
+            lastRequesters = new java.util.concurrent.ConcurrentLinkedQueue,
             requestFailReason = '';
 
         this.playlistName = playlistName;
@@ -999,7 +998,16 @@
         
         this.addToQueue = function(youtubeVideo, position) {
             requests.addAtPosition(youtubeVideo, position);
-        }
+        };
+        
+        this.getPreviousRequesters = function() {
+            return lastRequesters;
+        };
+        
+         this.addRequester = function(requester) {
+             lastRequesters.add(requester);
+        };
+        
 
         /** END CONTRUCTOR PlayList() */
     }
@@ -1123,19 +1131,21 @@
         this.play = function(youtubeVideo) {
             // Increment song count
             $.inidb.incr("songcounts", "totalsongs", 1);
+
+            var lastRequesters = currentPlaylist.getPreviousRequesters();
+            var requestOwner = youtubeVideo.getOwner();
             
-//            if (shuffleQueue) {
-//                if (lastPlayed.size() > 3) {
-//                    lastPlayed.poll();
-//                }
-//                
-//                lastPlayed.push(youtubeVideo.getOwner());
-//            }
-            
-//            $.say("Owner - " + youtubeVideo.getOwner());
+            if (lastRequesters != null) {
+                if (lastRequesters.size() > 2) {
+                    lastRequesters.poll();
+                }
+            }
+
+            if(!$.isAdmin(requestOwner) && !$.isMod(requestOwner)) {
+                currentPlaylist.addRequester(requestOwner);
+            }
 
             // Increment request count for user
-            var requestOwner = youtubeVideo.getOwner();
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
 //            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle());
@@ -2598,11 +2608,13 @@
 
         var random = Math.floor(Math.random() * (+numberOfRequests - +0)) + +0; 
         var request = currentPlaylist.getRequestAtIndex(random);
-        
-        var recentUsers = lastPlayed.toArray();
+         
+        var recentUsers = currentPlaylist.getPreviousRequesters();
         var i;
-        for (i = 0; i < recentUsers.length; i++) {
-            if (request.getOwner().equalsIgnoreCase(recentUsers[i])) {
+        
+        var history = recentUsers.toArray();
+        for (i = 0; i < history.length; i++) {
+            if (request.getOwner().equalsIgnoreCase(history[i])) {
                 return getRandomRequest();
             }
         }
@@ -2630,6 +2642,7 @@
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
+        $.registerChatSubcommand('wrongsong', 'position', 2);
         
         // Custom Commands
         $.registerChatCommand('./systems/youtubePlayer.js', 'songcount');
