@@ -96,6 +96,11 @@ connection.onmessage = function(e) {
         handlePlayList(messageObject);
         return;
     }
+    
+    if (messageObject['requestHistory'] !== undefined) {
+        handleSongHistoryList(messageObject);
+        return;
+    }
 }
 
 function handleNewSong(title, duration, requester, id) {
@@ -133,6 +138,20 @@ function handleSongList(d) {
     $('#songTable').html(tableData);
 }
 
+function handleSongHistoryList(d) {
+    debugMsg('handleSongHistoryList(' + d + ')');
+    var tableData = '<tr><th>Song Title</th><th>Requester</th><th>Duration</th></tr>';
+    for (var i in d['requestHistory']) {
+//        var playerIndex = parseInt(i, 10) + 1;
+        var id = d['requestHistory'][i]['song'];
+        var title = d['requestHistory'][i]['title'];
+        var duration = d['requestHistory'][i]['duration'];
+        var requester = d['requestHistory'][i]['requester'];
+        tableData += '<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>';
+    }
+    $('#requestHistoryTable').html(tableData);
+}
+
 // Type is: success (green), info (blue), warning (yellow), danger (red)
 function newAlert(message, title, type, timeout) {
   debugMsg('newAlert(' + message + ', ' + title + ', ' + type + ', ' + timeout + ')');
@@ -155,6 +174,8 @@ function refreshData() {
     jsonObject['query'] = 'songlist';
     connection.send(JSON.stringify(jsonObject));
     jsonObject['query'] = 'playlist';
+    connection.send(JSON.stringify(jsonObject));
+    jsonObject['query'] = 'songrequesthistory';
     connection.send(JSON.stringify(jsonObject));
 }
 setInterval(refreshData, 20000);

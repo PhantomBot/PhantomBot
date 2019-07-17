@@ -347,6 +347,7 @@
             //requests = new java.util.concurrent.ConcurrentLinkedQueue, // @type { YoutubeVideo[] }
             requests = new Packages.kentobot.songrequest.SongQueue,  // @type { YoutubeVideo[] }
             lastRequesters = new java.util.concurrent.ConcurrentLinkedQueue,
+            currentStreamHistory = new java.util.concurrent.ConcurrentLinkedQueue,
             requestFailReason = '';
 
         this.playlistName = playlistName;
@@ -637,6 +638,10 @@
             voteArray = [];
             return true;
         };
+        
+        this.getSongRequestHistory = function() {
+            return currentStreamHistory.toArray();
+        };
 
         /**
          * @function findSongByTitle
@@ -733,8 +738,6 @@
                 return null;
             }
             
-            // TODO Add Randomizer here
-
             exception = true;
             while (exception) {
                 previousVideo = currentVideo;
@@ -1008,6 +1011,10 @@
              lastRequesters.add(requester);
         };
         
+        this.addSongToHistory = function(request) {
+            currentStreamHistory.add(request);
+        };
+        
 
         /** END CONTRUCTOR PlayList() */
     }
@@ -1122,6 +1129,28 @@
                 client.songList(JSON.stringify(jsonList));
             }
         };
+        
+        this.pushSongRequestHistoryList = function() {
+           var jsonList = {},
+                requestList = [],
+                youtubeObject,
+                i;
+
+            if (currentPlaylist) {
+                jsonList['requestHistory'] = [];
+                requestList = currentPlaylist.getSongRequestHistory();
+                for (i in requestList) {
+                    youtubeObject = requestList[i];
+                    jsonList['requestHistory'].push({
+                        "song": youtubeObject.getVideoId() + '',
+                        "title": youtubeObject.getVideoTitle() + '',
+                        "duration": youtubeObject.getVideoLengthMMSS() + '',
+                        "requester": youtubeObject.getOwner() + ''
+                    });
+                }
+                client.songList(JSON.stringify(jsonList));
+            } 
+        }
 
 
         /**
@@ -1148,6 +1177,7 @@
             // Increment request count for user
             $.inidb.incr("songcounts", requestOwner +"-request-counts" , 1);
             
+           currentPlaylist.addSongToHistory(youtubeVideo);
            saveSongHistory(String($.username.resolve(requestOwner)), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoId());
             
            client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
@@ -1338,6 +1368,13 @@
      */
     $.bind('yTPlayerRequestCurrentSong', function(event) {
         connectedPlayerClient.pushCurrentSong();
+    });
+    
+    /**
+     * @event YTPlayerRequestSongHistoryEvent
+     */
+    $.bind('yTPlayerRequestSongHistory', function(event) {
+        connectedPlayerClient.pushSongRequestHistoryList();
     });
 
     /**

@@ -827,6 +827,13 @@
         $api.on($script, 'yTPlayerRequestCurrentSong', function(event) {
             callHook('yTPlayerRequestCurrentSong', event, false);
         });
+        
+        /*
+         * @event yTPlayerRequestSongHistoryEvent
+         */
+        $api.on($script, 'yTPlayerRequestSongHistory', function(event) {
+            callHook('yTPlayerRequestSongHistory', event, false);
+        });
 
         /*
          * @event yTPlayerRandomizeEvent
