@@ -620,7 +620,7 @@
                 previousVideo = currentVideo;
                 try {
                     var playListIndex = defaultPlaylistReadOnly[playlistPosition];
-                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
+                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), previousVideo.getOwner());
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
                     return false;
