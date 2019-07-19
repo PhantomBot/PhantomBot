@@ -24,7 +24,6 @@ package tv.phantombot.twitch.pubsub;
 
 import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
-import java.io.IOException;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,7 +45,6 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.moderation.*;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.locks.ReentrantLock;
@@ -56,12 +54,7 @@ public class TwitchPubSub {
     private final Map<String, String> messageCache = Maps.newHashMap();
     private final Map<String, Long> timeoutCache = Maps.newHashMap();
     private final String channel;
-    private final int channelId;
-    private final String oAuth;
-    private final int botId;
     private TwitchPubSubWS twitchPubSubWS;
-    private Boolean reconAllowed = true;
-    private Long lastReconnect = 0L;
     private boolean reconnecting = false;
     private ReentrantLock lock = new ReentrantLock();
 
@@ -84,7 +77,7 @@ public class TwitchPubSub {
         return instance;
     }
     
-    public static TwitchPubSub instance(String channel) {
+    private static TwitchPubSub instance(String channel) {
         TwitchPubSub instance = instances.get(channel);
 
         return instance;
@@ -100,9 +93,6 @@ public class TwitchPubSub {
      */
     private TwitchPubSub(String channel, int channelId, int botId, String oAuth) {
         this.channel = channel;
-        this.channelId = channelId;
-        this.botId = botId;
-        this.oAuth = oAuth;
 
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
@@ -162,13 +152,11 @@ public class TwitchPubSub {
      * Private class for the websocket.
      */
     private class TwitchPubSubWS extends WebSocketClient {
-        private final TwitchPubSubWS twitchPubSubWS;
         private final TwitchPubSub twitchPubSub;
         private final Timer timer = new Timer("tv.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
         private final String oAuth;
         private final int botId;
-        private final URI uri;
 
         /**
          * Constructor for the PubSubWS class.
@@ -186,7 +174,6 @@ public class TwitchPubSub {
             this.botId = botId;
             this.oAuth = oAuth;
             this.twitchPubSub = twitchPubSub;
-            this.twitchPubSubWS = this;
             this.startTimer();
 
             try {
@@ -393,7 +380,6 @@ public class TwitchPubSub {
 
             if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
-                reconAllowed = false;
                 return;
             }
 

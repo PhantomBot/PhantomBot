@@ -21,11 +21,8 @@
 
 package tv.phantombot.ytplayer;
 
-import java.io.File;
 import java.io.FileInputStream;
 
-import java.net.InetSocketAddress;
-import java.net.InetAddress;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;

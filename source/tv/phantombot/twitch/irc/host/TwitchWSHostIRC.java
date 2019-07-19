@@ -72,7 +72,7 @@ public class TwitchWSHostIRC {
         return instance;
     }
     
-    public static TwitchWSHostIRC instance(String channelName) {
+    private static TwitchWSHostIRC instance(String channelName) {
         TwitchWSHostIRC instance = instances.get(channelName);
         return instance;
     }
@@ -181,7 +181,6 @@ public class TwitchWSHostIRC {
         private final String login;
         private final String oAuth;
         private final EventBus eventBus;
-        private final URI uri;
         private Pattern hostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you for up to (\\d+) viewers");
         private Pattern autoHostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you for up to (\\d+) viewers");
         private Pattern hostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you.");
@@ -238,7 +237,6 @@ public class TwitchWSHostIRC {
                 this.setSocketFactory(sslSocketFactory);
             } catch (Exception ex) {
                 com.gmt2001.Console.err.println(ex.getMessage());
-                return;
             }
         }
 
@@ -395,7 +393,6 @@ public class TwitchWSHostIRC {
                 matcher = autoHostPatternNoViewers.matcher(message);
                 if (matcher.find()) {
                     eventBus.postAsync(new TwitchAutoHostedEvent(matcher.group(1)));
-                    return;
                 }
             }
         }

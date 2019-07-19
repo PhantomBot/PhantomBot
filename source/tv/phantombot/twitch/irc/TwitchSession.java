@@ -19,7 +19,6 @@ package tv.phantombot.twitch.irc;
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
-import tv.phantombot.twitch.irc.TwitchWSIRC;
 
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
@@ -29,9 +28,8 @@ public class TwitchSession extends MessageQueue {
     private final String channelName;
     private final String oAuth;
     private TwitchWSIRC twitchWSIRC;
-    private long lastReconnect = 0;
     private boolean reconnecting = false;
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     /**
      * Method that return this instance.
@@ -48,7 +46,7 @@ public class TwitchSession extends MessageQueue {
         return instance;
     }
     
-    public static TwitchSession instance() {
+    private static TwitchSession instance() {
         return instance;
     }
 

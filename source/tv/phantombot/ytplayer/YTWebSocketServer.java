@@ -92,19 +92,9 @@
 
 package tv.phantombot.ytplayer;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
 import java.util.Collection;
-import java.util.regex.Pattern;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.common.collect.Maps;
 
@@ -112,7 +102,6 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
@@ -124,14 +113,14 @@ import tv.phantombot.event.command.CommandEvent;
 
 public class YTWebSocketServer extends WebSocketServer {
 
-    private String authString;
-    private String authStringRO;
+    private final String authString;
+    private final String authStringRO;
     private int currentVolume = 0;
     private int currentState = -10;
     private boolean clientConnected = false;
     private int bufferCounter = 0;
 
-    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
     public YTWebSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
         super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
@@ -235,7 +224,6 @@ public class YTWebSocketServer extends WebSocketServer {
                  */
                 if (currentState == 3 && dataInt == -1) {
                     currentState = dataInt;
-                    playerState = YTPlayerState.getStateFromId(dataInt);
                     if (bufferCounter++ == 3) {
                         EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
                         bufferCounter = 0;
@@ -265,7 +253,6 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
-                return;
             }
         } else if (jsonObject.has("query")) {
             if (jsonObject.getString("query").equals("songlist")) {
@@ -276,7 +263,6 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
-                return;
             }
         } else if (jsonObject.has("dbquery")) {
             handleDBQuery(webSocket, jsonObject.getString("query_id"), jsonObject.getString("table"));
@@ -310,11 +296,9 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
-                return;
             }
         } else {
             com.gmt2001.Console.err.println("YTWebSocketServer: Unknown JSON passed ["+jsonString+"]");
-            return;
         }
     }
 
@@ -340,9 +324,11 @@ public class YTWebSocketServer extends WebSocketServer {
         }
     }
 
+    @Override
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
     }
 
+    @Override
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
     }
 
@@ -452,7 +438,7 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     private static String genSessionKey(WebSocket webSocket) {
-        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+        return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
     }
 
     public void setClientConnected(boolean clientConnected) {
