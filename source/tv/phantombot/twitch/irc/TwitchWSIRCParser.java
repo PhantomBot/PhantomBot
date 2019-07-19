@@ -51,7 +51,7 @@ public class TwitchWSIRCParser implements Runnable {
     // The user login sent in the anonymous sub gift event from Twitch.
     // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
     private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
-
+    private static TwitchWSIRCParser instance;
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
@@ -59,11 +59,21 @@ public class TwitchWSIRCParser implements Runnable {
     private final EventBus eventBus = EventBus.instance();
     private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
     private final BlockingDeque<Map<String, String>> giftedSubscriptionEvents = new LinkedBlockingDeque<>();
-    private final WebSocket webSocket;
+    private WebSocket webSocket;
     private final TwitchSession session;
     private final String channelName;
     private final Thread runThread;
 
+    public static TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
+        if (instance == null) {
+            instance = new TwitchWSIRCParser(webSocket, channelName, session);
+        } else {
+            instance.setWebSocket(webSocket);
+        }
+        
+        return instance;
+    }
+    
     /**
      * Class constructor.
      *
@@ -71,7 +81,7 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String}    channelName
      * @param {TwitchSession}   session
      */
-    public TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
+    private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
         this.webSocket = webSocket;
         this.channelName = channelName;
         this.session = session;
@@ -106,6 +116,10 @@ public class TwitchWSIRCParser implements Runnable {
         // Start a new thread for events.
         this.runThread = new Thread(this);
         this.runThread.start();
+    }
+    
+    private void setWebSocket(WebSocket webSocket) {
+        this.webSocket = webSocket;
     }
 
     /**
@@ -316,6 +330,7 @@ public class TwitchWSIRCParser implements Runnable {
 
         // Join the channel.
         webSocket.send("JOIN #" + channelName);
+        session.send(".mods");
 
         // Log in the console that web joined.
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");

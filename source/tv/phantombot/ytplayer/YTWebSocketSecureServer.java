@@ -41,10 +41,6 @@ import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 public class YTWebSocketSecureServer extends YTWebSocketServer {
 
     public YTWebSocketSecureServer(String ip, int port, String authString, String authStringRO, String keyFileName, String keyPassword) throws Exception {
-        this(ip, port, authString, authStringRO, keyFileName, keyPassword, 200);
-    }
-
-    public YTWebSocketSecureServer(String ip, int port, String authString, String authStringRO, String keyFileName, String keyPassword, int tasksAllowed) throws Exception {
         super(ip, port, authString, authStringRO);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -65,7 +61,7 @@ public class YTWebSocketSecureServer extends YTWebSocketServer {
 
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), tasksAllowed));
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool()));
         } catch(Exception ex) {
             com.gmt2001.Console.out.println("YTWebSocketSecureServer Exception: " + ex.getMessage());
             throw new Exception("Failed to create YTWebSocketSecureServer");

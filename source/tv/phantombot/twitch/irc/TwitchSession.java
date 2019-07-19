@@ -17,9 +17,8 @@
 package tv.phantombot.twitch.irc;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
-import tv.phantombot.PhantomBot;
+import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.twitch.irc.TwitchWSIRC;
 
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
@@ -31,6 +30,8 @@ public class TwitchSession extends MessageQueue {
     private final String oAuth;
     private TwitchWSIRC twitchWSIRC;
     private long lastReconnect = 0;
+    private boolean reconnecting = false;
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * Method that return this instance.
@@ -44,6 +45,10 @@ public class TwitchSession extends MessageQueue {
         if (instance == null) {
             instance = new TwitchSession(channelName, botName, oAuth);
         }
+        return instance;
+    }
+    
+    public static TwitchSession instance() {
         return instance;
     }
 
@@ -131,35 +136,35 @@ public class TwitchSession extends MessageQueue {
     /**
      * Method that handles reconnecting with Twitch.
      */
-    @SuppressWarnings("SleepWhileInLoop")
     public void reconnect() {
         // Do not try to send messages anymore.
         this.setAllowSendMessages(false);
-        // Variable that will break the reconnect loop.
-        boolean reconnected = false;
-
-        while (!reconnected && !PhantomBot.instance().isExiting()) {
-            if (lastReconnect + 10000 <= System.currentTimeMillis()) {
-                lastReconnect = System.currentTimeMillis();
-                try {
-                    // Close the connection and destroy the class.
-                    this.twitchWSIRC.close();
-                    // Create a new connection.
-                    this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, this);
-                    // Check if we are reconnected.
-                    reconnected = this.twitchWSIRC.connectWSS(true);
-                    // If we are connected, allow us the send messages again.
-                    this.setAllowSendMessages(reconnected);
-                } catch (URISyntaxException ex) {
-                    com.gmt2001.Console.err.println("Error when reconnecting to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-                }
-            }
-            // Sleep for 5 seconds.
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("Sleep failed during reconnect [InterruptedException]: " + ex.getMessage());
-            }
+        if (lock.isLocked()) {
+            return;
+        }
+        
+        lock.lock();
+        try {
+            new Thread( () -> {
+                TwitchSession.instance().doReconnect();
+            }).start();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void doReconnect() {
+        if (reconnecting) {
+            return;
+        }
+            
+        try {
+            reconnecting = true;
+            this.twitchWSIRC.reconnectBlocking();
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            reconnecting = false;
         }
     }
 

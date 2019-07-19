@@ -407,7 +407,6 @@ public final class PhantomBot implements Listener {
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
         this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
         this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
-        this.socketServerTasksSize = Integer.parseInt(this.pbProperties.getProperty("wstasksize", "200"));
         this.testPanelServer = this.pbProperties.getProperty("testpanelserver", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
@@ -837,7 +836,7 @@ public final class PhantomBot implements Listener {
                     checkPortAvailabity(ytSocketPort);
                     if (useHttps) {
                         /* Set the music player server */
-                        youtubeSocketSecureServer = new YTWebSocketSecureServer(bindIP, ytSocketPort, youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                        youtubeSocketSecureServer = new YTWebSocketSecureServer(bindIP, ytSocketPort, youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword);
                         /* Start this youtube socket server */
                         youtubeSocketSecureServer.start();
                         print("YouTubeSocketSecureServer accepting connections on port: " + ytSocketPort + " (SSL)");
@@ -857,7 +856,7 @@ public final class PhantomBot implements Listener {
                         print("TEST PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
                     } else {
                         /* Set up the panel socket server */
-                        panelSocketSecureServer = new PanelSocketSecureServer(bindIP, panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword, socketServerTasksSize);
+                        panelSocketSecureServer = new PanelSocketSecureServer(bindIP, panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
                         /* Start the panel socket server */
                         panelSocketSecureServer.start();
                         print("PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
@@ -1267,8 +1266,9 @@ public final class PhantomBot implements Listener {
         /* Check to see if the sender is jtv */
         if (sender.equalsIgnoreCase("jtv")) {
             /* Splice the mod list so we can get all the mods */
-            if (message.startsWith("The moderators of this room are: ")) {
-                String[] moderators = message.substring(33).split(", ");
+            String searchStr = "The moderators of this channel are: ";
+            if (message.startsWith(searchStr)) {
+                String[] moderators = message.substring(searchStr.length()).split(", ");
 
                 /* Check to see if the bot is a moderator */
                 for (String moderator : moderators) {
@@ -1276,6 +1276,7 @@ public final class PhantomBot implements Listener {
                         EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getBotName(), "O", true));
                         /* Allow the bot to sends message to this session */
                         event.getSession().setAllowSendMessages(true);
+                        com.gmt2001.Console.debug.println("Allowing messages to be sent due to .mods response +O");
                     }
                 }
             }

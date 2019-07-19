@@ -413,7 +413,7 @@ public class PanelSocketServer extends WebSocketServer {
      * @param text Text to send to all open WebSockets.
      */
     public void sendToAll(String text) {
-        Collection<WebSocket> con = connections();
+        Collection<WebSocket> con = this.getConnections();
         synchronized (con) {
             for (WebSocket c : con) {
                 try {
@@ -923,6 +923,10 @@ public class PanelSocketServer extends WebSocketServer {
             return false;
         }
         return value.equals(authUsername);
+    }
+
+    @Override
+    public void onStart() {
     }
 
     /**
