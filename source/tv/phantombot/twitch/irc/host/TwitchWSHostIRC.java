@@ -35,10 +35,11 @@ import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -51,6 +52,8 @@ public class TwitchWSHostIRC {
     private final String oAuth;
     private final EventBus eventBus;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
+    private boolean reconnecting = false;
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * Creates an instance for a Twitch WS Host IRC Session
@@ -66,6 +69,11 @@ public class TwitchWSHostIRC {
             instances.put(channelName, instance);
             return instance;
         }
+        return instance;
+    }
+    
+    public static TwitchWSHostIRC instance(String channelName) {
+        TwitchWSHostIRC instance = instances.get(channelName);
         return instance;
     }
 
@@ -133,27 +141,32 @@ public class TwitchWSHostIRC {
      * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
-        Boolean reconnected = false;
-        long lastTry = System.currentTimeMillis();
-
-        while (!reconnected) {
-            if (lastTry + 10000L <= System.currentTimeMillis()) {
-                lastTry = System.currentTimeMillis();
-                try {
-                    com.gmt2001.Console.out.println("Reconnecting to Twitch Host Data Feed...");
-                    this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
-                    reconnected = twitchWSHostIRCWS.connectWSS();
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("Failed to reconnect to Twitch Data Host Feed. Exiting PhantomBot: " + ex.getMessage());
-                    PhantomBot.exitError();
-                }
-            } else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println("InterruptedException Occurred");
-                }
-            }
+        if (lock.isLocked()) {
+            return;
+        }
+        
+        lock.lock();
+        try {
+            new Thread( () -> {
+                TwitchWSHostIRC.instance(channelName).doReconnect();
+            }).start();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void doReconnect() {
+        if (reconnecting) {
+            return;
+        }
+            
+        try {
+            reconnecting = true;
+            this.twitchWSHostIRCWS.reconnectBlocking();
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            reconnecting = false;
         }
     }
 
@@ -186,7 +199,7 @@ public class TwitchWSHostIRC {
          * @param  oauth    OAuth key to use for authentication.
          */
         private TwitchWSHostIRCWS(TwitchWSHostIRC twitchWSHostIRC, URI uri) {
-            super(uri, new Draft_17(), null, 5000);
+            super(uri, new Draft_6455(), null, 5000);
 
             if (twitchWSHostIRC.GetChannelName().startsWith("#")) {
                 channelName = twitchWSHostIRC.GetChannelName().substring(1);
@@ -222,7 +235,7 @@ public class TwitchWSHostIRC {
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, null, null);
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-                setSocket(sslSocketFactory.createSocket());
+                this.setSocketFactory(sslSocketFactory);
             } catch (Exception ex) {
                 com.gmt2001.Console.err.println(ex.getMessage());
                 return;

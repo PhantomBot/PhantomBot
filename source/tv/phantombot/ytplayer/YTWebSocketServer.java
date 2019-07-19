@@ -332,7 +332,7 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     public void sendToAll(String text) {
-        Collection<WebSocket> con = connections();
+        Collection<WebSocket> con = this.getConnections();
         synchronized (con) {
             for (WebSocket c : con) {
                 c.send(text);
@@ -468,6 +468,10 @@ public class YTWebSocketServer extends WebSocketServer {
                                             "PhantomBot Community Forum at: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
         }
         return PhantomBot.instance().isYouTubeKeyEmpty();
+    }
+
+    @Override
+    public void onStart() {
     }
 
     // Class for storing Session data.
