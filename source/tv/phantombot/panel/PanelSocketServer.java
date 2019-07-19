@@ -366,7 +366,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        if (e.toString().indexOf("WebsocketNotConnectedException") == -1) {
+        if (!e.toString().contains("WebsocketNotConnectedException")) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }

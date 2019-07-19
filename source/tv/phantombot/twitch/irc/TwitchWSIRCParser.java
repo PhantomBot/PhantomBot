@@ -273,7 +273,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
 
         // Get username if present.
-        if (messageParts[0].indexOf("!") != -1) {
+        if (messageParts[0].contains("!")) {
             username = messageParts[0].substring(messageParts[0].indexOf("!") + 1, messageParts[0].indexOf("@"));
         }
 
@@ -298,7 +298,7 @@ public class TwitchWSIRCParser implements Runnable {
         String arguments = "";
 
         // Check for arguments.
-        if (command.indexOf(" ") != -1) {
+        if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
