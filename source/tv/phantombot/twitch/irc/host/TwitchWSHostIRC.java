@@ -29,6 +29,9 @@ import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 import com.google.common.collect.Maps;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,7 +98,8 @@ public class TwitchWSHostIRC {
                 com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
                 PhantomBot.exitError();
             }
-        } catch (Exception ex) {
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
             PhantomBot.exitError();
         }
@@ -235,7 +239,7 @@ public class TwitchWSHostIRC {
                 sslContext.init(null, null, null);
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
                 this.setSocketFactory(sslSocketFactory);
-            } catch (Exception ex) {
+            } catch (KeyManagementException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.println(ex.getMessage());
             }
         }
@@ -424,21 +428,18 @@ public class TwitchWSHostIRC {
          */
         private void checkPingTime() {
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    Thread.currentThread().setName("tv.phantombot.twitchwsirc.TwitchWSHostIRC::checkPingTime");
-
-                    if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
-                        com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
-                        sentPing = true;
-                        send("PING :tmi.twitch.tv");
-                    }
-
-                    if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
-                        com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
-                        close();
-                    }
+            service.scheduleAtFixedRate(() -> {
+                Thread.currentThread().setName("tv.phantombot.twitchwsirc.TwitchWSHostIRC::checkPingTime");
+                
+                if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
+                    sentPing = true;
+                    send("PING :tmi.twitch.tv");
+                }
+                
+                if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
+                    com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
+                    close();
                 }
             }, 1, 1, TimeUnit.MINUTES);
         }

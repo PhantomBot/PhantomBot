@@ -41,7 +41,6 @@ public class TwitchWSIRC extends WebSocketClient {
     private final String botName;
     private final String channelName;
     private final String oAuth;
-    private final URI uri;
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
@@ -176,11 +175,8 @@ public class TwitchWSIRC extends WebSocketClient {
             send("PONG");
         } else {
             try {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        twitchWSIRCParser.parseData(message);
-                    }
+                new Thread(() -> {
+                    twitchWSIRCParser.parseData(message);
                 }).start();
             } catch (Exception ex) {
                 twitchWSIRCParser.parseData(message);

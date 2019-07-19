@@ -81,6 +81,7 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String}    channelName
      * @param {TwitchSession}   session
      */
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
         this.webSocket = webSocket;
         this.channelName = channelName;
@@ -238,8 +239,8 @@ public class TwitchWSIRCParser implements Runnable {
             String[] tagParts = messageParts[0].substring(1).split(";");
 
             // We want to skip the first element which are badges, since they are parsed already.
-            for (int i = 0; i < tagParts.length; i++) {
-                String[] keyValues = tagParts[i].split("=");
+            for (String tagPart : tagParts) {
+                String[] keyValues = tagPart.split("=");
                 if (keyValues.length > 0) {
                     if (keyValues[0].equals("badges")) {
                         tags.putAll(parseBadges((keyValues.length == 1 ? "" : keyValues[1])));
@@ -476,22 +477,26 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {Map}    tags
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
-        if (message.equals("Login authentication failed")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
-            com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else if (message.equals("Invalid NICK")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else {
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
-            com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+        switch (message) {
+            case "Login authentication failed":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
+                com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            case "Invalid NICK":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            default:
+                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
+                com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+                break;
         }
     }
 
