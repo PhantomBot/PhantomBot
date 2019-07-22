@@ -477,19 +477,26 @@
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
                 var alias = $.getIniDbString('aliases', command),
-                    aliasArguments = '';
+                    aliasCommand,
+                    aliasArguments,
+                    subcmd,
+                    parts;
 
                 if (alias.indexOf(';') === -1) {
-                    var parts = alias.split(' ', 2);
+                    parts = alias.split(' ');
+                    aliasCommand = parts.shift();
+                    aliasArguments = parts.join(' ');
 
-                    $.command.run(sender, parts[0], ((parts[1] !== undefined ? parts[1] : '') + ' ' + args.join(' ')), event.getTags());
+                    $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
                 } else {
-                    var parts = alias.split(';');
+                    parts = alias.split(';');
 
                     for (var i = 0; i < parts.length; i++) {
-                        command = parts[i].split(' ');
+                        subcmd = parts[i].split(' ');
+                        aliasCommand = subcmd.shift();
+                        aliasArguments = subcmd.join(' ');
 
-                        $.command.run(sender, command[0], ((command[1] !== undefined ? command[1] : '') + ' ' + args.join(' ')), event.getTags());
+                        $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
                     }
                 }
                 return;
