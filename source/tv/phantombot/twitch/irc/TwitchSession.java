@@ -32,7 +32,7 @@ public class TwitchSession extends MessageQueue {
     private final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock lock2 = new ReentrantLock();
     private static final long MAX_BACKOFF = 300000L;
-    private long lastReconnect = 0L;
+    private long lastReconnect;
     private long nextBackoff = 1000L;
 
     /**
