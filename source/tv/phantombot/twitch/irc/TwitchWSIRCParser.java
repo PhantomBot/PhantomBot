@@ -51,7 +51,7 @@ public class TwitchWSIRCParser implements Runnable {
     // The user login sent in the anonymous sub gift event from Twitch.
     // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
     private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
-
+    private static TwitchWSIRCParser instance;
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
@@ -59,11 +59,21 @@ public class TwitchWSIRCParser implements Runnable {
     private final EventBus eventBus = EventBus.instance();
     private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
     private final BlockingDeque<Map<String, String>> giftedSubscriptionEvents = new LinkedBlockingDeque<>();
-    private final WebSocket webSocket;
+    private WebSocket webSocket;
     private final TwitchSession session;
     private final String channelName;
     private final Thread runThread;
 
+    public static TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
+        if (instance == null) {
+            instance = new TwitchWSIRCParser(webSocket, channelName, session);
+        } else {
+            instance.setWebSocket(webSocket);
+        }
+        
+        return instance;
+    }
+    
     /**
      * Class constructor.
      *
@@ -71,7 +81,8 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String}    channelName
      * @param {TwitchSession}   session
      */
-    public TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
         this.webSocket = webSocket;
         this.channelName = channelName;
         this.session = session;
@@ -106,6 +117,10 @@ public class TwitchWSIRCParser implements Runnable {
         // Start a new thread for events.
         this.runThread = new Thread(this);
         this.runThread.start();
+    }
+    
+    private void setWebSocket(WebSocket webSocket) {
+        this.webSocket = webSocket;
     }
 
     /**
@@ -224,8 +239,8 @@ public class TwitchWSIRCParser implements Runnable {
             String[] tagParts = messageParts[0].substring(1).split(";");
 
             // We want to skip the first element which are badges, since they are parsed already.
-            for (int i = 0; i < tagParts.length; i++) {
-                String[] keyValues = tagParts[i].split("=");
+            for (String tagPart : tagParts) {
+                String[] keyValues = tagPart.split("=");
                 if (keyValues.length > 0) {
                     if (keyValues[0].equals("badges")) {
                         tags.putAll(parseBadges((keyValues.length == 1 ? "" : keyValues[1])));
@@ -259,7 +274,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
 
         // Get username if present.
-        if (messageParts[0].indexOf("!") != -1) {
+        if (messageParts[0].contains("!")) {
             username = messageParts[0].substring(messageParts[0].indexOf("!") + 1, messageParts[0].indexOf("@"));
         }
 
@@ -284,7 +299,7 @@ public class TwitchWSIRCParser implements Runnable {
         String arguments = "";
 
         // Check for arguments.
-        if (command.indexOf(" ") != -1) {
+        if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
@@ -461,22 +476,26 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {Map}    tags
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
-        if (message.equals("Login authentication failed")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
-            com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else if (message.equals("Invalid NICK")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else {
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
-            com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+        switch (message) {
+            case "Login authentication failed":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
+                com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            case "Invalid NICK":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            default:
+                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
+                com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+                break;
         }
     }
 

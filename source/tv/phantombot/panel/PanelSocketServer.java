@@ -148,6 +148,7 @@ public class PanelSocketServer extends WebSocketServer {
      * @param port         The port to bind to.
      * @param authString   The authorization string to use for read/write connectivity.
      * @param authStringRO The authorization string to use for read-only connectivity.
+     * @throws java.lang.Exception
      */
     public PanelSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
         super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
@@ -366,7 +367,7 @@ public class PanelSocketServer extends WebSocketServer {
      */
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        if (e.toString().indexOf("WebsocketNotConnectedException") == -1) {
+        if (!e.toString().contains("WebsocketNotConnectedException")) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
@@ -413,15 +414,15 @@ public class PanelSocketServer extends WebSocketServer {
      * @param text Text to send to all open WebSockets.
      */
     public void sendToAll(String text) {
-        Collection<WebSocket> con = connections();
+        Collection<WebSocket> con = this.getConnections();
         synchronized (con) {
-            for (WebSocket c : con) {
+            con.forEach((c) -> {
                 try {
                     c.send(text);
                 } catch (Exception ex) {
                     com.gmt2001.Console.debug.println("Failed to send a message to the panel socket: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 }
-            }
+            });
         }
     }
 
@@ -923,6 +924,10 @@ public class PanelSocketServer extends WebSocketServer {
             return false;
         }
         return value.equals(authUsername);
+    }
+
+    @Override
+    public void onStart() {
     }
 
     /**

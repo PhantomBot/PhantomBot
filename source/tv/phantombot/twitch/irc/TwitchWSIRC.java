@@ -16,25 +16,20 @@
  */
 package tv.phantombot.twitch.irc;
 
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import java.net.URI;
-import java.net.Socket;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_17;
-import org.java_websocket.exceptions.InvalidFrameException;
-import org.java_websocket.framing.Framedata;
+import org.java_websocket.drafts.Draft_6455;
 
 import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import tv.phantombot.event.EventBus;
@@ -46,11 +41,9 @@ public class TwitchWSIRC extends WebSocketClient {
     private final String botName;
     private final String channelName;
     private final String oAuth;
-    private final URI uri;
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
-    private Framedata tempFrame;
 
     /**
      * Class constructor.
@@ -61,7 +54,7 @@ public class TwitchWSIRC extends WebSocketClient {
      * @param {String} oAuth
      */
     public TwitchWSIRC(URI uri, String channelName, String botName, String oAuth, TwitchSession session) {
-        super(uri, new Draft_17());
+        super(uri, new Draft_6455());
 
         this.uri = uri;
         this.channelName = channelName;
@@ -88,18 +81,14 @@ public class TwitchWSIRC extends WebSocketClient {
             sslContext.init(null, null, null);
             // Get a socket factory.
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            // Create the socket.
-            Socket socket = sslSocketFactory.createSocket();
             // Set TCP no delay.
-            socket.setTcpNoDelay(PhantomBot.getTwitchTcpNodelay());
+            this.setTcpNoDelay(PhantomBot.getTwitchTcpNodelay());
             // Set the socket.
-            this.setSocket(socket);
-            // Create a new parser instance.
-            this.twitchWSIRCParser = new TwitchWSIRCParser(this.getConnection(), channelName, session);
+            this.setSocketFactory(sslSocketFactory);
             // Connect.
             this.connect();
             return true;
-        } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
+        } catch (KeyManagementException | NoSuchAlgorithmException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         return false;
@@ -114,6 +103,8 @@ public class TwitchWSIRC extends WebSocketClient {
     public void onOpen(ServerHandshake handshakedata) {
         com.gmt2001.Console.out.println("Connected to " + this.botName + "@" + this.uri.getHost() + " (SSL)");
 
+        this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.getConnection(), channelName, session);
+        
         // Send the oauth
         this.send("PASS " + oAuth);
         // Send the bot name.
@@ -184,43 +175,10 @@ public class TwitchWSIRC extends WebSocketClient {
             send("PONG");
         } else {
             try {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        twitchWSIRCParser.parseData(message);
-                    }
+                new Thread(() -> {
+                    twitchWSIRCParser.parseData(message);
                 }).start();
             } catch (Exception ex) {
-                twitchWSIRCParser.parseData(message);
-            }
-        }
-    }
-
-    @Override
-    public void onFragment(Framedata frame) {
-        // First frame, save it and wait for the second one.
-        if (!frame.isFin()) {
-            tempFrame = frame;
-        } else {
-            String message = null;
-
-            if (tempFrame != null) {
-                try {
-                    // Add the new frame to the previous one.
-                    tempFrame.append(frame);
-
-                    // Convert the message into a string.
-                    message = StandardCharsets.UTF_8.decode(tempFrame.getPayloadData()).toString();
-                } catch (InvalidFrameException ex) {
-                    com.gmt2001.Console.err.println("Failed to parse message fragment: " + ex.getMessage());
-                }
-            } else {
-                // Convert the message into a string.
-                message = StandardCharsets.UTF_8.decode(frame.getPayloadData()).toString().trim();
-            }
-
-            // Try parsing the message.
-            if (message != null) {
                 twitchWSIRCParser.parseData(message);
             }
         }

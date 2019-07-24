@@ -92,19 +92,9 @@
 
 package tv.phantombot.ytplayer;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
 import java.util.Collection;
-import java.util.regex.Pattern;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.common.collect.Maps;
 
@@ -112,7 +102,6 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONStringer;
@@ -124,14 +113,14 @@ import tv.phantombot.event.command.CommandEvent;
 
 public class YTWebSocketServer extends WebSocketServer {
 
-    private String authString;
-    private String authStringRO;
+    private final String authString;
+    private final String authStringRO;
     private int currentVolume = 0;
     private int currentState = -10;
     private boolean clientConnected = false;
     private int bufferCounter = 0;
 
-    private Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final Map<String, wsSession> wsSessionMap = Maps.newHashMap();
 
     public YTWebSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
         super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
@@ -235,7 +224,6 @@ public class YTWebSocketServer extends WebSocketServer {
                  */
                 if (currentState == 3 && dataInt == -1) {
                     currentState = dataInt;
-                    playerState = YTPlayerState.getStateFromId(dataInt);
                     if (bufferCounter++ == 3) {
                         EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
                         bufferCounter = 0;
@@ -265,18 +253,21 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['status'] request passed ["+jsonString+"]");
-                return;
             }
         } else if (jsonObject.has("query")) {
-            if (jsonObject.getString("query").equals("songlist")) {
-                EventBus.instance().postAsync(new YTPlayerRequestSonglistEvent());
-            } else if (jsonObject.getString("query").equals("playlist")) {
-                EventBus.instance().postAsync(new YTPlayerRequestPlaylistEvent());
-            } else if (jsonObject.getString("query").equals("currentsong")) {
-                EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
-            } else {
-                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
-                return;
+            switch (jsonObject.getString("query")) {
+                case "songlist":
+                    EventBus.instance().postAsync(new YTPlayerRequestSonglistEvent());
+                    break;
+                case "playlist":
+                    EventBus.instance().postAsync(new YTPlayerRequestPlaylistEvent());
+                    break;
+                case "currentsong":
+                    EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
+                    break;
+                default:
+                    com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
+                    break;
             }
         } else if (jsonObject.has("dbquery")) {
             handleDBQuery(webSocket, jsonObject.getString("query_id"), jsonObject.getString("table"));
@@ -289,32 +280,36 @@ public class YTWebSocketServer extends WebSocketServer {
             dataString = jsonObject.getString("deletepl");
             EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
         } else if (jsonObject.has("command") && sessionData.isPlayer()) {
-            if (jsonObject.getString("command").equals("togglerandom")) {
-                EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
-            } else if (jsonObject.getString("command").equals("skipsong")) {
-                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-            } else if (jsonObject.getString("command").equals("stealsong")) {
-                if (jsonObject.has("youTubeID")) {
-                    EventBus.instance().postAsync(new YTPlayerStealSongEvent(jsonObject.getString("youTubeID"), jsonObject.getString("requester")));
-                } else {
-                    EventBus.instance().postAsync(new YTPlayerStealSongEvent());
-                }
-            } else if (jsonObject.getString("command").equals("songrequest")) {
-                if (jsonObject.has("search")) {
-                    dataString = jsonObject.getString("search");
-                    EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
-                }
-            } else if (jsonObject.getString("command").equals("loadpl")) {
-                EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jsonObject.getString("playlist")));
-            } else if (jsonObject.getString("command").equals("deletecurrent")) {
-                EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
-            } else {
-                com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
-                return;
+            switch (jsonObject.getString("command")) {
+                case "togglerandom":
+                    EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
+                    break;
+                case "skipsong":
+                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                    break;
+                case "stealsong":
+                    if (jsonObject.has("youTubeID")) {
+                        EventBus.instance().postAsync(new YTPlayerStealSongEvent(jsonObject.getString("youTubeID"), jsonObject.getString("requester")));
+                    } else {
+                        EventBus.instance().postAsync(new YTPlayerStealSongEvent());
+                    }   break;
+                case "songrequest":
+                    if (jsonObject.has("search")) {
+                        dataString = jsonObject.getString("search");
+                        EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
+                    }   break;
+                case "loadpl":
+                    EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jsonObject.getString("playlist")));
+                    break;
+                case "deletecurrent":
+                    EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
+                    break;
+                default:
+                    com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['command'] request passed ["+jsonString+"]");
+                    break;
             }
         } else {
             com.gmt2001.Console.err.println("YTWebSocketServer: Unknown JSON passed ["+jsonString+"]");
-            return;
         }
     }
 
@@ -332,17 +327,19 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     public void sendToAll(String text) {
-        Collection<WebSocket> con = connections();
+        Collection<WebSocket> con = this.getConnections();
         synchronized (con) {
-            for (WebSocket c : con) {
+            con.forEach((c) -> {
                 c.send(text);
-            }
+            });
         }
     }
 
+    @Override
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
     }
 
+    @Override
     public void onWebsocketCloseInitiated(WebSocket ws, int code, String reason) {
     }
 
@@ -452,7 +449,7 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     private static String genSessionKey(WebSocket webSocket) {
-        return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));
+        return Integer.toString(webSocket.getRemoteSocketAddress().hashCode());
     }
 
     public void setClientConnected(boolean clientConnected) {
@@ -468,6 +465,10 @@ public class YTWebSocketServer extends WebSocketServer {
                                             "PhantomBot Community Forum at: https://community.phantombot.tv/t/acquire-youtube-api-key/222");
         }
         return PhantomBot.instance().isYouTubeKeyEmpty();
+    }
+
+    @Override
+    public void onStart() {
     }
 
     // Class for storing Session data.

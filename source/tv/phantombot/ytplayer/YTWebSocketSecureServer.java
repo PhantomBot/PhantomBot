@@ -21,11 +21,10 @@
 
 package tv.phantombot.ytplayer;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.KeyManagementException;
 
-import java.net.InetSocketAddress;
-import java.net.InetAddress;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -34,6 +33,10 @@ import javax.net.ssl.TrustManagerFactory;
 import java.util.concurrent.Executors;
 
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 
@@ -41,10 +44,6 @@ import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 public class YTWebSocketSecureServer extends YTWebSocketServer {
 
     public YTWebSocketSecureServer(String ip, int port, String authString, String authStringRO, String keyFileName, String keyPassword) throws Exception {
-        this(ip, port, authString, authStringRO, keyFileName, keyPassword, 200);
-    }
-
-    public YTWebSocketSecureServer(String ip, int port, String authString, String authStringRO, String keyFileName, String keyPassword, int tasksAllowed) throws Exception {
         super(ip, port, authString, authStringRO);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -65,8 +64,8 @@ public class YTWebSocketSecureServer extends YTWebSocketServer {
 
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool(), tasksAllowed));
-        } catch(Exception ex) {
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext, Executors.newCachedThreadPool()));
+        } catch(IOException | KeyManagementException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CertificateException ex) {
             com.gmt2001.Console.out.println("YTWebSocketSecureServer Exception: " + ex.getMessage());
             throw new Exception("Failed to create YTWebSocketSecureServer");
         }
