@@ -331,7 +331,6 @@ public class TwitchWSIRCParser implements Runnable {
 
         // Join the channel.
         webSocket.send("JOIN #" + channelName);
-        session.send(".mods");
 
         // Log in the console that web joined.
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
