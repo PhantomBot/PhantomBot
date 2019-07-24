@@ -19,6 +19,7 @@ package tv.phantombot.twitch.irc;
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
+import tv.phantombot.PhantomBot;
 
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
@@ -137,13 +138,13 @@ public class TwitchSession extends MessageQueue {
     public void reconnect() {
         // Do not try to send messages anymore.
         this.setAllowSendMessages(false);
-        if (lock.isLocked()) {
+        if (lock.isLocked() || PhantomBot.instance().isExiting()) {
             return;
         }
         
         lock.lock();
         try {
-            new Thread( () -> {
+            new Thread(() -> {
                 TwitchSession.instance().doReconnect();
             }).start();
         } finally {
@@ -159,6 +160,9 @@ public class TwitchSession extends MessageQueue {
         try {
             reconnecting = true;
             this.twitchWSIRC.reconnectBlocking();
+            
+            // Should be connected now.
+            this.setAllowSendMessages(true);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         } finally {

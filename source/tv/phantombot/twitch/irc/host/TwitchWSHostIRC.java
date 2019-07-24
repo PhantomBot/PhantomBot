@@ -145,7 +145,7 @@ public class TwitchWSHostIRC {
      * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
-        if (lock.isLocked()) {
+        if (lock.isLocked() || PhantomBot.instance().isExiting()) {
             return;
         }
         
