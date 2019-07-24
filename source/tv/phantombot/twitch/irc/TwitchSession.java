@@ -29,8 +29,11 @@ public class TwitchSession extends MessageQueue {
     private final String channelName;
     private final String oAuth;
     private TwitchWSIRC twitchWSIRC;
-    private boolean reconnecting = false;
     private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock2 = new ReentrantLock();
+    private static final long MAX_BACKOFF = 300000L;
+    private long lastReconnect = 0L;
+    private long nextBackoff = 1000L;
 
     /**
      * Method that return this instance.
@@ -153,20 +156,29 @@ public class TwitchSession extends MessageQueue {
     }
     
     public void doReconnect() {
-        if (reconnecting) {
-            return;
-        }
-            
-        try {
-            reconnecting = true;
-            this.twitchWSIRC.reconnectBlocking();
-            
-            // Should be connected now.
-            this.setAllowSendMessages(true);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            reconnecting = false;
+        if (lock2.tryLock()) {
+            try {
+                long now = System.currentTimeMillis();
+
+                if (lastReconnect + (MAX_BACKOFF * 2) < now) {
+                    nextBackoff = 1000L;
+                } else {
+                    com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + nextBackoff + " seconds...");
+                    Thread.sleep(nextBackoff);
+                }
+                
+                lastReconnect = now;
+                nextBackoff = Math.min(MAX_BACKOFF, nextBackoff * 2L);
+                
+                this.twitchWSIRC.reconnectBlocking();
+
+                // Should be connected now.
+                this.setAllowSendMessages(true);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                lock2.unlock();
+            }
         }
     }
 
