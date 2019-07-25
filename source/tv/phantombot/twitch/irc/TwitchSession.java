@@ -163,7 +163,7 @@ public class TwitchSession extends MessageQueue {
                 if (lastReconnect + (MAX_BACKOFF * 2) < now) {
                     nextBackoff = 1000L;
                 } else {
-                    com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + nextBackoff + " seconds...");
+                    com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (nextBackoff / 1000) + " seconds...");
                     Thread.sleep(nextBackoff);
                 }
                 
