@@ -55,8 +55,11 @@ public class TwitchWSHostIRC {
     private final String oAuth;
     private final EventBus eventBus;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
-    private boolean reconnecting = false;
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock2 = new ReentrantLock();
+    private static final long MAX_BACKOFF = 300000L;
+    private long lastReconnect;
+    private long nextBackoff = 1000L;
 
     /**
      * Creates an instance for a Twitch WS Host IRC Session
@@ -160,17 +163,25 @@ public class TwitchWSHostIRC {
     }
     
     public void doReconnect() {
-        if (reconnecting) {
-            return;
-        }
-            
-        try {
-            reconnecting = true;
-            this.twitchWSHostIRCWS.reconnectBlocking();
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            reconnecting = false;
+        if (lock2.tryLock()) {
+            try {
+                long now = System.currentTimeMillis();
+
+                if (lastReconnect + (MAX_BACKOFF * 2) < now) {
+                    nextBackoff = 1000L;
+                } else {
+                    Thread.sleep(nextBackoff);
+                }
+                
+                lastReconnect = now;
+                nextBackoff = Math.min(MAX_BACKOFF, nextBackoff * 2L);
+                
+                this.twitchWSHostIRCWS.reconnectBlocking();
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                lock2.unlock();
+            }
         }
     }
 
