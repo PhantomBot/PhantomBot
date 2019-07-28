@@ -126,6 +126,9 @@ public class SongQueue implements Queue {
             throw new NullPointerException("Specified element is null");
         }
 
+        if (queue.contains(e)) {
+            queue.remove(e);
+        }
         queue.add(position, e);
     }
     
