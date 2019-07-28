@@ -1,27 +1,37 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
- * @author jsnphil
+ * @author IllusionaryOne
  */
 
 /*
- * history.js
+ * quotesPanel.js
  */
 
-(function() {
-
+(function () {
     /**
      * @function onMessage
      */
     function onMessage(message) {
         var msgObject,
-            html = '',
-            id = '',
-            quoteData = [];
+                html = '',
+                id = '',
+                quoteData = [];
 
         try {
             msgObject = JSON.parse(message.data);
@@ -54,13 +64,11 @@
                             '             onclick="$.deleteQuote(\'' + id + '\')"><i class="fa fa-trash" />' +
                             '        </div>' +
                             '    </td>' +
-
-                            // Date
+                            // ID and Date
+                            '    <td>ID: ' + id + '</td>' +
                             '    <td style="vertical-align: middle">' +
                             '        Date: ' + $.format.date(parseInt(quoteData[2]), 'MM.dd.yy') +
                             '    </td>' +
-
-
                             // User
                             '    <td style="vertical-align: middle">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
@@ -72,8 +80,8 @@
                             '            </button>' +
                             '        </form>' +
                             '    </td>' +
-
-                            // Song name
+                            '</tr>' +
+                            // Quote
                             '<tr style="textList">' +
                             '    <td colspan="4" style="vertical-align">' +
                             '        <form onkeypress="return event.keyCode != 13">' +
@@ -88,7 +96,7 @@
                             '</tr>';
                 }
                 html += '</table>';
-                $('#quoteList').html(html);
+                $('#songHistoryList').html(html);
                 handleInputFocus();
             }
         }
@@ -106,7 +114,7 @@
     $("#quotesPanel").load("/panel/quotes.html");
 
     // Load the DB items for this panel, wait to ensure that we are connected.
-    var interval = setInterval(function() {
+    var interval = setInterval(function () {
         if (isConnected && TABS_INITIALIZED) {
             var active = $('#tabs').tabs('option', 'active');
             if (active == 10) {
@@ -117,7 +125,7 @@
     }, INITIAL_WAIT_TIME);
 
     // Query the DB every 30 seconds for updates.
-    setInterval(function() {
+    setInterval(function () {
         var active = $('#tabs').tabs('option', 'active');
         if (active == 10 && isConnected && !isInputFocus()) {
             newPanelAlert('Refreshing Song History Data', 'success', 1000);
@@ -129,5 +137,10 @@
 
     // Export to HTML
     $.quotesOnMessage = onMessage;
-    $.quotesDoQuery = doQuery;
+    $.songhistoryDoQuery = doQuery;
+    $.deleteQuote = deleteQuote;
+    $.updateQuote = updateQuote;
+    $.addQuote = addQuote;
+    $.setQuoteMessage = setQuoteMessage;
+    $.delQuoteMsg = delQuoteMsg;
 })();
