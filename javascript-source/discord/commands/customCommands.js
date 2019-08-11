@@ -19,8 +19,8 @@
  * This module is to handle custom commands for discord.
  */
 (function() {
-    var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&]+)\)/),
-        reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&]+)\s([\w\W]+)\)/),
+    var reCustomAPI = new RegExp(/\(customapi ([\w-.~:\/?#\[\]@!$&'\(\)*+,;=%]+)\)/),
+        reCustomAPIJson = new RegExp(/\(customapijson ([\w-.~:\/?#\[\]@!$&'\(\)*+,;=%]+)\s([\w\W]+)\)/),
         reCustomArg = new RegExp(/\(([1-9])=([a-zA-Z1-9\)\(]+)\)/),
         reCustomToUserArg = new RegExp(/\(touser=([a-zA-Z1-9]+)\)/),
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
