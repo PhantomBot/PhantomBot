@@ -413,7 +413,7 @@ $(function() {
         })).append($('<button/>', {
             'class': 'btn btn-default',
             'type': 'button',
-            'text': 'Cancel',
+            'text': 'Abbrechen',
             'data-dismiss': 'modal'
         }))))).on('hidden.bs.modal', function() {
             $('#' + id).remove();
@@ -473,7 +473,7 @@ $(function() {
         })).append($('<button/>', {
             'class': 'btn btn-default',
             'type': 'button',
-            'text': 'Cancel',
+            'text': 'Abbrechen',
             'data-dismiss': 'modal'
         }))))).on('hidden.bs.modal', function() {
             $('#' + id).remove();
@@ -682,11 +682,11 @@ $(function() {
             'reverseButtons': true,
             'buttons': {
                 'confirm': {
-                    'text': 'Delete',
+                    'text': 'Löschen',
                     'visible': true
                 },
                 'cancel': {
-                    'text': 'Cancel',
+                    'text': 'Abbrechen',
                     'visible': true
                 }
             },

@@ -104,7 +104,7 @@ $(run = function() {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
 
                     // Get advance modal from our util functions in /utils/helpers.js
-                    helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
+                    helpers.getAdvanceModal('edit-command', 'Befehl Bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append input box for the command name. This one is disabled.

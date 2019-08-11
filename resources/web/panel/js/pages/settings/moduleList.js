@@ -49,7 +49,7 @@ $(run = function() {
                     'type': 'button',
                     'class': 'btn btn-xs btn-danger',
                     'data-toggle': 'tooltip',
-                    'title': 'Delete the module if it no longer exists.',
+                    'title': 'Lösche das Modul, wenn es nicht mehr existiert.',
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'html': $('<i/>', {

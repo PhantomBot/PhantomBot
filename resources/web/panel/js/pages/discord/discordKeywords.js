@@ -144,7 +144,7 @@ $(function() {
 
     // Add keyword button.
     $('#discord-addkey-button').on('click', function() {
-         helpers.getModal('add-keyword', 'Add Keyword', 'Save', $('<form/>', {
+         helpers.getModal('add-keyword', 'Schlüsselwort hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append keyword.

@@ -89,7 +89,7 @@ $(run = function() {
                 let timerId = $(this).data('notice');
 
                 // Ask the user if he want to remove the timer.
-                helpers.getConfirmDeleteModal('timer_modal_remove', 'Sind Sie sicher, dass Du den Timer mit der ID ' + timerId + ' entfernen möchten?', true,
+                helpers.getConfirmDeleteModal('timer_modal_remove', 'Bist du sicher, dass Du den Timer mit der ID ' + timerId + ' entfernen möchten?', true,
                     'Du hast den Timer mit der ID ' + timerId + ' erfolgreich entfernt!', function() {
                     // Remove the timer
                     socket.sendCommand('notice_remove_cmd', 'notice removesilent ' + timerId, function() {
@@ -146,11 +146,11 @@ $(function() {
 
     // Add timer button.
     $('#add-timer-button').on('click', function() {
-        helpers.getModal('add-timer', 'Add Timer', 'Save', $('<form/>', {
+        helpers.getModal('add-timer', 'Timer hinzufügen', 'Speichern', $('<form/>', {
             'role': 'form'
         })
         // Append timer text.
-        .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer Message', 'Follow me on Twitter! https://twitter.com/PhantomBotApp', '', 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
+        .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer-Nachricht', 'Folge mir auf Twitter! https://twitter.com/PhantomBotApp', '', 'Meldung dieses Timers. Verwende den Präfix "command:" und dann den Namen des Befehls, um einen Befehl auszuführen.')),
         // Callback once the user clicks save.
         function() {// Callback once we click the save button.
             let noticeText = $('#notice-text');
@@ -167,7 +167,7 @@ $(function() {
                         // Close the modal.
                         $('#add-timer').modal('hide');
                         // Alert the user.
-                        toastr.success('Successfully added the timer!');
+                        toastr.success('Timer erfolgreich hinzugefügt!');
                     });
             }
         }).modal('toggle');
@@ -179,23 +179,23 @@ $(function() {
             tables: ['noticeSettings', 'noticeSettings', 'noticeSettings', 'noticeSettings'],
             keys: ['reqmessages', 'interval', 'noticetoggle', 'noticeOfflineToggle']
         }, true, function(e) {
-            helpers.getModal('settings-timer', 'Timer Settings', 'Save', $('<form/>', {
+            helpers.getModal('settings-timer', 'Timer-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Append alias name.
-            .append(helpers.getInputGroup('notice-interval', 'number', 'Timer Interval (Minutes)', '', e.interval, 'Interval at which a random timer is said in chat.'))
+            .append(helpers.getInputGroup('notice-interval', 'number', 'Timer Interval (Minuten)', '', e.interval, 'Intervall, in dem ein zufälliger Timer im Chat angezeigt wird.'))
             // Append alias name.
-            .append(helpers.getInputGroup('notice-reqmsg', 'number', 'Timer Required Messages', '', e.reqmessages, 'Amount of message required to trigger a random timer along with the interval.'))
+            .append(helpers.getInputGroup('notice-reqmsg', 'number', 'Timer Benötigte Nachrichten', '', e.reqmessages, 'Menge der Nachricht, die benötigt wird, um einen Zufallstimer zusammen mit dem Intervall auszulösen.'))
             // Append toggle.
-            .append(helpers.getDropdownGroup('notice-toggle', 'Active Timers', (e.noticetoggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'], 'If the timers should be enabled.'))
+            .append(helpers.getDropdownGroup('notice-toggle', 'Timer aktivieren', (e.noticetoggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'], 'Sollen die Timer aktiviert werden?'))
             // Append offline toggle.
-            .append(helpers.getDropdownGroup('notice-offline-toggle', 'Active Offline Timers', (e.noticeOfflineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'], 'If the timers should be said in offline chat.')),
+            .append(helpers.getDropdownGroup('notice-offline-toggle', 'Offline-Timer aktivieren', (e.noticeOfflineToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'], 'Sollen die Timer in den Offline-Chat gesendet werden?')),
             // Callback once the user clicks save.
             function() {// Callback once we click the save button.
                 let noticeInterval = $('#notice-interval'),
                     noticeReqMsg = $('#notice-reqmsg'),
-                    noticeToggle = $('#notice-toggle').find(':selected').text() === 'Yes',
-                    noticeOfflineToggle = $('#notice-offline-toggle').find(':selected').text() === 'Yes';
+                    noticeToggle = $('#notice-toggle').find(':selected').text() === 'Ja',
+                    noticeOfflineToggle = $('#notice-offline-toggle').find(':selected').text() === 'Ja';
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -212,7 +212,7 @@ $(function() {
                                 // Close the modal.
                                 $('#settings-timer').modal('hide');
                                 // Alert the user.
-                                toastr.success('Successfully updated timer settings');
+                                toastr.success('Timer-Einstellungen erfolgreich aktualisiert');
                             });
                         });
                 }
