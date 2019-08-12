@@ -23,6 +23,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import tv.phantombot.event.twitch.follower.TwitchFollowsInitializedEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -34,13 +37,12 @@ import org.json.JSONArray;
 
 public class FollowersCache implements Runnable {
 
-    private static final Map<String, FollowersCache> instances = new HashMap<String, FollowersCache>();
+    private static final Map<String, FollowersCache> INSTANCES = new HashMap<String, FollowersCache>();
     private final Thread updateThread;
     private final String channelName;
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
-    private Boolean hasFail = false;
     private Boolean killed = false;
     private int numfail = 0;
 
@@ -51,11 +53,11 @@ public class FollowersCache implements Runnable {
      * @return {Object}
      */
     public static FollowersCache instance(String channelName) {
-        FollowersCache instance = instances.get(channelName);
+        FollowersCache instance = INSTANCES.get(channelName);
 
         if (instance == null) {
             instance = new FollowersCache(channelName);
-            instances.put(channelName, instance);
+            INSTANCES.put(channelName, instance);
         }
         return instance;
     }
@@ -65,6 +67,7 @@ public class FollowersCache implements Runnable {
      *
      * @param {String} channelName
      */
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache(String channelName) {
         this.updateThread = new Thread(this, "tv.phantombot.cache.FollowersCache");
         this.channelName = channelName;
@@ -113,8 +116,10 @@ public class FollowersCache implements Runnable {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
 
         JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, 0, false);
-        Map<String, String> newCache = new HashMap<String, String>();
         DataStore datastore = PhantomBot.instance().getDataStore();
+        DateTimeFormatter dtf = ISODateTimeFormat.dateTime();
+        DateTime followed_at;
+        long limit_date = DateTime.now().minusMinutes(20).getMillis();
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
@@ -124,7 +129,12 @@ public class FollowersCache implements Runnable {
                     String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
 
                     if (!datastore.exists("followed", follower)) {
-                        EventBus.instance().post(new TwitchFollowEvent(follower));
+                        followed_at = dtf.parseDateTime(jsonArray.getJSONObject(i).getString("created_at"));
+                    
+                        if (followed_at.isAfter(limit_date)) {
+                            EventBus.instance().post(new TwitchFollowEvent(follower));
+                        }
+                        
                         datastore.set("followed", follower, "true");
                     }
                 }
@@ -169,8 +179,8 @@ public class FollowersCache implements Runnable {
      * @function killall
      */
     public static void killall() {
-        for (FollowersCache instance : instances.values()) {
+        INSTANCES.values().forEach((instance) -> {
             instance.kill();
-        }
+        });
     }
 }
