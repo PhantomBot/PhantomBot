@@ -34,7 +34,7 @@
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
     <property name="version.name" value="${ant.project.name}-${version}" />
-    <property name="version.folder" location="${dist}/${version.name}" />
+    <property name="version.folder" location="${dist}/${version.name}-jdk11compat" />
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
@@ -116,7 +116,7 @@
 
     <target depends="pre.compile" name="compile.src">
         <echo>Compiling with Java Version ${ant.java.version} (${java.version})</echo>
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
@@ -130,7 +130,7 @@
     </target>
 
     <target depends="clean.build.test" name="compile.src.test">
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
