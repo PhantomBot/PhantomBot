@@ -95,7 +95,7 @@ $(run = function() {
                     t = $(this);
 
                 socket.getDBValue('alias_name_get', 'aliases', alias, function(e) {
-                    helpers.getModal('edit-alias', 'Edit Alias', 'Save', $('<form/>', {
+                    helpers.getModal('edit-alias', 'Alias bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
                     // Append alias name.

@@ -481,8 +481,8 @@ $(function() {
                 .append(helpers.getInputGroup('channel-alert', 'text', 'Alarmkanal', '#alerts', e.greetingsChannel,
                     'Kanal, in den alle Alarme gesendet werden sollen.'))))),
             function() {
-                let joinToggle = $('#join-toggle').find(':selected').text() === 'Yes',
-                    partToggle = $('#part-toggle').find(':selected').text() === 'Yes',
+                let joinToggle = $('#join-toggle').find(':selected').text() === 'Ja',
+                    partToggle = $('#part-toggle').find(':selected').text() === 'Ja',
                     partMessage = $('#part-message'),
                     joinMessage = $('#join-message'),
                     joinRole = $('#join-role'),

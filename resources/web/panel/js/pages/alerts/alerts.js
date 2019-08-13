@@ -553,7 +553,7 @@ $(function() {
             .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Abklingzeit der Begrüßung (Stunden)', '', (parseInt(e.cooldown) / 36e5),
                 'Wie lang die Begrüßungsnachricht pro Benutzer in Stunden ist. Das Minimum beträgt 5 Stunden.')),
             function() { // Callback once the user clicks save.
-                let greetingToggle = $('#greeting-toggle').find(':selected').text() === 'Yes',
+                let greetingToggle = $('#greeting-toggle').find(':selected').text() === 'Ja',
                     greetingCooldown = $('#greeting-cooldown');
 
                 // Make sure the user has someone in each box.
@@ -641,7 +641,7 @@ $(function() {
             // Add the the box for the tip reward
             .append(helpers.getInputGroup('tipeeestream-reward', 'number', 'Spenden Belohnungs-Multiplier', '', e.reward, 'Belohnungsmultiplikator für die Belohnung.')),
             function() { // Callback once the user clicks save.
-                let tipToggle = $('#tipeeestream-toggle').find(':selected').text() === 'Yes',
+                let tipToggle = $('#tipeeestream-toggle').find(':selected').text() === 'Ja',
                     tipMessage = $('#tipeeestream-message'),
                     tipReward = $('#tipeeestream-reward');
 
