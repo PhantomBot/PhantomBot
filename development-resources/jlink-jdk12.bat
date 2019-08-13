@@ -1,5 +1,3 @@
-@echo off
-
 REM  
 REM Copyright (C) 2016-2018 phantombot.tv
 REM  
@@ -19,5 +17,6 @@ REM
 
 setlocal enableextensions enabledelayedexpansion
 SET JDK="C:\Program Files\Java\jdk-12.0.1\bin"
-%JDK%\jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.desktop,java.management,java.sql,jdk.httpserver --output ..\resources\java-runtime
+%JDK%\jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.desktop,java.management,java.sql,jdk.httpserver,jdk.jdwp.agent --output ..\resources\java-runtime
 endlocal
+pause
