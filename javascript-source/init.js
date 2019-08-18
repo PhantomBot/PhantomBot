@@ -511,7 +511,7 @@
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             } else

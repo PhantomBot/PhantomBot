@@ -133,7 +133,7 @@
      * @param  {String}  username
      * @return {Number}
      */
-    function getSecs(username, command) {
+    function getSecs(username, command, isMod) {
         var cooldown = cooldowns[command];
 
         if (cooldown !== undefined) {

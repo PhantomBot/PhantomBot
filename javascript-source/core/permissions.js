@@ -154,7 +154,7 @@
      */
     function userExists(username) {
         for (var i in users) {
-            if (users[i] !== undefined && users[i][0].equalsIgnoreCase(username)) {
+            if (users[i] != undefined && users[i][0] != undefined && users[i][0].equalsIgnoreCase(username)) {
                 return true;
             }
         }
