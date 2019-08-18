@@ -1410,22 +1410,6 @@
                 }
             }
         }
-
-        if (state == playerStateEnum.ENDED) {
-            if (currentPlaylist) {
-                // Record song title for history
-                var videoTitle = currentPlaylist.getCurrentVideo().getVideoTitle();
-                var videoId = currentPlaylist.getCurrentVideo().getVideoId()
-                $.inidb.set("songhistory", videoTitle + '|' + videoId, $.getLocalTime());
-
-                // TODO Use HttpRequest or create a new class that can call the Google Sheets API to add rows for song
-                // Pass the song name, YouTube link, and requester
-
-                // Commented out to prevent autoplay
-                //currentPlaylist.nextVideo();
-
-            }
-        }
     });
 
     /**
