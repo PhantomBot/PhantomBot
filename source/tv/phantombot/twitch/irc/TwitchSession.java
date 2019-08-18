@@ -97,12 +97,12 @@ public class TwitchSession extends MessageQueue {
         try {
             this.twitchWSIRC.send(message);
         } catch (NotYetConnectedException  ex) {
-            com.gmt2001.Console.err.println("Failed to send message to Twitch (not connected yet): " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
         } catch (WebsocketNotConnectedException ex) {
             reconnect();
-            com.gmt2001.Console.err.println("Failed to send message to Twitch (not connected): " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [WebsocketNotConnectedException]: " + ex.getMessage());
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to send message to Twitch: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
 
@@ -170,6 +170,7 @@ public class TwitchSession extends MessageQueue {
                     nextBackoff = 1000L;
                 } else {
                     com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (nextBackoff / 1000) + " seconds...");
+                    com.gmt2001.Console.warn.println("Delaying next reconnect " + (nextBackoff / 1000) + " seconds...", true);
                     Thread.sleep(nextBackoff);
                 }
 
@@ -189,7 +190,7 @@ public class TwitchSession extends MessageQueue {
     }
 
     /**
-     * Method that stops everyting for TwitchWSIRC, there's no going back after this.
+     * Method that stops everything for TwitchWSIRC, there's no going back after this.
      */
     public void close() {
         // Kill the message queue.
