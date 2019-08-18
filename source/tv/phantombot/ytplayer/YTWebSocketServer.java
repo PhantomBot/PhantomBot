@@ -92,6 +92,7 @@
 
 package tv.phantombot.ytplayer;
 
+import kentobot.songrequest.YTPlayerRequestSongHistoryEvent;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
@@ -274,6 +275,8 @@ public class YTWebSocketServer extends WebSocketServer {
                 EventBus.instance().postAsync(new YTPlayerRequestPlaylistEvent());
             } else if (jsonObject.getString("query").equals("currentsong")) {
                 EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
+            } else if (jsonObject.getString("query").equals("songrequesthistory")) {
+                EventBus.instance().postAsync(new YTPlayerRequestSongHistoryEvent());
             } else {
                 com.gmt2001.Console.err.println("YTWebSocketServer: Bad ['query'] request passed ["+jsonString+"]");
                 return;
@@ -290,6 +293,8 @@ public class YTWebSocketServer extends WebSocketServer {
             EventBus.instance().postAsync(new YTPlayerDeletePlaylistByIDEvent(dataString));
         } else if (jsonObject.has("command") && sessionData.isPlayer()) {
             if (jsonObject.getString("command").equals("togglerandom")) {
+                EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
+            } else if (jsonObject.getString("command").equals("toggleshuffle")) {
                 EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
             } else if (jsonObject.getString("command").equals("skipsong")) {
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
@@ -448,6 +453,10 @@ public class YTWebSocketServer extends WebSocketServer {
     }
 
     public void currentSong(String jsonString) {
+        sendToAll(jsonString);
+    }
+    
+    public void songRequestHistory(String jsonString) {
         sendToAll(jsonString);
     }
 
