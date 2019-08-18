@@ -306,14 +306,21 @@
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
 
-            if (json != null && json.isRegex) {
-                json.phrase = new RegExp(json.phrase.replace('regex:', ''));
-            } else {
-                json.phrase = json.phrase.toLowerCase();
-            }
-            json.isBan = parseInt(json.timeout) === -1;
+            if (json != null) {
+                if (json.isRegex) {
+                    try {
+                        json.phrase = new RegExp(json.phrase.replace('regex:', ''));
+                    } catch (ex) {
+                        // Failed to create regex, ignore this and don't make it a blacklist.
+                        continue;
+                    }
+                } else {
+                    json.phrase = json.phrase.toLowerCase();
+                }
+                json.isBan = parseInt(json.timeout) === -1;
 
-            blackList.push(json);
+                blackList.push(json);
+            }
         }
     }
 
