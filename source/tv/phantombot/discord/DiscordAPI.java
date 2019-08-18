@@ -43,7 +43,6 @@ import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
-import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelJoinEvent;
 import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartEvent;
 import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
 import tv.phantombot.event.EventBus;
@@ -52,7 +51,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleDeleteEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleUpdateEvent;
@@ -110,12 +108,11 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to connect to Discord.
      *
-     * @param {String} token
+     * @param token
      */
     public void connect(String token) {
         try {
             DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(150).setDaemon(false).registerListener(new DiscordEventListener()).login();
-            
         } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
@@ -123,6 +120,7 @@ public class DiscordAPI extends DiscordUtil {
 
     /**
      * Method to reconnect to Discord.
+     * @return 
      */
     public boolean reconnect() {
         try {
@@ -139,6 +137,7 @@ public class DiscordAPI extends DiscordUtil {
     
     /** 
      * Method that checks if we are still connected to Discord and reconnects if we are not. 
+     * @return 
      */
     public ConnectionState checkConnectionStatus() {
         if (!DiscordAPI.client.isLoggedIn() || !DiscordAPI.client.isReady()) {
@@ -207,7 +206,7 @@ public class DiscordAPI extends DiscordUtil {
         String command = message.getContent().substring(1);
         String arguments = "";
 
-        if (command.indexOf(" ") != -1) {
+        if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
