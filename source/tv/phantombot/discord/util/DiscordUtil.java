@@ -92,7 +92,7 @@ public class DiscordUtil {
                     // Throw this if the channel object is null.
                     throw new DiscordException("Failed to send message due to the channel object being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 return null;
             }
@@ -129,7 +129,7 @@ public class DiscordUtil {
                     // Throw this if the user object is null.
                     throw new DiscordException("Failed to send private message due to the user being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send a private message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -165,7 +165,7 @@ public class DiscordUtil {
                     // Throw this if the channel and builder object is null.
                     throw new DiscordException("Failed to send embed message due to either the channel or builder being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | IllegalArgumentException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 return null;
             }
@@ -206,7 +206,7 @@ public class DiscordUtil {
                     // Throw this if the channel object is null.
                     throw new DiscordException("Failed to send embed message due to the channel being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | IllegalArgumentException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | IllegalArgumentException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 return null;
             }
@@ -255,7 +255,7 @@ public class DiscordUtil {
                     // Throw this if the channel object is null.
                     throw new DiscordException("Failed to send file message due to the channel being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | FileNotFoundException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | FileNotFoundException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 return null;
             }
@@ -313,7 +313,7 @@ public class DiscordUtil {
                     // Throw this if the message object is null.
                     throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         }).get();
@@ -336,7 +336,7 @@ public class DiscordUtil {
                     // Throw this if the message object is null.
                     throw new DiscordException("Failed to add reaction to message due to the message or reaction being null.");
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to add a reaction: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         }).get();
@@ -541,7 +541,7 @@ public class DiscordUtil {
                 if (roles != null && user != null) {
                     DiscordAPI.getGuild().editUserRoles(user, roles);
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to edit roles on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -607,7 +607,7 @@ public class DiscordUtil {
                 if (role != null && user != null) {
                     user.removeRole(role);
                 }
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to remove role on user: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -632,7 +632,7 @@ public class DiscordUtil {
         RequestBuffer.request(() -> {
             try {
                 DiscordAPI.getGuild().createRole().changeName(roleName);
-            } catch (MissingPermissionsException | DiscordException | NullPointerException | Exception ex) {
+            } catch (MissingPermissionsException | NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to create role: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -711,7 +711,7 @@ public class DiscordUtil {
                         List<IMessage> messages = channel.getMessageHistory(amount < 2 ? 2 : amount);
 
                         channel.bulkDelete(messages);
-                    } catch (DiscordException | NullPointerException | Exception ex) {
+                    } catch (NullPointerException | DiscordException ex) {
                         com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                     }
                 });
@@ -745,7 +745,7 @@ public class DiscordUtil {
 
                     channel.bulkDelete(messages);
                     return;
-                } catch (DiscordException | NullPointerException | Exception ex) {
+                } catch (NullPointerException | DiscordException ex) {
                     com.gmt2001.Console.err.println("Failed to bulk delete messages: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                 }
             });
@@ -773,7 +773,7 @@ public class DiscordUtil {
                 if (message != null) {
                     message.delete();
                 }
-            } catch (DiscordException | NullPointerException | Exception ex) {
+            } catch (NullPointerException | DiscordException ex) {
                 com.gmt2001.Console.err.println("Failed to delete a message: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
             }
         });
@@ -787,7 +787,7 @@ public class DiscordUtil {
     public void setGame(String game) {
         try {
             DiscordAPI.getShard().changePresence(StatusType.ONLINE, ActivityType.PLAYING, game);
-        } catch (DiscordException | Exception ex) {
+        } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to set game: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
@@ -801,7 +801,7 @@ public class DiscordUtil {
     public void setStream(String game, String url) {
         try {
             DiscordAPI.getShard().changeStreamingPresence(StatusType.ONLINE, game, url);
-        } catch (DiscordException | Exception ex) {
+        } catch (DiscordException ex) {
             com.gmt2001.Console.err.println("Failed to set stream: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
         }
     }
