@@ -46,6 +46,7 @@ public class MessageQueue implements Runnable {
         // Start a new thread for our final queue.
         this.thread = new Thread(this, "tv.phantombot.wschat.twitch.chat.utils.MessageQueue::run");
         this.thread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        this.thread.setPriority(Thread.MAX_PRIORITY);
         
     }
 

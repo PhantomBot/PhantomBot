@@ -28,7 +28,7 @@
         cooldown = [];
 
     /**
-     * @function permCheck 
+     * @function permCheck
      * @param username
      * @return boolean
      */
@@ -37,19 +37,22 @@
     };
 
     /**
-     * @function getCooldown 
+     * @function getCooldown
      * @param keyword
      * @return number
      */
     function getCooldown(keyword) {
         if ($.inidb.exists('coolkey', keyword.toLowerCase())) {
             return parseInt($.inidb.get('coolkey', keyword.toLowerCase()));
+        } else if ($.inidb.exists('coolkey', keyword)) { // ignore case
+            return parseInt($.inidb.get('coolkey', keyword));
+        } else {
+            return 0;
         }
-        return 0;
     };
 
     /**
-     * @function set 
+     * @function set
      * @export $.coolDownKeywords
      * @param keyword
      * @param time
@@ -71,20 +74,21 @@
     };
 
     /**
-     * @function get 
+     * @function get
      * @export $.coolDownKeywords
      * @param keyword
      * @param username
      * @return number
      */
     function get(keyword, username) {
-        var hasCooldown = $.inidb.exists('coolkey', keyword.toLowerCase()),
+        var hasCooldown = $.inidb.exists('coolkey', keyword.toLowerCase()) || $.inidb.exists('coolkey', keyword), // ignore case.
             i;
 
-        if (!hasCooldown) return 0;
+        if (!hasCooldown)
+            return 0;
 
         for (i in cooldown) {
-            if (cooldown[i].keyword.equals(keyword.toLowerCase())) {
+            if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
                 if ((cooldown[i].time - $.systemTime()) > 0) {
                     if (permCheck(username)) return 0;
                     return parseInt(cooldown[i].time - $.systemTime());
@@ -97,7 +101,7 @@
     };
 
     /**
-     * @function clear 
+     * @function clear
      * @export $.coolDownKeywords
      * @param keyword
      */
