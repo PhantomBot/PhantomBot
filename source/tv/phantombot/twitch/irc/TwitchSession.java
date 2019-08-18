@@ -97,12 +97,12 @@ public class TwitchSession extends MessageQueue {
         try {
             this.twitchWSIRC.send(message);
         } catch (NotYetConnectedException  ex) {
-            com.gmt2001.Console.error.println("Failed to send message to Twitch (not connected yet): " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch (not connected yet): " + ex.getMessage());
         } catch (WebsocketNotConnectedException ex) {
             reconnect();
-            com.gmt2001.Console.error.println("Failed to send message to Twitch (not connected): " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch (not connected): " + ex.getMessage());
         } catch (Exception ex) {
-            com.gmt2001.Console.error.println("Failed to send message to Twitch: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch: " + ex.getMessage());
         }
     }
 
