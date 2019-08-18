@@ -190,7 +190,7 @@ $(function() {
                     'If a message should be said in the channel when someone gifts multiple subscriptions. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('mass-gifsub-msg', 'text', 'Mystery Gift Subscription Message', '', e.massGiftSubMessage,
-                    'Message said when someone gifts multiple subscriptions to the channel. Tags: (name), (plan), (amount), and (reward)', false))
+                    'Message said when someone gifts multiple subscriptions to the channel. Tags: (name), (amount), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('mass-gifsub-reward', 'number', 'Mystery Gift Subscription Reward', '', e.massGiftSubReward,
                     'Reward given to the user who bought the subscription. This is a multiplier. (reward * amount gifted)'))))
@@ -216,7 +216,7 @@ $(function() {
                     'If a message should be said in the channel when an anonymous user gifts multiple subscriptions. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('anon-mass-gifsub-msg', 'text', 'Anonymous Gift Mystery Subscription Message', '', e.massAnonGiftSubMessage,
-                    'Message said when someone gifts an anonymous gifts subscriptions to the channel. Tags: (name), (plan), and (amount)', false))))
+                    'Message said when someone gifts an anonymous gifts subscriptions to the channel. Tags: (name), and (amount)', false))))
             // Tier settings
             .append(helpers.getCollapsibleAccordion('main-8', 'Tier Settings', $('<form/>', {
                     'role': 'form'
