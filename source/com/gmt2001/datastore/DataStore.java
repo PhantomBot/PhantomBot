@@ -163,6 +163,9 @@ public class DataStore {
     public void InsertString(String fName, String section, String key, String value) {
         SetString(fName, section, key, value);
     }
+    
+    public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+    }
 
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
         for (int i = 0; i < key.length; i++) {

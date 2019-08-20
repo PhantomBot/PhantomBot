@@ -1024,7 +1024,7 @@ public class SqliteStore extends DataStore {
         }
     }
 
-   // @Override
+   @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
         fName = validateFname(fName);
 
@@ -1041,8 +1041,9 @@ public class SqliteStore extends DataStore {
                 if (!first) {
                     s += ",";
                 }
+                
                 first = false;
-                s += "('', '" + k + "', " + value + ")";
+                s += "('" + section + "', '" + k + "', " + value + ")";
             }
 
             statement.addBatch(s + ";");
