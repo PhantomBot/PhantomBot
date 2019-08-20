@@ -892,7 +892,7 @@ public class MySQLStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-    
+
     @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
         fName = validateFname(fName);
@@ -910,23 +910,14 @@ public class MySQLStore extends DataStore {
                 if (!first) {
                     s += ",";
                 }
-<<<<<<< HEAD
-                first = false;
-                s += "('', '" + k + "', " + value + ")";
-=======
-                
+
                 first = false;
                 s += "('" + section + "', '" + k + "', " + value + ")";
->>>>>>> fab726ae312369cb3bc2d05c489e41faf6caff59
             }
 
             statement.addBatch(s + ";");
             statement.executeBatch();
         } catch (SQLException ex) {
-<<<<<<< HEAD
-=======
-            ex.printStackTrace();
->>>>>>> fab726ae312369cb3bc2d05c489e41faf6caff59
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
