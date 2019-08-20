@@ -434,10 +434,6 @@
          */
         $api.on($script, 'ircChannelMessage', function(event) {
             callHook('ircChannelMessage', event, false);
-
-            if (isModuleEnabled('./handlers/panelHandler.js')) {
-                $.panelDB.updateChatLinesDB(event.getSender());
-            }
         });
 
         /*
