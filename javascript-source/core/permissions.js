@@ -32,6 +32,7 @@
         moderatorsCache = [],
         botList = [];
         lastJoinPart = $.systemTime(),
+        firstRun = true,
         isUpdatingUsers = false;
 
     /**
@@ -647,9 +648,6 @@
                 $.username.removeUser(parts[i]);
             }
 
-            // Disable auto commit to perform faster DB writes.
-            $.inidb.setAutoCommit(false);
-
             // Handle joins.
             for (var i = 0; i < joins.length; i++) {
                 // Cast the user as a string, because Rhino.
@@ -659,18 +657,17 @@
                     continue;
                 }
 
-                if (!userExists(joins[i])) {
-                    if (!$.user.isKnown(joins[i])) {
-                        $.setIniDbBoolean('visited', joins[i], true);
-                    }
+                // Since the user's array gets so big, let's skip it on first run in case the bot ever gets shutdown and restarted mid stream.
+                if (!firstRun && !userExists(joins[i])) {
+                    $.users.push([joins[i], now]);
+                } else {
                     $.users.push([joins[i], now]);
                 }
             }
-            // Enable auto commit again and force save.
-            $.inidb.setAutoCommit(true);
-            $.inidb.SaveAll(true);
+            $.inidb.SetBatchString('visited', '', joins, new Array(joins.length).fill('true'));
             isUpdatingUsers = false;
-        }, 0);
+            firstRun = false;
+        }, 0, 'core::permissions.js::ircChannelUsersUpdate');
     });
 
     /**

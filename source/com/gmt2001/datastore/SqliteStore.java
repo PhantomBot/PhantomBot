@@ -1024,7 +1024,7 @@ public class SqliteStore extends DataStore {
         }
     }
 
-   // @Override
+    @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
         fName = validateFname(fName);
 
@@ -1048,7 +1048,6 @@ public class SqliteStore extends DataStore {
             statement.addBatch(s + ";");
             statement.executeBatch();
         } catch (SQLException ex) {
-            ex.printStackTrace();
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

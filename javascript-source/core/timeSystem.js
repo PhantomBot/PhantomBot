@@ -201,7 +201,7 @@
             return timeString;
         }
     }
-    
+
     /**
      * @function getCountString
      * @export $
@@ -488,12 +488,13 @@
             i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
-            $.inidb.setAutoCommit(false);
-            for (i in $.users) {
-                username = $.users[i][0].toLowerCase();
-                $.inidb.incr('time', username, 60);
+            var u = [];
+
+            for (var i in $.users) {
+                u.push($.users[i][0]);
             }
-            $.inidb.setAutoCommit(true);
+
+            $.inidb.IncreaseBatchString('time', '', u, '60');
         }
     }, 6e4, 'scripts::systems::timeSystem.js#1');
 
