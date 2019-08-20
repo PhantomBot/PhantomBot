@@ -22,14 +22,12 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IRole;
 
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RequestBuffer;
-import tv.phantombot.discord.DiscordAPI;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.util.regex.Pattern;
@@ -815,6 +813,7 @@ public class DiscordUtil {
 
     /**
      * Method that gets all server members
+     * @return 
      */
     public List<IUser> getUsers() {
         return DiscordAPI.getClient().getUsers();
