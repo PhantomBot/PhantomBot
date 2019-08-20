@@ -230,12 +230,10 @@ public class SqliteStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
 
-            if (use_indexes) {
-                try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (variable);")) {
-                    statement.execute();
-                } catch (SQLException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
+            try (PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);")) {
+                statement.execute();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
     }
