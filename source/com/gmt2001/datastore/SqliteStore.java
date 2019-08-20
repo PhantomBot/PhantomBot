@@ -1081,7 +1081,7 @@ public class SqliteStore extends DataStore {
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            try (PreparedStatement statement = connection.prepareStatement("CREATE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (variable);")) {
+            try (PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);")) {
                 statement.execute();
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
