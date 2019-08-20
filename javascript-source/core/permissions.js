@@ -630,6 +630,7 @@
 
             var joins = event.getJoins(),
                 parts = event.getParts(),
+                values = [],
                 now = $.systemTime();
 
             // Handle parts
@@ -652,6 +653,7 @@
             for (var i = 0; i < joins.length; i++) {
                 // Cast the user as a string, because Rhino.
                 joins[i] = (joins[i] + '');
+                values[i] = 'true';
 
                 if (isTwitchBot(joins[i])) {
                     continue;
@@ -664,7 +666,9 @@
                     $.users.push([joins[i], now]);
                 }
             }
-            $.inidb.SetBatchString('visited', '', joins, new Array(joins.length).fill('true'));
+
+            $.inidb.SetBatchString('visited', '', joins, values);
+
             isUpdatingUsers = false;
             firstRun = false;
         }, 0, 'core::permissions.js::ircChannelUsersUpdate');
