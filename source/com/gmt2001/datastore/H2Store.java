@@ -881,9 +881,12 @@ public class H2Store extends DataStore {
             
             int valueInt =  Integer.parseInt(value);
         
-            for (String key : keys) {
+            for (String key : keys)  {
+                int amount = valueInt;
             
-                int amount = (Integer.parseInt(GetString(fName, section, key)) + valueInt);
+                if (HasKey(fName, section, key)) {
+                    amount = (Integer.parseInt(GetString(fName, section, key)) + valueInt);
+                }
                 
                 SetString(fName, section, key, Integer.toString(amount));
             }
