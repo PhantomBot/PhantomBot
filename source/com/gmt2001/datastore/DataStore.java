@@ -132,9 +132,6 @@ public class DataStore {
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
         return new String[] { };
     }
-    
-    public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
-    }
 
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
         return new String[] { };
@@ -166,7 +163,7 @@ public class DataStore {
     public void InsertString(String fName, String section, String key, String value) {
         SetString(fName, section, key, value);
     }
-    
+
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
     }
 
@@ -364,7 +361,7 @@ public class DataStore {
     public Connection CreateConnection(String db, String user, String pass) {
         return null;
     }
-    
+
     public void CloseConnection() {
     }
 
