@@ -116,7 +116,7 @@
         }
         
         for (var i = users.length - 1; i >= 0; i--) {
-            if (!newUsers.includes(users[i])) {
+            if (newUsers.indexOf(users[i]) === -1) {
                 users.splice(i, 1);
             }
         }
@@ -155,7 +155,7 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        return users.includes(username);
+        return users.indexOf(username) !== -1;
     }
 
     /**
@@ -226,7 +226,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return subUsers.includes(username.toLowerCase());
+        return subUsers.indexOf(username.toLowerCase()) !== -1;
     }
 
     /**
@@ -287,7 +287,7 @@
      * @returns {boolean}
      */
     function hasModeO(username) {
-        return modeOUsers.includes(username.toLowerCase());
+        return modeOUsers.indexOf(username.toLowerCase()) !== -1;
     }
 
     /**
@@ -297,7 +297,7 @@
      * @returns {boolean}
      */
     function hasModList(username) {
-        return modListUsers.includes(username.toLowerCase());
+        return modListUsers.indexOf(username.toLowerCase()) !== -1;
     }
 
     /**
@@ -306,7 +306,7 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        return subUsers.includes(username.toLowerCase());
+        return subUsers.indexOf(username.toLowerCase()) !== -1;
     }
 
     /**
@@ -434,7 +434,7 @@
     function addSubUsersList(username) {
         username = (username + '').toLowerCase();
 
-        if (!subUsers.includes(username)) {
+        if (subUsers.indexOf(username.toLowerCase()) === -1) {
             subUsers.push(username);
         }
     }
@@ -833,7 +833,7 @@
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    if (!subUsers.includes(spl[1].toLowerCase())) {
+                    if (subUsers.indexOf(spl[1].toLowerCase()) !== -1) {
                         subUsers.push(spl[1]);
                         restoreSubscriberStatus(spl[1].toLowerCase());
                         for (i in subUsers) {
