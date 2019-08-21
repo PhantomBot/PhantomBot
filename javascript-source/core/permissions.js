@@ -27,6 +27,7 @@
     var userGroups = [],
         modeOUsers = [],
         subUsers = [],
+        vipUsers = [],
         modListUsers = [],
         users = [],
         moderatorsCache = [],
@@ -110,12 +111,12 @@
     function updateUsersObject(newUsers) {
         for (var i in newUsers) {
             if (!userExists(newUsers[i])) {
-                users.push([newUsers[i], $.systemTime()]);
+                users.push(newUsers[i]);
             }
         }
-
+        
         for (var i = users.length - 1; i >= 0; i--) {
-            if (!hasKey(newUsers, users[i][0])) {
+            if (!newUsers.includes(users[i])) {
                 users.splice(i, 1);
             }
         }
@@ -154,12 +155,7 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        for (var i in users) {
-            if (users[i] != undefined && users[i][0] != undefined && users[i][0].equalsIgnoreCase(username)) {
-                return true;
-            }
-        }
-        return false;
+        return users.includes(username);
     }
 
     /**
@@ -230,7 +226,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return hasKey(subUsers, username, 0);
+        return subUsers.includes(username.toLowerCase());
     }
 
     /**
@@ -291,7 +287,7 @@
      * @returns {boolean}
      */
     function hasModeO(username) {
-        return hasKey(modeOUsers, username.toLowerCase(), 0);
+        return modeOUsers.includes(username.toLowerCase());
     }
 
     /**
@@ -301,7 +297,7 @@
      * @returns {boolean}
      */
     function hasModList(username) {
-        return hasKey(modListUsers, username.toLowerCase());
+        return modListUsers.includes(username.toLowerCase());
     }
 
     /**
@@ -310,7 +306,7 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        return hasKey(subUsers, username, 0);
+        return subUsers.includes(username.toLowerCase());
     }
 
     /**
@@ -420,11 +416,11 @@
         var i, array = [];
         for (i in users) {
             if (filterId) {
-                if ($.getUserGroupId(users[i][0]) <= filterId) {
-                    array.push(users[i][0]);
+                if ($.getUserGroupId(users[i]) <= filterId) {
+                    array.push(users[i]);
                 }
             } else {
-                array.push(users[i][0]);
+                array.push(users[i]);
             }
         }
         return array;
@@ -437,12 +433,10 @@
      */
     function addSubUsersList(username) {
         username = (username + '').toLowerCase();
-        for (i in subUsers) {
-            if (subUsers[i][0].equalsIgnoreCase(username)) {
-                return;
-            }
+
+        if (!subUsers.includes(username)) {
+            subUsers.push(username);
         }
-        subUsers.push([username, $.systemTime() + 1e4]);
     }
 
     /**
@@ -451,15 +445,11 @@
      * @param username
      */
     function delSubUsersList(username) {
-        var newSubUsers = [];
-
-        username = (username + '').toLowerCase();
-        for (i in subUsers) {
-            if (!subUsers[i][0].equalsIgnoreCase(username)) {
-                newSubUsers.push([subUsers[i][0], subUsers[i][1]]);
-            }
+        var i = subUsers.indexOf(username.toLowerCase());
+        
+        if (i >= 0) {
+            subUsers.splice(i, 1);
         }
-        subUsers = newSubUsers;
     }
 
     /**
@@ -638,11 +628,9 @@
                 // Cast the user as a string, because Rhino.
                 parts[i] = (parts[i] + '');
                 // Remove the user from the users array.
-                for (var t = $.users.length - 1; t >= 0; t--) {
-                    if ($.users[t] !== undefined && $.users[t][0] == parts[i]) {
-                        $.users.splice(t, 1);
-                        break;
-                    }
+                var t = $.users.indexOf(parts[i]);
+                if (t >= 0) {
+                    $.users.splice(t, 1);
                 }
 
                 $.restoreSubscriberStatus(parts[i]);
@@ -661,9 +649,9 @@
 
                 // Since the user's array gets so big, let's skip it on first run in case the bot ever gets shutdown and restarted mid stream.
                 if (!firstRun && !userExists(joins[i])) {
-                    $.users.push([joins[i], now]);
+                    $.users.push(joins[i]);
                 } else {
-                    $.users.push([joins[i], now]);
+                    $.users.push(joins[i]);
                 }
             }
 
@@ -691,7 +679,7 @@
 
             lastJoinPart = $.systemTime();
 
-            users.push([username, $.systemTime()]);
+            users.push(username);
         }
     });
 
@@ -710,7 +698,7 @@
                 $.setIniDbBoolean('visited', username, true);
             }
 
-            users.push([username, $.systemTime()]);
+            users.push(username);
         }
     });
 
@@ -722,14 +710,12 @@
             i;
 
         if (!isUpdatingUsers) {
-            for (i in users) {
-                if (users[i] !== undefined && users[i][0].equals(username.toLowerCase())) {
-                    users.splice(i, 1);
-                    restoreSubscriberStatus(username.toLowerCase());
-
-                    // Remove this user's display name from the cache.
-                    $.username.removeUser(username);
-                }
+            i = users.indexOf(username);
+            
+            if (i >= 0) {
+                users.splice(i, 1);
+                restoreSubscriberStatus(username.toLowerCase());
+                $.username.removeUser(username);
             }
         }
     });
@@ -746,31 +732,27 @@
                 if (!hasModeO(username)) {
                     addModeratorToCache(username.toLowerCase());
                     if (isOwner(username)) {
-                        modeOUsers.push([username, 0]);
+                        modeOUsers.push(username);
                         $.inidb.set('group', username, '0');
                     } else {
                         if (isAdmin(username)) {
-                            modeOUsers.push([username, 1]);
+                            modeOUsers.push(username);
                             $.inidb.set('group', username, '1');
                         } else {
-                            modeOUsers.push([username, 2]);
+                            modeOUsers.push(username);
                             $.inidb.set('group', username, '2');
                         }
                     }
                 }
             } else {
                 if (hasModeO(username)) {
-                    var newmodeOUsers = [];
+                    removeModeratorFromCache(username);
 
-                    removeModeratorFromCache(username.toLowerCase());
-
-                    for (i in modeOUsers) {
-                        if (!modeOUsers[i][0].equalsIgnoreCase(username)) {
-                            newmodeOUsers.push([modeOUsers[i][0], modeOUsers[i][1]]);
-                        }
+                    i = modeOUsers.indexOf(username);
+                    
+                    if (i >= 0) {
+                        modeOUsers.splice(i, 1);
                     }
-
-                    modeOUsers = newmodeOUsers;
 
                     if (isSub(username)) {
                         $.inidb.set('group', username, '3'); // Subscriber, return to that group.
@@ -809,7 +791,7 @@
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.indexOf(modMessageStart) > -1) {
                 spl = message.replace(modMessageStart, '').split(', ');
-                var modListUsers = [];
+                modListUsers = [];
 
                 for (i in keys) {
                     if ($.inidb.get('group', keys[i]).equalsIgnoreCase('2')) {
@@ -826,7 +808,7 @@
                 $.saveArray(modListUsers, 'addons/mods.txt', false);
             } else if (message.indexOf(vipMessageStart) > -1) {
                 spl = message.replace(vipMessageStart, '').split(', ');
-                var vipUsers = [];
+                vipUsers = [];
 
                 for (i in keys) {
                     if ($.inidb.get('group', keys[i]).equalsIgnoreCase('5')) {
@@ -851,18 +833,14 @@
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    for (i in subUsers) {
-                        if (subUsers[i][0].equalsIgnoreCase(spl[1])) {
-                            subUsers[i][1] = $.systemTime() + 1e4;
-                            return;
+                    if (!subUsers.includes(spl[1].toLowerCase())) {
+                        subUsers.push(spl[1]);
+                        restoreSubscriberStatus(spl[1].toLowerCase());
+                        for (i in subUsers) {
+                            subsTxtList.push(subUsers[i]);
                         }
+                        $.saveArray(subsTxtList, 'addons/subs.txt', false);
                     }
-                    subUsers.push([spl[1], $.systemTime() + 1e4]);
-                    restoreSubscriberStatus(spl[1].toLowerCase());
-                    for (i in subUsers) {
-                        subsTxtList.push(subUsers[i][0]);
-                    }
-                    $.saveArray(subsTxtList, 'addons/subs.txt', false);
                 }
             }
         }
