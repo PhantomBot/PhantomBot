@@ -415,7 +415,7 @@
                 return;
             }
             for (var i in $.users) {
-                $.inidb.incr('points', $.users[i][0].toLowerCase(), parseInt(action));
+                $.inidb.incr('points', $.users[i].toLowerCase(), parseInt(action));
             }
             return;
         }
@@ -428,8 +428,8 @@
                 return;
             }
             for (var i in $.users) {
-                if ($.getUserPoints($.users[i][0].toLowerCase()) > parseInt(action)) {
-                    $.inidb.decr('points', $.users[i][0].toLowerCase(), parseInt(action));
+                if ($.getUserPoints($.users[i].toLowerCase()) > parseInt(action)) {
+                    $.inidb.decr('points', $.users[i].toLowerCase(), parseInt(action));
                 }
             }
             return;
