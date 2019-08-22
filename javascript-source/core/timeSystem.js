@@ -488,7 +488,13 @@
             i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
-            $.inidb.IncreaseBatchString('time', '', $.users, '60');
+            var u = [];
+
+            for (var i in $.users) {
+                u.push($.users[i][0]);
+            }
+
+            $.inidb.IncreaseBatchString('time', '', u, '60');
         }
     }, 6e4, 'scripts::systems::timeSystem.js#1');
 
@@ -499,7 +505,7 @@
 
         if (levelWithTime) {
             for (i in $.users) {
-                username = $.users[i].toLowerCase();
+                username = $.users[i][0].toLowerCase();
                 if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && !$.isVIP(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
                     if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);
