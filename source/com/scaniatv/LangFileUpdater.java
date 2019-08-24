@@ -89,7 +89,11 @@ public final class LangFileUpdater {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             
-            sb.append("$.lang.register('" + obj.getString("id") + "', '" + sanitizeResponse(obj.getString("response")) + "');\n");
+            sb.append("$.lang.register('");
+            sb.append(obj.getString("id"));
+            sb.append("', '");
+            sb.append(sanitizeResponse(obj.getString("response")));
+            sb.append("');\n");
         }
         
         try {
@@ -114,6 +118,8 @@ public final class LangFileUpdater {
             // If the script doesn't exist, load it.
             if (!exists) {
                 ScriptManager.loadScript(file);
+            } else {
+                ScriptManager.reloadScript(file);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
