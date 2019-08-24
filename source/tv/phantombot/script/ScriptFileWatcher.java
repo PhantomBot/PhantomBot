@@ -20,10 +20,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ScriptFileWatcher implements Runnable {
-    private static final ScriptFileWatcher instance = new ScriptFileWatcher();
-    private final List<Script> scripts = new CopyOnWriteArrayList<Script>();
+    private static ScriptFileWatcher instance;
+    private final List<Script> scripts = new CopyOnWriteArrayList<>();
     private final Thread thread;
     private boolean isKilled = false;
 
@@ -33,6 +34,9 @@ public class ScriptFileWatcher implements Runnable {
      * @return {Object}
      */
     public static ScriptFileWatcher instance() {
+        if (instance == null) {
+            instance = new ScriptFileWatcher();
+        } 
         return instance;
     }
 
@@ -50,7 +54,7 @@ public class ScriptFileWatcher implements Runnable {
     /**
      * Method to add scripts to the array list.
      *
-     * @param {Script} script
+     * @param script - Script to be reloaded.
      */
     public void addScript(Script script) {
         scripts.add(script);
@@ -67,6 +71,7 @@ public class ScriptFileWatcher implements Runnable {
      * Method that runs on a new thread to reload scripts.
      */
     @SuppressWarnings("SleepWhileInLoop")
+    @Override
     public void run() {
         while (!isKilled) {
             try {
@@ -86,7 +91,7 @@ public class ScriptFileWatcher implements Runnable {
                     Thread.sleep(1);
                 }
                 Thread.sleep(100);
-            } catch (Exception ex) {
+            } catch (IOException | InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
