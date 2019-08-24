@@ -47,10 +47,6 @@ public class Script {
 
         if (PhantomBot.getReloadScripts()) {
             ScriptFileWatcher.instance().addScript(this);
-        } else {
-            if (file.getPath().indexOf(System.getProperty("file.separator") + "lang" + System.getProperty("file.separator")) != -1) {
-                ScriptFileWatcher.instance().addScript(this);
-            }
         }
     }
 
