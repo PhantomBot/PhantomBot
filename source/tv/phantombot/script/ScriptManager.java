@@ -67,7 +67,7 @@ public class ScriptManager {
         Script script = scripts.get(scriptFile.toPath().toString());
         try {
             script.reload(false);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             if (scriptFile.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
             } else {
