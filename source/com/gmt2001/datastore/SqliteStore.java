@@ -190,6 +190,7 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
+    @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
         super.finalize();
 
@@ -344,7 +345,7 @@ public class SqliteStore extends DataStore {
 
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
 
-                ArrayList<String> s = new ArrayList<String>();
+                ArrayList<String> s = new ArrayList<>();
 
                 while (rs.next()) {
                     s.add(rs.getString("name").substring(11));
@@ -373,7 +374,7 @@ public class SqliteStore extends DataStore {
 
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
-                    ArrayList<String> s = new ArrayList<String>();
+                    ArrayList<String> s = new ArrayList<>();
 
                     while (rs.next()) {
                         s.add(rs.getString("section"));
@@ -405,7 +406,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -422,7 +423,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -451,7 +452,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+                        ArrayList<KeyValue> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -468,7 +469,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
+                        ArrayList<KeyValue> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -515,7 +516,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -537,7 +538,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -586,7 +587,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -608,7 +609,7 @@ public class SqliteStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -641,7 +642,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -657,7 +658,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -691,7 +692,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -707,7 +708,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -744,7 +745,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -760,7 +761,7 @@ public class SqliteStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<String>();
+                        ArrayList<String> s = new ArrayList<>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -928,8 +929,8 @@ public class SqliteStore extends DataStore {
         AddFile(fName);
 
         /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
-        Map<String, String> insertMap = new HashMap<String, String>();
-        Map<String, String> updateMap = new HashMap<String, String>();
+        Map<String, String> insertMap = new HashMap<>();
+        Map<String, String> updateMap = new HashMap<>();
 
         for (int idx = 0; idx < keys.length; idx++) {
             if (HasKey(fName, section, keys[idx])) {
@@ -1152,9 +1153,11 @@ public class SqliteStore extends DataStore {
     private synchronized void incrAutoCommitCtr() {
         autoCommitCtr++;
     }
+    
     private synchronized void decrAutoCommitCtr() {
         autoCommitCtr--;
     }
+    
     private synchronized int getAutoCommitCtr() {
         return autoCommitCtr;
     }

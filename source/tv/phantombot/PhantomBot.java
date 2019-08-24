@@ -58,7 +58,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -366,6 +365,7 @@ public final class PhantomBot implements Listener {
      *
      * @param Properties Properties object which configures the PhantomBot instance.
      */
+    @SuppressWarnings("static-access")
     public PhantomBot(Properties pbProperties) {
 
         /* Set the exeption handler */
@@ -1139,9 +1139,9 @@ public final class PhantomBot implements Listener {
 
         print("Terminating all script modules...");
         HashMap<String, Script> scripts = ScriptManager.getScripts();
-        for (Entry<String, Script> script : scripts.entrySet()) {
+        scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
-        }
+        });
 
         print("Saving all data...");
         dataStore.SaveAll(true);
@@ -1502,14 +1502,11 @@ public final class PhantomBot implements Listener {
             Files.move(Paths.get("botlogin.txt"), Paths.get("./config/botlogin.txt"));
             Files.move(Paths.get("phantombot.db"), Paths.get("./config/phantombot.db"));
 
-            try {
-                new File("phantombot.db").delete();
-                new File("botlogin.txt").delete();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to delete files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-            }
-        } catch (Exception ex) {
+            new File("phantombot.db").delete();
+            new File("botlogin.txt").delete();
+        } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to move files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.logStackTrace(ex);
         }
 
         // Move audio hooks and alerts. These two files should always exists.
@@ -1523,14 +1520,11 @@ public final class PhantomBot implements Listener {
             Files.move(Paths.get("./web/panel/js/ion-sound/sounds"), Paths.get("./config/audio-hooks"));
             Files.move(Paths.get("./web/alerts/data"), Paths.get("./config/gif-alerts"));
 
-            try {
-                FileUtils.deleteDirectory(new File("./web/panel/js/ion-sound/sounds"));
-                FileUtils.deleteDirectory(new File("./web/alerts/data"));
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to delete old audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-            }
-        } catch (Exception ex) {
+            FileUtils.deleteDirectory(new File("./web/panel/js/ion-sound/sounds"));
+            FileUtils.deleteDirectory(new File("./web/alerts/data"));
+        } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to move audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.logStackTrace(ex);
         }
     }
 
@@ -1549,9 +1543,9 @@ public final class PhantomBot implements Listener {
         builder.append(String.join(",", headers)).append("\n");
 
         // Append all values.
-        for (String[] value : values) {
+        values.forEach((value) -> {
             builder.append(String.join(",", value)).append("\n");
-        }
+        });
 
         // Write the data to a file.
         try {
@@ -1561,10 +1555,9 @@ public final class PhantomBot implements Listener {
             // Write the content.
             stream.write(builder.toString().getBytes(Charset.forName("UTF-8")));
             stream.flush();
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed writing data to file [IOException]: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            com.gmt2001.Console.err.println("Failed writing data to file [SecurityException]: " + ex.getMessage());
+        } catch (SecurityException | IOException ex) {
+            com.gmt2001.Console.err.println("Failed writing data to file [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.logStackTrace(ex);
         } finally {
             if (stream != null) {
                 try {
