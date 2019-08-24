@@ -1032,19 +1032,31 @@ public class SqliteStore extends DataStore {
             Statement statement = connection.createStatement();
             statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
 
-            String s = "INSERT OR IGNORE INTO phantombot_" + fName + " (section, variable, value) VALUES ";
+            StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
+            
+            sb.append("INSERT OR IGNORE INTO phantombot_");
+            sb.append(fName);
+            sb.append(" (section, variable, value) VALUES ");
 
             boolean first = true;
             for (String k : keys) {
                 if (!first) {
-                    s += ",";
+                    sb.append(",");
                 }
 
                 first = false;
-                s += "('" + section + "', '" + k + "', " + value + ")";
+                sb.append("('");
+                sb.append(section);
+                sb.append("', '");
+                sb.append(k);
+                sb.append("', ");
+                sb.append(value);
+                sb.append(")");
             }
+            
+            sb.append(";");
 
-            statement.addBatch(s + ";");
+            statement.addBatch(sb.toString());
             statement.executeBatch();
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
