@@ -365,6 +365,16 @@ public class DataStore {
     public void CloseConnection() {
     }
 
+    public boolean HasIncrementalMaitenance() {
+        return false;
+    }
+
+    public void IncrementalMaitenance() {
+    }
+
+    public void ShutdownMaitenance() {
+    }
+
     public void setAutoCommit(boolean mode) {
     }
 

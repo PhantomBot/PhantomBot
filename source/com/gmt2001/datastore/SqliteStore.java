@@ -43,7 +43,7 @@ public class SqliteStore extends DataStore {
     private Connection connection = null;
     private static final SqliteStore instance = new SqliteStore();
     private int autoCommitCtr = 0;
-    private boolean use_indexes = false;
+    private long lastVacuum;
 
     public static SqliteStore instance() {
         return instance;
@@ -62,8 +62,9 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        use_indexes = (boolean) o[4];
         connection = (Connection) o[5];
+        
+        lastVacuum = System.currentTimeMillis();
     }
 
     private String sanitizeOrder(String order) {
@@ -107,7 +108,6 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        use_indexes = (boolean) o[4];
         connection = (Connection) o[5];
     }
 
@@ -170,6 +170,14 @@ public class SqliteStore extends DataStore {
             config.setJournalMode(journal ? SQLiteConfig.JournalMode.WAL : SQLiteConfig.JournalMode.OFF);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
             connection.setAutoCommit(autocommit);
+            
+            try (Statement statement = connection.createStatement()) {
+                statement.addBatch("PRAGMA auto_vacuum=INCREMENTAL;");
+                statement.addBatch("VACUUM;");
+                statement.executeBatch();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1149,6 +1157,38 @@ public class SqliteStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
+    
+    @Override
+    public boolean HasIncrementalMaitenance() {
+        return true;
+    }
+    
+    @Override
+    public void IncrementalMaitenance() {
+        CheckConnection();
+        
+        try (Statement statement = connection.createStatement()) {
+            if (System.currentTimeMillis() - lastVacuum >= 10800000) {
+                statement.execute("VACUUM;");
+                lastVacuum = System.currentTimeMillis();
+            } else {
+                statement.execute("PRAGMA incremental_vacuum;");
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void ShutdownMaitenance() {
+        CheckConnection();
+        
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("VACUUM;");
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
 
     private synchronized void incrAutoCommitCtr() {
         autoCommitCtr++;
@@ -1163,6 +1203,6 @@ public class SqliteStore extends DataStore {
     }
 
     public boolean getUseIndexes() {
-        return use_indexes;
+        return true;
     }
 }

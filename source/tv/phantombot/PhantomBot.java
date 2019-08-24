@@ -60,6 +60,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -141,6 +143,7 @@ public final class PhantomBot implements Listener {
     private DataStore dataStore;
     private String dataStoreType;
     private String dataStoreConfig;
+    private Timer imTimer;
 
     /* MySQL Information */
     private String mySqlConn;
@@ -1074,6 +1077,16 @@ public final class PhantomBot implements Listener {
 
         /* Get the un time for that new thread we just created */
         Runtime.getRuntime().addShutdownHook(thread);
+        
+        if (dataStore.HasIncrementalMaitenance()) {
+            imTimer = new Timer();
+            imTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    dataStore.IncrementalMaitenance();
+                }
+            }, 300000, 3600000);
+        }
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -1108,7 +1121,10 @@ public final class PhantomBot implements Listener {
         PhantomBot.isInExitState = true;
 
         print("Stopping all events and message dispatching...");
-        ScriptFileWatcher.instance().kill();
+        if (reloadScripts) {
+            ScriptFileWatcher.instance().kill();
+        }
+        
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
@@ -1172,20 +1188,21 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        try {
-            for (int i = 5; i > 0; i--) {
-                com.gmt2001.Console.out.print("\rWaiting for everthing else to shutdown... " + i + " ");
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.err.printStackTrace(ex);
+        print("Performing database shutdown maitenance...");
+        if (dataStore.HasIncrementalMaitenance()) {
+            imTimer.cancel();
         }
-
-
-        com.gmt2001.Console.out.print("\r\n");
+        
+        dataStore.ShutdownMaitenance();
+        
         print("Closing the database...");
         dataStore.CloseConnection();
+        
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
 
         print(this.botName + " is exiting.");
     }
