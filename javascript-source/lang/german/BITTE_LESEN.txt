@@ -2,11 +2,11 @@ Guten Tag lieber PhantomBot Benutzer!
 
 Die deutsche Übersetzung für PhantomBot findest Du unter
 
-https://github.com/vesturo/PhantomBotDE
+https://github.com/PhantomBotDE/PhantomBotDE
 
 den PhantomBot Forumsbeitrag findest Du unter
 
-https://community.phantombot.tv/t/3872
+https://community.phantom.bot/t/3872
 
 
 Sollten Probleme, Fragen, Fehler oder Verbesserungsvorschläge auftauchen,
@@ -16,6 +16,6 @@ Du bist auch herzlichst eingeladen, Dich an der Übersetzung zu beteiligen.
 
 Viel Spaß beim Streamen und mit PhantomBot!
 
-Vesturo
+PhantomBotDE Team
 
 Hier auch noch ein großes Danke an die DEVs für diesen wundervollen bot!
