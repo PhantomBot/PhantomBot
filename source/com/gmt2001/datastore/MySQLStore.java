@@ -115,7 +115,6 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
-    @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
         super.finalize();
 
@@ -259,7 +258,7 @@ public class MySQLStore extends DataStore {
 
             DatabaseMetaData md = connection.getMetaData();
             try (ResultSet rs = md.getTables(null, null, "%", null)) {
-                ArrayList<String> s = new ArrayList<>();
+                ArrayList<String> s = new ArrayList<String>();
                 while (rs.next()) {
                     s.add(rs.getString(3));
                 }
@@ -285,7 +284,7 @@ public class MySQLStore extends DataStore {
 
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
-                    ArrayList<String> s = new ArrayList<>();
+                    ArrayList<String> s = new ArrayList<String>();
 
                     while (rs.next()) {
                         s.add(rs.getString("section"));
@@ -316,7 +315,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -333,7 +332,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -364,7 +363,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<KeyValue> s = new ArrayList<>();
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -381,7 +380,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<KeyValue> s = new ArrayList<>();
+                        ArrayList<KeyValue> s = new ArrayList<KeyValue>();
 
                         while (rs.next()) {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
@@ -429,7 +428,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -451,7 +450,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -501,7 +500,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -523,7 +522,7 @@ public class MySQLStore extends DataStore {
 
                     try (ResultSet rs = statement.executeQuery()) {
 
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while (rs.next()) {
                             s.add(rs.getString("variable"));
@@ -555,7 +554,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -571,7 +570,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -604,7 +603,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -620,7 +619,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(1, search);
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -656,7 +655,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(2, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
@@ -672,7 +671,7 @@ public class MySQLStore extends DataStore {
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
-                        ArrayList<String> s = new ArrayList<>();
+                        ArrayList<String> s = new ArrayList<String>();
 
                         while(rs.next()) {
                             s.add(rs.getString("variable"));

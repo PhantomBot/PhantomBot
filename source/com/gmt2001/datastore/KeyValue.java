@@ -14,6 +14,6 @@ public class KeyValue {
     return value;
   }
 
-  private final String key;
-  private final String value;
+  private String key;
+  private String value;
 }

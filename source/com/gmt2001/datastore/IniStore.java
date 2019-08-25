@@ -37,11 +37,10 @@ import org.apache.commons.io.FileUtils;
  *
  * @author gmt2001
  */
-@Deprecated
 public class IniStore extends DataStore implements ActionListener {
 
-    private final HashMap<String, IniFile> files = new HashMap<>();
-    private final HashMap<String, Date> changed = new HashMap<>();
+    private final HashMap<String, IniFile> files = new HashMap<String, IniFile>();
+    private final HashMap<String, Date> changed = new HashMap<String, Date>();
     private final Date nextSave = new Date(0);
     private final Timer t;
     private final Timer t2;
@@ -98,13 +97,13 @@ public class IniStore extends DataStore implements ActionListener {
 
                 String section = "";
 
-                f.data.put(section, new HashMap<>());
+                f.data.put(section, new HashMap<String, String>());
 
                 for (String line : lines) {
                     if (!line.trim().startsWith(";")) {
                         if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
                             section = line.trim().substring(1, line.trim().length() - 1);
-                            f.data.put(section, new HashMap<>());
+                            f.data.put(section, new HashMap<String, String>());
                         } else if (!line.trim().isEmpty()) {
                             String[] spl = line.split("=", 2);
                             f.data.get(section).put(spl[0], spl[1]);
@@ -170,7 +169,7 @@ public class IniStore extends DataStore implements ActionListener {
 
     private static class IniFile {
 
-        protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
+        protected HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
     }
 
     @Override
@@ -180,7 +179,7 @@ public class IniStore extends DataStore implements ActionListener {
         }
 
         IniFile f = new IniFile();
-        f.data.put("", new HashMap<>());
+        f.data.put("", new HashMap<String, String>());
 
         files.put(fName, f);
     }
@@ -446,7 +445,7 @@ public class IniStore extends DataStore implements ActionListener {
         section = validateSection(section);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<>());
+            files.get(fName).data.put(section, new HashMap<String, String>());
         }
 
         for (int idx = 0; idx < keys.length; idx++) {
@@ -469,7 +468,7 @@ public class IniStore extends DataStore implements ActionListener {
         key = validateKey(key);
 
         if (!files.get(fName).data.containsKey(section)) {
-            files.get(fName).data.put(section, new HashMap<>());
+            files.get(fName).data.put(section, new HashMap<String, String>());
         }
 
         files.get(fName).data.get(section).put(key, value);
