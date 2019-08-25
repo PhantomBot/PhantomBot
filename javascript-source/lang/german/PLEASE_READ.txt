@@ -2,11 +2,11 @@ Good day dear PhantomBot user!
 
 You can find the german translation for PhantomBot under
 
-https://github.com/vesturo/PhantomBotDE
+https://github.com/PhantomBotDE/PhantomBotDE
 
 the PhantomBot forum post, you can find under
 
-https://community.phantombot.tv/t/3872
+https://community.phantom.bot/t/3872
 
 
 If any problems, questions, errors or suggestions for improvement emerge,
@@ -16,7 +16,7 @@ You are also cordially invited to participate in the translation.
 
 Enjoy streaming and PhantomBot!
 
-Vesturo
+PhantomBotDE Team
 
 Here also a big thanks to the devs of PhantomBot
 for this great Twitch-Chat-Bot!

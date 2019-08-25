@@ -31,9 +31,9 @@ $.lang.register('followhandler.set.followmessage.usage', 'Verwendung: !followmes
 $.lang.register('followhandler.set.followreward.success', 'Follow Belohnung geändert auf $1.');
 $.lang.register('followhandler.set.followreward.usage', 'Verwendung: !followreward [$1]. (Aktuell $2)');
 $.lang.register('followhandler.shoutout.usage', 'Verwendung: !$1 (streamer)');
-$.lang.register('followhandler.shoutout.offline', 'Hey! Gib $1 einen Follow auf $2! $1 spielte das letzte Mal $3!');
-$.lang.register('followhandler.shoutout.online', 'Hey! Gib $1 einen Follow auf $2! $1 spielt gerade $3!');
-$.lang.register('followhandler.shoutout.no.game', 'Hey! Gib $1 einen Follow auf $2!');
+$.lang.register('followhandler.shoutout.offline', 'Hey! Gib $1 einen Follow auf $2 - $1 spielte das letzte Mal $3!');
+$.lang.register('followhandler.shoutout.online', 'Hey! Gib $1 einen Follow auf $2 - $1 spielt gerade $3!');
+$.lang.register('followhandler.shoutout.no.game', 'Hey! Gib $1 einen Follow auf $2 !');
 $.lang.register('followhandler.followtoggle.on', 'Benachrichtigungen für neue Follower sind aktiviert.');
 $.lang.register('followhandler.followtoggle.off', 'Benachrichtigungen für neue Follower sind deaktiviert.');
 $.lang.register('followhandler.followtraintoggle.on', 'Follow Zug Benachrichtigungen sind aktiviert.');
