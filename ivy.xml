@@ -24,7 +24,7 @@
     <info organisation="tv.phantombot" module="phantombot"/>
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.0.8" conf="*->*,!sources" />
-        <dependency org="org.apache.commons" name="commons-io" rev="1.3.2" conf="*->*,!sources" />
+        <dependency org="commons-io" name="commons-io" rev="2.5" conf="*->*,!sources" />
     </dependencies>
 </ivy-module>
 
