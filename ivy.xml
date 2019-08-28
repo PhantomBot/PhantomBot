@@ -23,8 +23,8 @@
 <ivy-module version="2.0">
     <info organisation="tv.phantombot" module="phantombot"/>
     <dependencies>
-        <dependency org="com.discord4j" name="discord4j-core" rev="3.0.8" />
-        <dependency org="org.apache.commons" name="commons-io" rev="1.3.2" />
+        <dependency org="com.discord4j" name="discord4j-core" rev="3.0.8" conf="*->*,!sources" />
+        <dependency org="org.apache.commons" name="commons-io" rev="1.3.2" conf="*->*,!sources" />
     </dependencies>
 </ivy-module>
 
