@@ -35,7 +35,7 @@ var setTimeout,
      * @param {Function} fn
      * @param {Number} delay
      * @param {String} name
-     
+
      * @returns {Number}
     */
     setTimeout = function(fn, delay, name) {
@@ -92,7 +92,12 @@ var setTimeout,
         }
 
         if (registry[id] != undefined) {
-            registry[id].cancel();
+            try {
+                registry[id].cancel();
+            } catch (ex) {
+                // Cannot cancel since timer is already over.
+                // Ignore this.
+            }
         }
 
         delete registry[id];

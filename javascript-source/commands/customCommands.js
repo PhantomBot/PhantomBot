@@ -271,7 +271,7 @@
 
         if (message.match(/\(random\)/g)) {
             try {
-                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
+                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)));
             } catch (ex) {
                 message = $.replace(message, '(random)', $.username.resolve($.botName));
             }
@@ -279,7 +279,7 @@
 
         if (message.match(/\(randomrank\)/g)) {
             try {
-                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)[0]));
+                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)));
             } catch (ex) {
                 message = $.replace(message, '(randomrank)', $.resolveRank($.botName));
             }
@@ -384,7 +384,7 @@
 
             if (args.length > 0) sender = args[0].replace('@','');
             if (args.length > 1) channel = args[1].replace('@','');
-     
+
             message = $.replace(message, '(followdate)', $.getFollowDate(event.getSender(), sender, channel));
         }
 
@@ -393,7 +393,7 @@
                 sender = event.getSender();
 
             if (args.length > 0) sender = args[0].replace('@','');
-     
+
             message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
         }
 
@@ -627,7 +627,7 @@
             if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
                 regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
             }
-            
+
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -651,7 +651,7 @@
             if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
                 regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
             }
-            
+
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -970,7 +970,7 @@
 
             action = action.replace('!', '').toLowerCase();
             argsString = args.slice(1).join(' ');
-            
+
             var silent = false;
             if (action.startsWith('silent@')) {
                 silent = true;
@@ -990,7 +990,7 @@
             if (!silent) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.success', action));
             }
-            
+
             if (argsString.length() === 0) {
                 $.inidb.RemoveKey('commandtoken', '', action);
             } else {

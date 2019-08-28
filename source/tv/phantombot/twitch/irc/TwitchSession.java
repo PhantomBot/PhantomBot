@@ -18,6 +18,7 @@ package tv.phantombot.twitch.irc;
 
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.PhantomBot;
 
@@ -49,7 +50,7 @@ public class TwitchSession extends MessageQueue {
         }
         return instance;
     }
-    
+
     private static TwitchSession instance() {
         return instance;
     }
@@ -95,8 +96,13 @@ public class TwitchSession extends MessageQueue {
     public void sendRaw(String message) {
         try {
             this.twitchWSIRC.send(message);
-        } catch (NotYetConnectedException ex) {
-            com.gmt2001.Console.debug.println("Failed to send message to Twitch: " + ex.getMessage());
+        } catch (NotYetConnectedException  ex) {
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
+        } catch (WebsocketNotConnectedException ex) {
+            reconnect();
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [WebsocketNotConnectedException]: " + ex.getMessage());
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
 
@@ -122,7 +128,7 @@ public class TwitchSession extends MessageQueue {
     public TwitchSession connect() {
         // Start the write queue.
         this.start(this);
-        
+
         // Connect to Twitch.
         try {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), channelName, botName, oAuth, this);
@@ -144,7 +150,7 @@ public class TwitchSession extends MessageQueue {
         if (lock.isLocked() || PhantomBot.instance().isExiting()) {
             return;
         }
-        
+
         lock.lock();
         try {
             new Thread(() -> {
@@ -154,7 +160,7 @@ public class TwitchSession extends MessageQueue {
             lock.unlock();
         }
     }
-    
+
     public void doReconnect() {
         if (lock2.tryLock()) {
             try {
@@ -164,12 +170,13 @@ public class TwitchSession extends MessageQueue {
                     nextBackoff = 1000L;
                 } else {
                     com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (nextBackoff / 1000) + " seconds...");
+                    com.gmt2001.Console.warn.println("Delaying next reconnect " + (nextBackoff / 1000) + " seconds...", true);
                     Thread.sleep(nextBackoff);
                 }
-                
+
                 lastReconnect = now;
                 nextBackoff = Math.min(MAX_BACKOFF, nextBackoff * 2L);
-                
+
                 this.twitchWSIRC.reconnectBlocking();
 
                 // Should be connected now.
@@ -183,7 +190,7 @@ public class TwitchSession extends MessageQueue {
     }
 
     /**
-     * Method that stops everyting for TwitchWSIRC, there's no going back after this.
+     * Method that stops everything for TwitchWSIRC, there's no going back after this.
      */
     public void close() {
         // Kill the message queue.

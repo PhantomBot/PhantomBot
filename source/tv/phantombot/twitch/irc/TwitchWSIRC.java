@@ -126,7 +126,7 @@ public class TwitchWSIRC extends WebSocketClient {
 
             // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
             if (System.currentTimeMillis() > (lastPong + 210000)) {
-                com.gmt2001.Console.debug.println("Closing our connection with Twitch since no PONG got sent back.");
+                com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
                 this.close();
             }
         }, 10, 30, TimeUnit.SECONDS);
@@ -144,7 +144,8 @@ public class TwitchWSIRC extends WebSocketClient {
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
             com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
-            com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+            com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ", true);
+            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]", true);
 
             this.session.reconnect();
         } else {

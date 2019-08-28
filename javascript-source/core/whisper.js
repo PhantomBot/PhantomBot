@@ -85,7 +85,7 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
+        if (message.startsWith('!') && $.isMod(sender) && $.users.includes(sender)) {
             message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');
