@@ -149,7 +149,7 @@ public class MySQLStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (variable(191)));");
+                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (section(30), variable(150)));");
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -888,6 +888,47 @@ public class MySQLStore extends DataStore {
                     statement.executeUpdate();
                 }
             }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+        fName = validateFname(fName);
+
+        AddFile(fName);
+
+        try {
+            Statement statement = connection.createStatement();
+            statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+
+            StringBuilder sb = new StringBuilder(66 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
+            
+            sb.append("INSERT IGNORE INTO phantombot_");
+            sb.append(fName);
+            sb.append(" (section, variable, value) VALUES ");
+
+            boolean first = true;
+            for (String k : keys) {
+                if (!first) {
+                    sb.append(",");
+                }
+
+                first = false;
+                sb.append("('");
+                sb.append(section);
+                sb.append("', '");
+                sb.append(k);
+                sb.append("', ");
+                sb.append(value);
+                sb.append(")");
+            }
+            
+            sb.append(";");
+
+            statement.addBatch(sb.toString());
+            statement.executeBatch();
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

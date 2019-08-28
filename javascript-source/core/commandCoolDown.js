@@ -79,7 +79,13 @@
      * @return {Boolean}
      */
     function isSpecial(command) {
-        return command == 'bet' || command == 'tickets' || command == 'bid' || command == 'adventure' || command == 'vote' || command == $.raffleCommand;
+        return command == 'bet' ||
+               command == 'tickets' ||
+               command == 'bid' ||
+               command == 'adventure' ||
+               command == 'vote' ||
+               command == 'joinqueue' ||
+               command == $.raffleCommand;
     }
 
     /*
@@ -101,7 +107,7 @@
                 return 0;
             }
         } else {
-            if (cooldown !== undefined) {
+            if (cooldown !== undefined && cooldown.time > 0) {
                 if (cooldown.isGlobal) {
                     if (cooldown.time > $.systemTime()) {
                         return (canIgnore(username, isMod) ? 0 : cooldown.time);
@@ -133,7 +139,7 @@
      * @param  {String}  username
      * @return {Number}
      */
-    function getSecs(username, command) {
+    function getSecs(username, command, isMod) {
         var cooldown = cooldowns[command];
 
         if (cooldown !== undefined) {

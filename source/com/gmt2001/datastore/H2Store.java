@@ -871,6 +871,29 @@ public class H2Store extends DataStore {
 
         setAutoCommit(true);
     }
+    
+    @Override
+    public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+        fName = validateFname(fName);
+
+        AddFile(fName);
+        try {
+            
+            int valueInt =  Integer.parseInt(value);
+        
+            for (String key : keys)  {
+                int amount = valueInt;
+            
+                if (HasKey(fName, section, key)) {
+                    amount = (Integer.parseInt(GetString(fName, section, key)) + valueInt);
+                }
+                
+                SetString(fName, section, key, Integer.toString(amount));
+            }
+        } catch (NumberFormatException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
 
     @Override
     public void SetString(String fName, String section, String key, String value) {

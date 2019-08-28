@@ -35,6 +35,8 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -42,6 +44,8 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONStringer;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.script.Script;
 
 import tv.phantombot.script.ScriptManager;
 
@@ -89,7 +93,11 @@ public final class LangFileUpdater {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             
-            sb.append("$.lang.register('" + obj.getString("id") + "', '" + sanitizeResponse(obj.getString("response")) + "');\n");
+            sb.append("$.lang.register('");
+            sb.append(obj.getString("id"));
+            sb.append("', '");
+            sb.append(sanitizeResponse(obj.getString("response")));
+            sb.append("');\n");
         }
         
         try {
@@ -114,6 +122,25 @@ public final class LangFileUpdater {
             // If the script doesn't exist, load it.
             if (!exists) {
                 ScriptManager.loadScript(file);
+            } else {
+                if (!PhantomBot.getReloadScripts()) {
+                    HashMap<String, Script> scripts = ScriptManager.getScripts();
+                    String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
+                    
+                    scripts.values().forEach((script -> {
+                        String path = script.getFile().toPath().toString();
+
+                        if (path.contains("lang")) {
+                            if (path.substring(path.indexOf("lang")).equals(matchPath)) {
+                                try {
+                                    script.reload();
+                                } catch (IOException ex) {
+                                    com.gmt2001.Console.err.printStackTrace(ex);
+                                }
+                            }
+                        }
+                    }));
+                }
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

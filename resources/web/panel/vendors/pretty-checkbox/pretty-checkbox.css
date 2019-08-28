@@ -56,7 +56,7 @@
   display: block;
   box-sizing: border-box;
   border-radius: 0;
-  border: 1px solid transparent;
+  border: 1px solid #3e3d3d;
   z-index: 0;
   position: absolute;
   left: 0;
@@ -321,7 +321,7 @@
 .pretty.p-default.p-thick .state label:after {
   border-width: calc(1em / 7);
 }
- 
+
 .pretty.p-default.p-thick .state label:after {
   -webkit-transform: scale(0.4) !important;
   -ms-transform: scale(0.4) !important;

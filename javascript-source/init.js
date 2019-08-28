@@ -314,7 +314,7 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
             }
         } else {
             for (i in hook.handlers) {
@@ -322,7 +322,7 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
                     }
                 }
             }
@@ -434,10 +434,6 @@
          */
         $api.on($script, 'ircChannelMessage', function(event) {
             callHook('ircChannelMessage', event, false);
-
-            if (isModuleEnabled('./handlers/panelHandler.js')) {
-                $.panelDB.updateChatLinesDB(event.getSender());
-            }
         });
 
         /*
@@ -511,7 +507,7 @@
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             } else
