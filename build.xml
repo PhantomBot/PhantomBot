@@ -95,7 +95,7 @@
                  uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
     
-    <target depends="init-ivy" name="init">
+    <target name="init">
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
@@ -110,6 +110,10 @@
                 </chainedmapper>
             </mapper>
         </pathconvert>
+    </target>
+    
+    <target depends="init-ivy" name="ivy-retrieve">
+        <ivy:retrieve/>
     </target>
 
     <target name="git.revision" if="git.present">
@@ -126,10 +130,9 @@
         </condition>
     </target>
 
-    <target depends="init,git.revision" name="pre.compile">
+    <target depends="init,ivy-retrieve,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
-        <ivy:retrieve/>
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="repoVersion = &quot;(.*)&quot;;"
