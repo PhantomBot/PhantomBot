@@ -210,7 +210,7 @@
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
             <fileset dir="./libraries" />
-            <fileset dir="./libs" includes="**/*.jar" excludes="**/*sources.jar, **/*javadoc.jar" />
+            <fileset dir="./lib" includes="**/*.jar" excludes="**/*sources.jar, **/*javadoc.jar" />
         </copy>
         <echo level="info" message="staging javascript-source into resources." />
         <copy todir="./resources/scripts">
