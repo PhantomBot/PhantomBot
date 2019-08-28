@@ -68,3 +68,5 @@ nbproject/
 .classpath
 .project
 
+# Libs downloaded from Maven
+lib/
