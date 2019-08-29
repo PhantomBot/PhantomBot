@@ -1,3 +1,4 @@
+@echo off
 REM  
 REM Copyright (C) 2016-2018 phantombot.tv
 REM  
