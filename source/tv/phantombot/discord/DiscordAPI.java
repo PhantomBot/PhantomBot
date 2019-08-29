@@ -17,28 +17,15 @@
 
 package tv.phantombot.discord;
 
-import sx.blah.discord.modules.Configuration;
-
-import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.api.internal.ShardImpl;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.ClientBuilder;
-
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionRemoveEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
-import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
-import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelLeaveEvent;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-
-import sx.blah.discord.util.DiscordException;
-
+import discord4j.core.DiscordClient;
+import discord4j.core.DiscordClientBuilder;
+import discord4j.core.event.domain.guild.GuildCreateEvent;
+import discord4j.core.event.domain.lifecycle.ReadyEvent;
+import discord4j.core.object.entity.Channel;
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
+import java.util.List;
 import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
@@ -50,10 +37,6 @@ import tv.phantombot.event.EventBus;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import sx.blah.discord.handle.impl.events.guild.role.RoleCreateEvent;
-import sx.blah.discord.handle.impl.events.guild.role.RoleDeleteEvent;
-import sx.blah.discord.handle.impl.events.guild.role.RoleUpdateEvent;
 
 import tv.phantombot.discord.util.DiscordUtil;
 
@@ -72,10 +55,11 @@ import tv.phantombot.event.discord.role.DiscordRoleUpdatedEvent;
  */
 public class DiscordAPI extends DiscordUtil {
     private static final DiscordAPI instance = new DiscordAPI();
-    private static IDiscordClient client;
-    private static ShardImpl shard;
-    private static IGuild guild;
+    private static DiscordClient client;
+    private static Guild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
+    private static DiscordClientBuilder builder;
+    private boolean ready = false;
 
     /**
      * Method to return this class object.
@@ -90,8 +74,6 @@ public class DiscordAPI extends DiscordUtil {
      * Class constructor
      */
     private DiscordAPI() {
-        Configuration.LOAD_EXTERNAL_MODULES = false;
-
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
     
@@ -111,10 +93,14 @@ public class DiscordAPI extends DiscordUtil {
      * @param token
      */
     public void connect(String token) {
-        try {
-            DiscordAPI.client = new ClientBuilder().withToken(token).setMaxReconnectAttempts(150).setDaemon(false).registerListener(new DiscordEventListener()).login();
-        } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+        DiscordAPI.builder = new DiscordClientBuilder(token);
+        DiscordAPI.client = builder.build();
+        DiscordAPI.client.login().doOnError(e -> {
+             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        }).block();
+        
+        if (isLoggedIn()) {
+            subscribeToEvents();
         }
     }
 
@@ -123,16 +109,45 @@ public class DiscordAPI extends DiscordUtil {
      * @return 
      */
     public boolean reconnect() {
-        try {
-            if (DiscordAPI.client.isLoggedIn()) {
-                DiscordAPI.client.logout();
-            }
-            DiscordAPI.client.login();
-            return true;
-        } catch (DiscordException ex) {
-            com.gmt2001.Console.err.println("Failed to reconnect with Discord: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+        ready = false;
+        DiscordAPI.client.logout();
+            
+        DiscordAPI.client = builder.build();
+        DiscordAPI.client.login().doOnError(e -> {
+             com.gmt2001.Console.err.println("Failed to reconnect with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        }).block();
+        
+        if (isLoggedIn()) {
+            subscribeToEvents();
         }
-        return false;
+        
+        return isLoggedIn();
+    }
+    
+    private void subscribeToEvents() {
+        DiscordAPI.client.getEventDispatcher().on(ReadyEvent.class) // Listen for ReadyEvent(s)
+                .map(event -> event.getGuilds().size()) // Get how many guilds the bot is in
+                .flatMap(size -> client.getEventDispatcher()
+                    .on(GuildCreateEvent.class) // Listen for GuildCreateEvent(s)
+                    .take(size) // Take only the first `size` GuildCreateEvent(s) to be received
+                    .collectList()) // Take all received GuildCreateEvents and make it a List
+                .subscribe(events -> DiscordEventListener.onDiscordReadyEvent(events));
+    }
+    
+    /** 
+     * Method that checks if we are logged in to Discord.
+     * @return 
+     */
+    public boolean isLoggedIn() {
+        return DiscordAPI.client.getSelfId().isPresent();
+    }
+    
+        /** 
+     * Method that checks if Discord is ready and has sent all Guilds.
+     * @return 
+     */
+    public boolean isReady() {
+        return ready;
     }
     
     /** 
@@ -140,7 +155,7 @@ public class DiscordAPI extends DiscordUtil {
      * @return 
      */
     public ConnectionState checkConnectionStatus() {
-        if (!DiscordAPI.client.isLoggedIn() || !DiscordAPI.client.isReady()) {
+        if (!isLoggedIn() || !isReady()) {
             com.gmt2001.Console.warn.println("Connection lost with Discord, attempting to reconnect...");
             if (reconnect()) {
                 com.gmt2001.Console.warn.println("Connection re-established with Discord.");
@@ -156,44 +171,34 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     /**
-     * Method that will return the current shard.
-     *
-     * @return {ShardImpl}
-     */
-    public static ShardImpl getShard() {
-        return shard;
-    }
-
-    /**
      * Method that will return the current guild.
      *
-     * @return {IGuild}
+     * @return {Guild}
      */
-    public static IGuild getGuild() {
+    public static Guild getGuild() {
         return guild;
     }
 
     /**
      * Method that will return the current guild
      *
-     * @return {IDiscordClient}
+     * @return {DiscordClient}
      */
-    public static IDiscordClient getClient() {
+    public static DiscordClient getClient() {
         return client;
     }
 
     /**
      * Method to set the guild and shard objects.
      */
-    private void setGuildAndShard() {
+    private void setGuildAndShard(List<GuildCreateEvent> events) {
         // PhantomBot only works in one server, so throw an error if there's multiple.
-        if (DiscordAPI.getClient().getGuilds().size() > 1) {
+        if (events.size() > 1) {
             com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
             DiscordAPI.client.logout();
             reconnectState = ConnectionState.CANNOT_RECONNECT;
         } else {
-            DiscordAPI.guild = DiscordAPI.getClient().getGuilds().get(0);
-            DiscordAPI.shard = (ShardImpl) DiscordAPI.getClient().getShards().get(0);
+            DiscordAPI.guild = events.get(0).getGuild();
         }
     }
 
@@ -202,8 +207,12 @@ public class DiscordAPI extends DiscordUtil {
      *
      * @param {String} message
      */
-    private void parseCommand(IUser user, IChannel channel, IMessage message, boolean isAdmin) {
-        String command = message.getContent().substring(1);
+    private void parseCommand(User user, Channel channel, Message message, boolean isAdmin) {
+        if (message.getContent().isEmpty()) {
+            return;
+        }
+        
+        String command = message.getContent().get().substring(1);
         String arguments = "";
 
         if (command.contains(" ")) {
@@ -218,18 +227,19 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Class to listen to events.
      */
-    private class DiscordEventListener {
-        @EventSubscriber
-        public void onDiscordReadyEvent(ReadyEvent event) {
+    private static class DiscordEventListener {
+        public static void onDiscordReadyEvent(List<GuildCreateEvent> events) {
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
 
-            setGuildAndShard();
+            DiscordAPI.instance().ready = true;
+            
+            DiscordAPI.instance().setGuildAndShard(events);
             
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.scheduleAtFixedRate(() -> {
                 if (reconnectState != ConnectionState.CANNOT_RECONNECT && !PhantomBot.instance().isExiting()) {
-                    if (checkConnectionStatus() == ConnectionState.DISCONNECTED) {
+                    if (DiscordAPI.instance().checkConnectionStatus() == ConnectionState.DISCONNECTED) {
                         com.gmt2001.Console.err.println("Connection with Discord was lost.");
                         com.gmt2001.Console.err.println("Reconnecting will be attempted in 60 seconds...");
                     }
@@ -239,11 +249,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordReadyEvent());
         }
 
-        @EventSubscriber
         public void onDiscordMessageEvent(MessageReceivedEvent event) {
-            IMessage iMessage = event.getMessage();
-            IChannel iChannel = event.getChannel();
-            IUser iUsername = event.getAuthor();
+            Message iMessage = event.getMessage();
+            Channel iChannel = event.getChannel();
+            User iUsername = event.getAuthor();
 
             String username = iUsername.getName().toLowerCase();
             String message = iMessage.getContent();
