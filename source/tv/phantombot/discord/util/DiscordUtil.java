@@ -78,7 +78,7 @@ public class DiscordUtil {
      */
     public Message sendMessage(TextChannel channel, String message) {
         if (channel != null) {
-            com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getMention() + "] [CHAT] " + message);
+            com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
 
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.println("Failed to send a message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());

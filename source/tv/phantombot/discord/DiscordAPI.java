@@ -35,6 +35,7 @@ import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
+import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import java.util.List;
 import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
@@ -290,14 +291,20 @@ public class DiscordAPI extends DiscordUtil {
 
             String username = iUser.getUsername().toLowerCase();
             String message = iMessage.getContent().get();
-            String channel = iChannel.getMention();
+            String channel;
             boolean isAdmin = DiscordAPI.instance().isAdministrator(iUser);
             
             if (message == null) {
                 return;
             }
+            
+            if (iChannel.getType() == Channel.Type.GUILD_TEXT) {
+                channel = "#" + ((TextChannel)iChannel).getName();
+            } else {
+                channel = "DM " + iChannel.getMention();
+            }
 
-            com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
+            com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {
                 DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin);
