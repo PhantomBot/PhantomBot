@@ -582,7 +582,7 @@ public class DiscordUtil {
             return;
         }
         
-        Set<Snowflake> rolesSf  = Collections.EMPTY_SET;
+        Set<Snowflake> rolesSf  = Collections.<Snowflake>emptySet();
         
         for (Role role : roles) {
             rolesSf.add(role.getId());
@@ -881,7 +881,7 @@ public class DiscordUtil {
      */
     public List<User> getUsers() {
         List<Member> m = DiscordAPI.getGuild().getMembers().collectList().block();
-        List<User> u = Collections.EMPTY_LIST;
+        List<User> u = Collections.<User>emptyList();
         
         if (m != null) {
             Collections.copy(u, m);
