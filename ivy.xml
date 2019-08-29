@@ -25,7 +25,9 @@
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.0.8" conf="*->*,!sources" />
         <dependency org="commons-io" name="commons-io" rev="2.5" conf="*->*,!sources" />
-        <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25" conf="*->*,!sources" />
+        <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.javassist" name="javassist" rev="3.25.0-GA" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.reflections" name="reflections" rev="0.9.11" conf="*->*,!sources,!javadoc" />
     </dependencies>
 </ivy-module>
 
