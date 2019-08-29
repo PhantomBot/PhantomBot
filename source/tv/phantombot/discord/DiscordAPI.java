@@ -19,19 +19,29 @@ package tv.phantombot.discord;
 
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
+import discord4j.core.event.domain.VoiceStateUpdateEvent;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
+import discord4j.core.event.domain.guild.MemberJoinEvent;
+import discord4j.core.event.domain.guild.MemberLeaveEvent;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.event.domain.message.ReactionAddEvent;
+import discord4j.core.event.domain.message.ReactionRemoveEvent;
+import discord4j.core.event.domain.role.RoleCreateEvent;
+import discord4j.core.event.domain.role.RoleDeleteEvent;
+import discord4j.core.event.domain.role.RoleUpdateEvent;
 import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.PrivateChannel;
+import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
 import java.util.List;
 import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
+import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelJoinEvent;
 import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartEvent;
 import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
 import tv.phantombot.event.EventBus;
@@ -136,6 +146,14 @@ public class DiscordAPI extends DiscordUtil {
                 .subscribe(events -> DiscordEventListener.onDiscordReadyEvent(events));
         
         DiscordAPI.client.getEventDispatcher().on(MessageCreateEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(MemberJoinEvent.class).subscribe(event -> DiscordEventListener.onDiscordUserJoinEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(MemberLeaveEvent.class).subscribe(event -> DiscordEventListener.onDiscordUserLeaveEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(RoleCreateEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleCreateEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(RoleUpdateEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleUpdateEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(RoleDeleteEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleDeleteEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(ReactionAddEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageReactionAddEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(ReactionRemoveEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageReactionRemoveEvent(event));
+        DiscordAPI.client.getEventDispatcher().on(VoiceStateUpdateEvent.class).subscribe(event -> DiscordEventListener.onDiscordVoiceStateUpdateEvent(event));
     }
     
     /** 
@@ -288,39 +306,46 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin));
         }
 
-        public void onDiscordUserJoinEvent(UserJoinEvent event) {
-            EventBus.instance().postAsync(new DiscordChannelJoinEvent(event.getUser()));
+        public static void onDiscordUserJoinEvent(MemberJoinEvent event) {
+            EventBus.instance().postAsync(new DiscordChannelJoinEvent(event.getMember()));
         }
 
-        public void onDiscordUserLeaveEvent(UserLeaveEvent event) {
+        public static void onDiscordUserLeaveEvent(MemberLeaveEvent event) {
             EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
         }
         
-        public void onDiscordRoleCreateEvent(RoleCreateEvent event) {
+        public static void onDiscordRoleCreateEvent(RoleCreateEvent event) {
             EventBus.instance().post(new DiscordRoleCreatedEvent(event.getRole()));
         }
         
-        public void onDiscordRoleUpdateEvent(RoleUpdateEvent event) { 
-            EventBus.instance().post(new DiscordRoleUpdatedEvent(event.getRole()));
+        public static void onDiscordRoleUpdateEvent(RoleUpdateEvent event) { 
+            EventBus.instance().post(new DiscordRoleUpdatedEvent(event.getCurrent()));
         }
         
-        public void onDiscordRoleDeleteEvent(RoleDeleteEvent event) {
-            EventBus.instance().post(new DiscordRoleDeletedEvent(event.getRole()));
+        public static void onDiscordRoleDeleteEvent(RoleDeleteEvent event) {
+            Role role = event.getRole().get();
+            
+            if (role == null) {
+                return;
+            }
+            
+            EventBus.instance().post(new DiscordRoleDeletedEvent(role));
         }
         
-        public void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
+        public static void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
             EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.ADD));
         }
         
-        public void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
+        public static void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
             EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
         }
-
-        public void onDiscordUserVoiceChannelJoinEvent(UserVoiceChannelJoinEvent event) {
-        }
-          
-        public void onDiscordUserVoiceChannelLeaveEvent(UserVoiceChannelLeaveEvent event) {
-            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getUser(), event.getVoiceChannel()));
+        
+        public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {
+            if (event.getCurrent().getChannelId().get() == null) {
+                EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getCurrent().getUser().block(), event.getOld().get().getChannel().block()));
+            } else {
+                EventBus.instance().postAsync(new DiscordUserVoiceChannelJoinEvent(event.getCurrent().getUser().block(), event.getCurrent().getChannel().block()));
+            }
         }
     }
 }
