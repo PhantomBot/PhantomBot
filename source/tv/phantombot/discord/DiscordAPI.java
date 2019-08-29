@@ -108,13 +108,12 @@ public class DiscordAPI extends DiscordUtil {
     public void connect(String token) {
         DiscordAPI.builder = new DiscordClientBuilder(token);
         DiscordAPI.client = builder.build();
+        
+        subscribeToEvents();
+        
         DiscordAPI.client.login().doOnError(e -> {
              com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
-        }).block();
-        
-        if (isLoggedIn()) {
-            subscribeToEvents();
-        }
+        }).subscribe();
     }
 
     /**
@@ -126,13 +125,12 @@ public class DiscordAPI extends DiscordUtil {
         DiscordAPI.client.logout();
             
         DiscordAPI.client = builder.build();
+        
+        subscribeToEvents();
+        
         DiscordAPI.client.login().doOnError(e -> {
              com.gmt2001.Console.err.println("Failed to reconnect with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
-        }).block();
-        
-        if (isLoggedIn()) {
-            subscribeToEvents();
-        }
+        }).subscribe();
         
         return isLoggedIn();
     }
