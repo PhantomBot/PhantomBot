@@ -25,6 +25,7 @@
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.0.8" conf="*->*,!sources" />
         <dependency org="commons-io" name="commons-io" rev="2.5" conf="*->*,!sources" />
+        <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25" conf="*->*,!sources" />
     </dependencies>
 </ivy-module>
 
