@@ -54,9 +54,14 @@ public class ScriptEventManager implements Listener {
 
         Reflections reflections = new Reflections("tv.phantombot.event");
         Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
-
+        String cpkg;
+        
         for (Class<? extends Event> c : classes) {
-            this.classes.add(c.getName().substring(0, c.getName().lastIndexOf(".")));
+            cpkg = c.getName().substring(0, c.getName().lastIndexOf("."));
+            
+            if (!this.classes.contains(cpkg)) {
+                this.classes.add(cpkg);
+            }
         }
     }
 
