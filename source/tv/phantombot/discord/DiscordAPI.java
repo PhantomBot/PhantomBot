@@ -21,9 +21,11 @@ import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.User;
 import java.util.List;
 import tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
@@ -132,6 +134,8 @@ public class DiscordAPI extends DiscordUtil {
                     .take(size) // Take only the first `size` GuildCreateEvent(s) to be received
                     .collectList()) // Take all received GuildCreateEvents and make it a List
                 .subscribe(events -> DiscordEventListener.onDiscordReadyEvent(events));
+        
+        DiscordAPI.client.getEventDispatcher().on(MessageCreateEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageEvent(event));
     }
     
     /** 
@@ -249,65 +253,72 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordReadyEvent());
         }
 
-        public void onDiscordMessageEvent(MessageReceivedEvent event) {
+        public static void onDiscordMessageEvent(MessageCreateEvent event) {
             Message iMessage = event.getMessage();
-            Channel iChannel = event.getChannel();
-            User iUsername = event.getAuthor();
+            Channel iChannel = iMessage.getChannel().block();
+            User iUser = event.getMember().get();
+            
+            if (iChannel == null) {
+                return;
+            }
+            
+            if (iUser == null) {
+                iUser = ((PrivateChannel)iChannel).getRecipients().blockFirst();
+            }
+            
+            if (iUser == null) {
+                return;
+            }
 
-            String username = iUsername.getName().toLowerCase();
-            String message = iMessage.getContent();
-            String channel = iChannel.getName();
-            boolean isAdmin = isAdministrator(iUsername);
+            String username = iUser.getUsername().toLowerCase();
+            String message = iMessage.getContent().get();
+            String channel = iChannel.getMention();
+            boolean isAdmin = DiscordAPI.instance().isAdministrator(iUser);
+            
+            if (message == null) {
+                return;
+            }
 
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel + "] " + username + ": " + message);
 
             if (message.startsWith("!")) {
-                parseCommand(iUsername, iChannel, iMessage, isAdmin);
+                DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin);
             }
 
-            EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUsername, iChannel, iMessage, isAdmin));
+            EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin));
         }
 
-        @EventSubscriber
         public void onDiscordUserJoinEvent(UserJoinEvent event) {
             EventBus.instance().postAsync(new DiscordChannelJoinEvent(event.getUser()));
         }
 
-        @EventSubscriber
         public void onDiscordUserLeaveEvent(UserLeaveEvent event) {
             EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
         }
         
-        @EventSubscriber
         public void onDiscordRoleCreateEvent(RoleCreateEvent event) {
             EventBus.instance().post(new DiscordRoleCreatedEvent(event.getRole()));
         }
         
-        @EventSubscriber
         public void onDiscordRoleUpdateEvent(RoleUpdateEvent event) { 
             EventBus.instance().post(new DiscordRoleUpdatedEvent(event.getRole()));
         }
         
-        @EventSubscriber
         public void onDiscordRoleDeleteEvent(RoleDeleteEvent event) {
             EventBus.instance().post(new DiscordRoleDeletedEvent(event.getRole()));
         }
         
-        @EventSubscriber
         public void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
             EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.ADD));
         }
         
-        @EventSubscriber
         public void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
             EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
         }
 
-        @EventSubscriber
         public void onDiscordUserVoiceChannelJoinEvent(UserVoiceChannelJoinEvent event) {
         }
           
-        @EventSubscriber
         public void onDiscordUserVoiceChannelLeaveEvent(UserVoiceChannelLeaveEvent event) {
             EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(event.getUser(), event.getVoiceChannel()));
         }

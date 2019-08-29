@@ -17,8 +17,8 @@
 
 package tv.phantombot.event.discord.uservoicechannel;
 
-import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.handle.obj.IUser;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.VoiceChannel;
 
 import tv.phantombot.event.discord.DiscordEvent;
 
@@ -29,7 +29,7 @@ public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
      *
      * @param {IUser} user
      */
-    protected DiscordUserVoiceChannelEvent(IUser user) {
+    protected DiscordUserVoiceChannelEvent(User user) {
         super(user);
     }
 
@@ -39,7 +39,7 @@ public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
      * @param {IUser}    user
      * @param {IVoiceChannel} voicechannel
      */
-    protected DiscordUserVoiceChannelEvent(IUser user, IVoiceChannel voicechannel) {
+    protected DiscordUserVoiceChannelEvent(User user, VoiceChannel voicechannel) {
         super(user, voicechannel);
     }
 }

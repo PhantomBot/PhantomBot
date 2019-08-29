@@ -17,7 +17,7 @@
 
 package tv.phantombot.event.discord.role;
 
-import sx.blah.discord.handle.obj.IRole;
+import discord4j.core.object.entity.Role;
 
 /**
  *
@@ -29,7 +29,7 @@ public class DiscordRoleCreatedEvent extends DiscordRoleEvent {
      * 
      * @param role
      */
-    public DiscordRoleCreatedEvent(IRole role) {
+    public DiscordRoleCreatedEvent(Role role) {
          // Not proper, fix this later.
         super(role);
     }
