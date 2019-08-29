@@ -1334,6 +1334,8 @@ public final class PhantomBot implements Listener {
 
     /** Load up main */
     public static void main(String[] args) throws IOException {
+        System.setProperty("io.netty.noUnsafe", "true");
+        
         // Move user files.
         moveUserConfig();
 

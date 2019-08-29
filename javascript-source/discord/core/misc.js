@@ -49,7 +49,7 @@
      * @return {boolean}
      */
     function isConnected() {
-        return Packages.tv.phantombot.discord.DiscordAPI.client.isLoggedIn() &&
+        return $.discordAPI.isLoggedIn() &&
         $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED
     }
 
