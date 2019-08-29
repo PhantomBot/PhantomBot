@@ -107,7 +107,7 @@
 
         for (var i = 0; i < discordRoles.size(); i++) {
             if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
-                everyoneRoleID = discordRoles.get(i).getStringID();
+                everyoneRoleID = discordRoles.get(i).getId().asString();
                 break;
             }
         }
@@ -244,7 +244,7 @@
         if (commandExists(command)) {
             if (typeof channelObj === 'object') {
                 if (commands[command].channel[channelObj.getName()] === undefined) {
-                    return commands[command].channel[channelObj.getStringID()]
+                    return commands[command].channel[channelObj.getId().asString()]
                 } else {
                     return commands[command].channel[channelObj.getName()];
                 }

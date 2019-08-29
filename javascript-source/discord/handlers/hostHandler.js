@@ -76,7 +76,7 @@
             s = $.replace(s, '(viewers)', String(viewers));
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(255, 0, 0)
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/host-embed-icon.png')
                     .withTitle($.lang.get('discord.hosthandler.auto.host.embedtitle'))
@@ -117,7 +117,7 @@
             s = $.replace(s, '(viewers)', String(viewers));
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(255, 0, 0)
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/host-embed-icon.png')
                     .withTitle($.lang.get('discord.hosthandler.host.embedtitle'))

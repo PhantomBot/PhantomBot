@@ -61,7 +61,7 @@
      * @return {string}
      */
     function getUserMention(username) {
-        return ($.discordAPI.getUser(username) != null ? $.discordAPI.getUser(username).mention() : username);
+        return ($.discordAPI.getUser(username) != null ? $.discordAPI.getUser(username).getMention() : username);
     }
 
     /**
@@ -73,9 +73,9 @@
      */
     function getUserMentionOrChannel(argument) {
         if ($.discordAPI.getUser(username) != null) {
-            return $.discordAPI.getUser(argument).mention();
+            return $.discordAPI.getUser(argument).getMention();
         } else if ($.discordAPI.getChannel(argument) != null) {
-            return $.discordAPI.getChannel(argument).mention();
+            return $.discordAPI.getChannel(argument).getMention();
         } else {
             return argument;
         }
@@ -88,7 +88,7 @@
      * @return {string}
      */
     function getRandomUser() {
-        return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).mention());
+        return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).getMention()());
     }
 
     /**

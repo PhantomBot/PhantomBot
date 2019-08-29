@@ -305,7 +305,7 @@
                 if (biography.equals('')) {
                     biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
                 }
-                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                               .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                               .withTitle('https://twitch.tv/' + twitchName)
                                               .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
@@ -378,7 +378,7 @@
                 if (!$.inidb.exists('promoteonline', twitchID)) {
                     if ($.systemTime() - $.getIniDbNumber('promoteonlinetime', twitchID, 0) >= (6e4 * 5)) {
                         $.inidb.set('promoteonlinetime', twitchID, $.systemTime());
-                        var embedBuilder = new Packages.sx.blah.discord.util.EmbedBuilder();
+                        var embedBuilder = new Packages.tv.phantombot.discord.util.EmbedBuilder();
                         embedBuilder.withThumbnail(logoUrl)
                                     .withTitle($.lang.get('discord.promotesystem.livemsg.title', $.username.resolve(twitchName), twitchName))
                                     .withColor(100, 65, 164)
@@ -437,7 +437,7 @@
             if (biography.equals('')) {
                 biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
-            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                           .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                           .withTitle('https://twitch.tv/' + twitchName)
                                           .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))

@@ -42,7 +42,7 @@
         }
 
         if (event.getMentionUser() != null) {
-            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
                 .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
@@ -54,7 +54,7 @@
                 .build());
         } else {
             // Send the message as an embed.
-            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
                 .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
