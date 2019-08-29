@@ -87,7 +87,7 @@
             s = $.replace(s, '(message)', donationMessage);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(87, 113, 220)
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/streamelements-embed-icon.png')
                     .withTitle($.lang.get('discord.streamelementshandler.embed.title'))

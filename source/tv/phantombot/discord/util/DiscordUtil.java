@@ -31,6 +31,7 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.object.util.Permission;
 import discord4j.core.object.util.PermissionSet;
 import discord4j.core.object.util.Snowflake;
+import discord4j.core.spec.EmbedCreateSpec;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -42,6 +43,7 @@ import java.awt.Color;
 import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Consumer;
 import reactor.core.publisher.Flux;
 
 import tv.phantombot.discord.DiscordAPI;
@@ -141,23 +143,24 @@ public class DiscordUtil {
      * Method to send embed messages.
      *
      * @param  channel
-     * @param  message
-     * @param  color
-     * @return {IMessage}
+     * @param  embed
+     * @return {Message}
      */
-    public Message sendMessageEmbed(TextChannel channel, String color, String message) {
+    public Message sendMessageEmbed(TextChannel channel, Consumer<? super EmbedCreateSpec> embed) {
         if (channel != null) {
-            com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + message);
-
-            return channel.createMessage(msg ->
-                    msg.setEmbed(ebd ->
-                            ebd.setColor(getColor(color)).setDescription(message)
-                    )
+            Message m = channel.createMessage(msg ->
+                    msg.setEmbed(embed)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.println("Failed to send an embed message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             }).onErrorReturn(null).block();
+            
+            if (m != null) {
+                com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().get());
+            }
+            
+            return m;
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            return sendMessageEmbed(channel, color, message);
+            return sendMessageEmbed(channel, embed);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -167,9 +170,34 @@ public class DiscordUtil {
      * Method to send embed messages.
      *
      * @param channelName
+     * @param embed
+     * @return {Message}
+     */
+    public Message sendMessageEmbed(String channelName, Consumer<? super EmbedCreateSpec> embed) {
+        return sendMessageEmbed(getChannel(channelName), embed);
+    }
+
+    /**
+     * Method to send embed messages.
+     *
+     * @param  channel
+     * @param  message
+     * @param  color
+     * @return {Message}
+     */
+    public Message sendMessageEmbed(TextChannel channel, String color, String message) {
+        return sendMessageEmbed(channel, ebd ->
+            ebd.setColor(getColor(color)).setDescription(message)
+        );
+    }
+
+    /**
+     * Method to send embed messages.
+     *
+     * @param channelName
      * @param message
      * @param color
-     * @return {IMessage}
+     * @return {Message}
      */
     public Message sendMessageEmbed(String channelName, String color, String message) {
         return sendMessageEmbed(getChannel(channelName), color, message);
@@ -230,7 +258,7 @@ public class DiscordUtil {
      * @param channelName
      * @param message
      * @param fileLocation
-     * @return {IMessage}
+     * @return {Message}
      */
     public Message sendFile(String channelName, String message, String fileLocation) {
         return sendFile(getChannel(channelName), message, fileLocation);
@@ -241,7 +269,7 @@ public class DiscordUtil {
      *
      * @param  channel
      * @param  fileLocation
-     * @return {IMessage}
+     * @return {Message}
      */
     public Message sendFile(TextChannel channel, String fileLocation) {
         return sendFile(channel, "", fileLocation);
@@ -252,7 +280,7 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param fileLocation
-     * @return {IMessage}
+     * @return {Message}
      */
     public Message sendFile(String channelName, String fileLocation) {
         return sendFile(getChannel(channelName), "", fileLocation);
@@ -345,7 +373,7 @@ public class DiscordUtil {
      * Method to return a channel object by its name.
      *
      * @param  channelName - The name of the channel.
-     * @return {IChannel}
+     * @return {Channel}
      */
     public TextChannel getChannel(String channelName) {
         // Remove any # in the channel name.

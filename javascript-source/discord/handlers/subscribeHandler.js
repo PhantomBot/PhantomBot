@@ -62,7 +62,7 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
                     .withTitle($.lang.get('discord.subscribehandler.subscriber.embedtitle'))
@@ -97,7 +97,7 @@
             s = $.replace(s, '(months)', months);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
                     .withTitle($.lang.get('discord.subscribehandler.giftsubscriber.embedtitle'))
@@ -122,7 +122,7 @@
             s = $.replace(s, '(name)', subscriber);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
                     .withTitle($.lang.get('discord.subscribehandler.primesubscriber.embedtitle'))
@@ -152,7 +152,7 @@
             s = $.replace(s, '(months)', months);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail('https://static-cdn.jtvnw.net/badges/v1/5d9f2208-5dd8-11e7-8513-2ff4adfae661/2')
                     .withTitle($.lang.get('discord.subscribehandler.resubscriber.embedtitle'))
