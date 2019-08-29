@@ -18,6 +18,7 @@ package tv.phantombot.discord.util;
 
 import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.GuildChannel;
+import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.PrivateChannel;
@@ -284,6 +285,59 @@ public class DiscordUtil {
     public void addReactions(Message message, ReactionEmoji[] emojis) {
         for (ReactionEmoji emoji : emojis) {
             addReaction(message, emoji);
+        }
+    }
+    
+    /**
+     * Method that adds a reaction to a message.
+     *
+     * @param message The message object
+     * @param emoji The emoji unicode
+     */
+    public void addReaction(Message message, String emoji) {
+        List<GuildEmoji> gel = DiscordAPI.getGuild().getEmojis().collectList().block();
+        ReactionEmoji re = null;
+        
+        if (gel != null) {
+            for (GuildEmoji ge : gel) {
+                if (ge.getName().equalsIgnoreCase(emoji)) {
+                    re = ReactionEmoji.custom(ge);
+                }
+            }
+        }
+        
+        if (re == null) {
+            re = ReactionEmoji.unicode(emoji);
+        }
+        
+        addReaction(message, re);
+    }
+    
+    /**
+     * Method that adds a reaction to a message.
+     *
+     * @param message The message object
+     * @param emojis The emoji unicodes
+     */
+    public void addReactions(Message message, String[] emojis) {
+        List<GuildEmoji> gel = DiscordAPI.getGuild().getEmojis().collectList().block();
+        ReactionEmoji re;
+        for (String emoji : emojis) {
+            re = null;
+
+            if (gel != null) {
+                for (GuildEmoji ge : gel) {
+                    if (ge.getName().equalsIgnoreCase(emoji)) {
+                        re = ReactionEmoji.custom(ge);
+                    }
+                }
+            }
+
+            if (re == null) {
+                re = ReactionEmoji.unicode(emoji);
+            }
+
+            addReaction(message, re);
         }
     }
 
