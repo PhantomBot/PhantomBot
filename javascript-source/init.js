@@ -559,9 +559,11 @@
             // If more permissions are added, we'll have to use a loop here.
             if (perm.permissions[0].selected.equals('true') && isAdmin == true) {
                 hasPerms = true;
+            } else if (perm.roles[0].indexOf('0') !== -1 || perm.roles[0].indexOf($.discordAPI.getGuild().getId().asString()) !== -1) {
+                hasPerms = true;
             } else {
                 for (var i = 0; i < perm.roles.length; i++) {
-                    if (user.hasRole($.discordAPI.getRoleByID(perm.roles[i])) == true) {
+                    if (user.getRoleIds().contains($.discordAPI.getRoleByID(perm.roles[i]).getId()) == true) {
                         hasPerms = true;
                         break;
                     }
