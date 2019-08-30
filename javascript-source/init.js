@@ -609,7 +609,7 @@
             for (var i = 0; i < roles.size(); i++) {
                 perms.roles.push({
                     'name' : roles.get(i).getName() + '',
-                    '_id': roles.get(i).getID().asString() + '',
+                    '_id': roles.get(i).getId().asString() + '',
                     'selected': 'false'
                 });
             }
