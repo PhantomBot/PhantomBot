@@ -32,20 +32,17 @@ import discord4j.core.object.util.Permission;
 import discord4j.core.object.util.PermissionSet;
 import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.List;
-
-import java.io.FileNotFoundException;
-
 import java.awt.Color;
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
-
 import tv.phantombot.discord.DiscordAPI;
 
 /**
@@ -55,7 +52,9 @@ import tv.phantombot.discord.DiscordAPI;
  * @author ScaniaTV
  */
 public class DiscordUtil {
-
+    public DiscordUtil() {
+    }
+    
     /**
      * Method that removes the # in the channel name.
      *
@@ -64,7 +63,7 @@ public class DiscordUtil {
      */
     public String sanitizeChannelName(String channelName) {
         // We have to make sure that it's at the start.
-        if (channelName.startsWith("#")) {
+        if (channelName.charAt(0) == '#') {
             return channelName.substring(1);
         } else {
             return channelName;
@@ -223,8 +222,8 @@ public class DiscordUtil {
                     return channel.createMessage(msg -> 
                             {
                                 try {
-                                    msg.addFile(fileLocation, new FileInputStream(fileLocation));
-                                } catch (FileNotFoundException ex) {
+                                    msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation)));
+                                } catch (IOException ex) {
                                     com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                                 }
                             }
@@ -235,8 +234,8 @@ public class DiscordUtil {
                     return channel.createMessage(msg -> 
                             {
                                 try {
-                                    msg.addFile(fileLocation, new FileInputStream(fileLocation)).setContent(message);
-                                } catch (FileNotFoundException ex) {
+                                    msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation))).setContent(message);
+                                } catch (IOException ex) {
                                     com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
                                 }
                             }
@@ -310,7 +309,7 @@ public class DiscordUtil {
      * @param message The message object
      * @param emojis The reaction objects
      */
-    public void addReactions(Message message, ReactionEmoji[] emojis) {
+    public void addReactions(Message message, ReactionEmoji... emojis) {
         for (ReactionEmoji emoji : emojis) {
             addReaction(message, emoji);
         }
@@ -347,7 +346,7 @@ public class DiscordUtil {
      * @param message The message object
      * @param emojis The emoji unicodes
      */
-    public void addReactions(Message message, String[] emojis) {
+    public void addReactions(Message message, String... emojis) {
         List<GuildEmoji> gel = DiscordAPI.getGuild().getEmojis().collectList().block();
         ReactionEmoji re;
         for (String emoji : emojis) {
@@ -405,7 +404,7 @@ public class DiscordUtil {
 
         if (channels!= null) {
             for (GuildChannel channel : channels) {
-                if ((channel.getId().asString().equals(channelId))
+                if (channel.getId().asString().equals(channelId)
                         && channel.getType() == Channel.Type.GUILD_TEXT) {
                     return (TextChannel)channel;
                 }
@@ -523,7 +522,7 @@ public class DiscordUtil {
      * @param  roles
      * @return {Role[]}
      */
-    public Role[] getRoleObjects(String[] roles) {
+    public Role[] getRoleObjects(String... roles) {
         Role[] list = new Role[roles.length];
 
         for (int i = 0; i < roles.length; i++) {
@@ -552,7 +551,7 @@ public class DiscordUtil {
             return new Role[0];
         }
 
-        return (roles.size() < 1 ? new Role[0] : roles.toArray(new Role[roles.size()]));
+        return roles.isEmpty() ? new Role[0] : roles.toArray(new Role[0]);
     }
 
     /**
@@ -571,7 +570,7 @@ public class DiscordUtil {
      * @param user
      * @param roles
      */
-    public void editUserRoles(User user, Role[] roles) {
+    public void editUserRoles(User user, Role... roles) {
         if (roles == null || user == null) {
             throw new IllegalArgumentException("user or roles object was null");
         }
@@ -601,7 +600,7 @@ public class DiscordUtil {
      * @param userId
      * @param roles
      */
-    public void editUserRoles(String userId, Role[] roles) {
+    public void editUserRoles(String userId, Role... roles) {
         editUserRoles(getUserById(Long.parseUnsignedLong(userId)), roles);
     }
 
@@ -896,7 +895,7 @@ public class DiscordUtil {
      * @param  color
      * @return {Color}
      */
-    public Color getColor(String color) throws IllegalArgumentException {
+    public Color getColor(String color) {
         Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
 
         if (match.find()) {
