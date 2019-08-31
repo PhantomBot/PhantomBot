@@ -804,7 +804,7 @@ public class DiscordUtil {
      * @param channel
      * @param list
      */
-    public void bulkDeleteMessages(TextChannel channel, Message[] list) {
+    public void bulkDeleteMessages(TextChannel channel, Message... list) {
         if (channel == null || list == null || list.length < 2) {
             throw new IllegalArgumentException("channel object was null, list object was null, or amount was less than 2");
         }
@@ -824,7 +824,7 @@ public class DiscordUtil {
      * @param channelName
      * @param messages
      */
-    public void bulkDeleteMessages(String channelName, Message[] messages) {
+    public void bulkDeleteMessages(String channelName, Message... messages) {
         bulkDeleteMessages(getChannel(channelName), messages);
     }
 
