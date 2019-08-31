@@ -19,7 +19,6 @@ package tv.phantombot.discord.util;
 import discord4j.core.spec.EmbedCreateSpec;
 import java.awt.Color;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.function.Consumer;
 
 /**
@@ -29,8 +28,8 @@ import java.util.function.Consumer;
 public class EmbedBuilder {
     private String title = "";
     private String url = "";
-    private Color color = null;
-    private Instant timestamp = null;
+    private Color color;
+    private Instant timestamp;
     private String footerTxt = "";
     private String footerIcon = "";
     private String authorName = "";
