@@ -128,7 +128,7 @@ public class TwitchWSIRCParser implements Runnable {
      */
     @Override
     public void run() {
-        while (true) {
+        while (!PhantomBot.isInExitState()) {
             try {
                 Map<String, String> tags = giftedSubscriptionEvents.take();
 
@@ -175,7 +175,6 @@ public class TwitchWSIRCParser implements Runnable {
      * @param rawBadges
      * @return
      */
-    // "staff/1,moderator/1,turbo/1,bits/1000"
     private Map<String, String> parseBadges(String rawBadges) {
         // A user cannot have more than 4 badges, acording to Twitch.
         Map<String, String> badges = new HashMap<>(4);
