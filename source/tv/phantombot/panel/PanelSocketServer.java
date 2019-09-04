@@ -273,12 +273,12 @@ public class PanelSocketServer extends WebSocketServer {
         // debugMsg("PanelSocketServer::onMessage(" + jsonString + ")");
 
         try {
-            if (jsonObject.has("command")) {
+            if (jsonObject.has("command") && !sessionData.isReadOnly()) {
                 String command = jsonObject.getString("command");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
                 doHandleCommand(webSocket, command, username, uniqueID, true);
-            } else if (jsonObject.has("command_sync")) {
+            } else if (jsonObject.has("command_sync") && !sessionData.isReadOnly()) {
                 String command = jsonObject.getString("command_sync");
                 String username = jsonObject.has("username") ? jsonObject.getString("username") : PhantomBot.instance().getBotName();
                 uniqueID = jsonObject.has("query_id") ? jsonObject.getString("query_id") : "";
