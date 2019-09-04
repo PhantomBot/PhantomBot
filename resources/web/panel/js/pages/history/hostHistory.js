@@ -26,7 +26,8 @@ $(function() {
 			hosts.push([
 				json.host,
 				new Date(parseInt(json.time)).toLocaleString(),
-				helpers.getDefaultIfNullOrUndefined(json.viewers, 'N/A')
+				helpers.getDefaultIfNullOrUndefined(json.viewers, 'N/A'),
+				parseInt(json.time)
 			]);
 		}
 
@@ -40,9 +41,11 @@ $(function() {
     		],
 			'columns': [
 				{ 'title': 'Username' },
-				{ 'title': 'Date', 'orderData': [1] },
-				{ 'title': 'Viewers' }
+				{ 'title': 'Date', 'orderData': [3] },
+				{ 'title': 'Viewers' },
+				{ 'visible': false }
 			]
 		});
 	});
 });
+3
