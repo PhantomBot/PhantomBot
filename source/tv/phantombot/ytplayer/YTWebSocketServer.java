@@ -271,7 +271,7 @@ public class YTWebSocketServer extends WebSocketServer {
             }
         } else if (jsonObject.has("dbquery")) {
             handleDBQuery(webSocket, jsonObject.getString("query_id"), jsonObject.getString("table"));
-        } else if (jsonObject.has("dbupdate")) {
+        } else if (jsonObject.has("dbupdate") && sessionData.isPlayer()) {
             handleDBUpdate(webSocket, jsonObject.getString("query_id"), jsonObject.getJSONObject("update").getString("table"), jsonObject.getJSONObject("update").getString("key"), jsonObject.getJSONObject("update").getString("value"));
         } else if (jsonObject.has("deletesr") && sessionData.isPlayer()) {
             dataString = jsonObject.getString("deletesr");
