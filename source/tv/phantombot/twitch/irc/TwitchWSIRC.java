@@ -83,6 +83,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
             if (System.currentTimeMillis() > (lastPong + 210000)) {
                 com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
+                com.gmt2001.Console.warn.println("Closing our connection with Twitch since no PONG got sent back.", true);
                 this.close();
             }
         }, 10, 30, TimeUnit.SECONDS);
