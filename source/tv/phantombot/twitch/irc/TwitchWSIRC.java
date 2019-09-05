@@ -16,25 +16,20 @@
  */
 package tv.phantombot.twitch.irc;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import java.net.URI;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-
-import org.java_websocket.handshake.ServerHandshake;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
-
-import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
-import tv.phantombot.event.EventBus;
-
+import org.java_websocket.enums.ReadyState;
+import org.java_websocket.handshake.ServerHandshake;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 
 public class TwitchWSIRC extends WebSocketClient {
     private final TwitchSession session;
@@ -44,6 +39,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
+    private boolean connecting = true;
 
     /**
      * Class constructor.
@@ -61,6 +57,35 @@ public class TwitchWSIRC extends WebSocketClient {
         this.botName = botName;
         this.oAuth = oAuth;
         this.session = session;
+
+        // Create a new ping timer that runs every 30 seconds.
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
+
+            if (this.getReadyState() != ReadyState.OPEN) {
+                return;
+            }
+            
+            if (this.connecting) {
+                lastPing = System.currentTimeMillis();
+                lastPong = System.currentTimeMillis();
+                this.connecting = false;
+                return;
+            }
+            
+            // if we sent a ping longer than 3 minutes ago, send another one.
+            if (System.currentTimeMillis() > (lastPing + 180000)) {
+                com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
+                lastPing = System.currentTimeMillis();
+                this.send("PING");
+            }
+
+            // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
+            if (System.currentTimeMillis() > (lastPong + 210000)) {
+                com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
+                this.close();
+            }
+        }, 10, 30, TimeUnit.SECONDS);
     }
 
     /**
@@ -86,6 +111,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // Set the socket.
             this.setSocketFactory(sslSocketFactory);
             // Connect.
+            connecting = true;
             this.connect();
             return true;
         } catch (KeyManagementException | NoSuchAlgorithmException ex) {
@@ -102,7 +128,7 @@ public class TwitchWSIRC extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         com.gmt2001.Console.out.println("Connected to " + this.botName + "@" + this.uri.getHost() + " (SSL)");
-
+        
         this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.getConnection(), channelName, session);
         
         // Send the oauth
@@ -112,24 +138,6 @@ public class TwitchWSIRC extends WebSocketClient {
 
         // Send an event saying that we are connected to Twitch.
         EventBus.instance().postAsync(new IrcConnectCompleteEvent(session));
-
-        // Create a new ping timer that runs every 30 seconds.
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
-
-            // if we sent a ping longer than 3 minutes ago, send another one.
-            if (System.currentTimeMillis() > (lastPing + 180000)) {
-                com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
-                lastPing = System.currentTimeMillis();
-                this.send("PING");
-            }
-
-            // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
-            if (System.currentTimeMillis() > (lastPong + 210000)) {
-                com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
-                this.close();
-            }
-        }, 10, 30, TimeUnit.SECONDS);
     }
 
     /**
@@ -147,6 +155,7 @@ public class TwitchWSIRC extends WebSocketClient {
             com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ", true);
             com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]", true);
 
+            connecting = true;
             this.session.reconnect();
         } else {
             com.gmt2001.Console.out.println("Connection to Twitch WS-IRC was closed...");
