@@ -31,7 +31,7 @@
         modListUsers = [],
         users = [],
         moderatorsCache = [],
-        botList = [];
+        botList = [],
         lastJoinPart = $.systemTime(),
         firstRun = true,
         isUpdatingUsers = false;
@@ -99,6 +99,25 @@
     }
 
     /**
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @returns {boolean}
+     */
+    function hasKey(list, value) {
+        var exists = false;
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].equalsIgnoreCase(value)) {
+                exists = true;
+                break;
+            }
+        }
+
+        return exists;
+    }
+
+     /**
      * @function updateUsersObject
      * @param {Array} list
      *
@@ -123,41 +142,22 @@
     }
 
     /**
-     * @function hasKey
-     * @param {Array} list
-     * @param {*} value
-     * @returns {boolean}
-     */
-    function hasKey(list, value) {
-        var exists = false;
-
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].equalsIgnoreCase(value)) {
-                exists = true;
-                break;
-            }
-        }
-
-        return exists;
-    }
-
-    /**
      * @function getKeyIndex
      * @param {Array} list
      * @param {*} value
      * @returns {boolean}
      */
     function getKeyIndex(list, value) {
-        var index = -1;
+        var idx = -1;
 
         for (var i = 0; i < list.length; i++) {
             if (list[i].equalsIgnoreCase(value)) {
-                index = i;
+                idx = i;
                 break;
             }
         }
 
-        return index;
+        return idx;
     }
 
     /**
@@ -720,7 +720,7 @@
             i;
 
         if (!isUpdatingUsers) {
-            i = getKeyIndex(users, username)
+            i = getKeyIndex(users, username);
 
             if (i >= 0) {
                 users.splice(i, 1);
@@ -758,7 +758,7 @@
                 if (hasModeO(username)) {
                     removeModeratorFromCache(username);
 
-                    i = getKeyIndex(modeOUsers, username)
+                    i = getKeyIndex(modeOUsers, username);
 
                     if (i >= 0) {
                         modeOUsers.splice(i, 1);
