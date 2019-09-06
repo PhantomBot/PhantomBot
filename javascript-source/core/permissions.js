@@ -31,7 +31,7 @@
         modListUsers = [],
         users = [],
         moderatorsCache = [],
-        botList = [];
+        botList = [],
         lastJoinPart = $.systemTime(),
         firstRun = true,
         isUpdatingUsers = false;
@@ -99,6 +99,25 @@
     }
 
     /**
+     * @function hasKey
+     * @param {Array} list
+     * @param {*} value
+     * @returns {boolean}
+     */
+    function hasKey(list, value) {
+        var exists = false;
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].equalsIgnoreCase(value)) {
+                exists = true;
+                break;
+            }
+        }
+
+        return exists;
+    }
+
+     /**
      * @function updateUsersObject
      * @param {Array} list
      *
@@ -114,38 +133,31 @@
                 users.push(newUsers[i]);
             }
         }
-        
+
         for (var i = users.length - 1; i >= 0; i--) {
-            if (newUsers.indexOf(users[i]) === -1) {
+            if (!hasKey(newUsers, users[i])) {
                 users.splice(i, 1);
             }
         }
     }
 
     /**
-     * @function hasKey
+     * @function getKeyIndex
      * @param {Array} list
      * @param {*} value
-     * @param {Number} [subIndex]
      * @returns {boolean}
      */
-    function hasKey(list, value, subIndex) {
-        var i;
+    function getKeyIndex(list, value) {
+        var idx = -1;
 
-        if (subIndex > -1) {
-            for (i in list) {
-                if (list[i][subIndex].equalsIgnoreCase(value)) {
-                    return true;
-                }
-            }
-        } else {
-            for (i in list) {
-                if (list[i].equalsIgnoreCase(value)) {
-                    return true;
-                }
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].equalsIgnoreCase(value)) {
+                idx = i;
+                break;
             }
         }
-        return false;
+
+        return idx;
     }
 
     /**
@@ -155,7 +167,7 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        return users.indexOf(username) !== -1;
+        return hasKey(users, username);
     }
 
     /**
@@ -226,7 +238,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return subUsers.indexOf(username.toLowerCase()) !== -1;
+        return hasKey(subUsers, username);
     }
 
     /**
@@ -287,7 +299,7 @@
      * @returns {boolean}
      */
     function hasModeO(username) {
-        return modeOUsers.indexOf(username.toLowerCase()) !== -1;
+        return hasKey(modeOUsers, username);
     }
 
     /**
@@ -297,7 +309,7 @@
      * @returns {boolean}
      */
     function hasModList(username) {
-        return modListUsers.indexOf(username.toLowerCase()) !== -1;
+        return hasKey(modListUsers, username);
     }
 
     /**
@@ -306,7 +318,7 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        return subUsers.indexOf(username.toLowerCase()) !== -1;
+        return hasKey(subUsers, username);
     }
 
     /**
@@ -432,9 +444,7 @@
      * @param username
      */
     function addSubUsersList(username) {
-        username = (username + '').toLowerCase();
-
-        if (subUsers.indexOf(username.toLowerCase()) === -1) {
+        if (!isSub(username)) {
             subUsers.push(username);
         }
     }
@@ -445,8 +455,8 @@
      * @param username
      */
     function delSubUsersList(username) {
-        var i = subUsers.indexOf(username.toLowerCase());
-        
+        var i = getKeyIndex(subUsers, username);
+
         if (i >= 0) {
             subUsers.splice(i, 1);
         }
@@ -628,7 +638,7 @@
                 // Cast the user as a string, because Rhino.
                 parts[i] = (parts[i] + '');
                 // Remove the user from the users array.
-                var t = $.users.indexOf(parts[i]);
+                var t = getKeyIndex($.users, parts[i]);
                 if (t >= 0) {
                     $.users.splice(t, 1);
                 }
@@ -710,8 +720,8 @@
             i;
 
         if (!isUpdatingUsers) {
-            i = users.indexOf(username);
-            
+            i = getKeyIndex(users, username);
+
             if (i >= 0) {
                 users.splice(i, 1);
                 restoreSubscriberStatus(username.toLowerCase());
@@ -748,8 +758,8 @@
                 if (hasModeO(username)) {
                     removeModeratorFromCache(username);
 
-                    i = modeOUsers.indexOf(username);
-                    
+                    i = getKeyIndex(modeOUsers, username);
+
                     if (i >= 0) {
                         modeOUsers.splice(i, 1);
                     }
