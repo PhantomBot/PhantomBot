@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.0.0" />
+    <property name="version" value="3.1.0" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.0.0" />
+    <property name="webpanel.version" value="1.0.1" />
     <property name="src" location="source" />
     <property name="reference" location="libraries" />
     <property name="build" location="build" />
