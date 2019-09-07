@@ -45,6 +45,7 @@
             $.inidb.set('panelstats', 'gameCount', 1);
             $.inidb.del('streamInfo', 'gamesPlayed');
         }
+        $.inidb.set('streamInfo', 'downtime', String($.systemTime()));
     });
 
     /**
@@ -159,7 +160,7 @@
             return '';
         }
     }
-    
+
     /**
      * @function getLogo
      * @export $
