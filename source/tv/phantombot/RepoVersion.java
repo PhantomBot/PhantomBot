@@ -40,6 +40,10 @@ public class RepoVersion {
         return repoVersion;
     }
 
+    public static String getBuildType() {
+        return buildType;
+    }
+
     public static boolean getNightlyBuild() {
         return buildType.equals("nightly_build");
     }
