@@ -901,7 +901,7 @@ public class MySQLStore extends DataStore {
 
         try {
             Statement statement = connection.createStatement();
-            statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+            statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS UNSIGNED) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
 
             StringBuilder sb = new StringBuilder(66 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
             
