@@ -108,7 +108,7 @@
         var exists = false;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i].equalsIgnoreCase(value)) {
+            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
                 exists = true;
                 break;
             }
@@ -151,7 +151,7 @@
         var idx = -1;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i].equalsIgnoreCase(value)) {
+            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
                 idx = i;
                 break;
             }
