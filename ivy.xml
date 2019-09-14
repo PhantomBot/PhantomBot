@@ -28,6 +28,11 @@
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25" conf="*->default" />
         <dependency org="org.javassist" name="javassist" rev="3.25.0-GA" conf="*->default" />
         <dependency org="org.reflections" name="reflections" rev="0.9.11" conf="*->default" />
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.3.2" conf="*->default" />
+        <dependency org="io.socket" name="engine.io-client" rev="0.7.0" conf="*->default" />
+        <dependency org="io.socket" name="socket.io-client" rev="0.7.0" conf="*->default" />
+        <dependency org="com.h2database" name="h2" rev="1.4.195" conf="*->default" />
+        <dependency org="joda-time" name="joda-time" rev="2.4" conf="*->default" />
     </dependencies>
 </ivy-module>
 
