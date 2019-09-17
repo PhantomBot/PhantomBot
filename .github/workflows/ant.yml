@@ -16,9 +16,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.4
-    - name: Build with Ant (WIN)
+    - name: Build with Ant
       run: %JAVA_HOME%/bin/ant -noinput -buildfile build.xml test
-       if: matrix.os == 'windows-latest'
-    - name: Build with Ant (LIN/MAC)
+      if: matrix.os == 'windows-latest'
+    - name: Build with Ant
       run: $JAVA_HOME/bin/ant -noinput -buildfile build.xml test
       if: matrix.os != 'windows-latest'
