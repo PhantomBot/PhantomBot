@@ -34,7 +34,7 @@
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
     <property name="version.name" value="${ant.project.name}-${version}" />
-    <property name="version.folder" location="${dist}/${version.name}-jdk11compat" />
+    <property name="version.folder" location="${dist}/${version.name}" />
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
