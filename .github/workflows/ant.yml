@@ -16,10 +16,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.4
+    - name: Set up Ant (Win)
+      run: choco install ant
+      if: startsWith(matrix.os, 'windows-')
+    - name: Set up Ant (macOS)
+      run: brew install ant
+      if: startsWith(matrix.os, 'macOS-')
     - name: Build with Ant
-      run: |
-        %JAVA_HOME%/bin/ant -noinput -buildfile build.xml test
-      if: matrix.os == 'windows-latest'
-    - name: Build with Ant
-      run: $JAVA_HOME/bin/ant -noinput -buildfile build.xml test
-      if: matrix.os != 'windows-latest'
+      run: ant -noinput -buildfile build.xml test
