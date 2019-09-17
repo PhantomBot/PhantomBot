@@ -42,7 +42,10 @@ jobs:
       with:
         java-version: 11.0.4
     - name: Set up Ant script
-      run: sed -i 's/"version" value="[0-9.]+"/"version" value="edge"/' build.xml
+      run: |
+        sed -i 's/"version" value="[0-9.]+"/"version" value="edge"/g' build.xml
+        echo $?
+        cat built.xml
     - name: Distclean with Ant
       run: ant -noinput -buildfile build.xml distclean
     - name: Build with Ant
