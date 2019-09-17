@@ -6,7 +6,7 @@ jobs:
   build:
     name: Test on ${{ matrix.os }} with JDK 11.0.4
     runs-on: ${{ matrix.os }}
-	strategy:
+    strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
