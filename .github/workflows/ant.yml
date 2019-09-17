@@ -17,4 +17,4 @@ jobs:
       with:
         java-version: 11.0.4
     - name: Build with Ant
-      run: ant -noinput -buildfile build.xml test
+      run: $JAVA_HOME/ant -noinput -buildfile build.xml test
