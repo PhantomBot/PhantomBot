@@ -49,7 +49,7 @@ jobs:
     - name: Distclean with Ant
       run: ant -noinput -buildfile build.xml distclean
     - name: Build with Ant
-      run: ant -noinput -buildfile build.xml dist
+      run: ant -noinput -Dbuildtype=edge_build -buildfile build.xml dist
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
