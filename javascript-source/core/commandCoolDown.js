@@ -1,4 +1,4 @@
-\/*
+/*
  * Copyright (C) 2016-2018 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -177,11 +177,6 @@
      * @return {Number}
      */
     function set(command, hasCooldown, seconds, isMod, username) {
-    	// Make sure we have the right type.
-    	if (typeof seconds !== 'number') {
-    		seconds = (parseInt(seconds + ''));
-    	}
-
         seconds = (seconds > 0 ? ((parseInt(seconds) * 1e3) + $.systemTime()) : 0);
 
         if (hasCooldown) {
