@@ -11,8 +11,8 @@ on:
     tags:
       - '!*'
 jobs:
-  test:
-    name: Test on ${{ matrix.os }} with JDK 11.0.4
+  buildtest:
+    name: Test Build on ${{ matrix.os }} with JDK 11.0.4
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -23,7 +23,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.4
-    - name: Set up Ant (Win)
+    - name: Set up Ant (Linux)
+      run: sudo apt-get install ant
+      if: startsWith(matrix.os, 'ubuntu-')
+    - name: Set up Ant (Windows)
       run: choco install ant
       if: startsWith(matrix.os, 'windows-')
     - name: Set up Ant (macOS)
@@ -41,13 +44,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.4
-    - name: Set up Ant script
+    - name: Set up Ant
+      run: sudo apt-get install ant
+    - name: Prep Ant script
       run: |
         sed -i -r 's/"version" value="[0-9.]+"/"version" value="edge"/' build.xml
         echo $?
         cat build.xml
-    - name: Distclean with Ant
-      run: ant -noinput -buildfile build.xml distclean
     - name: Build with Ant
       run: ant -noinput -Dbuildtype=edge_build -buildfile build.xml dist
     - name: Upload Artifact
