@@ -70,6 +70,7 @@
      */
     $.bind('twitchFollow', function(event) {
         var follower = event.getFollower(),
+            alertImageParams = null,
             s = followMessage;
 
         if (announceFollows === true && followToggle === true) {
@@ -79,6 +80,12 @@
 
             if (s.match(/\(reward\)/)) {
                 s = $.replace(s, '(reward)', $.getPointsString(followReward));
+            }
+
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageParams = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageParams);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             if (s.match(/^\/w/)) {
