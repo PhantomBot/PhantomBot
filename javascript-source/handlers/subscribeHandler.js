@@ -98,6 +98,7 @@
     $.bind('twitchSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = subMessage;
 
         if (subWelcomeToggle === true && announce === true) {
@@ -111,6 +112,12 @@
 
             if (message.match(/\(plan\)/g)) {
                 message = $.replace(message, '(plan)', getPlanName(tier));
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
@@ -129,6 +136,7 @@
      */
     $.bind('twitchPrimeSubscriber', function(event) {
         var subscriber = event.getSubscriber(),
+            alertImageFile = null,
             message = primeSubMessage;
 
         if (primeSubWelcomeToggle === true && announce === true) {
@@ -138,6 +146,12 @@
 
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
@@ -158,6 +172,7 @@
         var resubscriber = event.getReSubscriber(),
             months = event.getMonths(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = reSubMessage,
             emotes = [];
 
@@ -182,6 +197,13 @@
                 for (i = 0; i < months; i++, emotes.push(customEmote));
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber);
@@ -202,6 +224,7 @@
             recipient = event.getRecipient(),
             months = event.getMonths(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = giftSubMessage;
 
         if (giftSubWelcomeToggle === true && announce === true) {
@@ -230,6 +253,12 @@
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
 
             $.addSubUsersList(recipient);
@@ -254,6 +283,7 @@
         var gifter = event.getUsername(),
             amount = event.getAmount(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = massGiftSubMessage;
 
         if (massGiftSubWelcomeToggle === true && announce === true) {
@@ -273,6 +303,12 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
 
             if (massGiftSubReward > 0) {
@@ -289,6 +325,7 @@
             recipient = event.getRecipient(),
             months = event.getMonths(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = giftAnonSubMessage;
 
         if (giftAnonSubWelcomeToggle === true && announce === true) {
@@ -312,6 +349,12 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(message);
 
             $.addSubUsersList(recipient);
@@ -333,6 +376,7 @@
         var gifter = event.getUsername(),
             amount = event.getAmount(),
             tier = event.getPlan(),
+            alertImageFile = null,
             message = massAnonGiftSubMessage;
 
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
@@ -346,6 +390,12 @@
 
             if (message.match(/\(plan\)/g)) {
                 message = $.replace(message, '(plan)', getPlanName(tier));
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
