@@ -151,6 +151,7 @@
             viewers = event.getViewers(),
             hasRaided = false,
             raidObj,
+            alertImageFile = null,
             message;
 
         if (raidToggle === true) {
@@ -187,6 +188,12 @@
 
             if (hasRaided && message.match(/\(times\)/)) {
                 message = $.replace(message, '(times)', raidObj.totalRaids);
+            }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(message);
