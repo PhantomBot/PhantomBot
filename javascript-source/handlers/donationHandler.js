@@ -77,24 +77,22 @@
             donationUsername = donationJson.getString("name"),
             donationMsg = donationJson.getString("message");
 
+        var rewardPoints = Math.round(donationAmount * donationReward),
+            alertImageFile = null,
+            donationSay = donationMessage;
+
         if ($.inidb.exists('donations', donationID)) {
             return;
         }
 
         $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
-
         $.inidb.set('donations', donationID, donationJson);
-
         $.inidb.set('donations', 'last_donation', donationID);
-
         $.inidb.set('donations', 'last_donation_message', $.lang.get('main.donation.last.tip.message', donationUsername, donationCurrency, donationAmount.toFixed(2)));
 
         $.writeToFile(donationUsername + ": " + donationAmount.toFixed(2) + " ", donationAddonDir + "/latestDonation.txt", false);
 
         if (announceDonations && announceDonationsAllowed) {
-            var rewardPoints = Math.round(donationAmount * donationReward);
-            var donationSay = donationMessage;
-
             donationSay = donationSay.replace('(name)', donationUsername);
             donationSay = donationSay.replace('(amount)', donationAmount.toFixed(2));
             donationSay = donationSay.replace('(amount.toFixed(0))', donationAmount.toFixed(0));
@@ -102,6 +100,13 @@
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
             donationSay = donationSay.replace('(message)', donationMsg);
+
+            if (donationSay.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = donationSay.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                donationSay = (donationSay + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
             $.say(donationSay);
         }
 
