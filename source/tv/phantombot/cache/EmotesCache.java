@@ -33,6 +33,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmotesCache implements Runnable {
@@ -113,7 +114,7 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) {
+    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) throws JSONException {
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {

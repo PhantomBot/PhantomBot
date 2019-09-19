@@ -80,7 +80,7 @@ public class GameWispAPIv1 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -90,16 +90,16 @@ public class GameWispAPIv1 {
         jsonObject.put("_content", jsonContent);
     }
 
-    private static JSONObject readJsonFromGETUrl(String urlAddress) {
+    private static JSONObject readJsonFromGETUrl(String urlAddress) throws JSONException {
         return readJsonFromUrl("GET", urlAddress);
     }
 
-    private static JSONObject readJsonFromPOSTUrl(String urlAddress) {
+    private static JSONObject readJsonFromPOSTUrl(String urlAddress) throws JSONException {
         return readJsonFromUrl("POST", urlAddress);
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String methodType, String urlAddress) {
+    private static JSONObject readJsonFromUrl(String methodType, String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -198,7 +198,7 @@ public class GameWispAPIv1 {
      * @param String
      * @return JSONObject
      */
-    public JSONObject getUserSubInfoJSON(String username) {
+    public JSONObject getUserSubInfoJSON(String username) throws JSONException {
         return readJsonFromGETUrl(sAPIURL + "/pub/v1/channel/subscriber-for-channel?access_token=" + GameWispAPIv1.sAccessToken + "&type=twitch&user_name=" + username + "&include=anniversaries,user,tier");
     }
 
@@ -207,7 +207,7 @@ public class GameWispAPIv1 {
      * @param String
      * @return String {JSONObject}
      */
-    public String getUserSubInfoString(String username) {
+    public String getUserSubInfoString(String username) throws JSONException {
         JSONObject jsonObject = getUserSubInfoJSON(username);
         return jsonObject.toString();
     }
@@ -216,7 +216,7 @@ public class GameWispAPIv1 {
      * Refreshes the token.
      * @param String
      */
-    public String[] refreshToken() {
+    public String[] refreshToken() throws JSONException {
         JSONObject jsonObject = readJsonFromPOSTUrl(sAPIURL + "/pub/v1/oauth/token" +
                                 "?grant_type=refresh_token" +
                                 "&client_id=" + devKey +

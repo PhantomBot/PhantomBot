@@ -23,6 +23,7 @@ import java.util.Random;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  *
@@ -86,7 +87,7 @@ public class TwitchTeamsCache implements Runnable {
     /**
      * Method that updates the cache.
      */
-    private void updateCache() {
+    private void updateCache() throws JSONException {
         JSONObject teamsObj = TwitchAPIv5.instance().getChannelTeams(channelName);
         
         if (teamsObj.getBoolean("_success") && teamsObj.getInt("_http") == 200) {
@@ -131,7 +132,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public String getName() {
+        public String getName() throws JSONException {
             return (obj.getString("display_name"));
         }
         
@@ -140,7 +141,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public String getCreatedAt() {
+        public String getCreatedAt() throws JSONException {
             return (obj.getString("created_at"));
         }
         
@@ -149,7 +150,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public String getInfo() {
+        public String getInfo() throws JSONException {
             return (obj.getString("info"));
         }
         
@@ -158,7 +159,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public String getUrl() {
+        public String getUrl() throws JSONException {
             return ("https://twitch.tv/team/" + obj.getString("name"));
         }
         
@@ -167,7 +168,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public int getTotalMembers() {
+        public int getTotalMembers() throws JSONException {
             return (obj.getJSONArray("users").length());
         }
         
@@ -176,7 +177,7 @@ public class TwitchTeamsCache implements Runnable {
          * 
          * @return 
          */
-        public String getRandomMember() {
+        public String getRandomMember() throws JSONException {
             int random = new Random().nextInt(this.getTotalMembers());
             
             return obj.getJSONArray("users").getJSONObject(random).getString("name");
@@ -188,7 +189,7 @@ public class TwitchTeamsCache implements Runnable {
          * @param username
          * @return 
          */
-        public JSONObject getTeamMember(String username) {
+        public JSONObject getTeamMember(String username) throws JSONException {
             JSONArray users = obj.getJSONArray("users");
             JSONObject user = null;
             
@@ -208,7 +209,7 @@ public class TwitchTeamsCache implements Runnable {
          * @param username
          * @return 
          */
-        public boolean hasUser(String username) {
+        public boolean hasUser(String username) throws JSONException {
             JSONArray users = obj.getJSONArray("users");
             boolean foundUser = false;
             

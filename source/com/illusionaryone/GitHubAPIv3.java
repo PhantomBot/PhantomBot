@@ -71,7 +71,7 @@ public class GitHubAPIv3 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +82,7 @@ public class GitHubAPIv3 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) {
+    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -150,7 +150,7 @@ public class GitHubAPIv3 {
      *
      * @return  JSONObject  JSONObject from GitHub
      */
-    public JSONObject GetReleases() {
+    public JSONObject GetReleases() throws JSONException {
         return readJsonFromUrl(sAPIURL + "/releases", true);
     }
 
@@ -159,7 +159,7 @@ public class GitHubAPIv3 {
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
-    public String[] CheckNewRelease() {
+    public String[] CheckNewRelease() throws JSONException {
         JSONObject jsonObject = GetReleases();
         JSONArray jsonArray = jsonObject.getJSONArray("array");
         if (!jsonArray.getJSONObject(0).has("tag_name")) {

@@ -71,7 +71,7 @@ public class DataRenderServiceAPIv1 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +82,7 @@ public class DataRenderServiceAPIv1 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, String jsonString) {
+    private static JSONObject readJsonFromUrl(String urlAddress, String jsonString) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -212,7 +212,7 @@ public class DataRenderServiceAPIv1 {
      * @param   String  The type of data to send.
      * @return  String  Status string.
      */
-    public String postData(String jsonString, String channelName, String type) {
+    public String postData(String jsonString, String channelName, String type) throws JSONException {
         if (sAPIKey.length() == 0) {
             return "no_auth_key";
         }
@@ -230,7 +230,7 @@ public class DataRenderServiceAPIv1 {
      * @param   String  The channel name to authenticate as.
      * @return  String  Status string.
      */
-    public String deleteAllData(String channelName) {
+    public String deleteAllData(String channelName) throws JSONException {
         if (sAPIKey.length() == 0) {
             return "no_auth_key";
         }

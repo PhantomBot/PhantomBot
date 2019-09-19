@@ -48,6 +48,7 @@ import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.locks.ReentrantLock;
+import org.json.JSONException;
 
 public class TwitchPubSub {
     private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
@@ -236,7 +237,7 @@ public class TwitchPubSub {
          *
          * @param {jsonObject}  message  Message we get from PubSub.
          */
-        private void parse(JSONObject message) {
+        private void parse(JSONObject message) throws JSONException {
             JSONObject dataObj;
             JSONObject messageObj;
             JSONObject data;
@@ -319,20 +320,24 @@ public class TwitchPubSub {
          */
         @Override
         public void onOpen(ServerHandshake handshakedata) {
-            com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
-            com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
-
-
-            String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
-            JSONObject jsonObject = new JSONObject();
-            JSONObject topics = new JSONObject();
-
-            topics.put("topics", type);
-            topics.put("auth_token", oAuth.replace("oauth:", ""));
-            jsonObject.put("type", "LISTEN");
-            jsonObject.put("data", topics);
-
-            send(jsonObject.toString());
+            try {
+                com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
+                
+                
+                String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
+                JSONObject jsonObject = new JSONObject();
+                JSONObject topics = new JSONObject();
+                
+                topics.put("topics", type);
+                topics.put("auth_token", oAuth.replace("oauth:", ""));
+                jsonObject.put("type", "LISTEN");
+                jsonObject.put("data", topics);
+                
+                send(jsonObject.toString());
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         }
 
         /**
@@ -370,25 +375,29 @@ public class TwitchPubSub {
          */
         @Override
         public void onMessage(String message) {
-            JSONObject messageObj = new JSONObject(message);
-
-            com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
-
-            if (!messageObj.has("type")) {
-                return;
-            }
-
-            if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
-                return;
-            }
-
-            if (messageObj.getString("type").equalsIgnoreCase("pong")) {
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
-            }
-
-            if (messageObj.getString("type").equalsIgnoreCase("message")) {
-                parse(messageObj);
+            try {
+                JSONObject messageObj = new JSONObject(message);
+                
+                com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
+                
+                if (!messageObj.has("type")) {
+                    return;
+                }
+                
+                if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+                    com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                    return;
+                }
+                
+                if (messageObj.getString("type").equalsIgnoreCase("pong")) {
+                    com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
+                }
+                
+                if (messageObj.getString("type").equalsIgnoreCase("message")) {
+                    parse(messageObj);
+                }
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
 
@@ -398,12 +407,16 @@ public class TwitchPubSub {
         private class PingTask extends TimerTask {
             @Override
             public void run() {
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("type", "PING");
-
-                send(jsonObject.toString());
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: Sent a PING.");
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    
+                    jsonObject.put("type", "PING");
+                    
+                    send(jsonObject.toString());
+                    com.gmt2001.Console.debug.println("TwitchPubSubWS: Sent a PING.");
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
             }
         }
     }

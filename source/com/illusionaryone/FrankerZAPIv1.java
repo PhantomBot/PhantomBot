@@ -70,7 +70,7 @@ public class FrankerZAPIv1 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -81,7 +81,7 @@ public class FrankerZAPIv1 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -146,7 +146,7 @@ public class FrankerZAPIv1 {
      * @param channel
      * @return
      */
-    public JSONObject GetLocalEmotes(String channel) {
+    public JSONObject GetLocalEmotes(String channel) throws JSONException {
         return readJsonFromUrl(sAPIURL + "/room/" + channel);
     }
 
@@ -155,7 +155,7 @@ public class FrankerZAPIv1 {
      *
      * @return
      */
-    public JSONObject GetGlobalEmotes() {
+    public JSONObject GetGlobalEmotes() throws JSONException {
         return readJsonFromUrl(sAPIURL + "/set/global");
     }
 }

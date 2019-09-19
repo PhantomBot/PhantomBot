@@ -42,6 +42,7 @@ import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.ImgDownload;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONException;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -159,7 +160,11 @@ public class TwitchCache implements Runnable {
 
             if (doUpdateClips) {
                 doUpdateClips = false;
-                updateClips();
+                try {
+                    updateClips();
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
             } else {
                 doUpdateClips = true;
             }
@@ -180,7 +185,7 @@ public class TwitchCache implements Runnable {
      * We do not throw an exception because this is not a critical function unlike the gathering
      * of data via the updateCache() method.
      */
-    private void updateClips() {
+    private void updateClips() throws JSONException {
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
         String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
         if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {

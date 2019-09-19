@@ -73,7 +73,7 @@ public class TipeeeStreamAPIv1 {
      * Populates additional information into a JSON object to be digested
      * as needed.
      */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) {
+    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -87,7 +87,7 @@ public class TipeeeStreamAPIv1 {
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -169,7 +169,7 @@ public class TipeeeStreamAPIv1 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() {
+    public JSONObject GetDonations() throws JSONException {
         return readJsonFromUrl(url + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);
     }
 }
