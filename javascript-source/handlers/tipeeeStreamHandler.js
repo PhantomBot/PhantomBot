@@ -76,6 +76,7 @@
             donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
             donationAmount = paramObj.getInt('amount'),
             donationFormattedAmount = donationObj.getString('formattedAmount'),
+            alertImageFile = null,
             s = message;
 
         if ($.inidb.exists('donations', donationID)) {
@@ -119,6 +120,12 @@
 
             if (s.match(/\(reward\)/)) {
                 s = $.replace(s, '(reward)', $.getPointsString(Math.floor(parseFloat(donationAmount) * reward)));
+            }
+
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
             $.say(s);
