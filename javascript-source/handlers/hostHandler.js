@@ -68,6 +68,7 @@
     $.bind('twitchAutoHosted', function(event) {
         var hoster = event.getHoster().toLowerCase(),
             viewers = parseInt(event.getUsers()),
+            alertImageFile = null,
             s = autoHostMessage;
 
         if (announceHosts === false) {
@@ -88,23 +89,30 @@
             };
         }
 
-        if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.username.resolve(hoster));
-        }
-
-        if (s.match(/\(reward\)/)) {
-            s = $.replace(s, '(reward)', autoHostReward.toString());
-        }
-
-        if (s.match(/\(viewers\)/)) {
-            s = $.replace(s, '(viewers)', viewers.toString());
-        }
-
-        if (s.match(/^\/w/)) {
-            s = s.replace('/w', ' /w');
-        }
-
         if (autoHostToggle === true && viewers >= hostMinCount) {
+
+            if (s.match(/\(name\)/)) {
+                s = $.replace(s, '(name)', $.username.resolve(hoster));
+            }
+
+            if (s.match(/\(reward\)/)) {
+                s = $.replace(s, '(reward)', autoHostReward.toString());
+            }
+
+            if (s.match(/\(viewers\)/)) {
+                s = $.replace(s, '(viewers)', viewers.toString());
+            }
+
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (s.match(/^\/w/)) {
+                s = s.replace('/w', ' /w');
+            }
+
             $.say(s);
         }
 
@@ -121,6 +129,7 @@
     $.bind('twitchHosted', function(event) {
         var hoster = event.getHoster().toLowerCase(),
             viewers = parseInt(event.getUsers()),
+            alertImageFile = null,
             s = hostMessage;
 
         // Always update the Host History even if announcements are off or if they recently
@@ -155,23 +164,30 @@
             };
         }
 
-        if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.username.resolve(hoster));
-        }
-
-        if (s.match(/\(reward\)/)) {
-            s = $.replace(s, '(reward)', hostReward.toString());
-        }
-
-        if (s.match(/\(viewers\)/)) {
-            s = $.replace(s, '(viewers)', viewers.toString());
-        }
-
-        if (s.match(/^\/w/)) {
-            s = s.replace('/w', ' /w');
-        }
-
         if (hostToggle === true && viewers >= hostMinCount) {
+
+            if (s.match(/\(name\)/)) {
+                s = $.replace(s, '(name)', $.username.resolve(hoster));
+            }
+
+            if (s.match(/\(reward\)/)) {
+                s = $.replace(s, '(reward)', hostReward.toString());
+            }
+
+            if (s.match(/\(viewers\)/)) {
+                s = $.replace(s, '(viewers)', viewers.toString());
+            }
+
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                alertImageFile = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(alertImageFile);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (s.match(/^\/w/)) {
+                s = s.replace('/w', ' /w');
+            }
+
             $.say(s);
         }
 
