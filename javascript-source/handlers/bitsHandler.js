@@ -42,6 +42,7 @@
             bits = event.getBits(),
             ircMessage = event.getMessage(),
             emoteRegexStr = $.twitch.GetCheerEmotesRegex(),
+            alertImageFile = null,
             s = message;
 
         if (announceBits === false || toggle === false) {
@@ -69,8 +70,16 @@
             }
         }
 
+        if (s.match(/\(alert [,.\w\W]+\)/g)) {
+            alertImageFile = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+            s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+        }
+
         if (bits >= minimum) {
             $.say(s);
+            if (alertImageFile) {
+                $.panelsocketserver.alertImage(alertImageFile);
+            }
         }
 
         $.writeToFile(username + ' ', './addons/bitsHandler/latestCheer.txt', false);
