@@ -43,6 +43,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.script.Script;
@@ -67,7 +68,7 @@ public final class LangFileUpdater {
      * @param langFile
      * @return 
      */
-    public static String getCustomLang(String langFile) {
+    public static String getCustomLang(String langFile) throws JSONException {
         String stringArray;
         
         stringArray = convertLangMapToJSONArray(
@@ -86,7 +87,7 @@ public final class LangFileUpdater {
      * @param stringArray 
      * @param langFile 
      */
-    public static void updateCustomLang(String stringArray, String langFile) {
+    public static void updateCustomLang(String stringArray, String langFile) throws JSONException {
         final StringBuilder sb = new StringBuilder();
         final JSONArray array = new JSONArray(stringArray);
         
@@ -247,7 +248,7 @@ public final class LangFileUpdater {
      * @param map
      * @return 
      */
-    private static String convertLangMapToJSONArray(HashMap<String, String> map) {
+    private static String convertLangMapToJSONArray(HashMap<String, String> map) throws JSONException {
         final JSONStringer jsonArray = new JSONStringer();
         
         // Make a new array.
@@ -256,7 +257,11 @@ public final class LangFileUpdater {
         map.forEach((String key, String value) -> {
             final JSONObject obj = new JSONObject();
             
-            jsonArray.object().key("id").value(key).key("response").value(value).endObject();
+            try {
+                jsonArray.object().key("id").value(key).key("response").value(value).endObject();
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         });
         
         // Close the array.

@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -137,10 +138,14 @@ public class ModerationUtil {
     public boolean hasBlacklist(String username, String message, JSONObject blacklist) {
         boolean hasBlacklist = false;
         
-        if (blacklist.has("_total") && blacklist.getInt("_total") > 0) {
-            JSONArray list = blacklist.getJSONArray("list");
-            
-            
+        try {
+            if (blacklist.has("_total") && blacklist.getInt("_total") > 0) {
+                JSONArray list = blacklist.getJSONArray("list");
+                
+                
+            }
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
         }
         
         return hasBlacklist;

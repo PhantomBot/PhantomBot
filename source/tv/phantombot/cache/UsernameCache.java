@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONException;
 import tv.phantombot.PhantomBot;
 import org.json.JSONObject;
 
@@ -82,7 +83,7 @@ public class UsernameCache {
     
     // This will be implemented later
     // For now it's just to keep another class from throwing errors.
-    public JSONObject getUserData(String username) {
+    public JSONObject getUserData(String username) throws JSONException {
         return new JSONObject("");
     }
 

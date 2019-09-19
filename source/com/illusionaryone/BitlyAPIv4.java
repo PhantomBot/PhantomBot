@@ -71,7 +71,7 @@ public class BitlyAPIv4 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +82,7 @@ public class BitlyAPIv4 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) {
+    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -178,7 +178,7 @@ public class BitlyAPIv4 {
      * @param   String  Long URL
      * @return  String  Shortened URL or Long URL if there was an issue
      */
-    public String getShortURL(String longURL) {
+    public String getShortURL(String longURL) throws JSONException {
         JSONObject jsonObject = readJsonFromUrl(sAPIURL, longURL);
         if (jsonObject.has("link")) {
             return jsonObject.getString("link");

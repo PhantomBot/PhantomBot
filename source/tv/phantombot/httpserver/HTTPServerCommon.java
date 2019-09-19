@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 
 import tv.phantombot.PhantomBot;
 
@@ -88,7 +89,7 @@ public class HTTPServerCommon {
         }
     }
 
-    public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException {
+    public static void handle(HttpExchange exchange, String serverPassword, String serverWebAuth) throws IOException, JSONException {
         Boolean hasPassword = false;
         Boolean doRefresh = false;
         Boolean doMarquee = false;
@@ -239,7 +240,7 @@ public class HTTPServerCommon {
      * table=tableName&getSortedRowsByValue&limit=n
      * table=tableName&getSortedRowsByValue&offset=n
      */
-    private static void handleDBQuery(String uriPath, String[] uriQueryList, HttpExchange exchange, Boolean hasPassword) {
+    private static void handleDBQuery(String uriPath, String[] uriQueryList, HttpExchange exchange, Boolean hasPassword) throws JSONException {
         JSONStringer jsonObject = new JSONStringer();
         String[] keyValue;
         String   dbTable = null;
@@ -446,7 +447,7 @@ public class HTTPServerCommon {
      * @param hasPassword
      * @param needsPassword
      */
-    private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+    private static void handleLangFiles(String path, HttpExchange exchange, boolean hasPassword, boolean needsPassword) throws JSONException {
         if (needsPassword) {
             if (!hasPassword) {
                 sendHTMLError(403, "Access Denied", exchange);
@@ -471,7 +472,7 @@ public class HTTPServerCommon {
      * @param hasPassword
      * @param needsPassword
      */
-    private static void handleGamesList(HttpExchange exchange, boolean hasPassword, boolean needsPassword) {
+    private static void handleGamesList(HttpExchange exchange, boolean hasPassword, boolean needsPassword) throws JSONException {
         if (needsPassword) {
             if (!hasPassword) {
                 sendHTMLError(403, "Access Denied", exchange);
@@ -682,7 +683,7 @@ public class HTTPServerCommon {
         sendData("text/text", "event posted", exchange);
     }
 
-    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) throws IOException {
+    private static void handlePutRequestLang(String langFile, String langData, HttpExchange exchange, Boolean hasPassword) throws IOException, JSONException {
         if (!hasPassword) {
             sendHTMLError(403, "Access Denied.", exchange);
             return;

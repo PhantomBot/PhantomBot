@@ -51,7 +51,7 @@ public class CustomAPI {
      * @param  {String} url
      * @return {JSONObject}
      */
-    public JSONObject getJSON(String url) {
+    public JSONObject getJSON(String url) throws JSONException {
         try {
             HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
             if (data.success) {

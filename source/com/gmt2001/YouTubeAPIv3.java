@@ -81,7 +81,7 @@ public class YouTubeAPIv3 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -94,7 +94,7 @@ public class YouTubeAPIv3 {
     @SuppressWarnings( {
         "null", "SleepWhileInLoop", "UseSpecificCatch"
     })
-    private JSONObject GetData(request_type type, String urlAddress) {
+    private JSONObject GetData(request_type type, String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -168,7 +168,7 @@ public class YouTubeAPIv3 {
         this.apikey = apikey;
     }
 
-    public String[] SearchForVideo(String q) {
+    public String[] SearchForVideo(String q) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + q + "]");
 
         if (q.contains("v=") | q.contains("?v=")) {
@@ -248,7 +248,7 @@ public class YouTubeAPIv3 {
         return new String[] { "", "", "" };
     }
 
-    public int[] GetVideoLength(String id) {
+    public int[] GetVideoLength(String id) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
@@ -298,7 +298,7 @@ public class YouTubeAPIv3 {
         return new int[] { 0, 0, 0 };
     }
 
-    public int[] GetVideoInfo(String id) {
+    public int[] GetVideoInfo(String id) throws JSONException {
         int licenseRetval = 0;
         int embedRetval = 0;
 

@@ -33,6 +33,9 @@ import javax.net.ssl.SSLSession;
 import io.socket.emitter.Emitter;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
 
 import org.json.JSONObject;
 
@@ -92,31 +95,43 @@ public class SocketIOExample {
             webSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Singularity");
-                    webSocket.emit("authentication", new JSONObject().put("key", devKey).put("access_token", AccessToken));
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Connected to Singularity");
+                        webSocket.emit("authentication", new JSONObject().put("key", devKey).put("access_token", AccessToken));
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
 
             webSocket.on("unauthorized", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    com.gmt2001.Console.err.println("SingularityWS (GameWisp): Authorization Failed: " + jsonObject.getString("message"));
+                    try {
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        com.gmt2001.Console.err.println("SingularityWS (GameWisp): Authorization Failed: " + jsonObject.getString("message"));
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
 
             webSocket.on("authenticated", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Authenticated");
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    if (!jsonObject.has("session")) {
-                        com.gmt2001.Console.err.println("SingularityWS (GameWisp): Missing Session in Authenticated Return JSON");
-                        Authenticated = false;
-                        return;
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): Authenticated");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (!jsonObject.has("session")) {
+                            com.gmt2001.Console.err.println("SingularityWS (GameWisp): Missing Session in Authenticated Return JSON");
+                            Authenticated = false;
+                            return;
+                        }
+                        SessionID = jsonObject.getString("session");
+                        Authenticated = true;
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    SessionID = jsonObject.getString("session");
-                    Authenticated = true;
                 }
             });
 
@@ -140,75 +155,87 @@ public class SocketIOExample {
             webSocket.on("subscriber-new", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-new received");
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    if (!jsonObject.has("data")) {
-                        return;
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-new received");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (!jsonObject.has("data")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("usernames")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("tier")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("tier").has("level")) {
+                            return;
+                        }
+                        String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                        int tier = jsonObject.getJSONObject("data").getJSONObject("tier").getInt("level");
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!jsonObject.getJSONObject("data").has("usernames")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").has("tier")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("tier").has("level")) {
-                        return;
-                    }
-                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
-                    int tier = jsonObject.getJSONObject("data").getJSONObject("tier").getInt("level");
                 }
             });
 
             webSocket.on("subscriber-anniversary", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-anniversary received");
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    if (!jsonObject.has("data")) {
-                        return;
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-anniversary received");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (!jsonObject.has("data")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("subscriber")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").has("usernames")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").has("twitch")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("month_count")) {
+                            return;
+                        }
+                        String username = jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").getString("twitch");
+                        int months = jsonObject.getJSONObject("data").getInt("month_count");
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!jsonObject.getJSONObject("data").has("subscriber")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").has("usernames")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").has("twitch")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").has("month_count")) {
-                        return;
-                    }
-                    String username = jsonObject.getJSONObject("data").getJSONObject("subscriber").getJSONObject("usernames").getString("twitch");
-                    int months = jsonObject.getJSONObject("data").getInt("month_count");
                 }
             });
 
             webSocket.on("subscriber-benefits-change", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-benefits-change received");
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    if (!jsonObject.has("data")) {
-                        return;
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-benefits-change received");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (!jsonObject.has("data")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("usernames")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                            return;
+                        }
+                        if (!jsonObject.has("tier")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("tier").has("level")) {
+                            return;
+                        }
+                        String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                        int tier = jsonObject.getJSONObject("tier").getInt("level");
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!jsonObject.getJSONObject("data").has("usernames")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
-                        return;
-                    }
-                    if (!jsonObject.has("tier")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("tier").has("level")) {
-                        return;
-                    }
-                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
-                    int tier = jsonObject.getJSONObject("tier").getInt("level");
                 }
             });
 
@@ -224,22 +251,26 @@ public class SocketIOExample {
             webSocket.on("subscriber-status-change", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-status-changed received");
-                    JSONObject jsonObject = new JSONObject(args[0].toString());
-                    if (!jsonObject.has("data")) {
-                        return;
+                    try {
+                        com.gmt2001.Console.debug.println("SingularityWS (GameWisp): subscriber-status-changed received");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (!jsonObject.has("data")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("usernames")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
+                            return;
+                        }
+                        if (!jsonObject.getJSONObject("data").has("status")) {
+                            return;
+                        }
+                        String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
+                        String status = jsonObject.getJSONObject("data").getString("status");
+                    } catch (JSONException ex) {
+                        Logger.getLogger(SocketIOExample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!jsonObject.getJSONObject("data").has("usernames")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").getJSONObject("usernames").has("twitch")) {
-                        return;
-                    }
-                    if (!jsonObject.getJSONObject("data").has("status")) {
-                        return;
-                    }
-                    String username = jsonObject.getJSONObject("data").getJSONObject("usernames").getString("twitch");
-                    String status = jsonObject.getJSONObject("data").getString("status");
                 }
             });
 
