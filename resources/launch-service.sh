@@ -26,7 +26,7 @@
 
 unset DISPLAY
 
-if [[ $(uname)=="Darwin" ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
     SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do
         DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -35,10 +35,32 @@ if [[ $(uname)=="Darwin" ]]; then
     done
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
     cd "$DIR"
-	JAVA="./java-runtime-macos/bin/java"
+    JAVA="./java-runtime-macos/bin/java"
+elif [[ "$MACHTYPE" == "arm"* ]];
+    cd $(dirname $(readlink -f $0))
+    JAVA=$(which java)
+    
+    if (( $? > 0 )); then
+        jvermaj=0
+    else
+        jvermaj=$(java --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    fi
+    
+    if (( jvermaj < 11 )); then
+        echo "PhantomBot requires Java 11 or later to run."
+        echo
+        echo "Please install the package openjdk-11-jre-headless"
+        echo
+        echo "The commands to do this are:"
+        echo "   sudo apt-get install openjdk-11-jre-headless"
+        echo "   sudo update-alternatives --config java"
+        echo
+        echo "When you issue the update-alternatives command, select the option for java-11-openjdk"
+        exit 1
+    fi
 else
     cd $(dirname $(readlink -f $0))
-	JAVA="./java-runtime-linux/bin/java"
+    JAVA="./java-runtime-linux/bin/java"
 fi
 
 ${JAVA} -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
