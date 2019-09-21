@@ -55,17 +55,6 @@
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
 
-    <path id="reference.class.path">
-        <fileset dir="${reference}">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="${basedir}/">
-            <include name="lib/*.jar" />
-            <exclude name="lib/*sources.jar"/>
-            <exclude name="lib/*javadoc.jar"/>
-        </fileset>
-    </path>
-
     <condition property="build_type" value="${buildtype}" else="stable">
         <and>
             <isset property="buildtype" />
@@ -100,7 +89,24 @@
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
         <mkdir dir="${version.folder}" />
-
+    </target>
+    
+    <target depends="init-ivy" name="ivy-retrieve">
+        <ivy:retrieve/>
+    </target>
+    
+    <target depends="ivy-retrieve" name="classpaths">
+        <path id="reference.class.path">
+            <fileset dir="${reference}">
+                <include name="*.jar" />
+            </fileset>
+            <fileset dir="${basedir}/">
+                <include name="lib/*.jar" />
+                <exclude name="lib/*sources.jar"/>
+                <exclude name="lib/*javadoc.jar"/>
+            </fileset>
+        </path>
+        
         <pathconvert property="mf.classpath" pathsep=" ">
             <path refid="reference.class.path" />
             <mapper>
@@ -110,10 +116,6 @@
                 </chainedmapper>
             </mapper>
         </pathconvert>
-    </target>
-    
-    <target depends="init-ivy" name="ivy-retrieve">
-        <ivy:retrieve/>
     </target>
 
     <target name="git.revision" if="git.present">
@@ -130,7 +132,7 @@
         </condition>
     </target>
 
-    <target depends="init,ivy-retrieve,git.revision" name="pre.compile">
+    <target depends="init,ivy-retrieve,classpaths,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
         <replaceregexp
