@@ -77,6 +77,7 @@ public class TwitchWSIRC extends WebSocketClient {
             if (System.currentTimeMillis() > (lastPing + 180000)) {
                 com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
                 lastPing = System.currentTimeMillis();
+                lastPong = System.currentTimeMillis();
                 this.send("PING");
             }
 
