@@ -36,7 +36,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
     cd "$DIR"
     JAVA="./java-runtime-macos/bin/java"
-elif [[ "$MACHTYPE" == "arm"* ]];
+elif [[ "$MACHTYPE" == "arm"* ]]; then
     cd $(dirname $(readlink -f $0))
     JAVA=$(which java)
     
