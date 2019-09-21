@@ -102,6 +102,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONException;
 import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.console.ConsoleEventHandler;
 import tv.phantombot.scripts.core.Moderation;
@@ -1084,8 +1085,12 @@ public final class PhantomBot implements Listener {
 
         // Moved this to debug only. People are already asking questions.
         if (PhantomBot.enableDebugging) {
-            /* Check for bot verification. */
-            print("Bot Verification Status: " + (TwitchAPIv5.instance().getBotVerified(this.botName) ? "" : " NOT ") + "Verified.");
+            try {
+                /* Check for bot verification. */
+                print("Bot Verification Status: " + (TwitchAPIv5.instance().getBotVerified(this.botName) ? "" : " NOT ") + "Verified.");
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         }
 
         /* Check for a update with PhantomBot */
@@ -1420,27 +1425,31 @@ public final class PhantomBot implements Listener {
     private void doCheckPhantomBotUpdate() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
-
-            String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
-            if (newVersionInfo != null) {
-                try {
-                    Thread.sleep(6000);
-                    print("");
-                    print("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                    print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                    print("Download Link: " + newVersionInfo[1]);
-                    print("A reminder will be provided in 24 hours!");
-                    print("");
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
+            try {
+                Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
+                
+                String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                if (newVersionInfo != null) {
+                    try {
+                        Thread.sleep(6000);
+                        print("");
+                        print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                        print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                        print("Download Link: " + newVersionInfo[1]);
+                        print("A reminder will be provided in 24 hours!");
+                        print("");
+                    } catch (InterruptedException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
+                    
+                    if (webEnabled) {
+                        dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                    }
+                } else {
+                    dataStore.del("settings", "newrelease_info");
                 }
-
-                if (webEnabled) {
-                    dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
-                }
-            } else {
-                dataStore.del("settings", "newrelease_info");
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }, 0, 24, TimeUnit.HOURS);
     }
