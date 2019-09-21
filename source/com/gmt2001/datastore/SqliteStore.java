@@ -27,6 +27,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
 
@@ -40,10 +42,8 @@ public class SqliteStore extends DataStore {
     private int cache_size = -50000;
     private boolean safe_write = false;
     private boolean journal = true;
-    private Connection connection = null;
     private static final SqliteStore instance = new SqliteStore();
-    private int autoCommitCtr = 0;
-    private boolean use_indexes = false;
+    private static final WriteQueue writequeue = new WriteQueue();
 
     public static SqliteStore instance() {
         return instance;
@@ -62,8 +62,6 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        use_indexes = (boolean) o[4];
-        connection = (Connection) o[5];
     }
 
     private String sanitizeOrder(String order) {
@@ -107,8 +105,6 @@ public class SqliteStore extends DataStore {
         cache_size = (int) o[1];
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
-        use_indexes = (boolean) o[4];
-        connection = (Connection) o[5];
     }
 
     private static Object[] LoadConfigReal(String configStr) {
@@ -121,7 +117,6 @@ public class SqliteStore extends DataStore {
         boolean safe_write = false;
         boolean journal = true;
         boolean use_indexes = false;
-        Connection connection = null;
 
         try {
             File f = new File("./" + configStr);
@@ -147,20 +142,22 @@ public class SqliteStore extends DataStore {
                         use_indexes = line.substring(9).equalsIgnoreCase("true");
                     }
                 }
-
-                connection = CreateConnection(dbname, cache_size, safe_write, journal, true);
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         return new Object[] {
-                   dbname, cache_size, safe_write, journal, use_indexes, connection
+                   dbname, cache_size, safe_write, journal, use_indexes
                };
     }
 
     private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write, boolean journal, boolean autocommit) {
         Connection connection = null;
+        
+        if (!writequeue.isRunning) {
+            writequeue.start();
+        }
 
         try {
             SQLiteConfig config = new SQLiteConfig();
@@ -168,6 +165,7 @@ public class SqliteStore extends DataStore {
             config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.NORMAL);
             config.setTempStore(SQLiteConfig.TempStore.MEMORY);
             config.setJournalMode(journal ? SQLiteConfig.JournalMode.WAL : SQLiteConfig.JournalMode.OFF);
+            config.setBusyTimeout(10000);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
             connection.setAutoCommit(autocommit);
         } catch (SQLException ex) {
@@ -177,8 +175,7 @@ public class SqliteStore extends DataStore {
         return connection;
     }
 
-    @Override
-    public void CloseConnection() {
+    public void CloseConnection(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -193,9 +190,7 @@ public class SqliteStore extends DataStore {
     protected void finalize() throws Throwable {
         super.finalize();
 
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
-        }
+        writequeue.kill();
     }
 
     private String validateFname(String fName) {
@@ -204,34 +199,22 @@ public class SqliteStore extends DataStore {
         return fName;
     }
 
-    private void CheckConnection() {
-        try {
-            if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(dbname, cache_size, safe_write, journal, getAutoCommitCtr() == 0);
-            }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+    private Connection GetConnection() {
+        return CreateConnection(dbname, cache_size, safe_write, journal, true);
     }
 
     @Override
     public void AddFile(String fName) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (!FileExists(fName)) {
-            try (Statement statement = connection.createStatement()) {
-                statement.setQueryTimeout(10);
-
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
-            } catch (SQLException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);")) {
-                statement.execute();
+            try {
+                Statement statement = connection.createStatement();
+                statement.addBatch("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section string, variable string, value string);");
+                statement.addBatch("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);");
+                writequeue.block(statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -240,17 +223,17 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveKey(String fName, String section, String key) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                statement.setQueryTimeout(10);
+            try {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
                 statement.setString(1, section);
                 statement.setString(2, key);
-                statement.executeUpdate();
+                statement.addBatch();
+                writequeue.enqueue(statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -259,16 +242,16 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveSection(String fName, String section) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;")) {
-                statement.setQueryTimeout(10);
+            try {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setString(1, section);
-                statement.executeUpdate();
+                statement.addBatch();
+                writequeue.enqueue(statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -277,16 +260,15 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RemoveFile(String fName) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
-            try (Statement statement = connection.createStatement()) {
-                statement.setQueryTimeout(10);
-
-                statement.executeUpdate("DROP TABLE phantombot_" + fName + ";");
+            try {
+                Statement statement = connection.createStatement();
+                statement.addBatch("DROP TABLE phantombot_" + fName + ";");
+                writequeue.block    (statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -295,8 +277,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void RenameFile(String fNameSource, String fNameDest) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fNameSource = validateFname(fNameSource);
         fNameDest = validateFname(fNameDest);
@@ -307,9 +288,10 @@ public class SqliteStore extends DataStore {
 
         RemoveFile(fNameDest);
 
-        try (Statement statement = connection.createStatement()) {
-            statement.setQueryTimeout(10);
-            statement.executeUpdate("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+        try {
+            Statement statement = connection.createStatement();
+            statement.addBatch("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+            writequeue.block(statement);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -317,13 +299,11 @@ public class SqliteStore extends DataStore {
 
     @Override
     public boolean FileExists(String fName) {
-        CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         try (Statement statement = connection.createStatement()) {
-            statement.setQueryTimeout(10);
-
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
 
                 return rs.next();
@@ -337,11 +317,9 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetFileList() {
-        CheckConnection();
+        Connection connection = GetConnection();
 
         try (Statement statement = connection.createStatement()) {
-            statement.setQueryTimeout(10);
-
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
 
                 ArrayList<String> s = new ArrayList<String>();
@@ -362,15 +340,12 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetCategoryList(String fName) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             try (Statement statement = connection.createStatement()) {
-                statement.setQueryTimeout(10);
-
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
 
                     ArrayList<String> s = new ArrayList<String>();
@@ -392,15 +367,13 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeyList(String fName, String section) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -418,8 +391,6 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
-                    statement.setQueryTimeout(10);
-
                     try (ResultSet rs = statement.executeQuery()) {
 
                         ArrayList<String> s = new ArrayList<String>();
@@ -442,12 +413,12 @@ public class SqliteStore extends DataStore {
 
     @Override
     public KeyValue[] GetKeyValueList(String fName, String section) {
+        Connection connection = GetConnection();
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -464,8 +435,6 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
-                    statement.setQueryTimeout(10);
-
                     try (ResultSet rs = statement.executeQuery()) {
 
                         ArrayList<KeyValue> s = new ArrayList<KeyValue>();
@@ -496,6 +465,7 @@ public class SqliteStore extends DataStore {
     }
 
     private String[] GetKeysByOrderInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
+        Connection connection = GetConnection();
         String statementStr;
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -510,7 +480,6 @@ public class SqliteStore extends DataStore {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -533,8 +502,6 @@ public class SqliteStore extends DataStore {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                    statement.setQueryTimeout(10);
-
                     try (ResultSet rs = statement.executeQuery()) {
 
                         ArrayList<String> s = new ArrayList<String>();
@@ -566,6 +533,7 @@ public class SqliteStore extends DataStore {
     }
 
     private String[] GetKeysByOrderValueInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
+        Connection connection = GetConnection();
         String statementStr;
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -581,7 +549,6 @@ public class SqliteStore extends DataStore {
                 }
 
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -604,8 +571,6 @@ public class SqliteStore extends DataStore {
                     statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                 }
                 try (PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                    statement.setQueryTimeout(10);
-
                     try (ResultSet rs = statement.executeQuery()) {
 
                         ArrayList<String> s = new ArrayList<String>();
@@ -628,15 +593,13 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
@@ -653,7 +616,6 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -678,15 +640,13 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
@@ -703,7 +663,6 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -728,8 +687,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
         order = sanitizeOrder(order);
@@ -739,7 +697,6 @@ public class SqliteStore extends DataStore {
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, section);
                     statement.setString(2, "%" + search + "%");
 
@@ -756,7 +713,6 @@ public class SqliteStore extends DataStore {
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
-                    statement.setQueryTimeout(10);
                     statement.setString(1, "%" + search + "%");
 
                     try (ResultSet rs = statement.executeQuery()) {
@@ -781,8 +737,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public boolean HasKey(String fName, String section, String key) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
@@ -792,7 +747,6 @@ public class SqliteStore extends DataStore {
 
         if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
 
@@ -807,7 +761,6 @@ public class SqliteStore extends DataStore {
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
                 try (ResultSet rs = statement.executeQuery()) {
@@ -826,8 +779,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String GetKeyByValue(String fName, String section, String value) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         String result = null;
 
@@ -839,7 +791,6 @@ public class SqliteStore extends DataStore {
 
         if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, value);
 
@@ -854,7 +805,6 @@ public class SqliteStore extends DataStore {
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, value);
 
                 try (ResultSet rs = statement.executeQuery()) {
@@ -874,8 +824,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public String GetString(String fName, String section, String key) {
-        // "FileExists" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         String result = null;
 
@@ -887,7 +836,6 @@ public class SqliteStore extends DataStore {
 
         if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
 
@@ -902,7 +850,6 @@ public class SqliteStore extends DataStore {
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
-                statement.setQueryTimeout(10);
                 statement.setString(1, key);
 
                 try (ResultSet rs = statement.executeQuery()) {
@@ -921,8 +868,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        // "AddFile" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
         AddFile(fName);
@@ -939,48 +885,28 @@ public class SqliteStore extends DataStore {
             }
         }
 
-        setAutoCommit(false);
-
         try {
             if (insertMap.size() > 0) {
-                int idx = 0;
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
-                    statement.setQueryTimeout(10);
-                    for (String key : insertMap.keySet()) {
-                        statement.setString(1, insertMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
-
-                        if (idx++ % 500 == 0) {
-                            statement.executeBatch();
-                            statement.clearBatch();
-                        }
-                    }
-                    statement.executeBatch();
-                    statement.clearBatch();
-                    connection.commit();
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);");
+                for (String key : insertMap.keySet()) {
+                    statement.setString(1, insertMap.get(key));
+                    statement.setString(2, section);
+                    statement.setString(3, key);
+                    statement.addBatch();
                 }
+                
+                writequeue.enqueue(statement, connection, true, false);
             }
             if (updateMap.size() > 0) {
-                int idx = 0;
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
-                    statement.setQueryTimeout(10);
-                    for (String key : updateMap.keySet()) {
-                        statement.setString(1, updateMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
-
-                        if (idx++ % 500 == 0) {
-                            statement.executeBatch();
-                            statement.clearBatch();
-                        }
-                    }
-                    statement.executeBatch();
-                    statement.clearBatch();
-                    connection.commit();
+                PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;");
+                for (String key : updateMap.keySet()) {
+                    statement.setString(1, updateMap.get(key));
+                    statement.setString(2, section);
+                    statement.setString(3, key);
+                    statement.addBatch();
                 }
+                
+                writequeue.enqueue(statement, connection, true, false);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);
@@ -992,8 +918,7 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
-        // "AddFile" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
@@ -1001,21 +926,19 @@ public class SqliteStore extends DataStore {
 
         try {
             if (HasKey(fName, section, key)) {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
-                    statement.setQueryTimeout(10);
-                    statement.setString(1, value);
-                    statement.setString(2, section);
-                    statement.setString(3, key);
-                    statement.executeUpdate();
-                }
+                PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;");
+                statement.setString(1, value);
+                statement.setString(2, section);
+                statement.setString(3, key);
+                statement.addBatch();
+                writequeue.enqueue(statement);
             } else {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                    statement.setQueryTimeout(10);
-                    statement.setString(1, section);
-                    statement.setString(2, key);
-                    statement.setString(3, value);
-                    statement.executeUpdate();
-                }
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.addBatch();
+                writequeue.enqueue(statement);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -1024,13 +947,15 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+        Connection connection = GetConnection();
         fName = validateFname(fName);
 
         AddFile(fName);
 
         try {
-            Statement statement = connection.createStatement();
-            statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+            PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+            statement.addBatch();
+            writequeue.enqueue(statement);
 
             StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
             
@@ -1056,8 +981,9 @@ public class SqliteStore extends DataStore {
             
             sb.append(";");
 
-            statement.addBatch(sb.toString());
-            statement.executeBatch();
+            statement = connection.prepareStatement(sb.toString());
+            statement.addBatch();
+            writequeue.enqueue(statement);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1065,21 +991,19 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void InsertString(String fName, String section, String key, String value) {
-        // "AddFile" already checks the connections.
-        // CheckConnection();
+        Connection connection = GetConnection();
 
         fName = validateFname(fName);
 
         AddFile(fName);
 
         try {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                statement.setQueryTimeout(10);
-                statement.setString(1, section);
-                statement.setString(2, key);
-                statement.setString(3, value);
-                statement.executeUpdate();
-            }
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
+            statement.setString(1, section);
+            statement.setString(2, key);
+            statement.setString(3, value);
+            statement.addBatch();
+            writequeue.enqueue(statement);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1087,12 +1011,14 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void CreateIndexes() {
-        CheckConnection();
+        Connection connection = GetConnection();
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            try (PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);")) {
-                statement.execute();
+            try {
+                PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
+                statement.addBatch();
+                writequeue.enqueue(statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -1101,12 +1027,14 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void DropIndexes() {
-        CheckConnection();
+        Connection connection = GetConnection();
         String[] tableNames = GetFileList();
         for (String tableName : tableNames) {
             tableName = validateFname(tableName);
-            try (PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx")) {
-                statement.execute();
+            try {
+                PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx");
+                statement.addBatch();
+                writequeue.enqueue(statement);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -1115,51 +1043,192 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
-    public void setAutoCommit(boolean mode) {
-        CheckConnection();
-
-        try {
-            if (mode == true) {
-                decrAutoCommitCtr();
-                if (getAutoCommitCtr() == 0) {
-                    connection.commit();
-                    connection.setAutoCommit(mode);
-                }
-            } else {
-                incrAutoCommitCtr();
-                connection.setAutoCommit(mode);
-            }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.debug.println("SQLite commit was attempted too early, will perform later.");
-        }
-    }
-
-    @Override
     public void backupSQLite3(String filename) {
-        CheckConnection();
+        Connection connection = GetConnection();
 
         if (!new File ("./dbbackup").exists()) new File ("./dbbackup").mkdirs();
 
-        try (Statement statement = connection.createStatement()) {
-            statement.setQueryTimeout(10);
-            statement.executeUpdate("backup to ./dbbackup/" + filename);
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("backup to ./dbbackup/" + filename);
             com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
+    
+    private static class WQStatement {
+        public int id;
+        public Statement statement;
+        public Connection connection = null;
+        public boolean isBatch = false;
+        public boolean autoCommit = true;
+        public boolean blocking = false;
+        
+        public WQStatement(int id, Statement statement) {
+            this.id = id;
+            this.statement = statement;
+        }
+        
+        public WQStatement(int id, Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
+            this.id = id;
+            this.statement = statement;
+            this.connection = connection;
+            this.isBatch = isBatch;
+            this.autoCommit = autoCommit;
+        }
+        
+        public WQStatement(int id, Statement statement, Connection connection, boolean isBatch, boolean autoCommit, boolean blocking) {
+            this.id = id;
+            this.statement = statement;
+            this.connection = connection;
+            this.isBatch = isBatch;
+            this.autoCommit = autoCommit;
+            this.blocking = blocking;
+        }
+    }
+    
+    private static class WriteQueue implements Runnable {
+        private final BlockingDeque<WQStatement> queue = new LinkedBlockingDeque<>();
+        private final BlockingDeque<WQStatement> completed = new LinkedBlockingDeque<>();
+        private final Thread thread;
+        public boolean isRunning = false;
+        private boolean isKilled = false;
+        private int nextID = 0;
 
-    private synchronized void incrAutoCommitCtr() {
-        autoCommitCtr++;
-    }
-    private synchronized void decrAutoCommitCtr() {
-        autoCommitCtr--;
-    }
-    private synchronized int getAutoCommitCtr() {
-        return autoCommitCtr;
-    }
+        /**
+         * Class constructor.
+         *
+         * @param {String} channelName
+         */
+        public WriteQueue() {
+            // Set the default thread uncaught exception handler.
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-    public boolean getUseIndexes() {
-        return use_indexes;
+            // Start a new thread for our final queue.
+            this.thread = new Thread(this, "com.gmt2001.datastore.SqliteStore.WriteQueue::run");
+            this.thread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+            this.thread.setPriority(Thread.NORM_PRIORITY);
+        }
+
+        /**
+         * Method that starts this queue.
+         *
+         * @param {TwitchSession} session
+         */
+        public void start() {
+            // Start the write thread.
+            this.isRunning = true;
+            this.thread.start();
+        }
+        /**
+         * Method that adds a statement to the end of the queue.
+         *
+         * @param {PreparedStatement} statement
+         */
+        public void enqueue(Statement statement) {
+            enqueue(statement, null, false, true);
+        }
+
+        /**
+         * Method that adds a statement to the end of the queue.
+         *
+         * @param {PreparedStatement} statement
+         * @param {boolean} isBatch
+         * @param {boolean} autoCommit
+         */
+        public void enqueue(Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
+            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit));
+            
+            if (nextID >= Integer.MAX_VALUE - 5) {
+                nextID = 0;
+            }
+        }
+        
+        public void block(Statement statement) {
+            block(statement, null, false, true);
+        }
+        
+        @SuppressWarnings("SleepWhileInLoop")
+        public void block(Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
+            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit, true));
+            
+            int id = nextID - 1;
+            
+            if (nextID >= Integer.MAX_VALUE - 5) {
+                nextID = 0;
+            }
+            
+            boolean found = false;
+            
+            while (!found) {
+                try {
+                    WQStatement cstatement = completed.peek();
+                    
+                    if (cstatement != null && cstatement.id == id) {
+                        found = true;
+                    } else {
+                        Thread.sleep(100);
+                    }
+                } catch (InterruptedException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
+            }
+            
+            try {
+                completed.take();
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        /**
+         * Method that handles sending messages to Twitch from our queue.
+         */
+        @Override
+        public void run() {
+            while (!isKilled) {
+                int id = 0;
+                boolean blocking = false;
+                try {
+                    // Get the next message in the queue.
+                    WQStatement statement = queue.take();
+                    
+                    id = statement.id;
+                    blocking = statement.blocking;
+                    
+                    if (statement.connection != null && !statement.autoCommit) {
+                        statement.connection.setAutoCommit(false);
+                    }
+                    
+                    statement.statement.executeBatch();
+                    statement.statement.clearBatch();
+                    
+                    statement.statement.close();
+                    
+                    if (statement.connection != null && !statement.autoCommit) {
+                        statement.connection.commit();
+                        statement.connection.setAutoCommit(true);
+                    }
+                    
+                    if (blocking) {
+                        completed.add(statement);
+                    }
+                } catch (InterruptedException | SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                    
+                    if (blocking) {
+                        completed.add(new WQStatement(id, null));
+                    }
+                }
+            }
+        }
+
+        /**
+         * Method that kills this instance.
+         */
+        public void kill() {
+            this.isKilled = true;
+        }
     }
 }
