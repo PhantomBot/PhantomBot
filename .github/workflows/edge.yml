@@ -59,16 +59,26 @@ jobs:
       run: |
         mkdir dist/PhantomBot-edge-lin
         cp -r dist/PhantomBot-edge dist/PhantomBot-edge-lin
-        rm -rfv dist/PhantomBot-edge-lin/java-runtime dist/PhantomBot-edge-lin/java-runtime-macos dist/PhantomBot-edge-lin/launch.bat
+        rm -rfv dist/PhantomBot-edge-lin/java-runtime
+        rm -rfv dist/PhantomBot-edge-lin/java-runtime-macos
+        rm -rfv dist/PhantomBot-edge-lin/launch.bat
         mkdir dist/PhantomBot-edge-win
         cp -r dist/PhantomBot-edge dist/PhantomBot-edge-win
-        rm -rfv dist/PhantomBot-edge-win/java-runtime-linux dist/PhantomBot-edge-win/java-runtime-macos dist/PhantomBot-edge-win/launch.sh dist/PhantomBot-edge-win/launch-service.sh
+        rm -rfv dist/PhantomBot-edge-win/java-runtime-linux
+        rm -rfv dist/PhantomBot-edge-win/java-runtime-macos
+        rm -rfv dist/PhantomBot-edge-win/launch.sh
+        rm -rfv dist/PhantomBot-edge-win/launch-service.sh
         mkdir dist/PhantomBot-edge-mac
         cp -r dist/PhantomBot-edge dist/PhantomBot-edge-mac
-        rm -rfv dist/PhantomBot-edge-mac/java-runtime-linux dist/PhantomBot-edge-mac/java-runtime dist/PhantomBot-edge-lin/launch.bat
+        rm -rfv dist/PhantomBot-edge-mac/java-runtime-linux
+        rm -rfv dist/PhantomBot-edge-mac/java-runtime
+        rm -rfv dist/PhantomBot-edge-mac/launch.bat
         mkdir dist/PhantomBot-edge-arm
         cp -r dist/PhantomBot-edge dist/PhantomBot-edge-arm
-        rm -rfv dist/PhantomBot-edge-arm/java-runtime-linux dist/PhantomBot-edge-arm/java-runtime dist/PhantomBot-edge-arm/java-runtime-macos dist/PhantomBot-edge-lin/launch.bat
+        rm -rfv dist/PhantomBot-edge-arm/java-runtime-linux
+        rm -rfv dist/PhantomBot-edge-arm/java-runtime
+        rm -rfv dist/PhantomBot-edge-arm/java-runtime-macos
+        rm -rfv dist/PhantomBot-edge-arm/launch.bat
     - name: Upload Artifact (Full)
       uses: actions/upload-artifact@v1
       with:
