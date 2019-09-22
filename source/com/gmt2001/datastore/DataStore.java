@@ -374,4 +374,7 @@ public class DataStore {
 
     public void backupSQLite3(String filename) {
     }
+    
+    public void killWriteQueue() {
+    }
 }
