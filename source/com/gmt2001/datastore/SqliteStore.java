@@ -43,7 +43,7 @@ import org.sqlite.javax.SQLiteConnectionPoolDataSource;
  */
 public class SqliteStore extends DataStore {
 
-    private static final int MAX_CONNECTIONS = 10;
+    private static final int MAX_CONNECTIONS = 30;
     private static SqliteStore instance;
     private static WriteQueue writequeue;
     private MiniConnectionPoolManager poolMgr;
@@ -169,7 +169,11 @@ public class SqliteStore extends DataStore {
     @Override
     public void AddFile(String fName) {
         Connection connection = GetConnection();
+        AddFile(connection, fName);
+        CloseConnection(connection);
+    }
 
+    public void AddFile(Connection connection, String fName) {
         fName = validateFname(fName);
 
         if (!FileExists(connection, fName)) {
@@ -177,7 +181,7 @@ public class SqliteStore extends DataStore {
                 Statement statement = connection.createStatement();
                 statement.addBatch("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section string, variable string, value string);");
                 statement.addBatch("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);");
-                writequeue.block(statement, connection);
+                writequeue.block(statement, connection, false);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -908,7 +912,7 @@ public class SqliteStore extends DataStore {
         Connection connection = GetConnection();
 
         fName = validateFname(fName);
-        AddFile(fName);
+        AddFile(connection, fName);
 
         /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
         Map<String, String> insertMap = new HashMap<>();
@@ -959,7 +963,7 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
-        AddFile(fName);
+        AddFile(connection, fName);
 
         try {
             if (HasKey(fName, section, key)) {
@@ -987,7 +991,7 @@ public class SqliteStore extends DataStore {
         Connection connection = GetConnection();
         fName = validateFname(fName);
 
-        AddFile(fName);
+        AddFile(connection, fName);
 
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
@@ -1032,7 +1036,7 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
-        AddFile(fName);
+        AddFile(connection, fName);
 
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
@@ -1212,6 +1216,10 @@ public class SqliteStore extends DataStore {
 
         public void block(Statement statement, Connection connection) {
             block(statement, connection, false, true, true);
+        }
+
+        public void block(Statement statement, Connection connection, boolean shouldClose) {
+            block(statement, connection, false, true, shouldClose);
         }
 
         @SuppressWarnings("SleepWhileInLoop")
