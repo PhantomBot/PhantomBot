@@ -92,7 +92,7 @@
     </target>
     
     <target depends="init-ivy" name="ivy-retrieve">
-        <ivy:retrieve/>
+        <ivy:retrieve sync="true"/>
     </target>
     
     <target depends="ivy-retrieve" name="classpaths">
