@@ -142,7 +142,7 @@ public class SqliteStore extends DataStore {
         };
     }
 
-    public void CloseConnection(Connection connection) {
+    public static void CloseConnection(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -163,7 +163,13 @@ public class SqliteStore extends DataStore {
             writequeue.start();
         }
 
-        return poolMgr.getValidConnection();
+        try {
+            return poolMgr.getConnection();
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        
+        return null;
     }
 
     @Override
@@ -311,9 +317,9 @@ public class SqliteStore extends DataStore {
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            CloseConnection(connection);
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -340,10 +346,10 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -373,8 +379,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
@@ -390,11 +394,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -422,8 +426,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
@@ -439,11 +441,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -490,8 +492,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 if (isNumber) {
@@ -512,11 +512,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -564,8 +564,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 if (isNumber) {
@@ -586,11 +584,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -619,8 +617,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
@@ -636,13 +632,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -671,8 +665,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
@@ -688,13 +680,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -727,8 +717,6 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
@@ -745,13 +733,11 @@ public class SqliteStore extends DataStore {
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                } finally {
-                    CloseConnection(connection);
                 }
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -783,8 +769,6 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
@@ -798,10 +782,10 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         }
+
+        CloseConnection(connection);
 
         return out;
     }
@@ -833,8 +817,6 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
@@ -848,10 +830,10 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         }
+
+        CloseConnection(connection);
 
         return result;
 
@@ -884,8 +866,6 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
@@ -899,10 +879,10 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
-            } finally {
-                CloseConnection(connection);
             }
         }
+
+        CloseConnection(connection);
 
         return result;
     }
@@ -950,11 +930,8 @@ public class SqliteStore extends DataStore {
                 writequeue.enqueue(statement, connection, true, false, true);
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.println(ex);
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
-        setAutoCommit(true);
     }
 
     @Override
@@ -1101,9 +1078,9 @@ public class SqliteStore extends DataStore {
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            CloseConnection(connection);
         }
+
+        CloseConnection(connection);
     }
 
     @Override
@@ -1261,45 +1238,41 @@ public class SqliteStore extends DataStore {
         @Override
         public void run() {
             while (!isKilled) {
-                int id = 0;
-                boolean blocking = false;
-
                 try {
                     // Get the next message in the queue.
                     WQStatement statement = queue.take();
 
-                    id = statement.id;
-                    blocking = statement.blocking;
+                    try {
+                        if (!statement.autoCommit) {
+                            statement.connection.setAutoCommit(false);
+                        }
 
-                    if (!statement.autoCommit) {
-                        statement.connection.setAutoCommit(false);
+                        if (statement.statement != null) {
+                            statement.statement.executeBatch();
+                            statement.statement.clearBatch();
+
+                            statement.statement.close();
+                            statement.statement = null;
+                        }
+
+                        if (!statement.autoCommit) {
+                            statement.connection.commit();
+                            statement.connection.setAutoCommit(true);
+                        }
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
                     }
-
-                    if (statement.statement != null) {
-                        statement.statement.executeBatch();
-                        statement.statement.clearBatch();
-
-                        statement.statement.close();
-                    }
-
-                    if (!statement.autoCommit) {
-                        statement.connection.commit();
-                        statement.connection.setAutoCommit(true);
-                    }
-
+                    
                     if (statement.shouldClose) {
-                        statement.connection.close();
+                        CloseConnection(statement.connection);
+                        statement.connection = null;
                     }
 
-                    if (blocking) {
+                    if (statement.blocking) {
                         completed.add(statement);
                     }
-                } catch (InterruptedException | SQLException ex) {
+                } catch (InterruptedException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
-
-                    if (blocking) {
-                        completed.add(new WQStatement(id, null, null));
-                    }
                 }
             }
         }
