@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class CustomAPI {
-    private static final CustomAPI instance = new CustomAPI();
+    private static CustomAPI instance;
 
     /*
      * Method to the this instance.
@@ -35,6 +35,10 @@ public class CustomAPI {
      * @return {Object}
      */
     public static CustomAPI instance() {
+        if (instance == null) {
+            instance = new CustomAPI();
+        }
+        
         return instance;
     }
 

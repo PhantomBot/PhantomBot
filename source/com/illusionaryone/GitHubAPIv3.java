@@ -41,11 +41,15 @@ import org.json.JSONObject;
  */
 public class GitHubAPIv3 {
 
-    private static final GitHubAPIv3 instance = new GitHubAPIv3();
+    private static GitHubAPIv3 instance;
     private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static GitHubAPIv3 instance() {
+        if (instance == null) {
+            instance = new GitHubAPIv3();
+        }
+        
         return instance;
     }
 

@@ -24,9 +24,13 @@ import java.sql.Connection;
  */
 public class DataStore {
 
-    private static final DataStore instance = new DataStore();
+    private static DataStore instance;
 
     public static DataStore instance() {
+        if (instance == null) {
+            instance = new DataStore();
+        }
+        
         return instance;
     }
 

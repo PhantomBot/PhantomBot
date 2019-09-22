@@ -39,13 +39,17 @@ import org.json.JSONObject;
  */
 public class BitlyAPIv4 {
 
-    private static final BitlyAPIv4 instance = new BitlyAPIv4();
+    private static BitlyAPIv4 instance;
     private static final String sAPIURL = "https://api-ssl.bitly.com/v4/shorten";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "04cef1634958fb43bc6009dece7c489f0ffc8845";
     private static String sGUID = "Bg56fvSTpUC";
 
     public static BitlyAPIv4 instance() {
+        if (instance == null) {
+            instance = new BitlyAPIv4();
+        }
+        
         return instance;
     }
 

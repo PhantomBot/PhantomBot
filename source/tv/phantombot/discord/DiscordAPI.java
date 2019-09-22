@@ -64,7 +64,7 @@ import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartE
  * @author ScaniaTV
  */
 public class DiscordAPI extends DiscordUtil {
-    private static final DiscordAPI instance = new DiscordAPI();
+    private static DiscordAPI instance;
     private static DiscordClient client;
     private static Guild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
@@ -77,6 +77,10 @@ public class DiscordAPI extends DiscordUtil {
      * @return {Object}
      */
     public static DiscordAPI instance() {
+        if (instance == null) {
+            instance = new DiscordAPI();
+        }
+        
         return instance;
     }
 
