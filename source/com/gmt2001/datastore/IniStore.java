@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
@@ -244,6 +245,10 @@ public class IniStore extends DataStore implements ActionListener {
     @Override
     public void LoadConfig(String configStr) {
         inifolder = LoadConfigReal(configStr);
+    }
+    
+    public static boolean hasDatabase(String configStr) {
+        return Files.exists(Paths.get(LoadConfigReal(configStr)), LinkOption.NOFOLLOW_LINKS);
     }
 
     private static String LoadConfigReal(String configStr) {
