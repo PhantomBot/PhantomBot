@@ -214,7 +214,7 @@ public class SqliteStore extends DataStore {
                 Statement statement = connection.createStatement();
                 statement.addBatch("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section string, variable string, value string);");
                 statement.addBatch("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);");
-                writequeue.block(statement);
+                writequeue.block(statement, connection);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -233,7 +233,7 @@ public class SqliteStore extends DataStore {
                 statement.setString(1, section);
                 statement.setString(2, key);
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -251,7 +251,7 @@ public class SqliteStore extends DataStore {
                 PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setString(1, section);
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -268,7 +268,7 @@ public class SqliteStore extends DataStore {
             try {
                 Statement statement = connection.createStatement();
                 statement.addBatch("DROP TABLE phantombot_" + fName + ";");
-                writequeue.block    (statement);
+                writequeue.block(statement, connection);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -291,7 +291,7 @@ public class SqliteStore extends DataStore {
         try {
             Statement statement = connection.createStatement();
             statement.addBatch("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
-            writequeue.block(statement);
+            writequeue.block(statement, connection);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -303,21 +303,29 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
+        boolean out = false;
         try (Statement statement = connection.createStatement()) {
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
-
-                return rs.next();
+                out = rs.next();
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
-        return false;
+        return out;
     }
 
     @Override
     public String[] GetFileList() {
         Connection connection = GetConnection();
+        String[] out = new String[] {
+               };
 
         try (Statement statement = connection.createStatement()) {
             try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
@@ -328,14 +336,19 @@ public class SqliteStore extends DataStore {
                     s.add(rs.getString("name").substring(11));
                 }
 
-                return s.toArray(new String[s.size()]);
+                out =  s.toArray(new String[s.size()]);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -344,6 +357,9 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
+        String[] out = new String[] {
+               };
+        
         if (FileExists(fName)) {
             try (Statement statement = connection.createStatement()) {
                 try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
@@ -354,15 +370,20 @@ public class SqliteStore extends DataStore {
                         s.add(rs.getString("section"));
                     }
 
-                    return s.toArray(new String[s.size()]);
+                    out = s.toArray(new String[s.size()]);
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -370,6 +391,9 @@ public class SqliteStore extends DataStore {
         Connection connection = GetConnection();
 
         fName = validateFname(fName);
+        
+        String[] out = new String[] {
+               };
 
         if (FileExists(fName)) {
             if (section != null) {
@@ -384,10 +408,16 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
@@ -399,16 +429,21 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -416,6 +451,8 @@ public class SqliteStore extends DataStore {
         Connection connection = GetConnection();
         fName = validateFname(fName);
 
+        KeyValue[] out = new KeyValue[] {};
+        
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
@@ -428,10 +465,16 @@ public class SqliteStore extends DataStore {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                         }
 
-                        return s.toArray(new KeyValue[s.size()]);
+                        out = s.toArray(new KeyValue[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
@@ -443,15 +486,21 @@ public class SqliteStore extends DataStore {
                             s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                         }
 
-                        return s.toArray(new KeyValue[s.size()]);
+                        out = s.toArray(new KeyValue[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new KeyValue[] {};
+        return out;
     }
 
     @Override
@@ -472,6 +521,9 @@ public class SqliteStore extends DataStore {
         limit = sanitizeLimit(limit);
         offset = sanitizeOffset(offset);
 
+        String[] out = new String[] {
+               };
+        
         if (FileExists(fName)) {
             if (section != null) {
                 if (isNumber) {
@@ -490,10 +542,16 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 if (isNumber) {
@@ -510,16 +568,21 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -539,6 +602,9 @@ public class SqliteStore extends DataStore {
         order = sanitizeOrder(order);
         limit = sanitizeLimit(limit);
         offset = sanitizeOffset(offset);
+        
+        String[] out = new String[] {
+               };
 
         if (FileExists(fName)) {
             if (section != null) {
@@ -559,10 +625,16 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 if (isNumber) {
@@ -579,16 +651,21 @@ public class SqliteStore extends DataStore {
                             s.add(rs.getString("variable"));
                         }
 
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -597,6 +674,9 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
+        String[] out = new String[] {
+               };
+        
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
@@ -609,10 +689,16 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
@@ -624,18 +710,23 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -644,6 +735,9 @@ public class SqliteStore extends DataStore {
 
         fName = validateFname(fName);
 
+        String[] out = new String[] {
+               };
+        
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
@@ -656,10 +750,16 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
@@ -671,18 +771,23 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -694,6 +799,9 @@ public class SqliteStore extends DataStore {
         limit = sanitizeLimit(limit);
         offset = sanitizeOffset(offset);
 
+        String[] out = new String[] {
+               };
+        
         if (FileExists(fName)) {
             if (section != null) {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
@@ -706,10 +814,16 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
@@ -721,18 +835,23 @@ public class SqliteStore extends DataStore {
                         while(rs.next()) {
                             s.add(rs.getString("variable"));
                         }
-                        return s.toArray(new String[s.size()]);
+                        out = s.toArray(new String[s.size()]);
                     }
                 } catch (SQLException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
             }
         }
 
-        return new String[] {
-               };
+        return out;
     }
 
     @Override
@@ -745,6 +864,8 @@ public class SqliteStore extends DataStore {
             return false;
         }
 
+        boolean out = false;
+        
         if (section != null) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
                 statement.setString(1, section);
@@ -753,11 +874,17 @@ public class SqliteStore extends DataStore {
                 try (ResultSet rs = statement.executeQuery()) {
 
                     if (rs.next()) {
-                        return true;
+                        out = true;
                     }
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
@@ -766,15 +893,21 @@ public class SqliteStore extends DataStore {
                 try (ResultSet rs = statement.executeQuery()) {
 
                     if (rs.next()) {
-                        return true;
+                        out = true;
                     }
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
 
-        return false;
+        return out;
     }
 
     @Override
@@ -802,6 +935,12 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
@@ -815,6 +954,12 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
 
@@ -847,6 +992,12 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         } else {
             try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
@@ -860,6 +1011,12 @@ public class SqliteStore extends DataStore {
                 }
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
         }
 
@@ -895,7 +1052,7 @@ public class SqliteStore extends DataStore {
                     statement.addBatch();
                 }
                 
-                writequeue.enqueue(statement, connection, true, false);
+                writequeue.enqueue(statement, connection, true, false, true);
             }
             if (updateMap.size() > 0) {
                 PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;");
@@ -906,7 +1063,7 @@ public class SqliteStore extends DataStore {
                     statement.addBatch();
                 }
                 
-                writequeue.enqueue(statement, connection, true, false);
+                writequeue.enqueue(statement, connection, true, false, true);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println(ex);
@@ -931,14 +1088,14 @@ public class SqliteStore extends DataStore {
                 statement.setString(2, section);
                 statement.setString(3, key);
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection);
             } else {
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
                 statement.setString(1, section);
                 statement.setString(2, key);
                 statement.setString(3, value);
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -955,7 +1112,7 @@ public class SqliteStore extends DataStore {
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
             statement.addBatch();
-            writequeue.enqueue(statement);
+            writequeue.enqueue(statement, connection, false);
 
             StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
             
@@ -983,7 +1140,7 @@ public class SqliteStore extends DataStore {
 
             statement = connection.prepareStatement(sb.toString());
             statement.addBatch();
-            writequeue.enqueue(statement);
+            writequeue.enqueue(statement, connection, true);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1003,7 +1160,7 @@ public class SqliteStore extends DataStore {
             statement.setString(2, key);
             statement.setString(3, value);
             statement.addBatch();
-            writequeue.enqueue(statement);
+            writequeue.enqueue(statement, connection);
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1018,11 +1175,13 @@ public class SqliteStore extends DataStore {
             try {
                 PreparedStatement statement = connection.prepareStatement("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection, false);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+        
+        writequeue.enqueue(null, connection, true);
     }
 
     @Override
@@ -1034,12 +1193,13 @@ public class SqliteStore extends DataStore {
             try {
                 PreparedStatement statement = connection.prepareStatement("DROP INDEX IF EXISTS " + tableName + "_idx");
                 statement.addBatch();
-                writequeue.enqueue(statement);
+                writequeue.enqueue(statement, connection, false);
             } catch (SQLException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-
+        
+        writequeue.enqueue(null, connection, true);
     }
 
     @Override
@@ -1052,6 +1212,8 @@ public class SqliteStore extends DataStore {
             Statement statement = connection.createStatement();
             statement.execute("backup to ./dbbackup/" + filename);
             com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+            statement.close();
+            connection.close();
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -1064,10 +1226,12 @@ public class SqliteStore extends DataStore {
         public boolean isBatch = false;
         public boolean autoCommit = true;
         public boolean blocking = false;
+        public boolean shouldClose = true;
         
-        public WQStatement(int id, Statement statement) {
+        public WQStatement(int id, Statement statement, Connection connection) {
             this.id = id;
             this.statement = statement;
+            this.connection = connection;
         }
         
         public WQStatement(int id, Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
@@ -1078,13 +1242,14 @@ public class SqliteStore extends DataStore {
             this.autoCommit = autoCommit;
         }
         
-        public WQStatement(int id, Statement statement, Connection connection, boolean isBatch, boolean autoCommit, boolean blocking) {
+        public WQStatement(int id, Statement statement, Connection connection, boolean isBatch, boolean autoCommit, boolean blocking, boolean shouldClose) {
             this.id = id;
             this.statement = statement;
             this.connection = connection;
             this.isBatch = isBatch;
             this.autoCommit = autoCommit;
             this.blocking = blocking;
+            this.shouldClose = shouldClose;
         }
     }
     
@@ -1121,13 +1286,23 @@ public class SqliteStore extends DataStore {
             this.isRunning = true;
             this.thread.start();
         }
+        
         /**
          * Method that adds a statement to the end of the queue.
          *
          * @param {PreparedStatement} statement
          */
-        public void enqueue(Statement statement) {
-            enqueue(statement, null, false, true);
+        public void enqueue(Statement statement, Connection connection) {
+            enqueue(statement, connection, false, true, true);
+        }
+        
+        /**
+         * Method that adds a statement to the end of the queue.
+         *
+         * @param {PreparedStatement} statement
+         */
+        public void enqueue(Statement statement, Connection connection, boolean shouldClose) {
+            enqueue(statement, connection, false, true, shouldClose);
         }
 
         /**
@@ -1137,21 +1312,21 @@ public class SqliteStore extends DataStore {
          * @param {boolean} isBatch
          * @param {boolean} autoCommit
          */
-        public void enqueue(Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
-            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit));
+        public void enqueue(Statement statement, Connection connection, boolean isBatch, boolean autoCommit, boolean close) {
+            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit, false, close));
             
             if (nextID >= Integer.MAX_VALUE - 5) {
                 nextID = 0;
             }
         }
         
-        public void block(Statement statement) {
-            block(statement, null, false, true);
+        public void block(Statement statement, Connection connection) {
+            block(statement, connection, false, true, true);
         }
         
         @SuppressWarnings("SleepWhileInLoop")
-        public void block(Statement statement, Connection connection, boolean isBatch, boolean autoCommit) {
-            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit, true));
+        public void block(Statement statement, Connection connection, boolean isBatch, boolean autoCommit, boolean close) {
+            queue.add(new WQStatement(nextID++, statement, connection, isBatch, autoCommit, true, close));
             
             int id = nextID - 1;
             
@@ -1190,6 +1365,7 @@ public class SqliteStore extends DataStore {
             while (!isKilled) {
                 int id = 0;
                 boolean blocking = false;
+                
                 try {
                     // Get the next message in the queue.
                     WQStatement statement = queue.take();
@@ -1197,18 +1373,24 @@ public class SqliteStore extends DataStore {
                     id = statement.id;
                     blocking = statement.blocking;
                     
-                    if (statement.connection != null && !statement.autoCommit) {
+                    if (!statement.autoCommit) {
                         statement.connection.setAutoCommit(false);
                     }
                     
-                    statement.statement.executeBatch();
-                    statement.statement.clearBatch();
+                    if (statement.statement != null) {
+                        statement.statement.executeBatch();
+                        statement.statement.clearBatch();
+
+                        statement.statement.close();
+                    }
                     
-                    statement.statement.close();
-                    
-                    if (statement.connection != null && !statement.autoCommit) {
+                    if (!statement.autoCommit) {
                         statement.connection.commit();
                         statement.connection.setAutoCommit(true);
+                    }
+                    
+                    if (statement.shouldClose) {
+                        statement.connection.close();
                     }
                     
                     if (blocking) {
@@ -1218,7 +1400,7 @@ public class SqliteStore extends DataStore {
                     com.gmt2001.Console.err.printStackTrace(ex);
                     
                     if (blocking) {
-                        completed.add(new WQStatement(id, null));
+                        completed.add(new WQStatement(id, null, null));
                     }
                 }
             }
