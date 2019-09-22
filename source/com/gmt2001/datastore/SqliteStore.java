@@ -18,6 +18,9 @@ package com.gmt2001.datastore;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -111,6 +114,10 @@ public class SqliteStore extends DataStore {
         safe_write = (boolean) o[2];
         journal = (boolean) o[3];
     }
+    
+    public static boolean hasDatabase(String configStr) {
+        return Files.exists(Paths.get((String)LoadConfigReal(configStr)[0]), LinkOption.NOFOLLOW_LINKS);
+    }
 
     private static Object[] LoadConfigReal(String configStr) {
         if (configStr.isEmpty()) {
@@ -184,7 +191,6 @@ public class SqliteStore extends DataStore {
         try {
             if (connection != null) {
                 connection.close();
-                connection = null;
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
