@@ -1209,10 +1209,10 @@ public class SqliteStore extends DataStore {
         if (!new File ("./dbbackup").exists()) new File ("./dbbackup").mkdirs();
 
         try {
-            Statement statement = connection.createStatement();
-            statement.execute("backup to ./dbbackup/" + filename);
-            com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
-            statement.close();
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("backup to ./dbbackup/" + filename);
+                com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+            }
             connection.close();
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
