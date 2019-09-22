@@ -51,7 +51,6 @@ import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptManager;
 
 public final class LangFileUpdater {
-    private static final LangFileUpdater INSTANCE = new LangFileUpdater();
     private static final String CUSTOM_LANG_ROOT = "./scripts/lang/custom/";
     private static final String DEFAULT_LANG_ROOT = "./scripts/lang/english/";
     

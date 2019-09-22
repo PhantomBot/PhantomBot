@@ -56,7 +56,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterAPI {
 
-    private static final TwitterAPI instance = new TwitterAPI();
+    private static TwitterAPI instance;
     private String username;
     private String oauthAccessToken;
     private String oauthAccessSecret;
@@ -69,6 +69,10 @@ public class TwitterAPI {
      * Instance method for Twitter API.
      */
     public static TwitterAPI instance() {
+        if (instance == null) {
+            instance = new TwitterAPI();
+        }
+        
         return instance;
     }
 

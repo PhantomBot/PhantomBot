@@ -40,11 +40,15 @@ import org.json.JSONObject;
  */
 public class BTTVAPIv2 {
 
-    private static final BTTVAPIv2 instance = new BTTVAPIv2();
+    private static BTTVAPIv2 instance;
     private static final String sAPIURL = "https://api.betterttv.net/2";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static BTTVAPIv2 instance() {
+        if (instance == null) {
+            instance = new BTTVAPIv2();
+        }
+        
         return instance;
     }
 

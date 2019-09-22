@@ -40,12 +40,16 @@ import org.json.JSONObject;
  */
 public class DataRenderServiceAPIv1 {
 
-    private static final DataRenderServiceAPIv1 instance = new DataRenderServiceAPIv1();
+    private static DataRenderServiceAPIv1 instance;
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "";
     private static String sAPIURL = "";
 
     public static DataRenderServiceAPIv1 instance() {
+        if (instance == null) {
+            instance = new DataRenderServiceAPIv1();
+        }
+        
         return instance;
     }
 

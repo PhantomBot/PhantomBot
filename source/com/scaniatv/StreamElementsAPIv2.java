@@ -39,7 +39,7 @@ import org.json.JSONObject;
  */
 public class StreamElementsAPIv2 {
 
-    private static final StreamElementsAPIv2 instance = new StreamElementsAPIv2();
+    private static StreamElementsAPIv2 instance;
     private static final String url = "https://api.streamelements.com/kappa/v2";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String jwtToken = "";
@@ -50,6 +50,10 @@ public class StreamElementsAPIv2 {
      * Returns the current instance.
      */
     public static StreamElementsAPIv2 instance() {
+        if (instance == null) {
+            instance = new StreamElementsAPIv2();
+        }
+        
         return instance;
     }
 

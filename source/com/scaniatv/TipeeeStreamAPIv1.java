@@ -37,7 +37,7 @@ import org.json.JSONObject;
 
 public class TipeeeStreamAPIv1 {
 
-    private static final TipeeeStreamAPIv1 instance = new TipeeeStreamAPIv1();
+    private static TipeeeStreamAPIv1 instance;
     private static final String url = "https://api.tipeeestream.com/v1.0/events.json";
     private static final int iHTTPTimeout = 2 * 1000;
     private String apiOauth = "";
@@ -47,6 +47,10 @@ public class TipeeeStreamAPIv1 {
      * Returns the current instance.
      */
     public static TipeeeStreamAPIv1 instance() {
+        if (instance == null) {
+            instance = new TipeeeStreamAPIv1();
+        }
+        
         return instance;
     }
 

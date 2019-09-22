@@ -42,10 +42,15 @@ public class SqliteStore extends DataStore {
     private int cache_size = -50000;
     private boolean safe_write = false;
     private boolean journal = true;
-    private static final SqliteStore instance = new SqliteStore();
-    private static final WriteQueue writequeue = new WriteQueue();
+    private static SqliteStore instance;
+    private static WriteQueue writequeue;
 
     public static SqliteStore instance() {
+        if (instance == null) {
+            instance = new SqliteStore();
+            writequeue = new WriteQueue();
+        }
+        
         return instance;
     }
 

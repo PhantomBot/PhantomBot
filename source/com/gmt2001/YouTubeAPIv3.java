@@ -47,7 +47,7 @@ import tv.phantombot.PhantomBot;
  */
 public class YouTubeAPIv3 {
 
-    private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
+    private static YouTubeAPIv3 instance;
     private String apikey = "";
 
     private enum request_type {
@@ -56,6 +56,10 @@ public class YouTubeAPIv3 {
     };
 
     public static YouTubeAPIv3 instance() {
+        if (instance == null) {
+            instance = new YouTubeAPIv3();
+        }
+        
         return instance;
     }
 

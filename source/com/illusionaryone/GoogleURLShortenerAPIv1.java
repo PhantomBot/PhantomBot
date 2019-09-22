@@ -39,12 +39,16 @@ import org.json.JSONObject;
  */
 public class GoogleURLShortenerAPIv1 {
 
-    private static final GoogleURLShortenerAPIv1 instance = new GoogleURLShortenerAPIv1();
+    private static GoogleURLShortenerAPIv1 instance;
     private static final String sAPIURL = "https://www.googleapis.com/urlshortener/v1/url";
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAPIKey = "AIzaSyCtjgbY6ebAmNEzAduzAK6xrxBGQGDPDUI";
 
     public static GoogleURLShortenerAPIv1 instance() {
+        if (instance == null) {
+            instance = new GoogleURLShortenerAPIv1();
+        }
+        
         return instance;
     }
 

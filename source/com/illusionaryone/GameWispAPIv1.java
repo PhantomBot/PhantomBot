@@ -43,7 +43,7 @@ import org.json.JSONStringer;
  */
 public class GameWispAPIv1 {
 
-    private static final GameWispAPIv1 instance = new GameWispAPIv1();
+    private static GameWispAPIv1 instance;
     private static final String sAPIURL = "https://api.gamewisp.com";
     private static final int iHTTPTimeout = 2 * 1000;
     private static final String devKey = "d391637bb332e0b67d60388e2cac31dd93ad5bf";
@@ -55,6 +55,10 @@ public class GameWispAPIv1 {
     private static Boolean noAccessWarning = false;
 
     public static GameWispAPIv1 instance() {
+        if (instance == null) {
+            instance = new GameWispAPIv1();
+        }
+        
         return instance;
     }
 

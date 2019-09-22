@@ -45,10 +45,14 @@ public class IniStore extends DataStore implements ActionListener {
     private final Timer t;
     private final Timer t2;
     private static final long saveinterval = 5 * 60 * 1000;
-    private static final IniStore instance = new IniStore();
+    private static IniStore instance;
     private String inifolder = "";
 
     public static IniStore instance() {
+        if (instance == null) {
+            instance = new IniStore();
+        }
+        
         return instance;
     }
 

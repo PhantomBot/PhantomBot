@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class H2Store extends DataStore {
 
     private static Connection connection = null;
-    private static final H2Store instance = new H2Store();
+    private static H2Store instance;
     private boolean firstConnection = true;
 
     private String db = "";
@@ -44,6 +44,10 @@ public class H2Store extends DataStore {
     private int autoCommitCtr = 0;
 
     public static H2Store instance() {
+        if (instance == null) {
+            instance = new H2Store();
+        }
+        
         return instance;
     }
 
