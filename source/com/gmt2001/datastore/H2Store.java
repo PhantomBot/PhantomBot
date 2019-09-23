@@ -770,44 +770,17 @@ public class H2Store extends DataStore {
             fName = validateFname(fName);
             AddFile(connection, fName);
 
-            /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
-            Map<String, String> insertMap = new HashMap<>();
-            Map<String, String> updateMap = new HashMap<>();
-
-            for (int idx = 0; idx < keys.length; idx++) {
-                if (HasKey(fName, section, keys[idx])) {
-                    updateMap.put(keys[idx], values[idx]);
-                } else {
-                    insertMap.put(keys[idx], values[idx]);
-                }
-            }
-
             connection.setAutoCommit(false);
 
-            if (insertMap.size() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
-                    for (String key : insertMap.keySet()) {
-                        statement.setString(1, insertMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
-                    }
-
-                    statement.executeBatch();
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+                for (int idx = 0; idx < keys.length; idx++) {
+                    statement.setString(1, values[idx]);
+                    statement.setString(2, section);
+                    statement.setString(3, keys[idx]);
+                    statement.addBatch();
                 }
-            }
 
-            if (updateMap.size() > 0) {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
-                    for (String key : updateMap.keySet()) {
-                        statement.setString(1, updateMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
-                    }
-
-                    statement.executeBatch();
-                }
+                statement.executeBatch();
             }
 
             connection.commit();
@@ -825,20 +798,11 @@ public class H2Store extends DataStore {
 
             AddFile(connection, fName);
 
-            if (HasKey(fName, section, key)) {
-                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
-                    statement.setString(1, value);
-                    statement.setString(2, section);
-                    statement.setString(3, key);
-                    statement.execute();
-                }
-            } else {
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                    statement.setString(1, section);
-                    statement.setString(2, key);
-                    statement.setString(3, value);
-                    statement.execute();
-                }
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.execute();
             }
 
         } catch (SQLException ex) {
@@ -856,11 +820,9 @@ public class H2Store extends DataStore {
             connection.setAutoCommit(false);
 
             try (Statement statement = connection.createStatement()) {
-                statement.addBatch("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
-
                 StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
 
-                sb.append("INSERT OR IGNORE INTO phantombot_");
+                sb.append("MERGE INTO phantombot_");
                 sb.append(fName);
                 sb.append(" (section, variable, value) VALUES ");
 
@@ -888,25 +850,6 @@ public class H2Store extends DataStore {
 
             connection.commit();
             connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
-    @Override
-    public void InsertString(String fName, String section, String key, String value) {
-        try (Connection connection = GetConnection()) {
-
-            fName = validateFname(fName);
-
-            AddFile(connection, fName);
-
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                statement.setString(1, section);
-                statement.setString(2, key);
-                statement.setString(3, value);
-                statement.execute();
-            }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
