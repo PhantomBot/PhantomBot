@@ -997,9 +997,14 @@ public class SqliteStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
+    
+    @Override
+    public boolean canBackup() {
+        return true;
+    }
 
     @Override
-    public void backupSQLite3(String filename) {
+    public void backupDB(String filename) {
         try (Connection connection = GetConnection()) {
             if (!new File("./dbbackup").exists()) {
                 new File("./dbbackup").mkdirs();
@@ -1009,6 +1014,17 @@ public class SqliteStore extends DataStore {
                 statement.execute("backup to ./dbbackup/" + filename);
                 com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
             }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        try {
+            poolMgr.dispose();
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
