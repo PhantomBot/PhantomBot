@@ -818,31 +818,19 @@ public class H2Store extends DataStore {
             connection.setAutoCommit(false);
 
             try (Statement statement = connection.createStatement()) {
-                StringBuilder sb = new StringBuilder(92 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
-
-                sb.append("MERGE INTO phantombot_");
-                sb.append(fName);
-                sb.append(" (section, variable, value) KEY(SECTION, VARIABLE) VALUES ");
-
-                boolean first = true;
+                statement.execute("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+            }
+            
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" +fName + " USING DUAL ON section=? AND variable=? WHEN NOT MATCHED THEN INSERT VALUES (?, ?, ?);")){
                 for (String k : keys) {
-                    if (!first) {
-                        sb.append(",");
-                    }
-
-                    first = false;
-                    sb.append("('");
-                    sb.append(section);
-                    sb.append("', '");
-                    sb.append(k);
-                    sb.append("', ");
-                    sb.append(value);
-                    sb.append(")");
+                    statement.setString(1, section);
+                    statement.setString(2, k);
+                    statement.setString(3, section);
+                    statement.setString(4, k);
+                    statement.setString(5, value);
+                    statement.addBatch();
                 }
-
-                sb.append(";");
-
-                statement.addBatch(sb.toString());
+                
                 statement.executeBatch();
             }
 
