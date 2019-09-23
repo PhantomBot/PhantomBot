@@ -362,16 +362,21 @@ public class DataStore {
     public void DropIndexes() {
     }
 
-    public Connection CreateConnection(String db, String user, String pass) {
-        return null;
+    public boolean CanConnect() {
+        return true;
     }
 
-    public void CloseConnection() {
+    public boolean CanConnect(String db, String user, String pass) {
+        return true;
+    }
+    
+    public boolean canBackup() {
+        return false;
     }
 
-    public void setAutoCommit(boolean mode) {
+    public void backupDB(String filename) {
     }
 
-    public void backupSQLite3(String filename) {
+    public void dispose() {
     }
 }

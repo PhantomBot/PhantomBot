@@ -91,7 +91,7 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
-    public Connection CreateConnection(String db, String user, String pass) {
+    public boolean CanConnect(String db, String user, String pass) {
         this.db = db;
         this.user = user;
         this.pass = pass;
@@ -99,14 +99,14 @@ public class MySQLStore extends DataStore {
             connection = DriverManager.getConnection(db, user, pass);
             connection.setAutoCommit(getAutoCommitCtr() == 0);
             com.gmt2001.Console.out.println("Connected to MySQL");
-            return connection;
+            return true;
         } catch (SQLException ex) {
             com.gmt2001.Console.err.println("Failure to Connect to MySQL: " + ex.getMessage());
-            return null;
         }
+        
+        return false;
     }
 
-    @Override
     public void CloseConnection() {
         try {
             if (connection != null) {
@@ -136,7 +136,7 @@ public class MySQLStore extends DataStore {
     private void CheckConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(10)) {
-                connection = CreateConnection(db, user, pass);
+                CanConnect(db, user, pass);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -953,7 +953,6 @@ public class MySQLStore extends DataStore {
         }
     }
 
-    @Override
     public void setAutoCommit(boolean mode) {
         CheckConnection();
 
