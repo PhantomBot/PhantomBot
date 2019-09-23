@@ -35,7 +35,7 @@ import javax.swing.Timer;
 import org.apache.commons.io.FileUtils;
 
 /**
- *
+ * @deprecated
  * @author gmt2001
  */
 public class IniStore extends DataStore implements ActionListener {
@@ -50,15 +50,19 @@ public class IniStore extends DataStore implements ActionListener {
     private String inifolder = "";
 
     public static IniStore instance() {
+        return instance("");
+    }
+    
+    public static IniStore instance(String configStr) {
         if (instance == null) {
-            instance = new IniStore();
+            instance = new IniStore(configStr);
         }
         
         return instance;
     }
 
-    private IniStore() {
-        inifolder = LoadConfigReal("");
+    private IniStore(String configStr) {
+        inifolder = LoadConfigReal(configStr);
 
         t = new Timer((int) saveinterval, this);
         t2 = new Timer(1, this);
@@ -240,11 +244,6 @@ public class IniStore extends DataStore implements ActionListener {
         fName = validatefName(fName);
 
         LoadFile(fName, true);
-    }
-
-    @Override
-    public void LoadConfig(String configStr) {
-        inifolder = LoadConfigReal(configStr);
     }
     
     public static boolean hasDatabase(String configStr) {

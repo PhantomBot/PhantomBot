@@ -60,7 +60,7 @@ public final class DataStoreConverter {
 		}
 
 		// Close the old database.
-		secondaryDbInstance.CloseConnection();
+		secondaryDbInstance.dispose();
 		com.gmt2001.Console.out.println("Finished converting datastore.");
 	}
 }

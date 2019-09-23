@@ -40,6 +40,10 @@ public class MySQLStore extends DataStore {
     private int autoCommitCtr = 0;
 
     public static MySQLStore instance() {
+        return instance("");
+    }
+    
+    public static MySQLStore instance(String configStr) {
         if (instance == null) {
             instance = new MySQLStore();
         }

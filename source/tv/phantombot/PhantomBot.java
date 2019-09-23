@@ -527,9 +527,9 @@ public final class PhantomBot implements Listener {
 
         /* Load the datastore */
         if (dataStoreType.equalsIgnoreCase("inistore")) {
-            dataStore = IniStore.instance();
+            dataStore = IniStore.instance(dataStoreConfig);
         } else if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
-            dataStore = MySQLStore.instance();
+            dataStore = MySQLStore.instance(dataStoreConfig);
             if (this.mySqlPort.isEmpty()) {
                 this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false";
             } else {
@@ -547,7 +547,7 @@ public final class PhantomBot implements Listener {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
         } else if (dataStoreType.equalsIgnoreCase("h2store")) {
-            dataStore = H2Store.instance();
+            dataStore = H2Store.instance(dataStoreConfig);
 
             if (!dataStore.CanConnect()) {
                 print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
@@ -559,7 +559,7 @@ public final class PhantomBot implements Listener {
             }
         } else {
             dataStoreType = "sqlite3store";
-            dataStore = SqliteStore.instance();
+            dataStore = SqliteStore.instance(dataStoreConfig);
 
             /* Convert the inistore to sqlite if the inistore exists and the db is empty */
             if (IniStore.hasDatabase(dataStoreConfig) && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
@@ -1035,9 +1035,6 @@ public final class PhantomBot implements Listener {
         /* Register the console event handler */
         EventBus.instance().register(ConsoleEventHandler.instance());
         //EventBus.instance().register(tv.phantombot.scripts.core.Moderation.instance());
-
-        /* Load the datastore config */
-        dataStore.LoadConfig(dataStoreConfig);
 
         /* Export all these to the $. api in the scripts. */
         Script.global.defineProperty("inidb", dataStore, 0);

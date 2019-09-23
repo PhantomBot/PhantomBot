@@ -708,7 +708,6 @@ public class TwitchAPIv5 {
      */
     private int PopulateFollowedTable(JSONArray followsArray, DataStore dataStore) throws JSONException {
         int insertCtr = 0;
-        dataStore.setAutoCommit(false);
         for (int idx = 0; idx < followsArray.length(); idx++) {
             if (followsArray.getJSONObject(idx).has("user")) {
                 if (followsArray.getJSONObject(idx).getJSONObject("user").has("name")) {
@@ -719,7 +718,6 @@ public class TwitchAPIv5 {
                 }
             }
         }
-        dataStore.setAutoCommit(true);
         return insertCtr;
     }
 
