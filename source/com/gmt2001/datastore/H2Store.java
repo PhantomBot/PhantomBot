@@ -772,7 +772,7 @@ public class H2Store extends DataStore {
 
             connection.setAutoCommit(false);
 
-            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " (value, section, variable) KEY(SECTION, VARIABLE) values(?, ?, ?);")) {
                 for (int idx = 0; idx < keys.length; idx++) {
                     statement.setString(1, values[idx]);
                     statement.setString(2, section);
@@ -798,7 +798,7 @@ public class H2Store extends DataStore {
 
             AddFile(connection, fName);
 
-            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " values(?, ?, ?);")) {
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " KEY(SECTION, VARIABLE) values(?, ?, ?);")) {
                 statement.setString(1, section);
                 statement.setString(2, key);
                 statement.setString(3, value);
@@ -820,11 +820,11 @@ public class H2Store extends DataStore {
             connection.setAutoCommit(false);
 
             try (Statement statement = connection.createStatement()) {
-                StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
+                StringBuilder sb = new StringBuilder(92 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
 
                 sb.append("MERGE INTO phantombot_");
                 sb.append(fName);
-                sb.append(" (section, variable, value) VALUES ");
+                sb.append(" (section, variable, value) KEY(SECTION, VARIABLE) VALUES ");
 
                 boolean first = true;
                 for (String k : keys) {
