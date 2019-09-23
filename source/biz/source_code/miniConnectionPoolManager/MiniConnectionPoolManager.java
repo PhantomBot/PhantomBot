@@ -366,7 +366,7 @@ public class MiniConnectionPoolManager {
      * <code>Connection.close()</code> has not yet been called.
      *
      * @return the number of active connections.
-*
+     *
      */
     public synchronized int getActiveConnections() {
         return activeConnections;
@@ -380,7 +380,7 @@ public class MiniConnectionPoolManager {
      * been reused.
      *
      * @return the number of inactive connections.
-*
+     *
      */
     public synchronized int getInactiveConnections() {
         return recycledConnections.size();

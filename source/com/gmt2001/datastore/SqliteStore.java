@@ -46,21 +46,25 @@ public class SqliteStore extends DataStore {
     private final MiniConnectionPoolManager poolMgr;
 
     public static SqliteStore instance() {
+        return instance("");
+    }
+
+    public static SqliteStore instance(String configStr) {
         if (instance == null) {
-            instance = new SqliteStore();
+            instance = new SqliteStore(configStr);
         }
 
         return instance;
     }
 
-    private SqliteStore() {
+    private SqliteStore(String configStr) {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        Object o[] = LoadConfigReal("");
+        Object o[] = LoadConfigReal(configStr);
 
         SQLiteConfig config = new SQLiteConfig();
         config.setCacheSize((int) o[1]);
@@ -997,7 +1001,7 @@ public class SqliteStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-    
+
     @Override
     public boolean canBackup() {
         return true;

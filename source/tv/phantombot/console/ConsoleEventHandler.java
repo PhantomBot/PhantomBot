@@ -261,7 +261,7 @@ public class ConsoleEventHandler implements Listener {
             datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
-            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
+            dataStore.backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
         }
 

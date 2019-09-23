@@ -40,21 +40,29 @@ public class H2Store extends DataStore {
     private static H2Store instance;
 
     public static H2Store instance() {
+        return instance("");
+    }
+
+    public static H2Store instance(String configStr) {
         if (instance == null) {
-            instance = new H2Store();
+            instance = new H2Store(configStr);
         }
 
         return instance;
     }
 
-    private H2Store() {
+    private H2Store(String configStr) {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException ex) {
             com.gmt2001.Console.err.println(ex.getMessage());
         }
 
-        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/phantombot.h2;DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
+        if (configStr.isBlank()) {
+            configStr = "phantombot.h2";
+        }
+
+        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";DB_CLOSE_ON_EXIT=true;MAX_LENGTH_INPLACE_LOB=2048", "", "");
         poolMgr.setMaxConnections(MAX_CONNECTIONS);
     }
 
