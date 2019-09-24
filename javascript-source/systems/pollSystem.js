@@ -108,7 +108,7 @@
         $.inidb.RemoveFile('pollPanel');
         $.inidb.RemoveFile('pollVotes');
 
-        $.inidb.setAutoCommit(false);
+        
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
             $.inidb.set('pollVotes', poll.options[i].replace(/\s/, '%space_option%'), 0);
@@ -117,7 +117,7 @@
                 'votes': 0
             });
         }
-        $.inidb.setAutoCommit(true);
+        
 
         if (poll.time > 0) {
             $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));

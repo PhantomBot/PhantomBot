@@ -93,6 +93,7 @@
     
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:retrieve sync="true"/>
+        <ivy:report graph="false" todir="resources/licenses/"/>
     </target>
     
     <target depends="ivy-retrieve" name="classpaths">
