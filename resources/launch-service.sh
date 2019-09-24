@@ -36,7 +36,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
     cd "$DIR"
     JAVA="./java-runtime-macos/bin/java"
-elif [[ "$MACHTYPE" == "arm"* ]]; then
+elif [[ "$MACHTYPE" != "x86_64"* ]]; then
     cd $(dirname $(readlink -f $0))
     JAVA=$(which java)
     
@@ -49,13 +49,17 @@ elif [[ "$MACHTYPE" == "arm"* ]]; then
     if (( jvermaj < 11 )); then
         echo "PhantomBot requires Java 11 or later to run."
         echo
-        echo "Please install the package openjdk-11-jre-headless"
+        echo "Please install the package openjdk-11-jre-headless (Debian/rPi) or java-11-openjdk (RHEL/CentOS)"
         echo
-        echo "The commands to do this are:"
+        echo "The commands to do this are (Debian/rPi):"
         echo "   sudo apt-get install openjdk-11-jre-headless"
         echo "   sudo update-alternatives --config java"
         echo
-        echo "When you issue the update-alternatives command, select the option for java-11-openjdk"
+		echo "The commands to do this are (RHEL/CentOS):"
+        echo "   sudo yum install java-11-openjdk"
+        echo "   sudo alternatives --config java"
+        echo
+        echo "When you issue the update-alternatives or alternatives command, select the option for java-11-openjdk"
         exit 1
     fi
 else
