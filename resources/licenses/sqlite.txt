@@ -1,3 +1,0 @@
-The SQLite license is available at the following URL:
-
-https://www.sqlite.org/copyright.html
