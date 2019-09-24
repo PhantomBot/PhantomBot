@@ -194,13 +194,6 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     @Override
-    public void SaveChangedNow() {
-        nextSave.setTime(new Date().getTime() - 1);
-
-        SaveAll(false);
-    }
-
-    @Override
     public void SaveAll(boolean force) {
         if (!nextSave.after(new Date()) || force) {
             Object[] n = changed.keySet().toArray();
@@ -237,13 +230,6 @@ public class IniStore extends DataStore implements ActionListener {
                 com.gmt2001.Console.debug.println("Object null, nothing to save.");
             }
         }
-    }
-
-    @Override
-    public void ReloadFile(String fName) {
-        fName = validatefName(fName);
-
-        LoadFile(fName, true);
     }
     
     public static boolean hasDatabase(String configStr) {

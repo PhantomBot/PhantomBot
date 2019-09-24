@@ -20,45 +20,22 @@ package com.gmt2001.datastore;
  *
  * @author gmt2001
  */
-public class DataStore {
-
-    private static DataStore instance;
+public abstract class DataStore {
 
     public static DataStore instance() {
-        if (instance == null) {
-            instance = new DataStore();
-        }
-
-        return instance;
-    }
-
-    protected DataStore() {
-    }
-
-    public void SaveChangedNow() {
+        return null;
     }
 
     public void SaveAll(boolean force) {
     }
 
-    public void ReloadFile(String fName) {
-    }
+    public abstract String[] GetFileList();
 
-    public String[] GetFileList() {
-        return new String[]{};
-    }
+    public abstract String[] GetCategoryList(String fName);
 
-    public String[] GetCategoryList(String fName) {
-        return new String[]{};
-    }
+    public abstract String[] GetKeyList(String fName, String section);
 
-    public String[] GetKeyList(String fName, String section) {
-        return new String[]{};
-    }
-
-    public KeyValue[] GetKeyValueList(String fName, String section) {
-        return new KeyValue[]{};
-    }
+    public abstract KeyValue[] GetKeyValueList(String fName, String section);
 
     public String[] GetKeysByOrder(String fName) {
         return this.GetKeysByOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
@@ -152,18 +129,28 @@ public class DataStore {
         return new String[]{};
     }
 
-    public String GetString(String fName, String section, String key) {
-        return "";
-    }
+    public abstract String GetString(String fName, String section, String key);
 
-    public void SetString(String fName, String section, String key, String value) {
-    }
+    public abstract void SetString(String fName, String section, String key, String value);
 
     public void InsertString(String fName, String section, String key, String value) {
         SetString(fName, section, key, value);
     }
 
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+        int amount;
+        
+        try {
+            amount = Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            amount = 0;
+        }
+        
+        for (String key : keys) {
+            int ival = GetInteger(fName, section, key);
+            ival += amount;
+            SetInteger(fName, section, key, ival);
+        }
     }
 
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
@@ -260,24 +247,17 @@ public class DataStore {
         SetInteger(fName, section, key, ival);
     }
 
-    public void RemoveKey(String fName, String section, String key) {
-    }
+    public abstract void RemoveKey(String fName, String section, String key);
 
-    public void RemoveSection(String fName, String section) {
-    }
+    public abstract void RemoveSection(String fName, String section);
 
-    public void AddFile(String fName) {
-    }
+    public abstract void AddFile(String fName);
 
-    public void RemoveFile(String fName) {
-    }
+    public abstract void RemoveFile(String fName);
 
-    public void RenameFile(String fNameSource, String fNameDest) {
-    }
+    public abstract void RenameFile(String fNameSource, String fNameDest);
 
-    public boolean FileExists(String fName) {
-        return false;
-    }
+    public abstract boolean FileExists(String fName);
 
     public boolean HasKey(String fName, String section, String key) {
         return GetString(fName, section, key) != null;

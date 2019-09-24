@@ -954,25 +954,6 @@ public class SqliteStore extends DataStore {
     }
 
     @Override
-    public void InsertString(String fName, String section, String key, String value) {
-        try (Connection connection = GetConnection()) {
-
-            fName = validateFname(fName);
-
-            AddFile(connection, fName);
-
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                statement.setString(1, section);
-                statement.setString(2, key);
-                statement.setString(3, value);
-                statement.execute();
-            }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
-    @Override
     public void CreateIndexes() {
         try (Connection connection = GetConnection()) {
             String[] tableNames = GetFileList();

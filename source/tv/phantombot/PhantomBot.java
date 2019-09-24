@@ -529,12 +529,14 @@ public final class PhantomBot implements Listener {
         if (dataStoreType.equalsIgnoreCase("inistore")) {
             dataStore = IniStore.instance(dataStoreConfig);
         } else if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
-            dataStore = MySQLStore.instance(dataStoreConfig);
             if (this.mySqlPort.isEmpty()) {
-                this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false";
+                this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false&user=" + this.mySqlUser + "&password=" + this.mySqlPass;
             } else {
-                this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + ":" + this.mySqlPort + "/" + this.mySqlName + "?useSSL=false";
+                this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + ":" + this.mySqlPort + "/" + this.mySqlName + "?useSSL=false&user=" + this.mySqlUser + "&password=" + this.mySqlPass;
             }
+
+            dataStore = MySQLStore.instance(this.mySqlConn);
+
             /* Check to see if we can create a connection */
             if (dataStore.CanConnect(this.mySqlConn, this.mySqlUser, this.mySqlPass)) {
                 print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
