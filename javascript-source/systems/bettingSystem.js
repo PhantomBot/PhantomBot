@@ -153,7 +153,7 @@
 
         $.say($.lang.get('bettingsystem.close.success', option));
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in bets) {
             if (bets[i].option.equalsIgnoreCase(option)) {
                 winners.push(i.toLowerCase());
@@ -162,7 +162,7 @@
                 $.inidb.incr('points', i.toLowerCase(), Math.floor(give));
             }
         }
-        $.inidb.setAutoCommit(true);
+        
 
         bet.winners = winners.join(', ');
         bet.pointsWon = total;
@@ -244,11 +244,11 @@
         if (refund) {
             var betters = Object.keys(bets);
 
-            $.inidb.setAutoCommit(false);
+            
             for (var i = 0; i < betters.length; i++) {
                 $.inidb.incr('points', betters[i], bets[betters[i]].amount);
             }
-            $.inidb.setAutoCommit(true);
+            
         }
 
         clear();
