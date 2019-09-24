@@ -215,7 +215,7 @@ public class MySQLStore extends DataStore {
 
         return out;
     }
-    
+
     public boolean FileExists(Connection connection, String fName) {
         fName = validateFname(fName);
 
@@ -768,7 +768,7 @@ public class MySQLStore extends DataStore {
 
         return result;
     }
-    
+
     @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
         try (Connection connection = GetConnection()) {
@@ -795,8 +795,6 @@ public class MySQLStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-
-    
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
