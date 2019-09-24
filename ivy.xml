@@ -21,7 +21,19 @@
 
 
 <ivy-module version="2.0">
-    <info organisation="tv.phantombot" module="phantombot"/>
+    <info organisation="tv.phantombot" module="phantombot">
+        <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
+        <repository name="PhantomBot" url="https://github.com/PhantomBot/PhantomBot" artifacts="true"/>
+        <description url="https://phantombot.tv/">
+            PhantomBot is a Twitch chat bot powered by Java.
+            PhantomBot has many modern features out of the box such as a built-in webpanel,
+            enhanced moderation, games, a point system, raffles, custom commands, a music player, and more!
+            PhantomBot can also be integrated with many services such as Discord, Twitter, TipeeeStream,
+            StreamLabs and StreamElements!
+
+            Additional functionality is enabled through the use of third-party modules.
+        </description>
+    </info>
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.0.9" conf="*->default" />
         <dependency org="commons-io" name="commons-io" rev="2.5" conf="*->default" />
@@ -42,4 +54,3 @@
         <dependency org="org.twitter4j" name="twitter4j-core" rev="4.0.4" conf="*->default" />
     </dependencies>
 </ivy-module>
-
