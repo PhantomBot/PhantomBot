@@ -24,7 +24,7 @@
     <info organisation="tv.phantombot" module="phantombot">
         <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
         <repository name="PhantomBot" url="https://github.com/PhantomBot/PhantomBot" artifacts="true"/>
-        <description url="https://phantombot.tv/">
+        <description homepage="https://phantombot.tv/">
             PhantomBot is a Twitch chat bot powered by Java.
             PhantomBot has many modern features out of the box such as a built-in webpanel,
             enhanced moderation, games, a point system, raffles, custom commands, a music player, and more!
