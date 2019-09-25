@@ -16,14 +16,13 @@
  */
 package tv.phantombot.discord.util;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.GuildChannel;
 import discord4j.core.object.entity.GuildEmoji;
+import discord4j.core.object.entity.GuildMessageChannel;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
@@ -77,7 +76,7 @@ public class DiscordUtil {
      * @param  message
      * @return {Message}
      */
-    public Message sendMessage(TextChannel channel, String message) {
+    public Message sendMessage(GuildMessageChannel channel, String message) {
         if (channel != null) {
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
 
@@ -145,7 +144,7 @@ public class DiscordUtil {
      * @param  embed
      * @return {Message}
      */
-    public Message sendMessageEmbed(TextChannel channel, Consumer<? super EmbedCreateSpec> embed) {
+    public Message sendMessageEmbed(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
         if (channel != null) {
             Message m = channel.createMessage(msg ->
                     msg.setEmbed(embed)
@@ -184,7 +183,7 @@ public class DiscordUtil {
      * @param  color
      * @return {Message}
      */
-    public Message sendMessageEmbed(TextChannel channel, String color, String message) {
+    public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
         return sendMessageEmbed(channel, ebd ->
             ebd.setColor(getColor(color)).setDescription(message)
         );
@@ -210,7 +209,7 @@ public class DiscordUtil {
      * @param  fileLocation
      * @return {Message}
      */
-    public Message sendFile(TextChannel channel, String message, String fileLocation) {
+    public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
         if (channel != null) {
             if (fileLocation.contains("..")) {
                 com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation that contains '..'");
@@ -270,7 +269,7 @@ public class DiscordUtil {
      * @param  fileLocation
      * @return {Message}
      */
-    public Message sendFile(TextChannel channel, String fileLocation) {
+    public Message sendFile(GuildMessageChannel channel, String fileLocation) {
         return sendFile(channel, "", fileLocation);
     }
 
@@ -374,7 +373,7 @@ public class DiscordUtil {
      * @param  channelName - The name of the channel.
      * @return {Channel}
      */
-    public TextChannel getChannel(String channelName) {
+    public GuildMessageChannel getChannel(String channelName) {
         // Remove any # in the channel name.
         channelName = sanitizeChannelName(channelName);
         
@@ -382,10 +381,9 @@ public class DiscordUtil {
 
         if (channels!= null) {
             for (GuildChannel channel : channels) {
-                if ((channel.getName().equalsIgnoreCase(channelName)
-                        || channel.getId().asString().equals(channelName))
-                        && channel.getType() == Channel.Type.GUILD_TEXT) {
-                    return (TextChannel)channel;
+                if (channel.getName().equalsIgnoreCase(channelName)
+                        || channel.getId().asString().equals(channelName)) {
+                    return (GuildMessageChannel)channel;
                 }
             }
         }
@@ -399,14 +397,13 @@ public class DiscordUtil {
      * @param   channelId - The string ID of the channel
      * @return {Channel}
      */
-    public TextChannel getChannelByID(String channelId) {
+    public GuildMessageChannel getChannelByID(String channelId) {
         List<GuildChannel> channels = DiscordAPI.getGuild().getChannels().collectList().block();
 
         if (channels!= null) {
             for (GuildChannel channel : channels) {
-                if (channel.getId().asString().equals(channelId)
-                        && channel.getType() == Channel.Type.GUILD_TEXT) {
-                    return (TextChannel)channel;
+                if (channel.getId().asString().equals(channelId)) {
+                    return (GuildMessageChannel)channel;
                 }
             }
         }
@@ -762,7 +759,7 @@ public class DiscordUtil {
      * @param channel
      * @param amount
      */
-    public void bulkDelete(TextChannel channel, int amount) {
+    public void bulkDelete(GuildMessageChannel channel, int amount) {
         // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
         // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
         
@@ -804,7 +801,7 @@ public class DiscordUtil {
      * @param channel
      * @param list
      */
-    public void bulkDeleteMessages(TextChannel channel, Message... list) {
+    public void bulkDeleteMessages(GuildMessageChannel channel, Message... list) {
         if (channel == null || list == null || list.length < 2) {
             throw new IllegalArgumentException("channel object was null, list object was null, or amount was less than 2");
         }

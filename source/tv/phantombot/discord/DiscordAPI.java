@@ -32,10 +32,10 @@ import discord4j.core.event.domain.role.RoleDeleteEvent;
 import discord4j.core.event.domain.role.RoleUpdateEvent;
 import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.GuildMessageChannel;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -283,7 +283,7 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
             
-            if (iUser == null) {
+            if (iUser == null && iChannel.getType() == Channel.Type.DM) {
                 iUser = ((PrivateChannel)iChannel).getRecipients().blockFirst();
             }
             
@@ -300,10 +300,10 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
             
-            if (iChannel.getType() == Channel.Type.GUILD_TEXT) {
-                channel = "#" + ((TextChannel)iChannel).getName();
+            if (iChannel.getType() == Channel.Type.DM) {
+                channel = "DM";
             } else {
-                channel = "DM " + iChannel.getMention();
+                channel = "#" + ((GuildMessageChannel)iChannel).getName();
             }
 
             com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
