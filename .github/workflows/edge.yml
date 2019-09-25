@@ -52,7 +52,7 @@ jobs:
       run: |
         sed -i -r 's/"version" value="[0-9.]+"/"version" value="edge"/' build.xml
         echo $?
-        sed -i -r 's/revision="[\w]+"/revision="edge"/;s/branch="[\w]+"/branch="edge"/' ivy.xml
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="edge"/;s/branch="[A-Za-z0-9._-]+"/branch="edge"/' ivy.xml
         echo $?
     - name: Build with Ant
       run: ant -noinput -Dbuildtype=edge_build -buildfile build.xml dist
