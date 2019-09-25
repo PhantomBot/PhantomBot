@@ -133,6 +133,7 @@ public class GitHubAPIv3 {
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());

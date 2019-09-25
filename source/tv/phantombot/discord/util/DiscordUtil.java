@@ -81,7 +81,7 @@ public class DiscordUtil {
             com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
 
             return channel.createMessage(message).doOnError(e -> {
-                com.gmt2001.Console.err.println("Failed to send a message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorReturn(null).block();
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             return sendMessage(channel, message);
@@ -112,12 +112,12 @@ public class DiscordUtil {
             com.gmt2001.Console.out.println("[DISCORD] [@" + user.getUsername().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
             
             PrivateChannel channel = user.getPrivateChannel().doOnError(e -> {
-                com.gmt2001.Console.err.println("Failed to send a private message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                com.gmt2001.Console.err.printStackTrace(e);
             }).block();
             
             if (channel != null) {
                 channel.createMessage(message).doOnError(e -> {
-                    com.gmt2001.Console.err.println("Failed to send a private message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(e);
                 }).block();
             }
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
@@ -149,11 +149,11 @@ public class DiscordUtil {
             Message m = channel.createMessage(msg ->
                     msg.setEmbed(embed)
             ).doOnError(e -> {
-                com.gmt2001.Console.err.println("Failed to send an embed message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorReturn(null).block();
             
             if (m != null) {
-                com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().get());
+                com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
             }
             
             return m;
@@ -223,11 +223,11 @@ public class DiscordUtil {
                                 try {
                                     msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation)));
                                 } catch (IOException ex) {
-                                    com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                                    com.gmt2001.Console.err.printStackTrace(ex);
                                 }
                             }
                     ).doOnError(e -> {
-                        com.gmt2001.Console.err.println("Failed to send a message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                        com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorReturn(null).block();
                 } else {
                     return channel.createMessage(msg -> 
@@ -235,11 +235,11 @@ public class DiscordUtil {
                                 try {
                                     msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation))).setContent(message);
                                 } catch (IOException ex) {
-                                    com.gmt2001.Console.err.println("Failed to upload a file: [" + ex.getClass().getSimpleName() + "] " + ex.getMessage());
+                                    com.gmt2001.Console.err.printStackTrace(ex);
                                 }
                             }
                     ).doOnError(e -> {
-                        com.gmt2001.Console.err.println("Failed to send a message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                        com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorReturn(null).block();
                 }
             }
@@ -293,7 +293,7 @@ public class DiscordUtil {
     public void addReaction(Message message, ReactionEmoji emoji) {
         if (message != null && emoji != null) {
             message.addReaction(emoji).doOnError(e -> {
-                com.gmt2001.Console.err.println("Failed to add a reaction: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                com.gmt2001.Console.err.printStackTrace(e);
             }).block();
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             addReaction(message, emoji);
@@ -587,7 +587,7 @@ public class DiscordUtil {
         m.edit(eds ->
                 eds.setRoles(rolesSf)
         ).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to edit roles on user: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -619,7 +619,7 @@ public class DiscordUtil {
         }
         
         m.addRole(role.getId()).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to add role on user: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -661,7 +661,7 @@ public class DiscordUtil {
         }
         
         m.removeRole(role.getId()).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to remove role on user: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -684,7 +684,7 @@ public class DiscordUtil {
         DiscordAPI.getGuild().createRole(role ->
                 role.setName(roleName)
         ).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to create role: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -695,7 +695,7 @@ public class DiscordUtil {
      */
     public void deleteRole(Role role) {
         role.delete().doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to delete role: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -836,7 +836,7 @@ public class DiscordUtil {
         }
         
         message.delete().doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to delete message: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -847,7 +847,7 @@ public class DiscordUtil {
      */
     public void setGame(String game) {
         DiscordAPI.getClient().updatePresence(Presence.online(Activity.playing(game))).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to set stream: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
@@ -859,7 +859,7 @@ public class DiscordUtil {
      */
     public void setStream(String game, String url) {
         DiscordAPI.getClient().updatePresence(Presence.online(Activity.streaming(game, url))).doOnError(e -> {
-            com.gmt2001.Console.err.println("Failed to set stream: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
 
