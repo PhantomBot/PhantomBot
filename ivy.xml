@@ -21,7 +21,7 @@
 
 
 <ivy-module version="2.0">
-    <info organisation="tv.phantombot" module="phantombot">
+    <info organisation="tv.phantombot" module="phantombot" revision="custom" status="integration" branch="custom">
         <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
         <repository name="PhantomBot" url="https://github.com/PhantomBot/PhantomBot" artifacts="true"/>
         <description homepage="https://phantombot.tv/">
