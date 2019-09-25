@@ -19,8 +19,8 @@ package tv.phantombot.discord.util;
 import discord4j.core.spec.EmbedCreateSpec;
 import java.awt.Color;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -41,7 +41,7 @@ public class EmbedBuilder {
     private String description = "";
     private String image = "";
     private String thumbnail = "";
-    private final List<AppendedField> appendedFields = Collections.emptyList();
+    private final List<AppendedField> appendedFields = new ArrayList<>();
 
     public EmbedBuilder() {
     }
