@@ -538,7 +538,7 @@ public final class PhantomBot implements Listener {
             dataStore = MySQLStore.instance(this.mySqlConn);
 
             /* Check to see if we can create a connection */
-            if (dataStore.CanConnect(this.mySqlConn, this.mySqlUser, this.mySqlPass)) {
+            if (!dataStore.CanConnect(this.mySqlConn, this.mySqlUser, this.mySqlPass)) {
                 print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
                 PhantomBot.exitError();
             }
