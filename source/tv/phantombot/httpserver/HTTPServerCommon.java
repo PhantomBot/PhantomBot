@@ -749,6 +749,12 @@ public class HTTPServerCommon {
             return "text/css";
         } else if (path.endsWith(".png")) {
             return "image/png";
+        } else if (path.endsWith(".mp3")) {
+            return "audio/mpeg";
+        } else if (path.endsWith(".aac")) {
+            return "audio/aac";
+        } else if (path.endsWith(".ogg")) {
+            return "audio/ogg";
         }
         return "text/text";
     }
