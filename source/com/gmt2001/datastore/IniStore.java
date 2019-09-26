@@ -38,6 +38,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * @deprecated @author gmt2001
  */
+@Deprecated
 public class IniStore extends DataStore implements ActionListener {
 
     private final HashMap<String, IniFile> files = new HashMap<>();
