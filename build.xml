@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="PhantomBot" basedir="." default="dist" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="PhantomBot" basedir="." default="dist" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
 
     <!--
 
@@ -94,6 +94,15 @@
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:retrieve sync="true"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
+        <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
+            <arg value="diff"/>
+            <arg value="--numstat"/>
+            <arg value="ivy.xml"/>
+        </exec>
+        <exec executable="git" failifexecutionfails="false" errorproperty="" if:blank="${git.ivychange}">
+            <arg value="checkout"/>
+            <arg value="resources/licenses/tv.phantombot-phantombot-default.html"/>
+        </exec>
     </target>
     
     <target depends="ivy-retrieve" name="classpaths">
