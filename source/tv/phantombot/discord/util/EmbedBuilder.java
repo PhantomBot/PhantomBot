@@ -158,7 +158,7 @@ public class EmbedBuilder {
             }
 
             if (!thumbnail.isEmpty()) {
-                t.setImage(thumbnail);
+                t.setThumbnail(thumbnail);
             }
 
             if (!appendedFields.isEmpty()) {
