@@ -33,7 +33,12 @@ jobs:
       run: choco install ant
       if: startsWith(matrix.os, 'windows-')
     - name: Set up Ant (macOS)
-      run: brew install ant
+      run: |
+        wget https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/ant.rb
+        sed -i '' -e 's/www.apache.org\/dyn\/closer.cgi?path=/archive.apache.org\/dist\//g' ant.rb
+        chmod +x ant.rb
+        brew install ./ant.rb
+        rm -f ant.rb
       if: startsWith(matrix.os, 'macOS-')
     - name: Build with Ant
       run: ant -noinput -buildfile build.xml test
