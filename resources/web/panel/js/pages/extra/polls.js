@@ -36,16 +36,12 @@ $(function() {
                     // Set the chart title.
                     chartConfig.options.title.text = e.title;
                     // Set the labels.
-                    chartConfig.data.labels = e.options.split('%space_option%');
+                    chartConfig.data.labels = e.options.split(',');
 
                     // Get all the data.
-                    let ops = e.options.split('%space_option%');
+                    let ops = e.options.split(',');
 
                     for (let i = 0; i < ops.length; i++) {
-                        if (ops[i].indexOf(' ') !== -1) {
-                            ops[i] = ops[i].split(' ').join('%space_option%');
-                        }
-
                         for (let j = 0; j < votes.length; j++) {
                             if (votes[j].key === ops[i]) {
                                 chartConfig.data.datasets[0].data.push(parseInt(votes[j].value));
@@ -87,16 +83,12 @@ $(function() {
             socket.getDBValue('get_poll_options_update', 'pollPanel', 'options', function(e) {
                 socket.getDBTableValues('get_poll_votes_update', 'pollVotes', function(votes) {
                     // Get all the data.
-                    let ops = e.pollPanel.split('%space_option%');
+                    let ops = e.pollPanel.split(',');
 
                     // Remove current data.
                     chartConfig.data.datasets[0].data = [];
 
                     for (let i = 0; i < ops.length; i++) {
-                        if (ops[i].indexOf(' ') !== -1) {
-                            ops[i] = ops[i].split(' ').join('%space_option%');
-                        }
-
                         for (let j = 0; j < votes.length; j++) {
                             if (votes[j].key === ops[i]) {
                                 chartConfig.data.datasets[0].data.push(parseInt(votes[j].value));
