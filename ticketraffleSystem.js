@@ -23,7 +23,6 @@
         maxEntries = 0,
 		trueSubMaxEntries = 0,
 		trueRegMaxEntries = 0,
-		uneffectedTickets = 0,
         followers = false,
         raffleStatus = false,
         msgToggle = $.getSetIniDbBoolean('settings', 'tRaffleMSGToggle', false),
@@ -170,36 +169,25 @@
 			return;
         }
 
-        for (var i = 0, t = 0; i < entries.length; i++) {
-            if (entries[i].equalsIgnoreCase(user)) {
-                t++;
-				if (tags.getTags().get('subscriber').equals('1') && (getTickets(user)+times >= trueSubMaxEntries) || (getTickets(user)+times >= trueRegMaxEntries))
-				{
-					if (msgToggle) {
-						$.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries) + " and " + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)/subTMulti));
-					}
-					return;
-				}
-				else 
-				{
-					if (getTickets(user) + times >= maxEntries)
-					{
-						if (msgToggle) {
-							$.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries) + " " + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)));
-						}
-						return;
-					}
-                }
-            }
-        }
-		
-		if (tags.getTags().get('subscriber').equals('1'))
+		$.consoleLn((parseInt(getTickets(user))+times >= trueSubMaxEntries));
+		$.consoleLn((parseInt(getTickets(user))+(times*subTMulti)) + " >  " + trueSubMaxEntries);
+		if (tags.getTags().get('subscriber').equals('1') && (parseInt(getTickets(user))+(times*subTMulti) > trueSubMaxEntries))
 		{
-			uneffectedTickets = (getTickets(user)/2);
-		} else
-		{
-			uneffectedTickets = getTickets(user);
+			if (msgToggle) {
+				$.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries) + " and " + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)/subTMulti));
+			}
+			return;
 		}
+		else 
+		{
+			if (parseInt(getTickets(user)) + times > maxEntries && !(tags.getTags().get('subscriber').equals('1')))
+			{
+				if (msgToggle) {
+					$.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries) + " " + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)));
+				}
+				return;
+			}
+        }
 
         if (cost > 0) {
             if ((times * cost) > $.getUserPoints(user)) {
@@ -220,7 +208,7 @@
 		
 		if (tags.getTags().containsKey('subscriber') ||	tags.getTags().get('subscriber').equals('1')) {
 			
-			if ((parseInt(getTickets(user))+times) <= maxEntries*subTMulti)
+			if (parseInt(getTickets(user))+times <= trueSubMaxEntries)
 			{
 				totalTickets += times;
 				$.inidb.decr('points', user, (price * cost));
@@ -229,7 +217,7 @@
 			}
 		} 
 		else {
-			if ((parseInt(getTickets(user))+times) <= maxEntries && !tags.getTags().get('subscriber').equals('1'))
+			if (parseInt(getTickets(user))+times <= maxEntries)
 			{
 				totalTickets += times;
 				$.inidb.decr('points', user, (price * cost));
