@@ -19,6 +19,6 @@ REM
 
 setlocal enableextensions enabledelayedexpansion
 cd %~dp0
-".\java-runtime\bin\java" -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %1
+".\java-runtime\bin\java" --add-opens java.base/java.lang=ALL-UNNAMED -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %1
 endlocal
 pause

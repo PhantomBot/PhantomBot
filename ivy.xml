@@ -40,7 +40,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
         <dependency org="org.javassist" name="javassist" rev="3.25.0-GA"/>
-        <dependency org="org.reflections" name="reflections" rev="0.9.11"/>
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.3.2"/>
         <dependency org="io.socket" name="engine.io-client" rev="0.7.0"/>
         <dependency org="io.socket" name="socket.io-client" rev="0.7.0"/>
