@@ -30,8 +30,6 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.TwitchSession;
 
-import com.google.common.collect.Maps;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +50,7 @@ import org.json.JSONException;
  */
 public class NoticeTimer implements Runnable, Listener {
 
-    private static final Map<String, NoticeTimer> instances = Maps.newHashMap();
+    private static final Map<String, NoticeTimer> instances = new HashMap<>();
     private Thread noticeThread;
     private String channel;
     private TwitchSession session;

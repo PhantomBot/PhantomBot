@@ -19,7 +19,6 @@
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitchAlertsAPIv1;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import org.json.JSONObject;
 
 public class DonationsCache implements Runnable {
 
-    private static final Map<String, DonationsCache> instances = Maps.newHashMap();
+    private static final Map<String, DonationsCache> instances = new HashMap<>();
     public static DonationsCache instance(String channel) {
         DonationsCache instance = instances.get(channel);
         if (instance == null) {
@@ -45,7 +44,7 @@ public class DonationsCache implements Runnable {
         return instance;
     }
 
-    private Map<String, String> cache = Maps.newHashMap();
+    private Map<String, String> cache = new HashMap<>();
     private final String channel;
     private final Thread updateThread;
     private boolean firstUpdate = true;
@@ -122,7 +121,7 @@ public class DonationsCache implements Runnable {
     }
 
     private void updateCache() throws Exception {
-        Map<String, String> newCache = Maps.newHashMap();
+        Map<String, String> newCache = new HashMap<>();
         JSONObject jsonResult;
         JSONArray donations = null;
 
