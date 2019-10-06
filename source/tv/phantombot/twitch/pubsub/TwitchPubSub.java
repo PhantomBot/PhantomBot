@@ -21,8 +21,6 @@
  */
 
 package tv.phantombot.twitch.pubsub;
-
-import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
 
 import java.util.Timer;
@@ -47,13 +45,14 @@ import tv.phantombot.event.pubsub.moderation.*;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import org.json.JSONException;
 
 public class TwitchPubSub {
-    private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
-    private final Map<String, String> messageCache = Maps.newHashMap();
-    private final Map<String, Long> timeoutCache = Maps.newHashMap();
+    private static final Map<String, TwitchPubSub> instances = new HashMap<>();
+    private final Map<String, String> messageCache = new HashMap<>();
+    private final Map<String, Long> timeoutCache = new HashMap<>();
     private final String channel;
     private TwitchPubSubWS twitchPubSubWS;
     private boolean reconnecting = false;
