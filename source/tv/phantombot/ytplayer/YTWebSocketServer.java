@@ -94,9 +94,8 @@ package tv.phantombot.ytplayer;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.collect.Maps;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,7 +121,7 @@ public class YTWebSocketServer extends WebSocketServer {
     private boolean clientConnected = false;
     private int bufferCounter = 0;
 
-    private final Map<String, wsSession> wsSessionMap = Maps.newHashMap();
+    private final Map<String, wsSession> wsSessionMap = new HashMap<>();
 
     public YTWebSocketServer(String ip, int port, String authString, String authStringRO) throws Exception {
         super((!ip.isEmpty() ? new InetSocketAddress(ip, port) : new InetSocketAddress(port)));
