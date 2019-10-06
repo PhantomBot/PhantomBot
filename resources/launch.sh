@@ -108,4 +108,4 @@ else
     JAVA="./java-runtime-linux/bin/java"
 fi
 
-${JAVA} -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
+${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
