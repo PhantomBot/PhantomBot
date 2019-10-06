@@ -17,7 +17,6 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class UsernameCache {
         return instance;
     }
 
-    private final Map<String, UserData> cache = Maps.newHashMap();
+    private final Map<String, UserData> cache = new HashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;

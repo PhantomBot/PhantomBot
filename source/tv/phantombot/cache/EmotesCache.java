@@ -22,7 +22,6 @@ package tv.phantombot.cache;
 import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.FrankerZAPIv1;
 import com.illusionaryone.BTTVAPIv2;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class EmotesCache implements Runnable {
 
     private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
     private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 60;
-    private static final Map<String, EmotesCache> instances = Maps.newHashMap();
+    private static final Map<String, EmotesCache> instances = new HashMap<>();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
         if (instance == null) {

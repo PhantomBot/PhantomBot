@@ -17,7 +17,6 @@
 package tv.phantombot.cache;
 
 import com.scaniatv.TipeeeStreamAPIv1;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,10 +31,10 @@ import org.json.JSONObject;
 
 public class TipeeeStreamCache implements Runnable {
 
-    private static final Map<String, TipeeeStreamCache> instances = Maps.newHashMap();
+    private static final Map<String, TipeeeStreamCache> instances = new HashMap<>();
     private final Thread updateThread;
     private final String channel;
-    private Map<String, String> cache = Maps.newHashMap();
+    private Map<String, String> cache = new HashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
@@ -143,7 +142,7 @@ public class TipeeeStreamCache implements Runnable {
      * Updates the cache by calling the TipeeeStream API.
      */
     private void updateCache() throws Exception {
-        Map<String, String> newCache = Maps.newHashMap();
+        Map<String, String> newCache = new HashMap<>();
         JSONObject jsonResult;
         JSONObject object;
         JSONArray donations = null;

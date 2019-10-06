@@ -23,8 +23,6 @@
 
 package tv.phantombot.cache;
 
-import com.google.common.collect.Maps;
-
 import java.lang.Math;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,7 +58,7 @@ import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
  */
 public class TwitchCache implements Runnable {
 
-    private static final Map<String, TwitchCache> instances = Maps.newHashMap();
+    private static final Map<String, TwitchCache> instances = new HashMap<>();
     private final String channel;
     private final Thread updateThread;
     private boolean killed = false;
