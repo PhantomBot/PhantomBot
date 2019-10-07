@@ -65,7 +65,7 @@ public class Reflect {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Class<?>> getClasses() {
         List<Class<?>> cl = new ArrayList<>();
 
