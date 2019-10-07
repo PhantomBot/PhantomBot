@@ -111,7 +111,7 @@
         
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
-            $.inidb.set('pollVotes', poll.options[i].replace(/\s/, '%space_option%'), 0);
+            $.inidb.set('pollVotes', poll.options[i], 0);
             objOBS.push({
                 'label': poll.options[i],
                 'votes': 0
@@ -135,7 +135,7 @@
         }));
 
         $.inidb.set('pollPanel', 'title', question);
-        $.inidb.set('pollPanel', 'options', options.join('%space_option%'));
+        $.inidb.set('pollPanel', 'options', options.join(','));
         $.inidb.set('pollPanel', 'isActive', 'true');
         return true;
     };
@@ -174,7 +174,7 @@
             'new_vote': 'true',
             'data': JSON.stringify(objOBS)
         }));
-        $.inidb.incr('pollVotes', poll.options[optionIndex].replace(/\s/, '%space_option%'), 1);
+        $.inidb.incr('pollVotes', poll.options[optionIndex], 1);
     };
 
     /**
