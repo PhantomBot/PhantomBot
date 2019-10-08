@@ -37,12 +37,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <configurations defaultconf="default"/>
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.0.9"/>
+        <dependency org="commons-codec" name="commons-codec" rev="1.9" />
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
-        <dependency org="org.javassist" name="javassist" rev="3.25.0-GA"/>
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.3.2"/>
-        <dependency org="io.socket" name="engine.io-client" rev="0.7.0"/>
-        <dependency org="io.socket" name="socket.io-client" rev="0.7.0"/>
         <dependency org="com.h2database" name="h2" rev="1.4.199"/>
         <dependency org="joda-time" name="joda-time" rev="2.4"/>
         <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>

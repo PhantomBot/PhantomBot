@@ -86,7 +86,6 @@ import tv.phantombot.httpserver.HTTPServer;
 import tv.phantombot.httpserver.HTTPSServer;
 import tv.phantombot.panel.PanelSocketSecureServer;
 import tv.phantombot.panel.PanelSocketServer;
-import tv.phantombot.panel.NewPanelSocketServer;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
@@ -129,7 +128,6 @@ public final class PhantomBot implements Listener {
     private Boolean webEnabled;
     private Boolean musicEnabled;
     private Boolean useHttps;
-    private Boolean testPanelServer;
     private int basePort;
     private String bindIP;
     private int ytSocketPort;
@@ -204,7 +202,6 @@ public final class PhantomBot implements Listener {
     private YTWebSocketServer youtubeSocketServer;
     private YTWebSocketSecureServer youtubeSocketSecureServer;
     private PanelSocketServer panelSocketServer;
-    private NewPanelSocketServer newPanelSocketServer;
     private PanelSocketSecureServer panelSocketSecureServer;
     private HTTPServer httpServer;
     private HTTPSServer httpsServer;
@@ -408,7 +405,6 @@ public final class PhantomBot implements Listener {
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
         this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
         this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
-        this.testPanelServer = this.pbProperties.getProperty("testpanelserver", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -849,34 +845,21 @@ public final class PhantomBot implements Listener {
                 }
 
                 if (useHttps) {
-                    if (testPanelServer) {
-                        newPanelSocketServer = new NewPanelSocketServer(panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
-                        newPanelSocketServer.start();
-                        print("TEST PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
-                    } else {
-                        /* Set up the panel socket server */
-                        panelSocketSecureServer = new PanelSocketSecureServer(bindIP, panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
-                        /* Start the panel socket server */
-                        panelSocketSecureServer.start();
-                        print("PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
-                    }
+                    /* Set up the panel socket server */
+                    panelSocketSecureServer = new PanelSocketSecureServer(bindIP, panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
+                    /* Start the panel socket server */
+                    panelSocketSecureServer.start();
+                    print("PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
 
                     /* Set up a new https server */
                     httpsServer = new HTTPSServer(bindIP, (basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
                     print("HTTPS server accepting connection on port: " + basePort + " (SSL)");
                 } else {
-                    if (testPanelServer) {
-                        newPanelSocketServer = new NewPanelSocketServer(panelSocketPort, webOAuth, webOAuthThro);
-                        newPanelSocketServer.start();
-                        print("TEST PanelSocketServer accepting connections on port: " + panelSocketPort);
-                    } else {
-                        /* Set up the panel socket server */
-                        panelSocketServer = new PanelSocketServer(bindIP, panelSocketPort, webOAuth, webOAuthThro);
-                        /* Set up the NEW panel socket server */
-                        /* Start the panel socket server */
-                        panelSocketServer.start();
-                        print("PanelSocketServer accepting connections on port: " + panelSocketPort);
-                    }
+                    panelSocketServer = new PanelSocketServer(bindIP, panelSocketPort, webOAuth, webOAuthThro);
+                    /* Set up the NEW panel socket server */
+                    /* Start the panel socket server */
+                    panelSocketServer.start();
+                    print("PanelSocketServer accepting connections on port: " + panelSocketPort);
 
                     /* Set up a new http server */
                     httpServer = new HTTPServer(bindIP, (basePort), oauth, webOAuth, panelUsername, panelPassword);
@@ -1046,11 +1029,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("channelName", channelName.toLowerCase(), 0);
         Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
         Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
-        if (testPanelServer) {
-            Script.global.defineProperty("panelsocketserver", newPanelSocketServer, 0);
-        } else {
-            Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
-        }
+        Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", BitlyAPIv4.instance(), 0);
@@ -1155,21 +1134,13 @@ public final class PhantomBot implements Listener {
             print("Shutting down all web socket/http servers...");
             if (!useHttps) {
                 httpServer.close();
-                if (testPanelServer) {
-                    newPanelSocketServer.dispose();
-                } else {
-                    panelSocketServer.dispose();
-                }
+                panelSocketServer.dispose();
                 if (musicEnabled) {
                     youtubeSocketServer.dispose();
                 }
             } else {
                 httpsServer.close();
-                if (testPanelServer) {
-                    newPanelSocketServer.dispose();
-                } else {
-                    panelSocketSecureServer.dispose();
-                }
+                panelSocketSecureServer.dispose();
                 if (musicEnabled) {
                     youtubeSocketSecureServer.dispose();
                 }

@@ -29,7 +29,7 @@
     <!-- Please see this for version numbers: https://semver.org/ -->
     <property name="webpanel.version" value="1.0.0" />
     <property name="src" location="source" />
-    <property name="reference" location="libraries" />
+    <property name="reference" location="lib" />
     <property name="build" location="build" />
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
@@ -109,15 +109,14 @@
         <ivy:cleancache/>
     </target>
     
+    <target depends="ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve"/>
+    
     <target depends="ivy-retrieve" name="classpaths">
         <path id="reference.class.path">
             <fileset dir="${reference}">
                 <include name="*.jar" />
-            </fileset>
-            <fileset dir="${basedir}/">
-                <include name="lib/*.jar" />
-                <exclude name="lib/*sources.jar"/>
-                <exclude name="lib/*javadoc.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*javadoc.jar"/>
             </fileset>
         </path>
         
@@ -228,7 +227,6 @@
 
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
-            <fileset dir="./libraries" />
             <fileset dir="./lib" includes="**/*.jar" excludes="**/*sources.jar, **/*javadoc.jar" />
         </copy>
         <echo level="info" message="staging javascript-source into resources." />
