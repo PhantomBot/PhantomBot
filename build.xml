@@ -226,25 +226,30 @@
         </jar>
 
         <mkdir dir="${lib.dir}" />
+        <echo level="info" message="staging lib folder into build dir." />
         <copy todir="${lib.dir}">
-            <fileset dir="./lib" includes="**/*.jar" excludes="**/*sources.jar, **/*javadoc.jar" />
+            <fileset dir="${reference}">
+                <include name="*.jar" />
+                <exclude name="*sources.jar"/>
+                <exclude name="*javadoc.jar"/>
+            </fileset>
         </copy>
-        <echo level="info" message="staging javascript-source into resources." />
-        <copy todir="./resources/scripts">
-            <fileset dir="./javascript-source" />
-        </copy>
-        <echo level="info" message="staging lib folder into resources." />
+        <echo level="info" message="staging resources folder into build dir." />
         <copy todir="${res.dir}">
             <fileset dir="./resources" />
+        </copy>
+        <echo level="info" message="staging javascript-source folder into build dir." />
+        <copy todir="${res.dir}/scripts">
+            <fileset dir="./javascript-source" />
         </copy>
         <replaceregexp
             file="${build.dir}/web/panel/js/utils/helpers.js"
             match="helpers\.PANEL_VERSION = &quot;(.*)&quot;;"
             replace="helpers\.PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
-        <copy todir="${version.folder}">
+        <move todir="${version.folder}">
             <fileset dir="${build.dir}" />
-        </copy>
+        </move>
     </target>
 
     <target depends="compile.src.test,post.compile" name="test"/>
@@ -271,7 +276,6 @@
 
     <target name="distclean" depends="clean">
         <delete dir="${dist}" />
-        <delete dir="resources/scripts" />
     </target>
 
 </project>
