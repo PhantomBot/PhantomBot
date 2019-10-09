@@ -49,7 +49,7 @@ public class StreamElementsAPIv2 {
     /*
      * Returns the current instance.
      */
-    public static StreamElementsAPIv2 instance() {
+    public static synchronized StreamElementsAPIv2 instance() {
         if (instance == null) {
             instance = new StreamElementsAPIv2();
         }

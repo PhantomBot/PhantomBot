@@ -46,7 +46,7 @@ public class TipeeeStreamAPIv1 {
     /*
      * Returns the current instance.
      */
-    public static TipeeeStreamAPIv1 instance() {
+    public static synchronized TipeeeStreamAPIv1 instance() {
         if (instance == null) {
             instance = new TipeeeStreamAPIv1();
         }

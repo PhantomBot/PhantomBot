@@ -44,7 +44,7 @@ public class GoogleURLShortenerAPIv1 {
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAPIKey = "AIzaSyCtjgbY6ebAmNEzAduzAK6xrxBGQGDPDUI";
 
-    public static GoogleURLShortenerAPIv1 instance() {
+    public static synchronized GoogleURLShortenerAPIv1 instance() {
         if (instance == null) {
             instance = new GoogleURLShortenerAPIv1();
         }

@@ -41,7 +41,7 @@ public class H2Store extends DataStore {
         return instance("");
     }
 
-    public static H2Store instance(String configStr) {
+    public static synchronized H2Store instance(String configStr) {
         if (instance == null) {
             instance = new H2Store(configStr);
         }
@@ -50,6 +50,8 @@ public class H2Store extends DataStore {
     }
 
     private H2Store(String configStr) {
+        super(configStr);
+
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException ex) {
@@ -820,8 +822,8 @@ public class H2Store extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
             }
-            
-            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" +fName + " USING DUAL ON section=? AND variable=? WHEN NOT MATCHED THEN INSERT VALUES (?, ?, ?);")){
+
+            try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " USING DUAL ON section=? AND variable=? WHEN NOT MATCHED THEN INSERT VALUES (?, ?, ?);")) {
                 for (String k : keys) {
                     statement.setString(1, section);
                     statement.setString(2, k);
@@ -830,7 +832,7 @@ public class H2Store extends DataStore {
                     statement.setString(5, value);
                     statement.addBatch();
                 }
-                
+
                 statement.executeBatch();
             }
 

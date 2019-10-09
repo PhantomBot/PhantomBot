@@ -54,7 +54,7 @@ public class IniStore extends DataStore implements ActionListener {
         return instance("");
     }
 
-    public static IniStore instance(String configStr) {
+    public static synchronized IniStore instance(String configStr) {
         if (instance == null) {
             instance = new IniStore(configStr);
         }
@@ -63,6 +63,8 @@ public class IniStore extends DataStore implements ActionListener {
     }
 
     private IniStore(String configStr) {
+        super(configStr);
+
         inifolder = LoadConfigReal(configStr);
 
         t = new Timer((int) saveinterval, this);

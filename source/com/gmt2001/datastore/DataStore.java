@@ -26,6 +26,9 @@ public abstract class DataStore {
         return null;
     }
 
+    protected DataStore(String configStr) {
+    }
+
     public void SaveAll(boolean force) {
     }
 
@@ -139,13 +142,13 @@ public abstract class DataStore {
 
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
         int amount;
-        
+
         try {
             amount = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
             amount = 0;
         }
-        
+
         for (String key : keys) {
             int ival = GetInteger(fName, section, key);
             ival += amount;

@@ -68,7 +68,7 @@ public class TwitterAPI {
     /*
      * Instance method for Twitter API.
      */
-    public static TwitterAPI instance() {
+    public static synchronized TwitterAPI instance() {
         if (instance == null) {
             instance = new TwitterAPI();
         }

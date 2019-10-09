@@ -44,7 +44,7 @@ public class FrankerZAPIv1 {
     private static final String sAPIURL = "https://api.frankerfacez.com/v1";
     private static final int iHTTPTimeout = 2 * 1000;
 
-    public static FrankerZAPIv1 instance() {
+    public static synchronized FrankerZAPIv1 instance() {
         if (instance == null) {
             instance = new FrankerZAPIv1();
         }

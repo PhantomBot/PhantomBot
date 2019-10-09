@@ -76,7 +76,7 @@ public class DiscordAPI extends DiscordUtil {
      *
      * @return {Object}
      */
-    public static DiscordAPI instance() {
+    public static synchronized DiscordAPI instance() {
         if (instance == null) {
             instance = new DiscordAPI();
         }

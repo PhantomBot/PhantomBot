@@ -45,7 +45,7 @@ public class GitHubAPIv3 {
     private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
     private static final int iHTTPTimeout = 2 * 1000;
 
-    public static GitHubAPIv3 instance() {
+    public static synchronized GitHubAPIv3 instance() {
         if (instance == null) {
             instance = new GitHubAPIv3();
         }

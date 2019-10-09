@@ -49,7 +49,7 @@ public class SqliteStore extends DataStore {
         return instance("");
     }
 
-    public static SqliteStore instance(String configStr) {
+    public static synchronized SqliteStore instance(String configStr) {
         if (instance == null) {
             instance = new SqliteStore(configStr);
         }
@@ -58,6 +58,8 @@ public class SqliteStore extends DataStore {
     }
 
     private SqliteStore(String configStr) {
+        super(configStr);
+
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException ex) {
@@ -920,9 +922,9 @@ public class SqliteStore extends DataStore {
 
                 StringBuilder sb = new StringBuilder(69 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
 
-                sb.append("INSERT OR IGNORE INTO phantombot_");
-                sb.append(fName);
-                sb.append(" (section, variable, value) VALUES ");
+                sb.append("INSERT OR IGNORE INTO phantombot_")
+                        .append(fName)
+                        .append(" (section, variable, value) VALUES ");
 
                 boolean first = true;
                 for (String k : keys) {
@@ -931,13 +933,13 @@ public class SqliteStore extends DataStore {
                     }
 
                     first = false;
-                    sb.append("('");
-                    sb.append(section);
-                    sb.append("', '");
-                    sb.append(k);
-                    sb.append("', ");
-                    sb.append(value);
-                    sb.append(")");
+                    sb.append("('")
+                            .append(section)
+                            .append("', '")
+                            .append(k)
+                            .append("', ")
+                            .append(value)
+                            .append(")");
                 }
 
                 sb.append(";");

@@ -45,7 +45,7 @@ public class DataRenderServiceAPIv1 {
     private static String sAPIKey = "";
     private static String sAPIURL = "";
 
-    public static DataRenderServiceAPIv1 instance() {
+    public static synchronized DataRenderServiceAPIv1 instance() {
         if (instance == null) {
             instance = new DataRenderServiceAPIv1();
         }

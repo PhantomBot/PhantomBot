@@ -54,7 +54,7 @@ public class GameWispAPIv1 {
     private static String sRefreshToken = "";
     private static Boolean noAccessWarning = false;
 
-    public static GameWispAPIv1 instance() {
+    public static synchronized GameWispAPIv1 instance() {
         if (instance == null) {
             instance = new GameWispAPIv1();
         }

@@ -55,7 +55,7 @@ public class YouTubeAPIv3 {
         GET, POST, PUT, DELETE
     };
 
-    public static YouTubeAPIv3 instance() {
+    public static synchronized YouTubeAPIv3 instance() {
         if (instance == null) {
             instance = new YouTubeAPIv3();
         }
