@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import tv.phantombot.PhantomBot;
 import org.json.JSONObject;
@@ -33,7 +34,7 @@ public class UsernameCache {
         return instance;
     }
 
-    private final Map<String, UserData> cache = new HashMap<>();
+    private final Map<String, UserData> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;

@@ -42,7 +42,7 @@ public class TwitchTeamsCache implements Runnable {
      * @param channelName
      * @return 
      */
-    public static TwitchTeamsCache instance(String channelName) {
+    public static synchronized TwitchTeamsCache instance(String channelName) {
         if (INSTANCE == null) {
             INSTANCE = new TwitchTeamsCache(channelName);
         }

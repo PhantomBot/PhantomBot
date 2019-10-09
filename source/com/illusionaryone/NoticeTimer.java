@@ -32,12 +32,12 @@ import tv.phantombot.twitch.irc.TwitchSession;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -50,7 +50,7 @@ import org.json.JSONException;
  */
 public class NoticeTimer implements Runnable, Listener {
 
-    private static final Map<String, NoticeTimer> instances = new HashMap<>();
+    private static final Map<String, NoticeTimer> instances = new ConcurrentHashMap<>();
     private Thread noticeThread;
     private String channel;
     private TwitchSession session;

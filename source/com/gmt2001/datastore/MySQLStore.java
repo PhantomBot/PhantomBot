@@ -41,7 +41,7 @@ public class MySQLStore extends DataStore {
         return instance("");
     }
 
-    public static MySQLStore instance(String configStr) {
+    public static synchronized MySQLStore instance(String configStr) {
         if (instance == null) {
             instance = new MySQLStore(configStr);
         }
@@ -50,6 +50,8 @@ public class MySQLStore extends DataStore {
     }
 
     private MySQLStore(String configStr) {
+        super(configStr);
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
@@ -830,9 +832,9 @@ public class MySQLStore extends DataStore {
 
                 StringBuilder sb = new StringBuilder(66 + fName.length() + (keys.length * (keys[0].length() + 17 + section.length() + value.length())));
 
-                sb.append("INSERT IGNORE INTO phantombot_");
-                sb.append(fName);
-                sb.append(" (section, variable, value) VALUES ");
+                sb.append("INSERT IGNORE INTO phantombot_")
+                        .append(fName)
+                        .append(" (section, variable, value) VALUES ");
 
                 boolean first = true;
                 for (String k : keys) {
@@ -841,13 +843,13 @@ public class MySQLStore extends DataStore {
                     }
 
                     first = false;
-                    sb.append("('");
-                    sb.append(section);
-                    sb.append("', '");
-                    sb.append(k);
-                    sb.append("', ");
-                    sb.append(value);
-                    sb.append(")");
+                    sb.append("('")
+                            .append(section)
+                            .append("', '")
+                            .append(k)
+                            .append("', ")
+                            .append(value)
+                            .append(")");
                 }
 
                 sb.append(";");

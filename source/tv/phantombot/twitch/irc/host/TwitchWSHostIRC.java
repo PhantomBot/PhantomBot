@@ -30,8 +30,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +48,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import tv.phantombot.PhantomBot;
 
 public class TwitchWSHostIRC {
-    private static final Map<String, TwitchWSHostIRC> instances = new HashMap<>();
+    private static final Map<String, TwitchWSHostIRC> instances = new ConcurrentHashMap<>();
     private final String twitchIRCWSS = "wss://irc-ws.chat.twitch.tv";
     private final String channelName;
     private final String oAuth;

@@ -34,7 +34,7 @@ public class CustomAPI {
      *
      * @return {Object}
      */
-    public static CustomAPI instance() {
+    public static synchronized CustomAPI instance() {
         if (instance == null) {
             instance = new CustomAPI();
         }

@@ -38,9 +38,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     JAVA="./java-runtime-macos/bin/java"
 elif [[ "$MACHTYPE" != "x86_64"* ]]; then
     cd $(dirname $(readlink -f $0))
-    osdist=$(cat /etc/os-release | awk '/^ID(_LIKE)?=/' | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 1')
-    osdist2=$(cat /etc/os-release | awk '/^ID(_LIKE)?=/' | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 2')
-    osver=$(cat /etc/os-release | awk '/^VERSION_ID=/' | sed 's/"//g' | cut -d = -f 2)
+    osdist=$(awk '/^ID(_LIKE)?=/' /etc/os-release | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 1')
+    osdist2=$(awk '/^ID(_LIKE)?=/' /etc/os-release | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 2')
+    osver=$(awk '/^VERSION_ID=/' /etc/os-release | sed 's/"//g' | cut -d = -f 2)
     JAVA=$(which java)
 
     if (( $? > 0 )); then

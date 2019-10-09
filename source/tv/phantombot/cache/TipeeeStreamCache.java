@@ -19,9 +19,9 @@ package tv.phantombot.cache;
 import com.scaniatv.TipeeeStreamAPIv1;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationEvent;
@@ -31,10 +31,10 @@ import org.json.JSONObject;
 
 public class TipeeeStreamCache implements Runnable {
 
-    private static final Map<String, TipeeeStreamCache> instances = new HashMap<>();
+    private static final Map<String, TipeeeStreamCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
     private final String channel;
-    private Map<String, String> cache = new HashMap<>();
+    private Map<String, String> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
@@ -142,7 +142,7 @@ public class TipeeeStreamCache implements Runnable {
      * Updates the cache by calling the TipeeeStream API.
      */
     private void updateCache() throws Exception {
-        Map<String, String> newCache = new HashMap<>();
+        Map<String, String> newCache = new ConcurrentHashMap<>();
         JSONObject jsonResult;
         JSONObject object;
         JSONArray donations = null;

@@ -45,7 +45,7 @@ public class BitlyAPIv4 {
     private static String sAPIKey = "04cef1634958fb43bc6009dece7c489f0ffc8845";
     private static String sGUID = "Bg56fvSTpUC";
 
-    public static BitlyAPIv4 instance() {
+    public static synchronized BitlyAPIv4 instance() {
         if (instance == null) {
             instance = new BitlyAPIv4();
         }

@@ -45,14 +45,14 @@ import tv.phantombot.event.pubsub.moderation.*;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import org.json.JSONException;
 
 public class TwitchPubSub {
-    private static final Map<String, TwitchPubSub> instances = new HashMap<>();
-    private final Map<String, String> messageCache = new HashMap<>();
-    private final Map<String, Long> timeoutCache = new HashMap<>();
+    private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
+    private final Map<String, String> messageCache = new ConcurrentHashMap<>();
+    private final Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
     private final String channel;
     private TwitchPubSubWS twitchPubSubWS;
     private boolean reconnecting = false;

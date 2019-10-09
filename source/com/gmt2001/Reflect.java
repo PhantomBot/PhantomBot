@@ -28,7 +28,7 @@ import java.util.jar.JarInputStream;
  *
  * @author gmt2001
  */
-public class Reflect {
+public final class Reflect {
 
     private static final Reflect instance = new Reflect();
 
