@@ -1,0 +1,181 @@
+/*
+ * Copyright (C) 2016-2018 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.gmt2001.httpwsserver;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+
+/**
+ * Provides an HTTP 1.1 server with WebSocket support
+ *
+ * @author gmt2001
+ */
+public class HTTPWSServer {
+
+    /**
+     * An instance of {@link HTTPWSServer}
+     */
+    private static HTTPWSServer INSTANCE;
+    /**
+     * The server's {@link EventLoopGroup}
+     */
+    private final EventLoopGroup group = new NioEventLoopGroup();
+    /**
+     * The server's listen {@link Channel}
+     */
+    private Channel ch;
+    /**
+     * A map of registered {@link HttpHandler} for handling HTTP Requests
+     */
+    static Map<String, HttpHandler> httpHandlers = new ConcurrentHashMap<>();
+    /**
+     * A map of registered {@link WsHandler} for handling WebSockets
+     */
+    static Map<String, WsHandler> wsHandlers = new ConcurrentHashMap<>();
+
+    /**
+     * Gets the server instance, you should always call the parameterized version, {@link HTTPWSServer#instance(String, int, String, String)}, at
+     * least once before this one
+     *
+     * @return An initialized {@link HTTPWSServer}
+     */
+    public static HTTPWSServer instance() {
+        return instance(null, 25000, null, null);
+    }
+
+    /**
+     * Gets the server instance, or initializes a new one if it hasn't been constructed yet
+     *
+     * @param ipOrHostname The IP or Hostname of an interface to bind to. null for the default AnyAddress
+     * @param port The port number to bind to
+     * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
+     * SSL/TLS support
+     * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     * @return An initialized {@link HTTPWSServer}
+     */
+    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, String sslFile, String sslPass) {
+        if (INSTANCE == null) {
+            INSTANCE = new HTTPWSServer(ipOrHostname, port, sslFile, sslPass);
+        }
+
+        return INSTANCE;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param ipOrHostname The IP or Hostname of an interface to bind to. null for the default AnyAddress
+     * @param port The port number to bind to
+     * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
+     * SSL/TLS support
+     * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     */
+    private HTTPWSServer(String ipOrHostname, int port, String sslFile, String sslPass) {
+        final SslContext sslCtx;
+
+        try {
+            if (sslFile != null && !sslFile.isBlank()) {
+                KeyStore ks = KeyStore.getInstance("JKS");
+                FileInputStream inputStream = new FileInputStream(sslFile);
+                ks.load(inputStream, sslPass.toCharArray());
+
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                kmf.init(ks, sslPass.toCharArray());
+
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+                tmf.init(ks);
+
+                sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
+            } else {
+                sslCtx = null;
+            }
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(group)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new HTTPWSServerInitializer(sslCtx));
+
+            if (ipOrHostname == null || ipOrHostname.isBlank()) {
+                ch = b.bind(port).sync().channel();
+            } else {
+                ch = b.bind(ipOrHostname, port).sync().channel();
+            }
+        } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException | UnrecoverableKeyException | InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            group.shutdownGracefully();
+        }
+    }
+
+    public static boolean validateUriPath(String path, boolean isWs) {
+        return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))
+                || !path.contains("..")
+                || !(path.startsWith("/config") && !path.startsWith("/config/audio-hooks") && !path.startsWith("/config/gif-alerts"));
+    }
+
+    public void registerHttpHandler(String path, HttpHandler handler) {
+        if (validateUriPath(path, false)) {
+            if (httpHandlers.containsKey(path)) {
+                throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
+            } else {
+                httpHandlers.put(path, handler);
+            }
+        } else {
+            throw new IllegalArgumentException("Illegal path. Must not contain .. or /ws and must not attempt to access any part of /config other than /config/audio-hooks or /config/gif-alerts");
+        }
+    }
+
+    public void deregisterHttpHandler(String path) {
+        httpHandlers.remove(path);
+    }
+
+    public void registerWsHandler(String path, WsHandler handler) {
+        if (validateUriPath(path, true)) {
+            if (wsHandlers.containsKey(path)) {
+                throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
+            } else {
+                wsHandlers.put(path, handler);
+            }
+        } else {
+            throw new IllegalArgumentException("Illegal path. Must not contain .. and must start with /ws");
+        }
+    }
+
+    public void deregisterWsHandler(String path) {
+        wsHandlers.remove(path);
+    }
+
+    public void close() {
+        ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
+        group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
+    }
+}
