@@ -17,12 +17,30 @@
 package com.gmt2001.httpwsserver;
 
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
+ * Represents a handler for HTTP requests
  *
  * @author gmt2001
  */
 public interface HttpHandler {
 
+    /**
+     * Gets the {@link HttpAuthenticationHandler} assigned to this endpoint
+     *
+     * @return An {@link HttpAuthenticationHandler}
+     */
     public HttpAuthenticationHandler getAuthHandler();
+
+    /**
+     * Handles the HTTP request and sends a response back to the client
+     *
+     * Only gets called if the {@link HttpAuthenticationHandler} returned {@code true}
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     */
+    public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req);
 }

@@ -20,10 +20,22 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
+ * Represents an Authentication Handler for an {@link HttpHandler}
  *
  * @author gmt2001
  */
 public interface HttpAuthenticationHandler {
 
+    /**
+     * Checks if the given {@link FullHttpRequest} is a valid authentication request, or if the underlying {@link Channel} has already been
+     * authenticated
+     *
+     * When returning {@code false}, this method should also send either an {@code 401 Unauthorized}, a {@code Header Location}, or an error page back
+     * to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param frame The {@link FullHttpRequest} to check
+     * @return {@code true} if authenticated, {@code false} otherwise
+     */
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 }

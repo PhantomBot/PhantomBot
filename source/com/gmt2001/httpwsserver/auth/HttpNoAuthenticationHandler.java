@@ -26,8 +26,16 @@ import io.netty.handler.codec.http.FullHttpRequest;
  */
 public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
 
+    /**
+     * An instance of {@link HttpNoAuthenticationHandler}
+     */
     private static HttpNoAuthenticationHandler INSTANCE;
 
+    /**
+     * Gets a handler instance
+     *
+     * @return An instance of {@link HttpNoAuthenticationHandler}
+     */
     public static synchronized HttpNoAuthenticationHandler instance() {
         if (INSTANCE == null) {
             INSTANCE = new HttpNoAuthenticationHandler();
@@ -36,9 +44,19 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
         return INSTANCE;
     }
 
+    /**
+     * Default Constructor
+     */
     private HttpNoAuthenticationHandler() {
     }
 
+    /**
+     * Always returns {@code true}, since this handler is for No Authentication
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} of the request
+     * @return {@code true}
+     */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         return true;

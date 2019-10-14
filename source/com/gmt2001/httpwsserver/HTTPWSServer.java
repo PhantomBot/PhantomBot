@@ -37,7 +37,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * Provides an HTTP 1.1 server with WebSocket support
+ * Provides a HTTP 1.1 server with WebSocket support
  *
  * @author gmt2001
  */
@@ -65,8 +65,9 @@ public class HTTPWSServer {
     static Map<String, WsHandler> wsHandlers = new ConcurrentHashMap<>();
 
     /**
-     * Gets the server instance, you should always call the parameterized version, {@link HTTPWSServer#instance(String, int, String, String)}, at
-     * least once before this one
+     * Gets the server instance.
+     *
+     * You should always call the parameterized version, {@link HTTPWSServer#instance(String, int, String, String)}, at least once before this one
      *
      * @return An initialized {@link HTTPWSServer}
      */
@@ -120,6 +121,7 @@ public class HTTPWSServer {
             } else {
                 sslCtx = null;
             }
+
             ServerBootstrap b = new ServerBootstrap();
             b.group(group)
                     .channel(NioServerSocketChannel.class)
@@ -136,12 +138,31 @@ public class HTTPWSServer {
         }
     }
 
+    /**
+     * Checks if a URI path is illegal
+     *
+     * Paths are considered illegal if: - isWs is {@code true} and the path does not start with {@code /ws} - isWs is {@code false} and the path
+     * starts with {@code /ws} - The path contains a {@code ..} - The path attempts to access the {@code /config} directory, unless it is
+     * {@code /config/audio-hooks} or {@code /config/gif-alerts}
+     *
+     * @param path The path to check
+     * @param isWs Whether this check is for a WebSocket or not
+     * @return {@code false} if the path is illegal, {@code} true otherwise
+     */
     public static boolean validateUriPath(String path, boolean isWs) {
         return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))
                 || !path.contains("..")
                 || !(path.startsWith("/config") && !path.startsWith("/config/audio-hooks") && !path.startsWith("/config/gif-alerts"));
     }
 
+    /**
+     * Registers a {@link HttpHandler} to an endpoint
+     *
+     * @param path The URI path to bind the handler to
+     * @param handler The {@link HttpHandler} that will handle the requests
+     * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
+     * @see validateUriPath
+     */
     public void registerHttpHandler(String path, HttpHandler handler) {
         if (validateUriPath(path, false)) {
             if (httpHandlers.containsKey(path)) {
@@ -154,10 +175,23 @@ public class HTTPWSServer {
         }
     }
 
+    /**
+     * Deregisters an HTTP URI path
+     *
+     * @param path The path to deregister
+     */
     public void deregisterHttpHandler(String path) {
         httpHandlers.remove(path);
     }
 
+    /**
+     * Registers a {@link WsHandler} to an endpoint
+     *
+     * @param path The URI path to bind the handler to
+     * @param handler The {@link WsHandler} that will handle the requests
+     * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
+     * @see validateUriPath
+     */
     public void registerWsHandler(String path, WsHandler handler) {
         if (validateUriPath(path, true)) {
             if (wsHandlers.containsKey(path)) {
@@ -170,10 +204,18 @@ public class HTTPWSServer {
         }
     }
 
+    /**
+     * Deregisters a WS URI path
+     *
+     * @param path The path to deregister
+     */
     public void deregisterWsHandler(String path) {
         wsHandlers.remove(path);
     }
 
+    /**
+     * Shuts down the server, with a grace period for ongoing requests to finish
+     */
     public void close() {
         ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);

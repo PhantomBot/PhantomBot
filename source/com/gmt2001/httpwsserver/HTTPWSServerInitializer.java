@@ -26,17 +26,32 @@ import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketSe
 import io.netty.handler.ssl.SslContext;
 
 /**
+ * Initializes {@link SocketChannel} objects for a {@link HTTPWSServer}
  *
  * @author gmt2001
  */
 class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
 
+    /**
+     * The SSL context to use
+     */
     private final SslContext sslCtx;
 
+    /**
+     * Constructor
+     *
+     * @param sslCtx Either {@code null} or a prepared {@link SslContext}
+     */
     public HTTPWSServerInitializer(SslContext sslCtx) {
         this.sslCtx = sslCtx;
     }
 
+    /**
+     * Initializes the {@link SocketChannel}
+     *
+     * @param ch The {@link SocketChannel} to initialize
+     * @throws Exception Passes any thrown exceptions up the stack
+     */
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();

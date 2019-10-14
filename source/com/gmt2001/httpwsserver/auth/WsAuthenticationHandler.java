@@ -20,10 +20,20 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
 /**
+ * Represents an Authentication Handler for a {@link WsHandler}
  *
  * @author gmt2001
  */
 public interface WsAuthenticationHandler {
 
+    /**
+     * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been authenticated
+     *
+     * When returning {@code false}, this method should also send an {@code Authentication Required} frame back to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param frame The {@link WebSocketFrame} to check
+     * @return {@code true} if authenticated, {@code false} otherwise
+     */
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame);
 }

@@ -38,10 +38,27 @@ import java.util.Base64;
  */
 public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler {
 
+    /**
+     * The realm to present to the user
+     */
     private final String realm;
+    /**
+     * The username required for valid authentication
+     */
     private final String user;
+    /**
+     * The password required for valid authentication
+     */
     private final String pass;
 
+    /**
+     * Constructor
+     *
+     * @param realm The realm to present to the user
+     * @param user The username required for valid authentication
+     * @param pass The password required for valid authentication
+     * @throws IllegalArgumentException If {@code realm} contains any double quotes or {@code user} contains any colons
+     */
     public HttpBasicAuthenticationHandler(String realm, String user, String pass) {
         if (realm.contains("\"") || user.contains(":")) {
             throw new IllegalArgumentException("Illegal realm or username. Realm must not contain double quotes, user must not contain colon");
@@ -52,6 +69,14 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         this.pass = pass;
     }
 
+    /**
+     * Checks if the given {@link FullHttpRequest} has the correct header with valid credentials
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param frame The {@link FullHttpRequest} to check
+     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with
+     * {@code 401 Unauthorized} and then close the channel
+     */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         HttpHeaders headers = req.headers();
