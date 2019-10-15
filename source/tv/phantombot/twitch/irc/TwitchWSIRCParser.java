@@ -203,6 +203,7 @@ public class TwitchWSIRCParser implements Runnable {
                         badges.put("user-type", badge);
                         break;
                     case "subscriber":
+                    case "founder":
                         badges.put("subscriber", "1");
                         break;
                     case "turbo":
