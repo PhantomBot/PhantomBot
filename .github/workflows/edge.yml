@@ -8,8 +8,7 @@ on:
       - '!*'
   pull_request:
     branches:
-      - 'edge'
-      - 'edge-*'
+      - '!*'
     tags:
       - '!*'
 jobs:
@@ -55,9 +54,12 @@ jobs:
         java-version: 11.0.4
     - name: Set up Ant
       run: sudo apt-get install ant
+    - name: Set up environment variables
+      id: build_env
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
     - name: Prep Ant script
       env:
-        BRANCH: ${{ github.ref }}
+        BRANCH: ${{ steps.build_env.outputs.branch }}
       run: |
         sed -i -r 's/"version" value="[0-9.]+"/"version" value="'$BRANCH'"/' build.xml
         echo $?
@@ -65,15 +67,15 @@ jobs:
         echo $?
     - name: Build with Ant
       env:
-        BUILDTYPE: format('{0}_build', ${{ github.ref }})
+        BUILDTYPE: format('{0}_build', ${{ steps.build_env.outputs.branch }})
       run: ant -noinput -Dbuildtype=$BUILDTYPE -buildfile build.xml dist
     - name: Prep Artifacts
       env:
-        FOLDERFULL: format('PhantomBot-{0}', ${{ github.ref }})
-        FOLDERLIN: format('PhantomBot-{0}-lin', ${{ github.ref }})
-        FOLDERWIN: format('PhantomBot-{0}-win', ${{ github.ref }})
-        FOLDERMAC: format('PhantomBot-{0}-mac', ${{ github.ref }})
-        FOLDERARM: format('PhantomBot-{0}-arm', ${{ github.ref }})
+        FOLDERFULL: format('PhantomBot-{0}', ${{ steps.build_env.outputs.branch }})
+        FOLDERLIN: format('PhantomBot-{0}-lin', ${{ steps.build_env.outputs.branch }})
+        FOLDERWIN: format('PhantomBot-{0}-win', ${{ steps.build_env.outputs.branch }})
+        FOLDERMAC: format('PhantomBot-{0}-mac', ${{ steps.build_env.outputs.branch }})
+        FOLDERARM: format('PhantomBot-{0}-arm', ${{ steps.build_env.outputs.branch }})
       run: |
         mkdir dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
@@ -86,25 +88,25 @@ jobs:
     - name: Upload Artifact (Full)
       uses: actions/upload-artifact@v1
       with:
-        name: format('PhantomBot-{0}', ${{ github.ref }})
-        path: format('dist/PhantomBot-{0}', ${{ github.ref }})
+        name: format('PhantomBot-{0}', ${{ steps.build_env.outputs.branch }})
+        path: format('dist/PhantomBot-{0}', ${{ steps.build_env.outputs.branch }})
     - name: Upload Artifact (Linux)
       uses: actions/upload-artifact@v1
       with:
-        name: format('PhantomBot-{0}-lin', ${{ github.ref }})
-        path: format('dist/PhantomBot-{0}-lin', ${{ github.ref }})
+        name: format('PhantomBot-{0}-lin', ${{ steps.build_env.outputs.branch }})
+        path: format('dist/PhantomBot-{0}-lin', ${{ steps.build_env.outputs.branch }})
     - name: Upload Artifact (Windows)
       uses: actions/upload-artifact@v1
       with:
-        name: format('PhantomBot-{0}-win', ${{ github.ref }})
-        path: format('dist/PhantomBot-{0}-win', ${{ github.ref }})
+        name: format('PhantomBot-{0}-win', ${{ steps.build_env.outputs.branch }})
+        path: format('dist/PhantomBot-{0}-win', ${{ steps.build_env.outputs.branch }})
     - name: Upload Artifact (macOS)
       uses: actions/upload-artifact@v1
       with:
-        name: format('PhantomBot-{0}-mac', ${{ github.ref }})
-        path: format('dist/PhantomBot-{0}-mac', ${{ github.ref }})
+        name: format('PhantomBot-{0}-mac', ${{ steps.build_env.outputs.branch }})
+        path: format('dist/PhantomBot-{0}-mac', ${{ steps.build_env.outputs.branch }})
     - name: Upload Artifact (ARM)
       uses: actions/upload-artifact@v1
       with:
-        name: format('PhantomBot-{0}-arm', ${{ github.ref }})
-        path: format('dist/PhantomBot-{0}-arm', ${{ github.ref }})
+        name: format('PhantomBot-{0}-arm', ${{ steps.build_env.outputs.branch }})
+        path: format('dist/PhantomBot-{0}-arm', ${{ steps.build_env.outputs.branch }})
