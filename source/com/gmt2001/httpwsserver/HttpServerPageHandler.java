@@ -62,7 +62,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
             return;
         }
 
-        HttpRequestHandler h = determineHttpHandler(req.uri());
+        HttpRequestHandler h = determineHttpRequestHandler(req.uri());
 
         if (h != null) {
             if (h.getAuthHandler().checkAuthorization(ctx, req)) {
@@ -91,7 +91,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      * @param uri The URI to check
      * @return The {@link HttpRequestHandler} to use, or {@code null} if none were found
      */
-    static HttpRequestHandler determineHttpHandler(String uri) {
+    static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
 
         for (String k : httpHandlers.keySet()) {
