@@ -265,7 +265,7 @@ $(function() {
             }
 
             // Check if the file is a gif, or video.
-            if (gifFile.match(/\.(webm|mp4|ogg)$/) !== null) {
+            if (gifFile.match(/\.(webm|mp4|ogg|ogv)$/) !== null) {
                 htmlObj = $('<video/>', {
                     'src': defaultPath + gifFile,
                     'autoplay': 'autoplay',
