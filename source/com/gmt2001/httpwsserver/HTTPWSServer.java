@@ -30,8 +30,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -55,10 +53,6 @@ public class HTTPWSServer {
      * The server's listen {@link Channel}
      */
     private Channel ch;
-    /**
-     * A map of registered {@link WsHandler} for handling WebSockets
-     */
-    static Map<String, WsHandler> wsHandlers = new ConcurrentHashMap<>();
 
     /**
      * Gets the server instance.
@@ -149,35 +143,6 @@ public class HTTPWSServer {
         return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))
                 || !path.contains("..")
                 || !(path.startsWith("/config") && !path.startsWith("/config/audio-hooks") && !path.startsWith("/config/gif-alerts"));
-    }
-
-    /**
-     * Registers a WS URI path to a {@link WsHandler}
-     *
-     * @param path The URI path to bind the handler to
-     * @param handler The {@link WsHandler} that will handle the requests
-     * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
-     * @see validateUriPath
-     */
-    public void registerWsHandler(String path, WsHandler handler) {
-        if (validateUriPath(path, true)) {
-            if (wsHandlers.containsKey(path)) {
-                throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
-            } else {
-                wsHandlers.put(path, handler);
-            }
-        } else {
-            throw new IllegalArgumentException("Illegal path. Must not contain .. and must start with /ws");
-        }
-    }
-
-    /**
-     * Deregisters a WS URI path
-     *
-     * @param path The path to deregister
-     */
-    public void deregisterWsHandler(String path) {
-        wsHandlers.remove(path);
     }
 
     /**
