@@ -48,7 +48,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
 
     /**
      * Handles incoming HTTP requests and passes valid ones to the appropriate {@link HttpHandler}
-     * 
+     *
      * If a handler is not available for the requested path, then {@code 404 NOT FOUND} is sent back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
@@ -63,7 +63,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
         }
 
         HttpHandler h = determineHttpHandler(req.uri());
-        
+
         if (h != null) {
             if (h.getAuthHandler().checkAuthorization(ctx, req)) {
                 h.handleRequest(ctx, req);
@@ -84,28 +84,28 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
         com.gmt2001.Console.debug.printOrLogStackTrace(cause);
         ctx.close();
     }
-    
+
     /**
      * Determines the best {@link HttpHandler} to use for a given URI
-     * 
+     *
      * @param uri The URI to check
      * @return The {@link HttpHandler} to use, or {@code null} if none were found
      */
     static HttpHandler determineHttpHandler(String uri) {
         String bestMatch = "";
-        
+
         for (String k : httpHandlers.keySet()) {
             if (uri.startsWith(k) && k.length() > bestMatch.length()) {
                 bestMatch = k;
             }
         }
-        
+
         return bestMatch.isBlank() ? null : httpHandlers.get(bestMatch);
     }
 
     /**
      * Detects the content MIME type based on the filename or manually provided type extension
-     * 
+     *
      * NOTE: This method ignores everything before the last {@code .} in the filename
      *
      * @param fileNameOrType The filename or type extension to check
@@ -184,7 +184,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
 
     /**
      * Creates and prepares a {@link FullHttpResponse} for transmission
-     * 
+     *
      * This method automatically sets the {@code Content-Type} and {@code Content-Length} headers
      *
      * If the value of {@code status} is in the {@code CLIENT ERROR 4xx}, {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
@@ -197,30 +197,28 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      * @return A {@link FullHttpRequest} that is ready to transmit
      */
     public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content, String fileNameOrType) {
-        ByteBuf bcontent;
         boolean isError = status.codeClass() == HttpStatusClass.CLIENT_ERROR || status.codeClass() == HttpStatusClass.SERVER_ERROR || status.codeClass() == HttpStatusClass.UNKNOWN;
 
-        if (content == null) {
-            bcontent = Unpooled.EMPTY_BUFFER;
-        } else {
-            if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
-                content = "<br /><br />" + content;
-            }
-
-            bcontent = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+        if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
+            content = "<br /><br />" + content;
         }
 
-        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, bcontent);
+        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.EMPTY_BUFFER);
 
         if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
             ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-            res.content().clear().writeBytes(buf).writeBytes(bcontent);
+            ByteBuf bcontent = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+            res.content().writeBytes(buf).writeBytes(bcontent);
             buf.release();
+            bcontent.release();
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType("html"));
             HttpUtil.setContentLength(res, res.content().readableBytes());
         } else {
+            ByteBuf bcontent = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+            res.content().writeBytes(bcontent);
+            bcontent.release();
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType(fileNameOrType));
-            HttpUtil.setContentLength(res, bcontent.readableBytes());
+            HttpUtil.setContentLength(res, res.content().readableBytes());
         }
 
         return res;
