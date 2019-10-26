@@ -45,12 +45,6 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
     }
 
     /**
-     * Default Constructor
-     */
-    private HttpNoAuthenticationHandler() {
-    }
-
-    /**
      * Always returns {@code true}, since this handler is for No Authentication
      *
      * @param ctx The {@link ChannelHandlerContext} of the session

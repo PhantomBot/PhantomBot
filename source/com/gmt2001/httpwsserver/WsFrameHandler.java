@@ -16,31 +16,31 @@
  */
 package com.gmt2001.httpwsserver;
 
-import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
+import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
 /**
- * Represents a handler for HTTP requests
+ * Represents a handler for WebSocket frames
  *
  * @author gmt2001
  */
-public interface HttpHandler {
+public interface WsFrameHandler {
 
     /**
-     * Gets the {@link HttpAuthenticationHandler} assigned to this endpoint
+     * Gets the {@link WsAuthenticationHandler} assigned to this endpoint
      *
-     * @return An {@link HttpAuthenticationHandler}
+     * @return An {@link WsAuthenticationHandler}
      */
-    public HttpAuthenticationHandler getAuthHandler();
+    public WsAuthenticationHandler getAuthHandler();
 
     /**
-     * Handles the HTTP request and sends a response back to the client
+     * Handles the WebSocket frame and sends a response back to the client, if necessary
      *
-     * Only gets called if the {@link HttpAuthenticationHandler} returned {@code true}
+     * Only gets called if the {@link WsAuthenticationHandler} returned {@code true}
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param req The {@link FullHttpRequest} containing the request
+     * @param frame The {@link WebSocketFrame} to process
      */
-    public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req);
+    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
 }

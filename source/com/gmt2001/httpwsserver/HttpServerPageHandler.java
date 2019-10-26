@@ -42,12 +42,12 @@ import java.util.concurrent.ConcurrentHashMap;
 class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     /**
-     * A map of registered {@link HttpHandler} for handling HTTP Requests
+     * A map of registered {@link HttpRequestHandler} for handling HTTP Requests
      */
-    static Map<String, HttpHandler> httpHandlers = new ConcurrentHashMap<>();
+    static Map<String, HttpRequestHandler> httpHandlers = new ConcurrentHashMap<>();
 
     /**
-     * Handles incoming HTTP requests and passes valid ones to the appropriate {@link HttpHandler}
+     * Handles incoming HTTP requests and passes valid ones to the appropriate {@link HttpRequestHandler}
      *
      * If a handler is not available for the requested path, then {@code 404 NOT FOUND} is sent back to the client
      *
@@ -62,7 +62,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
             return;
         }
 
-        HttpHandler h = determineHttpHandler(req.uri());
+        HttpRequestHandler h = determineHttpHandler(req.uri());
 
         if (h != null) {
             if (h.getAuthHandler().checkAuthorization(ctx, req)) {
@@ -86,12 +86,12 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
     }
 
     /**
-     * Determines the best {@link HttpHandler} to use for a given URI
+     * Determines the best {@link HttpRequestHandler} to use for a given URI
      *
      * @param uri The URI to check
-     * @return The {@link HttpHandler} to use, or {@code null} if none were found
+     * @return The {@link HttpRequestHandler} to use, or {@code null} if none were found
      */
-    static HttpHandler determineHttpHandler(String uri) {
+    static HttpRequestHandler determineHttpHandler(String uri) {
         String bestMatch = "";
 
         for (String k : httpHandlers.keySet()) {
@@ -245,14 +245,14 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
     }
 
     /**
-     * Registers a HTTP URI path to a {@link HttpHandler}
+     * Registers a HTTP URI path to a {@link HttpRequestHandler}
      *
      * @param path The URI path to bind the handler to
-     * @param handler The {@link HttpHandler} that will handle the requests
+     * @param handler The {@link HttpRequestHandler} that will handle the requests
      * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
      * @see validateUriPath
      */
-    public void registerHttpHandler(String path, HttpHandler handler) {
+    public void registerHttpHandler(String path, HttpRequestHandler handler) {
         if (HTTPWSServer.validateUriPath(path, false)) {
             if (httpHandlers.containsKey(path)) {
                 throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
