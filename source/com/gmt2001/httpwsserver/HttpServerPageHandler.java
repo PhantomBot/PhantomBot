@@ -44,7 +44,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
     /**
      * A map of registered {@link HttpRequestHandler} for handling HTTP Requests
      */
-    static Map<String, HttpRequestHandler> httpHandlers = new ConcurrentHashMap<>();
+    static Map<String, HttpRequestHandler> httpRequestHandlers = new ConcurrentHashMap<>();
 
     /**
      * Handles incoming HTTP requests and passes valid ones to the appropriate {@link HttpRequestHandler}
@@ -94,13 +94,13 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
     static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
 
-        for (String k : httpHandlers.keySet()) {
+        for (String k : httpRequestHandlers.keySet()) {
             if (uri.startsWith(k) && k.length() > bestMatch.length()) {
                 bestMatch = k;
             }
         }
 
-        return bestMatch.isBlank() ? null : httpHandlers.get(bestMatch);
+        return bestMatch.isBlank() ? null : httpRequestHandlers.get(bestMatch);
     }
 
     /**
@@ -254,10 +254,10 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      */
     public void registerHttpHandler(String path, HttpRequestHandler handler) {
         if (HTTPWSServer.validateUriPath(path, false)) {
-            if (httpHandlers.containsKey(path)) {
+            if (httpRequestHandlers.containsKey(path)) {
                 throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
             } else {
-                httpHandlers.put(path, handler);
+                httpRequestHandlers.put(path, handler);
             }
         } else {
             throw new IllegalArgumentException("Illegal path. Must not contain .. or /ws and must not attempt to access any part of /config other than /config/audio-hooks or /config/gif-alerts");
@@ -270,7 +270,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      * @param path The path to deregister
      */
     public void deregisterHttpHandler(String path) {
-        httpHandlers.remove(path);
+        httpRequestHandlers.remove(path);
     }
 
 }
