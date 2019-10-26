@@ -29,7 +29,7 @@ public interface WsAuthenticationHandler {
     /**
      * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been authenticated
      *
-     * When returning {@code false}, this method should also send an {@code Authentication Required} frame back to the client
+     * When returning {@code false}, this method MUST also send an {@code Authentication Required} frame back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check

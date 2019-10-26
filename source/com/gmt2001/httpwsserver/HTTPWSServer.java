@@ -56,10 +56,6 @@ public class HTTPWSServer {
      */
     private Channel ch;
     /**
-     * A map of registered {@link HttpHandler} for handling HTTP Requests
-     */
-    static Map<String, HttpHandler> httpHandlers = new ConcurrentHashMap<>();
-    /**
      * A map of registered {@link WsHandler} for handling WebSockets
      */
     static Map<String, WsHandler> wsHandlers = new ConcurrentHashMap<>();
@@ -149,43 +145,14 @@ public class HTTPWSServer {
      * @param isWs Whether this check is for a WebSocket or not
      * @return {@code false} if the path is illegal, {@code} true otherwise
      */
-    public static boolean validateUriPath(String path, boolean isWs) {
+    static boolean validateUriPath(String path, boolean isWs) {
         return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))
                 || !path.contains("..")
                 || !(path.startsWith("/config") && !path.startsWith("/config/audio-hooks") && !path.startsWith("/config/gif-alerts"));
     }
 
     /**
-     * Registers a {@link HttpHandler} to an endpoint
-     *
-     * @param path The URI path to bind the handler to
-     * @param handler The {@link HttpHandler} that will handle the requests
-     * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
-     * @see validateUriPath
-     */
-    public void registerHttpHandler(String path, HttpHandler handler) {
-        if (validateUriPath(path, false)) {
-            if (httpHandlers.containsKey(path)) {
-                throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
-            } else {
-                httpHandlers.put(path, handler);
-            }
-        } else {
-            throw new IllegalArgumentException("Illegal path. Must not contain .. or /ws and must not attempt to access any part of /config other than /config/audio-hooks or /config/gif-alerts");
-        }
-    }
-
-    /**
-     * Deregisters an HTTP URI path
-     *
-     * @param path The path to deregister
-     */
-    public void deregisterHttpHandler(String path) {
-        httpHandlers.remove(path);
-    }
-
-    /**
-     * Registers a {@link WsHandler} to an endpoint
+     * Registers a WS URI path to a {@link WsHandler}
      *
      * @param path The URI path to bind the handler to
      * @param handler The {@link WsHandler} that will handle the requests

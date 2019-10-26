@@ -30,7 +30,7 @@ public interface HttpAuthenticationHandler {
      * Checks if the given {@link FullHttpRequest} is a valid authentication request, or if the underlying {@link Channel} has already been
      * authenticated
      *
-     * When returning {@code false}, this method should also send either an {@code 401 Unauthorized}, a {@code Header Location}, or an error page back
+     * When returning {@code false}, this method MUST also send either an {@code 401 Unauthorized}, a {@code Header Location}, or an error page back
      * to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
