@@ -28,6 +28,13 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 public interface WsFrameHandler {
 
     /**
+     * Registers this {@link WsFrameHandler} with the {@link WebSocketFrameHandler}
+     *
+     * @return {@code this}
+     */
+    public WsFrameHandler register();
+
+    /**
      * Gets the {@link WsAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link WsAuthenticationHandler}

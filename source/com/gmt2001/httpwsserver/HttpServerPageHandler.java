@@ -39,12 +39,18 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author gmt2001
  */
-class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     /**
      * A map of registered {@link HttpRequestHandler} for handling HTTP Requests
      */
     static Map<String, HttpRequestHandler> httpRequestHandlers = new ConcurrentHashMap<>();
+
+    /**
+     * Default Constructor
+     */
+    HttpServerPageHandler() {
+    }
 
     /**
      * Handles incoming HTTP requests and passes valid ones to the appropriate {@link HttpRequestHandler}

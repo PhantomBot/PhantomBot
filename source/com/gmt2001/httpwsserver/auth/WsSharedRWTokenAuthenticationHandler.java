@@ -54,7 +54,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     /**
      * Represents the {@code authAttempts} attribute
      */
-    private final AttributeKey<Integer> authAttempts = AttributeKey.valueOf("authAttempts");;
+    private final AttributeKey<Integer> authAttempts = AttributeKey.valueOf("authAttempts");
 
     /**
      * Constructor
@@ -91,9 +91,9 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         if (ctx.channel().attr(authenticated).get()) {
             return true;
         }
-        
+
         ctx.channel().attr(authAttempts).set(ctx.channel().attr(authAttempts).get() + 1);
-        
+
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
 
@@ -105,6 +105,9 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         ctx.channel().attr(authenticated).set(Boolean.TRUE);
                         ctx.channel().attr(isReadOnly).set(Boolean.FALSE);
                     } else if (jso.getString("authenticated").equals(readOnlyToken)) {
+                        ctx.channel().attr(authenticated).set(Boolean.TRUE);
+                        ctx.channel().attr(isReadOnly).set(Boolean.TRUE);
+                    } else if (jso.getString("readauth").equals(readOnlyToken)) {
                         ctx.channel().attr(authenticated).set(Boolean.TRUE);
                         ctx.channel().attr(isReadOnly).set(Boolean.TRUE);
                     }
@@ -120,11 +123,11 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(authType).endObject();
 
         ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
-        
+
         if (!ctx.channel().attr(authenticated).get() && ctx.channel().attr(authAttempts).get() >= maxAttempts) {
             ctx.close();
         }
-        
+
         return ctx.channel().attr(authenticated).get();
     }
 

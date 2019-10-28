@@ -39,7 +39,7 @@ import org.json.JSONStringer;
  *
  * @author gmt2001
  */
-class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
+public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
     /**
      * A map of registered {@link WsFrameHandler} for handling WebSockets
@@ -55,6 +55,12 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     private static final Queue<Channel> wsSessions = new ConcurrentLinkedQueue<>();
 
     /**
+     * Default Constructor
+     */
+    WebSocketFrameHandler() {
+    }
+
+    /**
      * Handles incoming WebSocket frames and passes them to the appropriate {@link WsFrameHandler}
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
@@ -64,7 +70,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         WsFrameHandler h = wsFrameHandlers.get(ctx.channel().attr(uri).get());
-        
+
         if (h.getAuthHandler().checkAuthorization(ctx, frame)) {
             h.handleFrame(ctx, frame);
         }

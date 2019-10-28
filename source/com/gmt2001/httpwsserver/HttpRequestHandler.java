@@ -28,6 +28,13 @@ import io.netty.handler.codec.http.FullHttpRequest;
 public interface HttpRequestHandler {
 
     /**
+     * Registers this {@link HttpRequestHandler} with the {@link HttpServerPageHandler}
+     *
+     * @return {@code this}
+     */
+    public HttpRequestHandler register();
+
+    /**
      * Gets the {@link HttpAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link HttpAuthenticationHandler}
