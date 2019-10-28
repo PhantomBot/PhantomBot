@@ -252,7 +252,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
      * @see validateUriPath
      */
-    public void registerHttpHandler(String path, HttpRequestHandler handler) {
+    public static void registerHttpHandler(String path, HttpRequestHandler handler) {
         if (HTTPWSServer.validateUriPath(path, false)) {
             if (httpRequestHandlers.containsKey(path)) {
                 throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
@@ -269,7 +269,7 @@ class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest>
      *
      * @param path The path to deregister
      */
-    public void deregisterHttpHandler(String path) {
+    public static void deregisterHttpHandler(String path) {
         httpRequestHandlers.remove(path);
     }
 

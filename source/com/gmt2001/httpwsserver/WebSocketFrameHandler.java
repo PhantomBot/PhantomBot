@@ -17,6 +17,9 @@
 package com.gmt2001.httpwsserver;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
@@ -25,7 +28,9 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.AttributeKey;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
@@ -43,7 +48,11 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Represents the {@code uri} attribute
      */
-    private final AttributeKey<String> uri = AttributeKey.valueOf("uri");
+    private static final AttributeKey<String> uri = AttributeKey.valueOf("uri");
+    /**
+     * Represents the {@code uri} attribute
+     */
+    private static final Queue<Channel> wsSessions = new ConcurrentLinkedQueue<>();
 
     /**
      * Handles incoming WebSocket frames and passes them to the appropriate {@link WsFrameHandler}
@@ -88,6 +97,10 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                 ctx.close();
             } else {
                 ctx.channel().attr(uri).set(ruri);
+                ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
+                    wsSessions.remove(f.channel());
+                });
+                wsSessions.add(ctx.channel());
             }
         }
     }
@@ -164,6 +177,17 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
+     * Transmits a {@link WebSocketFrame} to all authenticated clients
+     *
+     * @param resframe The {@link WebSocketFrame} to transmit
+     */
+    public static void broadcastWsFrame(WebSocketFrame resframe) {
+        wsSessions.forEach((c) -> {
+            c.writeAndFlush(resframe);
+        });
+    }
+
+    /**
      * Registers a WS URI path to a {@link WsFrameHandler}
      *
      * @param path The URI path to bind the handler to
@@ -171,7 +195,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * @throws IllegalArgumentException If {@code path} is either already registered, or illegal
      * @see validateUriPath
      */
-    public void registerWsHandler(String path, WsFrameHandler handler) {
+    public static void registerWsHandler(String path, WsFrameHandler handler) {
         if (HTTPWSServer.validateUriPath(path, true)) {
             if (wsFrameHandlers.containsKey(path)) {
                 throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
@@ -188,7 +212,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      *
      * @param path The path to deregister
      */
-    public void deregisterWsHandler(String path) {
+    public static void deregisterWsHandler(String path) {
         wsFrameHandlers.remove(path);
     }
 
