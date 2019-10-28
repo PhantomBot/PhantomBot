@@ -293,12 +293,8 @@
         }
 
         /* Push the panel stats */
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            
             $.inidb.set('raffleList', username, true);
             $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
-            
-        }
     }
 
     /**
