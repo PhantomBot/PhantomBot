@@ -145,7 +145,7 @@ public class SqliteStore extends DataStore {
     }
 
     private String validateFname(String fName) {
-        fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
+        fName = fName.replaceAll("([^a-zA-Z0-9_])", "_");
 
         return fName;
     }
