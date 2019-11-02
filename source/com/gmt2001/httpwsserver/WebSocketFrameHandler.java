@@ -132,6 +132,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     static String determineWsFrameHandler(String uri) {
         String bestMatch = "";
 
+        if (uri.contains("..")) {
+            return null;
+        }
+
         for (String k : wsFrameHandlers.keySet()) {
             if (uri.startsWith(k) && k.length() > bestMatch.length()) {
                 bestMatch = k;

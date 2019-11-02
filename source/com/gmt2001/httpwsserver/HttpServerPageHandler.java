@@ -31,6 +31,12 @@ import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -99,6 +105,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      */
     static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
+
+        if (uri.contains("..")) {
+            return null;
+        }
 
         for (String k : httpRequestHandlers.keySet()) {
             if (uri.startsWith(k) && k.length() > bestMatch.length()) {
@@ -248,6 +258,58 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
             ctx.writeAndFlush(res);
         }
+    }
+
+    /**
+     * Transmits a {@link FullHttpResponse} back to the client that lists the contents of the directory pointed to by {@code p}
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param p The {@link Path} to the directory to list
+     */
+    public static void listDirectory(ChannelHandlerContext ctx, FullHttpRequest req, Path p) {
+        try {
+            List<String> listing = new ArrayList<>();
+            Files.list(p).forEach((f) -> {
+                listing.add(f.getFileName().toString());
+            });
+
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", listing), "plain"));
+        } catch (IOException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+        }
+    }
+
+    /**
+     * Checks if the file or directory pointed to by {@code p} exists, is not hidden, is not a symlink, and is readable
+     *
+     * Sends back a {@code 404 NOT FOUND} or {@code 403 FORBIDDEN} on failure
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param p The {@link Path} to the file or directory to check
+     * @param directoryAllowed Indicates if directories are allowed. If set to {@code false}, will cause a {@code 403 FORBIDDEN} if {@code p} is a
+     * directory
+     * @return {@code true} if the file is valid, not hidden, not a symlink, and is readable. {@code true} if {@code directoryAllowed} is {@code true}
+     * and passed the same tests. {@code false} otherwise
+     */
+    public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {
+        try {
+            if (!Files.exists(p, LinkOption.NOFOLLOW_LINKS)) {
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
+                return false;
+            } else if (Files.isHidden(p) || Files.isSymbolicLink(p) || !Files.isReadable(p) || (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS) && !directoryAllowed)) {
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                return false;
+            }
+        } catch (IOException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+            return false;
+        }
+
+        return true;
     }
 
     /**
