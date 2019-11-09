@@ -30,7 +30,8 @@
 (function() {
     var embedReg = new RegExp(/\(embed\s([\s\d\w]+),\s([\w\W]+)\)/),
         fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
-        fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
+        fileReg = new RegExp(/\(file\s([\w\W]+)\)/),
+        messageDeleteArray = [];
 
     /**
      * @function userPrefix
@@ -149,6 +150,30 @@
      */
     function setRole(role, username) {
         return $.discordAPI.addRole(role, username);
+    }
+
+    /**
+     * @function handleDeleteReaction
+     * 
+     * @param {object} user
+     * @param {object} message
+     * @export $.discord
+     */
+    function handleDeleteReaction(user, message, commandMessage) {
+        var ReactionEmoji = Packages.sx.blah.discord.handle.impl.obj.ReactionEmoji;
+        var xEmoji = ReactionEmoji.of('❌');
+        message.addReaction(xEmoji);
+
+        messageDeleteArray[message.getStringID()] = {
+            lastMessage: message,
+            lastCommandMessage: commandMessage,
+            lastUser: user,
+            timeout: setTimeout(function() {
+                messageDeleteArray[message.getStringID()].lastMessage['delete']();
+                messageDeleteArray[message.getStringID()].lastCommandMessage['delete']();
+                delete messageDeleteArray[message.getStringID()];
+            }, 3e4)
+        }
     }
 
     /**
@@ -325,6 +350,29 @@
     });
 
     /**
+     * @event discordMessageReaction
+     */
+    $.bind('discordMessageReaction', function(event) {
+        var reactionEvent = event.getEvent(),
+            reactionUser = reactionEvent.getUser(),
+            reaction = reactionEvent.getReaction(),
+            messageID = reaction.getMessage().getStringID(),
+            messageInArray = messageDeleteArray[messageID];
+
+        if(messageInArray !== undefined) {
+            if((messageInArray.lastUser.getStringID() == reactionUser.getStringID()) && 
+            (messageInArray.lastMessage.getStringID() == messageID)) {
+                if(reaction.getEmoji() == '❌') {
+                    reaction.getMessage()['delete']();
+                    messageInArray.lastCommandMessage['delete']();
+                    clearTimeout(messageInArray.timeout);
+                    delete messageDeleteArray[messageID];
+                }
+            }
+        }
+    });
+
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {
@@ -349,6 +397,7 @@
         setGame: setGame,
         setRole: setRole,
         say: say,
+        handleDeleteReaction: handleDeleteReaction,
         resolve: {
             global: getUserMentionOrChannel,
             getUserMentionOrChannel: getUserMentionOrChannel
