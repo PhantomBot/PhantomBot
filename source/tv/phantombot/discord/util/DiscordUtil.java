@@ -16,13 +16,16 @@
  */
 package tv.phantombot.discord.util;
 
+import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.GuildChannel;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.GuildMessageChannel;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
+import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
@@ -51,13 +54,14 @@ import tv.phantombot.discord.DiscordAPI;
  * @author ScaniaTV
  */
 public class DiscordUtil {
+
     public DiscordUtil() {
     }
-    
+
     /**
      * Method that removes the # in the channel name.
      *
-     * @param  channelName
+     * @param channelName
      * @return {String}
      */
     public String sanitizeChannelName(String channelName) {
@@ -72,13 +76,18 @@ public class DiscordUtil {
     /**
      * Method to send a message to a channel.
      *
-     * @param  channel
-     * @param  message
+     * @param channel
+     * @param message
      * @return {Message}
      */
-    public Message sendMessage(GuildMessageChannel channel, String message) {
+    public Message sendMessage(MessageChannel channel, String message) {
         if (channel != null) {
-            com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [CHAT] " + message);
+            if (channel.getType() == Channel.Type.DM) {
+                sendPrivateMessage((PrivateChannel) channel, message);
+                return null;
+            }
+
+            com.gmt2001.Console.out.println("[DISCORD] [#" + ((TextChannel) channel).getName() + "] [CHAT] " + message);
 
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -93,8 +102,8 @@ public class DiscordUtil {
     /**
      * Method to send a message to a channel.
      *
-     * @param  channelName
-     * @param  message
+     * @param channelName
+     * @param message
      * @return {Message}
      */
     public Message sendMessage(String channelName, String message) {
@@ -109,19 +118,11 @@ public class DiscordUtil {
      */
     public void sendPrivateMessage(User user, String message) {
         if (user != null) {
-            com.gmt2001.Console.out.println("[DISCORD] [@" + user.getUsername().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
-            
             PrivateChannel channel = user.getPrivateChannel().doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).block();
-            
-            if (channel != null) {
-                channel.createMessage(message).doOnError(e -> {
-                    com.gmt2001.Console.err.printStackTrace(e);
-                }).block();
-            }
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            sendPrivateMessage(user, message);
+
+            sendPrivateMessage(channel, message);
         } else {
             throw new IllegalArgumentException("user object was null");
         }
@@ -138,24 +139,45 @@ public class DiscordUtil {
     }
 
     /**
+     * Method to send private messages to a user.
+     *
+     * @param userName
+     * @param message
+     */
+    public void sendPrivateMessage(PrivateChannel channel, String message) {
+        if (channel != null) {
+            User user = channel.getRecipients().blockFirst();
+            com.gmt2001.Console.out.println("[DISCORD] [@" + user.getUsername().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
+
+            channel.createMessage(message).doOnError(e -> {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }).block();
+        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
+            sendPrivateMessage(channel, message);
+        } else {
+            throw new IllegalArgumentException("channel object was null");
+        }
+    }
+
+    /**
      * Method to send embed messages.
      *
-     * @param  channel
-     * @param  embed
+     * @param channel
+     * @param embed
      * @return {Message}
      */
     public Message sendMessageEmbed(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
         if (channel != null) {
-            Message m = channel.createMessage(msg ->
-                    msg.setEmbed(embed)
+            Message m = channel.createMessage(msg
+                    -> msg.setEmbed(embed)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorReturn(null).block();
-            
+
             if (m != null) {
                 com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
             }
-            
+
             return m;
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             return sendMessageEmbed(channel, embed);
@@ -178,14 +200,14 @@ public class DiscordUtil {
     /**
      * Method to send embed messages.
      *
-     * @param  channel
-     * @param  message
-     * @param  color
+     * @param channel
+     * @param message
+     * @param color
      * @return {Message}
      */
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
-        return sendMessageEmbed(channel, ebd ->
-            ebd.setColor(getColor(color)).setDescription(message)
+        return sendMessageEmbed(channel, ebd
+                -> ebd.setColor(getColor(color)).setDescription(message)
         );
     }
 
@@ -204,9 +226,9 @@ public class DiscordUtil {
     /**
      * Method to send a file to a channel.
      *
-     * @param  channel
-     * @param  message
-     * @param  fileLocation
+     * @param channel
+     * @param message
+     * @param fileLocation
      * @return {Message}
      */
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
@@ -218,26 +240,26 @@ public class DiscordUtil {
                 com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
 
                 if (message.isEmpty()) {
-                    return channel.createMessage(msg -> 
-                            {
-                                try {
-                                    msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation)));
-                                } catch (IOException ex) {
-                                    com.gmt2001.Console.err.printStackTrace(ex);
-                                }
-                            }
+                    return channel.createMessage(msg
+                            -> {
+                        try {
+                            msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation)));
+                        } catch (IOException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        }
+                    }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorReturn(null).block();
                 } else {
-                    return channel.createMessage(msg -> 
-                            {
-                                try {
-                                    msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation))).setContent(message);
-                                } catch (IOException ex) {
-                                    com.gmt2001.Console.err.printStackTrace(ex);
-                                }
-                            }
+                    return channel.createMessage(msg
+                            -> {
+                        try {
+                            msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation))).setContent(message);
+                        } catch (IOException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        }
+                    }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorReturn(null).block();
@@ -265,8 +287,8 @@ public class DiscordUtil {
     /**
      * Method to send a file to a channel.
      *
-     * @param  channel
-     * @param  fileLocation
+     * @param channel
+     * @param fileLocation
      * @return {Message}
      */
     public Message sendFile(GuildMessageChannel channel, String fileLocation) {
@@ -313,7 +335,7 @@ public class DiscordUtil {
             addReaction(message, emoji);
         }
     }
-    
+
     /**
      * Method that adds a reaction to a message.
      *
@@ -323,7 +345,7 @@ public class DiscordUtil {
     public void addReaction(Message message, String emoji) {
         List<GuildEmoji> gel = DiscordAPI.getGuild().getEmojis().collectList().block();
         ReactionEmoji re = null;
-        
+
         if (gel != null) {
             for (GuildEmoji ge : gel) {
                 if (ge.getName().equalsIgnoreCase(emoji)) {
@@ -331,14 +353,14 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         if (re == null) {
             re = ReactionEmoji.unicode(emoji);
         }
-        
+
         addReaction(message, re);
     }
-    
+
     /**
      * Method that adds a reaction to a message.
      *
@@ -370,20 +392,20 @@ public class DiscordUtil {
     /**
      * Method to return a channel object by its name.
      *
-     * @param  channelName - The name of the channel.
+     * @param channelName - The name of the channel.
      * @return {Channel}
      */
     public GuildMessageChannel getChannel(String channelName) {
         // Remove any # in the channel name.
         channelName = sanitizeChannelName(channelName);
-        
+
         List<GuildChannel> channels = DiscordAPI.getGuild().getChannels().collectList().block();
 
-        if (channels!= null) {
+        if (channels != null) {
             for (GuildChannel channel : channels) {
                 if (channel.getName().equalsIgnoreCase(channelName)
                         || channel.getId().asString().equals(channelName)) {
-                    return (GuildMessageChannel)channel;
+                    return (GuildMessageChannel) channel;
                 }
             }
         }
@@ -394,16 +416,16 @@ public class DiscordUtil {
     /**
      * Method to return a channel object by its ID.
      *
-     * @param   channelId - The string ID of the channel
+     * @param channelId - The string ID of the channel
      * @return {Channel}
      */
     public GuildMessageChannel getChannelByID(String channelId) {
         List<GuildChannel> channels = DiscordAPI.getGuild().getChannels().collectList().block();
 
-        if (channels!= null) {
+        if (channels != null) {
             for (GuildChannel channel : channels) {
                 if (channel.getId().asString().equals(channelId)) {
-                    return (GuildMessageChannel)channel;
+                    return (GuildMessageChannel) channel;
                 }
             }
         }
@@ -414,7 +436,7 @@ public class DiscordUtil {
     /**
      * Method to return a user object by its name.
      *
-     * @param  userName - The user's name.
+     * @param userName - The user's name.
      * @return {User}
      */
     public User getUser(String userName) {
@@ -427,14 +449,14 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         return null;
     }
 
     /**
      * Method to return a user object by its id.
      *
-     * @param  userId - The ID of the user.
+     * @param userId - The ID of the user.
      * @return {User}
      */
     public User getUserById(long userId) {
@@ -447,15 +469,15 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         return null;
     }
 
     /**
      * Method to return a user object by its name and its discriminator.
      *
-     * @param  userName
-     * @param  discriminator
+     * @param userName
+     * @param discriminator
      * @return {User}
      */
     public User getUserWithDiscriminator(String userName, String discriminator) {
@@ -469,14 +491,14 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         return null;
     }
 
     /**
      * Method to return a role object by its name.
      *
-     * @param  roleName
+     * @param roleName
      * @return {Role}
      */
     public Role getRole(String roleName) {
@@ -489,7 +511,7 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -500,7 +522,7 @@ public class DiscordUtil {
      * @return {Role}
      */
     public Role getRoleByID(String id) {
-       List<Role> roles = DiscordAPI.getGuild().getRoles().collectList().block();
+        List<Role> roles = DiscordAPI.getGuild().getRoles().collectList().block();
 
         if (roles != null) {
             for (Role role : roles) {
@@ -509,14 +531,14 @@ public class DiscordUtil {
                 }
             }
         }
-        
+
         return null;
     }
 
     /**
      * Method to get an array of role objects by a string of role names.
      *
-     * @param  roles
+     * @param roles
      * @return {Role[]}
      */
     public Role[] getRoleObjects(String... roles) {
@@ -525,25 +547,25 @@ public class DiscordUtil {
         for (int i = 0; i < roles.length; i++) {
             list[i] = getRole(roles[i]);
         }
-        
+
         return list;
     }
 
     /**
      * Method to get a list of a user's roles.
      *
-     * @param  user
+     * @param user
      * @return {List}
      */
     public Role[] getUserRoles(User user) {
         Member m = user.asMember(DiscordAPI.getGuild().getId()).block();
-        
+
         if (m == null) {
             return new Role[0];
         }
-        
+
         List<Role> roles = m.getRoles().collectList().block();
-        
+
         if (roles == null) {
             return new Role[0];
         }
@@ -554,7 +576,7 @@ public class DiscordUtil {
     /**
      * Method to get a list of a user's roles.
      *
-     * @param  userId
+     * @param userId
      * @return {List}
      */
     public Role[] getUserRoles(String userId) {
@@ -571,21 +593,21 @@ public class DiscordUtil {
         if (roles == null || user == null) {
             throw new IllegalArgumentException("user or roles object was null");
         }
-        
+
         Member m = user.asMember(DiscordAPI.getGuild().getId()).block();
-        
+
         if (m == null) {
             return;
         }
-        
-        Set<Snowflake> rolesSf  = Collections.<Snowflake>emptySet();
-        
+
+        Set<Snowflake> rolesSf = Collections.<Snowflake>emptySet();
+
         for (Role role : roles) {
             rolesSf.add(role.getId());
         }
-        
-        m.edit(eds ->
-                eds.setRoles(rolesSf)
+
+        m.edit(eds
+                -> eds.setRoles(rolesSf)
         ).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
@@ -611,13 +633,13 @@ public class DiscordUtil {
         if (role == null || user == null) {
             throw new IllegalArgumentException("user or role object was null");
         }
-        
+
         Member m = user.asMember(DiscordAPI.getGuild().getId()).block();
-        
+
         if (m == null) {
             return;
         }
-        
+
         m.addRole(role.getId()).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
@@ -653,13 +675,13 @@ public class DiscordUtil {
         if (role == null || user == null) {
             throw new IllegalArgumentException("user or role object was null");
         }
-        
+
         Member m = user.asMember(DiscordAPI.getGuild().getId()).block();
-        
+
         if (m == null) {
             return;
         }
-        
+
         m.removeRole(role.getId()).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
@@ -681,8 +703,8 @@ public class DiscordUtil {
      * @param roleName
      */
     public void createRole(String roleName) {
-        DiscordAPI.getGuild().createRole(role ->
-                role.setName(roleName)
+        DiscordAPI.getGuild().createRole(role
+                -> role.setName(roleName)
         ).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
@@ -720,33 +742,33 @@ public class DiscordUtil {
     /**
      * Method to check if someone is an administrator.
      *
-     * @param  user
+     * @param user
      * @return {Boolean}
      */
     public boolean isAdministrator(User user) {
         if (user == null) {
             throw new IllegalArgumentException("user object was null");
         }
-        
+
         Member m = user.asMember(DiscordAPI.getGuild().getId()).block();
-        
+
         if (m == null) {
             return false;
         }
-        
+
         PermissionSet ps = m.getBasePermissions().block();
-        
+
         if (ps == null) {
             return false;
         }
-        
+
         return ps.contains(Permission.ADMINISTRATOR);
     }
 
     /**
      * Method to check if someone is an administrator.
      *
-     * @param  userName
+     * @param userName
      * @return {Boolean}
      */
     public boolean isAdministrator(String userName) {
@@ -762,22 +784,22 @@ public class DiscordUtil {
     public void bulkDelete(GuildMessageChannel channel, int amount) {
         // Discord4J says that getting messages can block the current thread if they need to be requested from Discord's API.
         // So start this on a new thread to avoid that. Please note that you need to delete at least 2 messages.
-        
+
         if (channel == null || amount < 2) {
             throw new IllegalArgumentException("channel object was null or amount was less than 2");
         }
-        
+
         Thread thread;
         thread = new Thread(() -> {
             List<Message> msgs = channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().block();
-            
+
             if (msgs != null) {
                 Flux<Snowflake> msgSfs = Flux.empty();
-                
+
                 msgs.forEach((msg) -> {
                     Flux.concat(msgSfs, Flux.just(msg.getId()));
                 });
-                
+
                 channel.bulkDelete(msgSfs);
             }
         }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
@@ -805,9 +827,9 @@ public class DiscordUtil {
         if (channel == null || list == null || list.length < 2) {
             throw new IllegalArgumentException("channel object was null, list object was null, or amount was less than 2");
         }
-        
+
         Flux<Snowflake> msgSfs = Flux.empty();
-                
+
         for (Message msg : list) {
             Flux.concat(msgSfs, Flux.just(msg.getId()));
         }
@@ -834,7 +856,7 @@ public class DiscordUtil {
         if (message == null) {
             throw new IllegalArgumentException("message object was null");
         }
-        
+
         message.delete().doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
@@ -873,23 +895,24 @@ public class DiscordUtil {
 
     /**
      * Method that gets all server members
-     * @return 
+     *
+     * @return
      */
     public List<User> getUsers() {
         List<Member> m = DiscordAPI.getGuild().getMembers().collectList().block();
         List<User> u = Collections.<User>emptyList();
-        
+
         if (m != null) {
             Collections.copy(u, m);
         }
-        
+
         return u;
     }
 
     /**
      * Method to get a color object.
      *
-     * @param  color
+     * @param color
      * @return {Color}
      */
     public Color getColor(String color) {
