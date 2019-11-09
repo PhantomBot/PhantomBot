@@ -537,7 +537,6 @@
             var username = event.getUsername(),
                 command = event.getCommand(),
                 user = event.getDiscordUser(),
-                channel = event.getDiscordChannel(),
                 channelName = event.getChannel(),
                 channelId = event.getChannelId(),
                 isAdmin = event.isAdmin(),
@@ -583,10 +582,10 @@
                 return;
             }
 
-            if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
+            if ($.discord.getCommandChannel(command, event) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
                 return;
             } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
+                if (($.discord.getCommandChannel(command, event) !== undefined && (!$.discord.getCommandChannel(command, event).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, event).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
                     return;
                 }
             }

@@ -240,16 +240,16 @@
      * @param {string} command
      * @return {string}
      */
-    function getCommandChannel(command, channelObj) {
+    function getCommandChannel(command, event) {
         if (commandExists(command)) {
             if (typeof channelObj === 'object') {
-                if (commands[command].channel[channelObj.getName()] === undefined) {
-                    return commands[command].channel[channelObj.getId().asString()]
+                if (commands[command].channel[event.getChannel()] === undefined) {
+                    return commands[command].channel[event.getChannelId()]
                 } else {
-                    return commands[command].channel[channelObj.getName()];
+                    return commands[command].channel[event.getChannel()];
                 }
             } else {
-                return commands[command].channel[channelObj];
+                return commands[command].channel[event];
             }
 
         }
