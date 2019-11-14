@@ -56,6 +56,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * Default Constructor
      */
     HttpServerPageHandler() {
+        super();
     }
 
     /**
@@ -128,7 +129,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @return The valid MIME type, or {@code text/plain} if not recognized
      */
     static String detectContentType(String fileNameOrType) {
-        String ext = (fileNameOrType.lastIndexOf(".") == -1 ? fileNameOrType : fileNameOrType.substring(fileNameOrType.lastIndexOf(".")));
+        String ext = (fileNameOrType.lastIndexOf('.') == -1 ? fileNameOrType : fileNameOrType.substring(fileNameOrType.lastIndexOf('.')));
 
         switch (ext) {
             case "aac":

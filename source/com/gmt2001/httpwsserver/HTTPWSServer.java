@@ -23,8 +23,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +41,7 @@ import javax.net.ssl.TrustManagerFactory;
  *
  * @author gmt2001
  */
-public class HTTPWSServer {
+public final class HTTPWSServer {
 
     /**
      * An instance of {@link HTTPWSServer}
@@ -98,16 +100,17 @@ public class HTTPWSServer {
         try {
             if (sslFile != null && !sslFile.isBlank()) {
                 KeyStore ks = KeyStore.getInstance("JKS");
-                FileInputStream inputStream = new FileInputStream(sslFile);
-                ks.load(inputStream, sslPass.toCharArray());
+                try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+                    ks.load(inputStream, sslPass.toCharArray());
 
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-                kmf.init(ks, sslPass.toCharArray());
+                    KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                    kmf.init(ks, sslPass.toCharArray());
 
-                TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-                tmf.init(ks);
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+                    tmf.init(ks);
 
-                sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
+                    sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
+                }
             } else {
                 sslCtx = null;
             }

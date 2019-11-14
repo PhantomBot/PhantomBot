@@ -43,6 +43,7 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
      * @param sslCtx Either {@code null} or a prepared {@link SslContext}
      */
     public HTTPWSServerInitializer(SslContext sslCtx) {
+        super();
         this.sslCtx = sslCtx;
     }
 

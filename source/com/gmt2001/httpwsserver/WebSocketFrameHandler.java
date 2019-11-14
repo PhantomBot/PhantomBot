@@ -58,6 +58,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * Default Constructor
      */
     WebSocketFrameHandler() {
+        super();
     }
 
     /**
