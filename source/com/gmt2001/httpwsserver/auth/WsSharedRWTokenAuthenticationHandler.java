@@ -101,10 +101,10 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                 JSONObject jso = new JSONObject(tframe.text());
 
                 if (jso.has("authenticate")) {
-                    if (jso.getString("authenticated").equals(readWriteToken)) {
+                    if (jso.getString("authenticate").equals(readWriteToken)) {
                         ctx.channel().attr(authenticated).set(Boolean.TRUE);
                         ctx.channel().attr(isReadOnly).set(Boolean.FALSE);
-                    } else if (jso.getString("authenticated").equals(readOnlyToken)) {
+                    } else if (jso.getString("authenticate").equals(readOnlyToken)) {
                         ctx.channel().attr(authenticated).set(Boolean.TRUE);
                         ctx.channel().attr(isReadOnly).set(Boolean.TRUE);
                     } else if (jso.getString("readauth").equals(readOnlyToken)) {
