@@ -55,4 +55,9 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         return true;
     }
+
+    @Override
+    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
 }

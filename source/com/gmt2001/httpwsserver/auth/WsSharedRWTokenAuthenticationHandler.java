@@ -142,4 +142,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         return ctx.channel().attr(isReadOnly).get();
     }
 
+    @Override
+    public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
 }

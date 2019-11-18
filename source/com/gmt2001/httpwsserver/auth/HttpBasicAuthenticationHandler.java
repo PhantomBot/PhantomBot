@@ -107,4 +107,9 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
         return false;
     }
+
+    @Override
+    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
 }
