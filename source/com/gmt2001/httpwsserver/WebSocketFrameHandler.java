@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver;
 
+import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -46,11 +47,11 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     static Map<String, WsFrameHandler> wsFrameHandlers = new ConcurrentHashMap<>();
     /**
-     * Represents the {@code uri} attribute
+     * Represents the {@code attrUri} attribute
      */
-    private static final AttributeKey<String> uri = AttributeKey.valueOf("uri");
+    public static final AttributeKey<String> attrUri = AttributeKey.valueOf("uri");
     /**
-     * Represents the {@code uri} attribute
+     * Represents a {@link Queue} containing all current WS Sessions
      */
     private static final Queue<Channel> wsSessions = new ConcurrentLinkedQueue<>();
 
@@ -70,7 +71,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        WsFrameHandler h = wsFrameHandlers.get(ctx.channel().attr(uri).get());
+        WsFrameHandler h = wsFrameHandlers.get(ctx.channel().attr(attrUri).get());
 
         if (h.getAuthHandler().checkAuthorization(ctx, frame)) {
             h.handleFrame(ctx, frame);
@@ -103,7 +104,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
                 ctx.close();
             } else {
-                ctx.channel().attr(uri).set(ruri);
+                ctx.channel().attr(attrUri).set(ruri);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     wsSessions.remove(f.channel());
                 });
@@ -180,10 +181,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * Transmits a {@link WebSocketFrame} back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param frame The {@link WebSocketFrame} containing the request
+     * @param reqframe The {@link WebSocketFrame} containing the request
      * @param resframe The {@link WebSocketFrame} to transmit
      */
-    public static void sendWsFrame(ChannelHandlerContext ctx, WebSocketFrame frame, WebSocketFrame resframe) {
+    public static void sendWsFrame(ChannelHandlerContext ctx, WebSocketFrame reqframe, WebSocketFrame resframe) {
         ctx.channel().writeAndFlush(resframe);
     }
 
@@ -194,7 +195,23 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static void broadcastWsFrame(WebSocketFrame resframe) {
         wsSessions.forEach((c) -> {
-            c.writeAndFlush(resframe);
+            if (c.attr(WsAuthenticationHandler.attrAuthenticated).get()) {
+                c.writeAndFlush(resframe);
+            }
+        });
+    }
+
+    /**
+     * Transmits a {@link WebSocketFrame} to all authenticated clients that are connected to a specific URI
+     *
+     * @param uri The URI to filter clients by for the broadcast
+     * @param resframe The {@link WebSocketFrame} to transmit
+     */
+    public static void broadcastWsFrame(String uri, WebSocketFrame resframe) {
+        wsSessions.forEach((c) -> {
+            if (c.attr(WsAuthenticationHandler.attrAuthenticated).get() && c.attr(attrUri).get().equals(uri)) {
+                c.writeAndFlush(resframe);
+            }
         });
     }
 

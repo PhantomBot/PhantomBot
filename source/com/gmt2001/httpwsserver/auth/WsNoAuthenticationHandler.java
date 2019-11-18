@@ -35,9 +35,9 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
     private static WsNoAuthenticationHandler INSTANCE;
 
     /**
-     * Represents the {@code sentAuthReply} attribute
+     * Represents the {@code attrSentAuthReply} attribute
      */
-    private final AttributeKey<Boolean> sentAuthReply = AttributeKey.valueOf("sentAuthReply");
+    private final AttributeKey<Boolean> attrSentAuthReply = AttributeKey.valueOf("sentAuthReply");
 
     /**
      * Gets a handler instance
@@ -64,15 +64,16 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame req) {
-        ctx.channel().attr(sentAuthReply).setIfAbsent(Boolean.FALSE);
+        ctx.channel().attr(attrSentAuthReply).setIfAbsent(Boolean.FALSE);
+        ctx.channel().attr(attrAuthenticated).setIfAbsent(Boolean.TRUE);
 
-        if (!ctx.channel().attr(sentAuthReply).get()) {
+        if (!ctx.channel().attr(attrSentAuthReply).get()) {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("authresult").value("true").key("authtype").value("read").endObject();
 
             ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
 
-            ctx.channel().attr(sentAuthReply).set(Boolean.TRUE);
+            ctx.channel().attr(attrSentAuthReply).set(Boolean.TRUE);
         }
 
         return true;

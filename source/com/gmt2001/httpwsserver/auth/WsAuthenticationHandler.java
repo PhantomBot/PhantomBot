@@ -18,6 +18,7 @@ package com.gmt2001.httpwsserver.auth;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.util.AttributeKey;
 
 /**
  * Represents an Authentication Handler for a {@link WsHandler}
@@ -27,7 +28,13 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 public interface WsAuthenticationHandler {
 
     /**
-     * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been authenticated
+     * Represents the {@code attrAuthenticated} attribute
+     */
+    public static final AttributeKey<Boolean> attrAuthenticated = AttributeKey.valueOf("authenticated");
+
+    /**
+     * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been
+     * authenticated
      *
      * When returning {@code false}, this method MUST also send an {@code Authentication Required} frame back to the client
      *
