@@ -47,7 +47,7 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     @Override
-    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame req) {
+    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
