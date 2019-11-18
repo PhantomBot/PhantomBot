@@ -60,10 +60,10 @@ public class WsYTHandler implements WsFrameHandler {
     private static final String[] allowedDBQueryTables = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
     private static final String[] allowedDBUpdateTables = new String[]{"ytSettings"};
     private final WsAuthenticationHandler authHandler;
-    private int currentVolume = 0;
+    private int currentVolume;
     private int currentState = -10;
-    private boolean clientConnected = false;
-    private int bufferCounter = 0;
+    private boolean clientConnected;
+    private int bufferCounter;
 
     public WsYTHandler(String ytAuthRO, String ytAuth) {
         authHandler = new WsSharedRWTokenAuthenticationHandler(ytAuthRO, ytAuth, 10);
@@ -130,63 +130,15 @@ public class WsYTHandler implements WsFrameHandler {
                 handleRestrictedCommands(ctx, frame, jso);
             }
 
-            handleCommands(ctx, frame, jso);
+            handleUnrestrictedCommands(ctx, frame, jso);
         }
     }
 
     private void handleRestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        YTPlayerState playerState;
-        JSONObject jsonStatus;
         String dataString;
-        int dataInt;
 
         if (jso.has("status")) {
-            try {
-                jsonStatus = jso.getJSONObject("status");
-                if (jsonStatus.has("state")) {
-                    dataInt = jsonStatus.getInt("state");
-                    /* If the current status is buffering and then we receive an unstarted event, then the player
-                    * is stuck. This normally happens with videos that are not allowed to play in the region
-                    * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
-                    * we get back the buffering state a few times.
-                     */
-                    if (getCurrentState() == 3 && dataInt == -1) {
-                        setCurrentState(dataInt);
-
-                        int bufferCounterTmp = getBufferCounter();
-                        setBufferCounter(bufferCounterTmp + 1);
-                        if (getBufferCounter() == 3) {
-                            EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                            setBufferCounter(0);
-                        }
-                    } else {
-                        setBufferCounter(0);
-                        int currentStateTmp = getCurrentState();
-                        setCurrentState(dataInt == 200 ? currentStateTmp : dataInt);
-                        playerState = YTPlayerState.getStateFromId(dataInt);
-                        EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
-                    }
-                } else if (jsonStatus.has("ready")) {
-                    setCurrentState(-2);
-                    EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
-                } else if (jsonStatus.has("readypause")) {
-                    setCurrentState(-3);
-                    EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEWPAUSE));
-                } else if (jsonStatus.has("currentid")) {
-                    dataString = jsonStatus.getString("currentid");
-                    EventBus.instance().postAsync(new YTPlayerCurrentIdEvent(dataString));
-                } else if (jsonStatus.has("volume")) {
-                    dataInt = jsonStatus.getInt("volume");
-                    setCurrentVolume(dataInt);
-                    EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
-                } else if (jsonStatus.has("errorcode")) {
-                    dataInt = jsonStatus.getInt("errorcode");
-                    com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
-                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                }
-            } catch (JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
-            }
+            handleStatus(ctx, frame, jso);
         } else if (jso.has("dbupdate")) {
             try {
                 handleDBUpdate(ctx, frame, jso.getString("query_id"), jso.getJSONObject("update").getString("table"),
@@ -209,41 +161,99 @@ public class WsYTHandler implements WsFrameHandler {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         } else if (jso.has("command")) {
-            try {
-                switch (jso.getString("command")) {
-                    case "togglerandom":
-                        EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
-                        break;
-                    case "skipsong":
-                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                        break;
-                    case "stealsong":
-                        if (jso.has("youTubeID")) {
-                            EventBus.instance().postAsync(new YTPlayerStealSongEvent(jso.getString("youTubeID"), jso.getString("requester")));
-                        } else {
-                            EventBus.instance().postAsync(new YTPlayerStealSongEvent());
-                        }
-                        break;
-                    case "songrequest":
-                        if (jso.has("search")) {
-                            dataString = jso.getString("search");
-                            EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
-                        }
-                        break;
-                    case "loadpl":
-                        EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jso.getString("playlist")));
-                        break;
-                    case "deletecurrent":
-                        EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
-                        break;
-                }
-            } catch (JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
-            }
+            handleCommand(ctx, frame, jso);
         }
     }
 
-    private void handleCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+    private void handleStatus(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        JSONObject jsonStatus;
+        int dataInt;
+
+        try {
+            jsonStatus = jso.getJSONObject("status");
+            if (jsonStatus.has("state")) {
+                dataInt = jsonStatus.getInt("state");
+                /* If the current status is buffering and then we receive an unstarted event, then the player
+                    * is stuck. This normally happens with videos that are not allowed to play in the region
+                    * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
+                    * we get back the buffering state a few times.
+                 */
+                if (getCurrentState() == 3 && dataInt == -1) {
+                    setCurrentState(dataInt);
+
+                    int bufferCounterTmp = getBufferCounter();
+                    setBufferCounter(bufferCounterTmp + 1);
+                    if (getBufferCounter() == 3) {
+                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                        setBufferCounter(0);
+                    }
+                } else {
+                    setBufferCounter(0);
+                    int currentStateTmp = getCurrentState();
+                    setCurrentState(dataInt == 200 ? currentStateTmp : dataInt);
+                    YTPlayerState playerState = YTPlayerState.getStateFromId(dataInt);
+                    EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
+                }
+            } else if (jsonStatus.has("ready")) {
+                setCurrentState(-2);
+                EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEW));
+            } else if (jsonStatus.has("readypause")) {
+                setCurrentState(-3);
+                EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEWPAUSE));
+            } else if (jsonStatus.has("currentid")) {
+                String dataString = jsonStatus.getString("currentid");
+                EventBus.instance().postAsync(new YTPlayerCurrentIdEvent(dataString));
+            } else if (jsonStatus.has("volume")) {
+                dataInt = jsonStatus.getInt("volume");
+                setCurrentVolume(dataInt);
+                EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
+            } else if (jsonStatus.has("errorcode")) {
+                dataInt = jsonStatus.getInt("errorcode");
+                com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
+                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+            }
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
+
+    private void handleCommand(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        try {
+            switch (jso.getString("command")) {
+                case "togglerandom":
+                    EventBus.instance().postAsync(new YTPlayerRandomizeEvent());
+                    break;
+                case "skipsong":
+                    EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                    break;
+                case "stealsong":
+                    if (jso.has("youTubeID")) {
+                        EventBus.instance().postAsync(new YTPlayerStealSongEvent(jso.getString("youTubeID"), jso.getString("requester")));
+                    } else {
+                        EventBus.instance().postAsync(new YTPlayerStealSongEvent());
+                    }
+                    break;
+                case "songrequest":
+                    if (jso.has("search")) {
+                        String dataString = jso.getString("search");
+                        EventBus.instance().postAsync(new YTPlayerSongRequestEvent(dataString));
+                    }
+                    break;
+                case "loadpl":
+                    EventBus.instance().postAsync(new YTPlayerLoadPlaylistEvent(jso.getString("playlist")));
+                    break;
+                case "deletecurrent":
+                    EventBus.instance().postAsync(new YTPlayerDeleteCurrentEvent());
+                    break;
+                default:
+                    break;
+            }
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
+
+    private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         if (jso.has("query")) {
             try {
                 switch (jso.getString("query")) {
@@ -255,6 +265,8 @@ public class WsYTHandler implements WsFrameHandler {
                         break;
                     case "currentsong":
                         EventBus.instance().postAsync(new YTPlayerRequestCurrentSongEvent());
+                        break;
+                    default:
                         break;
                 }
             } catch (JSONException ex) {
@@ -299,12 +311,7 @@ public class WsYTHandler implements WsFrameHandler {
         }
 
         JSONStringer jsonObject = new JSONStringer();
-        try {
-            PhantomBot.instance().getDataStore().set(table, key, value);
-        } catch (NullPointerException ex) {
-            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
-            return;
-        }
+        PhantomBot.instance().getDataStore().set(table, key, value);
 
         EventBus.instance().post(new CommandEvent(PhantomBot.instance().getBotName(), "reloadyt", ""));
         jsonObject.object().key("query_id").value(id).endObject();
