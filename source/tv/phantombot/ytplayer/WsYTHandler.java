@@ -138,7 +138,7 @@ public class WsYTHandler implements WsFrameHandler {
         String dataString;
 
         if (jso.has("status")) {
-            handleStatus(ctx, frame, jso);
+            handleStatus(jso);
         } else if (jso.has("dbupdate")) {
             try {
                 handleDBUpdate(ctx, frame, jso.getString("query_id"), jso.getJSONObject("update").getString("table"),
@@ -161,11 +161,11 @@ public class WsYTHandler implements WsFrameHandler {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         } else if (jso.has("command")) {
-            handleCommand(ctx, frame, jso);
+            handleCommand(jso);
         }
     }
 
-    private void handleStatus(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+    private void handleStatus(JSONObject jso) {
         JSONObject jsonStatus;
         int dataInt;
 
@@ -178,18 +178,16 @@ public class WsYTHandler implements WsFrameHandler {
                     * and are not returned as such by the API lookup. Skip the song.  But, only skip the song if
                     * we get back the buffering state a few times.
                  */
-                if (getCurrentState() == 3 && dataInt == -1) {
+                if (getPlayerState() == 3 && dataInt == -1) {
                     setCurrentState(dataInt);
 
-                    int bufferCounterTmp = getBufferCounter();
-                    setBufferCounter(bufferCounterTmp + 1);
-                    if (getBufferCounter() == 3) {
+                    if (bufferCounter++ == 3) {
                         EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
-                        setBufferCounter(0);
+                        bufferCounter = 0;
                     }
                 } else {
-                    setBufferCounter(0);
-                    int currentStateTmp = getCurrentState();
+                    bufferCounter = 0;
+                    int currentStateTmp = getPlayerState();
                     setCurrentState(dataInt == 200 ? currentStateTmp : dataInt);
                     YTPlayerState playerState = YTPlayerState.getStateFromId(dataInt);
                     EventBus.instance().postAsync(new YTPlayerStateEvent(playerState));
@@ -217,7 +215,7 @@ public class WsYTHandler implements WsFrameHandler {
         }
     }
 
-    private void handleCommand(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+    private void handleCommand(JSONObject jso) {
         try {
             switch (jso.getString("command")) {
                 case "togglerandom":
@@ -290,15 +288,10 @@ public class WsYTHandler implements WsFrameHandler {
 
         jsonObject.object().key("query_id").value(id);
 
-        try {
-            String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
-            for (String dbKey : dbKeys) {
-                String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
-                jsonObject.key(dbKey).value(value);
-            }
-        } catch (NullPointerException ex) {
-            com.gmt2001.Console.debug.println("NULL returned from DB. DB Object not created yet.");
-            return;
+        String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
+        for (String dbKey : dbKeys) {
+            String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
+            jsonObject.key(dbKey).value(value);
         }
 
         jsonObject.endObject();
@@ -318,28 +311,12 @@ public class WsYTHandler implements WsFrameHandler {
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 
-    private synchronized int getCurrentVolume() {
-        return currentVolume;
-    }
-
     private synchronized void setCurrentVolume(int currentVolume) {
         this.currentVolume = currentVolume;
     }
 
-    private synchronized int getCurrentState() {
-        return currentState;
-    }
-
     private synchronized void setCurrentState(int currentState) {
         this.currentState = currentState;
-    }
-
-    private synchronized int getBufferCounter() {
-        return bufferCounter;
-    }
-
-    private synchronized void setBufferCounter(int bufferCounter) {
-        this.bufferCounter = bufferCounter;
     }
 
     public void play(String youtubeID, String songTitle, String duration, String requester) throws JSONException {
@@ -375,12 +352,12 @@ public class WsYTHandler implements WsFrameHandler {
         }
     }
 
-    public int getVolume() {
-        return getCurrentVolume();
+    public synchronized int getVolume() {
+        return currentVolume;
     }
 
-    public int getPlayerState() {
-        return getCurrentState();
+    public synchronized int getPlayerState() {
+        return currentState;
     }
 
     public void sendJSONToAll(String jsonString) {
