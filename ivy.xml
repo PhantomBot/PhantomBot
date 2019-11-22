@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </info>
     <configurations defaultconf="default"/>
     <dependencies>
-        <dependency org="com.discord4j" name="discord4j-core" rev="3.0.9"/>
+        <dependency org="com.discord4j" name="discord4j-core" rev="3.0.11"/>
         <dependency org="io.netty" name="netty-codec-http" rev="4.1.39.Final" />
         <dependency org="commons-codec" name="commons-codec" rev="1.9" />
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
