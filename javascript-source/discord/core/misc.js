@@ -157,23 +157,23 @@
      * 
      * @param {object} user
      * @param {object} message
+     * @param {object} commandMessage
      * @export $.discord
      */
     function handleDeleteReaction(user, message, commandMessage) {
-        var ReactionEmoji = Packages.sx.blah.discord.handle.impl.obj.ReactionEmoji;
-        var xEmoji = ReactionEmoji.of('❌');
+        var xEmoji = Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌');
         message.addReaction(xEmoji);
 
-        messageDeleteArray[message.getStringID()] = {
+        messageDeleteArray[message.getId().asString()] = {
             lastMessage: message,
             lastCommandMessage: commandMessage,
             lastUser: user,
             timeout: setTimeout(function() {
-                messageDeleteArray[message.getStringID()].lastMessage['delete']();
-                messageDeleteArray[message.getStringID()].lastCommandMessage['delete']();
-                delete messageDeleteArray[message.getStringID()];
+                messageDeleteArray[message.getId().asString()].lastMessage.delete().subscribe();
+                messageDeleteArray[message.getId().asString()].lastCommandMessage.delete().subscribe();
+                delete messageDeleteArray[message.getId().asString()];
             }, 3e4)
-        }
+        };
     }
 
     /**
@@ -352,19 +352,18 @@
     /**
      * @event discordMessageReaction
      */
-    $.bind('discordMessageReaction', function(event) {
+    $.bind('discordMessageReaction', function (event) {
         var reactionEvent = event.getEvent(),
-            reactionUser = reactionEvent.getUser(),
-            reaction = reactionEvent.getReaction(),
-            messageID = reaction.getMessage().getStringID(),
-            messageInArray = messageDeleteArray[messageID];
+                reactionUser = event.getSenderId();
 
-        if(messageInArray !== undefined) {
-            if((messageInArray.lastUser.getStringID() == reactionUser.getStringID()) && 
-            (messageInArray.lastMessage.getStringID() == messageID)) {
-                if(reaction.getEmoji() == '❌') {
-                    reaction.getMessage()['delete']();
-                    messageInArray.lastCommandMessage['delete']();
+        if (event.getReactionEmoji().asUnicodeEmoji().equals(Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌'))) {
+            var messageID = reactionEvent.getMessage().block().getId().asString(),
+                    messageInArray = messageDeleteArray[messageID];
+            if (messageInArray !== undefined) {
+                if ((messageInArray.lastUser.getId().asString().equals(reactionUser)) &&
+                        (messageInArray.lastMessage.getId().asString().equals(messageID))) {
+                    reactionEvent.getMessage().block().delete().subscribe();
+                    messageInArray.lastCommandMessage.delete().subscribe();
                     clearTimeout(messageInArray.timeout);
                     delete messageDeleteArray[messageID];
                 }

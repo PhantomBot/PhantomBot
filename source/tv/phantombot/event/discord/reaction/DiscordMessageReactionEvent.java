@@ -44,11 +44,11 @@ public class DiscordMessageReactionEvent extends DiscordReactionEvent {
      * @param event 
      * @param type 
      */
-    public DiscordMessageReactionEvent(ReactionAddEvent event, ReactionType type) {
+    public DiscordMessageReactionEvent(ReactionAddEvent event) {
         super(event.getUser().block(), event.getChannel().block());
         
         this.event = event;
-        this.type = type;
+        this.type = ReactionType.ADD;
     }
     
     /**
@@ -57,11 +57,11 @@ public class DiscordMessageReactionEvent extends DiscordReactionEvent {
      * @param event 
      * @param type 
      */
-    public DiscordMessageReactionEvent(ReactionRemoveEvent event, ReactionType type) {
+    public DiscordMessageReactionEvent(ReactionRemoveEvent event) {
         super(event.getUser().block(), event.getChannel().block());
         
         this.event = event;
-        this.type = type;
+        this.type = ReactionType.REMOVE;
     }
     
     /**
