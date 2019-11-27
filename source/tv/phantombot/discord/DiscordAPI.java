@@ -370,11 +370,11 @@ public class DiscordAPI extends DiscordUtil {
         }
 
         public static void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
-            EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.ADD));
+            EventBus.instance().post(new DiscordMessageReactionEvent(event));
         }
 
         public static void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
-            EventBus.instance().post(new DiscordMessageReactionEvent(event, DiscordMessageReactionEvent.ReactionType.REMOVE));
+            EventBus.instance().post(new DiscordMessageReactionEvent(event));
         }
 
         public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {

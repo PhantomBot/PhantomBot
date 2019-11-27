@@ -87,7 +87,7 @@ public class DiscordUtil {
                 return null;
             }
 
-            com.gmt2001.Console.out.println("[DISCORD] [#" + ((TextChannel) channel).getName() + "] [CHAT] " + message);
+            com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message);
 
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
