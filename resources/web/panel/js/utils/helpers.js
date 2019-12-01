@@ -995,49 +995,49 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/select2/select2.dark.min.css'
+                'href': '/panel/vendors/select2/select2.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/AdminLTE.dark.min.css'
+                'href': '/panel/vendors/adminlte/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/skins/skin-purple.dark.min.css'
+                'href': '/panel/vendors/adminlte/css/skins/skin-purple.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/css/style.dark.min.css'
+                'href': '/panel/css/style.dark.min.css'
             }));
         } else {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/select2/select2.min.css'
+                'href': '/panel/vendors/select2/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/AdminLTE.min.css'
+                'href': '/panel/vendors/adminlte/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/skins/skin-purple.min.css'
+                'href': '/panel/vendors/adminlte/css/skins/skin-purple.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/css/style.min.css'
+                'href': '/panel/css/style.min.css'
             }));
         }
     };

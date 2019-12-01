@@ -32,6 +32,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -128,8 +129,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param fileNameOrType The filename or type extension to check
      * @return The valid MIME type, or {@code text/plain} if not recognized
      */
-    static String detectContentType(String fileNameOrType) {
-        String ext = (fileNameOrType.lastIndexOf('.') == -1 ? fileNameOrType : fileNameOrType.substring(fileNameOrType.lastIndexOf('.')));
+    public static String detectContentType(String fileNameOrType) {
+        String ext = (fileNameOrType.lastIndexOf('.') == -1 ? fileNameOrType : fileNameOrType.substring(fileNameOrType.lastIndexOf('.') + 1));
 
         switch (ext) {
             case "aac":
@@ -213,25 +214,29 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param fileNameOrType The filename or type extension for MIME type detection
      * @return A {@link FullHttpRequest} that is ready to transmit
      */
-    public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content, String fileNameOrType) {
+    public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, byte[] content, String fileNameOrType) {
         boolean isError = status.codeClass() == HttpStatusClass.CLIENT_ERROR || status.codeClass() == HttpStatusClass.SERVER_ERROR || status.codeClass() == HttpStatusClass.UNKNOWN;
 
-        if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
-            content = "<br /><br />" + content;
+        if (content == null) {
+            content = new byte[0];
         }
 
-        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.EMPTY_BUFFER);
+        if (fileNameOrType == null) {
+            fileNameOrType = "";
+        }
+
+        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.buffer());
 
         if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
-            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-            ByteBuf bcontent = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString() + "<br /><br />", CharsetUtil.UTF_8);
+            ByteBuf bcontent = Unpooled.copiedBuffer(content);
             res.content().writeBytes(buf).writeBytes(bcontent);
             buf.release();
             bcontent.release();
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType("html"));
             HttpUtil.setContentLength(res, res.content().readableBytes());
         } else {
-            ByteBuf bcontent = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+            ByteBuf bcontent = Unpooled.copiedBuffer(content);
             res.content().writeBytes(bcontent);
             bcontent.release();
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType(fileNameOrType));
@@ -275,8 +280,9 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 listing.add(f.getFileName().toString());
             });
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", listing), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", listing).getBytes(Charset.forName("UTF-8")), "plain"));
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500: " + p.toString());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }
@@ -298,13 +304,16 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {
         try {
             if (!Files.exists(p, LinkOption.NOFOLLOW_LINKS)) {
+                com.gmt2001.Console.debug.println("404: " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
                 return false;
             } else if (Files.isHidden(p) || Files.isSymbolicLink(p) || !Files.isReadable(p) || (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS) && !directoryAllowed)) {
+                com.gmt2001.Console.debug.println("403: " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return false;
             }
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500: " + p.toString());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
             return false;

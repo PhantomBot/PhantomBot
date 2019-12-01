@@ -82,11 +82,13 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
             return true;
         }
 
-        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.EMPTY_BUFFER);
+        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
         ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
         res.content().writeBytes(buf);
         buf.release();
         HttpUtil.setContentLength(res, res.content().readableBytes());
+
+        com.gmt2001.Console.debug.println("403");
 
         res.headers().set(CONNECTION, CLOSE);
         ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);

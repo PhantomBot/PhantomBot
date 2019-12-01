@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -57,6 +58,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (!req.method().equals(HttpMethod.GET)) {
+            com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return;
         }
@@ -64,12 +66,22 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
-            Path p = Paths.get("./web/", qsd.path());
+            String path = qsd.path();
+
+            Path p = Paths.get("./web/", path);
+
+            if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
+                path = path + "/index.html";
+                p = Paths.get("./web/", path);
+            }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, Files.readString(p), p.getFileName().toString()));
+                com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                        + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, Files.readAllBytes(p), p.getFileName().toString()));
             }
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }

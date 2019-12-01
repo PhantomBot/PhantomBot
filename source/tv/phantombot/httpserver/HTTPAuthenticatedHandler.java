@@ -77,39 +77,45 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
             return;
         } else if (!req.method().equals(HttpMethod.GET)) {
+            com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return;
         }
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+        String path = qsd.path();
 
-        if (qsd.path().startsWith("/dbquery")) {
+        if (path.startsWith("/dbquery")) {
             handleDbQuery(ctx, req, qsd);
             return;
-        } else if (qsd.path().startsWith("/games")) {
+        } else if (path.startsWith("/games")) {
             handleGames(ctx, req, qsd);
             return;
-        } else if (qsd.path().startsWith("/get-lang") || qsd.path().startsWith("/lang")) {
+        } else if (path.startsWith("/get-lang") || path.startsWith("/lang")) {
             handleLang(ctx, req);
             return;
-        } else if (qsd.path().startsWith("/inistore")) {
+        } else if (path.startsWith("/inistore")) {
             handleIniStore(ctx, req, qsd);
             return;
         }
 
         try {
-            Path p = Paths.get(qsd.path());
+            Path p = Paths.get(path);
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, true)) {
                 if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
                     HttpServerPageHandler.listDirectory(ctx, req, p);
-                } else if (qsd.path().startsWith("/addons") && (qsd.parameters().containsKey("marquee") || qsd.parameters().containsKey("refresh"))) {
+                } else if (path.startsWith("/addons") && (qsd.parameters().containsKey("marquee") || qsd.parameters().containsKey("refresh"))) {
                     handleAddons(ctx, req, p, qsd);
                 } else {
-                    HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, Files.readString(p), p.getFileName().toString()));
+                    com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                            + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
+                    HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
+                            req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
                 }
             }
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }
@@ -160,8 +166,11 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + Files.readString(p) + "</body></html>";
             }
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret, p.getFileName().toString()));
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                    + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), p.getFileName().toString()));
         } catch (NumberFormatException | IOException ex) {
+            com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }
@@ -172,7 +181,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
         if (!qsd.parameters().containsKey("table") || qsd.parameters().get("table").isEmpty() || qsd.parameters().get("table").get(0).isBlank()) {
             jsonObject.object().key("error").value("table not provided").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
             return;
         }
 
@@ -191,14 +200,14 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else if (!PhantomBot.instance().getDataStore().FileExists(dbTable)) {
             jsonObject.object().key("error").value("table does not exist").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else if (qsd.parameters().containsKey("keyExists")) {
             if (qsd.parameters().get("keyExists").isEmpty() || qsd.parameters().get("keyExists").get(0).isBlank()) {
                 jsonObject.object().key("error").value("key not provided").endObject();
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString(), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
             } else {
                 jsonObject.object().key("table");
                 jsonObject.object();
@@ -208,12 +217,12 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 jsonObject.endObject();
                 jsonObject.endObject();
 
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
             }
         } else if (qsd.parameters().containsKey("getData")) {
             if (qsd.parameters().get("getData").isEmpty() || qsd.parameters().get("getData").get(0).isBlank()) {
                 jsonObject.object().key("error").value("key not provided").endObject();
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString(), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
             } else {
                 jsonObject.object().key("table");
                 jsonObject.object();
@@ -223,7 +232,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 jsonObject.endObject();
                 jsonObject.endObject();
 
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
             }
         } else if (qsd.parameters().containsKey("getKeys")) {
             jsonObject.object();
@@ -243,7 +252,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else if (qsd.parameters().containsKey("getAllRows")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -263,7 +272,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else if (qsd.parameters().containsKey("getSortedRows")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -299,7 +308,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else if (qsd.parameters().containsKey("getSortedRowsByValue")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -335,16 +344,16 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } else {
             jsonObject.object().key("error").value("malformed request").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
         }
     }
 
     private void handleGames(ChannelHandlerContext ctx, FullHttpRequest req, QueryStringDecoder qsd) {
         if (!qsd.parameters().containsKey("search") || qsd.parameters().get("search").isEmpty() || qsd.parameters().get("search").get(0).isBlank()) {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "[]", "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "[]".getBytes(Charset.forName("UTF-8")), "json"));
             return;
         }
 
@@ -362,8 +371,9 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
 
             stringer.endArray();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, stringer.toString(), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, stringer.toString().getBytes(Charset.forName("UTF-8")), "json"));
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }
@@ -389,14 +399,14 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
         }
 
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, outputString, "plain"));
+        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, outputString.getBytes(Charset.forName("UTF-8")), "plain"));
     }
 
     private void handleLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.headers().contains("lang-path")) {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, LangFileUpdater.getCustomLang(req.headers().get("lang-path")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, LangFileUpdater.getCustomLang(req.headers().get("lang-path")).getBytes(Charset.forName("UTF-8")), "plain"));
         } else {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", LangFileUpdater.getLangFiles()), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", LangFileUpdater.getLangFiles()).getBytes(Charset.forName("UTF-8")), "plain"));
         }
     }
 
@@ -415,13 +425,13 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             PhantomBot.instance().getSession().say(msg);
         }
 
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "event posted", "plain"));
+        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "event posted".getBytes(Charset.forName("UTF-8")), "plain"));
     }
 
     private void putLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         LangFileUpdater.updateCustomLang(req.content().toString(Charset.forName("UTF-8")), req.headers().get("lang-path"));
 
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.", "plain"));
+        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(Charset.forName("UTF-8")), "plain"));
     }
 
 }

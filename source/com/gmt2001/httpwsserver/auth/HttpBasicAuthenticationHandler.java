@@ -84,7 +84,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         String auth = headers.get("Authorization");
 
         if (auth != null && auth.startsWith("Basic ")) {
-            String userpass = new String(Base64.getDecoder().decode(auth));
+            String userpass = new String(Base64.getDecoder().decode(auth.substring(6)));
             int colon = userpass.indexOf(':');
 
             if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
@@ -92,15 +92,18 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             }
         }
 
-        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.EMPTY_BUFFER);
+        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
         ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
         res.content().writeBytes(buf);
         buf.release();
         HttpUtil.setContentLength(res, res.content().readableBytes());
 
         if (auth == null) {
+            com.gmt2001.Console.debug.println("WWW-Authenticate");
             res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
         }
+
+        com.gmt2001.Console.debug.println("403");
 
         res.headers().set(CONNECTION, CLOSE);
         ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);

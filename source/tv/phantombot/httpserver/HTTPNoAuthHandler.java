@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -53,6 +54,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.HEAD)) {
+            com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return;
         }
@@ -61,18 +63,27 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
         try {
             String start = "./web/";
+            String path = qsd.path();
 
-            if (qsd.path().startsWith("/config/audio-hooks") || qsd.path().startsWith("/config/gif-alerts")) {
+            if (path.startsWith("/config/audio-hooks") || path.startsWith("/config/gif-alerts")) {
                 start = ".";
             }
 
-            Path p = Paths.get(start, qsd.path());
+            Path p = Paths.get(start, path);
+
+            if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
+                path = path + "/index.html";
+                p = Paths.get(start, path);
+            }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
+                com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                        + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
-                        req.method().equals(HttpMethod.HEAD) ? null : Files.readString(p), p.getFileName().toString()));
+                        req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
             }
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }

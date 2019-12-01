@@ -400,22 +400,22 @@ public class WsPanelHandler implements WsFrameHandler {
     public void sendJSONToAll(String jsonString) {
         WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
     }
-    
+
     public void triggerAudioPanel(String audioHook) {
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
         sendJSONToAll(jsonObject.toString());
     }
-    
+
     public void doAudioHooksUpdate() {
         JSONObject jso = new JSONObject();
         JSONObject query = new JSONObject();
-        query.append("table", "audio_hooks");
-        jso.append("query", query);
-        jso.append("dbkeys", "audio_hook_reload");
+        query.put("table", "audio_hooks");
+        jso.put("query", query);
+        jso.put("dbkeys", "audio_hook_reload");
         handleDBKeysQuery(null, null, jso);
     }
-    
+
     public void alertImage(String imageInfo) {
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("alert_image").value(imageInfo).endObject();
