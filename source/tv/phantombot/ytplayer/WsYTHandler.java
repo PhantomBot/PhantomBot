@@ -56,9 +56,9 @@ import tv.phantombot.event.ytplayer.YTPlayerVolumeEvent;
  */
 public class WsYTHandler implements WsFrameHandler {
 
-    private static final AttributeKey<Boolean> attrIsPlayer = AttributeKey.valueOf("isPlayer");
-    private static final String[] allowedDBQueryTables = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
-    private static final String[] allowedDBUpdateTables = new String[]{"ytSettings"};
+    private static final AttributeKey<Boolean> ATTR_IS_PLAYER = AttributeKey.valueOf("isPlayer");
+    private static final String[] ALLOWED_DB_QUERY_TABLES = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
+    private static final String[] ALLOWED_DB_UPDATE_TABLES = new String[]{"ytSettings"};
     private final WsAuthenticationHandler authHandler;
     private int currentVolume;
     private int currentState = -10;
@@ -82,22 +82,22 @@ public class WsYTHandler implements WsFrameHandler {
 
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        ctx.channel().attr(attrIsPlayer).setIfAbsent(Boolean.FALSE);
+        ctx.channel().attr(ATTR_IS_PLAYER).setIfAbsent(Boolean.FALSE);
 
         ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
-            if (f.channel().attr(attrIsPlayer).get()) {
+            if (f.channel().attr(ATTR_IS_PLAYER).get()) {
                 clientConnected = false;
                 EventBus.instance().postAsync(new YTPlayerDisconnectEvent());
             }
         });
 
         if (frame instanceof TextWebSocketFrame) {
-            if (clientConnected && !ctx.channel().attr(attrIsPlayer).get() && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.attrIsReadOnly).get()) {
+            if (clientConnected && !ctx.channel().attr(ATTR_IS_PLAYER).get() && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 JSONStringer jso = new JSONStringer();
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("secondconnection").value(true).endObject().toString()));
                 ctx.close();
                 return;
-            } else if (!clientConnected && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.attrIsReadOnly).get()) {
+            } else if (!clientConnected && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 return;
             } else if (!clientConnected) {
                 boolean hasYTKey = !PhantomBot.instance().isYouTubeKeyEmpty();
@@ -111,7 +111,7 @@ public class WsYTHandler implements WsFrameHandler {
                 }
 
                 clientConnected = true;
-                ctx.channel().attr(attrIsPlayer).set(Boolean.TRUE);
+                ctx.channel().attr(ATTR_IS_PLAYER).set(Boolean.TRUE);
                 EventBus.instance().postAsync(new YTPlayerConnectEvent());
             }
 
@@ -126,7 +126,7 @@ public class WsYTHandler implements WsFrameHandler {
                 return;
             }
 
-            if (ctx.channel().attr(attrIsPlayer).get()) {
+            if (ctx.channel().attr(ATTR_IS_PLAYER).get()) {
                 handleRestrictedCommands(ctx, frame, jso);
             }
 
@@ -280,7 +280,7 @@ public class WsYTHandler implements WsFrameHandler {
     }
 
     public void handleDBQuery(ChannelHandlerContext ctx, WebSocketFrame frame, String id, String table) throws JSONException {
-        if (!Arrays.stream(allowedDBQueryTables).anyMatch(t -> t.equals(table))) {
+        if (!Arrays.stream(ALLOWED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
@@ -299,7 +299,7 @@ public class WsYTHandler implements WsFrameHandler {
     }
 
     public void handleDBUpdate(ChannelHandlerContext ctx, WebSocketFrame frame, String id, String table, String key, String value) throws JSONException {
-        if (!Arrays.stream(allowedDBUpdateTables).anyMatch(t -> t.equals(table))) {
+        if (!Arrays.stream(ALLOWED_DB_UPDATE_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 

@@ -44,13 +44,13 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     private final int maxAttempts;
     /**
-     * Represents the {@code attrIsReadOnly} attribute
+     * Represents the {@code ATTR_IS_READ_ONLY} attribute
      */
-    public static final AttributeKey<Boolean> attrIsReadOnly = AttributeKey.valueOf("isReadOnly");
+    public static final AttributeKey<Boolean> ATTR_IS_READ_ONLY = AttributeKey.valueOf("isReadOnly");
     /**
      * Represents the {@code attrAuthAttempts} attribute
      */
-    private static final AttributeKey<Integer> attrAuthAttempts = AttributeKey.valueOf("authAttempts");
+    private static final AttributeKey<Integer> ATTR_AUTH_ATTEMPTS = AttributeKey.valueOf("authAttempts");
 
     /**
      * Constructor
@@ -81,15 +81,15 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        ctx.channel().attr(attrAuthenticated).setIfAbsent(Boolean.FALSE);
-        ctx.channel().attr(attrIsReadOnly).setIfAbsent(Boolean.TRUE);
-        ctx.channel().attr(attrAuthAttempts).setIfAbsent(0);
+        ctx.channel().attr(ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
+        ctx.channel().attr(ATTR_IS_READ_ONLY).setIfAbsent(Boolean.TRUE);
+        ctx.channel().attr(ATTR_AUTH_ATTEMPTS).setIfAbsent(0);
 
-        if (ctx.channel().attr(attrAuthenticated).get()) {
+        if (ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             return true;
         }
 
-        ctx.channel().attr(attrAuthAttempts).set(ctx.channel().attr(attrAuthAttempts).get() + 1);
+        ctx.channel().attr(ATTR_AUTH_ATTEMPTS).set(ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() + 1);
 
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
@@ -99,14 +99,14 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
                 if (jso.has("authenticate")) {
                     if (jso.getString("authenticate").equals(readWriteToken)) {
-                        ctx.channel().attr(attrAuthenticated).set(Boolean.TRUE);
-                        ctx.channel().attr(attrIsReadOnly).set(Boolean.FALSE);
+                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
                     } else if (jso.getString("authenticate").equals(readOnlyToken)) {
-                        ctx.channel().attr(attrAuthenticated).set(Boolean.TRUE);
-                        ctx.channel().attr(attrIsReadOnly).set(Boolean.TRUE);
+                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                     } else if (jso.getString("readauth").equals(readOnlyToken)) {
-                        ctx.channel().attr(attrAuthenticated).set(Boolean.TRUE);
-                        ctx.channel().attr(attrIsReadOnly).set(Boolean.TRUE);
+                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                     }
                 }
             } catch (JSONException ex) {
@@ -115,17 +115,17 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         }
 
         JSONStringer jsonObject = new JSONStringer();
-        String hasAuth = ctx.channel().attr(attrAuthenticated).get() ? "true" : "false";
-        String authType = ctx.channel().attr(attrAuthenticated).get() ? (ctx.channel().attr(attrIsReadOnly).get() ? "read" : "read/write") : "none";
+        String hasAuth = ctx.channel().attr(ATTR_AUTHENTICATED).get() ? "true" : "false";
+        String authType = ctx.channel().attr(ATTR_AUTHENTICATED).get() ? (ctx.channel().attr(ATTR_IS_READ_ONLY).get() ? "read" : "read/write") : "none";
         jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(authType).endObject();
 
         ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
 
-        if (!ctx.channel().attr(attrAuthenticated).get() && ctx.channel().attr(attrAuthAttempts).get() >= maxAttempts) {
+        if (!ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
             ctx.close();
         }
 
-        return ctx.channel().attr(attrAuthenticated).get();
+        return ctx.channel().attr(ATTR_AUTHENTICATED).get();
     }
 
     @Override

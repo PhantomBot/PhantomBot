@@ -51,4 +51,7 @@ public class WsPanelHandler implements WsFrameHandler {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void sendJSONToAll(String jsonString) {
+        WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+    }
 }

@@ -28,9 +28,9 @@ import io.netty.util.AttributeKey;
 public interface WsAuthenticationHandler {
 
     /**
-     * Represents the {@code attrAuthenticated} attribute
+     * Represents the {@code ATTR_AUTHENTICATED} attribute
      */
-    public static final AttributeKey<Boolean> attrAuthenticated = AttributeKey.valueOf("authenticated");
+    public static final AttributeKey<Boolean> ATTR_AUTHENTICATED = AttributeKey.valueOf("authenticated");
 
     /**
      * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been
