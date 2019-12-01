@@ -192,7 +192,7 @@ public class WsPanelHandler implements WsFrameHandler {
             tempArgs.add(jsonArray.getString(i));
         }
 
-        if (tempArgs.size() > 0) {
+        if (!tempArgs.isEmpty()) {
             int i = 0;
             args = new String[tempArgs.size()];
 
