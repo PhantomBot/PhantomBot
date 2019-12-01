@@ -34,7 +34,7 @@ import java.net.BindException;
 
 import tv.phantombot.PhantomBot;
 
-
+@Deprecated
 public class HTTPServer {
     private HttpServer server;
     private String     serverPassword;

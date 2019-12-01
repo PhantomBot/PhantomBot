@@ -27,6 +27,7 @@ import com.gmt2001.datastore.H2Store;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStoreConverter;
+import com.gmt2001.httpwsserver.HTTPWSServer;
 
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.BitlyAPIv4;
@@ -82,10 +83,6 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.httpserver.HTTPServer;
-import tv.phantombot.httpserver.HTTPSServer;
-import tv.phantombot.panel.PanelSocketSecureServer;
-import tv.phantombot.panel.PanelSocketServer;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptManager;
@@ -93,8 +90,6 @@ import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
-import tv.phantombot.ytplayer.YTWebSocketServer;
-import tv.phantombot.ytplayer.YTWebSocketSecureServer;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.twitch.api.TwitchValidate;
 
@@ -104,7 +99,12 @@ import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.console.ConsoleEventHandler;
+import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
+import tv.phantombot.httpserver.HTTPNoAuthHandler;
+import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
+import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.scripts.core.Moderation;
+import tv.phantombot.ytplayer.WsYTHandler;
 
 public final class PhantomBot implements Listener {
     /* Bot Information */
@@ -198,15 +198,10 @@ public final class PhantomBot implements Listener {
     private StreamElementsCache streamElementCache;
     public static String twitchCacheReady = "false";
 
-    /* Socket Servers */
-    private YTWebSocketServer youtubeSocketServer;
-    private YTWebSocketSecureServer youtubeSocketSecureServer;
-    private PanelSocketServer panelSocketServer;
-    private PanelSocketSecureServer panelSocketSecureServer;
-    private HTTPServer httpServer;
-    private HTTPSServer httpsServer;
-    private int socketServerTasksSize;
-
+    /* Sockets */
+    private WsPanelHandler panelHandler;
+    private WsYTHandler ytHandler;
+    
     /* PhantomBot Information */
     private static PhantomBot instance;
     private static Boolean reloadScripts = false;
@@ -822,52 +817,16 @@ public final class PhantomBot implements Listener {
     private void init() {
         /* Is the web toggle enabled? */
         if (webEnabled) {
-            try {
-                checkPortAvailabity(basePort);
-                checkPortAvailabity(panelSocketPort);
+            checkPortAvailabity(basePort);
+            HTTPWSServer.instance(bindIP, basePort, httpsFileName, httpsPassword);
+            new HTTPNoAuthHandler().register();
+            new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
+            new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
+            panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
 
-                /* Is the music toggled on? */
-                if (musicEnabled) {
-                    checkPortAvailabity(ytSocketPort);
-                    if (useHttps) {
-                        /* Set the music player server */
-                        youtubeSocketSecureServer = new YTWebSocketSecureServer(bindIP, ytSocketPort, youtubeOAuth, youtubeOAuthThro, httpsFileName, httpsPassword);
-                        /* Start this youtube socket server */
-                        youtubeSocketSecureServer.start();
-                        print("YouTubeSocketSecureServer accepting connections on port: " + ytSocketPort + " (SSL)");
-                    } else {
-                        /* Set the music player server */
-                        youtubeSocketServer = new YTWebSocketServer(bindIP, ytSocketPort, youtubeOAuth, youtubeOAuthThro);
-                        /* Start this youtube socket server */
-                        youtubeSocketServer.start();
-                        print("YouTubeSocketServer accepting connections on port: " + ytSocketPort);
-                    }
-                }
-
-                if (useHttps) {
-                    /* Set up the panel socket server */
-                    panelSocketSecureServer = new PanelSocketSecureServer(bindIP, panelSocketPort, webOAuth, webOAuthThro, httpsFileName, httpsPassword);
-                    /* Start the panel socket server */
-                    panelSocketSecureServer.start();
-                    print("PanelSocketSecureServer accepting connections on port: " + panelSocketPort + " (SSL)");
-
-                    /* Set up a new https server */
-                    httpsServer = new HTTPSServer(bindIP, (basePort), oauth, webOAuth, panelUsername, panelPassword, httpsFileName, httpsPassword);
-                    print("HTTPS server accepting connection on port: " + basePort + " (SSL)");
-                } else {
-                    panelSocketServer = new PanelSocketServer(bindIP, panelSocketPort, webOAuth, webOAuthThro);
-                    /* Set up the NEW panel socket server */
-                    /* Start the panel socket server */
-                    panelSocketServer.start();
-                    print("PanelSocketServer accepting connections on port: " + panelSocketPort);
-
-                    /* Set up a new http server */
-                    httpServer = new HTTPServer(bindIP, (basePort), oauth, webOAuth, panelUsername, panelPassword);
-                    print("HTTP server accepting connection on port: " + basePort);
-                }
-            } catch (Exception ex) {
-                print("Exception occurred in one of the socket based services, PhantomBot will now exit.");
-                PhantomBot.exitError();
+            /* Is the music toggled on? */
+            if (musicEnabled) {
+                ytHandler = (WsYTHandler) new WsYTHandler(youtubeOAuthThro, youtubeOAuth).register();
             }
         }
 
@@ -1028,8 +987,8 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("botName", botName.toLowerCase(), 0);
         Script.global.defineProperty("channelName", channelName.toLowerCase(), 0);
         Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
-        Script.global.defineProperty("ytplayer", (useHttps ? youtubeSocketSecureServer : youtubeSocketServer), 0);
-        Script.global.defineProperty("panelsocketserver", (useHttps ? panelSocketSecureServer : panelSocketServer), 0);
+        Script.global.defineProperty("ytplayer", ytHandler, 0);
+        Script.global.defineProperty("panelsocketserver", panelHandler, 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("shortenURL", BitlyAPIv4.instance(), 0);
@@ -1132,19 +1091,7 @@ public final class PhantomBot implements Listener {
         /* Check to see if web is enabled */
         if (webEnabled) {
             print("Shutting down all web socket/http servers...");
-            if (!useHttps) {
-                httpServer.close();
-                panelSocketServer.dispose();
-                if (musicEnabled) {
-                    youtubeSocketServer.dispose();
-                }
-            } else {
-                httpsServer.close();
-                panelSocketSecureServer.dispose();
-                if (musicEnabled) {
-                    youtubeSocketSecureServer.dispose();
-                }
-            }
+            HTTPWSServer.instance().close();
         }
 
         try {

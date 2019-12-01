@@ -40,7 +40,7 @@ import java.security.cert.CertificateException;
 
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 
-
+@Deprecated
 public class YTWebSocketSecureServer extends YTWebSocketServer {
 
     public YTWebSocketSecureServer(String ip, int port, String authString, String authStringRO, String keyFileName, String keyPassword) throws Exception {

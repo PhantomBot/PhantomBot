@@ -134,6 +134,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author IllusionaryOne
  */
+@Deprecated
 public class PanelSocketServer extends WebSocketServer {
 
     private final String authString;

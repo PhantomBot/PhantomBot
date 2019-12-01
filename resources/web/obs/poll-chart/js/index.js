@@ -17,7 +17,7 @@
 
 // Main stuff.
 $(function() {
-    var webSocket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPanelPort(), null, { reconnectInterval: 500 }),
+    var webSocket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/panel', null, { reconnectInterval: 500 }),
         localConfigs = getQueryMap(),
         chart;
 

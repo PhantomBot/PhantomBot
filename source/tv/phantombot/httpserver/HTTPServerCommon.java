@@ -40,7 +40,7 @@ import org.json.JSONException;
 import tv.phantombot.PhantomBot;
 
 import org.json.JSONStringer;
-
+@Deprecated
 public class HTTPServerCommon {
 
     public static void handleYTP(HttpExchange exchange) throws IOException {

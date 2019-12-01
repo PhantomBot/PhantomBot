@@ -109,7 +109,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.ytplayer.*;
 import tv.phantombot.event.command.CommandEvent;
-
+@Deprecated
 public class YTWebSocketServer extends WebSocketServer {
 
     private final String authString;

@@ -47,7 +47,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import java.io.File;
 
-
+@Deprecated
 public class HTTPSServer {
     private HttpsServer server;
     private String     serverPassword;
