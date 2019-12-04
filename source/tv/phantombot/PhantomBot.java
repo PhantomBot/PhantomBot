@@ -1393,6 +1393,10 @@ public final class PhantomBot implements Listener {
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
+        if (RepoVersion.getBuildType().startsWith("edge") || RepoVersion.getBuildType().startsWith("custom")) {
+            return;
+        }
+
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
             try {
