@@ -25,7 +25,6 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
@@ -34,6 +33,8 @@ import discord4j.core.object.util.Permission;
 import discord4j.core.object.util.PermissionSet;
 import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.rest.http.client.ClientException;
+import discord4j.rest.json.response.ErrorResponse;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -857,9 +858,27 @@ public class DiscordUtil {
             throw new IllegalArgumentException("message object was null");
         }
 
-        message.delete().doOnError(e -> {
+        com.gmt2001.Console.debug.println("Deleteing Discord message: " + message.getId().asString());
+
+        try {
+            message.delete().block();
+        } catch (RuntimeException e) {
+            if (e instanceof ClientException) {
+                ErrorResponse er = ((ClientException) e).getErrorResponse();
+                if (er != null && er.getFields().containsKey("errorResponse")) {
+                    ErrorResponse er2 = (ErrorResponse) er.getFields().get("errorResponse");
+                    if (er2 != null) {
+                        if (er2.getFields().containsKey("code") && (int) er2.getFields().get("code") == 10008) {
+                            com.gmt2001.Console.err.println("Delete message failed (Unknown Message): " + message.getId().asString());
+                            com.gmt2001.Console.debug.printStackTrace(e);
+                            return;
+                        }
+                    }
+                }
+            }
+
             com.gmt2001.Console.err.printStackTrace(e);
-        }).block();
+        }
     }
 
     /**
