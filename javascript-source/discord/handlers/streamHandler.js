@@ -67,10 +67,8 @@
         setTimeout(function() {
             // Delete live messages if any.
             if (liveMessages.length > 0) {
-                for (var i = 0; i < liveMessages.length; i++) {
-                    if (liveMessages[i] != null) {
-                        $.discordAPI.deleteMessage(liveMessages[i]);
-                    }
+                while (liveMessages.length > 0) {
+                    $.discordAPI.deleteMessage(liveMessages.shift());
                 }
             }
 
@@ -166,10 +164,8 @@
 
                 // Delete offline messages if any.
                 if (offlineMessages.length > 0) {
-                    for (var i = 0; i < offlineMessages.length; i++) {
-                        if (offlineMessages[i] != null) {
-                            $.discordAPI.deleteMessage(offlineMessages[i]);
-                        }
+                    while (offlineMessages.length > 0) {
+                        $.discordAPI.deleteMessage(offlineMessages.shift());
                     }
                 }
 
