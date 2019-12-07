@@ -148,7 +148,15 @@ public class DiscordUtil {
     public void sendPrivateMessage(PrivateChannel channel, String message) {
         if (channel != null) {
             User user = channel.getRecipients().blockFirst();
-            com.gmt2001.Console.out.println("[DISCORD] [@" + user.getUsername().toLowerCase() + "#" + user.getDiscriminator() + "] [DM] " + message);
+            String uname = "";
+            String udisc = "";
+
+            if (user != null) {
+                uname = user.getUsername().toLowerCase();
+                udisc = user.getDiscriminator();
+            }
+
+            com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
 
             channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -867,12 +875,10 @@ public class DiscordUtil {
                 ErrorResponse er = ((ClientException) e).getErrorResponse();
                 if (er != null && er.getFields().containsKey("errorResponse")) {
                     ErrorResponse er2 = (ErrorResponse) er.getFields().get("errorResponse");
-                    if (er2 != null) {
-                        if (er2.getFields().containsKey("code") && (int) er2.getFields().get("code") == 10008) {
-                            com.gmt2001.Console.err.println("Delete message failed (Unknown Message): " + message.getId().asString());
-                            com.gmt2001.Console.debug.printStackTrace(e);
-                            return;
-                        }
+                    if (er2 != null && er2.getFields().containsKey("code") && (int) er2.getFields().get("code") == 10008) {
+                        com.gmt2001.Console.err.println("Delete message failed (Unknown Message): " + message.getId().asString());
+                        com.gmt2001.Console.debug.printStackTrace(e);
+                        return;
                     }
                 }
             }
