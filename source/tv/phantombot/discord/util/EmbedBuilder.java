@@ -19,8 +19,8 @@ package tv.phantombot.discord.util;
 import discord4j.core.spec.EmbedCreateSpec;
 import java.awt.Color;
 import java.time.Instant;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -29,6 +29,14 @@ import java.util.function.Consumer;
  */
 public class EmbedBuilder {
 
+    private static final int FIELDS_MAX = 25;
+    private static final int TITLE_MAX_CHAR = 256;
+    private static final int FIELD_TITLE_MAX_CHAR = 256;
+    private static final int FIELD_CONTENT_MAX_CHAR = 1024;
+    private static final int DESC_MAX_CHAR = 2048;
+    private static final int FOOTER_MAX_CHAR = 2048;
+    private static final int AUTHOR_NAME_MAX_CHAR = 256;
+    private static final int TOTAL_MAX_CHAR = 6000;
     private String title = "";
     private String url = "";
     private Color color;
@@ -103,9 +111,22 @@ public class EmbedBuilder {
         return this;
     }
 
-    public EmbedBuilder withDesc(String text) {
+    public EmbedBuilder withDescription(String text) {
         this.description = text;
         return this;
+    }
+
+    public EmbedBuilder withDesc(String text) {
+        return this.withDescription(text);
+    }
+
+    public EmbedBuilder appendDescription(String text) {
+        this.description += text;
+        return this;
+    }
+
+    public EmbedBuilder appendDesc(String text) {
+        return this.appendDescription(text);
     }
 
     public EmbedBuilder withThumbnail(String url) {
@@ -119,14 +140,39 @@ public class EmbedBuilder {
     }
 
     public EmbedBuilder appendField(String name, String value, boolean inline) {
-        this.appendedFields.add(new AppendedField(name, value, inline));
+        if (this.appendedFields.size() < FIELDS_MAX) {
+            this.appendedFields.add(new AppendedField(name, value, inline));
+        }
         return this;
     }
 
+    public EmbedBuilder clearFields() {
+        this.appendedFields.clear();
+        return this;
+    }
+
+    public int getFieldCount() {
+        return this.appendedFields.size();
+    }
+
+    public int getTotalVisibleCharacters() {
+        return Math.min(TITLE_MAX_CHAR, title.length()) + Math.min(DESC_MAX_CHAR, description.length()) + Math.min(FOOTER_MAX_CHAR, footerTxt.length())
+                + Math.min(AUTHOR_NAME_MAX_CHAR, authorName.length()) + appendedFields.stream().mapToInt(af -> Math.min(FIELD_TITLE_MAX_CHAR, af.name.length())
+                + Math.min(FIELD_CONTENT_MAX_CHAR, af.value.length())).sum();
+    }
+
+    public boolean doesExceedCharacterLimit() {
+        return this.getTotalVisibleCharacters() > TOTAL_MAX_CHAR;
+    }
+
     public Consumer<? super EmbedCreateSpec> build() {
+        if (this.doesExceedCharacterLimit()) {
+            throw new IllegalArgumentException("Embed exceeds character limit of " + TOTAL_MAX_CHAR + " (has " + this.getTotalVisibleCharacters() + " chars)");
+        }
+
         return (EmbedCreateSpec t) -> {
             if (!title.isEmpty()) {
-                t.setTitle(title);
+                t.setTitle(title.substring(0, Math.min(TITLE_MAX_CHAR, title.length())));
             }
 
             if (!url.isEmpty()) {
@@ -142,15 +188,15 @@ public class EmbedBuilder {
             }
 
             if (!footerTxt.isEmpty()) {
-                t.setFooter(footerTxt, footerIcon);
+                t.setFooter(footerTxt.substring(0, Math.min(FOOTER_MAX_CHAR, footerTxt.length())), footerIcon);
             }
 
             if (!authorName.isEmpty()) {
-                t.setAuthor(authorName, authorUrl, authorIcon);
+                t.setAuthor(authorName.substring(0, Math.min(AUTHOR_NAME_MAX_CHAR, authorName.length())), authorUrl, authorIcon);
             }
 
             if (!description.isEmpty()) {
-                t.setDescription(description);
+                t.setDescription(description.substring(0, Math.min(DESC_MAX_CHAR, description.length())));
             }
 
             if (!image.isEmpty()) {
@@ -163,7 +209,7 @@ public class EmbedBuilder {
 
             if (!appendedFields.isEmpty()) {
                 appendedFields.forEach((af) -> {
-                    t.addField(af.name, af.value, af.inline);
+                    t.addField(af.name.substring(0, Math.min(FIELD_TITLE_MAX_CHAR, af.name.length())), af.value.substring(0, Math.min(FIELD_CONTENT_MAX_CHAR, af.value.length())), af.inline);
                 });
             }
         };
