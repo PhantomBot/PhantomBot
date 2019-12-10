@@ -143,7 +143,7 @@ $(run = function() {
                                 'Cost in points that will be taken from the user when running the command.'))
                             // Append input box for the command channel.
                             .append(helpers.getInputGroup('command-channel', 'text', 'Channel', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
-                                'Channel you want this command to work in. Seperate with a space and comma for multiple. If left empty, the command will work in all channels.'))
+                                'Channel you want this command to work in. Seperate with commas (no spaces) for multiple. If left empty, the command will work in all channels.'))
                             // Append input box for the command alias.
                             .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
                                 'Another command name that will also trigger this command.'))

@@ -582,12 +582,8 @@
                 return;
             }
 
-            if ($.discord.getCommandChannel(command, event) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
+            if (!$.discord.getCommandChannelAllowed(command, channelName, channelId)) {
                 return;
-            } else {
-                if (($.discord.getCommandChannel(command, event) !== undefined && (!$.discord.getCommandChannel(command, event).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, event).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
-                    return;
-                }
             }
 
             callHook('discordChannelCommand', event, false);
