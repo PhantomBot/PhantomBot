@@ -135,8 +135,8 @@ public final class PhantomBot implements Listener {
     private int panelSocketPort;
 
     /* SSL information */
-    private String httpsPassword = "password";
-    private String httpsFileName = "cert.jks";
+    private String httpsPassword = "";
+    private String httpsFileName = "";
 
     /* DataStore Information */
     private DataStore dataStore;
