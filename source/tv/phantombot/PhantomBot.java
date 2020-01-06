@@ -1174,7 +1174,7 @@ public final class PhantomBot implements Listener {
 
         try {
             for (int i = 5; i > 0; i--) {
-                com.gmt2001.Console.out.print("\rWaiting for everthing else to shutdown... " + i + " ");
+                com.gmt2001.Console.out.print("\rWaiting for everything else to shutdown... " + i + " ");
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ex) {
