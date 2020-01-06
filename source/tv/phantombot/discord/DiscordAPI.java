@@ -307,7 +307,7 @@ public class DiscordAPI extends DiscordUtil {
                 iUser = ((PrivateChannel) iChannel).getRecipients().blockFirst();
             }
 
-            if (iUser == null) {
+            if (iUser == null || iUser.getId().equals(client.getSelfId().get())) {
                 return;
             }
 
