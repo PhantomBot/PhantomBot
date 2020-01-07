@@ -26,15 +26,13 @@ package tv.phantombot.cache;
 import com.illusionaryone.TwitterAPI;
 import com.illusionaryone.BitlyAPIv4;
 
-import com.google.common.collect.Maps;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import twitter4j.Status;
 
@@ -52,7 +50,7 @@ import tv.phantombot.event.twitter.TwitterRetweetEvent;
  */
 public class TwitterCache implements Runnable {
 
-    private static final Map<String, TwitterCache> instances = Maps.newHashMap();
+    private static final Map<String, TwitterCache> instances = new ConcurrentHashMap<>();
     private final String channel;
     private final Thread updateThread;
     private boolean killed = false;

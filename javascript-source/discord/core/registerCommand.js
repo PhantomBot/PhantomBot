@@ -107,7 +107,7 @@
 
         for (var i = 0; i < discordRoles.size(); i++) {
             if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
-                everyoneRoleID = discordRoles.get(i).getStringID();
+                everyoneRoleID = discordRoles.get(i).getId().asString();
                 break;
             }
         }

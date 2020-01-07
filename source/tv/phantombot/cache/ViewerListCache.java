@@ -41,7 +41,7 @@ public class ViewerListCache implements Runnable {
      * @param  {String} channelName
      * @return {Object}
      */
-    public static ViewerListCache instance(String channelName) {
+    public static synchronized ViewerListCache instance(String channelName) {
         if (instance == null) {
             instance = new ViewerListCache(channelName);
         }

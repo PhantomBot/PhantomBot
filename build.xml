@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="PhantomBot" basedir="." default="dist">
+<project name="PhantomBot" basedir="." default="dist" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
 
     <!--
 
@@ -29,7 +29,7 @@
     <!-- Please see this for version numbers: https://semver.org/ -->
     <property name="webpanel.version" value="1.0.0" />
     <property name="src" location="source" />
-    <property name="reference" location="libraries" />
+    <property name="reference" location="lib" />
     <property name="build" location="build" />
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
@@ -38,6 +38,14 @@
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
+    <!-- Apache Ivy properties -->
+    <property name="ivy.install.version" value="2.5.0-rc1"/>
+    <condition property="ivy.home" value="${env.IVY_HOME}">
+        <isset property="env.IVY_HOME"/>
+    </condition>
+    <property name="ivy.home" value="${user.home}/.ant"/>
+    <property name="ivy.jar.dir" value="${ivy.home}/lib"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
 
     <tstamp>
         <format property="NOW" pattern="MMM dd yyyy HH:mm:ss zzz" timezone="GMT" />
@@ -45,12 +53,6 @@
 
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
-    </path>
-
-    <path id="reference.class.path">
-        <fileset dir="${reference}">
-            <include name="*.jar" />
-        </fileset>
     </path>
 
     <condition property="build_type" value="${buildtype}" else="stable">
@@ -62,12 +64,62 @@
 
     <available file=".git" type="dir" property="git.present"/>
 
+    <target name="download-ivy" unless="offline">
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy">
+        <!-- try to load Ivy here from Ivy home, in case the user has not already dropped
+        it into Ant's lib dir (note that the latter copy will always take precedence).
+        We will not fail as long as local lib dir exists (it may be empty) and
+        Ivy is in at least one of Ant's lib dir or the local lib dir. -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+    
     <target name="init">
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
         <mkdir dir="${version.folder}" />
-
+    </target>
+    
+    <target depends="init-ivy" name="ivy-retrieve">
+        <ivy:retrieve sync="true"/>
+        <ivy:report graph="false" todir="resources/licenses/"/>
+        <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
+            <arg value="diff"/>
+            <arg value="--numstat"/>
+            <arg value="ivy.xml"/>
+        </exec>
+        <exec executable="git" failifexecutionfails="false" errorproperty="" if:blank="${git.ivychange}">
+            <arg value="checkout"/>
+            <arg value="resources/licenses/tv.phantombot-phantombot-default.html"/>
+        </exec>
+    </target>
+    
+    <target depends="init-ivy" name="ivy-cleancache">
+        <ivy:cleancache/>
+    </target>
+    
+    <target depends="ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve"/>
+    
+    <target depends="ivy-retrieve" name="classpaths">
+        <path id="reference.class.path">
+            <fileset dir="${reference}">
+                <include name="*.jar" />
+                <exclude name="*sources.jar"/>
+                <exclude name="*javadoc.jar"/>
+            </fileset>
+        </path>
+        
         <pathconvert property="mf.classpath" pathsep=" ">
             <path refid="reference.class.path" />
             <mapper>
@@ -93,7 +145,7 @@
         </condition>
     </target>
 
-    <target depends="init,git.revision" name="pre.compile">
+    <target depends="init,ivy-retrieve,classpaths,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
         <replaceregexp
@@ -108,7 +160,7 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;${version}&quot;;" />
-            <replaceregexp
+        <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;${webpanel.version}&quot;;" />
@@ -116,7 +168,7 @@
 
     <target depends="pre.compile" name="compile.src">
         <echo>Compiling with Java Version ${ant.java.version} (${java.version})</echo>
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
@@ -130,7 +182,7 @@
     </target>
 
     <target depends="clean.build.test" name="compile.src.test">
-        <javac target="1.8" source="1.8" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <classpath refid="reference.class.path" />
@@ -150,7 +202,7 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
-            <replaceregexp
+        <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;@webpanel.version@&quot;;" />
@@ -174,25 +226,30 @@
         </jar>
 
         <mkdir dir="${lib.dir}" />
+        <echo level="info" message="staging lib folder into build dir." />
         <copy todir="${lib.dir}">
-            <fileset dir="./libraries" />
+            <fileset dir="${reference}">
+                <include name="*.jar" />
+                <exclude name="*sources.jar"/>
+                <exclude name="*javadoc.jar"/>
+            </fileset>
         </copy>
-        <echo level="info" message="staging javascript-source into resources." />
-        <copy todir="./resources/scripts">
-            <fileset dir="./javascript-source" />
-        </copy>
-        <echo level="info" message="staging lib folder into resources." />
+        <echo level="info" message="staging resources folder into build dir." />
         <copy todir="${res.dir}">
             <fileset dir="./resources" />
+        </copy>
+        <echo level="info" message="staging javascript-source folder into build dir." />
+        <copy todir="${res.dir}/scripts">
+            <fileset dir="./javascript-source" />
         </copy>
         <replaceregexp
             file="${build.dir}/web/panel/js/utils/helpers.js"
             match="helpers\.PANEL_VERSION = &quot;(.*)&quot;;"
             replace="helpers\.PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
-        <copy todir="${version.folder}">
+        <move todir="${version.folder}">
             <fileset dir="${build.dir}" />
-        </copy>
+        </move>
     </target>
 
     <target depends="compile.src.test,post.compile" name="test"/>
@@ -219,7 +276,6 @@
 
     <target name="distclean" depends="clean">
         <delete dir="${dist}" />
-        <delete dir="resources/scripts" />
     </target>
 
 </project>

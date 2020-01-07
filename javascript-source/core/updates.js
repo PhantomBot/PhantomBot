@@ -554,11 +554,11 @@
 
         $.inidb.RemoveFile('quotes');
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in temp) {
             $.inidb.set('quotes', i, temp[i]);
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
 
         $.inidb.del('modules', './handlers/discordHandler.js');
@@ -643,7 +643,7 @@
         var keys = $.inidb.GetKeyList('points', ''),
             i;
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in keys) {
             if (keys[i].match(/[A-Z]/)) {
                 if ($.inidb.get('points', keys[i]) == null) {
@@ -671,7 +671,7 @@
                 $.consoleLn('[permission] [remove] ' + keys[i]);
             }
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
 
         $.consoleLn('PhantomBot update 2.3.6b completed!');
@@ -848,7 +848,7 @@
 
             for (var i = 0; i < discordRoles.size(); i++) {
                 if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
-                    everyoneRoleID = discordRoles.get(i).getStringID();
+                    everyoneRoleID = discordRoles.get(i).getId().asString();
                     break;
                 }
             }
@@ -926,11 +926,11 @@
     function restoreTableContents(tableName, contents) {
         var i;
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in contents) {
             $.inidb.set(tableName, i, contents[i]);
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
     }
 })();

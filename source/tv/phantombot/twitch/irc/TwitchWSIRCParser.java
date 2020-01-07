@@ -64,7 +64,7 @@ public class TwitchWSIRCParser implements Runnable {
     private final String channelName;
     private final Thread runThread;
 
-    public static TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
+    public static synchronized TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
         if (instance == null) {
             instance = new TwitchWSIRCParser(webSocket, channelName, session);
         } else {

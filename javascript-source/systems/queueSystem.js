@@ -270,7 +270,7 @@
 
         keys = Object.keys(queue);
         t = 1;
-        $.inidb.setAutoCommit(false);
+        
         for (i in keys) {
             queue[keys[i]].position = t;
             var temp = JSON.parse($.inidb.get('queue', keys[i]));
@@ -278,7 +278,7 @@
             $.inidb.set('queue', keys[i], JSON.stringify(temp));
             t++;
         }
-        $.inidb.setAutoCommit(true);
+        
     }
 
     /*

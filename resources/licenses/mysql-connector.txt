@@ -1,3 +1,0 @@
-License is available at the following URL:
-
-https://downloads.mysql.com/docs/licenses/connector-j-5.1-gpl-en.pdf

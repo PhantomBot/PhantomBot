@@ -175,7 +175,7 @@
             }
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
             username = $.users[i].toLowerCase();
             if (isOnline) {
@@ -234,7 +234,7 @@
                 }
             }
         }
-        $.inidb.setAutoCommit(true);
+        
 
         // Update points for all users with the same amount of online/offline gain.
         $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
@@ -318,11 +318,11 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
             $.inidb.incr('points', $.users[i].toLowerCase(), amount);
         }
-        $.inidb.setAutoCommit(true);
+        
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     };
@@ -337,13 +337,13 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
             if (getUserPoints($.users[i].toLowerCase()) > amount) {
                 $.inidb.decr('points', $.users[i].toLowerCase(), amount);
             }
         }
-        $.inidb.setAutoCommit(true);
+        
 
         $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
     };

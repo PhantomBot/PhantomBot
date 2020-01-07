@@ -39,12 +39,16 @@ import org.json.JSONObject;
  */
 public class GoogleURLShortenerAPIv1 {
 
-    private static final GoogleURLShortenerAPIv1 instance = new GoogleURLShortenerAPIv1();
+    private static GoogleURLShortenerAPIv1 instance;
     private static final String sAPIURL = "https://www.googleapis.com/urlshortener/v1/url";
     private static final int iHTTPTimeout = 2 * 1000;
     private String sAPIKey = "AIzaSyCtjgbY6ebAmNEzAduzAK6xrxBGQGDPDUI";
 
-    public static GoogleURLShortenerAPIv1 instance() {
+    public static synchronized GoogleURLShortenerAPIv1 instance() {
+        if (instance == null) {
+            instance = new GoogleURLShortenerAPIv1();
+        }
+        
         return instance;
     }
 
@@ -70,7 +74,7 @@ public class GoogleURLShortenerAPIv1 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -81,7 +85,7 @@ public class GoogleURLShortenerAPIv1 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) {
+    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -165,7 +169,7 @@ public class GoogleURLShortenerAPIv1 {
      * @param   String  Long URL
      * @return  String  Shortened URL or Long URL if there was an issue
      */
-    public String getShortURL(String longURL) {
+    public String getShortURL(String longURL) throws JSONException {
         JSONObject jsonObject = readJsonFromUrl(sAPIURL + "?key=" + sAPIKey, longURL);
         if (jsonObject.has("id")) {
             return jsonObject.getString("id");

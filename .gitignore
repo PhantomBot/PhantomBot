@@ -68,3 +68,8 @@ nbproject/
 .classpath
 .project
 
+# Libs downloaded from Maven
+lib/
+
+# Allow java-runtime files
+!resources/java-runtime*/*

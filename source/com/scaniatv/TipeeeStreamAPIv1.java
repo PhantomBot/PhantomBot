@@ -37,7 +37,7 @@ import org.json.JSONObject;
 
 public class TipeeeStreamAPIv1 {
 
-    private static final TipeeeStreamAPIv1 instance = new TipeeeStreamAPIv1();
+    private static TipeeeStreamAPIv1 instance;
     private static final String url = "https://api.tipeeestream.com/v1.0/events.json";
     private static final int iHTTPTimeout = 2 * 1000;
     private String apiOauth = "";
@@ -46,7 +46,11 @@ public class TipeeeStreamAPIv1 {
     /*
      * Returns the current instance.
      */
-    public static TipeeeStreamAPIv1 instance() {
+    public static synchronized TipeeeStreamAPIv1 instance() {
+        if (instance == null) {
+            instance = new TipeeeStreamAPIv1();
+        }
+        
         return instance;
     }
 
@@ -73,7 +77,7 @@ public class TipeeeStreamAPIv1 {
      * Populates additional information into a JSON object to be digested
      * as needed.
      */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) {
+    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -87,7 +91,7 @@ public class TipeeeStreamAPIv1 {
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -169,7 +173,7 @@ public class TipeeeStreamAPIv1 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() {
+    public JSONObject GetDonations() throws JSONException {
         return readJsonFromUrl(url + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);
     }
 }

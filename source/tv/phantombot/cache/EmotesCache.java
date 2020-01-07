@@ -22,24 +22,24 @@ package tv.phantombot.cache;
 import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.FrankerZAPIv1;
 import com.illusionaryone.BTTVAPIv2;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmotesCache implements Runnable {
 
     private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
     private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 60;
-    private static final Map<String, EmotesCache> instances = Maps.newHashMap();
+    private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
         if (instance == null) {
@@ -113,7 +113,7 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) {
+    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) throws JSONException {
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {

@@ -67,10 +67,8 @@
         setTimeout(function() {
             // Delete live messages if any.
             if (liveMessages.length > 0) {
-                for (var i = 0; i < liveMessages.length; i++) {
-                    if (liveMessages[i] != null) {
-                        $.discordAPI.deleteMessage(liveMessages[i]);
-                    }
+                while (liveMessages.length > 0) {
+                    $.discordAPI.deleteMessage(liveMessages.shift());
                 }
             }
 
@@ -136,7 +134,7 @@
                 }
 
                 // Send the message as an embed.
-                offlineMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                offlineMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(100, 65, 164)
                     .withThumbnail($.twitchcache.getLogoLink())
                     .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
@@ -166,10 +164,8 @@
 
                 // Delete offline messages if any.
                 if (offlineMessages.length > 0) {
-                    for (var i = 0; i < offlineMessages.length; i++) {
-                        if (offlineMessages[i] != null) {
-                            $.discordAPI.deleteMessage(offlineMessages[i]);
-                        }
+                    while (offlineMessages.length > 0) {
+                        $.discordAPI.deleteMessage(offlineMessages.shift());
                     }
                 }
 
@@ -186,7 +182,7 @@
                     }
 
                     // Send the message as an embed.
-                    liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+                    liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                         .withColor(100, 65, 164)
                         .withThumbnail($.twitchcache.getLogoLink())
                         .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))
@@ -225,7 +221,7 @@
         if (s.indexOf('@') !== -1) {
             liveMessages.push($.discord.say(channelName, s));
         }
-        liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        liveMessages.push($.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
             .withColor(100, 65, 164)
             .withThumbnail($.twitchcache.getLogoLink())
             .withTitle(s.replace(/(\@everyone|\@here)/ig, ''))

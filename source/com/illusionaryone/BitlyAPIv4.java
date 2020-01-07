@@ -39,13 +39,17 @@ import org.json.JSONObject;
  */
 public class BitlyAPIv4 {
 
-    private static final BitlyAPIv4 instance = new BitlyAPIv4();
+    private static BitlyAPIv4 instance;
     private static final String sAPIURL = "https://api-ssl.bitly.com/v4/shorten";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String sAPIKey = "04cef1634958fb43bc6009dece7c489f0ffc8845";
     private static String sGUID = "Bg56fvSTpUC";
 
-    public static BitlyAPIv4 instance() {
+    public static synchronized BitlyAPIv4 instance() {
+        if (instance == null) {
+            instance = new BitlyAPIv4();
+        }
+        
         return instance;
     }
 
@@ -71,7 +75,7 @@ public class BitlyAPIv4 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +86,7 @@ public class BitlyAPIv4 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) {
+    private static JSONObject readJsonFromUrl(String urlAddress, String longURL) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -178,7 +182,7 @@ public class BitlyAPIv4 {
      * @param   String  Long URL
      * @return  String  Shortened URL or Long URL if there was an issue
      */
-    public String getShortURL(String longURL) {
+    public String getShortURL(String longURL) throws JSONException {
         JSONObject jsonObject = readJsonFromUrl(sAPIURL, longURL);
         if (jsonObject.has("link")) {
             return jsonObject.getString("link");

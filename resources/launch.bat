@@ -18,16 +18,7 @@ REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
 REM
 
 setlocal enableextensions enabledelayedexpansion
-set first=1
-for /f "delims=" %%a in ("%comspec%") do set "compath=%%~DPa"
-PATH %PATH%;%compath%;%JAVA_HOME%\bin\
-WHERE java >nul 2>nul
-IF %ERRORLEVEL% NEQ 0 (
-    echo You must have Java installed, please install it from: https://java.com/download
-    pause
-    exit
-)
-SET mypath=%~dp0
-java -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "%mypath%PhantomBot.jar" %1
+cd %~dp0
+".\java-runtime\bin\java" --add-opens java.base/java.lang=ALL-UNNAMED -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %1
 endlocal
 pause
