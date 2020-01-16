@@ -100,7 +100,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         }
 
         try {
-            Path p = Paths.get(path);
+            Path p = Paths.get(".", path);
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, true)) {
                 if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {

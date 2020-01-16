@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
+import java.util.List;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that implements password and token-based authentication
@@ -50,6 +51,11 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      * The password that grants access
      */
     private final String password;
+
+    /**
+     * NoArg default for webauth query param
+     */
+    private static final List<String> NOARG = List.of("");
 
     /**
      * Constructor
@@ -76,7 +82,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
 
         String auth1 = headers.get("password");
         String auth2 = headers.get("webauth");
-        String auth3 = qsd.parameters().get("webauth").get(0);
+        String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
 
         if ((auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token))) {
             return true;
