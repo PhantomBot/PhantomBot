@@ -167,8 +167,8 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
-                    + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), p.getFileName().toString()));
+                    + HttpServerPageHandler.detectContentType("html") + ")");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html"));
         } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
