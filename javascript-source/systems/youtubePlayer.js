@@ -887,11 +887,15 @@
          * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
-            $.writeToFile(
-                youtubeVideo.getVideoTitle() + ' ',
-                baseFileOutputPath + 'currentsong.txt',
-                false
-            );
+            var writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(baseFileOutputPath + 'currentsong.txt'), 'UTF-8');
+
+            try {
+                writer.write(youtubeVideo.getVideoTitle());
+            } catch (ex) {
+                $.log.error('Failed to update current song file: ' + ex.toString());
+            } finally {
+                writer.close();
+            }
         };
 
         /**
