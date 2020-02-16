@@ -1285,8 +1285,12 @@
             }
 
             for (idx in aliases) {
-                if (permCom(sender, $.inidb.get('aliases', aliases[idx]), '') === 0) {
-                    cmdList.push('!' + aliases[idx]);
+                var aliasCmd = $.inidb.get('aliases', aliases[idx]);
+
+                if (!$.inidb.exists('disabledCommands', aliasCmd)) {
+                    if (permCom(sender, aliasCmd, '') === 0) {
+                        cmdList.push('!' + aliases[idx]);
+                    }
                 }
             }
 
