@@ -442,10 +442,21 @@
         }
 
         if (message.match(/\(repeat\s[1-9]\d*,[\w\s]+\)/g)) {
+            var MIN_COUNTER_VALUE = 1;
+            var MAX_COUNTER_VALUE = 30;
+
             var matches = message.match(/\(repeat\s([1-9]\d*),([\w\s]+)\)/);
             var allMatch = matches[0];
-            var counter = matches[1];
+            var counter = parseInt(matches[1]);
             var iteratingText = matches[2];
+
+            if (counter < MIN_COUNTER_VALUE) {
+                counter = MIN_COUNTER_VALUE;
+            }
+
+            if (counter > MAX_COUNTER_VALUE) {
+                counter = MAX_COUNTER_VALUE;
+            }
 
             var tmpArray = [];
 
