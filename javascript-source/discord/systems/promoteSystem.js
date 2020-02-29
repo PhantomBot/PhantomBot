@@ -339,11 +339,7 @@
             start += 100;
             end += 100;
 
-            if (!jsonObject.has('_total') || !jsonObject.has('streams')) {
-                return;
-            }
-    
-            if (jsonObject.getInt('_total') === 0) {
+            if (!jsonObject.has('streams')) {
                 return;
             }
     
