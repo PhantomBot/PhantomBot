@@ -2015,6 +2015,7 @@
     });
 
     /** Export functions to API */
+    $.checkBlackList = checkBlackList;
     $.performModeration = performModeration;
     $.timeoutUser = timeoutUserFor;
     $.permitUserLink = permitUser;

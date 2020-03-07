@@ -309,6 +309,23 @@
         }
 
         if (hookName === 'command') {
+            const message = event.getCommand() + ' ' + event.getArguments();
+            const fakeEvent = {
+                getSender: function() {
+                    return event.getSender();
+                },
+                getMessage: function() {
+                    return message;
+                },
+                getTags: function() {
+                    return event.getTags();
+                }
+            }
+
+            if ($.checkBlackList(event.getSender(), fakeEvent, message, event.getTags())) {
+                return;
+            }
+
             i = getHookIndex($.getCommandScript(event.getCommand()), hookName);
 
             try {
