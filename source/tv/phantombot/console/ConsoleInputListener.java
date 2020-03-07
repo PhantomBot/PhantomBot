@@ -22,14 +22,13 @@ import tv.phantombot.event.console.ConsoleInputEvent;
 public class ConsoleInputListener extends Thread {
 
     @Override
-    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         while (true) {
             try {
                 String msg = com.gmt2001.Console.in.readLine();
-                EventBus.instance().post(new ConsoleInputEvent(msg));
+                EventBus.post(new ConsoleInputEvent(msg));
                 Thread.sleep(10);
             } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);

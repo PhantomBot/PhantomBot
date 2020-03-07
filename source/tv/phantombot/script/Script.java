@@ -18,6 +18,7 @@ package tv.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,221 +29,218 @@ import tv.phantombot.PhantomBot;
 
 public class Script {
 
-    public static final NativeObject global = new NativeObject();
-    @SuppressWarnings("rawtypes")
-    private final List<ScriptDestroyable> destroyables = new ArrayList<>();
-    private static final NativeObject vars = new NativeObject();
-    private final File file;
-    private long lastModified;
-    private Context context;
-    private boolean killed = false;
-    private int fileNotFoundCount = 0;
-    private static ScriptableObject scope;
+	public static final NativeObject global = new NativeObject();
+	private static final NativeObject vars = new NativeObject();
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public Script(File file) {
-        this.file = file;
-        this.lastModified = file.lastModified();
+	private final List<ScriptDestroyable<?>> destroyables = new ArrayList<>();
+	private final File file;
 
-        if (PhantomBot.getReloadScripts()) {
-            ScriptFileWatcher.instance().addScript(this);
-        }
-    }
+	private long lastModified;
+	private Context context;
+	private boolean killed = false;
+	private int fileNotFoundCount = 0;
+	private static ScriptableObject scope;
 
-    public static String callMethod(String method, String arg) {
-        Object[] obj = new Object[] {arg};
+	public Script(File file) {
+		this.file = file;
+		this.lastModified = file.lastModified();
 
-        return scope.callMethod(global, method, obj).toString();
-    }
+		if (PhantomBot.getReloadScripts()) {
+			ScriptFileWatcher.instance().addScript(this);
+		}
+	}
 
-    @SuppressWarnings("rawtypes")
-    public void reload() throws IOException {
-        if (killed) {
-            return;
-        }
+	public static String callMethod(String method, String arg) {
+		Object[] obj = new Object[] { arg };
 
-        doDestroyables();
-        try {
-            load();
-            if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.out.println("Reloaded module: init.js");
-            } else {
-                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.out.println("Reloaded module: " + path);
-            }
-            fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
-                fileNotFoundCount++;
-                if (fileNotFoundCount == 1) {
-                    return;
-                }
-            } else {
-                fileNotFoundCount = 0;
-            }
+		return ScriptableObject.callMethod(global, method, obj).toString();
+	}
 
-            if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
-            } else {
-                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
-            }
-        }
-    }
+	public void reload() throws IOException {
+		if (killed) {
+			return;
+		}
 
-    @SuppressWarnings("rawtypes")
-    public void reload(Boolean silent) throws IOException {
-        if (killed) {
-            return;
-        }
+		doDestroyables();
+		try {
+			load();
+			if (file.getPath().endsWith("init.js")) {
+				com.gmt2001.Console.out.println("Reloaded module: init.js");
+			} else {
+				String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+				com.gmt2001.Console.out.println("Reloaded module: " + path);
+			}
+			fileNotFoundCount = 0;
+		} catch (Exception ex) {
+			if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+				fileNotFoundCount++;
+				if (fileNotFoundCount == 1) {
+					return;
+				}
+			} else {
+				fileNotFoundCount = 0;
+			}
 
-        doDestroyables();
-        try {
-            load();
-            if (silent) {
-                if (file.getPath().endsWith("init.js")) {
-                    com.gmt2001.Console.out.println("Reloaded module: init.js");
-                } else {
-                    String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                    com.gmt2001.Console.out.println("Reloaded module: " + path);
-                }
-            }
-            fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
-                fileNotFoundCount++;
-                if (fileNotFoundCount == 1) {
-                    return;
-                }
-            } else {
-                fileNotFoundCount = 0;
-            }
+			if (file.getPath().endsWith("init.js")) {
+				com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+			} else {
+				String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+				com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
+			}
+		}
+	}
 
-            if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
-            } else {
-                String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
-            }
-        }
-    }
+	public void reload(Boolean silent) throws IOException {
+		if (killed) {
+			return;
+		}
 
-    public void load() throws IOException {
-        if (killed) {
-            return;
-        }
+		doDestroyables();
+		try {
+			load();
+			if (silent) {
+				if (file.getPath().endsWith("init.js")) {
+					com.gmt2001.Console.out.println("Reloaded module: init.js");
+				} else {
+					String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+					com.gmt2001.Console.out.println("Reloaded module: " + path);
+				}
+			}
+			fileNotFoundCount = 0;
+		} catch (Exception ex) {
+			if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+				fileNotFoundCount++;
+				if (fileNotFoundCount == 1) {
+					return;
+				}
+			} else {
+				fileNotFoundCount = 0;
+			}
 
-        if (!file.getName().endsWith(".js")) {
-            return;
-        }
+			if (file.getPath().endsWith("init.js")) {
+				com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
+			} else {
+				String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
+				com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
+			}
+		}
+	}
 
-        /* macOS user reported errors loading ._ files. Could be from text editor. */
-        if (file.getName().startsWith("._")) {
-            return;
-        }
+	public void load() throws IOException {
+		if (killed) {
+			return;
+		}
 
-        /* Enable Error() in JS to provide an object with fileName and lineNumber. */
-        final ContextFactory ctxFactory = new ContextFactory() {
-            @Override
-            protected boolean hasFeature(Context cx, int featureIndex) {
-                switch (featureIndex) {
-                case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
-                    return true;
-                default:
-                    return super.hasFeature(cx, featureIndex);
-                }
-            }
-        };
-        RhinoException.setStackStyle(StackStyle.MOZILLA);
+		if (!file.getName().endsWith(".js")) {
+			return;
+		}
 
-        /* Create Debugger Instance - this opens for only init.js */
-        Main debugger = null;
-        if (PhantomBot.getEnableRhinoDebugger()) {
-            if (file.getName().endsWith("init.js")) {
-                debugger = new Main(file.getName());
-                debugger.attachTo(ctxFactory);
-            }
-        }
+		/* macOS user reported errors loading ._ files. Could be from text editor. */
+		if (file.getName().startsWith("._")) {
+			return;
+		}
 
-        context = ctxFactory.enterContext();
-        if (!PhantomBot.getEnableRhinoDebugger()) {
-            context.setOptimizationLevel(9);
-        }
+		/* Enable Error() in JS to provide an object with fileName and lineNumber. */
+		final ContextFactory ctxFactory = new ContextFactory() {
+			@Override
+			protected boolean hasFeature(Context cx, int featureIndex) {
+				switch (featureIndex) {
+				case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
+					return true;
+				default:
+					return super.hasFeature(cx, featureIndex);
+				}
+			}
+		};
+		RhinoException.setStackStyle(StackStyle.MOZILLA);
 
-        scope = context.initStandardObjects(vars, false);//Normal scripting object.
-        scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
-        scope.defineProperty("$api", ScriptApi.instance(), 0);
-        scope.defineProperty("$script", this, 0);
+		/* Create Debugger Instance - this opens for only init.js */
+		Main debugger = null;
+		if (PhantomBot.getEnableRhinoDebugger()) {
+			if (file.getName().endsWith("init.js")) {
+				debugger = new Main(file.getName());
+				debugger.attachTo(ctxFactory);
+			}
+		}
 
-        /* Configure debugger. */
-        if (PhantomBot.getEnableRhinoDebugger()) {
-            if (file.getName().endsWith("init.js")) {
-                debugger.setBreakOnEnter(false);
-                debugger.setScope(scope);
-                debugger.setSize(640, 480);
-                debugger.setVisible(true);
-            }
-        }
+		context = ctxFactory.enterContext();
+		if (!PhantomBot.getEnableRhinoDebugger()) {
+			context.setOptimizationLevel(9);
+		}
 
-        try {
-            context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
-        } catch (FileNotFoundException ex) {
-            throw new IOException("File not found. This could be a caching issue, will retry.");
-        } catch (EvaluatorException ex) {
-            throw new IOException("JavaScript Error: " + ex.getMessage());
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
-        }
-    }
+		scope = context.initStandardObjects(vars, false);// Normal scripting object.
+		scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
+		scope.defineProperty("$api", ScriptApi.getInstance(), 0);
+		scope.defineProperty("$script", this, 0);
 
-    @SuppressWarnings("rawtypes")
-    public List<ScriptDestroyable> destroyables() {
-        return destroyables;
-    }
+		/* Configure debugger. */
+		if (PhantomBot.getEnableRhinoDebugger()) {
+			if (file.getName().endsWith("init.js")) {
+				debugger.setBreakOnEnter(false);
+				debugger.setScope(scope);
+				debugger.setSize(640, 480);
+				debugger.setVisible(true);
+			}
+		}
 
-    @SuppressWarnings("rawtypes")
-    public void doDestroyables() {
-        for (ScriptDestroyable destroyable : destroyables) {
-            destroyable.destroy();
-        }
+		try {
+			context.evaluateString(scope, FileUtils.readFileToString(file, Charset.defaultCharset()), file.getName(), 1,
+					null);
+		} catch (FileNotFoundException ex) {
+			throw new IOException("File not found. This could be a caching issue, will retry.");
+		} catch (EvaluatorException ex) {
+			throw new IOException("JavaScript Error: " + ex.getMessage());
+		} catch (Exception ex) {
+			throw new IOException(ex.getMessage());
+		}
+	}
 
-        destroyables.clear();
-    }
+	public List<ScriptDestroyable<?>> destroyables() {
+		return destroyables;
+	}
 
-    public File getFile() {
-        return file;
-    }
+	public void doDestroyables() {
+		for (ScriptDestroyable<?> destroyable : destroyables) {
+			destroyable.destroy();
+		}
 
-    public long getLastModified() {
-        return lastModified;
-    }
+		destroyables.clear();
+	}
 
-    public void setLastModified(long lastModified) {
-        this.lastModified = lastModified;
-    }
+	public File getFile() {
+		return file;
+	}
 
-    public String getPath() {
-        return file.toPath().toString();
-    }
+	public long getLastModified() {
+		return lastModified;
+	}
 
-    public Context getContext() {
-        return context;
-    }
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
+	}
 
-    public boolean isKilled() {
-        return killed;
-    }
+	public String getPath() {
+		return file.toPath().toString();
+	}
 
-    public void kill() {
-        if (context == null) {
-            return;
-        }
-        ObservingDebugger od = new ObservingDebugger();
-        context.setDebugger(od, 0);
-        context.setGeneratingDebug(true);
-        context.setOptimizationLevel(-1);
-        doDestroyables();
-        od.setDisconnected(true);
-        killed = true;
-    }
+	public Context getContext() {
+		return context;
+	}
+
+	public boolean isKilled() {
+		return killed;
+	}
+
+	public void kill() {
+		if (context == null) {
+			return;
+		}
+		ObservingDebugger od = new ObservingDebugger();
+		context.setDebugger(od, 0);
+		context.setGeneratingDebug(true);
+		context.setOptimizationLevel(-1);
+		doDestroyables();
+		od.setDisconnected(true);
+		killed = true;
+	}
 }

@@ -18,50 +18,47 @@ package tv.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class ScriptApi {
 
-    private static final ScriptApi instance = new ScriptApi();
+	private static final ScriptApi INSTANCE = new ScriptApi();
 
-    public static ScriptApi instance() {
-        return instance;
-    }
+	public static ScriptApi getInstance() {
+		return INSTANCE;
+	}
 
-    private ScriptApi() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-    }
+	private ScriptApi() {
+		Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+	}
 
-    public void on(Script script, String eventName, ScriptEventHandler handler) {
-        script.destroyables().add(new ScriptDestroyable<ScriptEventHandler>(handler) {
-            @Override
-            public void destroy(ScriptEventHandler handler) {
-                ScriptEventManager.instance().unregister(handler);
-            }
-        });
-        ScriptEventManager.instance().register(eventName, handler);
-    }
+	public void on(Script script, String eventName, ScriptEventHandler handler) {
+		script.destroyables().add(new ScriptDestroyable<ScriptEventHandler>(handler) {
 
-    public boolean exists(String eventName) {
-        return ScriptEventManager.instance().hasEvent(eventName);
-    }
+			@Override
+			public void destroy(ScriptEventHandler handler) {
+				ScriptEventManager.instance().unregister(handler);
+			}
+		});
+		ScriptEventManager.instance().register(eventName, handler);
+	}
 
-    public void loadScript(Script script, String fileName) throws IOException {
-        ScriptManager.loadScript(new File(new File("./scripts/"), fileName));
-    }
+	public boolean exists(String eventName) {
+		return ScriptEventManager.instance().hasEvent(eventName);
+	}
 
-    public Script loadScriptR(Script script, String fileName) throws IOException {
-        return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName));
-    }
+	public void loadScript(Script script, String fileName) throws IOException {
+		ScriptManager.loadScript(new File(new File("./scripts/"), fileName));
+	}
 
-    public Script reloadScriptR(Script script, String fileName) throws IOException {
-        return ScriptManager.reloadScriptR(new File(new File("./scripts/"), fileName));
-    }
+	public Script loadScriptR(Script script, String fileName) throws IOException {
+		return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName));
+	}
 
-    public Script getScript(Script script, String fileName) throws IOException {
-        return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
-    }
+	public Script reloadScriptR(Script script, String fileName) throws IOException {
+		return ScriptManager.reloadScriptR(new File(new File("./scripts/"), fileName));
+	}
+
+	public Script getScript(Script script, String fileName) throws IOException {
+		return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
+	}
 }

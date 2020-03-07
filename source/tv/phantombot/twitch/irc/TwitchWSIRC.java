@@ -137,7 +137,7 @@ public class TwitchWSIRC extends WebSocketClient {
         this.send("NICK " + botName);
 
         // Send an event saying that we are connected to Twitch.
-        EventBus.instance().postAsync(new IrcConnectCompleteEvent(session));
+        EventBus.postAsync(new IrcConnectCompleteEvent(session));
     }
 
     /**

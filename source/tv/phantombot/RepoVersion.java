@@ -16,43 +16,37 @@
  */
 package tv.phantombot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 public class RepoVersion {
 
-    private static final String phantomBotVersion = "@phantombot.version@";
-    private static final String repoVersion = "@repository.version@";
-    private static final String buildType = "@buildtype@";
-    private static final String panelVersion = "@webpanel.version@";
+	private static final String phantomBotVersion = "@phantombot.version@";
+	private static final String repoVersion = "@repository.version@";
+	private static final String buildType = "@buildtype@";
+	private static final String panelVersion = "@webpanel.version@";
 
-    private RepoVersion() {
-    }
+	private RepoVersion() {
+	}
 
-    public static String getPhantomBotVersion() {
-        return phantomBotVersion;
-    }
+	public static String getPhantomBotVersion() {
+		return phantomBotVersion;
+	}
 
-    public static String getRepoVersion() {
-        return repoVersion;
-    }
+	public static String getRepoVersion() {
+		return repoVersion;
+	}
 
-    public static String getBuildType() {
-        return buildType;
-    }
+	public static String getBuildType() {
+		return buildType;
+	}
 
-    public static boolean getNightlyBuild() {
-        return buildType.equals("nightly_build");
-    }
+	public static boolean getNightlyBuild() {
+		return buildType.equals("nightly_build");
+	}
 
-    public static boolean getPrereleaseBuild() {
-        return buildType.equals("prerelease_build");
-    }
+	public static boolean getPrereleaseBuild() {
+		return buildType.equals("prerelease_build");
+	}
 
-    public static String getPanelVersion() {
-        return panelVersion;
-    }
+	public static String getPanelVersion() {
+		return panelVersion;
+	}
 }

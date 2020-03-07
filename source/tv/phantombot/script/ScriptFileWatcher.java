@@ -43,7 +43,8 @@ public class ScriptFileWatcher implements Runnable {
     /**
      * Class constructor.
      */
-    private ScriptFileWatcher() {
+    @SuppressWarnings("static-access")
+	private ScriptFileWatcher() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         this.thread = new Thread(this, "tv.phantombot.script.ScriptFileWatcher::run");
@@ -70,7 +71,6 @@ public class ScriptFileWatcher implements Runnable {
     /**
      * Method that runs on a new thread to reload scripts.
      */
-    @SuppressWarnings("SleepWhileInLoop")
     @Override
     public void run() {
         while (!isKilled) {

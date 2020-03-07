@@ -18,12 +18,12 @@
 package tv.phantombot.scripts.core;
 
 import java.util.Map;
+
 import org.json.JSONException;
-
-import tv.phantombot.cache.UsernameCache;
-import tv.phantombot.PhantomBot;
-
 import org.json.JSONObject;
+
+import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.Cache;
 
 /**
  * Class that stores a Twitch user. Each user gets their own class.
@@ -343,7 +343,7 @@ public final class User {
         if (!isBuilt(full)) {
             try {
                 // This can query the API or our database.
-                JSONObject user = UsernameCache.instance().getUserData(getUsername());
+                JSONObject user = Cache.getUsername().getUserData(getUsername());
                 
                 // Make sure we got data.
                 if (user.has("_id")) {

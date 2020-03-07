@@ -18,29 +18,27 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.datastore.DataStore;
-import com.gmt2001.UncaughtExceptionHandler;
-import net.engio.mbassy.listener.Handler;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.gmt2001.datastore.DataStore;
+
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.cache.TwitchCache;
+import tv.phantombot.cache.Cache;
+import tv.phantombot.cache.types.TwitchCache;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.TwitchSession;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.json.JSONObject;
-import org.json.JSONException;
 
 /*
  * Provides a timer system for managing notices.  Reads data directly from the
@@ -177,7 +175,7 @@ public class NoticeTimer implements Runnable, Listener {
      * @param    int    currentMinute - Passed to processScheduledTimers()
      */
     private void processTimers(int currentMinute) throws JSONException {
-        TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        TwitchCache twitchCache = Cache.getTwitch(this.channel);
         DataStore dataStore = PhantomBot.instance().getDataStore();
 
         /* Notices are disabled. */
@@ -231,7 +229,7 @@ public class NoticeTimer implements Runnable, Listener {
      * Performs the main procesing of ordered timers.
      */
     private void processOrderedTimers() {
-        TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        TwitchCache twitchCache = Cache.getTwitch(this.channel);
         String currentGameTitle = twitchCache.getGameTitle();
         DataStore dataStore = PhantomBot.instance().getDataStore();
         JSONObject noticeData = null;
@@ -345,7 +343,7 @@ public class NoticeTimer implements Runnable, Listener {
     private void processScheduledTimers(int currentMinute) throws JSONException {
         List<JSONObject> eligibleGameNotices = new ArrayList<JSONObject>();
         List<JSONObject> eligibleNotices = new ArrayList<JSONObject>();
-        TwitchCache twitchCache = TwitchCache.instance(this.channel);
+        TwitchCache twitchCache = Cache.getTwitch(this.channel);
         JSONObject noticeData = null;
         DataStore dataStore = PhantomBot.instance().getDataStore();
         String currentGameTitle = twitchCache.getGameTitle();

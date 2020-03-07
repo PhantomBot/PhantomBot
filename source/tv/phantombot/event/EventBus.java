@@ -16,75 +16,61 @@
  */
 package tv.phantombot.event;
 
+import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.SyncMessageBus;
-
-import net.engio.mbassy.bus.MBassador;
-
 import tv.phantombot.PhantomBot;
 
 public class EventBus {
-    private static final EventBus instance = new EventBus();
-    private static final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
 
-    /**
-     * Class constructor.
-     */
-    private EventBus() {
+	private static final MBassador<Event> MESSAGE_BUS = new MBassador<Event>(new BusConfiguration()
+			.addFeature(Feature.SyncPubSub.Default())
+			.addFeature(Feature.AsynchronousHandlerInvocation.Default())
+			.addFeature(Feature.AsynchronousMessageDispatch.Default()
+			.setNumberOfMessageDispatchers(10))
+			.addPublicationErrorHandler(new ExceptionHandler()));
 
-    }
+	/**
+	 * Method that registers a listener with the bus.
+	 *
+	 * @param {Listener} listener
+	 */
+	public static void register(Listener listener) {
+		EventBus.MESSAGE_BUS.subscribe(listener);
+	}
 
-    /**
-     * Method that returns this instance
-     *
-     * @return {EventBus}
-     */
-    public static EventBus instance() {
-        return instance;
-    }
+	/**
+	 * Method that removes a listener from the bus.
+	 *
+	 * @param {Listener} listener
+	 */
+	public static void unregister(Listener listener) {
+		EventBus.MESSAGE_BUS.unsubscribe(listener);
+	}
 
-    /**
-     * Method that registers a listener with the bus.
-     *
-     * @param {Listener} listener
-     */
-    public void register(Listener listener) {
-        bus.subscribe(listener);
-    }
+	/**
+	 * Method that posts an event in sync.
+	 *
+	 * @param {Event} event
+	 */
+	public static void post(Event event) {
+		if (PhantomBot.isInExitState()) {
+			return;
+		}
 
-    /**
-     * Method that removes a listener from the bus.
-     *
-     * @param {Listener} listener
-     */
-    public void unregister(Listener listener) {
-        bus.unsubscribe(listener);
-    }
+		EventBus.MESSAGE_BUS.publish(event);
+	}
 
-    /**
-     * Method that posts an event in sync.
-     *
-     * @param {Event} event
-     */
-    public void post(Event event) {
-        if (PhantomBot.isInExitState()) {
-            return;
-        }
+	/**
+	 * Method that posts an event in async.
+	 *
+	 * @param {Event} event
+	 */
+	public static void postAsync(Event event) {
+		if (PhantomBot.isInExitState()) {
+			return;
+		}
 
-        bus.publish(event);
-    }
-
-    /**
-     * Method that posts an event in async.
-     *
-     * @param {Event} event
-     */
-    public void postAsync(Event event) {
-        if (PhantomBot.isInExitState()) {
-            return;
-        }
-
-        bus.publishAsync(event);
-    }
+		EventBus.MESSAGE_BUS.publishAsync(event);
+	}
 }
