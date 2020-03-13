@@ -158,14 +158,18 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String} rawMessage
      */
     public void parseData(String rawMessage) {
-        if (rawMessage.contains("\n")) {
-            String[] messageList = rawMessage.split("\n");
+        try {
+            if (rawMessage.contains("\n")) {
+                String[] messageList = rawMessage.split("\n");
 
-            for (String message : messageList) {
-                parseLine(message);
+                for (String message : messageList) {
+                    parseLine(message);
+                }
+            } else {
+                parseLine(rawMessage);
             }
-        } else {
-            parseLine(rawMessage);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to parse Twitch message: [" + ex.getMessage() + "] \n\n {" + rawMessage + "}");
         }
     }
 
