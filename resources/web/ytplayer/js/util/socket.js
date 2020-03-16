@@ -18,7 +18,7 @@
  */
 
 $(function() {
-    var socket = new WebSocket((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPlayerPort()),
+    var socket = new WebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer'),
         listeners = [],
         player = {},
         hasAPIKey = true,
