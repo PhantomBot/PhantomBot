@@ -138,6 +138,22 @@
             }
 
             /**
+             * @commandpath greeting setdefault - Set the default greeting message
+             */
+            if (action.equalsIgnoreCase('setdefault')) {
+                message = args.splice(1, args.length - 1).join(' ');
+
+                if (!message) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.admin'));
+                    return;
+                }
+
+                $.inidb.set('greeting', 'defaultJoin', message);
+                defaultJoinMessage = message;
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.default.success', defaultJoinMessage));
+            }
+
+            /**
              * @commandpath greeting enable [default | message] - Enable greetings and use the default or set a message.
              */
             if (action.equalsIgnoreCase('enable')) {
