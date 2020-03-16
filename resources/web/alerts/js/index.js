@@ -27,7 +27,7 @@ $(function() {
      * @return {ReconnectingWebSocket}
      */
     function getWebSocket() {
-        let socketUri = ((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.hostname + ':' + getPanelPort()), // URI of the socket.
+        let socketUri = ((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/panel'), // URI of the socket.
             reconnectInterval = 5000; // How often in milliseconds we should try reconnecting.
 
         return new ReconnectingWebSocket(socketUri, null, {
@@ -265,7 +265,7 @@ $(function() {
             }
 
             // Check if the file is a gif, or video.
-            if (gifFile.match(/\.(webm|mp4|ogg)$/) !== null) {
+            if (gifFile.match(/\.(webm|mp4|ogg|ogv)$/) !== null) {
                 htmlObj = $('<video/>', {
                     'src': defaultPath + gifFile,
                     'autoplay': 'autoplay',

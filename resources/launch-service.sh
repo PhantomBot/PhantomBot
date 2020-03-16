@@ -26,6 +26,8 @@
 
 unset DISPLAY
 
+tmp=""
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do
@@ -108,4 +110,9 @@ else
     JAVA="./java-runtime-linux/bin/java"
 fi
 
-${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED -Djava.security.policy=config/security -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
+if mount | grep '/tmp' | grep -q noexec; then
+    mkdir -p $(dirname $(readlink -f $0))/tmp
+    tmp="-Djava.io.tmpdir=$(dirname $(readlink -f $0))/tmp"
+fi
+
+${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Djava.security.policy=config/security -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}

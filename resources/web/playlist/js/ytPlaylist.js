@@ -24,7 +24,7 @@ var DEBUG_MODE = false;
 var connectedToWS = false;
 
 var url = window.location.host.split(":");
-var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
+var addr = (getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer';
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 

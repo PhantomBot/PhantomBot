@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy ByPass -File .\launch_logged_win.ps1

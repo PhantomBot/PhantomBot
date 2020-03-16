@@ -360,8 +360,8 @@
             var messageID = reactionEvent.getMessage().block().getId().asString(),
                     messageInArray = messageDeleteArray[messageID];
             if (messageInArray !== undefined) {
-                if ((messageInArray.lastUser.getId().asString().equals(reactionUser)) &&
-                        (messageInArray.lastMessage.getId().asString().equals(messageID))) {
+                if (messageInArray.lastUser.getId().asString().equals(reactionUser) &&
+                        messageInArray.lastMessage.getId().asString().equals(messageID)) {
                     reactionEvent.getMessage().block().delete().subscribe();
                     messageInArray.lastCommandMessage.delete().subscribe();
                     clearTimeout(messageInArray.timeout);
