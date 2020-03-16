@@ -979,7 +979,7 @@
                 "title": currentPlaylist.getCurrentVideo().getVideoTitle() + '',
                 "duration": currentPlaylist.getCurrentVideo().getVideoLengthMMSS() + ''
             };
-            client.sendJSONToAll(JSON.stringify(jsonData));
+            client.currentSong(JSON.stringify(jsonData));
         }
 
         /**
@@ -1041,7 +1041,7 @@
                         }
                     }
                 }
-                client.sendJSONToAll(JSON.stringify(jsonList));
+                client.playList(JSON.stringify(jsonList));
             }
         };
 
@@ -1066,7 +1066,7 @@
                         "requester": youtubeObject.getOwner() + ''
                     });
                 }
-                client.sendJSONToAll(JSON.stringify(jsonList));
+                client.songList(JSON.stringify(jsonList));
             }
         };
 
@@ -1299,6 +1299,7 @@
         loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
+        $.ytplayer.setClientConnected(true);
     });
 
     /**
@@ -1307,6 +1308,7 @@
     $.bind('yTPlayerDisconnect', function(event) {
         connectedPlayerClient = null;
 
+        $.ytplayer.setClientConnected(false);
         $.consoleLn($.lang.get('ytplayer.console.client.disconnected'));
         if (!songRequestsEnabled && announceInChat) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));
