@@ -109,13 +109,7 @@
         <ivy:cleancache/>
     </target>
     
-    <target name="clearlib">
-        <delete>
-            <fileset dir="${reference}" includes="**/*.jar" />
-        </delete>
-    </target>
-    
-    <target depends="clearlib,ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve" />
+    <target depends="ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve"/>
     
     <target depends="ivy-retrieve" name="classpaths">
         <path id="reference.class.path">

@@ -52,28 +52,19 @@ COPY --from=builder "${BUILDDIR}/dist/build/." "${BASEDIR}/"
 
 RUN cd "${BASEDIR}" \
     && rm -rf \
-    && mkdir "${DATADIR}/scripts" \
-    && mkdir "${DATADIR}/scripts/discord" \
-    && mkdir "${DATADIR}/scripts/lang" \
     && mv "${BASEDIR}/addons" "${DATADIR}/" \
-    && mv "${BASEDIR}/config" "${DATADIR}/" \
     && mv "${BASEDIR}/logs" "${DATADIR}/" \
-    && mv "${BASEDIR}/scripts/custom" "${DATADIR}/scripts/" \
-    && mv "${BASEDIR}/scripts/discord/custom" "${DATADIR}/scripts/discord/" \
-    && mv "${BASEDIR}/scripts/lang/custom" "${DATADIR}/scripts/lang/" \
+    && mv "${BASEDIR}/config" "${DATADIR}/" \
     && mkdir "${DATADIR}/dbbackup" \
     && ln -s "${DATADIR}/addons" \
-    && ln -s "${DATADIR}/config" \
-    && ln -s "${DATADIR}/dbbackup" \
     && ln -s "${DATADIR}/logs" \
-    && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/" \
-    && ln -s "${DATADIR}/scripts/discord/custom" "${BASEDIR}/scripts/discord/" \
-    && ln -s "${DATADIR}/scripts/lang/custom" "${BASEDIR}/scripts/lang/"
+    && ln -s "${DATADIR}/config" \
+    && ln -s "${DATADIR}/dbbackup"
 
 VOLUME "${DATADIR}"
 
 WORKDIR "${BASEDIR}"
 
-EXPOSE 25000
+EXPOSE 25000 25001 25002 25003 25004 25005
 
 CMD ["sh", "launch-service.sh"]

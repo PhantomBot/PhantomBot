@@ -129,7 +129,7 @@
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        $.panelsocketserver.sendToAll(JSON.stringify({
             'start_poll': 'true',
             'data': JSON.stringify(objOBS)
         }));
@@ -170,7 +170,7 @@
             if (objOBS[i].label == poll.options[optionIndex])
                 objOBS[i].votes++;
         }
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        $.panelsocketserver.sendToAll(JSON.stringify({
             'new_vote': 'true',
             'data': JSON.stringify(objOBS)
         }));
@@ -192,7 +192,7 @@
         clearTimeout(timeout);
 
         $.inidb.set('pollPanel', 'isActive', 'false');
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        $.panelsocketserver.sendToAll(JSON.stringify({
             'end_poll': 'true'
         }));
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {

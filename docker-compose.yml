@@ -15,31 +15,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-version: '3'
+version: '2'
 services:
   phantombot:
-    container_name: phantombot-nightly
-    image: gmt2001/phantombot-nightly:latest
+    #build:
+    #  context: .
+    container_name: phantombot
+    image: phantombot/phantombot:latest
     ports:
-      - "25000:25000"
+      - "25000-25005:25000-25005"
     restart: always
     volumes:
       - /opt/PhantomBot/addons
-      - /opt/PhantomBot/config
-      - /opt/PhantomBot/dbbackup
+      - /opt/PhantomBot/botlogin.txt
       - /opt/PhantomBot/logs
-      - /opt/PhantomBot/scripts/custom
-      - /opt/PhantomBot/scripts/discord/custom
-      - /opt/PhantomBot/scripts/lang/custom
+      - /opt/PhantomBot/config/phantombot.db
+      - /opt/PhantomBot/config/phantombot.db-journal
     environment:
-      # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix
-      # Twitch bot user (Required)
+      # Twitch bot user
       - PHANTOMBOT_USER=
-      # Twitch bot user OAuth token (https://twitchapps.com/tmi/) (Required)
+      # Twitch bot user OAuth token (https://twitchapps.com/tmi/)
       - PHANTOMBOT_OAUTH=
       # Twitch caster channel OAuth token (https://phantombot.tv/oauth/)
-      # - PHANTOMBOT_APIOAUTH=
-      # Twitch caster channel (Required)
+      #- PHANTOMBOT_APIOAUTH=
+      # Twitch caster channel
       - PHANTOMBOT_CHANNEL=
       # Webinterface username
       #- PHANTOMBOT_PANELUSER=
