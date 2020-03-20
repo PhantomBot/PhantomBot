@@ -194,6 +194,7 @@
     /** Export functions to API */
     $.patternDetector = {
         hasLinks: hasLinks,
+        getLinks: getLinks,
         getLongestRepeatedSequence: getLongestRepeatedSequence,
         getLongestNonLetterSequence: getLongestNonLetterSequence,
         getNumberOfNonLetters: getNumberOfNonLetters,
