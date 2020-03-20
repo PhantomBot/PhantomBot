@@ -142,7 +142,8 @@
         messageTime = $.systemTime(),
         warning = '',
         youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
-        i;
+        i,
+        j;
 
     /**
      * @function reloadModeration
@@ -493,8 +494,14 @@
      * @param {string} message
      */
     function checkWhiteList(message) {
+        var links = $.patternDetector.getLinks(message);
         for (i in whiteList) {
-            if (message.indexOf(whiteList[i]) !== -1) {
+            for (j = 0; j < links.length; j++) {
+                if (links[j].indexOf(whiteList[i]) !== -1) {
+                    links.splice(j--, 1);
+                }
+            }
+            if (links.length === 0) {
                 return true;
             }
         }
