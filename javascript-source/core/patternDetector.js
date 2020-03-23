@@ -50,7 +50,10 @@
      * @returns {string[]}
      */
     function getLinks(event) {
-        var matches = Array.from(event.getMessage().matchAll(patterns.link));
+        // turn Java String into JavaScript string
+        // https://github.com/mozilla/rhino/issues/638
+        var message = event.getMessage() + '';
+        var matches = Array.from(message.matchAll(patterns.link));
         return matches.map(function(m) { return m[0] });
     }
 
