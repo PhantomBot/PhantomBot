@@ -18,7 +18,7 @@
 $.lang.register('quotesystem.add.usage1', 'Verwendung: !addquote [Zitat]');
 $.lang.register('quotesystem.add.usage2', 'Verwendung: !addquote [Benutzer] [Zitat]');
 $.lang.register('quotesystem.add.offline', 'Nur Moderatoren können Zitate hinzufügen, während der Stream offline ist.');
-$.lang.register('quotesystem.add.success', 'Neues Zitat von $1, mit der ID #$2, hizugefügt.');
+$.lang.register('quotesystem.add.success', 'Neues Zitat von $1, mit der ID #$2, hinzugefügt.');
 $.lang.register('quotesystem.del.usage', 'Verwedung: !delquote [Zitat ID]');
 $.lang.register('quotesystem.del.success', 'Zitat $1 gelöscht. Es sind noch $2 Zitate vorhanden.');
 $.lang.register('quotesystem.del.404', 'Konnte Zitat, $1, nicht löschen... Bist du sicher, dass es existiert?');
