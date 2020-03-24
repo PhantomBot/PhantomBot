@@ -53,8 +53,7 @@
         // turn Java String into JavaScript string
         // https://github.com/mozilla/rhino/issues/638
         var message = event.getMessage() + '';
-        var matches = Array.from(message.matchAll(patterns.link));
-        return matches.map(function(m) { return m[0] });
+        return message.match(patterns.link);
     }
 
     /**
