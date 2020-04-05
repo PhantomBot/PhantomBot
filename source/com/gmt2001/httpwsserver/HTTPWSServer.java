@@ -35,6 +35,7 @@ import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import tv.phantombot.PhantomBot;
 
 /**
  * Provides a HTTP 1.1 server with WebSocket support
@@ -98,7 +99,7 @@ public final class HTTPWSServer {
         final SslContext sslCtx;
 
         try {
-            if (sslFile != null && !sslFile.isBlank()) {
+            if (PhantomBot.instance().useHttps() && sslFile != null && !sslFile.isBlank()) {
                 KeyStore ks = KeyStore.getInstance("JKS");
                 try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
                     ks.load(inputStream, sslPass.toCharArray());
