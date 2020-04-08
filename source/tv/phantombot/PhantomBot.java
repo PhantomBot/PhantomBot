@@ -310,6 +310,15 @@ public final class PhantomBot implements Listener {
     }
 
     /**
+     * Is HTTPS switch enabled in config?
+     *
+     * @return {boolean} HTTPS Switch
+     */
+    public boolean useHttps() {
+        return this.useHttps;
+    }
+
+    /**
      * Prints a message in the bot console.
      *
      * @param {Object} message
