@@ -43,12 +43,22 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="incommingRaids">
                     <form role="form">
+                        <div class="load-ajax">
+                            <div class="spinner"></div>
+                            <p class="load-ajax-text">Loading...</p>
+                        </div>
+
                         <table id="raidHistoryTable" class="table table-bordered table-hover"></table>
                     </form>
                 </div>
 
                 <div class="tab-pane" id="outgoingRaids">
                     <form role="form">
+
+                        <div class="load-ajax">
+                            <div class="spinner"></div>
+                            <p class="load-ajax-text">Loading...</p>
+                        </div>
                         <table id="outRaidHistoryTable" class="table table-bordered table-hover"></table>
                     </form>
                 </div>
