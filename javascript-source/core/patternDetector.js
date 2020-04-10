@@ -23,7 +23,7 @@
  */
 (function() {
     var patterns = {
-        link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|a[cdefgilmnoqrstuwxz])' + '|(?:biz|bike|bot|b[abdefghijmnorstvwyz])' + '|(?:com|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|(?:fyi|f[ijkmor])' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|(?:how|h[kmnrtu])' + '|(?:info|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|(?:r[eouw])' + '|(?:s[abcdeghijklmnortuvyz])' + '|(?:t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|(?:vote|v[ceginu])' + '|(?:xxx)' + '|(?:watch|w[fs])' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'i'),
+        link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|a[cdefgilmnoqrstuwxz])' + '|(?:biz|bike|bot|b[abdefghijmnorstvwyz])' + '|(?:com|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|(?:fyi|f[ijkmor])' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|(?:how|h[kmnrtu])' + '|(?:info|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|(?:r[eouw])' + '|(?:s[abcdeghijklmnortuvyz])' + '|(?:t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|(?:vote|v[ceginu])' + '|(?:xxx)' + '|(?:watch|w[fs])' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'ig'),
         emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
         repeatedSeq: /(.)(\1+)/ig,
         nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
@@ -37,11 +37,23 @@
      * @function hasLinks
      * @export $.patternDetector
      * @param {Object} event
-     * @param {boolean} [aggressive]
      * @returns {boolean}
      */
     function hasLinks(event) {
         return patterns.link.test(event.getMessage());
+    }
+
+    /**
+     * @function getLinks
+     * @export $.patternDetector
+     * @param {Object} event
+     * @returns {string[]}
+     */
+    function getLinks(event) {
+        // turn Java String into JavaScript string
+        // https://github.com/mozilla/rhino/issues/638
+        var message = event.getMessage() + '';
+        return message.match(patterns.link);
     }
 
     /**
@@ -184,6 +196,7 @@
     /** Export functions to API */
     $.patternDetector = {
         hasLinks: hasLinks,
+        getLinks: getLinks,
         getLongestRepeatedSequence: getLongestRepeatedSequence,
         getLongestNonLetterSequence: getLongestNonLetterSequence,
         getNumberOfNonLetters: getNumberOfNonLetters,
