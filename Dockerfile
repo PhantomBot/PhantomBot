@@ -48,7 +48,7 @@ ARG DATADIR=${BASEDIR}_data
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
 
-COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-3.0.0/." "${BASEDIR}/"
+COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-3.1.0/." "${BASEDIR}/"
 
 RUN cd "${BASEDIR}" \
     && rm -rf \
