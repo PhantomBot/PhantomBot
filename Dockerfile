@@ -68,8 +68,8 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/dbbackup" \
     && ln -s "${DATADIR}/logs" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
-    && ln -s "${DATADIR}/scripts/discord/custom" "${BASEDIR}/scripts/discord/" \
-    && ln -s "${DATADIR}/scripts/lang/custom" "${BASEDIR}/scripts/lang/"
+    && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
+    && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom"
 
 VOLUME "${DATADIR}"
 
