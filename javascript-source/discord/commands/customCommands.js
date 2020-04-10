@@ -598,7 +598,7 @@
                     if (event.getArgs()[2].length() === 0) {
                         $.inidb.del('discordChannelcom', event.getArgs()[0]);
                     } else {
-                        $.inidb.set('discordChannelcom', event.getArgs()[0], event.getArgs()[2].replace(/#/g, '').toLowerCase());
+                        $.inidb.set('discordChannelcom', event.getArgs()[0], String(event.getArgs()[2]).replace(/#/g, '').toLowerCase());
                     }
 
                     $.discord.updateCommandChannel(event.getArgs()[0]);
