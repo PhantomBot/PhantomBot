@@ -35,7 +35,6 @@ import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import tv.phantombot.PhantomBot;
 
 /**
  * Provides a HTTP 1.1 server with WebSocket support
@@ -60,12 +59,12 @@ public final class HTTPWSServer {
     /**
      * Gets the server instance.
      *
-     * You should always call the parameterized version, {@link HTTPWSServer#instance(String, int, String, String)}, at least once before this one
+     * You should always call the parameterized version, {@link HTTPWSServer#instance(String, int, boolean, String, String)}, at least once before this one
      *
      * @return An initialized {@link HTTPWSServer}
      */
     public static HTTPWSServer instance() {
-        return instance(null, 25000, null, null);
+        return instance(null, 25000, false, null, null);
     }
 
     /**
@@ -73,14 +72,15 @@ public final class HTTPWSServer {
      *
      * @param ipOrHostname The IP or Hostname of an interface to bind to. null for the default AnyAddress
      * @param port The port number to bind to
+     * @param useHttps If SSL should be used.
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      * @return An initialized {@link HTTPWSServer}
      */
-    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, String sslFile, String sslPass) {
+    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
         if (INSTANCE == null) {
-            INSTANCE = new HTTPWSServer(ipOrHostname, port, sslFile, sslPass);
+            INSTANCE = new HTTPWSServer(ipOrHostname, port, useHttps, sslFile, sslPass);
         }
 
         return INSTANCE;
@@ -91,15 +91,16 @@ public final class HTTPWSServer {
      *
      * @param ipOrHostname The IP or Hostname of an interface to bind to. null for the default AnyAddress
      * @param port The port number to bind to
+     * @param useHttps If SSL should be used.
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      */
-    private HTTPWSServer(String ipOrHostname, int port, String sslFile, String sslPass) {
+    private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
         final SslContext sslCtx;
 
         try {
-            if (PhantomBot.instance().useHttps() && sslFile != null && !sslFile.isBlank()) {
+            if (useHttps && sslFile != null && !sslFile.isBlank()) {
                 KeyStore ks = KeyStore.getInstance("JKS");
                 try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
                     ks.load(inputStream, sslPass.toCharArray());
