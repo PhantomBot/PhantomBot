@@ -827,7 +827,7 @@ public final class PhantomBot implements Listener {
         /* Is the web toggle enabled? */
         if (webEnabled) {
             checkPortAvailabity(basePort);
-            HTTPWSServer.instance(bindIP, basePort, httpsFileName, httpsPassword);
+            HTTPWSServer.instance(bindIP, basePort, useHttps, httpsFileName, httpsPassword);
             new HTTPNoAuthHandler().register();
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();

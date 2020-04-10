@@ -65,7 +65,7 @@ public final class HTTPWSServer {
      * @return An initialized {@link HTTPWSServer}
      */
     public static HTTPWSServer instance() {
-        return instance(null, 25000, null, null);
+        return instance(null, 25000, false, null, null);
     }
 
     /**
@@ -78,9 +78,9 @@ public final class HTTPWSServer {
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      * @return An initialized {@link HTTPWSServer}
      */
-    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, String sslFile, String sslPass) {
+    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
         if (INSTANCE == null) {
-            INSTANCE = new HTTPWSServer(ipOrHostname, port, sslFile, sslPass);
+            INSTANCE = new HTTPWSServer(ipOrHostname, port, useHttps, sslFile, sslPass);
         }
 
         return INSTANCE;
@@ -95,11 +95,11 @@ public final class HTTPWSServer {
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      */
-    private HTTPWSServer(String ipOrHostname, int port, String sslFile, String sslPass) {
+    private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
         final SslContext sslCtx;
 
         try {
-            if (PhantomBot.instance().useHttps() && sslFile != null && !sslFile.isBlank()) {
+            if (useHttps && sslFile != null && !sslFile.isBlank()) {
                 KeyStore ks = KeyStore.getInstance("JKS");
                 try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
                     ks.load(inputStream, sslPass.toCharArray());
