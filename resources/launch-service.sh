@@ -115,4 +115,12 @@ if mount | grep '/tmp' | grep -q noexec; then
     tmp="-Djava.io.tmpdir=$(dirname $(readlink -f $0))/tmp"
 fi
 
+if [[ ! -x "${JAVA}" ]]; then
+    echo "Java does not have the executable permission"
+    echo "Please run the following command to fix this:"
+    echo "   sudo chmod u+x ${JAVA}"
+
+    exit 1
+fi
+
 ${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Djava.security.policy=config/security -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
