@@ -525,7 +525,9 @@
             // Decrease or add points after the command is sent to not slow anything down.
             if ($.priceCom(sender, command, subCommand, isMod) === 0) {
                 $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand, ''));
-            } else if ($.payCom(command) === 0) {
+            } 
+
+            if ($.payCom(command) === 0) {
                 $.inidb.incr('points', sender, $.getCommandPay(command));
             }
         });

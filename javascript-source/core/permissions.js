@@ -791,7 +791,7 @@
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase().trim(),
             modMessageStart = 'the moderators of this channel are: ',
-            vipMessageStart = 'the vips of this channel are: ',
+            vipMessageStart = 'vips for this channel are: ',
             novipMessageStart = 'this channel does not have any vips',
             keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
