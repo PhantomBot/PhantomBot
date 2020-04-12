@@ -420,7 +420,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         }
 
         if (msg.charAt(0) == '!') {
-            PhantomBot.instance().handleCommand(user, msg);
+            PhantomBot.instance().handleCommand(user, msg.substring(1));
         } else {
             PhantomBot.instance().getSession().say(msg);
         }
