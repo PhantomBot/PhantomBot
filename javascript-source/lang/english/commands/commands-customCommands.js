@@ -32,6 +32,7 @@ $.lang.register('customcommands.alias.usage', 'Usage: !aliascom (alias name) (ex
 $.lang.register('customcommands.delete.success', 'Command !$1 has been removed!');
 $.lang.register('customcommands.delete.usage', 'Usage: !delcom (command)');
 $.lang.register('customcommands.edit.404', 'You cannot overwrite a default command.');
+$.lang.register('customcommands.edit.editcom.alias', 'You cannot edit an alias, please use the following: !editcom !$1 $2');
 $.lang.register('customcommands.set.perm.error.target404', 'The command !$1 does not exist!');
 $.lang.register('customcommands.set.perm.success', 'Permissions for command: $1 set for group: $2 and higher.');
 $.lang.register('customcommands.set.perm.unset.success', 'All recursive permissions for the command: $1 and any of its aliases have been removed.');

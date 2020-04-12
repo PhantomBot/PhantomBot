@@ -16,7 +16,7 @@
  */
 
 (function() {
-    // Pre-build regular expressions.
+    // Pre-build regular expressions.z
     var reCustomAPI = new RegExp(/\(customapi\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
@@ -964,7 +964,11 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
                 return;
             } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                if ($.inidb.exists('aliases', action)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.editcom.alias', $.inidb.get('aliases', action), argsString));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                }
                 return;
             } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
                 if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
