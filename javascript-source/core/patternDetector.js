@@ -46,13 +46,13 @@
     /**
      * @function getLinks
      * @export $.patternDetector
-     * @param {Object} event
+     * @param {String} message
      * @returns {string[]}
      */
-    function getLinks(event) {
+    function getLinks(message) {
         // turn Java String into JavaScript string
         // https://github.com/mozilla/rhino/issues/638
-        var message = event.getMessage() + '';
+        message = message + '';
         return message.match(patterns.link);
     }
 
