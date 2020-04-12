@@ -102,6 +102,10 @@ public class WsPanelHandler implements WsFrameHandler {
         String username = jso.has("username") ? jso.getString("username") : PhantomBot.instance().getBotName();
         String uniqueID = jso.has("query_id") ? jso.getString("query_id") : "";
 
+        if (command.charAt(0) == '!') {
+            command = command.substring(1);
+        }
+        
         if (!jso.has("command_sync")) {
             PhantomBot.instance().handleCommand(username, command);
         } else {
