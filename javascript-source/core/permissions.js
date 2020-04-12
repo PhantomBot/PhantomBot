@@ -841,7 +841,7 @@
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    if (subUsers.contains(spl[1].toLowerCase())) {
+                    if (!subUsers.contains(spl[1].toLowerCase())) {
                         subUsers.add(spl[1]);
 
                         restoreSubscriberStatus(spl[1].toLowerCase());
