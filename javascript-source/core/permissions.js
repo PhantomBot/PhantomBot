@@ -26,7 +26,7 @@
 (function() {
     var userGroups = [],
         modeOUsers = [],
-        subUsers = [],
+        subUsers = new java.util.concurrent.CopyOnWriteArrayList(),
         vipUsers = [],
         modListUsers = [],
         users = [],
@@ -238,7 +238,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return hasKey(subUsers, username);
+        return subUsers.contains(username.toLowerCase());
     }
 
     /**
@@ -318,7 +318,7 @@
      * @returns {Boolean}
      */
     function isTwitchSub(username) {
-        return hasKey(subUsers, username);
+        return isSub(username);
     }
 
     /**
@@ -445,7 +445,7 @@
      */
     function addSubUsersList(username) {
         if (!isSub(username)) {
-            subUsers.push(username);
+            subUsers.add(username);
         }
     }
 
@@ -455,10 +455,8 @@
      * @param username
      */
     function delSubUsersList(username) {
-        var i = getKeyIndex(subUsers, username);
-
-        if (i >= 0) {
-            subUsers.splice(i, 1);
+        if (subUsers.contains(username)) {
+            subUsers.remove(username);
         }
     }
 
@@ -843,10 +841,11 @@
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    if (subUsers.indexOf(spl[1].toLowerCase()) !== -1) {
-                        subUsers.push(spl[1]);
+                    if (subUsers.contains(spl[1].toLowerCase()) !== -1) {
+                        subUsers.add(spl[1]);
+
                         restoreSubscriberStatus(spl[1].toLowerCase());
-                        for (i in subUsers) {
+                        for (var i = 0; i < subUsers.size(); i++) {
                             subsTxtList.push(subUsers[i]);
                         }
                         $.saveArray(subsTxtList, 'addons/subs.txt', false);
