@@ -42,7 +42,7 @@ connection.onopen = function(data) {
     connectedToWS = true;
 
     var jsonObject = {};
-    jsonObject["readauth"] = getAuth();
+    jsonObject["authenticate"] = getAuth();
     connection.send(JSON.stringify(jsonObject));
     debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
 }
