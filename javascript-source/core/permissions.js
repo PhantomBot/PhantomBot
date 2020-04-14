@@ -846,7 +846,7 @@
 
                         restoreSubscriberStatus(spl[1].toLowerCase());
                         for (var i = 0; i < subUsers.size(); i++) {
-                            subsTxtList.push(subUsers[i]);
+                            subsTxtList.push(subUsers.get(i));
                         }
                         $.saveArray(subsTxtList, 'addons/subs.txt', false);
                     }

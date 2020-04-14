@@ -67,7 +67,7 @@ public class MessageQueue implements Runnable {
      *
      * @param {boolean} isAllowedToSend
      */
-    public void setAllowSendMessages(boolean isAllowedToSend) {
+    public synchronized void setAllowSendMessages(boolean isAllowedToSend) {
         this.isAllowedToSend = isAllowedToSend;
     }
 
@@ -144,6 +144,7 @@ public class MessageQueue implements Runnable {
                 }
             } catch (WebsocketNotConnectedException ex) {
                 com.gmt2001.Console.err.println("Failed to send message due to being disconnected from Twitch IRC.");
+                this.setAllowSendMessages(false);
                 session.reconnect();
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
