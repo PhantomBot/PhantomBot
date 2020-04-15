@@ -43,6 +43,7 @@
         var creator = event.getCreator(),
             url = event.getClipURL(),
             title = event.getClipTitle(),
+            clipThumbnail = event.getThumbnailObject().getString("medium"),
             s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
@@ -75,6 +76,7 @@
                         .withTitle($.lang.get('discord.cliphandler.clip.embedtitle'))
                         .appendDescription(s)
                         .withUrl(url)
+                        .withImage(clipThumbnail)
                         .withTimestamp(Date.now())
                         .withFooterText('Twitch')
                         .withFooterIcon($.twitchcache.getLogoLink()).build());
