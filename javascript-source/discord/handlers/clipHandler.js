@@ -42,6 +42,7 @@
 	$.bind('twitchClip', function(event) {
         var creator = event.getCreator(),
             url = event.getClipURL(),
+            title = event.getClipTitle(),
             s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
@@ -55,6 +56,10 @@
 
         if (s.match(/\(url\)/g)) {
             s = $.replace(s, '(url)', url);
+        }
+
+        if (s.match(/\(title\)/g)) {
+            s = $.replace(s, '(title)', title);
         }
 
         if (s.match(/\(embedurl\)/g)) {
