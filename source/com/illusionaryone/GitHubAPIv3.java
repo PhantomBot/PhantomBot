@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,11 +41,15 @@ import org.json.JSONObject;
  */
 public class GitHubAPIv3 {
 
-    private static final GitHubAPIv3 instance = new GitHubAPIv3();
+    private static GitHubAPIv3 instance;
     private static final String sAPIURL = "https://api.github.com/repos/PhantomBotDE/PhantomBotDE";
     private static final int iHTTPTimeout = 2 * 1000;
 
-    public static GitHubAPIv3 instance() {
+    public static synchronized GitHubAPIv3 instance() {
+        if (instance == null) {
+            instance = new GitHubAPIv3();
+        }
+
         return instance;
     }
 
@@ -71,7 +75,7 @@ public class GitHubAPIv3 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +86,7 @@ public class GitHubAPIv3 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) {
+    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -129,6 +133,7 @@ public class GitHubAPIv3 {
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());
@@ -150,7 +155,7 @@ public class GitHubAPIv3 {
      *
      * @return  JSONObject  JSONObject from GitHub
      */
-    public JSONObject GetReleases() {
+    public JSONObject GetReleases() throws JSONException {
         return readJsonFromUrl(sAPIURL + "/releases", true);
     }
 
@@ -159,7 +164,7 @@ public class GitHubAPIv3 {
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
-    public String[] CheckNewRelease() {
+    public String[] CheckNewRelease() throws JSONException {
         JSONObject jsonObject = GetReleases();
         JSONArray jsonArray = jsonObject.getJSONArray("array");
         if (!jsonArray.getJSONObject(0).has("tag_name")) {

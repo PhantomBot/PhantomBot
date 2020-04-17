@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ $(run = function() {
         tables: ['modules', 'auctionSettings'],
         keys: ['./systems/auctionSystem.js', 'isActive']
     }, true, function(e) {
-        if (!helpers.getModuleStatus(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
             // Remove the chat.
             $('#twitch-chat-auction').find('iframe').remove();
             return;

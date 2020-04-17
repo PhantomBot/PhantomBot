@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ $(function() {
 				helpers.getDefaultIfNullOrUndefined(json.lastRaidViewers, '0'),
 				helpers.getDefaultIfNullOrUndefined(json.totalRaids, '1'),
 				helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0'),
+				parseInt(json.lastRaidTime)
 			]);
 		}
 
@@ -52,10 +53,11 @@ $(function() {
     		],
 			'columns': [
 				{ 'title': 'Benutzername' },
-				{ 'title': 'Letzter Raid', 'orderData': [1] },
+				{ 'title': 'Letzter Raid', 'orderData': [5] },
 				{ 'title': 'Zuschauer' },
 				{ 'title': 'Gesamte Raids' },
-				{ 'title': 'Gesamte Zuschauer' }
+				{ 'title': 'Gesamte Zuschauer' },
+                { 'visible': false }
 			]
 		});
 	});

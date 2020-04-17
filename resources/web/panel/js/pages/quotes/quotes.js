@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('quotes_module_toggle', 'modules', './systems/quoteSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('quotesModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('quotesModule', e.modules)) {
             return;
         }
 
@@ -121,7 +121,7 @@ $(run = function() {
                         'role': 'form'
                     })
                     // Append quote date.
-                    .append(helpers.getInputGroup('quote-date', 'text', 'Erstellt am', '', helpers.getPaddedDateString(new Date(data[2]).toLocaleDateString()), 'Datum, an dem das Zitat erstellt wurde.'))
+                    .append(helpers.getInputGroup('quote-date', 'text', 'Erstellt am', '', helpers.getPaddedDateString(new Date(parseInt(data[2])).toLocaleDateString()), 'Datum, an dem das Zitat erstellt wurde.'))
                     // Append quote creator
                     .append(helpers.getInputGroup('quote-user', 'text', 'Erstellt von', '', data[0], 'Der Benutzer, der das Zitat erstellt hat.'))
                     // Append quote game

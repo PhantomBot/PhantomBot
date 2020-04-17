@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
 
-            $.inidb.setAutoCommit(false);
+
             for (i in quoteKeys) {
                 quotes.push($.inidb.get('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
@@ -85,7 +85,7 @@
             for (i in quotes) {
                 $.inidb.set('quotes', i, quotes[i]);
             }
-            $.inidb.setAutoCommit(true);
+
             isDeleting = false;
             return (quotes.length ? quotes.length : 0);
         } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import org.json.JSONException;
 
 import tv.phantombot.PhantomBot;
 
@@ -91,9 +92,9 @@ public class ConsoleEventHandler implements Listener {
      * @param event
      */
     @Handler
-    public void onConsoleInput(ConsoleInputEvent event) {
+    public void onConsoleInput(ConsoleInputEvent event) throws JSONException {
         // The message said in the console.
-        String message = event.getMessage().replaceAll("!", "").trim();
+        String message = event.getMessage();
         // If settings were changed.
         boolean changed = false;
         // Arguments of the message string.
@@ -107,6 +108,8 @@ public class ConsoleEventHandler implements Listener {
         if (message == null || message.isEmpty()) {
             return;
         }
+
+        message = message.replaceAll("!", "").trim();
 
         // Check for arguments in the message string.
         if (message.contains(" ")) {
@@ -258,7 +261,7 @@ public class ConsoleEventHandler implements Listener {
             datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
-            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
+            dataStore.backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
         }
 

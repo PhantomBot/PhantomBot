@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@
             $.registerChatSubcommand(newName, 'add', 1);
             $.registerChatSubcommand(newName, 'give', 1);
             $.registerChatSubcommand(newName, 'take', 1);
+            $.registerChatSubcommand(newName, 'remove', 1);
             $.registerChatSubcommand(newName, 'set', 1);
             $.registerChatSubcommand(newName, 'all', 1);
             $.registerChatSubcommand(newName, 'takeall', 1);
@@ -150,7 +151,8 @@
      */
     function runPointsPayout() {
         var now = $.systemTime(),
-            uUsers = [],
+            normalPayoutUsers = [], // users that get the normal online payout, nothing custom.
+            isOnline = false,
             username,
             amount,
             i;
@@ -159,7 +161,7 @@
             return;
         }
 
-        if ($.isOnline($.channelName)) {
+        if ((isOnline = $.isOnline($.channelName))) {
             if (onlinePayoutInterval > 0 && (lastPayout + (onlinePayoutInterval * 6e4)) <= now) {
                 amount = onlineGain;
             } else {
@@ -173,10 +175,10 @@
             }
         }
 
-        $.inidb.setAutoCommit(false);
+
         for (i in $.users) {
-            username = $.users[i][0].toLowerCase();
-            if ($.isOnline($.channelName)) {
+            username = $.users[i].toLowerCase();
+            if (isOnline) {
                 if ($.isMod(username) && $.isSub(username) || $.isAdmin(username) && $.isSub(username)) {
                     if (parseInt($.inidb.get('grouppoints', 'Subscriber')) > 0) {
                         amount = parseInt($.inidb.get('grouppoints', 'Subscriber'));
@@ -225,12 +227,18 @@
             }
 
             if (!getUserPenalty(username)) {
-                $.inidb.incr('points', username, amount);
-                uUsers.push(username + '(' + amount + ')');
+                if (amount == onlineGain || amount == offlineGain) {
+                    normalPayoutUsers.push(username);
+                } else {
+                    $.inidb.incr('points', username, amount);
+                }
             }
         }
-        $.inidb.setAutoCommit(true);
-        $.log.file('pointSystem', 'Führe ' + pointNameMultiple + ' Auszahlungen aus. Nutzer: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+
+
+        // Update points for all users with the same amount of online/offline gain.
+        $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
+
         lastPayout = now;
     };
 
@@ -310,11 +318,11 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+
         for (i in $.users) {
-            $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
+            $.inidb.incr('points', $.users[i].toLowerCase(), amount);
         }
-        $.inidb.setAutoCommit(true);
+
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     };
@@ -329,13 +337,13 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+
         for (i in $.users) {
-            if (getUserPoints($.users[i][0].toLowerCase()) > amount) {
-                $.inidb.decr('points', $.users[i][0].toLowerCase(), amount);
+            if (getUserPoints($.users[i].toLowerCase()) > amount) {
+                $.inidb.decr('points', $.users[i].toLowerCase(), amount);
             }
         }
-        $.inidb.setAutoCommit(true);
+
 
         $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
     };
@@ -433,7 +441,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -469,7 +477,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -498,7 +506,7 @@
                     // Replace everything that is not \w
                     actionArg1 = $.user.sanitize(actionArg1);
 
-                    if (!$.user.isKnown(actionArg1)) {
+                    if (!$.user.isKnown(actionArg1) || $.isTwitchBot(actionArg1)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', actionArg1));
                         return;
                     }
@@ -742,7 +750,7 @@
                     amount = $.randRange(1, action);
                 } while (amount == lastAmount);
                 totalAmount += amount;
-                $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
+                $.inidb.incr('points', $.users[i].toLowerCase(), amount);
             }
 
             if (totalAmount > 0) {
@@ -772,7 +780,7 @@
             // Replace everything that is not \w
             action = $.user.sanitize(action);
 
-            if (!$.user.isKnown(action)) {
+            if (!$.user.isKnown(action) || $.isTwitchBot(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.404'));
                 return;
             }

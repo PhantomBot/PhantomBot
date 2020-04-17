@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,15 @@ import org.json.JSONObject;
  */
 public class BTTVAPIv2 {
 
-    private static final BTTVAPIv2 instance = new BTTVAPIv2();
+    private static BTTVAPIv2 instance;
     private static final String sAPIURL = "https://api.betterttv.net/2";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static BTTVAPIv2 instance() {
+        if (instance == null) {
+            instance = new BTTVAPIv2();
+        }
+
         return instance;
     }
 
@@ -70,7 +74,7 @@ public class BTTVAPIv2 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -81,7 +85,7 @@ public class BTTVAPIv2 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -145,7 +149,7 @@ public class BTTVAPIv2 {
      * @param channel
      * @return
      */
-    public JSONObject GetLocalEmotes(String channel) {
+    public JSONObject GetLocalEmotes(String channel) throws JSONException {
         return readJsonFromUrl(sAPIURL + "/channels/" + channel);
     }
 
@@ -154,7 +158,7 @@ public class BTTVAPIv2 {
      *
      * @return
      */
-    public JSONObject GetGlobalEmotes() {
+    public JSONObject GetGlobalEmotes() throws JSONException {
         return readJsonFromUrl(sAPIURL + "/emotes");
     }
 

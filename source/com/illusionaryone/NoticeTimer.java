@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,14 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.TwitchSession;
 
-import com.google.common.collect.Maps;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -52,7 +50,7 @@ import org.json.JSONException;
  */
 public class NoticeTimer implements Runnable, Listener {
 
-    private static final Map<String, NoticeTimer> instances = Maps.newHashMap();
+    private static final Map<String, NoticeTimer> instances = new ConcurrentHashMap<>();
     private Thread noticeThread;
     private String channel;
     private TwitchSession session;
@@ -148,7 +146,11 @@ public class NoticeTimer implements Runnable, Listener {
 
             if (this.lastMinuteRan != currentMinute) {
                 this.lastMinuteRan = currentMinute;
-                processTimers(currentMinute);
+                try {
+                    processTimers(currentMinute);
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
             }
 
             /* Wait 30 seconds between checking for the next minute to arrive. */
@@ -174,7 +176,7 @@ public class NoticeTimer implements Runnable, Listener {
      *
      * @param    int    currentMinute - Passed to processScheduledTimers()
      */
-    private void processTimers(int currentMinute) {
+    private void processTimers(int currentMinute) throws JSONException {
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
         DataStore dataStore = PhantomBot.instance().getDataStore();
 
@@ -340,7 +342,7 @@ public class NoticeTimer implements Runnable, Listener {
      *
      * @param    int    currentMinute - The current minute past the hour to compare to the timers.
      */
-    private void processScheduledTimers(int currentMinute) {
+    private void processScheduledTimers(int currentMinute) throws JSONException {
         List<JSONObject> eligibleGameNotices = new ArrayList<JSONObject>();
         List<JSONObject> eligibleNotices = new ArrayList<JSONObject>();
         TwitchCache twitchCache = TwitchCache.instance(this.channel);
@@ -471,7 +473,7 @@ public class NoticeTimer implements Runnable, Listener {
      * @param    List      List of notices, which are JSONObjects.
      * @return   String    The message to send from the JSONObject found.
      */
-    private String findEligibleNotice(List<JSONObject> noticeList) {
+    private String findEligibleNotice(List<JSONObject> noticeList) throws JSONException {
         String message = "";
         int weight = 0;
 

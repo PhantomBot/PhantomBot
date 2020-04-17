@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2019. - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Valentin Sickert <lapotor@lapotor.de>
+ * Copyright (C) 2016-2019 phantombot.tv
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // If we can sroll the event log or not.
@@ -12,8 +22,8 @@ var canScroll = true;
 $(function() {
     // Query our panel settings first.
     socket.getDBValues('panel_get_settings', {
-        tables: ['panelData', 'panelData'],
-        keys: ['isDark', 'isReverseSortEvents']
+        tables: ['panelData', 'panelData', 'modules'],
+        keys: ['isDark', 'isReverseSortEvents', './systems/commercialSystem.js']
     }, true, function(e) {
         helpers.isDark = e.isDark === 'true';
         helpers.isReverseSortEvents = e.isReverseSortEvents === 'true';
@@ -24,6 +34,16 @@ $(function() {
         $('#dark-mode-toggle').prop('checked', helpers.isDark);
         // Update event toggle.
         $('#toggle-reverse-events').prop('checked', helpers.isReverseSortEvents);
+
+        // Disable isntant commercials if the module is disabled
+        if (e['./systems/commercialSystem.js'] !== 'true') {
+            $('#grp-instant-commercial').addClass('hidden');
+        } else {
+            $('#instant-commercial-length').select2({
+                placeholder: 'Commercial length, in seconds.',
+                width: '100%'
+            }).tooltip('disable');
+        }
 
         // Query recent events.
         socket.getDBValue('dashboard_get_events', 'panelData', 'data', function(e) {
@@ -246,7 +266,7 @@ $(function() {
         socket.sendCommand('update_title', 'settitlesilent ' + $('#stream-title').val(), function() {
             // Update game.
             socket.sendCommand('update_game', 'setgamesilent ' + $('#stream-game').val(), function() {
-                toastr.success('Successfully updated stream information!');
+                toastr.success('Streaminformationen wurden erfolgreich aktualisiert!');
             });
         });
     });
@@ -292,6 +312,17 @@ $(function() {
             toastr.success('Erfolgreich ausgeführter Befehl ' + e.params.data.text);
             // Clear input.
             $('#custom-command-run').val('').trigger('change');
+        });
+    });
+
+    // Handle running a commercial.
+    $('#dashboard-btn-instant-commercial').on('click', function() {
+        if ($('#instant-commercial-length').val() === "") {
+            toastr.error('Bitte wählen Sie eine Werbespot Länge');
+            return;
+        }
+        socket.sendCommand('instant_commercial', 'commercial ' + $('#instant-commercial-length').val() + ($('#instant-commercial-silent').is(':checked') ? ' silent' : ''), function() {
+            toastr.success('Es lief erfolgreich ein Werbespot!');
         });
     });
 

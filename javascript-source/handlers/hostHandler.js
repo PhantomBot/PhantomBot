@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,9 +326,7 @@
          * @commandpath unhost - Will unhost the channel that is being hosted. Make sure to add your bot as a channel editor on your Twitch dashboard for this to work.
          */
         if (command.equalsIgnoreCase('unhost')) {
-            if (action !== undefined) {
-                $.say('.unhost');
-            }
+            $.say('.unhost');
         }
     });
 

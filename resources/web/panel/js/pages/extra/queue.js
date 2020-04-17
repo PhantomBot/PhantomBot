@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $(run = function() {
         keys: ['./systems/queueSystem.js', 'isActive']
     }, true, function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus(['queueModule', 'queueListModule'], e['./systems/queueSystem.js'], 'queueModuleToggle')) {
+        if (!helpers.handleModuleLoadUp(['queueModule', 'queueListModule'], e['./systems/queueSystem.js'], 'queueModuleToggle')) {
             // Remove the chat.
             $('#queue-chat').find('iframe').remove();
             return;

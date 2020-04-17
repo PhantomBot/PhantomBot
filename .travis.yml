@@ -1,5 +1,10 @@
 language: java
-dist: trusty
+dist: xenial
+before_install:
+  - sudo apt-get -y install ant
 jdk:
-  - oraclejdk8
+  - openjdk11
+  - oraclejdk11
+notifications:
+  email: false
 sudo: false

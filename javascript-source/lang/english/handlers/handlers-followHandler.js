@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,3 +47,5 @@ $.lang.register('followhandler.set.followdelay.success', 'Follow delay set to $1
 $.lang.register('followhandler.follow.age.err.404', '$1 $2 is not following channel $3');
 $.lang.register('followhandler.follow.age.time.days', '$1 $2 has been following channel $3 since $4 ($5 days ago).');
 $.lang.register('followhandler.follow.age.time', '$1 $2 has been following channel $3 since $4.');
+$.lang.register('followhandler.follow.age.datefmt', 'MM-dd-yyyy');
+$.lang.register('followhandler.follow.age.datefmt.404', 'Not Following');

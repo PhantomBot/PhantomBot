@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
                 try {
                     json.regexKey = new RegExp(json.keyword.replace('regex:', ''));
                 } catch (ex) {
-                    $.log.error('Fehlerhaftes regex im Schlagwort erkannt [' + keys[i] + ']: ' + ex.message);
+                    $.log.error('Bad regex detected in keyword [' + keys[i] + ']: ' + ex.message);
                     continue;
                 }
             }

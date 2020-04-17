@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 // Main socket and functions.
 $(function() {
-    var webSocket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPanelPort(), null, { reconnectInterval: 500 }),
+    var webSocket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/panel', null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -469,7 +469,12 @@ $(function() {
      */
     webSocket.onmessage = function(e) {
         try {
-            helpers.log('Nachricht vom Socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
+            helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
+
+            if (e.data === 'PING') {
+                webSocket.send('PONG');
+                return;
+            }
 
             let message = JSON.parse(e.data);
 
@@ -484,15 +489,6 @@ $(function() {
                         return;
                     } else {
                         helpers.isAuth = true;
-                    }
-                    // Beta alert. To be removed later.
-                    if (localStorage.getItem('phantombot_beta_warning') !== 'true') {
-                        if (confirm('Hey there! \nThis panel is currently in its early development stages. ' +
-                            'Bugs and issues are to be expected. If you find any, please report them under the beta panel post of the forums! \n\nThank you.')) {
-                            localStorage.setItem('phantombot_beta_warning', 'true');
-                        } else {
-                            return;
-                        }
                     }
 
                     // Load the main page.
@@ -533,6 +529,19 @@ $(function() {
                         helpers.log('Callback mit ID aufgerufen: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
                         // Remove the callback from the array.
                         delete callbacks[message.query_id];
+
+                        // Remove any active spinners.
+                        if (message.query_id !== 'get_bot_updates' && message.query_id.indexOf('get') !== -1) {
+                            // Remove any active spinners.
+                            $('.load-ajax').remove();
+                        }
+
+                        if (message.query_id.indexOf('module_toggle') !== -1 || message.query_id.indexOf('module_status') !== -1
+                            || message.query_id.endsWith('module')) {
+                            if (message.results.value == 'false') {
+                                $('.load-ajax').remove();
+                            }
+                        }
                     } else {
                         helpers.log('Warten auf Daten (' + callback.await + ' übrig) vor dem Aufruf des Callbacks mit ID: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
                     }
@@ -543,7 +552,7 @@ $(function() {
             }
         } catch (ex) {
             // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-            helpers.logError('Failed to parse message from socket: ' + ex.stack, helpers.LOG_TYPE.FORCE);
+            helpers.logError('Failed to parse message from socket: ' + ex.stack + '\n\n' + e.data, helpers.LOG_TYPE.FORCE);
         }
     };
 

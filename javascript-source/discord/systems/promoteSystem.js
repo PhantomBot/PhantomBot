@@ -305,7 +305,7 @@
                 if (biography.equals('')) {
                     biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
                 }
-                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                               .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                               .withTitle('https://twitch.tv/' + twitchName)
                                               .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
@@ -339,11 +339,7 @@
             start += 100;
             end += 100;
 
-            if (!jsonObject.has('_total') || !jsonObject.has('streams')) {
-                return;
-            }
-    
-            if (jsonObject.getInt('_total') === 0) {
+            if (!jsonObject.has('streams')) {
                 return;
             }
     
@@ -358,7 +354,14 @@
                 var twitchName = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('display_name');
                 var followers = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('followers');
                 var views = jsonStreams.getJSONObject(i).getJSONObject('channel').getInt('views');
-                var banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                var banner = null;
+                if (jsonStreams.getJSONObject(i).getJSONObject('channel').has('profile_banner')) {
+                    if (jsonStreams.getJSONObject(i).getJSONObject('channel').isNull('profile_banner')) {
+                        banner = null;
+                    } else {
+                        banner = jsonStreams.getJSONObject(i).getJSONObject('channel').getString('profile_banner');
+                    }
+                }
                 liveStreamers.push(twitchID);
 
                 if (title === null) {
@@ -371,7 +374,7 @@
                 if (!$.inidb.exists('promoteonline', twitchID)) {
                     if ($.systemTime() - $.getIniDbNumber('promoteonlinetime', twitchID, 0) >= (6e4 * 5)) {
                         $.inidb.set('promoteonlinetime', twitchID, $.systemTime());
-                        var embedBuilder = new Packages.sx.blah.discord.util.EmbedBuilder();
+                        var embedBuilder = new Packages.tv.phantombot.discord.util.EmbedBuilder();
                         embedBuilder.withThumbnail(logoUrl)
                                     .withTitle($.lang.get('discord.promotesystem.livemsg.title', $.username.resolve(twitchName), twitchName))
                                     .withColor(100, 65, 164)
@@ -383,7 +386,7 @@
                             embedBuilder.appendField($.lang.get('discord.promotesystem.livemsg.followers'), followers, true)
                                         .appendField($.lang.get('discord.promotesystem.livemsg.views'), views, true);
                         }
-                        if (banner != null && showBanner) {
+                        if (banner !== null && showBanner) {
                             embedBuilder.withImage(banner)
                         }
      
@@ -430,7 +433,7 @@
             if (biography.equals('')) {
                 biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
-            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                           .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                           .withTitle('https://twitch.tv/' + twitchName)
                                           .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))

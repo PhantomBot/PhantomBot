@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('keyword_module', 'modules', './handlers/keywordHandler.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('keywordModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('keywordModule', e.modules)) {
             return;
         }
 
@@ -153,7 +153,6 @@ $(run = function() {
                             case helpers.handleInputNumber(keywordCount):
                                 break;
                             default:
-                                keywordKey.val(keywordKey.val().toLowerCase());
 
                                 // Remove the old keyword.
                                 socket.removeDBValue('edit_keyword_rm', 'keywords', keyword, function() {
@@ -239,7 +238,6 @@ $(function() {
                 case helpers.handleInputNumber(keywordCount):
                     break;
                 default:
-                    keywordKey.val(keywordKey.val().toLowerCase());
 
                     // Update the values.
                     socket.updateDBValues('add_keyword', {

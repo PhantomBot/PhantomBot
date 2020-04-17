@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  */
 
 (function() {
-    // Pre-build regular expressions.
-    var reCustomAPI = new RegExp(/\(customapi\s([\w\W:\/\$\=\?\&\-]+)\)/), // URL[1]
+    // Pre-build regular expressions.z
+    var reCustomAPI = new RegExp(/\(customapi\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)\)/), // URL[1]
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(help=|\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(repeat [1-9]\d*,[\w\s]+\)|\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
@@ -81,6 +81,16 @@
             if (!message.match(tagCheck)) {
                 return event.getArgs()[0] + ' -> ' + message;
             }
+        }
+
+        if (message.match(/\(help=.*\)/g) && event.getArgs()[0] === undefined) {
+            message = message.match(/\(help=(.*?)\)/)[1];
+            $.say(message);
+            return null;
+        }
+
+        if (message.match(/\(help=.*\)/g)) {
+            message = $.replace(message, message.match(/(\(help=.*\))/)[1], '');
         }
 
         if (message.match(/\(views\)/g)) {
@@ -220,6 +230,10 @@
             message = $.replace(message, '(senderrank)', $.resolveRank(event.getSender()));
         }
 
+        if (message.match(/\(senderrankonly\)/g)) {
+            message = $.replace(message, '(senderrankonly)', $.getRank(event.getSender()));
+        }
+
         if (message.match(/\(@sender\)/g)) {
             message = $.replace(message, '(@sender)', $.userPrefix(event.getSender(), true));
         }
@@ -257,7 +271,7 @@
 
         if (message.match(/\(random\)/g)) {
             try {
-                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)[0]));
+                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)));
             } catch (ex) {
                 message = $.replace(message, '(random)', $.username.resolve($.botName));
             }
@@ -265,7 +279,7 @@
 
         if (message.match(/\(randomrank\)/g)) {
             try {
-                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)[0]));
+                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)));
             } catch (ex) {
                 message = $.replace(message, '(randomrank)', $.resolveRank($.botName));
             }
@@ -363,6 +377,26 @@
             }
         }
 
+        if (message.match(/\(followdate\)/g)) {
+            var args = event.getArgs(),
+                channel = $.channelName,
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+            if (args.length > 1) channel = args[1].replace('@','');
+
+            message = $.replace(message, '(followdate)', $.getFollowDate(event.getSender(), sender, channel));
+        }
+
+        if (message.match(/\(hours\)/g)) {
+            var args = event.getArgs(),
+                sender = event.getSender();
+
+            if (args.length > 0) sender = args[0].replace('@','');
+
+            message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
+        }
+
         if (message.match(/\(followage\)/g)) {
             var args = event.getArgs(),
                 channel = $.channelName,
@@ -407,6 +441,32 @@
             }
         }
 
+        if (message.match(/\(repeat\s[1-9]\d*,[\w\s]+\)/g)) {
+            var MIN_COUNTER_VALUE = 1;
+            var MAX_COUNTER_VALUE = 30;
+
+            var matches = message.match(/\(repeat\s([1-9]\d*),([\w\s]+)\)/);
+            var allMatch = matches[0];
+            var counter = parseInt(matches[1]);
+            var iteratingText = matches[2];
+
+            if (counter < MIN_COUNTER_VALUE) {
+                counter = MIN_COUNTER_VALUE;
+            }
+
+            if (counter > MAX_COUNTER_VALUE) {
+                counter = MAX_COUNTER_VALUE;
+            }
+
+            var tmpArray = [];
+
+            for(var i = 0; i < counter; i++) {
+                tmpArray.push(iteratingText);
+            }
+
+            message = $.replace(message, allMatch, tmpArray.join(' '));
+        }
+
         if (message.match(/\(age\)/g)) {
             $.getChannelAge(event);
             return null;
@@ -439,13 +499,15 @@
             message = apiTags(event, message);
         }
 
-        if (message.match('\n')) {
-            var splitMessage = message.split('\n');
+        if (message !== null) {
+            if (message.match('\n')) {
+                var splitMessage = message.split('\n');
 
-            for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
-                $.say(splitMessage[i]);
+                for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
+                    $.say(splitMessage[i]);
+                }
+                return null;
             }
-            return null;
         }
 
         return message;
@@ -588,6 +650,10 @@
 
         // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
         if ((regExCheck = message.match(reCustomAPI))) {
+            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
+                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
+            }
+
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -608,6 +674,10 @@
         // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
         // API seems like overkill.  Even 9 does, to be honest.
         if ((regExCheck = message.match(reCustomAPIJson))) {
+            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
+                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
+            }
+
             if (regExCheck[1].indexOf('$1') != -1) {
                 for (var i = 1; i <= 9; i++) {
                     if (regExCheck[1].indexOf('$' + i) != -1) {
@@ -894,7 +964,11 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
                 return;
             } else if ($.commandExists(action) && !$.inidb.exists('command', action)) {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                if ($.inidb.exists('aliases', action)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.editcom.alias', $.inidb.get('aliases', action), argsString));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.edit.404'));
+                }
                 return;
             } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
                 if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
@@ -912,6 +986,46 @@
             $.registerChatCommand('./commands/customCommands.js', action, 7);
             $.inidb.set('command', action, argsString);
             customCommands[action] = argsString;
+            return;
+        }
+
+        /*
+         * @commandpath tokencom [command] [token] - Stores a user/pass or API key to be replaced into a (customapi) tag. WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!
+         */
+        if (command.equalsIgnoreCase('tokencom')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.usage'));
+                return;
+            }
+
+            action = action.replace('!', '').toLowerCase();
+            argsString = args.slice(1).join(' ');
+
+            var silent = false;
+            if (action.startsWith('silent@')) {
+                silent = true;
+                action = action.substr(7);
+            }
+
+            if (!$.commandExists(action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
+                return;
+            } else if ($.inidb.get('command', action).match(/\(adminonlyedit\)/) && !$.isAdmin(sender)) {
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById('1')));
+                }
+                return;
+            }
+
+            if (!silent) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.success', action));
+            }
+
+            if (argsString.length() === 0) {
+                $.inidb.RemoveKey('commandtoken', '', action);
+            } else {
+                $.inidb.SetString('commandtoken', '', action, argsString);
+            }
             return;
         }
 
@@ -940,6 +1054,7 @@
             $.inidb.del('permcom', action);
             $.inidb.del('pricecom', action);
             $.inidb.del('aliases', action);
+            $.inidb.del('commandtoken', action);
             $.unregisterChatCommand(action);
             delete customCommands[action];
             return;
@@ -1200,8 +1315,12 @@
             }
 
             for (idx in aliases) {
-                if (permCom(sender, $.inidb.get('aliases', aliases[idx]), '') === 0) {
-                    cmdList.push('!' + aliases[idx]);
+                var aliasCmd = $.inidb.get('aliases', aliases[idx]);
+
+                if (!$.inidb.exists('disabledCommands', aliasCmd)) {
+                    if (permCom(sender, aliasCmd, '') === 0) {
+                        cmdList.push('!' + aliases[idx]);
+                    }
                 }
             }
 
@@ -1345,6 +1464,7 @@
         $.registerChatCommand('./commands/customCommands.js', 'delalias', 2);
         $.registerChatCommand('./commands/customCommands.js', 'delcom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'editcom', 2);
+        $.registerChatCommand('./commands/customCommands.js', 'tokencom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'permcom', 1);
         $.registerChatCommand('./commands/customCommands.js', 'commands', 7);
         $.registerChatCommand('./commands/customCommands.js', 'disablecom', 1);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,8 @@
         messageTime = $.systemTime(),
         warning = '',
         youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
-        i;
+        i,
+        j;
 
     /**
      * @function reloadModeration
@@ -306,14 +307,21 @@
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
 
-            if (json != null && json.isRegex) {
-                json.phrase = new RegExp(json.phrase.replace('regex:', ''));
-            } else {
-                json.phrase = json.phrase.toLowerCase();
-            }
-            json.isBan = parseInt(json.timeout) === -1;
+            if (json != null) {
+                if (json.isRegex) {
+                    try {
+                        json.phrase = new RegExp(json.phrase.replace('regex:', ''));
+                    } catch (ex) {
+                        // Failed to create regex, ignore this and don't make it a blacklist.
+                        continue;
+                    }
+                } else {
+                    json.phrase = json.phrase.toLowerCase();
+                }
+                json.isBan = parseInt(json.timeout) === -1;
 
-            blackList.push(json);
+                blackList.push(json);
+            }
         }
     }
 
@@ -486,8 +494,14 @@
      * @param {string} message
      */
     function checkWhiteList(message) {
+        var links = $.patternDetector.getLinks(message);
         for (i in whiteList) {
-            if (message.indexOf(whiteList[i]) !== -1) {
+            for (j = 0; j < links.length; j++) {
+                if (links[j].indexOf(whiteList[i]) !== -1) {
+                    links.splice(j--, 1);
+                }
+            }
+            if (links.length === 0) {
                 return true;
             }
         }

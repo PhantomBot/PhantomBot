@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('discord_custom_command_module', 'modules', './discord/commands/customCommands.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('discordCustomCommandsModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('discordCustomCommandsModule', e.modules)) {
             return;
         }
 
@@ -107,10 +107,12 @@ $(run = function() {
 
                 // Get all the info about the command.
                 socket.getDBValues('custom_command_edit', {
-                    tables: ['discordPricecom', 'discordPermcom', 'discordAliascom', 'discordChannelcom', 'discordCommands', 'discordCooldown'],
-                    keys: [command, command, command, command, command, command, command]
+                    tables: ['discordPricecom', 'discordPermcom', 'discordAliascom', 'discordChannelcom', 'discordCommands', 'discordCooldown', 'discordPermsObj'],
+                    keys: [command, command, command, command, command, command, 'obj']
                 }, function(e) {
                     let cooldownJson = (e.discordCooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.discordCooldown));
+                    let perm = JSON.parse(e.discordPermcom);
+                    let perms = JSON.parse(e.discordPermsObj);
 
                     // Get advance modal from our util functions in /utils/helpers.js
                     helpers.getAdvanceModal('edit-command', 'Befehl Bearbeiten', 'Speichern', $('<form/>', {
@@ -121,8 +123,17 @@ $(run = function() {
                     // Append a text box for the command response.
                     .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', '', e.discordCommands, 'Antwort des Befehls.'))
                     // Append a select option for the command permission.
-                    .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getDiscordGroupNameById(e.discordPermcom),
-                        ['Administrators', 'Everyone']))
+                    .append(helpers.getMultiDropdownGroup('command-permission', 'Zulässige Rollen und Berechtigungen', [
+                        {
+                            'title': 'Berechtigungen',
+                            'options': perm.permissions
+                        },
+                        {
+                            'title': 'Rollen',
+                            'selected': perm.roles,
+                            'options': perms.roles
+                        }
+                    ], 'Welche Rollen dürfen diesen Befehl ausführen? Die Administratorberechtigung ist Personen mit der Administratorberechtigung, die für ihre Rolle in Discord ausgewählt wurde'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -149,7 +160,7 @@ $(run = function() {
                     })), function() {
                         let commandName = $('#command-name'),
                             commandResponse = $('#command-response'),
-                            commandPermission = $('#command-permission'),
+                            commandPermissions = $('#command-permission option'),
                             commandCost = $('#command-cost'),
                             commandChannel = $('#command-channel'),
                             commandAlias = $('#command-alias'),
@@ -159,6 +170,26 @@ $(run = function() {
                         // Remove the ! and spaces.
                         commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
                         commandAlias.val(commandAlias.val().replace(/(\!|\s)/g, '').toLowerCase());
+
+                        // Generate all permissions.
+                        const permObj = {
+                            'roles': [],
+                            'permissions': []
+                        };
+
+                        commandPermissions.each(function() {
+                            var section = $(this).parent().attr('label');
+
+                            // This is a permission.
+                            if (section == 'Berechtigungen') {
+                                permObj.permissions.push({
+                                    'name': $(this).html(),
+                                    'selected': $(this).is(':selected').toString()
+                                });
+                            } else if ($(this).is(':selected')) {
+                                permObj.roles.push($(this).attr('id'));
+                            }
+                        });
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
@@ -171,7 +202,7 @@ $(run = function() {
                                 socket.updateDBValues('custom_command_add', {
                                     tables: ['discordPricecom', 'discordPermcom', 'discordCommands', 'discordCooldown'],
                                     keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
-                                    values: [commandCost.val(), helpers.getDiscordGroupIdByName(commandPermission.find(':selected').text(), true), commandResponse.val(), JSON.stringify({command: String(commandName.val()), seconds: String(commandCooldown.val()), isGlobal: String(commandCooldownGlobal)})]
+                                    values: [commandCost.val(), JSON.stringify(permObj), commandResponse.val(), JSON.stringify({command: String(commandName.val()), seconds: String(commandCooldown.val()), isGlobal: String(commandCooldownGlobal)})]
                                 }, function() {
                                     if (commandChannel.val().length > 0) {
                                         socket.updateDBValue('discord_channel_command_cmd', 'discordChannelcom', commandName.val(), commandChannel.val(), new Function());
@@ -196,11 +227,13 @@ $(run = function() {
                                     helpers.setTimeout(function() {
                                         // Add the cooldown to the cache.
                                         socket.wsEvent('discord', './discord/commands/customCommands.js', '',
-                                            [commandName.val(), helpers.getDiscordGroupIdByName(commandPermission.find(':selected').text(), true),
+                                            [commandName.val(), JSON.stringify(permObj),
                                             commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
                                     }, 5e2);
                                 });
                         }
+                    }).on('shown.bs.modal', function(e) {
+                        $('#command-permission').select2();
                     }).modal('toggle');
                 });
             });
