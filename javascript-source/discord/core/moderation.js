@@ -157,9 +157,9 @@
             obj = {},
             i;
 
-        obj['**Deleted_message_of:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
-        obj['**Creator:**'] = creator;
-        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Gelöschte_Nachricht_von:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Ersteller:**'] = creator;
+        obj['**Letzte_Nachricht:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {

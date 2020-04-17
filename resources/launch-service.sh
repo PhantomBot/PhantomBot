@@ -123,4 +123,4 @@ if [[ ! -x "${JAVA}" ]]; then
     exit 1
 fi
 
-${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Djava.security.policy=config/security -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
+${JAVA} --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Djava.security.policy=config/security -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBotDE.jar ${1}
