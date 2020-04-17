@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,7 @@
  */
 
 package tv.phantombot.twitch.pubsub;
-
-import com.google.common.collect.Maps;
 import com.gmt2001.Logger;
-import java.io.IOException;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,7 +29,7 @@ import java.util.TimerTask;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
@@ -46,20 +43,20 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.moderation.*;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import org.json.JSONException;
 
 public class TwitchPubSub {
-    private static final Map<String, TwitchPubSub> instances = Maps.newHashMap();
-    private final Map<String, String> messageCache = Maps.newHashMap();
-    private final Map<String, Long> timeoutCache = Maps.newHashMap();
-    private final int channelId;
-    private final String oAuth;
-    private final int botId;
+    private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
+    private final Map<String, String> messageCache = new ConcurrentHashMap<>();
+    private final Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
+    private final String channel;
     private TwitchPubSubWS twitchPubSubWS;
-    private Boolean reconAllowed = true;
-    private Long lastReconnect = 0L;
+    private boolean reconnecting = false;
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * This starts the PubSub instance.
@@ -73,9 +70,15 @@ public class TwitchPubSub {
         TwitchPubSub instance = instances.get(channel);
 
         if (instance == null) {
-            instance = new TwitchPubSub(channelId, botId, oAuth);
+            instance = new TwitchPubSub(channel, channelId, botId, oAuth);
             instances.put(channel, instance);
         }
+
+        return instance;
+    }
+
+    private static TwitchPubSub instance(String channel) {
+        TwitchPubSub instance = instances.get(channel);
 
         return instance;
     }
@@ -88,10 +91,8 @@ public class TwitchPubSub {
      * @param {int}     botId      The bot user id.
      * @param {string}  oauth      The bots tmi oauth token.
      */
-    private TwitchPubSub(int channelId, int botId, String oAuth) {
-        this.channelId = channelId;
-        this.botId = botId;
-        this.oAuth = oAuth;
+    private TwitchPubSub(String channel, int channelId, int botId, String oAuth) {
+        this.channel = channel;
 
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
@@ -117,28 +118,33 @@ public class TwitchPubSub {
     /**
      * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
      */
-    @SuppressWarnings("SleepWhileInLoop")
-    private void reconnectWSS() {
-        Boolean reconnected = false;
+    public void reconnect() {
+        if (lock.isLocked()) {
+            return;
+        }
 
-        while (!reconnected) {
-            if (lastReconnect + 10000L <= System.currentTimeMillis() && reconAllowed) {
-                lastReconnect = System.currentTimeMillis();
-                try {
-                    this.twitchPubSubWS.delete();
-                    this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
-                    reconnected = this.twitchPubSubWS.connectWSS(true);
-                } catch (URISyntaxException ex) {
-                    com.gmt2001.Console.err.println("TwitchPubSub reconnect fehlgeschlagen: " + ex.getMessage());
-                    PhantomBot.exitError();
-                }
-            }
+        lock.lock();
+        try {
+            new Thread( () -> {
+                TwitchPubSub.instance(channel).doReconnect();
+            }).start();
+        } finally {
+            lock.unlock();
+        }
+    }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("TwitchPubSub sleep ist Fehlgeschlagen vor dem Reconnect: " + ex.getMessage());
-            }
+    public void doReconnect() {
+        if (reconnecting) {
+            return;
+        }
+
+        try {
+            reconnecting = true;
+            this.twitchPubSubWS.reconnectBlocking();
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            reconnecting = false;
         }
     }
 
@@ -146,13 +152,11 @@ public class TwitchPubSub {
      * Private class for the websocket.
      */
     private class TwitchPubSubWS extends WebSocketClient {
-        private final TwitchPubSubWS twitchPubSubWS;
         private final TwitchPubSub twitchPubSub;
         private final Timer timer = new Timer("tv.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
         private final String oAuth;
         private final int botId;
-        private final URI uri;
 
         /**
          * Constructor for the PubSubWS class.
@@ -163,22 +167,21 @@ public class TwitchPubSub {
          * @param {string}  oauth      The bots tmi oauth token.
          */
         private TwitchPubSubWS(URI uri, TwitchPubSub twitchPubSub, int channelId, int botId, String oAuth) {
-            super(uri, new Draft_17(), null, 5000);
+            super(uri, new Draft_6455(), null, 5000);
 
             this.uri = uri;
             this.channelId = channelId;
             this.botId = botId;
             this.oAuth = oAuth;
             this.twitchPubSub = twitchPubSub;
-            this.twitchPubSubWS = this;
             this.startTimer();
 
             try {
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, null, null);
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-                this.setSocket(sslSocketFactory.createSocket());
-            } catch (IOException | KeyManagementException | NoSuchAlgorithmException ex) {
+                this.setSocketFactory(sslSocketFactory);
+            } catch (KeyManagementException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS konnte sich nicht verbinden: " + ex.getMessage());
             }
         }
@@ -233,7 +236,7 @@ public class TwitchPubSub {
          *
          * @param {jsonObject}  message  Message we get from PubSub.
          */
-        private void parse(JSONObject message) {
+        private void parse(JSONObject message) throws JSONException {
             JSONObject dataObj;
             JSONObject messageObj;
             JSONObject data;
@@ -316,20 +319,24 @@ public class TwitchPubSub {
          */
         @Override
         public void onOpen(ServerHandshake handshakedata) {
-            com.gmt2001.Console.debug.println("Verbunden zu Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
-            com.gmt2001.Console.out.println("Verbunden zu Twitch Moderation Data Feed");
+            try {
+                com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
 
 
-            String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
-            JSONObject jsonObject = new JSONObject();
-            JSONObject topics = new JSONObject();
+                String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
+                JSONObject jsonObject = new JSONObject();
+                JSONObject topics = new JSONObject();
 
-            topics.put("topics", type);
-            topics.put("auth_token", oAuth.replace("oauth:", ""));
-            jsonObject.put("type", "LISTEN");
-            jsonObject.put("data", topics);
+                topics.put("topics", type);
+                topics.put("auth_token", oAuth.replace("oauth:", ""));
+                jsonObject.put("type", "LISTEN");
+                jsonObject.put("data", topics);
 
-            send(jsonObject.toString());
+                send(jsonObject.toString());
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         }
 
         /**
@@ -345,7 +352,7 @@ public class TwitchPubSub {
             com.gmt2001.Console.out.println("Verbindung zum Twitch Moderation Data Feed verloren, neuer Versuch in 10 Sekunden.");
 
             closeTimer();
-            twitchPubSub.reconnectWSS();
+            twitchPubSub.reconnect();
         }
 
         /**
@@ -367,26 +374,29 @@ public class TwitchPubSub {
          */
         @Override
         public void onMessage(String message) {
-            JSONObject messageObj = new JSONObject(message);
+            try {
+                JSONObject messageObj = new JSONObject(message);
 
-            com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
+                com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
-            if (!messageObj.has("type")) {
-                return;
-            }
+                if (!messageObj.has("type")) {
+                    return;
+                }
 
-            if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
-                com.gmt2001.Console.err.println("TwitchPubSubWS Fehler: " + messageObj.getString("error"));
-                reconAllowed = false;
-                return;
-            }
+                if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+                    com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                    return;
+                }
 
-            if (messageObj.getString("type").equalsIgnoreCase("pong")) {
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: PONG erhalten.");
-            }
+                if (messageObj.getString("type").equalsIgnoreCase("pong")) {
+                    com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
+                }
 
-            if (messageObj.getString("type").equalsIgnoreCase("message")) {
-                parse(messageObj);
+                if (messageObj.getString("type").equalsIgnoreCase("message")) {
+                    parse(messageObj);
+                }
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
 
@@ -396,12 +406,16 @@ public class TwitchPubSub {
         private class PingTask extends TimerTask {
             @Override
             public void run() {
-                JSONObject jsonObject = new JSONObject();
+                try {
+                    JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("type", "PING");
+                    jsonObject.put("type", "PING");
 
-                send(jsonObject.toString());
-                com.gmt2001.Console.debug.println("TwitchPubSubWS: PING gesendet.");
+                    send(jsonObject.toString());
+                    com.gmt2001.Console.debug.println("TwitchPubSubWS: Sent a PING.");
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
             }
         }
     }

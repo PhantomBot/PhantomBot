@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ public class Helix {
      */
     private void generateJSONObject(JSONObject obj, boolean isSuccess, 
             String requestType, String data, String url, int responseCode, 
-            String exception, String exceptionMessage) {
+            String exception, String exceptionMessage) throws JSONException {
         
         obj.put("_success", isSuccess);
         obj.put("_type", requestType);
@@ -205,7 +205,7 @@ public class Helix {
      * @param data
      * @return 
      */
-    private JSONObject handleRequest(RequestType type, String endPoint, String data) {
+    private JSONObject handleRequest(RequestType type, String endPoint, String data) throws JSONException {
         JSONObject returnObject = new JSONObject();
         InputStream inStream = null;
         int responseCode = 0;
@@ -306,7 +306,7 @@ public class Helix {
      * @param endPoint
      * @return 
      */
-    private JSONObject handleRequest(RequestType type, String endPoint) {
+    private JSONObject handleRequest(RequestType type, String endPoint) throws JSONException {
         return handleRequest(type, endPoint, "");
     }
     
@@ -317,7 +317,7 @@ public class Helix {
      * @param usernames A string array of Twitch usernames. Limit: 100
      * @return 
      */
-    public JSONObject getUsersByType(String type, String[] usernames) {
+    public JSONObject getUsersByType(String type, String[] usernames) throws JSONException {
         return handleRequest(RequestType.GET, "/users?" + type + "=" + String.join("&" + type + "=", usernames));
     }
     
@@ -327,7 +327,7 @@ public class Helix {
      * @param usernames A string array of Twitch usernames. Limit: 100
      * @return 
      */
-    public JSONObject getUsersByNames(String[] usernames) {
+    public JSONObject getUsersByNames(String[] usernames) throws JSONException {
         return getUsersByType("login", usernames);
     }
     
@@ -337,7 +337,7 @@ public class Helix {
      * @param username The Twitch username.
      * @return 
      */
-    public JSONObject getUserByName(String username) {
+    public JSONObject getUserByName(String username) throws JSONException {
         return getUsersByNames(new String[] { 
             username 
         });
@@ -349,7 +349,7 @@ public class Helix {
      * @param ids A string array of user IDs. Limit: 100
      * @return 
      */
-    public JSONObject getUsersByIds(String[] ids) {
+    public JSONObject getUsersByIds(String[] ids) throws JSONException {
         return getUsersByType("id", ids);
     }
     
@@ -359,7 +359,7 @@ public class Helix {
      * @param id The ID of the user on Twitch.
      * @return 
      */
-    public JSONObject getUserById(String id) {
+    public JSONObject getUserById(String id) throws JSONException {
         return getUsersByIds(new String[] { 
             id 
         });
@@ -373,7 +373,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    private JSONObject getStreamsByType(String type, String[] streams, String[] parameters) {
+    private JSONObject getStreamsByType(String type, String[] streams, String[] parameters) throws JSONException {
         return handleRequest(RequestType.GET, "/streams?" + type + "=" + String.join("&" + type + "=", streams) + (parameters.length > 0 ? "&" + String.join("&", parameters) : "")); 
     }
     
@@ -384,7 +384,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getStreamsByNames(String[] streams, String[] parameters) {
+    public JSONObject getStreamsByNames(String[] streams, String[] parameters) throws JSONException {
         return getStreamsByType("user_login", streams, parameters);
     }
     
@@ -395,7 +395,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getStreamByName(String stream, String[] parameters) {
+    public JSONObject getStreamByName(String stream, String[] parameters) throws JSONException {
         return getStreamsByNames(new String[] { 
             stream 
         }, parameters);
@@ -407,7 +407,7 @@ public class Helix {
      * @param stream The name of the stream to get.
      * @return 
      */
-    public JSONObject getStreamByName(String stream) {
+    public JSONObject getStreamByName(String stream) throws JSONException {
         return getStreamsByNames(new String[] { 
             stream 
         }, new String[0]);
@@ -420,7 +420,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getStreamsByIds(String[] ids, String[] parameters) {
+    public JSONObject getStreamsByIds(String[] ids, String[] parameters) throws JSONException {
         return getStreamsByType("user_id", ids, parameters);
     }
     
@@ -431,7 +431,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getStreamById(String id, String[] parameters) {
+    public JSONObject getStreamById(String id, String[] parameters) throws JSONException {
         return getStreamsByIds(new String[] {
             id
         }, parameters);
@@ -443,7 +443,7 @@ public class Helix {
      * @param ids The IDs of the streams to get. Limit: 100
      * @return 
      */
-    public JSONObject getStreamsByIds(String[] ids) {
+    public JSONObject getStreamsByIds(String[] ids) throws JSONException {
         return getStreamsByIds(ids, new String[0]);
     }
 
@@ -453,7 +453,7 @@ public class Helix {
      * @param id The id of the stream to get.
      * @return 
      */
-    public JSONObject getStreamById(String id) {
+    public JSONObject getStreamById(String id) throws JSONException {
         return getStreamsByIds(new String[] { 
             id 
         }, new String[0]);
@@ -466,7 +466,7 @@ public class Helix {
      * @param games The list of games. Limit: 100
      * @return 
      */
-    private JSONObject getGamesByType(String type, String games[]) {
+    private JSONObject getGamesByType(String type, String games[]) throws JSONException {
         return handleRequest(RequestType.GET, "/games?" + type + "=" + String.join("&" + type + "=", games));
     }
     
@@ -476,7 +476,7 @@ public class Helix {
      * @param gameNames A string array of game names. Limit: 100
      * @return 
      */
-    public JSONObject getGamesByNames(String gameNames[]) {
+    public JSONObject getGamesByNames(String gameNames[]) throws JSONException {
         return getGamesByType("name", gameNames);
     }
     
@@ -486,7 +486,7 @@ public class Helix {
      * @param gameName The name of the game.
      * @return 
      */
-    public JSONObject getGameByName(String gameName) {
+    public JSONObject getGameByName(String gameName) throws JSONException {
         return getGamesByNames(new String[] {
             gameName
         });
@@ -498,7 +498,7 @@ public class Helix {
      * @param gameIDs A string array of game IDs. Limit: 100
      * @return 
      */
-    public JSONObject getGamesByIds(String gameIDs[]) {
+    public JSONObject getGamesByIds(String gameIDs[]) throws JSONException {
         return getGamesByType("id", gameIDs);
     }
     
@@ -508,7 +508,7 @@ public class Helix {
      * @param gameID The Id of the game.
      * @return 
      */
-    public JSONObject getGameById(String gameID) {
+    public JSONObject getGameById(String gameID) throws JSONException {
         return getGamesByNames(new String[] {
             gameID
         });
@@ -522,7 +522,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    private JSONObject getClipsByType(String type, String clipIds[], String[] parameters) {
+    private JSONObject getClipsByType(String type, String clipIds[], String[] parameters) throws JSONException {
         return handleRequest(RequestType.GET, "/clips?" + type + "=" + String.join("&" + type + "=", clipIds) + (parameters.length > 0 ? "&" + String.join("&", parameters) : ""));
     }
     
@@ -533,7 +533,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getBroadcasterClipsById(String channelId, String[] parameters) {
+    public JSONObject getBroadcasterClipsById(String channelId, String[] parameters) throws JSONException {
         return getClipsByType("broadcaster_id", new String[] {
             channelId
         }, parameters);
@@ -545,7 +545,7 @@ public class Helix {
      * @param channelId the ID of the broadcaster (channel).
      * @return 
      */
-    public JSONObject getBroadcasterClipsById(String channelId) {
+    public JSONObject getBroadcasterClipsById(String channelId) throws JSONException {
         return getClipsByType("broadcaster_id", new String[] {
             channelId
         }, new String[0]);
@@ -558,7 +558,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getGameClipsById(String gameId, String[] parameters) {
+    public JSONObject getGameClipsById(String gameId, String[] parameters) throws JSONException {
         return getClipsByType("game_id", new String[] { 
             gameId
         }, parameters);
@@ -570,7 +570,7 @@ public class Helix {
      * @param gameId The ID of the game.
      * @return 
      */
-    public JSONObject getGameClipsById(String gameId) {
+    public JSONObject getGameClipsById(String gameId) throws JSONException {
         return getClipsByType("game_id", new String[] { 
             gameId
         }, new String[0]);
@@ -583,7 +583,7 @@ public class Helix {
      * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
      * @return 
      */
-    public JSONObject getClipsById(String[] clipIds, String[] parameters) {
+    public JSONObject getClipsById(String[] clipIds, String[] parameters) throws JSONException {
         return getClipsByType("id", clipIds, parameters);
     }
     
@@ -593,7 +593,7 @@ public class Helix {
      * @param clipIds A string array of clip IDs.
      * @return 
      */
-    public JSONObject getClipsById(String[] clipIds) {
+    public JSONObject getClipsById(String[] clipIds) throws JSONException {
         return getClipsByType("id", clipIds, new String[0]);
     }
     
@@ -603,7 +603,7 @@ public class Helix {
      * @param clipId The ID of the clip
      * @return 
      */
-    public JSONObject getClipById(String clipId) {
+    public JSONObject getClipById(String clipId) throws JSONException {
         return getClipsByType("id", new String[] { 
             clipId 
         }, new String[0]);
