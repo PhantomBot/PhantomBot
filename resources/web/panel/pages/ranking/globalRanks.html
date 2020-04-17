@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2019 phantombot.tv
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,6 +42,11 @@
                         <div class="box-body">
                             <button class="btn btn-primary btn-sm pull-right" type="button" id="add-rank-button"><i class="fa fa-plus"></i>&nbsp; Rang hinzufügen</button>
 
+                            <div class="load-ajax">
+                                <div class="spinner"></div>
+                                <p class="load-ajax-text">Loading...</p>
+                            </div>
+
                             <table id="ranksTable" class="table table-bordered table-hover"></table>
                         </div>
                     </form>
@@ -51,5 +56,5 @@
     </section>
 
     <!-- ranking -->
-    <script src="panel/js/pages/ranking/globalRanks.js"></script>
+    <script src="/panel/js/pages/ranking/globalRanks.js"></script>
 </main>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
             $.inidb.set('panelstats', 'gameCount', 1);
             $.inidb.del('streamInfo', 'gamesPlayed');
         }
+        $.inidb.set('streamInfo', 'downtime', String($.systemTime()));
     });
 
     /**
@@ -159,7 +160,7 @@
             return '';
         }
     }
-    
+
     /**
      * @function getLogo
      * @export $
@@ -327,6 +328,29 @@
         } else {
             return 0;
         }
+    }
+
+    /**
+     * @function getFollowDate
+     * @export $
+     * @param username
+     * @param channelName
+     */
+    function getFollowDate(sender, username, channelName) {
+        username = $.user.sanitize(username);
+        channelName = $.user.sanitize(channelName);
+
+        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+
+        if (user.getInt('_http') === 404) {
+            return $.lang.get('followhandler.follow.age.datefmt.404');
+        }
+
+        var date = new Date(user.getString('created_at')),
+            dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
+            dateFinal = dateFormat.format(date);
+
+        return dateFinal;
     }
 
     /**
@@ -498,6 +522,7 @@
     $.updateStatus = updateStatus;
     $.updateCommunity = updateCommunity;
     $.getFollowAge = getFollowAge;
+    $.getFollowDate = getFollowDate;
     $.getChannelAge = getChannelAge;
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;

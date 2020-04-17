@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public final class DataStoreConverter {
 		}
 
 		// Close the old database.
-		secondaryDbInstance.CloseConnection();
+		secondaryDbInstance.dispose();
 		com.gmt2001.Console.out.println("Die Konvertierung des Datenspeichers ist abgeschlossen.");
 	}
 }

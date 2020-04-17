@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
             counts: [],
         },
         timeout;
+    var objOBS = [];
 
     /**
      * @function hasKey
@@ -89,6 +90,8 @@
             return false
         }
 
+        objOBS = [];
+
         poll.pollRunning = true;
         poll.pollMaster = pollMaster;
         poll.time = (parseInt(time) * 1000);
@@ -105,12 +108,16 @@
         $.inidb.RemoveFile('pollPanel');
         $.inidb.RemoveFile('pollVotes');
 
-        $.inidb.setAutoCommit(false);
+
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
-            $.inidb.set('pollVotes', poll.options[i].replace(/\s/, '%space_option'), 0);
+            $.inidb.set('pollVotes', poll.options[i], 0);
+            objOBS.push({
+                'label': poll.options[i],
+                'votes': 0
+            });
         }
-        $.inidb.setAutoCommit(true);
+
 
         if (poll.time > 0) {
             $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
@@ -122,8 +129,13 @@
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
+        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+            'start_poll': 'true',
+            'data': JSON.stringify(objOBS)
+        }));
+
         $.inidb.set('pollPanel', 'title', question);
-        $.inidb.set('pollPanel', 'options', options.join('%space_option%'));
+        $.inidb.set('pollPanel', 'options', options.join(','));
         $.inidb.set('pollPanel', 'isActive', 'true');
         return true;
     };
@@ -154,7 +166,15 @@
         optionIndex--;
         poll.voters.push(sender);
         poll.votes.push(optionIndex);
-        $.inidb.incr('pollVotes', poll.options[optionIndex].replace(/\s/, '%space_option%'), 1);
+        for (var i = 0; i < objOBS.length; i++) {
+            if (objOBS[i].label == poll.options[optionIndex])
+                objOBS[i].votes++;
+        }
+        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+            'new_vote': 'true',
+            'data': JSON.stringify(objOBS)
+        }));
+        $.inidb.incr('pollVotes', poll.options[optionIndex], 1);
     };
 
     /**
@@ -172,7 +192,9 @@
         clearTimeout(timeout);
 
         $.inidb.set('pollPanel', 'isActive', 'false');
-
+        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+            'end_poll': 'true'
+        }));
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';
             poll.pollMaster = '';

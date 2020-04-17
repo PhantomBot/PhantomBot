@@ -1,0 +1,11 @@
+.container {
+    height: auto;
+    width: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+.hidden {
+    display: none;
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,17 +152,26 @@ $(function() {
 
     // Reset bet button.
     $('#reset-betting').on('click', function() {
-        resetBet();
+        helpers.getModal('betting-reset', 'Wette zurücksetzen', 'Zurücksetzen', $('<form/>', {
+            'role': 'form'
+        })
+        // Add refund option
+        .append(helpers.getCheckBox('bet-refund', false, 'Alle Wetten erstatten',
+            'wenn jeder, der eine Wette platziert hat, seine Punkte zurückbekommen sollte.')),
+        function() {
+            resetBet();
 
-        if (isActive) {
-            socket.sendCommand('reset_end_bet_cmd', 'bet close', new Function());
-            isActive = false;
-        }
+            if (isActive) {
+                socket.sendCommand('reset_end_bet_cmd', 'bet reset' + ($('#bet-refund').prop('checked') === true ? ' -refund' : ''), new Function());
+                isActive = false;
+            }
+            $('#betting-reset').modal('toggle');
+        }).modal('toggle');
     });
 
     // Close bet button
     $('#close-betting').on('click', function() {
-        helpers.getModal('betting-close', 'Close Bet', 'Close', $('<form/>', {
+        helpers.getModal('betting-close', 'Wette schließen', 'Schließen', $('<form/>', {
             'role': 'form'
         })
         // Append options.
@@ -285,7 +294,7 @@ $(function() {
 // Handles the module toggle.
 $(run = function() {
     socket.getDBValue('betting_module_status', 'modules', './systems/bettingSystem.js', function(e) {
-        if (!helpers.getModuleStatus('bettingSystemModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('bettingSystemModule', e.modules)) {
             // Remove the chat.
             $('#twitch-chat-betting').find('iframe').remove();
             return;

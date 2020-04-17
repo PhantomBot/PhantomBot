@@ -1,7 +1,7 @@
 **Please read, especially if your first time contributing to PhantomBot:**
 
 Thank you for contributing to PhantomBot! Hopefully you followed the code style guide:
-https://github.com/PhantomBot/PhantomBot/blob/master/CODESTYLE.md
+https://github.com/PhantomBot/PhantomBot/blob/master/development-resources/CODESTYLE.md
 
 If you added in code from a third party, it must have a license that is compatible with PhantomBot.  If it is not, we will reject the merge request.  The development team takes this very seriously.  If you add in access to an API and PhantomBot would use that API improperly, we will reject the merge request.  Again, the development team takes this very seriously.
 

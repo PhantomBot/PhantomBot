@@ -40,6 +40,7 @@ public class ConfigurationManager {
     public static final String PROP_YTAUTH = "ytauth";
     public static final String PROP_YTAUTH_RO = "ytauthro";
     public static final String PROP_API_OAUTH = "apioauth";
+    public static final String PROP_SILENTSCRIPTSLOAD = "silentscriptsload";
 
     private ConfigurationManager() {
         // private constructor to prevent users from instantiating a pure static class

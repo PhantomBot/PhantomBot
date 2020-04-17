@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,13 +42,15 @@
     };
 
     /**
+     * Loads stories from the prefixes 'adventuresystem.stories.default' (only if the language
+     * property of 'adventuresystem.stories.default.enabled' is set to 'true') and
+     * 'adventuresystem.stories'.
+     *
+     * Clears any previously loaded stories.
+     *
      * @function loadStories
      */
     function loadStories() {
-        var storyId = 1,
-            chapterId,
-            lines;
-
         currentAdventure.users = [];
         currentAdventure.survivors = [];
         currentAdventure.caught = [];
@@ -56,20 +58,14 @@
 
         stories = [];
 
-        for (storyId; $.lang.exists('adventuresystem.stories.' + storyId + '.title'); storyId++) {
-            lines = [];
-            for (chapterId = 1; $.lang.exists('adventuresystem.stories.' + storyId + '.chapter.' + chapterId); chapterId++) {
-                lines.push($.lang.get('adventuresystem.stories.' + storyId + '.chapter.' + chapterId));
-            }
-
-            stories.push({
-                game: ($.lang.exists('adventuresystem.stories.' + storyId + '.game') ? $.lang.get('adventuresystem.stories.' + storyId + '.game') : null),
-                title: $.lang.get('adventuresystem.stories.' + storyId + '.title'),
-                lines: lines,
-            });
+        // For backwards compatibility, load default stories if the variable is not set
+        if (!$.lang.exists('adventuresystem.stories.default') || $.lang.get('adventuresystem.stories.default') === 'true') {
+            loadStoriesFromPrefix('adventuresystem.stories');
         }
 
-        $.consoleDebug($.lang.get('adventuresystem.loaded', storyId - 1));
+        loadStoriesFromPrefix('adventuresystem.stories.custom');
+
+        $.consoleDebug($.lang.get('adventuresystem.loaded', stories.length));
 
         for (var i in stories) {
             if (stories[i].game === null) {
@@ -79,6 +75,37 @@
 
         $.log.warn('Du musst mindestens ein Abenteuer haben, welches nicht ein bestimmtes Spiel gesetzt benötigt .');
         currentAdventure.gameState = 2;
+    };
+
+    /**
+     * Loads stories from a specific prefix in the language table and adds them to the
+     * global stories array.
+     *
+     * @param {string} prefix - The prefix underneath which the stories can be found
+     * @example
+     * // Import stories with adventuresystem.stories.custom.X.title as title and
+     * // adventuresystem.stories.custom.X.chapter.Y as chapters
+     * loadStoriesFromPrefix('adventuresystem.stories.custom');
+     */
+    function loadStoriesFromPrefix(prefix) {
+        var storyId = 1,
+            chapterId,
+            lines;
+
+         for (storyId; $.lang.exists(prefix + '.' + storyId + '.title'); storyId++) {
+            lines = [];
+            for (chapterId = 1; $.lang.exists(prefix + '.' + storyId + '.chapter.' + chapterId); chapterId++) {
+                lines.push($.lang.get(prefix + '.' + storyId + '.chapter.' + chapterId));
+            }
+
+            stories.push({
+                game: ($.lang.exists(prefix + '.' + storyId + '.game') ? $.lang.get(prefix + '.' + storyId + '.game') : null),
+                title: $.lang.get(prefix + '.' + storyId + '.title'),
+                lines: lines,
+            });
+        }
+
+        $.consoleDebug($.lang.get('adventuresystem.loaded.prefix', storyId - 1, prefix));
     };
 
     /**

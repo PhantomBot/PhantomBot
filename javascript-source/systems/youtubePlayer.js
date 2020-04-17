@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -887,11 +887,15 @@
          * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
-            $.writeToFile(
-                youtubeVideo.getVideoTitle() + ' ',
-                baseFileOutputPath + 'currentsong.txt',
-                false
-            );
+            var writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(baseFileOutputPath + 'currentsong.txt'), 'UTF-8');
+
+            try {
+                writer.write(youtubeVideo.getVideoTitle());
+            } catch (ex) {
+                $.log.error('Failed to update current song file: ' + ex.toString());
+            } finally {
+                writer.close();
+            }
         };
 
         /**
@@ -975,7 +979,7 @@
                 "title": currentPlaylist.getCurrentVideo().getVideoTitle() + '',
                 "duration": currentPlaylist.getCurrentVideo().getVideoLengthMMSS() + ''
             };
-            client.currentSong(JSON.stringify(jsonData));
+            client.sendJSONToAll(JSON.stringify(jsonData));
         }
 
         /**
@@ -1032,12 +1036,12 @@
 
                             jsonList['playlist'].push({ "song": videoId, "title": videoTitle, "duration": videoLength });
                         } catch (ex) {
-                            $.log.error('YouTube API suche schlägt fehl: Playlist [' + jsonList['playlistname'] +
-                                '] Index [' + playList[i] + '] YT ID [' + youTubeDbId + '] Fehler [' + ex + ']');
+                            $.log.error('YouTube API Failed Lookup: Playlist [' + jsonList['playlistname'] +
+                                '] Index [' + playList[i] + '] YT ID [' + youTubeDbId + '] Error [' + ex + ']');
                         }
                     }
                 }
-                client.playList(JSON.stringify(jsonList));
+                client.sendJSONToAll(JSON.stringify(jsonList));
             }
         };
 
@@ -1062,7 +1066,7 @@
                         "requester": youtubeObject.getOwner() + ''
                     });
                 }
-                client.songList(JSON.stringify(jsonList));
+                client.sendJSONToAll(JSON.stringify(jsonList));
             }
         };
 
@@ -1295,7 +1299,6 @@
         loadDefaultPl();
         connectedPlayerClient.pushPlayList();
         $.youtubePlayerConnected = true;
-        $.ytplayer.setClientConnected(true);
     });
 
     /**
@@ -1304,7 +1307,6 @@
     $.bind('yTPlayerDisconnect', function(event) {
         connectedPlayerClient = null;
 
-        $.ytplayer.setClientConnected(false);
         $.consoleLn($.lang.get('ytplayer.console.client.disconnected'));
         if (!songRequestsEnabled && announceInChat) {
             $.say($.lang.get('ytplayer.songrequests.disabled'));

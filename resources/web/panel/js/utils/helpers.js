@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ $(function() {
             case 'bits':
                 return 'background-color: #6441a5;';
             case 'host':
-                return 'background-color: #ed1c2a;';
+                return 'background-color: #ed4c1c;';
             case 'auto-host':
                 return 'background-color: #ffff00; color: #000000;';
             case 'tip': // To be added soon.
@@ -385,6 +385,7 @@ $(function() {
     helpers.getModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
+            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -415,7 +416,9 @@ $(function() {
             'type': 'button',
             'text': 'Abbrechen',
             'data-dismiss': 'modal'
-        }))))).on('hidden.bs.modal', function() {
+        }))))).on('shown.bs.modal', function() {
+            $('#' + id).focus();
+        }).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         });
     };
@@ -433,6 +436,7 @@ $(function() {
     helpers.getAdvanceModal = function(id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
+            'tabindex': '99',
             'id': id
         }).append($('<div/>', {
             'class': 'modal-dialog'
@@ -475,7 +479,9 @@ $(function() {
             'type': 'button',
             'text': 'Abbrechen',
             'data-dismiss': 'modal'
-        }))))).on('hidden.bs.modal', function() {
+        }))))).on('shown.bs.modal', function() {
+            $('#' + id).focus();
+        }).on('hidden.bs.modal', function() {
             $('#' + id).remove();
         }).on('show.bs.collapse', function() {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
@@ -588,6 +594,70 @@ $(function() {
             return $('<option/>', {
                 'html': option
             });
+        }))));
+    };
+
+    /*
+     * @function Generates a multi-select dropdown.
+     *
+     * @param  {String} id
+     * @param  {String} title
+     * @param  {String} def
+     * @param  {Array}  options [
+        {
+            'title': 'Some title',
+            'options': [
+                {
+                    'name': 'option name',
+                    'selected': 'true'
+                },
+                ...
+            ]
+        },
+        ...
+     ]
+     * @param  {String} toolTip
+     * @return {Object}
+     */
+    helpers.getMultiDropdownGroup = function(id, title, options, toolTip) {
+        return  $('<div/>', {
+            'class': 'form-group'
+        }).append($('<lable/>', {
+            'html': $('<b/>', {
+                'text': title
+            })
+        })).append($('<div/>', {
+            'class': 'dropdown',
+            'data-toggle': 'tooltip',
+            'title': toolTip
+        }).append($('<select/>', {
+            'class': 'form-control select2 select2-hidden-accessible',
+            'multiple': 'multiple',
+            'id': id,
+            'style': 'width: 100%; cursor: pointer;'
+        }).append(options.map(function(option) {
+            let selected = option.selected;
+            let roles = option.options;
+            let group = $('<optgroup/>', {
+                'label': option.title
+            });
+
+            for (let i = 0; i < roles.length; i++) {
+                let o = $('<option/>', {
+                    'html': roles[i].name,
+                    'id': roles[i]._id
+                });
+
+                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
+                    o.attr('selected', 'selected');
+                } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
+                    o.attr('selected', 'selected');
+                }
+
+                group.append(o);
+            }
+
+            return group;
         }))));
     };
 
@@ -757,9 +827,11 @@ $(function() {
         if (typeof id === 'object') {
             for (let i = 0; i < id.length; i++) {
                 if (toggle === 'false') {
-                    $('#' + id[i]).slideUp(helpers.DELAY_MS);
+                    //$('#' + id[i]).slideUp(helpers.DELAY_MS);
+                    $('#' + id[i] + ' *').prop('disabled', true);
                 } else {
-                    $('#' + id[i]).slideDown(helpers.DELAY_MS);
+                    //$('#' + id[i]).slideDown(helpers.DELAY_MS);
+                    $('#' + id[i] + ' *').prop('disabled', false);
                 }
             }
             // Handle the switch toggle
@@ -767,13 +839,25 @@ $(function() {
         } else {
             if (toggle === 'false') {
                 $('#' + id + 'Toggle').prop('checked', false);
-                $('#' + id).slideUp(helpers.DELAY_MS);
+                //$('#' + id).slideUp(helpers.DELAY_MS);
+                $('#' + id + ' *').prop('disabled', true);
             } else {
                 $('#' + id + 'Toggle').prop('checked', true);
-                $('#' + id).slideDown(helpers.DELAY_MS);
+                //$('#' + id).slideDown(helpers.DELAY_MS);
+                $('#' + id + ' *').prop('disabled', false);
             }
         }
         return toggle === 'true';
+    };
+
+    /*
+     * @function Same as the function above but doesn't return anything but true.
+     *
+     * @param  {String}|{Array} id
+     * @return {Boolean}
+     */
+    helpers.handleModuleLoadUp = function(id, toggle, swit) {
+        return helpers.getModuleStatus(id, toggle, swit);
     };
 
     /*
@@ -800,8 +884,8 @@ $(function() {
             case 'donators':
             case 'donator':
                 return (asString ? '4' : 4);
-            case 'hosters':
-            case 'hoster':
+            case 'vips':
+            case 'vip':
                 return (asString ? '5' : 5);
             case 'regulars':
             case 'regular':
@@ -819,13 +903,15 @@ $(function() {
      * @return {Number}
      */
     helpers.getDiscordGroupIdByName = function(name, asString) {
-        switch (name.toLowerCase()) {
+        /*switch (name.toLowerCase()) {
             case 'administrators':
             case 'administrator':
                 return (asString ? '1' : 1);
             default:
                 return (asString ? '0' : 0);
-        }
+        }*/
+
+        return 'null';
     };
 
     /*
@@ -847,7 +933,7 @@ $(function() {
             case '4':
                 return 'Donators';
             case '5':
-                return 'Hosters';
+                return 'vips';
             case '6':
                 return 'Regulars';
             default:
@@ -858,16 +944,36 @@ $(function() {
     /*
      * @function Gets the group name by its ID.
      *
-     * @param  {String} id
+     * @param  {String} j
      * @return {Number}
      */
-    helpers.getDiscordGroupNameById = function(id) {
-        switch (id.toString()) {
-            case '1':
-                return 'Administrators';
-            default:
-                return 'Everyone';
+    helpers.getDiscordGroupNameById = function(j) {
+        let json = JSON.parse(j);
+        let roles = [];
+        let perms = [];
+
+        for (let i = 0; i < json.roles.length; i++) {
+            if (json.roles[i].selected == 'true')
+                roles.push(json.roles[i].name);
         }
+
+        if (roles.length === 0) {
+            roles.push('None');
+        }
+
+        for (let i = 0; i < json.permissions.length; i++) {
+            if (json.permissions[i].selected == 'true')
+                perms.push(json.permissions[i].name);
+        }
+
+        if (perms.length === 0) {
+            perms.push('None');
+        }
+
+        return {
+            roles: roles,
+            perms: perms
+        };
     };
 
     /*
@@ -889,49 +995,49 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/select2/select2.dark.min.css'
+                'href': '/panel/vendors/select2/select2.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/AdminLTE.dark.min.css'
+                'href': '/panel/vendors/adminlte/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/skins/skin-purple.dark.min.css'
+                'href': '/panel/vendors/adminlte/css/skins/skin-purple.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/css/style.dark.min.css'
+                'href': '/panel/css/style.dark.min.css'
             }));
         } else {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/select2/select2.min.css'
+                'href': '/panel/vendors/select2/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/AdminLTE.min.css'
+                'href': '/panel/vendors/adminlte/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/vendors/adminlte/css/skins/skin-purple.min.css'
+                'href': '/panel/vendors/adminlte/css/skins/skin-purple.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'panel/css/style.min.css'
+                'href': '/panel/css/style.min.css'
             }));
         }
     };

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,9 @@
      * @returns {string}
      */
     function whisperPrefix(username, force) {
+        if (username.toLowerCase() == $.botName.toLowerCase()) {
+            return '';
+        }
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
@@ -85,7 +88,7 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && hasKey($.users, sender, 0)) {
+        if (message.startsWith('!') && $.isMod(sender) && $.userExists(sender)) {
             message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');

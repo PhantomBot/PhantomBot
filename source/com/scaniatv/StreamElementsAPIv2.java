@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ import org.json.JSONObject;
  */
 public class StreamElementsAPIv2 {
 
-    private static final StreamElementsAPIv2 instance = new StreamElementsAPIv2();
+    private static StreamElementsAPIv2 instance;
     private static final String url = "https://api.streamelements.com/kappa/v2";
     private static final int iHTTPTimeout = 2 * 1000;
     private static String jwtToken = "";
@@ -49,7 +49,11 @@ public class StreamElementsAPIv2 {
     /*
      * Returns the current instance.
      */
-    public static StreamElementsAPIv2 instance() {
+    public static synchronized StreamElementsAPIv2 instance() {
+        if (instance == null) {
+            instance = new StreamElementsAPIv2();
+        }
+
         return instance;
     }
 
@@ -77,7 +81,7 @@ public class StreamElementsAPIv2 {
      * Populates additional information into a JSON object to be digested
      * as needed.
      */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) {
+    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -91,7 +95,7 @@ public class StreamElementsAPIv2 {
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -182,7 +186,7 @@ public class StreamElementsAPIv2 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() {
+    public JSONObject GetDonations() throws JSONException {
         return readJsonFromUrl(url + "/tips/" + this.id + "?limit=" + this.pullLimit);
     }
 }

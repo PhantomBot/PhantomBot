@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ $.lang.register('customcommands.alias.usage', 'Usage: !aliascom (alias name) (ex
 $.lang.register('customcommands.delete.success', 'Command !$1 has been removed!');
 $.lang.register('customcommands.delete.usage', 'Usage: !delcom (command)');
 $.lang.register('customcommands.edit.404', 'You cannot overwrite a default command.');
+$.lang.register('customcommands.edit.editcom.alias', 'You cannot edit an alias, please use the following: !editcom !$1 $2');
 $.lang.register('customcommands.set.perm.error.target404', 'The command !$1 does not exist!');
 $.lang.register('customcommands.set.perm.success', 'Permissions for command: $1 set for group: $2 and higher.');
 $.lang.register('customcommands.set.perm.unset.success', 'All recursive permissions for the command: $1 and any of its aliases have been removed.');
@@ -49,6 +50,8 @@ $.lang.register('customcommands.404.no.commands', 'There are no custom commands,
 $.lang.register('customcommands.cmds', 'Current custom commands: $1');
 $.lang.register('customcommands.edit.usage', 'Usage: !editcom (command) (message)');
 $.lang.register('customcommands.edit.success', 'Command !$1 has been edited!');
+$.lang.register('customcommands.token.usage', 'Usage: !tokencom (command) (token) -- WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!');
+$.lang.register('customcommands.token.success', 'Token set for command !$1! Make sure you put a (token) subtag in the customapi url for this command in the spot you want it to appear');
 $.lang.register('customcommands.touser.offline', 'Sorry, but $1 appears to be offline!');
 $.lang.register('customcommands.customapi.404', 'The !$1 command requires parameters.');
 $.lang.register('customcommands.customapijson.err', '!$1: An error occurred processing the API.');

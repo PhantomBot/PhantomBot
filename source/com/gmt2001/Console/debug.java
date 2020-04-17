@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,6 +104,23 @@ public final class debug {
             }
             logStackTrace(e);
         }
+    }
+
+    /**
+     * Prints the stack trace if debug is enabled and not in log only mode
+     *
+     * Always logs the stack trace, even with debug off
+     *
+     * @param e A {@link Throwable} to print/log
+     */
+    public static void printOrLogStackTrace(Throwable e) {
+        if (PhantomBot.getEnableDebugging()) {
+            if (!PhantomBot.getEnableDebuggingLogOnly()) {
+                e.printStackTrace(System.err);
+            }
+        }
+
+        logStackTrace(e);
     }
 
     public static void logStackTrace(Throwable e) {

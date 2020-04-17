@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,9 +48,9 @@ $(function() {
     	    	break;
     	    default:
     	    	socket.updateDBValues('discord_logs_update', {
-    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-        			keys: ['modLogs', 'cbenniToggle', 'customCommandLogs', 'modLogChannel'],
-    	    		values: [moderationLogs, moderationCBenni, customCommandLog, logChannel.val()]
+    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'chatModerator'],
+        			keys: ['modLogs', 'cbenniToggle', 'customCommandLogs', 'modLogChannel', 'moderationLogs'],
+    	    		values: [moderationLogs, moderationCBenni, customCommandLog, logChannel.val(), moderationLogs]
     	    	}, function() {
     	    		// Update the scripts variables.
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {

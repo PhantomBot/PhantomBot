@@ -1,0 +1,2 @@
+JAVA_VERSION="11.0.4"
+MODULES="java.base java.datatransfer java.xml java.prefs java.desktop java.logging java.management java.security.sasl java.naming java.transaction.xa java.sql jdk.crypto.ec jdk.crypto.cryptoki jdk.httpserver jdk.jdwp.agent"

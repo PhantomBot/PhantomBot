@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2019 phantombot.tv
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,6 +41,11 @@
             <form role="form">
                 <!-- Box content -->
                 <div class="box-body">
+                    <div class="load-ajax">
+                        <div class="spinner"></div>
+                        <p class="load-ajax-text">Lade...</p>
+                    </div>
+
                     <table id="hostHistoryTable" class="table table-bordered table-hover"></table>
                 </div>
             </form>
@@ -48,5 +53,5 @@
     </section>
 
     <!-- hostHistory -->
-    <script src="panel/js/pages/history/hostHistory.js"></script>
+    <script src="/panel/js/pages/history/hostHistory.js"></script>
 </main>

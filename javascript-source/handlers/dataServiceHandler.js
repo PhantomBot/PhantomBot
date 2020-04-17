@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@
             return;
         }
 
-        $.consoleLn('DataRenderService: Verarbeite Daten (siehe Event Log für Details)');
-        $.log.event('DataRenderService: Handler Prozess Start');
+        $.consoleLn('DataRenderService: Processing Data (see event logs for details)');
+        $.log.event('DataRenderService: Handler Process Start');
 
         commandHelpFileData = $.readFile('./addons/dataservice/commands_help.txt');
         for (var idx in commandHelpFileData) {
@@ -58,7 +58,9 @@
         jsonStringer = new JSONStringer();
         jsonStringer.object().key('commands').array();
         for (var idx in entries) {
-            var command = entries[idx].key, commandValue = entries[idx].value;
+            // commandValue is a Java string, but needs to be a JS string for the replace() calls
+            // below to work, so we cast it explicitly here.
+            var command = entries[idx].key, commandValue = String(entries[idx].value);
             if (!$.inidb.exists('disabledCommands', command)) {
                 jsonStringer.object();
                 jsonStringer.key('command').value(command);
@@ -81,7 +83,7 @@
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'commands');
-        $.log.event('DataRenderService: Befehl API Status : ' + apiStatus);
+        $.log.event('DataRenderService: Commands API status : ' + apiStatus);
 
         entries = $.inidb.GetKeyValueList('quotes', '');
         jsonStringer = new JSONStringer();
@@ -96,7 +98,7 @@
         }
         jsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'quotes');
-        $.log.event('DataRenderService: Zitat API Status : ' + apiStatus);
+        $.log.event('DataRenderService: Quotes API status : ' + apiStatus);
 
         entries = $.inidb.GetKeyValueList('points', '');
         jsonStringer = new JSONStringer();
@@ -131,15 +133,15 @@
         jsonStringer.endArray().endObject();
         ranksJsonStringer.endArray().endObject();
         apiStatus = $.dataRenderServiceAPI.postData(jsonStringer.toString(), $.channelName, 'times');
-        $.log.event('DataRenderService: Zeit API Status : ' + apiStatus);
+        $.log.event('DataRenderService: Times API status : ' + apiStatus);
 
         apiStatus = $.dataRenderServiceAPI.postData(ranksJsonStringer.toString(), $.channelName, 'ranks');
-        $.log.event('DataRenderService: Rang API Status : ' + apiStatus);
+        $.log.event('DataRenderService: Ranks API status : ' + apiStatus);
 
-        $.log.event('DataRenderService: Handler Prozess fertiggestellt');
+        $.log.event('DataRenderService: Handler Process Complete');
         $.setIniDbNumber('datarenderservice', 'last_time', $.systemTime());
 
-        $.consoleLn('DataRenderService: Daten wurden verarbeitet.');
+        $.consoleLn('DataRenderService: Data has been Processed');
     }
 
     /**
@@ -168,7 +170,7 @@
         $.registerChatCommand('./handlers/dataServiceHandler.js', 'terminatedataserviceapi', 1);
 
         if ($.dataRenderServiceAPI.hasAPIKey()) {
-            $.consoleLn('Daten Render Service API-Schlüssel vorhanden, Aktiviere Daten Strom');
+            $.consoleLn('Data Render Service API Key Present, Enabling Data Feed');
             setInterval(drsTimer, 6e4);
         }
     });

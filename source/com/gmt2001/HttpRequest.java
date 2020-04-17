@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -55,6 +56,11 @@ public class HttpRequest {
             URL u = new URL(url);
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
+
+            if (u.getUserInfo() != null) {
+                String basicAuth = "Basic " + new String(new Base64().encode(u.getUserInfo().getBytes()));
+                h.setRequestProperty("Authorization", basicAuth);
+            }
 
             headers.entrySet().stream().forEach((e) -> {
                 h.addRequestProperty(e.getKey(), e.getValue());
