@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ public class ExceptionHandler implements IPublicationErrorHandler {
 
     @Override
     public void handleError(PublicationError err) {
-        com.gmt2001.Console.err.println("Versand des Ereignisses fehlgeschlagen [" + err.getHandler().toString() + "] to [" + err.getListener().toString() + "] " + err.getCause().getMessage());
+        com.gmt2001.Console.err.println("Failed to dispatch event [" + err.getHandler().toString() + "] to [" + err.getListener().toString() + "] " + err.getCause().getMessage());
         com.gmt2001.Console.err.printStackTrace(err.getCause());
     }
 }

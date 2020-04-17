@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord;
 
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
-
+import discord4j.core.object.entity.Channel;
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.TextChannel;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.VoiceChannel;
 import tv.phantombot.event.Event;
 
 public abstract class DiscordEvent extends Event {
-    private final IUser user;
-    private final IChannel channel;
-    private final IMessage message;
+
+    private final User user;
+    private final VoiceChannel voicechannel;
+    private final Channel channel;
+    private final Message message;
     private final String username;
     private final String channelName;
     private final String sender;
@@ -37,59 +39,98 @@ public abstract class DiscordEvent extends Event {
 
     /**
      * Class constructor for this event.
-     *
-     * @param {IUser} user
      */
-    protected DiscordEvent(IUser user) {
+    protected DiscordEvent() {
+        this(null);
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param {User} user
+     */
+    protected DiscordEvent(User user) {
+        this(user, null);
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param {User} user
+     * @param {Channel} channel
+     */
+    protected DiscordEvent(User user, Channel channel) {
+        this(user, channel, null);
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param {User} user
+     * @param {Channel} channel
+     * @param {Message} message
+     */
+    protected DiscordEvent(User user, Channel channel, Message message) {
+        this.user = user;
+        this.channel = channel;
+        this.voicechannel = null;
+        this.message = message;
+
+        if (channel != null) {
+            if (channel.getType() != Channel.Type.DM) {
+                this.channelName = ((TextChannel) channel).getName();
+            } else {
+                this.channelName = channel.getMention();
+            }
+
+            this.channelId = channel.getId().asString();
+        } else {
+            this.channelName = null;
+            this.channelId = null;
+        }
+
+        if (user != null) {
+            this.username = user.getUsername();
+            this.discrim = user.getDiscriminator();
+            this.senderId = user.getId().asString();
+            this.sender = (username + "#" + discrim);
+            this.mention = user.getMention();
+        } else {
+            this.username = null;
+            this.discrim = null;
+            this.senderId = null;
+            this.sender = null;
+            this.mention = null;
+        }
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param {User} user
+     * @param {VoiceChannel} channel
+     */
+    protected DiscordEvent(User user, VoiceChannel voicechannel) {
         this.user = user;
         this.channel = null;
+        this.voicechannel = voicechannel;
         this.message = null;
-        this.channelName = null;
-        this.channelId = null;
-        this.username = user.getName();
-        this.discrim = user.getDiscriminator();
-        this.senderId = user.getStringID();
-        this.sender = (username + "#" + discrim);
-        this.mention = user.mention();
-    }
+        this.channelName = voicechannel.getName();
+        this.channelId = voicechannel.getId().asString();
 
-    /**
-     * Class constructor for this event.
-     *
-     * @param {IUser}    user
-     * @param {IChannel} channel
-     */
-    protected DiscordEvent(IUser user, IChannel channel) {
-        this.user = user;
-        this.channel = channel;
-        this.message = null;
-        this.channelName = channel.getName();
-        this.channelId = channel.getStringID();
-        this.username = user.getName();
-        this.discrim = user.getDiscriminator();
-        this.senderId = user.getStringID();
-        this.sender = (username + "#" + discrim);
-        this.mention = user.mention();
-    }
-
-    /**
-     * Class constructor for this event.
-     *
-     * @param {IUser}    user
-     * @param {IChannel} channel
-     * @param {IMessage} message
-     */
-    protected DiscordEvent(IUser user, IChannel channel, IMessage message) {
-        this.user = user;
-        this.channel = channel;
-        this.message = message;
-        this.channelName = channel.getName();
-        this.channelId = channel.getStringID();
-        this.username = user.getName();
-        this.discrim = user.getDiscriminator();
-        this.senderId = user.getStringID();
-        this.sender = (username + "#" + discrim);
-        this.mention = user.mention();
+        if (user != null) {
+            this.username = user.getUsername();
+            this.discrim = user.getDiscriminator();
+            this.senderId = user.getId().asString();
+            this.sender = (username + "#" + discrim);
+            this.mention = user.getMention();
+        } else {
+            this.username = null;
+            this.discrim = null;
+            this.senderId = null;
+            this.sender = null;
+            this.mention = null;
+        }
     }
 
     /**
@@ -134,7 +175,7 @@ public abstract class DiscordEvent extends Event {
      * @return {String}
      */
     public String getMessage() {
-        return this.message.getContent();
+        return this.message.getContent().get();
     }
 
     /**
@@ -167,27 +208,36 @@ public abstract class DiscordEvent extends Event {
     /**
      * Method that returns the user's object for Discord4J.
      *
-     * @return {IUser}
+     * @return {User}
      */
-    public IUser getDiscordUser() {
+    public User getDiscordUser() {
         return this.user;
     }
 
     /**
      * Method that returns the channel's object for Discord4J.
      *
-     * @return {IChannel}
+     * @return {Channel}
      */
-    public IChannel getDiscordChannel() {
+    public Channel getDiscordChannel() {
         return this.channel;
+    }
+
+    /**
+     * Method that returns the channel's object for Discord4J.
+     *
+     * @return {Channel}
+     */
+    public Channel getDiscordVoiceChannel() {
+        return this.voicechannel;
     }
 
     /**
      * Method that returns the message object
      *
-     * @return {IMessage}
+     * @return {Message}
      */
-    public IMessage getDiscordMessage() {
+    public Message getDiscordMessage() {
         return this.message;
     }
 }

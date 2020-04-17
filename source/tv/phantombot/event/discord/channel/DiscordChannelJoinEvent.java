@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 package tv.phantombot.event.discord.channel;
 
-import sx.blah.discord.handle.obj.IUser;
+import discord4j.core.object.entity.User;
 
 public class DiscordChannelJoinEvent extends DiscordChannelEvent {
 
@@ -25,7 +25,7 @@ public class DiscordChannelJoinEvent extends DiscordChannelEvent {
      *
      * @param {IUser} user
      */
-    public DiscordChannelJoinEvent(IUser user) {
+    public DiscordChannelJoinEvent(User user) {
         super(user);
     }
 }

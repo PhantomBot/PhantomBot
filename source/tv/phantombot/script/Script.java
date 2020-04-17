@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  */
 package tv.phantombot.script;
 
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.*;
@@ -31,7 +30,7 @@ public class Script {
 
     public static final NativeObject global = new NativeObject();
     @SuppressWarnings("rawtypes")
-    private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
+    private final List<ScriptDestroyable> destroyables = new ArrayList<>();
     private static final NativeObject vars = new NativeObject();
     private final File file;
     private long lastModified;
@@ -47,10 +46,6 @@ public class Script {
 
         if (PhantomBot.getReloadScripts()) {
             ScriptFileWatcher.instance().addScript(this);
-        } else {
-            if (file.getPath().indexOf(System.getProperty("file.separator") + "lang" + System.getProperty("file.separator")) != -1) {
-                ScriptFileWatcher.instance().addScript(this);
-            }
         }
     }
 
@@ -70,10 +65,10 @@ public class Script {
         try {
             load();
             if (file.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.out.println("Neugeladenes Modul: init.js");
+                com.gmt2001.Console.out.println("Reloaded module: init.js");
             } else {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-                com.gmt2001.Console.out.println("Neugeladenes Modul: " + path);
+                com.gmt2001.Console.out.println("Reloaded module: " + path);
             }
             fileNotFoundCount = 0;
         } catch (Exception ex) {
