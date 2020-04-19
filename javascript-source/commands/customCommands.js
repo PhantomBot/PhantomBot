@@ -1021,7 +1021,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.token.success', action));
             }
 
-            if (argsString.length() === 0) {
+            if (argsString.length === 0) {
                 $.inidb.RemoveKey('commandtoken', '', action);
             } else {
                 $.inidb.SetString('commandtoken', '', action, argsString);
