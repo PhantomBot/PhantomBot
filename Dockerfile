@@ -18,7 +18,7 @@
 # Build container
 FROM openjdk:11.0.4-jdk as builder
 
-ARG PROJECT_NAME=PhantomBot
+ARG PROJECT_NAME=PhantomBotDE
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
