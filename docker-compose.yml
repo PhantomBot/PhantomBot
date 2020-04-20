@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-version: '3'
+version: '3.1.2'
 services:
   phantombot:
-    container_name: phantombot-nightly
-    image: gmt2001/phantombot-nightly:latest
+    container_name: phantombotde
+    image: PhantomBotDE/PhantomBotDE:latest
     ports:
       - "25000:25000"
     restart: always
