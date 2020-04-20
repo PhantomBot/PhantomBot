@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-version: '3'
+version: '3.1.2'
 services:
   phantombot:
-    container_name: phantombotde-dev
-    image: vesturo/testrepo:latest
+    container_name: phantombotde
+    image: phantombotde/phantombotde:3.1.2
     ports:
       - "25000:25000"
     restart: always
