@@ -143,7 +143,8 @@
         warning = '',
         youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
         i,
-        j;
+        j,
+        k;
 
     /**
      * @function reloadModeration
@@ -494,10 +495,24 @@
      * @param {string} message
      */
     function checkWhiteList(message) {
+        function checkLink(link, whiteListItem) {
+            var baseLink = link.match(/[^.]*[^/]*/)[0];
+            var itemRe = RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+            var matches = Array.from(link.matchAll(itemRe));
+            for (k = 0; k < matches.length; k++) {
+                var matchStart = matches[k].index;
+                var matchEnd = matches[k].index + matches[k][0].length;
+                if (matchStart < baseLink.length && matchEnd >= baseLink.length) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         var links = $.patternDetector.getLinks(message);
-        for (i in whiteList) {
+        for (i = 0; i < whiteList.length; i++) {
             for (j = 0; j < links.length; j++) {
-                if (links[j].indexOf(whiteList[i]) !== -1) {
+                if (checkLink(links[j], whiteList[i])) {
                     links.splice(j--, 1);
                 }
             }
