@@ -499,7 +499,7 @@
             } else
 
             // Check the command permission.
-            if ($.permCom(sender, command, subCommand) !== 0) {
+            if ($.permCom(sender, command, subCommand, event.getTags()) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to the user not having permission for it.');
                 return;

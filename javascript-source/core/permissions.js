@@ -151,7 +151,7 @@
         var idx = -1;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
+            if (list[i] !== undefined && $.equalsIgnoreCase(list[i], value)) {
                 idx = i;
                 break;
             }
@@ -228,7 +228,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase()) || isOwner(username);
     }
 
     /**
@@ -249,7 +249,7 @@
      * @returns {boolean}
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1'));
+        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
 
     /**

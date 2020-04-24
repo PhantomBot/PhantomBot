@@ -228,7 +228,7 @@
             } else if (commands[command].groupId == 4) {
                 group = 'Donator';
             } else if (commands[command].groupId == 5) {
-                group = 'Hoster';
+                group = 'VIP';
             } else if (commands[command].groupId == 6) {
                 group = 'Regular';
             } else if (commands[command].groupId == 7) {
@@ -278,7 +278,7 @@
             } else if (commands[command].subcommands[subcommand].groupId == 4) {
                 group = 'Donator';
             } else if (commands[command].subcommands[subcommand].groupId == 5) {
-                group = 'Hoster';
+                group = 'VIP';
             } else if (commands[command].subcommands[subcommand].groupId == 6) {
                 group = 'Regular';
             } else if (commands[command].subcommands[subcommand].groupId == 7) {

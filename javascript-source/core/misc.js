@@ -142,6 +142,20 @@
         }
     }
 
+    function equalsIgnoreCase(str1, str2) {
+        try {
+            return str1.equalsIgnoreCase(str2);
+        } catch (e) {
+            try {
+                return str1.toLowerCase() == str2.toLowerCase();
+            } catch (e) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @function say
      * @export $
@@ -748,4 +762,5 @@
     $.getMessageWrites = getMessageWrites;
     $.sayWithTimeout = sayWithTimeout;
     $.paginateArrayDiscord = paginateArrayDiscord;
+    $.equalsIgnoreCase = equalsIgnoreCase;
 })();

@@ -56,6 +56,8 @@ public final class HTTPWSServer {
      */
     private Channel ch;
 
+    public boolean sslEnabled = false;
+
     /**
      * Gets the server instance.
      *
@@ -112,6 +114,7 @@ public final class HTTPWSServer {
                     tmf.init(ks);
 
                     sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
+                    sslEnabled = true;
                 }
             } else {
                 sslCtx = null;
