@@ -771,20 +771,42 @@
      * @param {sub} subcommand
      * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
-    function permCom(username, command, subcommand) {
+    function permCom(username, command, subcommand, tags) {
+        var commandGroup, allowed;
         if (subcommand === '') {
-            if ($.getCommandGroup(command) >= $.getUserGroupId(username)) {
-                return 0;
-            } else {
-                return 1;
-            }
+            commandGroup = $.getCommandGroup(command);
         } else {
-            if ($.getSubcommandGroup(command, subcommand) >= $.getUserGroupId(username)) {
-                return 0;
-            } else {
-                return 2;
-            }
+            commandGroup = $.getSubcommandGroup(command, subcommand);
         }
+        
+        switch(commandGroup) {
+            case 0:
+                allowed = $.isCaster(username);
+                break;
+            case 1:
+                allowed = $.isAdmin(username);
+                break;
+            case 2:
+                allowed = $.isModv3(username, tags);
+                break;
+            case 3:
+                allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
+                break;
+            case 4:
+                allowed = $.isDonator(username) || $.isModv3(username, tags);
+                break;
+            case 5:
+                allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
+                break;
+            case 6:
+                allowed = $.isReg(username) || $.isModv3(username, tags);
+                break;
+            default:
+                allowed = true;
+                break;
+        }
+        
+        return allowed ? 0 : (subcommand === '' ? 1 : 2);
     }
 
     /*

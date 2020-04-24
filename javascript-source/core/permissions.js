@@ -228,7 +228,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase()) || isMod(username);
     }
 
     /**
@@ -249,7 +249,7 @@
      * @returns {boolean}
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1'));
+        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
 
     /**
