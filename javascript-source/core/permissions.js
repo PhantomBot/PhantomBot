@@ -228,7 +228,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase()) || isMod(username);
+        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase()) || isOwner(username);
     }
 
     /**
