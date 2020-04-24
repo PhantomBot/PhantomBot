@@ -151,7 +151,7 @@
         var idx = -1;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
+            if (list[i] !== undefined && $.equalsIgnoreCase(list[i], value)) {
                 idx = i;
                 break;
             }
