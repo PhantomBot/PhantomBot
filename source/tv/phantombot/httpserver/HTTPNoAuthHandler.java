@@ -16,12 +16,14 @@
  */
 package tv.phantombot.httpserver;
 
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -53,6 +55,22 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
+            String host = req.headers().get(HttpHeaderNames.HOST);
+
+            if (host == null) {
+                host = "";
+            } else if (HTTPWSServer.instance().sslEnabled) {
+                host = "https://" + host;
+            } else {
+                host = "http://" + host;
+            }
+
+            com.gmt2001.Console.debug.println("421");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MISDIRECTED_REQUEST, ("Authenticated request attempted, please direct request to: " + host + "/dbquery").getBytes(), null));
+            return;
+        }
+
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.HEAD)) {
             com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
