@@ -73,14 +73,23 @@
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
             notice = $.inidb.get('notices', 'message_' + RandomNotice);
 
-        if (notice == null) {
-            return;
-        }
-
         RandomNotice++;
 
         if (RandomNotice >= numberOfNotices) {
             RandomNotice = 0;
+        }
+
+        if (notice == null) {
+            return;
+        }
+
+        if (notice.match(/\(gameonly=.*\)/g)) {
+            var game = notice.match(/\(gameonly=(.*)\)/)[1];
+
+            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
+                return sendNotice();
+            }
+            notice = $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
         }
 
         if (notice.startsWith('command:')) {
