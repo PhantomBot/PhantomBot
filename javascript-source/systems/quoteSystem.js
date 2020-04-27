@@ -192,13 +192,15 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
                     return;
                 }
-                var target = args[0].toLowerCase();
-                if (!$.user.isKnown(target)) {
+                var useTwitchNames = ($.inidb.exists('settings', 'quoteTwitchNamesToggle')) ? $.inidb.get('settings', 'quoteTwitchNamesToggle') == "true" : true;
+                var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
+                if (useTwitchNames && !$.user.isKnown(target)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
                     return;
                 }
                 quote = args.splice(1).join(' ');
-                $.say($.lang.get('quotesystem.add.success', $.username.resolve(target), saveQuote(String($.username.resolve(target)), quote)));
+                var username = useTwitchNames ? $.username.resolve(target) : target;
+                $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             }

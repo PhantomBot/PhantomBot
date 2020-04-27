@@ -203,13 +203,21 @@ $(function() {
 
     // Quotes settings button.
     $('#quote-settings-button').on('click', function() {
-        socket.getDBValue('get_quote_settings', 'settings', 'quoteMessage', function(e) {
+        socket.getDBValues('get_quote_settings', {
+            tables: ['settings', 'settings'],
+            keys: ['quoteMessage', 'quoteTwitchNamesToggle']
+        }, true, function(e) {
             helpers.getModal('quote-settings', 'Quote Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
             // Quote input.
-            .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)", by (user) ((date))'), 'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)')), function() {// Callback once we click the save button.
-                let quoteMsg = $('#quote-msg');
+            .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)", by (user) ((date))'),
+                'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)'))
+            .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Force Twitch Names', (e['quoteTwitchNamesToggle'] !== 'false' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If names for quotes should be validated against Twitch usernames. If not, names can be anything.')),
+            function() {// Callback once we click the save button.
+                let quoteMsg = $('#quote-msg'),
+                    quoteTwitchNamesToggle = $('#quote-twitch-names-toggle').find(':selected').text() === 'Yes';
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -217,7 +225,11 @@ $(function() {
                         break;
                     default:
                         // Add quote.
-                        socket.updateDBValue('get_quote_settings_update', 'settings', 'quoteMessage', quoteMsg.val(), function() {
+                        socket.updateDBValues('get_quote_settings_update', {
+                            tables: ['settings', 'settings'],
+                            keys: ['quoteMessage', "quoteTwitchNamesToggle"],
+                            values: [quoteMsg.val(), quoteTwitchNamesToggle]
+                        }, function() {
                             // Close the modal.
                             $('#quote-settings').modal('hide');
                             // Alert the user.
