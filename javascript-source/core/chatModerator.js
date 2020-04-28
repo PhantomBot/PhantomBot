@@ -497,7 +497,7 @@
     function checkWhiteList(message) {
         function checkLink(link, whiteListItem) {
             var baseLink = link.match(/[^.]*[^/]*/)[0];
-            var itemRe = RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+            var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
             var matches = Array.from(link.matchAll(itemRe));
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
