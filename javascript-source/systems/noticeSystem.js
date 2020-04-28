@@ -71,25 +71,29 @@
     function sendNotice() {
         var EventBus = Packages.tv.phantombot.event.EventBus,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
-            notice = $.inidb.get('notices', 'message_' + RandomNotice);
+            start = RandomNotice,
+            
+        do {
+            var notice = $.inidb.get('notices', 'message_' + RandomNotice);
 
-        RandomNotice++;
+            RandomNotice++;
 
-        if (RandomNotice >= numberOfNotices) {
-            RandomNotice = 0;
-        }
+            if (RandomNotice >= numberOfNotices) {
+                RandomNotice = 0;
+            }
+            
+            if (notice && notice.match(/\(gameonly=.*\)/g)) {
+                var game = notice.match(/\(gameonly=(.*)\)/)[1];
+                if ($.getGame($.channelName).equalsIgnoreCase(game)) {
+                    notice = $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
+                } else {
+                    notice === null;
+                }
+            }
+        } while(!notice || start !== RandomNotice);
 
         if (notice == null) {
             return;
-        }
-
-        if (notice.match(/\(gameonly=.*\)/g)) {
-            var game = notice.match(/\(gameonly=(.*)\)/)[1];
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return sendNotice();
-            }
-            notice = $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
         }
 
         if (notice.startsWith('command:')) {
