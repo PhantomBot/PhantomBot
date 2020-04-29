@@ -309,6 +309,22 @@
 
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.found', matchingKeys.join(', ')));
         }
+
+        /**
+         * @commandpath quotetwitchnamestoggle - Toggles on and off if quote names need to have been seen in chat before
+         */
+        if (command.equalsIgnoreCase('quotetwitchnamestoggle')) {
+            var useTwitchNames = $.inidb.get('settings', 'quoteTwitchNamesToggle') == "true";
+            if (useTwitchNames) {
+                useTwitchNames = false;
+                $.inidb.set('settings', 'quoteTwitchNamesToggle', 'false');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-disabled'));
+            } else {
+                useTwitchNames = true;
+                $.inidb.set('settings', 'quoteTwitchNamesToggle', 'true');
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-enabled'));
+            }
+        }
     });
 
     /**
@@ -324,5 +340,6 @@
         $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
         $.registerChatCommand('./systems/quoteSystem.js', 'quote');
         $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', 1);
     });
 })();
