@@ -72,9 +72,10 @@
         var EventBus = Packages.tv.phantombot.event.EventBus,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
             start = RandomNotice,
+            notice = null;
             
         do {
-            var notice = $.inidb.get('notices', 'message_' + RandomNotice);
+            notice = $.inidb.get('notices', 'message_' + RandomNotice);
 
             RandomNotice++;
 
