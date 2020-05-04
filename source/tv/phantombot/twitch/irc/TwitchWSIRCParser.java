@@ -582,18 +582,27 @@ public class TwitchWSIRCParser implements Runnable {
                     com.gmt2001.Console.out.println("[ERROR] After, open the botlogin.txt file and replace the oauth= value with the token.");
                     com.gmt2001.Console.out.println();
                 } else {
-                    com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
-                    com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
-                    com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
-                    com.gmt2001.Console.out.println();
+                    // Since the "user-type" tag in deprecated and Twitch wants us to reply on badges
+                    // A user can sometimes lose its badge for no reason from one message to another
+                    // So, this could possibly make the bot lose its moderator powers, even though the bot
+                    // is still a mod, so checking the "mod" tag before removing a user's moderator permissions
+                    // is the only way to fix this, an admin or staff member could lose moderation powers from the bot
+                    // for a second if they are not a channel moderator, so the bot would try and time them out if a moderation
+                    // filter is triggered. This fix is only to prevent the bot from losing moderator powers.
+                    if (!tags.containsKey("mod") || !tags.get("mod").equals("1")) {
+                        com.gmt2001.Console.out.println();
+                        com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
+                        com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
+                        com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
+                        com.gmt2001.Console.out.println();
 
-                    // We're not a mod thus we cannot send messages.
-                    session.setAllowSendMessages(false);
-                    // Remove the bot from the moderators list.
-                    if (moderators.contains(username)) {
-                        moderators.remove(username);
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                        // We're not a mod thus we cannot send messages.
+                        session.setAllowSendMessages(false);
+                        // Remove the bot from the moderators list.
+                        if (moderators.contains(username)) {
+                            moderators.remove(username);
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                        }
                     }
                 }
             }
