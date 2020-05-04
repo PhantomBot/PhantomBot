@@ -324,7 +324,7 @@ public class TwitchPubSub {
                 com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
                 
                 
-                String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
+                String[] type = new String[] {"chat_moderator_actions." + channelId};
                 JSONObject jsonObject = new JSONObject();
                 JSONObject topics = new JSONObject();
                 
