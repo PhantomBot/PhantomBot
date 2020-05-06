@@ -83,6 +83,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         String auth1 = headers.get("password");
         String auth2 = headers.get("webauth");
         String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
+        String astr = auth1 != null ? auth1 : (auth2 != null ? auth2 : (auth3 != null ? auth3 : ""));
 
         if ((auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token))) {
             return true;
@@ -94,7 +95,10 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         buf.release();
         HttpUtil.setContentLength(res, res.content().readableBytes());
 
-        com.gmt2001.Console.debug.println("403");
+        com.gmt2001.Console.debug.println("401");
+        com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
+        com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
+        com.gmt2001.Console.debug.println("Got: >" + astr + "<");
 
         res.headers().set(CONNECTION, CLOSE);
         ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);

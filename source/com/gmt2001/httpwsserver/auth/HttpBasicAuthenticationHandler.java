@@ -103,7 +103,9 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
         }
 
-        com.gmt2001.Console.debug.println("403");
+        com.gmt2001.Console.debug.println("401");
+        com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
+        com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth.substring(6))) + "<");
 
         res.headers().set(CONNECTION, CLOSE);
         ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
