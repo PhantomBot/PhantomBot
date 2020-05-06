@@ -126,7 +126,7 @@ public class DiscordAPI extends DiscordUtil {
         }).doOnSuccess(cgateway -> {
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
-            DiscordAPI.selfId = cgateway.getSelfId().blockOptional();
+            DiscordAPI.selfId = cgateway.getSelfId().blockOptional(Duration.ofSeconds(5));
         }).subscribe();
     }
 
@@ -147,7 +147,7 @@ public class DiscordAPI extends DiscordUtil {
         }).doOnSuccess(cgateway -> {
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
-            DiscordAPI.selfId = cgateway.getSelfId().blockOptional();
+            DiscordAPI.selfId = cgateway.getSelfId().blockOptional(Duration.ofSeconds(5));
         }).subscribe();
 
         return isLoggedIn();
@@ -193,7 +193,7 @@ public class DiscordAPI extends DiscordUtil {
 
     public void testJoin() {
         try {
-            DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(gateway, null, gateway.getSelf().block().asMember(DiscordAPI.guild.getId()).block(), 0));
+            DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(gateway, null, gateway.getSelf().block(Duration.ofSeconds(5)).asMember(DiscordAPI.guild.getId()).block(Duration.ofSeconds(5)), 0));
         } catch (Exception e) {
             com.gmt2001.Console.debug.printStackTrace(e);
         }
