@@ -1,6 +1,5 @@
 package tv.phantombot;
 
-import com.sun.tools.javac.util.List;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,10 +7,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Supplier;
-import java.util.Map.Entry;
 
 public class ConfigurationManager {
 
