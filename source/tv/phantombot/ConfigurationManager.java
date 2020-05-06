@@ -126,7 +126,7 @@ public class ConfigurationManager {
         if (!startProperties.getProperty("allownonascii", "false").equalsIgnoreCase("true")) {
             for (String propertyKey : startProperties.stringPropertyNames()) {
                 String olds = startProperties.getProperty(propertyKey);
-                String news = olds.codePoints().filter(x -> x < 32 || x > 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
                 if (!olds.equals(news)) {
                     startProperties.setProperty(propertyKey, news);
