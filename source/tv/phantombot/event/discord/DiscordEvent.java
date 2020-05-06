@@ -50,7 +50,7 @@ public abstract class DiscordEvent extends Event {
      * @param {User} user
      */
     protected DiscordEvent(User user) {
-        this(user, null);
+        this(user, null, null);
     }
 
     /**
