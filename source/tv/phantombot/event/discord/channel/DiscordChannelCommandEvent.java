@@ -17,10 +17,9 @@
 
 package tv.phantombot.event.discord.channel;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
-
+import discord4j.core.object.entity.channel.Channel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      * @return {String[]}
      */
     private String[] parse() {
-        List<String> tempArgs = new LinkedList<String>();
+        List<String> tempArgs = new LinkedList<>();
         Boolean hasQuote = false;
         String tempString = "";
 

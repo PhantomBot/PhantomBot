@@ -16,25 +16,25 @@
  */
 package tv.phantombot.discord.util;
 
-import discord4j.core.object.entity.Channel;
-import discord4j.core.object.entity.GuildChannel;
 import discord4j.core.object.entity.GuildEmoji;
-import discord4j.core.object.entity.GuildMessageChannel;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.MessageChannel;
-import discord4j.core.object.entity.PrivateChannel;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.GuildChannel;
+import discord4j.core.object.entity.channel.GuildMessageChannel;
+import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import discord4j.core.object.reaction.ReactionEmoji;
-import discord4j.core.object.util.Permission;
-import discord4j.core.object.util.PermissionSet;
-import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
+import discord4j.rest.util.Permission;
+import discord4j.rest.util.PermissionSet;
+import discord4j.rest.util.Snowflake;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -872,7 +872,7 @@ public class DiscordUtil {
             message.delete().block();
         } catch (RuntimeException e) {
             if (e instanceof ClientException) {
-                ErrorResponse er = ((ClientException) e).getErrorResponse();
+                ErrorResponse er = ((ClientException) e).getErrorResponse().get();
                 if (er != null && er.getFields().containsKey("errorResponse")) {
                     ErrorResponse er2 = (ErrorResponse) er.getFields().get("errorResponse");
                     if (er2 != null && er2.getFields().containsKey("code") && (int) er2.getFields().get("code") == 10008) {
@@ -893,7 +893,7 @@ public class DiscordUtil {
      * @param game
      */
     public void setGame(String game) {
-        DiscordAPI.getClient().updatePresence(Presence.online(Activity.playing(game))).doOnError(e -> {
+        DiscordAPI.getGateway().updatePresence(Presence.online(Activity.playing(game))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
@@ -905,7 +905,7 @@ public class DiscordUtil {
      * @param url
      */
     public void setStream(String game, String url) {
-        DiscordAPI.getClient().updatePresence(Presence.online(Activity.streaming(game, url))).doOnError(e -> {
+        DiscordAPI.getGateway().updatePresence(Presence.online(Activity.streaming(game, url))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).block();
     }
@@ -915,7 +915,7 @@ public class DiscordUtil {
      *
      */
     public void removeGame() {
-        DiscordAPI.getClient().updatePresence(Presence.online()).block();
+        DiscordAPI.getGateway().updatePresence(Presence.online()).block();
     }
 
     /**

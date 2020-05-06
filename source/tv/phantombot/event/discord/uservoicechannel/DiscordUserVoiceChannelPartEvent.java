@@ -17,7 +17,7 @@
 package tv.phantombot.event.discord.uservoicechannel;
 
 import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.VoiceChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
 
 public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEvent {
 

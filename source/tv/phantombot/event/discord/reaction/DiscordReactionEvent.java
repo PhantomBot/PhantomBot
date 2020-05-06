@@ -17,9 +17,8 @@
 
 package tv.phantombot.event.discord.reaction;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.User;
-
+import discord4j.core.object.entity.channel.Channel;
 import tv.phantombot.event.discord.DiscordEvent;
 
 /**
