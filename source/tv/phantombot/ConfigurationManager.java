@@ -1,5 +1,6 @@
 package tv.phantombot;
 
+import com.sun.tools.javac.util.List;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -121,6 +122,16 @@ public class ConfigurationManager {
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
             com.gmt2001.Console.err.println("Exiting PhantomBot");
             PhantomBot.exitError();
+        }
+
+        for (String propertyKey : startProperties.stringPropertyNames()) {
+            String olds = startProperties.getProperty(propertyKey);
+            String news = olds.codePoints().filter(x -> x < 32 || x > 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+            if (!olds.equals(news)) {
+                startProperties.setProperty(propertyKey, news);
+                changed = true;
+            }
         }
 
         /* Check to see if anything changed */
