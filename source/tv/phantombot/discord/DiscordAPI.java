@@ -323,7 +323,7 @@ public class DiscordAPI extends DiscordUtil {
             }
 
             iMessage.getChannel().timeout(Duration.ofMillis(500)).doOnSuccess(iChannel -> {
-                User iUser = event.getMember().map(m -> (User) m).orElse(((PrivateChannel) iChannel).getRecipients().take(1).singleOrEmpty().block(Duration.ofMillis(500)));
+                User iUser = event.getMember().isPresent() ? event.getMember().get() : ((PrivateChannel) iChannel).getRecipients().take(1).singleOrEmpty().block(Duration.ofMillis(500));
 
                 if (iUser == null || (DiscordAPI.selfId.isPresent() && iUser.getId().equals(DiscordAPI.selfId.get()))) {
                     return;
