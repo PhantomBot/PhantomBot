@@ -26,20 +26,26 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
+import org.sqlite.SQLiteConfig;
 
 /**
  * Processes HTTP requests and passes successful ones to the appropriate registered final handler
@@ -349,6 +355,40 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      */
     public static void deregisterHttpHandler(String path) {
         httpRequestHandlers.remove(path);
+    }
+
+    /**
+     * Parses out cookies and converts them to a Map
+     *
+     * @param req The {@link FullHttpRequest} containing the request
+     * @return A Map of cookies
+     */
+    public static Map<String, String> parseCookies(FullHttpRequest req) {
+        Map<String, String> cookies = new HashMap<>();
+
+        req.headers().getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
+            String[] cookie = scookie.split("=", 2);
+            cookies.put(cookie[0], cookie[1]);
+        }));
+
+        return cookies;
+    }
+
+    /**
+     * Parses out post data and converts it to a Map
+     *
+     * @param req The {@link FullHttpRequest} containing the request
+     * @return A Map of post data
+     */
+    public static Map<String, String> parsePost(FullHttpRequest req) {
+        Map<String, String> post = new HashMap<>();
+
+        Stream.of(req.content().toString(Charset.defaultCharset()).split("&")).forEach(ppost -> {
+            String[] spost = ppost.split("=", 2);
+            post.put(spost[0], URLDecoder.decode(spost[1], Charset.defaultCharset()));
+        });
+
+        return post;
     }
 
 }

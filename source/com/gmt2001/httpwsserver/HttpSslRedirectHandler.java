@@ -22,7 +22,6 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.sqlite.SQLiteConfig;
 
 /**
  * Redirects HTTP requests to HTTPS, when SSL is enabled

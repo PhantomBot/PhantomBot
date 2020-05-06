@@ -23,6 +23,7 @@ import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -32,6 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.Map;
+import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -45,6 +49,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     @Override
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/", this);
+        HttpServerPageHandler.registerHttpHandler("/panel/login", this);
         return this;
     }
 
@@ -68,6 +73,33 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             com.gmt2001.Console.debug.println("421");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MISDIRECTED_REQUEST, ("Authenticated request attempted, please direct request to: " + host + "/dbquery").getBytes(), null));
+            return;
+        }
+
+        if (req.method().equals(HttpMethod.POST) && req.uri().startsWith("/panel/login")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+
+            Map<String, String> post = HttpServerPageHandler.parsePost(req);
+
+            String user = post.getOrDefault("user", "");
+            String pass = post.getOrDefault("pass", "");
+
+            String host = req.headers().get(HttpHeaderNames.HOST);
+
+            if (host == null) {
+                host = "";
+            } else if (HTTPWSServer.instance().sslEnabled) {
+                host = "https://" + host;
+            } else {
+                host = "http://" + host;
+            }
+
+            res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly");
+
+            res.headers().set(HttpHeaderNames.LOCATION, host + "/panel");
+
+            com.gmt2001.Console.debug.println("303");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
