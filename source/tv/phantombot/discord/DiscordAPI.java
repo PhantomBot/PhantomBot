@@ -127,7 +127,7 @@ public class DiscordAPI extends DiscordUtil {
         }).doOnSuccess(cgateway -> {
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
-            DiscordAPI.selfId = cgateway.getSelfId().blockOptional(Duration.ofSeconds(5));
+            cgateway.getSelfId().timeout(Duration.ofSeconds(5)).doOnSuccess(aselfId -> { DiscordAPI.selfId = Optional.ofNullable(aselfId); }).doOnError(e -> { DiscordAPI.selfId = Optional.empty(); }).subscribe();
         }).subscribe();
     }
 
