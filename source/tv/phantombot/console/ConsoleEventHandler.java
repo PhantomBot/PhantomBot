@@ -333,7 +333,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
 
-            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000", ((int)(Math.random() * 100.0)) + "", "No message"));
             return;
         }
 
@@ -357,7 +357,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
 
-            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000", "No message"));
             return;
         }
 
