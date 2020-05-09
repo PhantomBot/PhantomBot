@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM openjdk:11.0.4-jdk as builder
+FROM diamol/openjdk:jdk as builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
@@ -39,7 +39,7 @@ RUN cd "${BUILDDIR}" \
     && ant jar
 
 # Application container
-FROM azul/zulu-openjdk-alpine:11.0.4-jre
+FROM diamol/openjdk:latest
 
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
