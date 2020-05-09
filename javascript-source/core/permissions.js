@@ -279,7 +279,7 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('badges').indexOf('vip') !== -1) || getUserGroupId(username.toLowerCase()) == 5;
+        return (tags != null && tags != '{}' && tags.get('vip').equals('1')) || getUserGroupId(username.toLowerCase()) == 5;
     }
 
     /**
