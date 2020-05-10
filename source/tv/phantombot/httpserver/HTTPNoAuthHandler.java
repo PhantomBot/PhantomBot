@@ -50,6 +50,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/", this);
         HttpServerPageHandler.registerHttpHandler("/panel/login", this);
+        HttpServerPageHandler.registerHttpHandler("/panel/vendors", this);
+        HttpServerPageHandler.registerHttpHandler("/panel/css", this);
         return this;
     }
 
