@@ -73,7 +73,7 @@
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
             start = RandomNotice,
             notice = null;
-            
+                        
         do {
             notice = $.inidb.get('notices', 'message_' + RandomNotice);
 
@@ -88,10 +88,10 @@
                 if ($.getGame($.channelName).equalsIgnoreCase(game)) {
                     notice = $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
                 } else {
-                    notice === null;
+                    notice = null;
                 }
             }
-        } while(!notice || start !== RandomNotice);
+        } while(!notice && start !== RandomNotice);
 
         if (notice == null) {
             return;
