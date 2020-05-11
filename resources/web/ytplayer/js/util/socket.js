@@ -22,7 +22,8 @@ $(function() {
         listeners = [],
         player = {},
         hasAPIKey = true,
-        secondConnection = false;
+        secondConnection = false,
+        keepAlive;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -318,6 +319,9 @@ $(function() {
         $('body').append($('<script/>', {
             src: 'https://www.youtube.com/iframe_api'
         }));
+
+        // Stop websocket from timing out
+        keepAlive = setInterval(function() { socket.send(''); },10000);
     };
 
     /*
@@ -325,6 +329,10 @@ $(function() {
      */
     socket.onclose = (e) => {
         console.error('Connection lost with the websocket.');
+
+        // Clear interval to stop unnecessary calls
+        window.clearInterval(keepAlive);
+
         if (secondConnection) {
             toastr.error('PhantomBot has closed the WebSocket.', '', {timeOut: 0});
         } else {
