@@ -105,7 +105,7 @@ public class WsPanelHandler implements WsFrameHandler {
         if (command.charAt(0) == '!') {
             command = command.substring(1);
         }
-        
+
         if (!jso.has("command_sync")) {
             PhantomBot.instance().handleCommand(username, command);
         } else {
@@ -402,27 +402,43 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void sendJSONToAll(String jsonString) {
-        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+        try {
+            WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     public void triggerAudioPanel(String audioHook) {
-        JSONStringer jsonObject = new JSONStringer();
-        jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
-        sendJSONToAll(jsonObject.toString());
+        try {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     public void doAudioHooksUpdate() {
-        JSONObject jso = new JSONObject();
-        JSONObject query = new JSONObject();
-        query.put("table", "audio_hooks");
-        jso.put("query", query);
-        jso.put("dbkeys", "audio_hook_reload");
-        handleDBKeysQuery(null, null, jso);
+        try {
+            JSONObject jso = new JSONObject();
+            JSONObject query = new JSONObject();
+            query.put("table", "audio_hooks");
+            jso.put("query", query);
+            jso.put("dbkeys", "audio_hook_reload");
+            handleDBKeysQuery(null, null, jso);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     public void alertImage(String imageInfo) {
-        JSONStringer jsonObject = new JSONStringer();
-        jsonObject.object().key("alert_image").value(imageInfo).endObject();
-        sendJSONToAll(jsonObject.toString());
+        try {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("alert_image").value(imageInfo).endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 }

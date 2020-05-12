@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Supplier;
-import java.util.Map.Entry;
 
 public class ConfigurationManager {
 
@@ -48,7 +48,7 @@ public class ConfigurationManager {
 
     static Properties getConfiguration() {
         /* List of properties that must exist. */
-        String[] requiredProperties = new String[] { PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER };
+        String[] requiredProperties = new String[]{PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER};
         String requiredPropertiesErrorMessage = "";
 
         /* Properties configuration */
@@ -121,6 +121,18 @@ public class ConfigurationManager {
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
             com.gmt2001.Console.err.println("Exiting PhantomBot");
             PhantomBot.exitError();
+        }
+
+        if (!startProperties.getProperty("allownonascii", "false").equalsIgnoreCase("true")) {
+            for (String propertyKey : startProperties.stringPropertyNames()) {
+                String olds = startProperties.getProperty(propertyKey);
+                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+                if (!olds.equals(news)) {
+                    startProperties.setProperty(propertyKey, news);
+                    changed = true;
+                }
+            }
         }
 
         /* Check to see if anything changed */
@@ -207,37 +219,27 @@ public class ConfigurationManager {
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
-     * 
-     * @param properties   the properties object to be modified
+     * Sets a default value to a properties object if the requested property does not exist
+     *
+     * @param properties the properties object to be modified
      * @param propertyName the name of the property, which should be set if null
-     * @param defaultValue the default value, to which the property is set, if the
-     *                     property is missing in the properties object
-     * @param setMessage   the message which will be printed if the value is set to
-     *                     the given default value
-     * @return {@code true} if the value has been set to default, {@code false} if
-     *         the value is already present in the properties object
+     * @param defaultValue the default value, to which the property is set, if the property is missing in the properties object
+     * @param setMessage the message which will be printed if the value is set to the given default value
+     * @return {@code true} if the value has been set to default, {@code false} if the value is already present in the properties object
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, String defaultValue, String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
-     * 
-     * @param properties            the properties object to be modified
-     * @param propertyName          the name of the property, which should be
-     *                              generated if null
-     * @param defaultValueGenerator the generating function, which generates the
-     *                              default value, if the property is missing in the
-     *                              properties object
-     * @param generatedMessage      the message which will be printed if the value
-     *                              is generated
-     * @return {@code true} if the value has been generated, {@code false} if the
-     *         value is already present in the properties object and does not have
-     *         to be generated
+     * Sets a default value to a properties object if the requested property does not exist
+     *
+     * @param properties the properties object to be modified
+     * @param propertyName the name of the property, which should be generated if null
+     * @param defaultValueGenerator the generating function, which generates the default value, if the property is missing in the properties object
+     * @param generatedMessage the message which will be printed if the value is generated
+     * @return {@code true} if the value has been generated, {@code false} if the value is already present in the properties object and does not have
+     * to be generated
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
         Boolean changed = false;
@@ -250,14 +252,12 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets a boolean value from the a properties object and prints a message
-     * according to the property name.
-     * 
-     * @param properties   the Properties object to get the boolean value from
+     * Gets a boolean value from the a properties object and prints a message according to the property name.
+     *
+     * @param properties the Properties object to get the boolean value from
      * @param propertyName the name of the property to get
-     * @param defaulValue  the default value of the property
-     * @return the value of the property. If parsing the value to a Boolean fails,
-     *         the default value is returned.
+     * @param defaulValue the default value of the property
+     * @return the value of the property. If parsing the value to a Boolean fails, the default value is returned.
      */
     public static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue) {
         Boolean result = defaulValue;

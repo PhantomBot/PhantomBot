@@ -91,6 +91,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
         ctx.channel().attr(ATTR_AUTH_ATTEMPTS).set(ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() + 1);
 
+        String astr = "";
+
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
 
@@ -98,6 +100,14 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                 JSONObject jso = new JSONObject(tframe.text());
 
                 if (jso.has("authenticate") || jso.has("readauth")) {
+                    if (jso.has("authenticate")) {
+                        astr = jso.getString("authenticate");
+                    }
+
+                    if (jso.has("readauth")) {
+                        astr = jso.getString("readauth");
+                    }
+
                     if (jso.getString("authenticate").equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
@@ -122,6 +132,10 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
 
         if (!ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
+            com.gmt2001.Console.debug.println("wsauthfail");
+            com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
+            com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
+            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
             ctx.close();
         }
 

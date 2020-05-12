@@ -17,9 +17,9 @@
 
 package tv.phantombot.event.discord.channel;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 
 public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     private final boolean isAdmin;

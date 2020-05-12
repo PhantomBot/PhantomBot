@@ -217,6 +217,7 @@
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
+                $.consoleLn("Fallback uptime");
                 var stream = $.twitch.GetStream(channelName),
                     now = new Date(),
                     createdAtDate,

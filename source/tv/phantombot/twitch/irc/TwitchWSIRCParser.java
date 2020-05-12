@@ -170,6 +170,7 @@ public class TwitchWSIRCParser implements Runnable {
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to parse Twitch message: [" + ex.getMessage() + "] \n\n {" + rawMessage + "}");
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

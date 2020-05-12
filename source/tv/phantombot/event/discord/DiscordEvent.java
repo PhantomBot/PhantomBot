@@ -16,11 +16,11 @@
  */
 package tv.phantombot.event.discord;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.VoiceChannel;
+import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.TextChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
 import tv.phantombot.event.Event;
 
 public abstract class DiscordEvent extends Event {
@@ -50,7 +50,7 @@ public abstract class DiscordEvent extends Event {
      * @param {User} user
      */
     protected DiscordEvent(User user) {
-        this(user, null);
+        this(user, null, null);
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class DiscordEvent extends Event {
      * @return {String}
      */
     public String getMessage() {
-        return this.message.getContent().get();
+        return this.message.getContent();
     }
 
     /**
