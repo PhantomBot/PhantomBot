@@ -34,3 +34,5 @@ $.lang.register('quotesystem.quotemessage.success', 'Changed the message used fo
 $.lang.register('quotesystem.searchquote.usage', 'Usage: !searchquote [text] (Must provide at least 5 characters)');
 $.lang.register('quotesystem.searchquote.404', 'No matching quotes found.');
 $.lang.register('quotesystem.searchquote.found', 'Quote IDs with matches: $1');
+$.lang.register('quotesystem.twitchnames-disabled', 'Usernames for quotes won\'t be validated');
+$.lang.register('quotesystem.twitchnames-enabled', 'Usernames for quotes will validated against users who have been in chat.');
