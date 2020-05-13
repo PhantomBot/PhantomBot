@@ -34,8 +34,7 @@ $(function() {
             'username': 'log',
             'password': 'out'
         }).done(function() {
-            // Nothing should happen here.
-            alert('Failed to log out.');
+            window.location = '/panel/login?logout=true';
         }).fail(function() {
             // We logged out. We want a 401, this means the old password was dumped (The good one).
             window.location = '/';
