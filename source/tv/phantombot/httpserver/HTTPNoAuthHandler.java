@@ -78,13 +78,19 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.method().equals(HttpMethod.POST) && req.uri().startsWith("/panel/login")) {
+        if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
 
-            Map<String, String> post = HttpServerPageHandler.parsePost(req);
+            if (req.uri().contains("logout=true")) {
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT");
+            } else if (req.method().equals(HttpMethod.POST)) {
+                Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
-            String user = post.getOrDefault("user", "");
-            String pass = post.getOrDefault("pass", "");
+                String user = post.getOrDefault("user", "");
+                String pass = post.getOrDefault("pass", "");
+
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly");
+            }
 
             String host = req.headers().get(HttpHeaderNames.HOST);
 
@@ -95,8 +101,6 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             } else {
                 host = "http://" + host;
             }
-
-            res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly");
 
             res.headers().set(HttpHeaderNames.LOCATION, host + "/panel");
 
