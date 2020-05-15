@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord;
 
+import discord4j.common.close.CloseStatus;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
@@ -37,6 +38,7 @@ import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.util.Snowflake;
 import java.time.Duration;
@@ -80,6 +82,8 @@ public class DiscordAPI extends DiscordUtil {
     private static DiscordClientBuilder builder;
     private boolean ready;
     private static Optional<Snowflake> selfId = Optional.empty();
+    private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
+    protected static CloseStatus lastCloseStatus = CloseStatus.NORMAL_CLOSE;
 
     /**
      * Method to return this class object.
@@ -121,14 +125,26 @@ public class DiscordAPI extends DiscordUtil {
         DiscordAPI.builder = DiscordClientBuilder.create(token);
         DiscordAPI.client = (DiscordClient) DiscordAPI.builder.build();
 
-        DiscordAPI.client.gateway().setEnabledIntents(IntentSet.all()).login().timeout(Duration.ofSeconds(30)).doOnError(e -> {
+        DiscordAPI.client.gateway().setEnabledIntents(this.connectIntents).login(PBDiscordGatewayClient::new).timeout(Duration.ofSeconds(30)).doOnError(e -> {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
+
+            com.gmt2001.Console.debug.println("Last close status " + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : ""));
         }).doOnSuccess(cgateway -> {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
             cgateway.getSelfId().timeout(Duration.ofSeconds(5)).doOnSuccess(aselfId -> { DiscordAPI.selfId = Optional.ofNullable(aselfId); }).doOnError(e -> { DiscordAPI.selfId = Optional.empty(); }).subscribe();
+        }).doFinally(sig -> {
+            if (lastCloseStatus.getCode() > 1000) {
+                if (lastCloseStatus.getCode() == 4014) {
+                    com.gmt2001.Console.err.println("Discord rejected privileged intents (" + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : "") + "). Trying without them...");
+                    this.connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
+                    this.reconnect();
+                } else {
+                    com.gmt2001.Console.err.println("Discord connection closed with status " + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : ""));
+                }
+            }
         }).subscribe();
     }
 
@@ -143,14 +159,25 @@ public class DiscordAPI extends DiscordUtil {
 
         DiscordAPI.client = (DiscordClient) DiscordAPI.builder.build();
 
-        DiscordAPI.client.gateway().setEnabledIntents(IntentSet.all()).login().timeout(Duration.ofSeconds(30)).doOnError(e -> {
+        DiscordAPI.client.gateway().setEnabledIntents(this.connectIntents).login(PBDiscordGatewayClient::new).timeout(Duration.ofSeconds(30)).doOnError(e -> {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
+
+            com.gmt2001.Console.debug.println("Last close status " + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : ""));
         }).doOnSuccess(cgateway -> {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
             DiscordAPI.selfId = cgateway.getSelfId().blockOptional(Duration.ofSeconds(5));
+        }).doFinally(sig -> {
+            if (lastCloseStatus.getCode() > 1000) {
+                com.gmt2001.Console.err.println("Discord connection closed with status " + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : ""));
+
+                if (lastCloseStatus.getCode() == 4014 && this.connectIntents.contains(Intent.GUILD_MEMBERS)) {
+                    this.connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
+                    this.reconnect();
+                }
+            }
         }).subscribe();
 
         return isLoggedIn();
