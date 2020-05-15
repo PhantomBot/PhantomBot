@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteErrorCode;
+import org.sqlite.SQLiteException;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
 /**
@@ -962,7 +964,16 @@ public class SqliteStore extends DataStore {
             try (Statement statement = connection.createStatement()) {
                 for (String tableName : tableNames) {
                     tableName = validateFname(tableName);
+                    try {
                     statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
+                    } catch (SQLiteException ex) {
+                        if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT) {
+                            statement.execute("DELETE FROM " + tableName + " WHERE rowid NOT IN (SELECT MIN(rowid) FROM " + tableName + " GROUP BY section, variable);");
+                            statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
+                        } else {
+                            throw ex;
+                        }
+                    }
                 }
             }
         } catch (SQLException ex) {
