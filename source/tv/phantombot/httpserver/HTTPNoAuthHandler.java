@@ -82,14 +82,14 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
 
             if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST)) {
                 Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
                 String user = post.getOrDefault("user", "");
                 String pass = post.getOrDefault("pass", "");
 
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; Path=/");
             }
 
             String host = req.headers().get(HttpHeaderNames.HOST);
@@ -101,8 +101,16 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             } else {
                 host = "http://" + host;
             }
+            
+            String kickback;
+            
+            if (req.uri().contains("kickback=")) {
+                kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
+            } else {
+                kickback = "/panel";
+            }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + "/panel");
+            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
 
             com.gmt2001.Console.debug.println("303");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
