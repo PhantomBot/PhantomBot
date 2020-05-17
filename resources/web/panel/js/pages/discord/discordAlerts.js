@@ -356,9 +356,10 @@ $(function() {
     $('#discordStreamHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_stream_settings', {
             tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                    'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-            keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage', 'gameToggle',
-                'gameMessage', 'botGameToggle', 'onlineChannel']
+                     'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                     'discordSettings'],
+            keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage',
+                   'gameToggle', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle']
         }, true, function(e) {
             helpers.getModal('stream-alert', 'Stream Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -372,10 +373,10 @@ $(function() {
             .append(helpers.getCollapsibleAccordion('main-1', 'Online Settings', $('<form/>', {
                     'role': 'form'
                 })
-            	// Add the toggle for onine alerts.
+            	// Add the toggle for online alerts.
             	.append(helpers.getDropdownGroup('online-toggle', 'Enable Online Alerts', (e.onlineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 	'If a message should be said in the channel when you go live on Twitch.'))
-            	// Add the toggle for one alerts.
+            	// Add the toggle for auto bot streaming status
             	.append(helpers.getDropdownGroup('online-status', 'Enable Bot Status', (e.botGameToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 	'Show your bot as streaming when you go live.'))
             	// Add the text area for the online message.
@@ -407,7 +408,10 @@ $(function() {
                 })
                 // Add channel box.
                 .append(helpers.getInputGroup('channel-alert', 'text', 'Alert Channel', '#alerts', e.onlineChannel,
-                    'Channel where all alerts should go too.'))))),
+                    'Channel where all alerts should go too.'))
+                // Add the toggle for auto bot streaming status
+                .append(helpers.getDropdownGroup('delete-message', 'Delete alerts automatically', (e.deleteMessageToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                  'Automatically delete the online message after the stream ends and the offline message when a new stream starts.'))))),
             function() {
             	let onlineToggle = $('#online-toggle').find(':selected').text() === 'Yes',
             		statusToggle = $('#online-status').find(':selected').text() === 'Yes',
@@ -416,7 +420,8 @@ $(function() {
             		offlineMessage = $('#offline-message'),
             		gameToggle = $('#game-toggle').find(':selected').text() === 'Yes',
             		gameMessage = $('#game-message'),
-            		channel = $('#channel-alert');
+            		channel = $('#channel-alert'),
+            		deleteMessageToggle = $('#delete-message').find(':selected').text() === 'Yes';
 
             	switch (false) {
             		case helpers.handleInputString(onlineMessage):
@@ -426,11 +431,12 @@ $(function() {
             		default:
             			socket.updateDBValues('discord_stream_alerts_updater', {
             				tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                    				'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-            				keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage', 'gameToggle',
-                				'gameMessage', 'botGameToggle', 'onlineChannel'],
+                    				'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                    				'discordSettings',],
+            				keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage',
+                				'gameToggle', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle'],
             				values: [onlineToggle, onlineMessage.val(), offlineToggle, offlineMessage.val(),
-            						gameToggle, gameMessage.val(), statusToggle, channel.val()]
+            						gameToggle, gameMessage.val(), statusToggle, channel.val(), deleteMessageToggle]
             			}, function() {
             				socket.wsEvent('discord', './discord/handlers/streamHandler.js', '', [], function() {
                                 // Close the modal.
