@@ -215,6 +215,8 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', module.getModuleName()));
                     } catch (ex) {
                         $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
@@ -286,6 +288,8 @@
                         }
                     } catch (ex) {
                         $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 }
             }
