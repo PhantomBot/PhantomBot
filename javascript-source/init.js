@@ -315,6 +315,8 @@
                 hook.handlers[i].handler(event);
             } catch (ex) {
                 $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                $.consoleLn("Sending stack trace to error log...");
+                Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
             }
         } else {
             for (i in hook.handlers) {
@@ -323,6 +325,8 @@
                         hook.handlers[i].handler(event);
                     } catch (ex) {
                         $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 }
             }
