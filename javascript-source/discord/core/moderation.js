@@ -635,22 +635,24 @@
              * @discordcommandpath moderation cleanup [channel] [amount] - Will delete that amount of messages for that channel.
              */
             if (action.equalsIgnoreCase('cleanup')) {
+                var resolvedChannel = null;
                 if (subAction === undefined || (actionArgs == undefined || isNaN(parseInt(actionArgs)))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.usage'));
                     return;
-                } else if (parseInt(actionArgs) > 10000 || parseInt(actionArgs) < 1) {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.err'));
+                } else if (parseInt(actionArgs) > 10000 || parseInt(actionArgs) < 2) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.err.amount'));
                     return;
                 }
 
                 if (subAction.match(/<#\d+>/)) {
-                    subAction = $.discordAPI.getChannelByID(subAction.match(/<#(\d+)>/)[1]);
-                    if (subAction == null) {
-                        return;
-                    }
+                    resolvedChannel = $.discordAPI.getChannelByID(subAction.match(/<#(\d+)>/)[1]);
+                }
+                if (resolvedChannel == null) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.err.unknownchannel', subAction));
+                    return;
                 }
 
-                $.discordAPI.bulkDelete(subAction, parseInt(actionArgs));
+                $.discordAPI.bulkDelete(resolvedChannel, parseInt(actionArgs));
 
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
             }
