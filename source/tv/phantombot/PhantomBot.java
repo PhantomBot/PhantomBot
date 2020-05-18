@@ -97,6 +97,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
+import reactor.util.Loggers;
 import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.console.ConsoleEventHandler;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
@@ -378,6 +379,10 @@ public final class PhantomBot implements Listener {
 
         /* Assign properties passed in to local instance. */
         this.pbProperties = pbProperties;
+
+        if (this.pbProperties.getProperty("reactordebug", "false").equalsIgnoreCase("true")) {
+            Loggers.useVerboseConsoleLoggers();
+        }
 
         /* Set the default bot variables */
         this.enableDebugging = this.pbProperties.getProperty("debugon") == null ? false : this.pbProperties.getProperty("debugon").equalsIgnoreCase("true");
