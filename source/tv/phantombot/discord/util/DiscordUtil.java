@@ -812,16 +812,12 @@ public class DiscordUtil {
             throw new IllegalArgumentException("channel object was null or amount was less than 2");
         }
         
+        com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + channel.getName());
         Thread thread;
         thread = new Thread(() -> {
             channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().doOnSuccess(msgs -> {
-                Flux<Snowflake> msgSfs = Flux.empty();
-                
-                msgs.forEach((msg) -> {
-                    Flux.concat(msgSfs, Flux.just(msg.getId()));
-                });
-                
-                channel.bulkDelete(msgSfs);
+                com.gmt2001.Console.debug.println("Found " + msgs.size() + " messages to delete");
+                channel.bulkDelete(Flux.fromIterable(msgs).map(msg -> msg.getId())).doOnNext(s -> com.gmt2001.Console.err.println("Rejected message " + s.asString() + " from delete operation for being too old")).doOnError(e -> com.gmt2001.Console.debug.printStackTrace(e)).doOnComplete(() -> com.gmt2001.Console.debug.println("Bulk delete complete")).subscribe();
             }).subscribe();
         }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
         
