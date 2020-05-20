@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('keywordhandler.add.usage', 'Usage: !keyword add [keyword / regex:keyword] [response]');
+$.lang.register('keywordhandler.add.usage', 'Usage: !keyword add [flags] [keyword] [response]. Flags can by empty or any combination of "--regex", "--case-sensitive".');
 $.lang.register('keywordhandler.keyword.404', 'That keyword does not exist.');
 $.lang.register('keywordhandler.keyword.added', 'keyword "$1" added!');
 $.lang.register('keywordhandler.keyword.removed', 'keyword "$1" has been removed!');
