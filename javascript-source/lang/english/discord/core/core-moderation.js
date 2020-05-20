@@ -51,7 +51,8 @@ $.lang.register('moderation.whitelist.remove.success', 'Phrase or username remov
 $.lang.register('moderation.whitelist.list.404', 'The whitelist is empty.');
 $.lang.register('moderation.whitelist.list', 'Whitelist: ```$1```');
 $.lang.register('moderation.cleanup.usage', 'Usage: !moderation cleanup [channel] [amount]');
-$.lang.register('moderation.cleanup.err', 'You can only delete 1 to 10000 messages.');
+$.lang.register('moderation.cleanup.err.amount', 'You can only delete 2 to 10000 messages.');
+$.lang.register('moderation.cleanup.err.unknownchannel', 'Unknown channel: $1. Try discord\'s auto-completion.');
 $.lang.register('moderation.cleanup.failed', 'Failed to perform bulk message deletion: Currently deleting messages.');
 $.lang.register('moderation.cleanup.failed.err', 'Failed to perform bulk message deletion.');
 $.lang.register('moderation.cleanup.done', 'Deleted $1 messages!');
