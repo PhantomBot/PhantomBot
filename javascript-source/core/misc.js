@@ -698,7 +698,7 @@
      * @param {string}
      */
     function replace(str, from, to) {
-        let idx, parts = [], l = from.length, prev = 0;
+        var idx, parts = [], l = from.length, prev = 0;
         for (; ~(idx = str.indexOf(from, prev)); ) {
             parts.push(str.slice(prev, idx), to);
             prev = idx + l;
