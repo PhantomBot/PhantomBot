@@ -503,7 +503,7 @@ public class DiscordUtil {
      * @return {User}
      */
     public Mono<User> getUserAsync(String userName) {
-        return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName)).take(1).single().map(m -> (User) m);
+        return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName)).take(1).single().map(m -> (User) m);
     }
     
     @Deprecated
@@ -666,7 +666,7 @@ public class DiscordUtil {
             m.addRole(role.getId()).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
-        });
+        }).subscribe();
     }
 
     /**
