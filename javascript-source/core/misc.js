@@ -691,20 +691,20 @@
     }
 
     /**
+     * Taken from: https://jsperf.com/replace-vs-split-join-vs-replaceall/95s
+     *
      * @function replace
      * @export $
      * @param {string}
      */
-    function replace(string, find, replace) {
-        if (find.equals(replace)) {
-            return string;
+    function replace(str, from, to) {
+        let idx, parts = [], l = from.length, prev = 0;
+        for (; ~(idx = str.indexOf(from, prev)); ) {
+            parts.push(str.slice(prev, idx), to);
+            prev = idx + l;
         }
-
-        while (string.indexOf(find) >= 0) {
-            string = string.replace(find, (replace + ''));
-        }
-
-        return string;
+        parts.push(str.slice(prev));
+        return parts.join('');
     }
 
     /**
