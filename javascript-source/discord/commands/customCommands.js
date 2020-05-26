@@ -81,16 +81,22 @@
         }
 
         if (s.match(/\(random\)/)) {
-            s = $.replace(s, '(random)', $.discord.username.random());
+            s = $.replaceFunc(s, '(random)', $.discord.username.random);
         }
 
         if (s.match(/\(#\)/)) {
-            s = $.replace(s, '(#)', $.randRange(1, 100).toString());
+            s = $.replaceFunc(s, '(#)', function () {
+                return $.randRange(1, 100).toString();
+            });
         }
 
         if (s.match(/\(# (\d+),(\d+)\)/g)) {
-            var mat = s.match(/\(# (\d+),(\d+)\)/);
-            s = $.replace(s, mat[0], $.randRange(parseInt(mat[1]), parseInt(mat[2])).toString());
+            var mat = s.match(/\(# (\d+),(\d+)\)/),
+                min = parseInt(mat[1]),
+                max = parseInt(mat[2]);
+            s = $.replaceFunc(s, mat[0], function () {
+                return $.randRange(min, max).toString();
+            });
         }
 
         if (s.match(/\(status\)/)) {
@@ -126,7 +132,9 @@
         if (s.match(/\(readfilerand/)) {
             if (s.search(/\((readfilerand ([^)]+)\))/g) >= 0) {
                 var results = $.readFile('./addons/' + RegExp.$2);
-                s = $.replace(s, '(' + RegExp.$1, $.randElement(results));
+                s = $.replaceFunc(s, '(' + RegExp.$1, function () {
+                    return $.randElement(results);
+                });
             }
         }
 

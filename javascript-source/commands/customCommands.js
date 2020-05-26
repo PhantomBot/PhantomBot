@@ -128,7 +128,9 @@
                 var path = RegExp.$2;
                 var path2 = RegExp.$1;
                 var results = $.arrayShuffle($.readFile('./addons/' + path.trim().replace(/\.\./g, '')));
-                message = $.replace(message, '(' + path2.trim(), $.randElement(results));
+                message = $.replaceFunc(message, '(' + path2.trim(), function() {
+                    return $.randElement(results);
+                });
             }
         }
 
@@ -271,7 +273,9 @@
 
         if (message.match(/\(random\)/g)) {
             try {
-                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)));
+                message = $.replaceFunc(message, '(random)', function () {
+                    return $.username.resolve($.randElement($.users));
+                });
             } catch (ex) {
                 message = $.replace(message, '(random)', $.username.resolve($.botName));
             }
@@ -279,7 +283,9 @@
 
         if (message.match(/\(randomrank\)/g)) {
             try {
-                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)));
+                message = $.replaceFunc(message, '(randomrank)', function () {
+                    return $.resolveRank($.randElement($.users));
+                });
             } catch (ex) {
                 message = $.replace(message, '(randomrank)', $.resolveRank($.botName));
             }
@@ -301,13 +307,19 @@
             message = $.replace(message, '(pay)', String($.inidb.exists('paycom', event.getCommand()) ? $.getPointsString($.inidb.get('paycom', event.getCommand())) : $.getPointsString(0)));
         }
 
-        if (message.match(/\(#\)/g)) {
-            message = $.replace(message, '(#)', String($.randRange(1, 100)));
+        if (message.match(/\(#\)/)) {
+            message = $.replaceFunc(s, '(#)', function () {
+                return String($.randRange(1, 100));
+            });
         }
 
-        if (message.match(/\(# (\d+),(\d+)\)/g)) {
-            var mat = message.match(/\(# (\d+),(\d+)\)/);
-            message = $.replace(message, mat[0], String($.randRange(parseInt(mat[1]), parseInt(mat[2]))));
+        if (message.match(/\(# (\d+),(\d+)\)/)) {
+            var mat = message.match(/\(# (\d+),(\d+)\)/),
+                min = parseInt(mat[1]),
+                max = parseInt(mat[2]);
+            message = $.replaceFunc(message, mat[0], function () {
+                return String($.randRange(min, max));
+            });
         }
 
         if (message.match(/\(viewers\)/g)) {

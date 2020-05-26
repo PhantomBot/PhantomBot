@@ -695,12 +695,32 @@
      *
      * @function replace
      * @export $
-     * @param {string}
+     * @param {string} str: the string in which to replace all matches
+     * @param {string} from: the matches to look for in str
+     * @param {string} to: what to replace the matches with
      */
     function replace(str, from, to) {
         var idx, parts = [], l = from.length, prev = 0;
         for (; ~(idx = str.indexOf(from, prev)); ) {
             parts.push(str.slice(prev, idx), to);
+            prev = idx + l;
+        }
+        parts.push(str.slice(prev));
+        return parts.join('');
+    }
+
+
+    /**
+     * @function replaceFunc
+     * @export $
+     * @param {string} str: the string in which to replace the first matche
+     * @param {string} from: the matches to look for in str
+     * @param {function} toFunc: function to return what to replace the matches with (gets called for each match).
+     */
+    function replaceFunc(str, from, toFunc) {
+        var idx, parts = [], l = from.length, prev = 0;
+        for (; ~(idx = str.indexOf(from, prev)); ) {
+            parts.push(str.slice(prev, idx), toFunc());
             prev = idx + l;
         }
         parts.push(str.slice(prev));
@@ -754,6 +774,7 @@
     $.trueRandElement = trueRandElement;
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
+    $.replaceFunc = replaceFunc;
     $.replace = replace;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
