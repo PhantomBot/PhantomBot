@@ -157,7 +157,7 @@
         }
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
-            $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
+            $.discordAPI.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
 
             s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
             if (s.length === 0) {
