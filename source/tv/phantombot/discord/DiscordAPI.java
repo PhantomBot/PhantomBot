@@ -82,7 +82,7 @@ public class DiscordAPI extends DiscordUtil {
     private static DiscordClientBuilder builder;
     private boolean ready;
     private static Optional<Snowflake> selfId = Optional.empty();
-    private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
+    private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.GUILD_PRESENCES, Intent.DIRECT_MESSAGES);
     protected static CloseStatus lastCloseStatus = CloseStatus.NORMAL_CLOSE;
 
     /**
@@ -331,6 +331,8 @@ public class DiscordAPI extends DiscordUtil {
             DiscordAPI.instance().ready = true;
 
             DiscordAPI.instance().setGuildAndShard(events);
+
+            com.gmt2001.Console.debug.println(DiscordAPI.guild);
 
             // Set a timer that checks our connection status with Discord every 60 seconds
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
