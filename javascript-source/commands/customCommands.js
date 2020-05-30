@@ -338,16 +338,16 @@
             message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
         }
 
-        if (message.match(/\(code=/g)) {
+        if (message.match(/(\(code=(\d+)\))/)) {
             var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                length = message.substr(6).replace(')', ''),
+                length = parseInt(RegExp.$2),
                 text = '',
                 i;
 
             for (i = 0; i < length; i++) {
                 text += code.charAt(Math.floor(Math.random() * code.length));
             }
-            message = $.replace(message, '(code=' + length + ')', String(text));
+            message = $.replace(message, RegExp.$1, String(text));
         }
 
         if (message.match(/\(alert [,.\w\W]+\)/g)) {
