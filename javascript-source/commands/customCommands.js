@@ -17,14 +17,10 @@
 
 (function() {
     // Pre-build regular expressions.z
-    var reCustomAPI = new RegExp(/\(customapi\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)\)/), // URL[1]
-        reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
-        reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
-        reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(help=|\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(repeat [1-9]\d*,[\w\s]+\)|\(customapi |\(customapijson /),
-        customCommands = [],
-        ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
-        CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+    var reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
+      customCommands = [],
+      ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+      CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
     /*
      * @function getCustomAPIValue
@@ -70,6 +66,968 @@
     }
 
     /*
+     * @function unescapeTags
+     *
+     * @param {string} args
+     */
+    function escapeTags(args) {
+        return args.replace(/([\\()])/g, '\\$1');
+    }
+
+    /*
+     * @function unescapeTags
+     *
+     * @param {string} args
+     */
+    function unescapeTags(args) {
+        return args.replace(/\\([\\()])/g, '$1');
+    }
+
+    var transformers = (function () {
+        var cmd,
+            flag,
+            i,
+            j,
+            keys,
+            match,
+            temp,
+            transformers;
+
+        // (#): a random integer from 1 to 100
+        // (# a:int, b:int): a random integer from a to b
+        function randomInt(args) {
+            if (!args) {
+                return {
+                    result: String($.randRange(1, 100)),
+                    cache: false
+                };
+            } else if ((match = args.match(/\s(\d+), (\d+)/))) {
+                return {
+                    result: String($.randRange(parseInt(match[1]), parseInt(match[2]))),
+                    cache: false
+                };
+            }
+        }
+
+        // (n:int): the n-th argument (escaped by default)
+        // (n:int=tag:str): the n-th argument if given else to the be expanded tag
+        function buildArgs(n) {
+            return function (args, event) {
+                if (!args) {
+                    return {result: event.getArgs()[n - 1] !== undefined ? String(event.getArgs()[n - 1]) : ''};
+                } else if ((match = args.match(/^=(.+)$/))) {
+                    return {
+                        result: '(' + escapeTags(match[1]) + ')',
+                        raw: true
+                    };
+                }
+            }
+        }
+
+        // (@sender): '@<Sender's Name>, '
+        function atSender(args, event) {
+            if (!args) {
+                return {result: String($.userPrefix(event.getSender(), true))};
+            }
+        }
+
+        // (adminonlyedit): ''
+        function adminonlyedit(args) {
+            if (!args) {
+                return {result: ''};
+            }
+        }
+
+        // (age): output the channel's age and exit
+        function age(args, event) {
+            if (!args) {
+                $.getChannelAge(event);
+                return {cancel: 'true'};
+            }
+        }
+
+        // (alert name:str): fire off the given alert
+        function alert(args) {
+            if ((match = args.match(/^ ([,.\w\W]+)$/))) {
+                $.panelsocketserver.alertImage(match[1]);
+                return {result: '', cache: false};
+            }
+        }
+
+        // (baresender): the message's sender
+        function baresender(args, event) {
+            if (!args) {
+                return {result: String(event.getSender())};
+            }
+        }
+
+        // (channelname): name of the twitch channel
+        function channelname(args) {
+            if (!args) {
+                return {result: String($.username.resolve($.channelName))};
+            }
+        }
+
+        // (code=length:int): random code of of given lenght composed of a-zA-Z0-9
+        function code(args) {
+            var code,
+                length,
+                temp = '';
+            if ((match = args.match(/^=([1-9]\d*)$/))) {
+                code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                length = parseInt(match[1]);
+                for (i = 0; i < length; i++) {
+                    temp += code.charAt(Math.floor(Math.random() * code.length));
+                }
+                return {
+                    result: temp,
+                    cache: false
+                }
+            }
+        }
+
+        // (command name:str): execute command with given name and pass no args then exit
+        // (command name:str args:str): execute command with given name and pass args then exit
+        function command(args, event) {
+            var argStr;
+            if ((match = args.match(/^\s(\S+)(?:\s(.*))?$/))) {
+                cmd = match[1];
+                argStr = match[2] || '';
+                if (cmd.length > 0) {
+                    var EventBus = Packages.tv.phantombot.event.EventBus;
+                    var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                    EventBus.instance().post(new CommandEvent(event.getSender(), cmd, argStr));
+                }
+                return {cancel: true};
+            }
+        }
+
+        // (commandslist): lists custom commands (paginated) and exit.
+        // (commandslist prefix:str): prefix + lists custom commands (paginated) and exit.
+        function commandslist(args, event) {
+            var prefix;
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                prefix = match[1] || '';
+                keys = $.inidb.GetKeyList('pricecom', '');
+                temp = [];
+                for (i in keys) {
+                    if (!keys[i].includes(' ')) {
+                        temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
+                    }
+                }
+                $.paginateArray(temp, 'NULL' + prefix, ', ', true, event.getSender());
+                return {cancel: true};
+            }
+        }
+
+        // (count): increases the count of how often this command has been called and output new count
+        function count(args, event) {
+            if (!args) {
+                $.inidb.incr('commandCount', event.getCommand(), 1);
+                return {result: String($.inidb.get('commandCount', event.getCommand()))};
+            }
+        }
+
+        // (countdown=datetime:str): count down to given datetime
+        function countdown(args) {
+            if ((match = args.match(/^=(.*)$/))) {
+                temp = Date.parse(match[1]);
+                if (isNaN(temp)) {
+                    return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
+                }
+                temp -= Date.parse($.getLocalTime());
+                return {result: String($.getCountString(temp / 1000, false))};
+            }
+        }
+
+        // (countup=datetime:str): count up to given datetime
+        function countup(args) {
+            if ((match = args.match(/^=(.*)$/))) {
+                temp = Date.parse(match[1]);
+                if (isNaN(temp)) {
+                    return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
+                }
+                temp = Date.parse($.getLocalTime()) - temp;
+                return {result: String($.getCountString(temp / 1000, true))};
+            }
+        }
+
+        // (currenttime timezone:str, format:str): current date/time in given timezone
+        function currenttime(args) {
+            if ((match = args.match(/^ (.+), (.*)$/))) {
+                return {result: String($.getCurrentLocalTimeString(match[2], match[1]))};
+            }
+        }
+
+        // (customapi url:str): http GET url and output returned text (escaped by default)
+        // $1-$9 in url will be expanded to the command's arguments
+        function customapi(args, event) {
+            if ((match = args.match(/^\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)$/))) {
+                cmd = event.getCommand();
+                if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
+                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
+                }
+
+                flag = false;
+                match[1].replace(/$([1-9])/g, function (m) {
+                    i = parseInt(m[1]);
+                    if (!args[i - 1]) {
+                        flag = true;
+                        return m[0];
+                    }
+                    return args[i - 1];
+                });
+                if (flag) {
+                    return {result: $.lang.get('customcommands.customapi.404', cmd)};
+                }
+                return {
+                    result: String(getCustomAPIValue(match[1])),
+                    cache: false
+                };
+            }
+        }
+
+        // (customapijson url:str specs:str): httpGet url and extract json info according to specs (escaped by default)
+        // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
+        // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
+        // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
+        // API seems like overkill.  Even 9 does, to be honest.
+        var reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
+        var JSONObject = Packages.org.json.JSONObject;
+        function customapijson(args, event) {
+            var customJSONStringTag,
+                jsonCheckList,
+                jsonItems,
+                jsonObject,
+                response,
+                responsePart,
+                result = '';
+            if ((match = args.match(/^ ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)$/))) {
+                cmd = event.getCommand();
+                if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
+                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
+                }
+
+                flag = false;
+                match[1].replace(/$([1-9])/g, function (m) {
+                    i = parseInt(m[1]);
+                    if (!args[i - 1]) {
+                        flag = true;
+                        return m[0];
+                    }
+                    return args[i - 1];
+                });
+                if (flag) {
+                    return {result: $.lang.get('customcommands.customapi.404', cmd)};
+                }
+
+                result = '';
+                response = getCustomAPIValue(match[1]);
+                jsonItems = match[2].split(' ');
+                for (j = 0; j < jsonItems.length; j++) {
+                    if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
+                        result += " " + jsonItems[j].match(reCustomAPITextTag)[1];
+                    } else if (jsonItems[j].startsWith('{') && !jsonItems[j].endsWith('}')) {
+                        customJSONStringTag = '';
+                        while (!jsonItems[j].endsWith('}')) {
+                            customJSONStringTag += jsonItems[j++] + " ";
+                        }
+                        customJSONStringTag += jsonItems[j];
+                        result += " " + customJSONStringTag.match(reCustomAPITextTag)[1];
+                    } else {
+                        jsonCheckList = jsonItems[j].split('.');
+                        if (jsonCheckList.length === 1) {
+                            try {
+                                responsePart = new JSONObject(response).get(jsonCheckList[0]);
+                            } catch (ex) {
+                                $.log.error('Failed to get data from API: ' + ex.message);
+                                return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                            }
+                            result += responsePart;
+                        } else {
+                            for (i = 0; i < jsonCheckList.length - 1; i++) {
+                                if (i === 0) {
+                                    try {
+                                        jsonObject = new JSONObject(response).get(jsonCheckList[i]);
+                                    } catch (ex) {
+                                        $.log.error('Failed to get data from API: ' + ex.message);
+                                        return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                                    }
+                                } else if (!isNaN(jsonCheckList[i + 1])) {
+                                    try {
+                                        jsonObject = jsonObject.get(jsonCheckList[i]);
+                                    } catch (ex) {
+                                        $.log.error('Failed to get data from API: ' + ex.message);
+                                        return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                                    }
+                                } else {
+                                    try {
+                                        jsonObject = jsonObject.get(jsonCheckList[i]);
+                                    } catch (ex) {
+                                        $.log.error('Failed to get data from API: ' + ex.message);
+                                        return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                                    }
+                                }
+                            }
+                            try {
+                                responsePart = jsonObject.get(jsonCheckList[i]);
+                            } catch (ex) {
+                                $.log.error('Failed to get data from API: ' + ex.message);
+                                return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                            }
+                            result += responsePart;
+                        }
+                    }
+                }
+
+                return {
+                    result: String(result),
+                    cache: false
+                };
+            }
+        }
+
+        // (downtime): how long the channel has been offline
+        function downtime(args) {
+            if (!args) {
+                return {result: String($.getStreamDownTime())};
+            }
+        }
+
+        // (echo): all arguments passed to the command
+        function echo(args, event) {
+            if (!args) {
+                return {result: event.getArguments() ? String(event.getArguments()) : ''}
+            }
+        }
+
+        // (encodeurl url:str): url encode the given url
+        function encodeurl(args) {
+            if ((match = args.match(/^ (.*)$/))) {
+                return {result: encodeURI(match[1])};
+            }
+
+        }
+
+        // (followage): send message how long sender of command is following this channel and exit
+        // (followage user:str): send message how long given user is following this channel and exit
+        // (followage user:str channel:str): send message how long given user is following given channel and exit
+        // leading @ will be stripped from user if present
+        function followage(args, event) {
+            var channel,
+                user;
+            if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+                user = (match[1] || String(event.getSender())).replace(/^@/, '');
+                channel = (match[2] || String($.channelName)).replace(/^@/, '');
+                $.getFollowAge(event.getSender(), user, channel);
+                return {cancel: true};
+            }
+        }
+
+        // (followdate): date since when sender of command is following this channel
+        // (followdate user:str): date since when given user is following this channel
+        // (followdate user:str channel:str): date since when given user is following given channel
+        // leading @ will be stripped from user if present
+        function followdate(args, event) {
+            var channel,
+                user;
+            if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+                user = (match[1] || String(event.getSender())).replace(/^@/, '');
+                channel = (match[2] || String($.channelName)).replace(/^@/, '');
+                return {result: String($.getFollowDate(event.getSender(), user, channel))};
+            }
+        }
+
+        // (follows): number of follower of this channel
+        function follows(args) {
+            if (!args) {
+                return {result: String($.getFollows($.channelName))}
+            }
+        }
+
+        // (game): currently played game
+        function game(args) {
+            if (!args) {
+                return {result: String($.getGame($.channelName))};
+            }
+        }
+
+        // (gameinfo): similar to (game) but include game time if online
+        function gameinfo(args) {
+            var game,
+                playtime;
+            if (!args) {
+                game = $.getGame($.channelName);
+                if (!game.trim()) {
+                    return {result: $.lang.get('streamcommand.game.no.game')};
+                } else if (!$.isOnline($.channelName) || !(playtime = $.getPlayTime())) {
+                    return {result: $.lang.get('streamcommand.game.offline', game)};
+                } else {
+                    return {result: $.lang.get('streamcommand.game.online', $.getGame($.channelName), playtime)};
+                }
+            }
+        }
+
+        // (gameonly=name:str): exit if current game of this channel does not match
+        function gameonly(args) {
+            if ((match = args.match(/^=(.*)$/))) {
+                if (!$.getGame($.channelName).equalsIgnoreCase(match[1])) {
+                    return {cancel: true};
+                }
+                return {result: ''};
+            }
+        }
+
+        // (gamesplayed): list games played in current stream; if offline, tell sender so and exit
+        function gamesplayed(args, event) {
+            if (!args) {
+                if (!$.isOnline($.channelName)) {
+                    $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                    return {cancel: true};
+                }
+                return {result: String($.getGamesPlayed())};
+            }
+        }
+
+        // (help=message:str): say message and exit if no arguments are passed to the command; '' otherwise
+        function help(args, event) {
+            if ((match = args.match(/^=(.*)$/))) {
+                if (event.getArgs()[0] === undefined) {
+                    $.say(match[1]);
+                    return {cancel: true};
+                } else {
+                    return {result: ''};
+                }
+            }
+        }
+
+        // (hours): number of hours sender has spent watching the channel
+        // (hours user:str): number of hours the given sender has spent in this channel's chat
+        function hours(args, event) {
+            var user;
+            if ((match = args.match(/^(?: (.*))?$/))) {
+                user = (match[1] || String(event.getSender())).replace(/^@/, '');
+                return {result: String($.getUserTime(user) / 3600)};
+            }
+        }
+
+        // (keywordcount keyword:str): increase the keyword count for the given keyword and return new count
+        function keywordcount(args) {
+            var keyword,
+                keywordInfo;
+            if ((match = args.match(/^\s(.+)$/))) {
+                keyword = match[1];
+                if ($.inidb.exists('keywords', keyword)) {
+                    keywordInfo = JSON.parse($.inidb.get('keywords', keyword));
+                    if ('count' in keywordInfo) {
+                        ++keywordInfo["count"];
+                    } else {
+                        keywordInfo["count"] = 1;
+                    }
+                    $.inidb.set('keywords', keyword, JSON.stringify(keywordInfo));
+                    return {result: String(keywordInfo["count"])};
+                } else {
+                    return {result: $.lang.get('customcommands.keyword.404', keyword)};
+                }
+            }
+        }
+
+        // (lasttip): last tip message
+        function lasttip(args) {
+            if (!args) {
+                if ($.inidb.exists('donations', 'last_donation_message')) {
+                    return {result: String($.inidb.get('donations', 'last_donation_message'))};
+                } else {
+                    return {result: $.lang.get('customcommands.lasttip.404')};
+                }
+            }
+        }
+
+        // (offlineonly): exit if channel is not offline else ''
+        function offlineonly(args, event) {
+            if (!args) {
+                if ($.isOnline($.channelName)) {
+                    returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
+                    return {cancel: true};
+                }
+                return {result: ''};
+            }
+        }
+
+        // (onlineonly): exit if channel is not online else ''
+        function onlineonly(args, event) {
+            if (!args) {
+                if (!$.isOnline($.channelName)) {
+                    returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
+                    return {cancel: true};
+                }
+                return {result: ''};
+            }
+        }
+
+        // (pay): how much points this command will give
+        // (pay command:str): how much points the given command will give
+        function pay(args, event) {
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                cmd = match[1] || event.getCommand();
+                if ($.inidb.exists('paycom', cmd)) {
+                    temp = $.inidb.get('paycom', cmd);
+                } else {
+                    temp = 0;
+                }
+                return {result: String($.getPointsString(temp))};
+            }
+        }
+
+        // (playsound hook:str): play a sound hook
+        function playsound(args) {
+            if ((match = args.match(/^\s([a-zA-Z1-9_]+)$/))) {
+                if (!$.audioHookExists(match[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return {result: $.lang.get('customcommands.playsound.404', match[1])};
+                }
+                $.panelsocketserver.triggerAudioPanel(match[1]);
+                return {result: '', cache: false};
+            }
+        }
+
+        // (playtime): how long this channel has streamed current game
+        //             if currently offline, tell sender and exit
+        function playtime(args, event) {
+            if (!args) {
+                if (!$.isOnline($.channelName)) {
+                    $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                    return {cancel: true};
+                }
+                return {result: String($.getPlayTime() || '')}
+            }
+        }
+
+        // (pointname): the plural name of you loyalty points
+        function pointname(args) {
+            if (!args) {
+                return {result: String($.pointNameMultiple)};
+            }
+        }
+
+        // (pointtouser): like (@sender)
+        // (pointtouser user:str): user name + ' -> '
+        function pointtouser(args, event) {
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                if (match[1]) {
+                    temp = match[1].replace(/[^a-zA-Z0-9_@]/g, '') + ' -> ';
+                } else {
+                    temp = String($.userPrefix(event.getSender(), true));
+                }
+                return {result: temp};
+            }
+        }
+
+        // (points): points of the sender
+        // (points user:str): points of the given user; leading @ will be stripped
+        function points(args, event) {
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                match[1] = match[1] ? match[1].replace(/^@/, '') : event.getSender();
+                return {result: String($.getUserPoints(match[1]))};
+            }
+        }
+
+        // (price): how much points this command costs
+        // (price command:str): how much points the given command costs
+        function price(args, event) {
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                cmd = match[1] || event.getCommand();
+                if ($.inidb.exists('pricecom', cmd)) {
+                    temp = $.inidb.get('pricecom', cmd);
+                } else {
+                    temp = 0;
+                }
+                return {result: String($.getPointsString(temp))};
+            }
+        }
+
+        // (random): random user in chat or the bot's name if chat is empty
+        function random(args) {
+            if (!args) {
+                try {
+                    return {
+                        result: String($.username.resolve($.randElement($.users))),
+                        cache: false
+                    };
+                } catch (ex) {
+                    return {result: String($.username.resolve($.botName))};
+                }
+            }
+        }
+
+        // (randomrank): a random user in chat or the bot if chat is empty + their rank
+        function randomrank(args) {
+            if (!args) {
+                try {
+                    return {
+                        result: String($.resolveRank($.randElement($.users))),
+                        cache: false
+                    };
+                } catch (ex) {
+                    return {result: String($.resolveRank($.botName))};
+                }
+            }
+        }
+
+        // (readfile filename:str): first line of file addons/filename
+        function readfile(args) {
+            var fileName;
+            if ((match = args.match(/^ (.+)$/))) {
+                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                if (!$.fileExists(fileName)) {
+                    return {result: $.lang.get('customcommand.file.404', fileName)};
+                }
+                return {result: String($.readFile(fileName)[0] || '')};
+            }
+        }
+
+        // (readfilerand filename:str): random line of file addons/filename
+        function readfilerand(args) {
+            var fileName;
+            if ((match = args.match(/^ (.+)$/))) {
+                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                if (!$.fileExists(fileName)) {
+                    return {result: $.lang.get('customcommand.file.404', fileName)};
+                }
+                temp = $.readFile(fileName);
+                return {result: String($.randElement(temp) || ''), cache: false};
+            }
+        }
+
+        // (repeat n:int, message:str): repeat the message n times
+        function repeat(args) {
+            var MAX_COUNTER_VALUE = 30,
+                n;
+            if ((match = args.match(/^\s([1-9]\d*),\s(.*)$/))) {
+                if (!match[2]) {
+                    return {result: ''};
+                }
+                n = parseInt(match[1]);
+                if (n > MAX_COUNTER_VALUE) {
+                    n = MAX_COUNTER_VALUE;
+                }
+                temp = [];
+                for (i = 0; i < n; i++) {
+                    temp.push(match[2]);
+                }
+                return {result: temp.join(' ')};
+            }
+        }
+
+        // (sender): the sender's name
+        function sender(args, event) {
+            if (!args) {
+                return {result: String($.username.resolve(event.getSender()))};
+            }
+        }
+
+        // (senderrank): sender's rank + ' ' + sender's name
+        function senderrank(args, event) {
+            if (!args) {
+                return {result: String($.resolveRank(event.getSender()))};
+            }
+        }
+
+        // (senderrankonly): sender's rank
+        function senderrankonly(args, event) {
+            if (!args) {
+                return {result: String($.getRank(event.getSender()))};
+            }
+        }
+
+        // (status): twitch status of this channel
+        function status(args) {
+            if (!args) {
+                return {result: String($.getStatus($.channelName))};
+            }
+        }
+
+        // (subscribers): number of subscribers of this channel
+        function subscribers(args) {
+            if (!args) {
+                return {result: String($.getSubscriberCount() + ' ')};
+            }
+        }
+
+        // (team_member_followers team:str, membername:str): number of followers of user membername in your given team
+        function team_member_followers(args) {
+            var teamObj,
+                teamMember;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(match[1]);
+                if (teamObj != null) {
+                    teamMember = teamObj.getTeamMember(match[2]);
+                    if (teamMember != null) {
+                        return {result: String(teamMember.get('followers'))};
+                    } else {
+                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                    }
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                }
+            }
+        }
+
+        // (team_member_game team:str, membername:str): game user membername in your given team currently plays
+        function team_member_game(args) {
+            var teamObj,
+                teamMember;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(match[1]);
+                if (teamObj != null) {
+                    teamMember = teamObj.getTeamMember(match[2]);
+                    if (teamMember != null) {
+                        return {result: String(teamMember.getString('game'))};
+                    } else {
+                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                    }
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                }
+            }
+        }
+
+        // (team_member_url team:str, membername:str): url of user membername in your given team currently plays
+        function team_member_url(args) {
+            var teamObj,
+                teamMember;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(match[1]);
+                if (teamObj != null) {
+                    teamMember = teamObj.getTeamMember(match[2]);
+                    if (teamMember != null) {
+                        return {result: String(teamMember.getString('url'))};
+                    } else {
+                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                    }
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                }
+            }
+        }
+
+        // (team_members team:str): number of members in your given team
+        function team_members(args) {
+            var teamObj;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(match[1]);
+                if (teamObj != null) {
+                    return {result: String(teamObj.getTotalMembers())};
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                }
+            }
+        }
+
+        // (team_name team:str): name of your given team
+        function team_name(args) {
+            var teamObj;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(match[1]);
+                if (teamObj != null) {
+                    return {result: String(teamObj.getName())};
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                }
+            }
+        }
+
+        // (team_random_member team:str): random member of your given team
+        function team_random_member(args) {
+            var teamObj;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(teamName);
+                if (teamObj != null) {
+                    return {result: String(teamObj.getRandomMember())};
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                }
+            }
+        }
+
+        // (team_url team:str): url to your given team
+        function team_url(args) {
+            var teamObj;
+            if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+                teamObj = $.twitchteamscache.getTeam(teamName);
+                if (teamObj != null) {
+                    return {result: String(teamObj.getUrl())};
+                } else {
+                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                }
+            }
+        }
+
+        // (titleinfo): title + uptime if online
+        function titleinfo(args) {
+            var status;
+            if (!args) {
+                status = $.getStatus($.channelName);
+                if (!status.trim()) {
+                    return {result: $.lang.get('streamcommand.title.no.title')};
+                } else if (!$.isOnline($.channelName)) {
+                    return {result: $.lang.get('streamcommand.title.offline', status)};
+                } else {
+                    return {result: $.lang.get('streamcommand.title.online', status, String($.getStreamUptime($.channelName)))};
+                }
+            }
+        }
+
+        // (touser): sender's name
+        // (touser name:str): given user's name
+        function touser(args, event) {
+            if ((match = args.match(/^(?:\s(.*))?$/))) {
+                if (match[1]) {
+                    temp = match[1].replace(/[^a-zA-Z0-9_@]/g, '');
+                } else {
+                    temp = event.getSender();
+                }
+                return {result: String($.username.resolve(temp))};
+            }
+        }
+
+        // (unescape str:str): unescape \\ \( \) to \ ( ) respectively
+        // NOTE: this might cause more substitutions and should only be applied
+        // to trusted strings.
+        function unescape(args) {
+            if ((match = args.match(/^ (.*)$/))) {
+                return {result: match[1], raw: true};
+            }
+        }
+
+        // (uptime): how long the channel has been streaming this session. If offline, notify user and exit.
+        function uptime(args, event) {
+            if (!args) {
+                if (!$.isOnline($.channelName)) {
+                    $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+                    return {cancel: true};
+                }
+                return {result: $.getStreamUptime($.channelName)};
+            }
+        }
+
+        // (useronly=name:str): if sender does not match, tell user so
+        //                      (given permComMsgEnabled in settings is set) and exit;
+        //                      '' otherwise.
+        function useronly(args, event) {
+            if ((match = args.match(/^=(.*)$/))) {
+                if (!event.getSender().equalsIgnoreCase(match[1])) {
+                    if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                        $.say($.whisperPrefix(event.getSender()) + $.lang.get('cmd.useronly', match[1]));
+                    }
+                    return {cancel: true};
+                }
+                return {result: ''};
+            }
+        }
+
+        // (viewers): number of current viewers
+        function viewers(args) {
+            if (!args) {
+                return {result: String($.getViewers($.channelName) + ' ')};
+            }
+        }
+
+        // (views): number of total views
+        function views(args) {
+            if (!args) {
+                return {result: String($.twitchcache.getViews())};
+            }
+        }
+
+        // (writefile filename:str, append:bool, text:str): write text to addons/filename
+        //                                                  if append is 'true', append to file else overwrite
+        function writefile(args) {
+            var fileName;
+            if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
+                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                if (!$.fileExists(fileName)) {
+                    return {result: $.lang.get('customcommand.file.404', fileName)};
+                }
+                $.writeToFile(match[3], fileName, match[2] === 'true');
+                return {result: '', cache: false};
+            }
+        }
+
+        transformers = {
+            '#': randomInt,
+            '@sender': atSender,
+            'adminonlyedit': adminonlyedit,
+            'age': age,
+            'alert': alert,
+            'baresender': baresender,
+            'channelname': channelname,
+            'code': code,
+            'command': command,
+            'commandslist': commandslist,
+            'count': count,
+            'countdown': countdown,
+            'countup': countup,
+            'currenttime': currenttime,
+            'customapi': customapi,
+            'customapijson': customapijson,
+            'downtime': downtime,
+            'echo': echo,
+            'encodeurl': encodeurl,
+            'followage': followage,
+            'followdate': followdate,
+            'follows': follows,
+            'game': game,
+            'gameinfo': gameinfo,
+            'gameonly': gameonly,
+            'gamesplayed': gamesplayed,
+            'help': help,
+            'hours': hours,
+            'keywordcount': keywordcount,
+            'lasttip': lasttip,
+            'offlineonly': offlineonly,
+            'onlineonly': onlineonly,
+            'pay': pay,
+            'playsound': playsound,
+            'playtime': playtime,
+            'pointname': pointname,
+            'pointtouser': pointtouser,
+            'points': points,
+            'price': price,
+            'random': random,
+            'randomrank': randomrank,
+            'readfile': readfile,
+            'readfilerand': readfilerand,
+            'repeat': repeat,
+            'sender': sender,
+            'senderrank': senderrank,
+            'senderrankonly': senderrankonly,
+            'status': status,
+            'subscribers': subscribers,
+            'team_member_followers': team_member_followers,
+            'team_member_game': team_member_game,
+            'team_member_url': team_member_url,
+            'team_members': team_members,
+            'team_name': team_name,
+            'team_random_member': team_random_member,
+            'team_url': team_url,
+            'titleinfo': titleinfo,
+            'touser': touser,
+            'unescape': unescape,
+            'uptime': uptime,
+            'useronly': useronly,
+            'viewers': viewers,
+            'views': views,
+            'writefile': writefile,
+        };
+        for (i = 1; i <= 9; i++) {
+            transformers[String(i)] = buildArgs(i);
+        }
+
+        return transformers;
+    })();
+
+    /*
      * @function tags
      *
      * @param {string} event
@@ -77,429 +1035,50 @@
      * @return {string}
      */
     function tags(event, message, atEnabled) {
-        if (atEnabled && event.getArgs()[0] !== undefined && $.isModv3(event.getSender(), event.getTags())) {
-            if (!message.match(tagCheck)) {
-                return event.getArgs()[0] + ' -> ' + message;
-            }
-        }
-
-        if (message.match(/\(help=.*\)/g) && event.getArgs()[0] === undefined) {
-            message = message.match(/\(help=(.*?)\)/)[1];
-            $.say(message);
-            return null;
-        }
-
-        if (message.match(/\(help=.*\)/g)) {
-            message = $.replace(message, message.match(/(\(help=.*\))/)[1], '');
-        }
-
-        if (message.match(/\(views\)/g)) {
-            message = $.replace(message, '(views)', $.twitchcache.getViews());
-        }
-
-        if (message.match(/\(gameonly=.*\)/g)) {
-            var game = message.match(/\(gameonly=(.*)\)/)[1];
-
-            if (!$.getGame($.channelName).equalsIgnoreCase(game)) {
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(gameonly=.*\))/)[1], '');
-        }
-
-        if (message.match(/\(useronly=.*\)/g)) {
-            var user = message.match(/\(useronly=(.*?)\)/)[1];
-            if (!event.getSender().equalsIgnoreCase(user)) {
-                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                    $.say($.whisperPrefix(event.getSender()) + $.lang.get('cmd.useronly', user));
+        var match,
+            tagFound = false,
+            transformed,
+            transformCache = {};
+        message += '';  // make sure this is a JS string, not a Java string
+        while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s=()]*)([\s=](?:\\\(|\\\)|[^()])*)?\))/))) {
+            var wholeMatch = match[1],
+                tagName = match[2],
+                tagArgs = match[3] ? unescapeTags(match[3]) : '';
+            if (transformCache.hasOwnProperty(wholeMatch)) {
+                $.replace(message, wholeMatch, transformCache[wholeMatch]);
+            } else if (transformers.hasOwnProperty(tagName)
+                       && (transformed = transformers[tagName](tagArgs, event))) {
+                tagFound = true;
+                if (transformed.hasOwnProperty('cancel') && transformed.cancel) {
+                    return null;
                 }
-                return null;
-            }
-            message = $.replace(message, message.match(/(\(useronly=.*?\))/)[1], '');
-        }
-
-        if (message.match(/\(readfile/)) {
-            if (message.search(/\((readfile ([^)]+)\))/g) >= 0) {
-                message = $.replace(message, '(' + RegExp.$1, $.readFile('./addons/' + RegExp.$2.replace(/\.\./g, ''))[0]);
-            }
-        }
-
-        if (message.match(/\(readfilerand/)) {
-            if (message.search(/\((readfilerand ([^)]+)\))/g) >= 0) {
-                var path = RegExp.$2;
-                var path2 = RegExp.$1;
-                var results = $.arrayShuffle($.readFile('./addons/' + path.trim().replace(/\.\./g, '')));
-                message = $.replace(message, '(' + path2.trim(), $.randElement(results));
-            }
-        }
-
-        if (message.match(/\(adminonlyedit\)/)) {
-            message = $.replace(message, '(adminonlyedit)', '');
-        }
-
-        if (message.match(/\(pointtouser\)/)) {
-            if (event.getArgs()[0] !== undefined) {
-                message = $.replace(message, '(pointtouser)', (String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '') + ' -> '));
-            } else {
-                message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
-            }
-        }
-
-        if (message.match(/\(currenttime/)) {
-            var timezone = message.match(/\(currenttime ([\w\W]+), (.*)\)/)[1],
-                format = message.match(/\(currenttime ([\w\W]+), (.*)\)/)[2];
-
-            message = $.replace(message, message.match(/\(currenttime ([\w\W]+), (.*)\)/)[0], $.getCurrentLocalTimeString(format, timezone));
-        }
-
-        if (message.match(/\(1\)/g)) {
-            for (var i = 1; i < 10; i++) {
-                if (message.includes('(' + i + ')')) {
-                    message = $.replace(message, '(' + i + ')', (event.getArgs()[i - 1] !== undefined ? event.getArgs()[i - 1] : ''));
+                if (!transformed.hasOwnProperty('raw') || !transformed.raw) {
+                    transformed.result = escapeTags(transformed.result)
+                }
+                if (transformed.hasOwnProperty('cache') && transformed.cache) {
+                    transformCache[wholeMatch] = transformed.result;
+                    message = $.replace(message, wholeMatch, transformed.result);
                 } else {
-                    break;
+                    // only replace the first appearance
+                    message = message.replace(wholeMatch, transformed.result);
                 }
-            }
-        }
 
-        if (message.match(/\(commandcostlist\)/)) {
-            var keys = $.inidb.GetKeyList('pricecom', ''),
-                temp = [],
-                i;
-            for (i in keys) {
-                if (!keys[i].includes(' ')) {
-                    temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
-                }
-            }
-            $.paginateArray(temp, 'NULL' + message.replace('(commandcostlist)', ''), ', ', true, event.getSender());
-            return null;
-        }
-
-        if (message.match(/\(1=[^)]+\)/g)) {
-            if (event.getArgs()[0]) {
-                var t = message.match(/\(1=[^)]+\)/)[0];
-                message = $.replace(message, t, event.getArgs()[0]);
-            }
-            message = $.replace(message, '(1=', '(');
-        }
-
-        if (message.match(/\(countdown=[^)]+\)/g)) {
-            var t = message.match(/\([^)]+\)/)[0],
-                countdown, time;
-            countdown = t.replace('(countdown=', '').replace(')', '');
-            time = (Date.parse(countdown) - Date.parse($.getLocalTime()));
-            message = $.replace(message, t, $.getCountString(time / 1000, false));
-        }
-
-        if (message.match(/\(countup=[^)]+\)/g)) {
-            var t = message.match(/\([^)]+\)/)[0],
-                countup, time;
-            countup = t.replace('(countup=', '').replace(')', '');
-            time = (Date.parse($.getLocalTime()) - Date.parse(countup));
-            message = $.replace(message, t, $.getCountString(time / 1000, true));
-        }
-
-        if (message.match(/\(downtime\)/g)) {
-            message = $.replace(message, '(downtime)', String($.getStreamDownTime()));
-        }
-
-        if (message.match(/\(channelname\)/g)) {
-            message = $.replace(message, '(channelname)', $.username.resolve($.channelName));
-        }
-
-        if (message.match(/\(onlineonly\)/g)) {
-            if (!$.isOnline($.channelName)) {
-                returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
-                return null;
-            }
-            message = $.replace(message, '(onlineonly)', '');
-        }
-
-        if (message.match(/\(offlineonly\)/g)) {
-            if ($.isOnline($.channelName)) {
-                returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
-                return null;
-            }
-            message = $.replace(message, '(offlineonly)', '');
-        }
-
-        if (message.match(/\(sender\)/g)) {
-            message = $.replace(message, '(sender)', $.username.resolve(event.getSender()));
-        }
-
-        if (message.match(/\(senderrank\)/g)) {
-            message = $.replace(message, '(senderrank)', $.resolveRank(event.getSender()));
-        }
-
-        if (message.match(/\(senderrankonly\)/g)) {
-            message = $.replace(message, '(senderrankonly)', $.getRank(event.getSender()));
-        }
-
-        if (message.match(/\(@sender\)/g)) {
-            message = $.replace(message, '(@sender)', $.userPrefix(event.getSender(), true));
-        }
-
-        if (message.match(/\(baresender\)/g)) {
-            message = $.replace(message, '(baresender)', event.getSender());
-        }
-
-        if (message.match(/\(game\)/g)) {
-            message = $.replace(message, '(game)', $.getGame($.channelName));
-        }
-
-        if (message.match(/\(status\)/g)) {
-            message = $.replace(message, '(status)', $.getStatus($.channelName));
-        }
-
-        if (message.match(/\(count\)/g)) {
-            $.inidb.incr('commandCount', event.getCommand(), 1);
-            message = $.replace(message, '(count)', $.inidb.get('commandCount', event.getCommand()));
-        }
-
-        if (message.match(/\(keywordcount\s(.+)\)/g)) {
-            var input_keyword = message.match(/.*\(keywordcount\s(.+)\).*/)[1],
-                keyword_info = JSON.parse($.inidb.get('keywords', input_keyword));
-
-            if ('count' in keyword_info) {
-                ++keyword_info["count"];
             } else {
-                keyword_info["count"] = 1;
-            }
-            $.inidb.set('keywords', input_keyword, JSON.stringify(keyword_info));
-
-            message = $.replace(message, '(keywordcount ' + input_keyword + ')', keyword_info["count"]);
-        }
-
-        if (message.match(/\(random\)/g)) {
-            try {
-                message = $.replace(message, '(random)', $.username.resolve($.randElement($.users)));
-            } catch (ex) {
-                message = $.replace(message, '(random)', $.username.resolve($.botName));
+                message = $.replace(message, wholeMatch, '\\(' + wholeMatch.slice(1, -1) + '\\)');
             }
         }
 
-        if (message.match(/\(randomrank\)/g)) {
-            try {
-                message = $.replace(message, '(randomrank)', $.resolveRank($.randElement($.users)));
-            } catch (ex) {
-                message = $.replace(message, '(randomrank)', $.resolveRank($.botName));
-            }
+        // custom commands without tags can be directed towards users by mods
+        if (tagFound === -1
+            && atEnabled
+            && event.getArgs()[0] !== undefined
+            && $.isModv3(event.getSender(), event.getTags())) {
+            return event.getArgs()[0] + ' -> ' + unescapeTags(message);
         }
 
-        if (message.match(/\(pointname\)/g)) {
-            message = $.replace(message, '(pointname)', $.pointNameMultiple);
-        }
+        message = unescapeTags(message);
 
-        if (message.match(/\(points\)/g)) {
-            message = $.replace(message, '(points)', $.getUserPoints(event.getSender()));
-        }
-
-        if (message.match(/\(price\)/g)) {
-            message = $.replace(message, '(price)', String($.inidb.exists('pricecom', event.getCommand()) ? $.getPointsString($.inidb.get('pricecom', event.getCommand())) : $.getPointsString(0)));
-        }
-
-        if (message.match(/\(pay\)/g)) {
-            message = $.replace(message, '(pay)', String($.inidb.exists('paycom', event.getCommand()) ? $.getPointsString($.inidb.get('paycom', event.getCommand())) : $.getPointsString(0)));
-        }
-
-        if (message.match(/\(#\)/g)) {
-            message = $.replace(message, '(#)', String($.randRange(1, 100)));
-        }
-
-        if (message.match(/\(# (\d+),(\d+)\)/g)) {
-            var mat = message.match(/\(# (\d+),(\d+)\)/);
-            message = $.replace(message, mat[0], String($.randRange(parseInt(mat[1]), parseInt(mat[2]))));
-        }
-
-        if (message.match(/\(viewers\)/g)) {
-            message = $.replace(message, '(viewers)', String($.getViewers($.channelName) + ' '));
-        }
-
-        if (message.match(/\(follows\)/g)) {
-            message = $.replace(message, '(follows)', String($.getFollows($.channelName) + ' '));
-        }
-
-        if (message.match(/\(subscribers\)/g)) {
-            message = $.replace(message, '(subscribers)', String($.getSubscriberCount() + ' '));
-        }
-
-        if (message.match(/\(touser\)/g)) {
-            message = $.replace(message, '(touser)', (event.getArgs()[0] === undefined ? $.username.resolve(event.getSender()) : String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '')));
-        }
-
-        if (message.match(/\(echo\)/g)) {
-            message = $.replace(message, '(echo)', (event.getArguments() ? event.getArguments() : ''));
-        }
-
-        if (message.match(/\(gamesplayed\)/g)) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return null;
-            }
-            message = $.replace(message, '(gamesplayed)', $.getGamesPlayed());
-        }
-
-        if (message.match(/\(code=/g)) {
-            var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                length = message.substr(6).replace(')', ''),
-                text = '',
-                i;
-
-            for (i = 0; i < length; i++) {
-                text += code.charAt(Math.floor(Math.random() * code.length));
-            }
-            message = $.replace(message, '(code=' + length + ')', String(text));
-        }
-
-        if (message.match(/\(alert [,.\w\W]+\)/g)) {
-            var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-            $.panelsocketserver.alertImage(filename);
-            message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            if (message == '') return null;
-        }
-
-        if (message.match(/\(gameinfo\)/)) {
-            if ($.getGame($.channelName) == ' ' || $.getGame($.channelName) == '') {
-                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.no.game'));
-            } else if (!$.isOnline($.channelName) || $.getPlayTime() == 0) {
-                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.offline', $.getGame($.channelName)));
-            } else {
-                message = $.replace(message, '(gameinfo)', $.lang.get('streamcommand.game.online', $.getGame($.channelName), $.getPlayTime()));
-            }
-        }
-
-        if (message.match(/\(titleinfo\)/)) {
-            if ($.getStatus($.channelName) == ' ' || $.getStatus($.channelName) == '') {
-                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.no.title'));
-            } else if (!$.isOnline($.channelName)) {
-                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.offline', $.getStatus($.channelName)));
-            } else {
-                message = $.replace(message, '(titleinfo)', $.lang.get('streamcommand.title.online', $.getStatus($.channelName), String($.getStreamUptime($.channelName))));
-            }
-        }
-
-        if (message.match(/\(followdate\)/g)) {
-            var args = event.getArgs(),
-                channel = $.channelName,
-                sender = event.getSender();
-
-            if (args.length > 0) sender = args[0].replace('@','');
-            if (args.length > 1) channel = args[1].replace('@','');
-
-            message = $.replace(message, '(followdate)', $.getFollowDate(event.getSender(), sender, channel));
-        }
-
-        if (message.match(/\(hours\)/g)) {
-            var args = event.getArgs(),
-                sender = event.getSender();
-
-            if (args.length > 0) sender = args[0].replace('@','');
-
-            message = $.replace(message, '(hours)', parseInt($.getUserTime(sender) / 3600));
-        }
-
-        if (message.match(/\(followage\)/g)) {
-            var args = event.getArgs(),
-                channel = $.channelName,
-                sender = event.getSender();
-
-            if (args.length > 0) sender = args[0].replace('@','');
-            if (args.length > 1) channel = args[1].replace('@','');
-
-            $.getFollowAge(event.getSender(), sender, channel);
-            return null;
-        }
-
-        if (message.match(/\(playtime\)/g)) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return null;
-            }
-            message = $.replace(message, '(playtime)', ($.getPlayTime() ? $.getPlayTime() : ''));
-        }
-
-        if (message.match(/\(uptime\)/g)) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return null;
-            }
-            message = $.replace(message, '(uptime)', String($.getStreamUptime($.channelName)));
-        }
-
-        if (message.match(/\(lasttip\)/g)) {
-            message = $.replace(message, '(lasttip)', ($.inidb.exists('donations', 'last_donation_message') ? $.inidb.get('donations', 'last_donation_message') : 'No donations found.'));
-        }
-
-        if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-            if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                $.log.error('Could not play audio hook: Audio hook does not exist.');
-                return null;
-            }
-            $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-            message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            if (message == '') {
-                return null;
-            }
-        }
-
-        if (message.match(/\(repeat\s[1-9]\d*,[\w\s]+\)/g)) {
-            var MIN_COUNTER_VALUE = 1;
-            var MAX_COUNTER_VALUE = 30;
-
-            var matches = message.match(/\(repeat\s([1-9]\d*),([\w\s]+)\)/);
-            var allMatch = matches[0];
-            var counter = parseInt(matches[1]);
-            var iteratingText = matches[2];
-
-            if (counter < MIN_COUNTER_VALUE) {
-                counter = MIN_COUNTER_VALUE;
-            }
-
-            if (counter > MAX_COUNTER_VALUE) {
-                counter = MAX_COUNTER_VALUE;
-            }
-
-            var tmpArray = [];
-
-            for(var i = 0; i < counter; i++) {
-                tmpArray.push(iteratingText);
-            }
-
-            message = $.replace(message, allMatch, tmpArray.join(' '));
-        }
-
-        if (message.match(/\(age\)/g)) {
-            $.getChannelAge(event);
-            return null;
-        }
-
-        if (message.match(/\(writefile .+\)/)) {
-            if (message.match(/\(writefile (.+), (.+), (.+)\)/)) {
-                var file = message.match(/\(writefile (.+), (.+), (.+)\)/)[1],
-                    append = (message.match(/\(writefile (.+), (.+), (.+)\)/)[2] == 'true' ? true : false),
-                    string = message.match(/\(writefile (.+), (.+), (.+)\)/)[3];
-                $.writeToFile(string, './addons/' + file.replace(/\.\./g, ''), append);
-            }
-            message = $.replace(message, message.match(/\(writefile (.+), (.+), (.+)\)/)[0], '');
-            if (message == '') {
-                return null;
-            }
-        }
-
-        if (message.match(/\(encodeurl ([\w\W]+)\)/)) {
-            var m = message.match(/\(encodeurl ([\w\W]+)\)/);
-            message = $.replace(message, m[0], encodeURI(m[1]));
-        }
-
-        // Variables for Twitch teams.
-        if (message.match(/\(team_.*/)) {
-            message = handleTwitchTeamVariables(message);
-        }
-
-        if (message.match(reCustomAPIJson) || message.match(reCustomAPI) || message.match(reCommandTag)) {
-            message = apiTags(event, message);
-        }
-
-        if (message !== null) {
+        if (message) {
             if (message.match('\n')) {
                 var splitMessage = message.split('\n');
 
@@ -511,255 +1090,6 @@
         }
 
         return message;
-    }
-
-    /*
-     * @function handleTwitchTeamVariables Handles the twitch team tags.
-     *
-     * @return String
-     */
-    function handleTwitchTeamVariables(message) {
-        if (message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/)) {
-            var teamMatch = message.match(/\(team_members ([a-zA-Z0-9-_]+)\)/),
-                teamName = teamMatch[1],
-                teamObj = $.twitchteamscache.getTeam(teamName);
-
-            if (teamObj != null) {
-                message = $.replace(message, teamMatch[0], teamObj.getTotalMembers());
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/)) {
-            var teamMatch = message.match(/\(team_url ([a-zA-Z0-9-_]+)\)/),
-                teamName = teamMatch[1],
-                teamObj = $.twitchteamscache.getTeam(teamName);
-
-            if (teamObj != null) {
-                message = $.replace(message, teamMatch[0], teamObj.getUrl());
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/)) {
-            var teamMatch = message.match(/\(team_name ([a-zA-Z0-9-_]+)\)/),
-                teamName = teamMatch[1],
-                teamObj = $.twitchteamscache.getTeam(teamName);
-
-            if (teamObj != null) {
-                message = $.replace(message, teamMatch[0], teamObj.getName());
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/)) {
-            var teamMatch = message.match(/\(team_random_member ([a-zA-Z0-9-_]+)\)/),
-                teamName = teamMatch[1],
-                teamObj = $.twitchteamscache.getTeam(teamName);
-
-            if (teamObj != null) {
-                message = $.replace(message, teamMatch[0], teamObj.getRandomMember());
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
-            var teamMatch = message.match(/\(team_member_game ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
-                teamName = teamMatch[1],
-                teamUser = teamMatch[2]
-                teamObj = $.twitchteamscache.getTeam(teamName),
-                teamMember = teamObj.getTeamMember(teamUser);
-
-            if (teamObj != null) {
-                if (teamMember != null) {
-                    message = $.replace(message, teamMatch[0], teamMember.getString('game'));
-                } else {
-                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
-                }
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
-            var teamMatch = message.match(/\(team_member_followers ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
-                teamName = teamMatch[1],
-                teamUser = teamMatch[2]
-                teamObj = $.twitchteamscache.getTeam(teamName),
-                teamMember = teamObj.getTeamMember(teamUser);
-
-            if (teamObj != null) {
-                if (teamMember != null) {
-                    message = $.replace(message, teamMatch[0], teamMember.get('followers'));
-                } else {
-                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
-                }
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        if (message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/)) {
-            var teamMatch = message.match(/\(team_member_url ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)\)/),
-                teamName = teamMatch[1],
-                teamUser = teamMatch[2]
-                teamObj = $.twitchteamscache.getTeam(teamName),
-                teamMember = teamObj.getTeamMember(teamUser);
-
-            if (teamObj != null) {
-                if (teamMember != null) {
-                    message = $.replace(message, teamMatch[0], teamMember.getString('url'));
-                } else {
-                    message = $.replace(message, teamMatch[0], 'API_ERROR: That user is not in the team.');
-                }
-            } else {
-                message = $.replace(message, teamMatch[0], 'API_ERROR: You\'re not in that team.');
-            }
-        }
-
-        return message;
-    }
-
-    /*
-     * @function apiTags
-     *
-     * @export $
-     * @param {string} message
-     * @param {Object} event
-     * @returns {string}
-     */
-    function apiTags(event, message) {
-        var JSONObject = Packages.org.json.JSONObject,
-            JSONArray = Packages.org.json.JSONArray,
-            command = event.getCommand(),
-            args = event.getArgs(),
-            origCustomAPIResponse = '',
-            customAPIReturnString = '',
-            message = message + '',
-            customAPIResponse = '',
-            customJSONStringTag = '',
-            commandToExec = 0,
-            jsonObject,
-            regExCheck,
-            jsonItems,
-            jsonCheckList;
-
-        // Get the URL for a customapi, if applicable, and process $1 - $9.  See below about that.
-        if ((regExCheck = message.match(reCustomAPI))) {
-            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
-                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
-            }
-
-            if (regExCheck[1].indexOf('$1') != -1) {
-                for (var i = 1; i <= 9; i++) {
-                    if (regExCheck[1].indexOf('$' + i) != -1) {
-                        if (!args[i - 1]) {
-                            return $.lang.get('customcommands.customapi.404', command);
-                        }
-                        regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
-                    } else {
-                        break;
-                    }
-                }
-            }
-            customAPIReturnString = getCustomAPIValue(regExCheck[1]);
-        }
-
-        // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
-        // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
-        // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
-        // API seems like overkill.  Even 9 does, to be honest.
-        if ((regExCheck = message.match(reCustomAPIJson))) {
-            if (regExCheck[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', command)) {
-                regExCheck[1] = regExCheck[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', command));
-            }
-
-            if (regExCheck[1].indexOf('$1') != -1) {
-                for (var i = 1; i <= 9; i++) {
-                    if (regExCheck[1].indexOf('$' + i) != -1) {
-                        if (!args[i - 1]) {
-                            return $.lang.get('customcommands.customapi.404', command);
-                        }
-                        regExCheck[1] = regExCheck[1].replace('$' + i, args[i - 1]);
-                    } else {
-                        break;
-                    }
-                }
-            }
-            origCustomAPIResponse = getCustomAPIValue(regExCheck[1]);
-            jsonItems = regExCheck[2].split(' ');
-            for (var j = 0; j < jsonItems.length; j++) {
-                if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
-                    customAPIReturnString += " " + jsonItems[j].match(reCustomAPITextTag)[1];
-                } else if (jsonItems[j].startsWith('{') && !jsonItems[j].endsWith('}')) {
-                    customJSONStringTag = '';
-                    while (!jsonItems[j].endsWith('}')) {
-                        customJSONStringTag += jsonItems[j++] + " ";
-                    }
-                    customJSONStringTag += jsonItems[j];
-                    customAPIReturnString += " " + customJSONStringTag.match(reCustomAPITextTag)[1];
-                } else {
-                    jsonCheckList = jsonItems[j].split('.');
-                    if (jsonCheckList.length == 1) {
-                        try {
-                            customAPIResponse = new JSONObject(origCustomAPIResponse).get(jsonCheckList[0]);
-                        } catch (ex) {
-                            $.log.error('Failed to get data from API: ' + ex.message);
-                            return $.lang.get('customcommands.customapijson.err', command);
-                        }
-                        customAPIReturnString += customAPIResponse;
-                    } else {
-                        for (var i = 0; i < jsonCheckList.length - 1; i++) {
-                            if (i == 0) {
-                                try {
-                                    jsonObject = new JSONObject(origCustomAPIResponse).get(jsonCheckList[i]);
-                                } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
-                                    return $.lang.get('customcommands.customapijson.err', command);
-                                }
-                            } else if (!isNaN(jsonCheckList[i + 1])) {
-                                try {
-                                    jsonObject = jsonObject.get(jsonCheckList[i]);
-                                } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
-                                    return $.lang.get('customcommands.customapijson.err', command);
-                                }
-                            } else {
-                                try {
-                                    jsonObject = jsonObject.get(jsonCheckList[i]);
-                                } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
-                                    return $.lang.get('customcommands.customapijson.err', command);
-                                }
-                            }
-                        }
-                        try {
-                            customAPIResponse = jsonObject.get(jsonCheckList[i]);
-                        } catch (ex) {
-                            $.log.error('Failed to get data from API: ' + ex.message);
-                            return $.lang.get('customcommands.customapijson.err', command);
-                        }
-                        customAPIReturnString += customAPIResponse;
-                    }
-                }
-            }
-        }
-
-        if (message.match(reCommandTag)) {
-            commandToExec = message.match(reCommandTag)[1];
-            if (commandToExec.length > 0) {
-                var EventBus = Packages.tv.phantombot.event.EventBus;
-                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-                EventBus.instance().post(new CommandEvent(event.getSender(), commandToExec, message.replace(reCommandTag, '').substring(1)));
-                return null;
-            }
-        }
-
-        return message.replace(reCustomAPI, customAPIReturnString).replace(reCustomAPIJson, customAPIReturnString);
     }
 
     /*
@@ -778,7 +1108,7 @@
         } else {
             commandGroup = $.getSubcommandGroup(command, subcommand);
         }
-        
+
         switch(commandGroup) {
             case 0:
                 allowed = $.isCaster(username);
@@ -805,7 +1135,7 @@
                 allowed = true;
                 break;
         }
-        
+
         return allowed ? 0 : (subcommand === '' ? 1 : 2);
     }
 
