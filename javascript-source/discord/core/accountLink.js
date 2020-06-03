@@ -121,7 +121,7 @@
                     if (accounts[keys[i]].code == code && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
                         $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
 
-                        $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', $.channelName));
+                        $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', sender.toLowerCase()));
                         delete accounts[keys[i]];
                         return;
                     }
