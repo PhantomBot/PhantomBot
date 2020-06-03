@@ -458,6 +458,10 @@ public class YTWebSocketServer extends WebSocketServer {
     public void songRequestHistory(String jsonString) {
         sendToAll(jsonString);
     }
+    
+    public void queueStatus(String jsonString) {
+        sendToAll(jsonString);
+    }
 
     private static String genSessionKey(WebSocket webSocket) {
         return new String(Integer.toString(webSocket.getRemoteSocketAddress().hashCode()));

@@ -141,6 +141,15 @@ option:hover {
     padding-bottom: 10px;
 }
 
+#queueStatus {
+    display: inline;
+    float: left;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 #copyright {
     font-family: "Roboto", arial;
     display: inline;

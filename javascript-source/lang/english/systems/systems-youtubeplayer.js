@@ -144,7 +144,6 @@ $.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  --
 // Custom
 $.lang.register('ytplayer.requestsong.error.maximum.total.requests', 'Only $1 songs can be requested per stream per user');
 $.lang.register('ytplayer.command.songcount', 'Kent has played $1 songs');
-$.lang.register('ytplayer.command.requestcount', '$1 has had $2 request(s) played');
 $.lang.register('ytplayer.command.queuelimit.usage', 'Usage: !queuelimit [off | max requests]');
 $.lang.register('ytplayer.command.queuelimit.success', 'Maximum number of requests in the queue set to $1');
 $.lang.register('ytplayer.command.queuelimit.success.off', 'Queue limit has been turned off');
@@ -171,22 +170,10 @@ $.lang.register('ytplayer.command.edit.404', 'You do not have a song in the queu
 $.lang.register('ytplayer.command.edit.closed', 'Requests are closed and your request could not be changed');
 $.lang.register('ytplayer.command.edit.mod.usage', 'Usage: !edit user [username] [YouTube ID | YouTube link | search string]');
 
-$.lang.register('ytplayer.command.bump.usage', 'Usage: !bump [user] [position] [allow]');
-$.lang.register('ytplayer.command.bump.success', 'Your song has been bumped to the top of the queue.');
-$.lang.register('ytplayer.command.bump.limit.reached', '$1 has reached their bump limit for the stream.');
-
-$.lang.register('ytplayer.command.move.usage', 'Usage: !move [user] [position]');
-$.lang.register('ytplayer.command.move.success', '$1\'s song has been moved to position $2');
-$.lang.register('ytplayer.command.move.none', '$1 does not have a song in the queue');
-$.lang.register('ytplayer.command.move.404', '$1 does not have a song in the queue');
-$.lang.register('ytplayer.command.move.error.length', 'Invalid song position - the queue only has $1 songs');
-
-$.lang.register('ytplayer.command.bumplimit.usage', 'Usage: !bumplimit [off|limit]');
-$.lang.register('ytplayer.command.bumplimit.success.off', 'Bump limits have been turned off');
-$.lang.register('ytplayer.command.bumplimit.success', "Bump limits are now set to $1");
 
 $.lang.register('ytplayer.startstream.requests.open', 'Request queue is open');
 $.lang.register('ytplayer.startstream.clearhistory', 'Clearing song history');
-$.lang.register('ytplayer.startstream.clearbumps', 'Resetting user bumps');
 $.lang.register('ytplayer.startstream.shuffle.off', 'Setting the play mode to sequential');
+
+$.lang.register('ytplayer.discord.save', '$1, requested by $2 $3');
 

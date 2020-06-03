@@ -35,8 +35,6 @@
             stealRefund = $.getSetIniDbBoolean('ytSettings', 'stealRefund', false),
             voteCount = $.getSetIniDbNumber('ytSettings', 'voteCount', 0),
             playCCOnly = $.getSetIniDbBoolean('ytSettings', 'playCCOnly', false),
-            bumpLimit = $.getSetIniDbNumber('ytSettings', 'bumpLimit', 1),
-            bumpedUsers = [],
             voteArray = [],
             skipCount,
             lastSkipTime = 0,
@@ -56,8 +54,9 @@
             /* @type {PlayerClientInterface} */
             connectedPlayerClient = null,
             /* @type {BotPlayList} */
-            currentPlaylist = null;
-
+            currentPlaylist = null,
+            shuffleBuffer = $.getSetIniDbNumber('shuffleSettings', 'songbuffer', 2)
+            ;
     /**
      * @function reloadyt
      */
@@ -95,14 +94,43 @@
     }
 
     /**
-     * @function createDefaultPl
+     * @function loadDefaultPl
      */
-    function createDefaultPl() {
-        $.inidb.set('ytPlaylist_default', '1', 'vY_kyk8yL9U');
-        $.inidb.set('ytPlaylist_default', '2', 'q_Wk_dn-jEg');
-        $.inidb.set('ytPlaylist_default', '3', '5WRZ-bC5XzE');
-        $.inidb.set('ytPlaylist_default', '4', '9Y5CCHacHfk');
-        $.inidb.set('ytPlaylist_default', 'lastkey', '4');
+    function loadDefaultPl() {
+        if (currentPlaylist === null && connectedPlayerClient !== null) {
+            /** Pre-load last activated playlist */
+            currentPlaylist = new BotPlayList(activePlaylistname, true);
+            /** if the current playlist is "default" and it's empty, add some default songs. */
+            if (currentPlaylist.getPlaylistname().equals('default') && currentPlaylist.getplaylistLength() == 0) {
+                /** whatfunk - Waves FREE CC0 No Copyright Royalty Free Music */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('vY_kyk8yL9U', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** CYAN!DE - Scorpion FREE Electro House Music For Monetize */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('q_Wk_dn-jEg', $.botName));
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** SmaXa - We're Coming In FREE Creative Commons Music */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('5WRZ-bC5XzE', $.botName))
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+
+                /** Static Love - Choices FREE Pop Music for Monetize */
+                try {
+                    currentPlaylist.addToPlaylist(new YoutubeVideo('9Y5CCHacHfk', $.botName))
+                } catch (ex) {
+                    $.log.error("YoutubeVideo::exception: " + ex);
+                }
+            }
+        }
     }
 
     /**
@@ -158,7 +186,8 @@
                 videoTitle = '',
                 videoLength = -1,
                 license = 0,
-                embeddable = 0;
+                embeddable = 0,
+                bumped = false;
 
         this.found = false;
 
@@ -176,6 +205,14 @@
          */
         this.getOwner = function () {
             return owner;
+        };
+
+        this.setBumpFlag = function () {
+            bumped = true;
+        };
+
+        this.isBump = function () {
+            return bumped;
         };
 
         /**
@@ -846,7 +883,6 @@
          * @return {YoutubeVideo}
          */
         this.requestSong = function (searchQuery, requestOwner) {
-            var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
             if (!$.isAdmin(requestOwner) && !$.isMod(requestOwner) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner) || this.senderReachedTotalRequestsMax(requestOwner))) {
                 if (this.senderReachedRequestMax(requestOwner)) {
                     // User already has max allowed in the queue
@@ -869,31 +905,12 @@
                 return null;
             }
 
-            if (this.videoExistsInRequests(youtubeVideo)) {
-                requestFailReason = $.lang.get('ytplayer.requestsong.error.exists');
-                return null;
+            var requestAllowed = isRequestAllowed(requestOwner, youtubeVideo);
+
+            if (requestAllowed) {
+                requests.add(youtubeVideo);
+                return youtubeVideo;
             }
-
-            if (this.videoLengthExceedsMax(youtubeVideo) && !$.isAdmin(requestOwner)) {
-                var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
-                var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
-
-                if (seconds === 0) {
-                    seconds = "00";
-                }
-                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS(), minutes + ":" + seconds);
-                return null;
-            }
-
-            for (var i in keys) {
-                if (youtubeVideo.getVideoTitle().toLowerCase().includes(keys[i])) {
-                    requestFailReason = $.lang.get('ytplayer.blacklist.404');
-                    return null;
-                }
-            }
-
-            requests.add(youtubeVideo);
-            return youtubeVideo;
         };
 
         /**
@@ -1026,29 +1043,6 @@
     }
 
     /**
-     @class
-     @description This class holds a user and the number of times they have been bumped
-     @param {string} user
-     */
-    function BumpedUser(username) {
-        var bumpCount = 0;
-
-        this.getBumpCount = function () {
-            return bumpCount;
-        };
-
-        this.getUser = function () {
-            return username;
-        };
-
-        this.incrementBumpCount = function () {
-            bumpCount++;
-        };
-    }
-
-    /** END CONSTRUCTOR BumpedUser **/
-
-    /**
      * @class
      * @description This class acts as interface between the javascript and any connected player clients
      */
@@ -1152,7 +1146,8 @@
                         "song": youtubeObject.getVideoId() + '',
                         "title": youtubeObject.getVideoTitle() + '',
                         "duration": youtubeObject.getVideoLengthMMSS() + '',
-                        "requester": youtubeObject.getOwner() + ''
+                        "requester": youtubeObject.getOwner() + '',
+                        "bump": youtubeObject.isBump() + ''
                     });
                 }
                 client.songList(JSON.stringify(jsonList));
@@ -1181,6 +1176,31 @@
             }
         }
 
+//        this.pushQueueStatus = function () {
+//            var jsonList = {};
+//            if (currentPlaylist) {
+//                var requestStatus, shuffleStatus;
+//                if (songRequestsEnabled) {
+//                    requestStatus = "Open";
+//                } else {
+//                    requestStatus = "Closed";
+//                }
+//                if (shuffleQueue) {
+//                    shuffleStatus = "On";
+//                } else {
+//                    shuffleStatus = "Off";
+//                }
+//
+//                jsonList['queueStatus'] = [];
+//                jsonList['queueStatus'].push({
+//
+//                    "queue": requestStatus,
+//                    "shuffle": shuffleStatus
+//                });
+//                client.queueStatus(JSON.stringify(jsonList));
+//            }
+//        }
+
 
         /**
          * @function play
@@ -1194,12 +1214,12 @@
             var requestOwner = youtubeVideo.getOwner();
 
             if (lastRequesters != null) {
-                if (lastRequesters.size() > 2) {
+                if (lastRequesters.size() > shuffleBuffer) {
                     lastRequesters.poll();
                 }
             }
 
-            if (!$.isAdmin(requestOwner) && !$.isMod(requestOwner)) {
+            if (!$.isAdmin(requestOwner)) {
                 currentPlaylist.addRequester(requestOwner);
             }
 
@@ -1268,8 +1288,6 @@
         }
     }
 
-
-
     /**
      * @event yTPlayerRandomize
      */
@@ -1320,25 +1338,6 @@
         } else {
             refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
             retval = currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo());
-        }
-
-        if (stealRefund && retval != -2 && refundUser.length > 1) {
-            if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
-                if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
-                    var isMod = $.isMod(refundUser);
-                    if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(refundUser)) || !isMod))) {
-                        var refund = $.inidb.get('pricecom', 'songrequest');
-                        if (refund == 0) {
-                            refund = $.inidb.get('pricecom', 'addsong');
-                        }
-                        refund = parseInt(refund / 2);
-                        if (refund > 0) {
-                            $.inidb.incr('points', refundUser, parseInt(refund));
-                            $.say($.lang.get('ytplayer.command.stealsong.refund', $.username.resolve(refundUser), refund, (refund == 1 ? $.pointNameSingle : $.pointNameMultiple)));
-                        }
-                    }
-                }
-            }
         }
     });
 
@@ -1408,6 +1407,13 @@
     $.bind('yTPlayerRequestSongHistory', function (event) {
         connectedPlayerClient.pushSongRequestHistoryList();
     });
+
+    /**
+     * @event YTPlayerRequestQueueStatusEvent
+     */
+//    $.bind('yTPlayerRequestQueueStatus', function (event) {
+//        connectedPlayerClient.pushQueueStatus();
+//    });
 
     /**
      * @event yTPlayerState
@@ -1485,6 +1491,7 @@
     $.bind('command', function (event) {
         var command = event.getCommand(),
                 sender = event.getSender().toLowerCase(),
+                arguments = event.getArguments(),
                 args = event.getArgs(),
                 pActions,
                 action,
@@ -1536,41 +1543,6 @@
                 if (connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.resetdefaultlist.active'));
                     return;
-                }
-                $.inidb.RemoveFile('ytPlaylist_default');
-                createDefaultPl();
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.resetdefaultlist.success'));
-                return;
-            }
-
-            /**
-             * @commandpath ytp togglecconly - Toggle option to only use Creative Commons licensed songs.
-             */
-            if (action.equalsIgnoreCase('togglecconly')) {
-                if ($.getIniDbBoolean('ytSettings', 'playCCOnly')) {
-                    playCCOnly = false;
-                    $.setIniDbBoolean('ytSettings', 'playCCOnly', false);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.togglecconly.disable'));
-                } else {
-                    playCCOnly = true;
-                    $.setIniDbBoolean('ytSettings', 'playCCOnly', true);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.togglecconly.enable'));
-                }
-                return;
-            }
-
-            /**
-             * @commandpath ytp togglestealrefund - Toggle refunding users half their points if their song is stolen, use to reward users with songs that are liked
-             */
-            if (action.equalsIgnoreCase('togglestealrefund')) {
-                if ($.getIniDbBoolean('ytSettings', 'stealRefund')) {
-                    stealRefund = false;
-                    $.setIniDbBoolean('ytSettings', 'stealRefund', false);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.togglestealrefund.disable'));
-                } else {
-                    stealRefund = true;
-                    $.setIniDbBoolean('ytSettings', 'stealRefund', true);
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.togglestealrefund.enable'));
                 }
                 return;
             }
@@ -2131,7 +2103,6 @@
             }
         }
 
-
         /****** Song Requests Added Here ******/
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
@@ -2148,7 +2119,21 @@
                 return;
             }
 
-            var request = currentPlaylist.requestSong(event.getArguments(), sender);
+            var user;
+            if (args[0].equalsIgnoreCase('user')) {
+                if (!(args[1] && args[2])) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.edit.mod.usage'));
+                    return;
+                }
+
+                user = args[1].toLowerCase();
+                song = args[2];
+            } else {
+                song = args[0];
+                user = sender;
+            }
+
+            var request = currentPlaylist.requestSong(song, user);
             if (request != null) {
                 var i;
                 var queueLengthInSeconds = 0;
@@ -2165,9 +2150,9 @@
                     playTime = secondsToTimestamp(queueLengthInSeconds);
 
 
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), playTime));
+                    $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), playTime));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success.shuffle', request.getVideoTitle()));
+                    $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.songrequest.success.shuffle', request.getVideoTitle()));
                 }
 
                 connectedPlayerClient.pushSongList();
@@ -2325,18 +2310,6 @@
         }
 
         /**
-         * @commandpath songcount
-         */
-        if (command.equalsIgnoreCase('requests')) {
-            var count = $.inidb.get("songcounts", sender + "-request-counts");
-
-            if (count === null) {
-                count = 0;
-            }
-            $.say($.lang.get('ytplayer.command.requestcount', sender, count));
-        }
-
-        /**
          * @commandpath queuelimit [off|max concurrent requests] - Set the maximum number of requests a user can
          * have in the queue at one time
          */
@@ -2401,25 +2374,6 @@
             $.say($.lang.get('ytplayer.command.requestlimit.length', minutes + ":" + seconds));
         }
 
-        if (command.equalsIgnoreCase('shuffle')) {
-            if (shuffleQueue) {
-                var requests = currentPlaylist.getRequestList();
-                var numberOfRequests = currentPlaylist.getRequestsCount();
-
-                if (numberOfRequests == 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
-                }
-
-                var request = getRandomRequest();
-
-                currentPlaylist.removeUserSong(request.getOwner());
-                currentPlaylist.addToQueue(request, 0);
-                connectedPlayerClient.pushSongList();
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle.disabled'));
-            }
-        }
-
         if (command.equalsIgnoreCase('position')) {
             if (shuffleQueue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.shuffle'));
@@ -2428,33 +2382,25 @@
 
             var requests = currentPlaylist.getRequestList();
 
-            var message;
             if (requests.length != 0) {
-                var i;
-                var request;
-                var timeToPlayInSeconds = 0;
-                for (i = 0; i < requests.length; i++) {
-                    request = requests[i];
-
-                    if (request.getOwner() == sender) {
-                        var playTime;
-                        if (i == 0) {
-                            playTime = "It's up next!";
-                        } else {
-                            playTime = "There is " + secondsToTimestamp(timeToPlayInSeconds) + " worth of music before your song";
-                        }
-
-                        $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.success', (i + 1), playTime));
-                        return;
+                var request = getUserRequest(sender);
+                if (request == null) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.none'));
+                } else {
+                    var i = request[1];
+                    if (i == 0) {
+                        playTime = "It's up next!";
                     } else {
-                        timeToPlayInSeconds = timeToPlayInSeconds + parseInt(request.getVideoLength(), 10);
+                        playTime = "There is " + secondsToTimestamp(request[2]) + " worth of music before your song";
                     }
-                }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.none'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.position.success', (i + 1), playTime));
+                }
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
             }
+
+            return;
         }
 
         if (command.equalsIgnoreCase('queuesize')) {
@@ -2484,9 +2430,10 @@
                     return;
                 }
 
-                user = args[1];
+                user = args[1].toLowerCase();
                 newSong = args[2];
             } else {
+                newSong = args[0];
                 user = sender;
             }
 
@@ -2496,18 +2443,8 @@
                 return;
             }
 
-            var i, requestFound = false;
-            var existingRequest;
-            for (i = 0; i < requestsList.length; i++) {
-                existingRequest = requestsList[i];
-
-                if (existingRequest.getOwner() == user) {
-                    requestFound = true;
-                    break;
-                }
-            }
-
-            if (!requestFound) {
+            var existingRequest = getUserRequest(user);
+            if (existingRequest == null) {
                 $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.position.none'));
                 return;
             }
@@ -2522,170 +2459,11 @@
                 return;
             }
 
-            // Make sure new request follows rules
-            if (currentPlaylist.videoExistsInRequests(newRequest)) {
-                $.say($.whisperPrefix(user) + $.lang.get('ytplayer.requestsong.error.exists'));
-                return;
-            }
-
-            if (currentPlaylist.videoLengthExceedsMax(newRequest)) {
-                var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
-                var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
-
-                if (seconds === 0) {
-                    seconds = "00";
-                }
-                requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', newRequest.getVideoLengthMMSS(), minutes + ":" + seconds);
-
-                $.say($.whisperPrefix(user) + requestFailReason);
-                return;
-            }
-
-            var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
-            for (var i in keys) {
-                if (newRequest.getVideoTitle().toLowerCase().includes(keys[i])) {
-                    requestFailReason = $.lang.get('ytplayer.blacklist.404');
-
-                    $.say($.whisperPrefix(user) + requestFailReason);
-                    return;
-                }
-            }
-
-            currentPlaylist.removeUserSong(user);
-            currentPlaylist.addToQueue(newRequest, i);
-            connectedPlayerClient.pushSongList();
-            $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.edit.success', newRequest.getVideoTitle()));
-        }
-
-        if (command.equalsIgnoreCase('promote')) {
-            if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.bump.usage'));
-                return;
-            }
-
-            var bumper = args[0];
-            var requestsList = currentPlaylist.getRequestList();
-
-            if (bumper.startsWith("@")) {
-                bumper = bumper.substring(1, bumper.length());
-            }
-
-            if (requestsList.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
-                return;
-            }
-
-            var position, override = false;
-            if (!args[1]) {
-                position = 0;
-            } else {
-                if (isNaN(parseInt(args[1])) && args[1].equalsIgnoreCase("allow")) {
-                    override = true;
-                    position = 0;
-                } else {
-                    position = args[1] - 1;
-                }
-            }
-
-            if (position > currentPlaylist.getRequestsCount()) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.error.length', currentPlaylist.getRequestsCount()));
-                return;
-            }
-
-            if (args[2]) {
-                if (args[2].equalsIgnoreCase("allow")) {
-                    override = true;
-                }
-            }
-
-            var i, requestFound = false;
-            var existingRequest;
-            for (i = 0; i < requestsList.length; i++) {
-                existingRequest = requestsList[i];
-
-                if (existingRequest.getOwner().equalsIgnoreCase(bumper)) {
-                    requestFound = true;
-                    break;
-                }
-            }
-
-            // Look for bumped user in list
-            var bumpedUser, bumpedUserFound = false;
-            for (i = 0; i < bumpedUsers.length; i++) {
-                bumpedUser = bumpedUsers[i];
-                if (bumpedUser.getUser().equalsIgnoreCase(bumper)) {
-                    bumpedUserFound = true;
-                    break;
-                }
-            }
-
-            if (bumpedUserFound) {
-                if (bumpedUser.getBumpCount() >= bumpLimit && !override) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.bump.limit.reached', bumper));
-                    return;
-                }
-            } else {
-                bumpedUser = new BumpedUser(bumper);
-            }
-
-            if (requestFound) {
-                currentPlaylist.addToQueue(existingRequest, position);
+            if (isRequestAllowed(user, newRequest)) {
+                currentPlaylist.removeUserSong(user);
+                currentPlaylist.addToQueue(newRequest, existingRequest[1]);
                 connectedPlayerClient.pushSongList();
-                $.say($.whisperPrefix(bumper) + $.lang.get('ytplayer.command.bump.success'));
-
-                bumpedUser.incrementBumpCount();
-                bumpedUsers.push(bumpedUser);
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.none', bumper));
-            }
-        }
-
-        if (command.equalsIgnoreCase('move')) {
-            if (!args[1]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.usage'));
-                return;
-            }
-
-            var requester = args[0];
-            var newPosition = args[1];
-
-            if (requester.startsWith("@")) {
-                requester = requester.substring(1, requester.length);
-            }
-
-            if (newPosition > currentPlaylist.getRequestsCount()) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.error.length', currentPlaylist.getRequestsCount()));
-                return;
-            }
-
-            var newQueuePosition = newPosition - 1;
-
-            var requestsList = currentPlaylist.getRequestList();
-
-            if (requestsList.length == 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
-                return;
-            }
-
-            var i, requestFound = false;
-            var existingRequest;
-            for (i = 0; i < requestsList.length; i++) {
-                existingRequest = requestsList[i];
-
-                if (existingRequest.getOwner().equalsIgnoreCase(requester)) {
-                    requestFound = true;
-                    break;
-                }
-            }
-
-            if (requestFound) {
-                currentPlaylist.addToQueue(existingRequest, newQueuePosition);
-                connectedPlayerClient.pushSongList();
-
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.success', requester, newPosition));
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.move.none', requester));
-                return;
+                $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.edit.success', newRequest.getVideoTitle()));
             }
         }
 
@@ -2694,7 +2472,7 @@
             $.say($.lang.get('ytplayer.startstream.clearhistory'));
 
             bumpedUsers = [];
-            $.say($.lang.get('ytplayer.startstream.clearbumps'));
+            $.clearBumpedUsers();
 
             // Open the queue
             songRequestsEnabled = true;
@@ -2706,6 +2484,15 @@
             $.setIniDbBoolean('ytSettings', 'shuffleQueue', shuffleQueue);
             $.say($.lang.get('ytplayer.startstream.shuffle.off'));
 
+            var currentDate = $.getCurLocalTimeString('yyyy.MM.dd');
+            var playlistName = "Song of the Night Contenders " + currentDate;
+
+            var requestedPlaylist = new BotPlayList(playlistName, true);
+            currentPlaylist.loadNewPlaylist(playlistName);
+            loadPanelPlaylist();
+
+            $.say("Loading new Song of the Night contenders playlist");
+
             if (connectedPlayerClient) {
                 connectedPlayerClient.pushPlayList();
             }
@@ -2716,31 +2503,73 @@
             currentPlaylist.clearSongHistory();
         }
 
-        if (command.equalsIgnoreCase('bumplimit')) {
-            if (!args[0]) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.bumplimit.usage'));
-                return;
-            }
+        /**
+         * Save command - saves current song to Discord
+         * !save
+         */
+        if (command.equalsIgnoreCase('save')) {
+            $.discord.say(
+                    "#new-music-discovery",
+                    $.lang.get(
+                            'ytplayer.discord.save',
+                            currentPlaylist.getCurrentVideo().getVideoTitle(),
+                            currentPlaylist.getCurrentVideo().getOwner(),
+                            currentPlaylist.getCurrentVideo().getVideoLink()
+                            )
+                    )
 
-            if (isNaN(parseInt(args[0])) && !args[0].equalsIgnoreCase('off')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.bumplimit.usage'));
-                return;
-            }
-
-            var message;
-            if (args[0].equalsIgnoreCase('off')) {
-                bumpLimit = 999;
-                message = $.lang.get('ytplayer.command.bumplimit.success.off');
-            } else {
-                bumpLimit = parseInt(args[0]);
-                message = $.lang.get('ytplayer.command.bumplimit.success', bumpLimit);
-            }
-
-            $.inidb.set('ytSettings', 'bumplimit', bumpLimit);
-            $.say(message);
-            return;
+            $.say("Saving the request to Discord");
         }
     });
+
+    function isRequestAllowed(user, request) {
+        // Make sure new request follows rules
+        if (currentPlaylist.videoExistsInRequests(request)) {
+            $.say($.whisperPrefix(user) + $.lang.get('ytplayer.requestsong.error.exists'));
+            return false;
+        }
+
+        if (currentPlaylist.videoLengthExceedsMax(request)) {
+            var minutes = Math.floor(songRequestsMaxSecondsforVideo / 60);
+            var seconds = songRequestsMaxSecondsforVideo - minutes * 60;
+
+            if (seconds === 0) {
+                seconds = "00";
+            }
+            requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', request.getVideoLengthMMSS(), minutes + ":" + seconds);
+
+            $.say($.whisperPrefix(user) + requestFailReason);
+            return false;
+        }
+
+        var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
+        for (var i in keys) {
+            if (request.getVideoTitle().toLowerCase().includes(keys[i])) {
+                requestFailReason = $.lang.get('ytplayer.blacklist.404');
+
+                $.say($.whisperPrefix(user) + requestFailReason);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function getUserRequest(user) {
+        var timeToPlayInSeconds = 0;
+        var request;
+        var requests = currentPlaylist.getRequestList();
+        for (i = 0; i < requests.length; i++) {
+            request = requests[i];
+            if (request.getOwner() == user) {
+                return [request, i, timeToPlayInSeconds];
+            } else {
+                timeToPlayInSeconds = timeToPlayInSeconds + parseInt(request.getVideoLength(), 10);
+            }
+        }
+
+        return null;
+    }
 
     function secondsToTimestamp(timeInSeconds) {
         // multiply by 1000 because Date() requires miliseconds
@@ -2777,30 +2606,39 @@
         return time;
     }
 
-    function getRandomRequest() {
-        var requests = currentPlaylist.getRequestList();
-        var numberOfRequests = currentPlaylist.getRequestsCount();
-
-        if (numberOfRequests == 0) {
-            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.queue.empty'));
-        }
-
-        var random = Math.floor(Math.random() * (+numberOfRequests - +0)) + +0;
-        var request = currentPlaylist.getRequestAtIndex(random);
-
-        var recentUsers = currentPlaylist.getPreviousRequesters();
-        var i;
-
-        var history = recentUsers.toArray();
-        for (i = 0; i < history.length; i++) {
-            if (request.getOwner().equalsIgnoreCase(history[i])) {
-                return getRandomRequest();
-            }
-        }
-
-        $.say($.lang.get('ytplayer.command.shuffle', (random + 1), request.getVideoTitle(), request.getOwner()));
-        return request;
+    /**
+     * @function getSongQueue
+     * @export $
+     * @param {username}
+     */
+    function getSongQueue() {
+        return currentPlaylist.getRequestList();
     }
+
+    function getCurrentPlaylist() {
+        return currentPlaylist;
+    }
+
+    function getConnectedPlayerClient() {
+        return connectedPlayerClient;
+    }
+
+    function toggleQueueShuffle() {
+        shuffleQueue = !shuffleQueue;
+    }
+
+    function isQueueShuffleEnabled() {
+        return shuffleQueue;
+    }
+
+    $.getSongQueue = getSongQueue;
+    $.getUserRequest = getUserRequest;
+    $.currentPlaylist = getCurrentPlaylist;
+    $.getConnectedPlayerClient = getConnectedPlayerClient;
+    $.toggleQueueShuffle = toggleQueueShuffle;
+    $.isQueueShuffleEnabled = isQueueShuffleEnabled;
+
+    /* --- */
 
     $.bind('initReady', function () {
         $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 2);
@@ -2813,6 +2651,8 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
+        $.registerChatSubcommand('songrequest', 'user', 2);
+
         $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
@@ -2825,22 +2665,19 @@
 
         // Custom Commands
         $.registerChatCommand('./systems/youtubePlayer.js', 'songcount');
-        $.registerChatCommand('./systems/youtubePlayer.js', 'requests');
         $.registerChatCommand('./systems/youtubePlayer.js', 'queuelimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'requestlimit', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'length');
-        $.registerChatCommand('./systems/youtubePlayer.js', "shuffle", 2);
+
         $.registerChatCommand('./systems/youtubePlayer.js', "position");
         $.registerChatCommand('./systems/youtubePlayer.js', "queuesize");
         $.registerChatCommand('./systems/youtubePlayer.js', "edit");
         $.registerChatSubcommand('edit', 'user', 2);
 
-        $.registerChatCommand('./systems/youtubePlayer.js', "promote", 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', "move", 2);
-        $.registerChatCommand('./systems/youtubePlayer.js', "bumplimit", 2);
-
         $.registerChatCommand('./systems/youtubePlayer.js', "clearhistory", 2);
         $.registerChatCommand('./systems/youtubePlayer.js', "startstream", 0);
+
+        $.registerChatCommand('./systems/youtubePlayer.js', "save", 2);
 
         loadPanelPlaylist();
         loadDefaultPl();
@@ -2852,4 +2689,3 @@
         $.inidb.RemoveFile("songcounts");
     });
 })();
-
