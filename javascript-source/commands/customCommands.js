@@ -946,9 +946,6 @@
             var fileName;
             if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
                 fileName = './addons/' + match[1].replace(/\.\./g, '');
-                if (!$.fileExists(fileName)) {
-                    return {result: $.lang.get('customcommand.file.404', fileName)};
-                }
                 $.writeToFile(match[3], fileName, match[2] === 'true');
                 return {result: '', cache: false};
             }
