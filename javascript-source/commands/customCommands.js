@@ -680,7 +680,7 @@
             if ((match = args.match(/^ (.+)$/))) {
                 fileName = './addons/' + match[1].replace(/\.\./g, '');
                 if (!$.fileExists(fileName)) {
-                    return {result: $.lang.get('customcommand.file.404', fileName)};
+                    return {result: $.lang.get('customcommands.file.404', fileName)};
                 }
                 return {result: String($.readFile(fileName)[0] || '')};
             }
@@ -692,7 +692,7 @@
             if ((match = args.match(/^ (.+)$/))) {
                 fileName = './addons/' + match[1].replace(/\.\./g, '');
                 if (!$.fileExists(fileName)) {
-                    return {result: $.lang.get('customcommand.file.404', fileName)};
+                    return {result: $.lang.get('customcommands.file.404', fileName)};
                 }
                 temp = $.readFile(fileName);
                 return {result: String($.randElement(temp) || ''), cache: false};
