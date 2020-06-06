@@ -269,13 +269,13 @@
                 }
 
                 flag = false;
-                match[1].replace(/$([1-9])/g, function (m) {
+                match[1] = match[1].replace(/\$([1-9])/g, function (m) {
                     i = parseInt(m[1]);
-                    if (!args[i - 1]) {
+                    if (!event.getArgs()[i - 1]) {
                         flag = true;
                         return m[0];
                     }
-                    return args[i - 1];
+                    return event.getArgs()[i - 1];
                 });
                 if (flag) {
                     return {result: $.lang.get('customcommands.customapi.404', cmd)};
@@ -309,13 +309,13 @@
                 }
 
                 flag = false;
-                match[1].replace(/$([1-9])/g, function (m) {
+                match[1] = match[1].replace(/\$([1-9])/g, function (m) {
                     i = parseInt(m[1]);
-                    if (!args[i - 1]) {
+                    if (!event.getArgs()[i - 1]) {
                         flag = true;
                         return m[0];
                     }
-                    return args[i - 1];
+                    return event.getArgs()[i - 1];
                 });
                 if (flag) {
                     return {result: $.lang.get('customcommands.customapi.404', cmd)};
