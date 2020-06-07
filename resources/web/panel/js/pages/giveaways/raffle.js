@@ -1,4 +1,4 @@
-/*
+3/*
  * Copyright (C) 2016-2019 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ $(run = function () {
             }));
         } else {
             $('#raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#raffle-chat').addClass('box-body');
         }
 
         // Load the raffle list.

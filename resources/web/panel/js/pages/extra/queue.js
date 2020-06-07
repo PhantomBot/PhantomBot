@@ -38,6 +38,7 @@ $(run = function () {
                 }));
             } else {
                 $('#queue-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+                $('#queue-chat').addClass('box-body');
             }
         }
 

@@ -177,6 +177,7 @@ $(function() {
                                 }));
                             } else if (e.hasChat) {
                                 $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+                                $('#twitch-chat-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-chat-box').addClass('off');
                             }
@@ -192,6 +193,7 @@ $(function() {
                                 }));
                             } else if (e.hasPlayer) {
                                 $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+                                $('#twitch-player-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-player-box').addClass('off');
                             }
@@ -259,7 +261,7 @@ $(function() {
             const h3 = $(this).find('h3');
 
             if (h3.attr('id') != 'dashboard-uptime') {
-            	helpers.handlePanelSetInfo(h3, h3.attr('id'), h3.data('parsed'));
+                helpers.handlePanelSetInfo(h3, h3.attr('id'), h3.data('parsed'));
             }
         });
     });
@@ -357,6 +359,7 @@ $(function() {
                 }
             } else if (checked) {
                 $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+                $('#twitch-player-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-chat-iframe').html().length > 0) {
                     $('#twitch-player-box').prop('class', 'col-md-6').removeClass('off');
@@ -395,6 +398,7 @@ $(function() {
                 }
             } else if (checked) {
                 $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+                $('#twitch-chat-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-player-iframe').html().length > 0) {
                     $('#twitch-chat-box').prop('class', 'col-md-6').removeClass('off');
