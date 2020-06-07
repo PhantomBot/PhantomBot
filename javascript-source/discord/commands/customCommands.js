@@ -450,7 +450,7 @@
                 i;
 
             for (i in keys) {
-                key.push('#' + keys[i]);
+                key.push(keys[i].replace('#', ''));
             }
 
             $.inidb.set('discordChannelcom', action, subAction);
