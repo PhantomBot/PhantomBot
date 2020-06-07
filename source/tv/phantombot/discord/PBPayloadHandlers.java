@@ -43,6 +43,7 @@ import discord4j.gateway.retry.ReconnectException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -126,15 +127,17 @@ public abstract class PBPayloadHandlers {
             IdentifyProperties props = ImmutableIdentifyProperties.of(System.getProperty("os.name"), "Discord4J",
                     "Discord4J");
             IdentifyOptions options = client.identifyOptions();
+            int[] shard = new int[]{options.getShardIndex(), options.getShardCount()};
             Identify identify = Identify.builder()
                     .token(client.token())
-                    .intents(options.getIntents().map(set -> Possible.of(set.getRawValue())).orElse(Possible.absent()))
+                    .intents(options.getIntents())
                     .properties(props)
                     .compress(false)
-                    .largeThreshold(options.getLargeThreshold())
-                    .shard(options.getShardInfo().asArray())
-                    .presence(options.getInitialStatus().map(Possible::of).orElse(Possible.absent()))
-                    .guildSubscriptions(options.getGuildSubscriptions().map(Possible::of).orElse(Possible.absent()))
+                    .largeThreshold(250)
+                    .shard(shard)
+                    .presence(Optional.ofNullable(options.getInitialStatus()).map(Possible::of).orElse(Possible.absent()))
+                    .guildSubscriptions(options.getIntents().isAbsent() ?
+                            Possible.of(options.isGuildSubscriptions()) : Possible.absent())
                     .build();
             log.debug(format(context.getContext(), "Identifying to Gateway"), client.sequence().get());
             client.sender().next(GatewayPayload.identify(identify));

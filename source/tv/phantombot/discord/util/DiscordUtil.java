@@ -16,7 +16,6 @@
  */
 package tv.phantombot.discord.util;
 
-import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -32,8 +31,9 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
-import discord4j.rest.util.Color;
 import discord4j.rest.util.Permission;
+import discord4j.rest.util.Snowflake;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -969,33 +969,33 @@ public class DiscordUtil {
         Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
 
         if (match.find()) {
-            return Color.of(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
         } else {
             switch (color) {
                 case "black":
-                    return Color.BLACK;
+                    return Color.black;
                 case "blue":
-                    return Color.BLUE;
+                    return Color.blue;
                 case "cyan":
-                    return Color.CYAN;
+                    return Color.cyan;
                 case "gray":
-                    return Color.GRAY;
+                    return Color.gray;
                 case "green":
-                    return Color.GREEN;
+                    return Color.green;
                 case "magenta":
-                    return Color.MAGENTA;
+                    return Color.magenta;
                 case "orange":
-                    return Color.ORANGE;
+                    return Color.orange;
                 case "pink":
-                    return Color.PINK;
+                    return Color.pink;
                 case "red":
-                    return Color.RED;
+                    return Color.red;
                 case "white":
-                    return Color.WHITE;
+                    return Color.white;
                 case "yellow":
-                    return Color.YELLOW;
+                    return Color.yellow;
                 default:
-                    return Color.GRAY;
+                    return Color.gray;
             }
         }
     }
