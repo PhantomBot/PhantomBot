@@ -17,7 +17,7 @@
 package tv.phantombot.discord.util;
 
 import discord4j.core.spec.EmbedCreateSpec;
-import java.awt.Color;
+import discord4j.rest.util.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +70,11 @@ public class EmbedBuilder {
     }
 
     public EmbedBuilder withColor(int r, int g, int b) {
-        return this.withColor(new Color(r, g, b));
+        return this.withColor(Color.of(r, g, b));
     }
 
     public EmbedBuilder withColor(int color) {
-        return this.withColor(new Color(color));
+        return this.withColor(Color.of(color));
     }
 
     public EmbedBuilder withTimestamp(Instant instant) {
