@@ -159,8 +159,6 @@
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
                     message = $.replace(message, '(' + i + ')', (event.getArgs()[i - 1] !== undefined ? event.getArgs()[i - 1] : ''));
-                } else {
-                    break;
                 }
             }
         }
