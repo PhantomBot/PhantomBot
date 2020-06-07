@@ -310,6 +310,7 @@ $(run = function () {
             }));
         } else {
             $('#twitch-chat-betting').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#twitch-chat-betting').addClass('box-body');
         }
     });
 });

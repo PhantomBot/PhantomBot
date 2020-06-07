@@ -69,6 +69,7 @@ $(run = function () {
             }));
         } else {
             $('#ticket-raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#ticket-raffle-chat').addClass('box-body');
         }
 
         // Load the raffle list.

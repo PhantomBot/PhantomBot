@@ -44,6 +44,7 @@ $(run = function () {
             }));
         } else {
             $('#twitch-chat-auction').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#twitch-chat-auction').addClass('box-body');
         }
 
         // Add temp function.
