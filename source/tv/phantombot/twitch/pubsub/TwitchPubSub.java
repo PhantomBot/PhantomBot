@@ -22,32 +22,27 @@
 
 package tv.phantombot.twitch.pubsub;
 import com.gmt2001.Logger;
-
+import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONObject;
 import org.json.JSONArray;
-
-import java.util.Map;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.moderation.*;
-
-import java.net.URI;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import org.json.JSONException;
+import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 
 public class TwitchPubSub {
     private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
@@ -241,7 +236,16 @@ public class TwitchPubSub {
             JSONObject messageObj;
             JSONObject data;
 
-            if (message.has("data")) {
+            if (message.getString("type").equals("reward-redeemed")) {
+                dataObj = message.getJSONObject("data");
+                data = dataObj.getJSONObject("redemption");
+                this.log("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
+                EventBus.instance().postAsync(new PubSubChannelPointsEvent(
+                        data.getString("id"), data.getJSONObject("reward").getString("id"), data.getJSONObject("user").getString("id"),
+                        data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
+                        data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").getString("prompt"), data.getString("user_input"), data.getString("status")
+                ));
+            } else if (message.has("data")) {
                 dataObj = message.getJSONObject("data");
                 if (dataObj.has("message")) {
                     messageObj = new JSONObject(dataObj.getString("message"));
@@ -324,7 +328,7 @@ public class TwitchPubSub {
                 com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
                 
                 
-                String[] type = new String[] {"chat_moderator_actions." + botId + "." + channelId};
+                String[] type = new String[] {"chat_moderator_actions." + channelId};
                 JSONObject jsonObject = new JSONObject();
                 JSONObject topics = new JSONObject();
                 
@@ -332,7 +336,18 @@ public class TwitchPubSub {
                 topics.put("auth_token", oAuth.replace("oauth:", ""));
                 jsonObject.put("type", "LISTEN");
                 jsonObject.put("data", topics);
-                
+
+                send(jsonObject.toString());
+
+                type = new String[] {"channel-points-channel-v1." + channelId};
+                jsonObject = new JSONObject();
+                topics = new JSONObject();
+
+                topics.put("topics", type);
+                topics.put("auth_token", oAuth.replace("oauth:", ""));
+                jsonObject.put("type", "LISTEN");
+                jsonObject.put("data", topics);
+
                 send(jsonObject.toString());
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);

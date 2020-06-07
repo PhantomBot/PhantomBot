@@ -1097,6 +1097,13 @@
         $api.on($script, 'PubSubModerationUnBan', function(event) {
             callHook('PubSubModerationUnBan', event, false);
         });
+
+        /*
+         * @event PubSubChannelPoints
+         */
+        $api.on($script, 'PubSubChannelPoints', function(event) {
+            callHook('PubSubChannelPoints', event, false);
+        });
     }
 
     // Export functions to API
