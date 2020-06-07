@@ -21,10 +21,14 @@
         reCustomAPIJson = new RegExp(/\(customapijson ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)\)/), // URL[1], JSONmatch[2..n]
         reCustomAPITextTag = new RegExp(/{([\w\W]+)}/),
         reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-        tagCheck = new RegExp(/\(help=|\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\(1\)|\(2\)|\(3\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\(1=|\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(repeat [1-9]\d*,[\w\s]+\)|\(customapi |\(customapijson /),
+        tagCheck = new RegExp(/\(help=|\(views\)|\(subscribers\)|\(age\)|\(sender\)|\(@sender\)|\(baresender\)|\(random\)|\([1-9]\)|\(count\)|\(pointname\)|\(points\)|\(currenttime|\(price\)|\(#|\(uptime\)|\(follows\)|\(game\)|\(status\)|\(touser\)|\(echo\)|\(alert [,.\w]+\)|\(readfile|\([1-9]=|\([1-9]\||\(countdown=|\(countup=|\(downtime\)|\(pay\)|\(onlineonly\)|\(offlineonly\)|\(code=|\(followage\)|\(followdate\)|\(hours\)|\(gameinfo\)|\(titleinfo\)|\(gameonly=|\(useronly=|\(playtime\)|\(gamesplayed\)|\(pointtouser\)|\(lasttip\)|\(writefile .+\)|\(readfilerand|\(team_|\(commandcostlist\)|\(playsound |\(repeat [1-9]\d*,[\w\s]+\)|\(customapi |\(customapijson /),
         customCommands = [],
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+
+    RegExp.quote = function (str) {
+        return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+    };
 
     /*
      * @function getCustomAPIValue
@@ -151,12 +155,10 @@
             message = $.replace(message, message.match(/\(currenttime ([\w\W]+), (.*)\)/)[0], $.getCurrentLocalTimeString(format, timezone));
         }
 
-        if (message.match(/\(1\)/g)) {
+        if (message.match(/\([1-9]\)/g)) {
             for (var i = 1; i < 10; i++) {
                 if (message.includes('(' + i + ')')) {
                     message = $.replace(message, '(' + i + ')', (event.getArgs()[i - 1] !== undefined ? event.getArgs()[i - 1] : ''));
-                } else {
-                    break;
                 }
             }
         }
@@ -174,12 +176,38 @@
             return null;
         }
 
-        if (message.match(/\(1=[^)]+\)/g)) {
-            if (event.getArgs()[0]) {
-                var t = message.match(/\(1=[^)]+\)/)[0];
-                message = $.replace(message, t, event.getArgs()[0]);
+        if (message.match(/\([1-9]=[^)]+\)/g)) {
+            var rge, t;
+            for (var i = 1; i < 10; i++) {
+                rge = new RegExp(RegExp.quote("\(" + i + "=[^)]+\)"));
+                t = message.match(rge);
+                if (t != null) {
+                    if (event.getArgs()[i - 1] !== undefined) {
+                       message = $.replace(message, t[0], event.getArgs()[i - 1]);
+                    } else {
+                        message = $.replace(message, '(' + i + '=', '(');
+                    }
+                } else {
+                    break;
+                }
             }
-            message = $.replace(message, '(1=', '(');
+        }
+
+        if (message.match(/\([1-9]\|[^)]+\)/g)) {
+            var rge, t;
+            for (var i = 1; i < 10; i++) {
+                rge = new RegExp(RegExp.quote("\(" + i + "\|[^)]+\)"));
+                t = message.match(rge);
+                if (t != null) {
+                    if (event.getArgs()[i - 1] !== undefined) {
+                       message = $.replace(message, t[0], event.getArgs()[i - 1]);
+                    } else {
+                        message = $.replace(message, t[0], t[0].substring(t[0].indexOf('|') + 1, $.strlen(t[0]) - 1));
+                    }
+                } else {
+                    break;
+                }
+            }
         }
 
         if (message.match(/\(countdown=[^)]+\)/g)) {

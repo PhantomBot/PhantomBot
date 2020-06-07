@@ -168,26 +168,30 @@ $(function() {
                             e.hasPlayer = (e.hasPlayer === 'true' || e.hasPlayer === null);
 
                             // Handle adding the chat.
-                            if (e.hasChat) {
+                            if (e.hasChat && location.protocol.toLowerCase().startsWith('https')) {
                                 $('#twitch-chat-iframe').html($('<iframe/>', {
                                     'frameborder': '0',
                                     'scrolling': 'no',
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
+                                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '') + '&parent=' + location.hostname
                                 }));
+                            } else if (e.hasChat) {
+                                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
                             } else {
                                 $('#twitch-chat-box').addClass('off');
                             }
 
                             // Handle adding the player.
-                            if (e.hasPlayer) {
+                            if (e.hasPlayer && location.protocol.toLowerCase().startsWith('https')) {
                                 // Add the player.
                                 $('#twitch-player-iframe').html($('<iframe/>', {
                                     'frameborder': '0',
                                     'scrolling': 'no',
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false'
+                                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                                 }));
+                            } else if (e.hasPlayer) {
+                                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
                             } else {
                                 $('#twitch-player-box').addClass('off');
                             }
@@ -337,13 +341,22 @@ $(function() {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasPlayer', checked, function() {
-            if (checked) {
+            if (checked && location.protocol.toLowerCase().startsWith('https')) {
                 $('#twitch-player-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false'
+                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                 }));
+                // Handle the box size.
+                if ($('#twitch-chat-iframe').html().length > 0) {
+                    $('#twitch-player-box').prop('class', 'col-md-6').removeClass('off');
+                    $('#twitch-chat-box').prop('class', 'col-md-6');
+                } else {
+                    $('#twitch-player-box').prop('class', 'col-md-12');
+                }
+            } else if (checked) {
+                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
                 // Handle the box size.
                 if ($('#twitch-chat-iframe').html().length > 0) {
                     $('#twitch-player-box').prop('class', 'col-md-6').removeClass('off');
@@ -365,14 +378,23 @@ $(function() {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasChat', checked, function() {
-            if (checked) {
+            if (checked && location.protocol.toLowerCase().startsWith('https')) {
                 $('#twitch-chat-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
+                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '') + '&parent=' + location.hostname
                 }));
 
+                // Handle the box size.
+                if ($('#twitch-player-iframe').html().length > 0) {
+                    $('#twitch-chat-box').prop('class', 'col-md-6').removeClass('off');
+                    $('#twitch-player-box').prop('class', 'col-md-6');
+                } else {
+                    $('#twitch-chat-box').prop('class', 'col-md-12');
+                }
+            } else if (checked) {
+                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
                 // Handle the box size.
                 if ($('#twitch-player-iframe').html().length > 0) {
                     $('#twitch-chat-box').prop('class', 'col-md-6').removeClass('off');

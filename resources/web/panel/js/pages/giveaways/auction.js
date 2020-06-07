@@ -16,11 +16,11 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     socket.getDBValues('auction_module_status_toggle', {
         tables: ['modules', 'auctionSettings'],
         keys: ['./systems/auctionSystem.js', 'isActive']
-    }, true, function(e) {
+    }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
             // Remove the chat.
             $('#twitch-chat-auction').find('iframe').remove();
@@ -34,20 +34,24 @@ $(run = function() {
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
-        // Add Twitch chat.
-        $('#twitch-chat-auction').html($('<iframe/>', {
-            'frameborder': '0',
-            'scrolling': 'no',
-            'style': 'min-width: 100%; min-height: 493px;',
-            'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
-        }));
+        if (location.protocol.toLowerCase().startsWith('https')) {
+            // Add Twitch chat.
+            $('#twitch-chat-auction').html($('<iframe/>', {
+                'frameborder': '0',
+                'scrolling': 'no',
+                'style': 'min-width: 100%; min-height: 493px;',
+                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '') + '&parent=' + location.hostname
+            }));
+        } else {
+            $('#twitch-chat-auction').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+        }
 
         // Add temp function.
-        helpers.temp.updateStats = function() {
+        helpers.temp.updateStats = function () {
             socket.getDBValues('auction_module_status_toggle', {
                 tables: ['auctionresults', 'auctionresults'],
                 keys: ['winner', 'amount']
-            }, true, function(e) {
+            }, true, function (e) {
                 if (e['winner'] != null) {
                     $('#auction-top-bidder').html(e['winner']);
                     $('#auction-points').html(e['amount']);
@@ -56,27 +60,27 @@ $(run = function() {
         };
 
         // Set a timer to auto load the raffle list.
-        helpers.setInterval(function() {
+        helpers.setInterval(function () {
             helpers.temp.updateStats();
         }, 3e3);
     });
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Module toggle.
-    $('#auctionSystemModuleToggle').on('change', function() {
+    $('#auctionSystemModuleToggle').on('change', function () {
         socket.sendCommandSync('auction_system_module_toggle_cmd',
-            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/auctionSystem.js', run);
+                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/auctionSystem.js', run);
     });
 
     // Open/Close button.
-    $('#open-or-close-auction').on('click', function() {
+    $('#open-or-close-auction').on('click', function () {
         if ($(this)[0].innerText.trim() === 'Open') {
             const commandLevel = $('#auction-perm').find(':selected').text(),
-                minBet = $('#auction-bet'),
-                incre = $('#auction-inc'),
-                timer = $('#auction-timer');
+                    minBet = $('#auction-bet'),
+                    incre = $('#auction-inc'),
+                    timer = $('#auction-timer');
 
             // Make sure the user entered everything right.
             switch (false) {
@@ -85,8 +89,8 @@ $(function() {
                 case helpers.handleInputNumber(timer, 0):
                     break;
                 default:
-                    socket.sendCommandSync('auction_command_permisison_update', 'permcomsilent bid ' + helpers.getGroupIdByName(commandLevel, true), function() {
-                        socket.sendCommand('auction_open_cmd', 'auction open ' + incre.val() + ' ' + minBet.val() + ' ' + timer.val(), function() {
+                    socket.sendCommandSync('auction_command_permisison_update', 'permcomsilent bid ' + helpers.getGroupIdByName(commandLevel, true), function () {
+                        socket.sendCommand('auction_open_cmd', 'auction open ' + incre.val() + ' ' + minBet.val() + ' ' + timer.val(), function () {
                             // Alert the user.
                             toastr.success('Successfully opened the auction!');
                             // Update the button.
@@ -97,7 +101,7 @@ $(function() {
                     });
             }
         } else {
-            socket.sendCommandSync('close_auction_cmd', 'auction close', function() {
+            socket.sendCommandSync('close_auction_cmd', 'auction close', function () {
                 // Alert the user.
                 toastr.success('Successfully closed the auction!');
                 // Reload to remove the winner.
@@ -111,15 +115,15 @@ $(function() {
     });
 
     // Warn auction.
-    $('#warn-auction').on('click', function() {
-        socket.sendCommand('auction_warn_cmd', 'auction warn', function() {
+    $('#warn-auction').on('click', function () {
+        socket.sendCommand('auction_warn_cmd', 'auction warn', function () {
             toastr.success('Warning users that the auction is about to close.');
         });
     });
 
     // Warn reset.
-    $('#reset-auction').on('click', function() {
-        socket.sendCommand('auction_reset_cmd', 'auction reset', function() {
+    $('#reset-auction').on('click', function () {
+        socket.sendCommand('auction_reset_cmd', 'auction reset', function () {
             toastr.success('The auction has been reset.');
 
             $('#open-or-close-auction').html($('<i/>', {

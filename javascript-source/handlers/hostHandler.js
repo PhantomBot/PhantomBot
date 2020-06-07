@@ -21,19 +21,19 @@
  * Register and announce (un)host events.
  * Optionally supports rewarding points for a host (Only every 6 hours!)
  */
-(function() {
+(function () {
     var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 0),
-        autoHostReward = $.getSetIniDbNumber('settings', 'autoHostReward', 0),
-        hostMinViewerCount = $.getSetIniDbNumber('settings', 'hostMinViewerCount', 0),
-        hostMinCount = $.getSetIniDbNumber('settings', 'hostMinCount', 0),
-        hostMessage = $.getSetIniDbString('settings', 'hostMessage', $.lang.get('hosthandler.host.message')),
-        autoHostMessage = $.getSetIniDbString('settings', 'autoHostMessage', $.lang.get('hosthandler.autohost.message')),
-        hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', true),
-        hostToggle = $.getSetIniDbBoolean('settings', 'hostToggle', false),
-        autoHostToggle = $.getSetIniDbBoolean('settings', 'autoHostToggle', false),
-        hostTimeout = 216e5, // 6 hours = 6 * 60 * 60 * 1000
-        hostList = {},
-        announceHosts = false;
+            autoHostReward = $.getSetIniDbNumber('settings', 'autoHostReward', 0),
+            hostMinViewerCount = $.getSetIniDbNumber('settings', 'hostMinViewerCount', 0),
+            hostMinCount = $.getSetIniDbNumber('settings', 'hostMinCount', 0),
+            hostMessage = $.getSetIniDbString('settings', 'hostMessage', $.lang.get('hosthandler.host.message')),
+            autoHostMessage = $.getSetIniDbString('settings', 'autoHostMessage', $.lang.get('hosthandler.autohost.message')),
+            hostHistory = $.getSetIniDbBoolean('settings', 'hostHistory', true),
+            hostToggle = $.getSetIniDbBoolean('settings', 'hostToggle', false),
+            autoHostToggle = $.getSetIniDbBoolean('settings', 'autoHostToggle', false),
+            hostTimeout = 216e5, // 6 hours = 6 * 60 * 60 * 1000
+            hostList = {},
+            announceHosts = false;
 
     /*
      * @function updateHost
@@ -53,7 +53,7 @@
     /*
      * @event twitchHostsInitialized
      */
-    $.bind('twitchHostsInitialized', function(event) {
+    $.bind('twitchHostsInitialized', function (event) {
         if (!$.bot.isModuleEnabled('./handlers/hostHandler.js')) {
             return;
         }
@@ -65,10 +65,10 @@
     /*
      * @event twitchAutoHosted
      */
-    $.bind('twitchAutoHosted', function(event) {
+    $.bind('twitchAutoHosted', function (event) {
         var hoster = event.getHoster().toLowerCase(),
-            viewers = parseInt(event.getUsers()),
-            s = autoHostMessage;
+                viewers = parseInt(event.getUsers()),
+                s = autoHostMessage;
 
         if (announceHosts === false) {
             return;
@@ -105,7 +105,30 @@
         }
 
         if (autoHostToggle === true && viewers >= hostMinCount) {
-            $.say(s);
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+                if (s == '') {
+                    return null;
+                }
+            }
+
+            if (s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                s = $.replace(s, s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+                if (s == '') {
+                    return null;
+                }
+            }
+
+            if (s != '') {
+                $.say(s);
+            }
         }
 
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestAutoHost.txt', false);
@@ -118,10 +141,10 @@
     /*
      * @event twitchHosted
      */
-    $.bind('twitchHosted', function(event) {
+    $.bind('twitchHosted', function (event) {
         var hoster = event.getHoster().toLowerCase(),
-            viewers = parseInt(event.getUsers()),
-            s = hostMessage;
+                viewers = parseInt(event.getUsers()),
+                s = hostMessage;
 
         // Always update the Host History even if announcements are off or if they recently
         // hosted the channel and it would not be noted in chat.  This was the caster does
@@ -185,12 +208,12 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argsString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                argsString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0];
 
         /*
          * @commandpath hosttoggle - Toggles host announcements.
@@ -333,7 +356,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
         $.registerChatCommand('./handlers/hostHandler.js', 'autohostmessage', 1);
         $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
