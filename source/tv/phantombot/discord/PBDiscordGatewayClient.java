@@ -44,12 +44,15 @@ import discord4j.common.operator.RateLimitOperator;
 import discord4j.common.retry.ReconnectContext;
 import discord4j.common.retry.ReconnectOptions;
 import discord4j.discordjson.json.gateway.*;
+import discord4j.gateway.DefaultGatewayClient;
 import discord4j.gateway.GatewayClient;
 import discord4j.gateway.GatewayObserver;
 import discord4j.gateway.GatewayOptions;
 import discord4j.gateway.GatewayReactorResources;
 import discord4j.gateway.GatewayWebsocketHandler;
 import discord4j.gateway.IdentifyOptions;
+import discord4j.gateway.PayloadContext;
+import discord4j.gateway.PayloadHandlers;
 import discord4j.gateway.json.GatewayPayload;
 import discord4j.gateway.limiter.PayloadTransformer;
 import discord4j.gateway.payload.PayloadReader;
@@ -127,7 +130,7 @@ public class PBDiscordGatewayClient implements GatewayClient {
     private final FluxSink<GatewayPayload<?>> outboundSink;
     private final FluxSink<GatewayPayload<Heartbeat>> heartbeatSink;
 
-    // mutable state, modified here and at PBPayloadHandlers
+    // mutable state, modified here and at PayloadHandlers
     private final AtomicBoolean connected = new AtomicBoolean(false);
     private final AtomicBoolean allowResume = new AtomicBoolean(true);
     private final AtomicInteger sequence = new AtomicInteger(0);
@@ -196,6 +199,14 @@ public class PBDiscordGatewayClient implements GatewayClient {
 
                     sessionHandler = new GatewayWebsocketHandler(receiverSink, outFlux, context);
 
+                    Integer resumeSequence = identifyOptions.getResumeSequence();
+                    if (resumeSequence != null && resumeSequence > 0) {
+                        this.sequence.set(identifyOptions.getResumeSequence());
+                        this.sessionId.set(identifyOptions.getResumeSessionId());
+                    } else {
+                        allowResume.set(false);
+                    }
+
                     Mono<Void> readyHandler = dispatch.filter(PBDiscordGatewayClient::isReadyOrResume)
                             .doOnNext(event -> {
                                 connected.set(true);
@@ -210,8 +221,9 @@ public class PBDiscordGatewayClient implements GatewayClient {
                                     state = GatewayObserver.RETRY_SUCCEEDED;
                                 }
                                 reconnectContext.reset();
+                                identifyOptions.setResumeSessionId(sessionId.get());
                                 allowResume.set(true);
-                                notifyObserver(state);
+                                notifyObserver(state, identifyOptions);
                             })
                             .then();
 
@@ -281,7 +293,7 @@ public class PBDiscordGatewayClient implements GatewayClient {
                                 if (t instanceof ReconnectException) {
                                     log.info(format(context, "{}"), t.getMessage());
                                 } else {
-                                    if (log.isTraceEnabled()) {
+                                    if (log.isDebugEnabled()) {
                                         log.error(format(context, "Gateway client error"), t);
                                     } else {
                                         log.error(format(context, "{}"), t.toString());
@@ -292,14 +304,8 @@ public class PBDiscordGatewayClient implements GatewayClient {
                             .doOnCancel(() -> sessionHandler.close())
                             .then();
                 })
-                .subscriberContext(ctx -> ctx.put(LogUtil.KEY_SHARD_ID, identifyOptions.getShardInfo().getIndex()))
                 .retryWhen(retryFactory())
-                .then(Mono.defer(() -> disconnectNotifier.then()))
-                .doOnSubscribe(s -> {
-                    if (disconnectNotifier != null) {
-                        throw new IllegalStateException("execute can only be subscribed once");
-                    }
-                });
+                .then(Mono.defer(() -> disconnectNotifier));
     }
 
     private String initUserAgent() {
@@ -321,7 +327,8 @@ public class PBDiscordGatewayClient implements GatewayClient {
     private GatewayPayload<?> updateSequence(GatewayPayload<?> payload) {
         if (payload.getSequence() != null) {
             sequence.set(payload.getSequence());
-            notifyObserver(GatewayObserver.SEQUENCE);
+            identifyOptions.setResumeSequence(sequence.get());
+            notifyObserver(GatewayObserver.SEQUENCE, identifyOptions);
         }
         return payload;
     }
@@ -343,15 +350,15 @@ public class PBDiscordGatewayClient implements GatewayClient {
                         if (!allowResume.get() || !canResume(retryContext.exception())) {
                             dispatchSink.next(GatewayStateChange.retryStarted(backoff));
                             allowResume.set(false);
-                            notifyObserver(GatewayObserver.RETRY_STARTED);
+                            notifyObserver(GatewayObserver.RETRY_STARTED, identifyOptions);
                         } else {
                             dispatchSink.next(GatewayStateChange.retryStartedResume(backoff));
-                            notifyObserver(GatewayObserver.RETRY_RESUME_STARTED);
+                            notifyObserver(GatewayObserver.RETRY_RESUME_STARTED, identifyOptions);
                         }
                     } else {
                         dispatchSink.next(GatewayStateChange.retryFailed(attempt - 1, backoff));
                         // TODO: add attempt/backoff values to GatewayObserver
-                        notifyObserver(GatewayObserver.RETRY_FAILED);
+                        notifyObserver(GatewayObserver.RETRY_FAILED, identifyOptions);
                         allowResume.set(false);
                     }
                     retryContext.applicationContext().next();
@@ -414,13 +421,13 @@ public class PBDiscordGatewayClient implements GatewayClient {
 
             if (behavior.getAction() == DisconnectBehavior.Action.STOP_ABRUPTLY) {
                 dispatchSink.next(GatewayStateChange.disconnectedResume());
-                notifyObserver(GatewayObserver.DISCONNECTED_RESUME);
+                notifyObserver(GatewayObserver.DISCONNECTED_RESUME, identifyOptions);
             } else if (behavior.getAction() == DisconnectBehavior.Action.STOP) {
                 dispatchSink.next(GatewayStateChange.disconnected());
                 allowResume.set(false);
                 sequence.set(0);
                 sessionId.set("");
-                notifyObserver(GatewayObserver.DISCONNECTED);
+                notifyObserver(GatewayObserver.DISCONNECTED, identifyOptions);
             }
 
             switch (behavior.getAction()) {
@@ -439,12 +446,12 @@ public class PBDiscordGatewayClient implements GatewayClient {
     private ConnectionObserver getObserver(Context context) {
         return (connection, newState) -> {
             log.debug(format(context, "{} {}"), newState, connection);
-            notifyObserver(newState);
+            notifyObserver(newState, identifyOptions);
         };
     }
 
-    private void notifyObserver(ConnectionObserver.State state) {
-        observer.onStateChange(state, this);
+    private void notifyObserver(ConnectionObserver.State state, IdentifyOptions options) {
+        observer.onStateChange(state, options);
     }
 
     @Override
@@ -503,7 +510,7 @@ public class PBDiscordGatewayClient implements GatewayClient {
 
     @Override
     public int getShardCount() {
-        return identifyOptions.getShardInfo().getCount();
+        return identifyOptions.getShardCount();
     }
 
     @Override
@@ -527,7 +534,7 @@ public class PBDiscordGatewayClient implements GatewayClient {
     }
 
     /////////////////////////////////
-    // Methods for PBPayloadHandlers //
+    // Methods for PayloadHandlers //
     /////////////////////////////////
 
     void ackHeartbeat() {
@@ -536,7 +543,7 @@ public class PBDiscordGatewayClient implements GatewayClient {
     }
 
     ////////////////////////////////
-    // Fields for PBPayloadHandlers //
+    // Fields for PayloadHandlers //
     ////////////////////////////////
 
     /**

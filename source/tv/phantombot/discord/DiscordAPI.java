@@ -17,7 +17,6 @@
 package tv.phantombot.discord;
 
 import discord4j.common.close.CloseStatus;
-import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
@@ -41,8 +40,10 @@ import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
+import discord4j.rest.util.Snowflake;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -80,7 +81,7 @@ public class DiscordAPI extends DiscordUtil {
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
     private static DiscordClientBuilder builder;
     private boolean ready;
-    private static Snowflake selfId = null;
+    private static Optional<Snowflake> selfId = Optional.empty();
     private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.GUILD_PRESENCES, Intent.DIRECT_MESSAGES);
     protected static CloseStatus lastCloseStatus = CloseStatus.NORMAL_CLOSE;
 
@@ -133,7 +134,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
-            DiscordAPI.selfId = cgateway.getSelfId();
+            cgateway.getSelfId().timeout(Duration.ofSeconds(5)).doOnSuccess(aselfId -> { DiscordAPI.selfId = Optional.ofNullable(aselfId); }).doOnError(e -> { DiscordAPI.selfId = Optional.empty(); }).subscribe();
         }).doFinally(sig -> {
             if (lastCloseStatus.getCode() > 1000) {
                 if (lastCloseStatus.getCode() == 4014) {
@@ -167,7 +168,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
-            DiscordAPI.selfId = cgateway.getSelfId();
+            DiscordAPI.selfId = cgateway.getSelfId().blockOptional(Duration.ofSeconds(5));
         }).doFinally(sig -> {
             if (lastCloseStatus.getCode() > 1000) {
                 com.gmt2001.Console.err.println("Discord connection closed with status " + lastCloseStatus.getCode() + (lastCloseStatus.getReason().isPresent() ? " " + lastCloseStatus.getReason().get() : ""));
@@ -208,7 +209,7 @@ public class DiscordAPI extends DiscordUtil {
      * @return
      */
     public boolean isLoggedIn() {
-        return DiscordAPI.selfId != null;
+        return DiscordAPI.selfId.isPresent();
     }
 
     /**
@@ -355,7 +356,7 @@ public class DiscordAPI extends DiscordUtil {
             iMessage.getChannel().timeout(Duration.ofMillis(500)).doOnSuccess(iChannel -> {
                 User iUser = event.getMember().isPresent() ? event.getMember().get() : ((PrivateChannel) iChannel).getRecipients().take(1).singleOrEmpty().block(Duration.ofMillis(500));
 
-                if (iUser == null || (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId))) {
+                if (iUser == null || (DiscordAPI.selfId.isPresent() && iUser.getId().equals(DiscordAPI.selfId.get()))) {
                     return;
                 }
 
