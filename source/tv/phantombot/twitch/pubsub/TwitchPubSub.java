@@ -405,11 +405,10 @@ public class TwitchPubSub {
                 
                 if (messageObj.getString("type").equalsIgnoreCase("pong")) {
                     com.gmt2001.Console.debug.println("TwitchPubSubWS: Got a PONG.");
+                    return;
                 }
                 
-                if (messageObj.getString("type").equalsIgnoreCase("message")) {
-                    parse(messageObj);
-                }
+                parse(messageObj);
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
