@@ -242,7 +242,7 @@ public class TwitchPubSub {
             if (message.getString("type").equals("reward-redeemed")) {
                 dataObj = message.getJSONObject("data");
                 data = dataObj.getJSONObject("redemption");
-                this.log("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
+                com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
                 EventBus.instance().postAsync(new PubSubChannelPointsEvent(
                         data.getString("id"), data.getJSONObject("reward").getString("id"), data.getJSONObject("user").getString("id"),
                         data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
