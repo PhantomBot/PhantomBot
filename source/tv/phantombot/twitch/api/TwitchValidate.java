@@ -21,13 +21,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+import org.json.JSONArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +50,7 @@ public class TwitchValidate {
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
     private static final int TIMEOUT_TIME = 5000;
+    private final List<String> scopes = new ArrayList<>();
     
     /**
      * This class constructor.
@@ -200,23 +203,42 @@ public class TwitchValidate {
      */
     public void validate(String oAuthToken, String type) {
         try {
-            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type);
+            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, false);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
         }
     }
 
+    public void validateAndScope(String oAuthToken, String type) {
+        try {
+            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, true);
+            new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
+        }
+    }
+
+    public boolean hasScope(String scope) {
+        return scopes.contains(scope);
+    }
+
+    public List<String> getScopes() {
+        return new ArrayList<>(scopes);
+    }
+
     /**
      * Runnable to push the validation checks to the background so as not to block the operation of the bot at start up.
      */
     private class ValidateRunnable implements Runnable {
-        private String oAuthToken;
-        private String type;
+        private final String oAuthToken;
+        private final String type;
+        private final boolean doScopes;
 
-        public ValidateRunnable(String oAuthToken, String type) {
+        public ValidateRunnable(String oAuthToken, String type, boolean doScopes) {
             this.oAuthToken = oAuthToken;
             this.type = type;
+            this.doScopes = doScopes;
         }
 
         @Override
@@ -229,6 +251,13 @@ public class TwitchValidate {
                                 "been disabled, or the Twitch API is experiencing issues.");
                         return;
                     }
+                }
+
+                if (requestObj.has("scopes") && doScopes) {
+                    JSONArray scopesa = requestObj.getJSONArray("scopes");
+                    scopesa.iterator().forEachRemaining(obj -> {
+                        scopes.add((String) obj);
+                    });
                 }
                 com.gmt2001.Console.out.println("Validated Twitch " + type + " OAUTH Token.");
             } catch (JSONException ex) {

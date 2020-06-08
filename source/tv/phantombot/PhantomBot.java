@@ -585,7 +585,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validate(this.oauth, "CHAT (oauth)");
+        TwitchValidate.instance().validateAndScope(this.oauth, "CHAT (oauth)");
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
@@ -1133,7 +1133,7 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.channelName);
 
         /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && checkDataStore("chatModerator", "moderationLogs")) {
+        if (this.oauth.length() > 0 && (TwitchValidate.instance().hasScope("channel:moderate") || TwitchValidate.instance().hasScope("channel:read:redemptions"))) {
             this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
