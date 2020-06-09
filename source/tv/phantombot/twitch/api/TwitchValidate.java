@@ -14,44 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.twitch.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Handle Validate requests of the OAUTH2 token from Twitch.
- * 
+ *
  * @author ScaniaTV, IllusionaryOne
  */
 public class TwitchValidate {
+
     // The current instance 
     private static final TwitchValidate instance = new TwitchValidate();
     // The base URL for Twitch API Helix.
-    private static final String BASE_URL = "https://api.twitch.tv/oauth2/validate";
+    private static final String BASE_URL = "https://id.twitch.tv/oauth2/validate";
     // The user agent for our requests to Helix.
-    private static final String USER_AGENT = "PhantomBot/2018";
+    private static final String USER_AGENT = "PhantomBot/2020";
     // Our content type, should always be JSON.
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
     private static final int TIMEOUT_TIME = 5000;
-    private final List<String> scopes = new ArrayList<>();
-    
+    private final List<String> scopesC = new ArrayList<>();
+    private final List<String> scopesA = new ArrayList<>();
+
     /**
      * This class constructor.
      */
@@ -62,41 +58,34 @@ public class TwitchValidate {
 
     /**
      * Method that returns the instance of TwitchValidate.
-     * 
-     * @return 
+     *
+     * @return
      */
     public static TwitchValidate instance() {
         return instance;
     }
-    
-    /**
-     * The types of requests we can make.
-     */
-    private enum RequestType {
-        GET,
-    };
-    
+
     /**
      * Method that gets data from an InputStream.
-     * 
+     *
      * @param stream
-     * @return 
+     * @return
      */
     private String getStringFromInputStream(InputStream stream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder returnString = new StringBuilder();
         String line;
-        
+
         while ((line = reader.readLine()) != null) {
             returnString.append(line);
         }
-        
+
         return returnString.toString();
     }
-    
+
     /**
      * Method that adds extra information to our returned object.
-     * 
+     *
      * @param obj
      * @param isSuccess
      * @param requestType
@@ -106,31 +95,31 @@ public class TwitchValidate {
      * @param exception
      * @param exceptionMessage
      */
-    private void generateJSONObject(JSONObject obj, boolean isSuccess, 
-            String requestType, String data, String url, int responseCode, 
+    private void generateJSONObject(JSONObject obj, boolean isSuccess,
+            String data, String url, int responseCode,
             String exception, String exceptionMessage) throws JSONException {
-        
+
         obj.put("_success", isSuccess);
-        obj.put("_type", requestType);
+        obj.put("_type", "GET");
         obj.put("_post", data);
         obj.put("_url", url);
         obj.put("_http", responseCode);
         obj.put("_exception", exception);
         obj.put("_exceptionMessage", exceptionMessage);
     }
-    
+
     /**
      * Method that handles data for Vaidation.
-     * 
+     *
      * @param type
      * @param data
-     * @return 
+     * @return
      */
-    private JSONObject handleRequest(RequestType type, String oAuthToken) throws JSONException {
+    private JSONObject handleRequest(String oAuthToken) throws JSONException {
         JSONObject returnObject = new JSONObject();
         InputStream inStream = null;
         int responseCode = 0;
-        
+
         try {
             // Generate a new URL.
             URL url = new URL(BASE_URL);
@@ -141,16 +130,16 @@ public class TwitchValidate {
             connection.addRequestProperty("Authorization", "OAuth " + oAuthToken);
             connection.addRequestProperty("User-Agent", USER_AGENT);
             // Add our request method.
-            connection.setRequestMethod(type.name());
+            connection.setRequestMethod("GET");
             // Set out timeout.
             connection.setConnectTimeout(TIMEOUT_TIME);
-            
+
             // Connect!
             connection.connect();
-            
+
             // Get our response code.
             responseCode = connection.getResponseCode();
-            
+
             // Get our response stream.
             if (responseCode == 200) {
                 inStream = connection.getInputStream();
@@ -161,47 +150,32 @@ public class TwitchValidate {
             // Parse the data.
             returnObject = new JSONObject(getStringFromInputStream(inStream));
             // Generate the return object,
-            generateJSONObject(returnObject, true, type.name(), "", BASE_URL, responseCode, "", "");
-        } catch (JSONException ex) {
+            generateJSONObject(returnObject, true, "", BASE_URL, responseCode, "", "");
+        } catch (IOException | NullPointerException | JSONException ex) {
             // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "JSONException", ex.getMessage());
-        } catch (NullPointerException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "NullPointerException", ex.getMessage());
-        } catch (MalformedURLException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "MalformedURLException", ex.getMessage());
-        } catch (SocketTimeoutException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "SocketTimeoutException", ex.getMessage());
-        } catch (IOException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "IOException", ex.getMessage());
-        } catch (Exception ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "Exception", ex.getMessage());
+            generateJSONObject(returnObject, false, "", BASE_URL, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         } finally {
             if (inStream != null) {
                 try {
                     inStream.close();
                 } catch (IOException ex) {
                     // Generate the return object.
-                    generateJSONObject(returnObject, false, type.name(), "", BASE_URL, responseCode, "IOException", ex.getMessage());
+                    generateJSONObject(returnObject, false, "", BASE_URL, responseCode, "IOException", ex.getMessage());
                 }
             }
         }
-        
+
         return returnObject;
     }
 
     /**
      * Method that validates an oAuthToken.
-     * 
+     *
      * @param type
      * @param BASE_URL
-     * @return 
+     * @return
      */
-    public void validate(String oAuthToken, String type) {
+    public void validateAPI(String oAuthToken, String type) {
         try {
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, false);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
@@ -210,7 +184,7 @@ public class TwitchValidate {
         }
     }
 
-    public void validateAndScope(String oAuthToken, String type) {
+    public void validateChat(String oAuthToken, String type) {
         try {
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, true);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
@@ -219,46 +193,62 @@ public class TwitchValidate {
         }
     }
 
-    public boolean hasScope(String scope) {
-        return scopes.contains(scope);
+    public boolean hasChatScope(String scope) {
+        return scopesC.contains(scope);
     }
 
-    public List<String> getScopes() {
-        return new ArrayList<>(scopes);
+    public List<String> getChatScopes() {
+        return new ArrayList<>(scopesC);
+    }
+
+    public boolean hasAPIScope(String scope) {
+        return scopesA.contains(scope);
+    }
+
+    public List<String> getAPIScopes() {
+        return new ArrayList<>(scopesA);
     }
 
     /**
      * Runnable to push the validation checks to the background so as not to block the operation of the bot at start up.
      */
     private class ValidateRunnable implements Runnable {
+
         private final String oAuthToken;
         private final String type;
-        private final boolean doScopes;
+        private final boolean isChat;
 
-        public ValidateRunnable(String oAuthToken, String type, boolean doScopes) {
-            this.oAuthToken = oAuthToken;
+        public ValidateRunnable(String oAuthToken, String type, boolean isChat) {
+            this.oAuthToken = oAuthToken.replace("oauth:", "");
             this.type = type;
-            this.doScopes = doScopes;
+            this.isChat = isChat;
         }
 
         @Override
         public void run() {
             try {
-                JSONObject requestObj = handleRequest(RequestType.GET, oAuthToken);
-                if (requestObj.has("message")) {
-                    if (requestObj.getString("message").equals("invalid access token")) {
-                        com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, " +
-                                "been disabled, or the Twitch API is experiencing issues.");
-                        return;
-                    }
+                JSONObject requestObj = handleRequest(oAuthToken);
+                com.gmt2001.Console.debug.println(requestObj.toString());
+
+                if (requestObj.has("message") && requestObj.getString("message").equals("invalid access token")) {
+                    com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "
+                            + "been disabled, or the Twitch API is experiencing issues.");
+                    return;
                 }
 
-                if (requestObj.has("scopes") && doScopes) {
+                if (!requestObj.getBoolean("_success")) {
+                    com.gmt2001.Console.err.println("Attempt to validate " + type + " OAUTH token failed.");
+                    com.gmt2001.Console.err.println("http=" + requestObj.getInt("_http") + "; exception=" + requestObj.getString("_exception") + "; exceptionMessage=" + requestObj.getString("_exceptionMessage"));
+                    return;
+                }
+
+                if (requestObj.has("scopes")) {
                     JSONArray scopesa = requestObj.getJSONArray("scopes");
                     scopesa.iterator().forEachRemaining(obj -> {
-                        scopes.add((String) obj);
+                        (isChat ? scopesC : scopesA).add((String) obj);
                     });
                 }
+
                 com.gmt2001.Console.out.println("Validated Twitch " + type + " OAUTH Token.");
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);

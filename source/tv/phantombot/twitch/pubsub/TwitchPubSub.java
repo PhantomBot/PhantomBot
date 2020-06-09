@@ -41,8 +41,8 @@ import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
-import tv.phantombot.event.pubsub.moderation.*;
 import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
+import tv.phantombot.event.pubsub.moderation.*;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {
@@ -328,9 +328,8 @@ public class TwitchPubSub {
         public void onOpen(ServerHandshake handshakedata) {
             try {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
-                com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
 
-                if (TwitchValidate.instance().hasScope("channel:moderate")) {
+                if (TwitchValidate.instance().hasChatScope("channel:moderate")) {
                     String[] type = new String[]{"chat_moderator_actions." + channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
@@ -341,9 +340,10 @@ public class TwitchPubSub {
                     jsonObject.put("data", topics);
 
                     send(jsonObject.toString());
+                    com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
                 }
 
-                if (TwitchValidate.instance().hasScope("channel:read:redemptions")) {
+                if (TwitchValidate.instance().hasChatScope("channel:read:redemptions")) {
                     String[] type2 = new String[]{"channel-points-channel-v1." + channelId};
                     JSONObject jsonObject2 = new JSONObject();
                     JSONObject topics2 = new JSONObject();
@@ -354,6 +354,7 @@ public class TwitchPubSub {
                     jsonObject2.put("data", topics2);
 
                     send(jsonObject2.toString());
+                    com.gmt2001.Console.out.println("Connected to Twitch Channel Points Data Feed");
                 }
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);

@@ -17,65 +17,65 @@
 
 package tv.phantombot;
 
-import net.engio.mbassy.listener.Handler;
-
+import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
+import com.gmt2001.datastore.DataStoreConverter;
+import com.gmt2001.datastore.H2Store;
 import com.gmt2001.datastore.IniStore;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
-import com.gmt2001.datastore.H2Store;
-import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.YouTubeAPIv3;
-import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.httpwsserver.HTTPWSServer;
-
-import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.BitlyAPIv4;
+import com.illusionaryone.DataRenderServiceAPIv1;
+import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
-import com.illusionaryone.DataRenderServiceAPIv1;
-
 import com.scaniatv.CustomAPI;
-import com.scaniatv.TipeeeStreamAPIv1;
 import com.scaniatv.StreamElementsAPIv2;
-
+import com.scaniatv.TipeeeStreamAPIv1;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
+import java.net.ServerSocket;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
-import java.net.ServerSocket;
 import java.security.SecureRandom;
-
 import java.text.SimpleDateFormat;
-
+import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
+import net.engio.mbassy.listener.Handler;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONException;
+import reactor.util.Loggers;
 import tv.phantombot.cache.DonationsCache;
 import tv.phantombot.cache.EmotesCache;
 import tv.phantombot.cache.FollowersCache;
-import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.StreamElementsCache;
+import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.TwitchCache;
+import tv.phantombot.cache.TwitchTeamsCache;
 import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.cache.ViewerListCache;
+import tv.phantombot.console.ConsoleEventHandler;
 import tv.phantombot.console.ConsoleInputListener;
+import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
@@ -83,28 +83,19 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
-import tv.phantombot.script.Script;
-import tv.phantombot.script.ScriptEventManager;
-import tv.phantombot.script.ScriptManager;
-import tv.phantombot.script.ScriptFileWatcher;
-import tv.phantombot.twitch.irc.TwitchSession;
-import tv.phantombot.twitch.pubsub.TwitchPubSub;
-import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
-import tv.phantombot.discord.DiscordAPI;
-import tv.phantombot.twitch.api.TwitchValidate;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.SystemUtils;
-import org.json.JSONException;
-import reactor.util.Loggers;
-import tv.phantombot.cache.TwitchTeamsCache;
-import tv.phantombot.console.ConsoleEventHandler;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
 import tv.phantombot.panel.WsPanelHandler;
+import tv.phantombot.script.Script;
+import tv.phantombot.script.ScriptEventManager;
+import tv.phantombot.script.ScriptFileWatcher;
+import tv.phantombot.script.ScriptManager;
 import tv.phantombot.scripts.core.Moderation;
+import tv.phantombot.twitch.api.TwitchValidate;
+import tv.phantombot.twitch.irc.TwitchSession;
+import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
+import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
 public final class PhantomBot implements Listener {
@@ -385,7 +376,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Set the default bot variables */
-        this.enableDebugging = this.pbProperties.getProperty("debugon") == null ? false : this.pbProperties.getProperty("debugon").equalsIgnoreCase("true");
+        PhantomBot.enableDebugging = this.pbProperties.getProperty("debugon") == null ? false : this.pbProperties.getProperty("debugon").equalsIgnoreCase("true");
         this.botName = this.pbProperties.getProperty("user").toLowerCase();
         this.channelName = this.pbProperties.getProperty("channel").toLowerCase();
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
@@ -575,7 +566,7 @@ public final class PhantomBot implements Listener {
         /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
-            TwitchValidate.instance().validate(this.apiOAuth, "API (apioauth)");
+            TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
         }
         
         /* Set the Bitly token. */
@@ -585,7 +576,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validateAndScope(this.oauth, "CHAT (oauth)");
+        TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
 
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
@@ -1086,9 +1077,9 @@ public final class PhantomBot implements Listener {
 
         print("Terminating all script modules...");
         HashMap<String, Script> scripts = ScriptManager.getScripts();
-        for (Entry<String, Script> script : scripts.entrySet()) {
+        scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
-        }
+        });
 
         print("Saving all data...");
         dataStore.SaveAll(true);
@@ -1132,8 +1123,13 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.channelName);
 
+        com.gmt2001.Console.debug.println("oauth.length=" + this.oauth.length());
+        com.gmt2001.Console.debug.println("TwitchValidate.getScopes=" + Arrays.toString(TwitchValidate.instance().getChatScopes().toArray()));
+        com.gmt2001.Console.debug.println("TwitchValidate.hasScope(channel:moderate)=" + (TwitchValidate.instance().hasChatScope("channel:moderate") ? "t" : "f"));
+        com.gmt2001.Console.debug.println("TwitchValidate.hasScope(channel:read:redemption)=" + (TwitchValidate.instance().hasChatScope("channel:read:redemptions") ? "t" : "f"));
+        com.gmt2001.Console.debug.println("StartPubSub=" + (this.oauth.length() > 0 && (TwitchValidate.instance().hasChatScope("channel:moderate") || TwitchValidate.instance().hasChatScope("channel:read:redemptions")) ? "t" : "f"));
         /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && (TwitchValidate.instance().hasScope("channel:moderate") || TwitchValidate.instance().hasScope("channel:read:redemptions"))) {
+        if (this.oauth.length() > 0 && (TwitchValidate.instance().hasChatScope("channel:moderate") || TwitchValidate.instance().hasChatScope("channel:read:redemptions"))) {
             this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
         }
 
@@ -1444,7 +1440,7 @@ public final class PhantomBot implements Listener {
             } catch (Exception ex) {
                 com.gmt2001.Console.err.println("Failed to delete files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to move files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
 
@@ -1462,10 +1458,10 @@ public final class PhantomBot implements Listener {
             try {
                 FileUtils.deleteDirectory(new File("./web/panel/js/ion-sound/sounds"));
                 FileUtils.deleteDirectory(new File("./web/alerts/data"));
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 com.gmt2001.Console.err.println("Failed to delete old audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed to move audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
@@ -1485,9 +1481,9 @@ public final class PhantomBot implements Listener {
         builder.append(String.join(",", headers)).append("\n");
 
         // Append all values.
-        for (String[] value : values) {
+        values.forEach((value) -> {
             builder.append(String.join(",", value)).append("\n");
-        }
+        });
 
         // Write the data to a file.
         try {
