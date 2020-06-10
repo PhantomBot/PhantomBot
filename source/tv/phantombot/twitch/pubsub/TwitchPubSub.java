@@ -244,7 +244,7 @@ public class TwitchPubSub {
                 if (dataObj.has("message")) {
                     messageObj = new JSONObject(dataObj.getString("message"));
                     data = messageObj.getJSONObject("data");
-                    if (message.getString("topic").startsWith("channel-points-channel-v1")) {
+                    if (dataObj.getString("topic").startsWith("channel-points-channel-v1")) {
                         data = data.getJSONObject("redemption");
                         com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
                         EventBus.instance().postAsync(new PubSubChannelPointsEvent(
@@ -252,7 +252,7 @@ public class TwitchPubSub {
                                 data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
                                 data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").getString("prompt"), data.getString("user_input"), data.getString("status")
                         ));
-                    } else if (message.getString("topic").startsWith("chat_moderator_actions")) {
+                    } else if (dataObj.getString("topic").startsWith("chat_moderator_actions")) {
                         if (data.has("moderation_action") && data.has("args") && data.has("created_by")) {
                             JSONArray args = data.getJSONArray("args");
                             String action = data.getString("moderation_action");
@@ -328,7 +328,7 @@ public class TwitchPubSub {
             try {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 
-                if (TwitchValidate.instance().hasChatScope("channel:moderate")) {
+                if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
                     String[] type = new String[]{"chat_moderator_actions." + channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
@@ -342,7 +342,7 @@ public class TwitchPubSub {
                     com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
                 }
 
-                if (TwitchValidate.instance().hasChatScope("channel:read:redemptions")) {
+                if (TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) {
                     String[] type2 = new String[]{"channel-points-channel-v1." + channelId};
                     JSONObject jsonObject2 = new JSONObject();
                     JSONObject topics2 = new JSONObject();
