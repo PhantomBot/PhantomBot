@@ -239,21 +239,20 @@ public class TwitchPubSub {
             JSONObject messageObj;
             JSONObject data;
 
-            if (message.getString("type").equals("reward-redeemed")) {
-                dataObj = message.getJSONObject("data");
-                data = dataObj.getJSONObject("redemption");
-                com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
-                EventBus.instance().postAsync(new PubSubChannelPointsEvent(
-                        data.getString("id"), data.getJSONObject("reward").getString("id"), data.getJSONObject("user").getString("id"),
-                        data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
-                        data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").getString("prompt"), data.getString("user_input"), data.getString("status")
-                ));
-            } else if (message.has("data")) {
+            if (message.has("data")) {
                 dataObj = message.getJSONObject("data");
                 if (dataObj.has("message")) {
                     messageObj = new JSONObject(dataObj.getString("message"));
-                    if (messageObj.has("data")) {
-                        data = messageObj.getJSONObject("data");
+                    data = messageObj.getJSONObject("data");
+                    if (message.getString("topic").startsWith("channel-points-channel-v1")) {
+                        data = data.getJSONObject("redemption");
+                        com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
+                        EventBus.instance().postAsync(new PubSubChannelPointsEvent(
+                                data.getString("id"), data.getJSONObject("reward").getString("id"), data.getJSONObject("user").getString("id"),
+                                data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
+                                data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").getString("prompt"), data.getString("user_input"), data.getString("status")
+                        ));
+                    } else if (message.getString("topic").startsWith("chat_moderator_actions")) {
                         if (data.has("moderation_action") && data.has("args") && data.has("created_by")) {
                             JSONArray args = data.getJSONArray("args");
                             String action = data.getString("moderation_action");
