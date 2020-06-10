@@ -1123,14 +1123,12 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.debug.println("ircJoinComplete::" + this.channelName);
 
-        com.gmt2001.Console.debug.println("oauth.length=" + this.oauth.length());
-        com.gmt2001.Console.debug.println("TwitchValidate.getScopes=" + Arrays.toString(TwitchValidate.instance().getChatScopes().toArray()));
-        com.gmt2001.Console.debug.println("TwitchValidate.hasScope(channel:moderate)=" + (TwitchValidate.instance().hasChatScope("channel:moderate") ? "t" : "f"));
-        com.gmt2001.Console.debug.println("TwitchValidate.hasScope(channel:read:redemption)=" + (TwitchValidate.instance().hasChatScope("channel:read:redemptions") ? "t" : "f"));
-        com.gmt2001.Console.debug.println("StartPubSub=" + (this.oauth.length() > 0 && (TwitchValidate.instance().hasChatScope("channel:moderate") || TwitchValidate.instance().hasChatScope("channel:read:redemptions")) ? "t" : "f"));
+        com.gmt2001.Console.debug.println("TwitchValidate.hasAPIScope(channel:moderate)=" + (TwitchValidate.instance().hasAPIScope("channel:moderate") ? "t" : "f"));
+        com.gmt2001.Console.debug.println("TwitchValidate.hasAPIScope(channel:read:redemption)=" + (TwitchValidate.instance().hasAPIScope("channel:read:redemptions") ? "t" : "f"));
+        com.gmt2001.Console.debug.println("StartPubSub=" + (this.oauth.length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) ? "t" : "f"));
         /* Start a pubsub instance here. */
-        if (this.oauth.length() > 0 && (TwitchValidate.instance().hasChatScope("channel:moderate") || TwitchValidate.instance().hasChatScope("channel:read:redemptions"))) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.oauth);
+        if (this.apiOAuth.length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions"))) {
+            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.apiOAuth);
         }
 
         /* Load the caches for each channels */
