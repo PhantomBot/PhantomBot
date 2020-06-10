@@ -249,8 +249,8 @@ public class TwitchPubSub {
                         com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
                         EventBus.instance().postAsync(new PubSubChannelPointsEvent(
                                 data.getString("id"), data.getJSONObject("reward").getString("id"), data.getJSONObject("user").getString("id"),
-                                data.getJSONObject("user").getString("login"), data.getJSONObject("user").getString("display_name"), data.getJSONObject("reward").getString("title"),
-                                data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").getString("prompt"), data.getString("user_input"), data.getString("status")
+                                data.getJSONObject("user").getString("login"), data.getJSONObject("user").optString("display_name", data.getJSONObject("user").getString("login")), data.getJSONObject("reward").getString("title"),
+                                data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").optString("prompt"), data.optString("user_input"), data.optString("status")
                         ));
                     } else if (dataObj.getString("topic").startsWith("chat_moderator_actions")) {
                         if (data.has("moderation_action") && data.has("args") && data.has("created_by")) {
