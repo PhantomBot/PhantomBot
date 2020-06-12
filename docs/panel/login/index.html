@@ -75,7 +75,7 @@
                 $.ajax(
                         {
                             type: 'GET',
-                            url: 'http://' + hostname + ':' + port + '/sslcheck',
+                            url: 'https://' + hostname + ':' + port + '/sslcheck',
                             crossDomain: true,
                             dataType: 'text',
                             success: function (sslStatus) {
@@ -112,7 +112,7 @@
                             error: function (xhr, status, thrown) {
                                 $('#error-box').removeClass('hide');
                                 $('#error-br').removeClass('hide');
-                                $('#error-box').html('Login request failed: ' + status + " > " + thrown);
+                                $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required,  or is not responding<br />' + status + ' > ' + thrown);
                             }
                         }
                 );
