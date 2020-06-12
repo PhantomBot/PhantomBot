@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Map;
-import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -62,7 +61,17 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        if (req.uri().startsWith("/sslcheck")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled ? "true" : "false").getBytes(), null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+
             String host = req.headers().get(HttpHeaderNames.HOST);
 
             if (host == null) {
@@ -73,46 +82,66 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 host = "http://" + host;
             }
 
-            com.gmt2001.Console.debug.println("421");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MISDIRECTED_REQUEST, ("Authenticated request attempted, please direct request to: " + host + "/dbquery").getBytes(), null));
+            res.headers().set(HttpHeaderNames.LOCATION, host + "/dbquery");
+
+            com.gmt2001.Console.debug.println("303");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
         if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+            HttpResponseStatus status;
+            String sameSite = "";
+
+            if (req.uri().contains("/remote")) {
+                status = HttpResponseStatus.NO_CONTENT;
+                sameSite = "; SameSite=None";
+            } else {
+                status = HttpResponseStatus.SEE_OTHER;
+            }
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
 
             if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST)) {
                 Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
                 String user = post.getOrDefault("user", "");
                 String pass = post.getOrDefault("pass", "");
 
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
-
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().sslEnabled) {
-                host = "https://" + host;
+            if (req.uri().contains("/remote")) {
+                String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                com.gmt2001.Console.debug.println("204");
             } else {
-                host = "http://" + host;
-            }
-            
-            String kickback;
-            
-            if (req.uri().contains("kickback=")) {
-                kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
-            } else {
-                kickback = "/panel";
+                String host = req.headers().get(HttpHeaderNames.HOST);
+
+                if (host == null) {
+                    host = "";
+                } else if (HTTPWSServer.instance().sslEnabled) {
+                    host = "https://" + host;
+                } else {
+                    host = "http://" + host;
+                }
+
+                String kickback;
+
+                if (req.uri().contains("kickback=")) {
+                    kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
+                } else {
+                    kickback = "/panel";
+                }
+
+                res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
+
+                com.gmt2001.Console.debug.println("303");
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
-
-            com.gmt2001.Console.debug.println("303");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }

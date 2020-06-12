@@ -44,15 +44,12 @@ import discord4j.common.operator.RateLimitOperator;
 import discord4j.common.retry.ReconnectContext;
 import discord4j.common.retry.ReconnectOptions;
 import discord4j.discordjson.json.gateway.*;
-import discord4j.gateway.DefaultGatewayClient;
 import discord4j.gateway.GatewayClient;
 import discord4j.gateway.GatewayObserver;
 import discord4j.gateway.GatewayOptions;
 import discord4j.gateway.GatewayReactorResources;
 import discord4j.gateway.GatewayWebsocketHandler;
 import discord4j.gateway.IdentifyOptions;
-import discord4j.gateway.PayloadContext;
-import discord4j.gateway.PayloadHandlers;
 import discord4j.gateway.json.GatewayPayload;
 import discord4j.gateway.limiter.PayloadTransformer;
 import discord4j.gateway.payload.PayloadReader;
@@ -198,6 +195,8 @@ public class PBDiscordGatewayClient implements GatewayClient {
                             .doOnNext(buf -> logPayload(senderLog, context, buf));
 
                     sessionHandler = new GatewayWebsocketHandler(receiverSink, outFlux, context);
+
+                    DiscordAPI.lastCloseStatus = CloseStatus.NORMAL_CLOSE;
 
                     Integer resumeSequence = identifyOptions.getResumeSequence();
                     if (resumeSequence != null && resumeSequence > 0) {
