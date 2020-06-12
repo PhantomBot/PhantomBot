@@ -62,7 +62,10 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.uri().startsWith("/sslcheck")) {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled ? "true" : "false").getBytes(), null));
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled ? "true" : "false").getBytes(), null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
