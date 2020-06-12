@@ -116,6 +116,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             if (req.uri().contains("/remote")) {
                 String origin = req.headers().get(HttpHeaderNames.ORIGIN);
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
                 com.gmt2001.Console.debug.println("204");
             } else {
                 String host = req.headers().get(HttpHeaderNames.HOST);

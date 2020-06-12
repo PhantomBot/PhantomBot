@@ -523,7 +523,7 @@
         <script type="text/javascript" language="javascript">
             $(function () {
                 $('body').append($('<script>', {
-                    'src': 'https://' + helpers.getBotHost + '/panel/js/utils/panelConfig.js'
+                    'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
                 }));
                 setTimeout(function () {
                     $('body').append($('<script/>', {
