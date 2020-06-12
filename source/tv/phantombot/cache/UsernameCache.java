@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
-import tv.phantombot.PhantomBot;
 import org.json.JSONObject;
 
 public class UsernameCache {
@@ -76,7 +75,7 @@ public class UsernameCache {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
@@ -88,7 +87,7 @@ public class UsernameCache {
     }
 
     public String resolve(String username) {
-        return resolve(username, new HashMap<String, String>());
+        return resolve(username, new HashMap<>());
     }
 
     public String resolve(String username, Map<String, String> tags) {

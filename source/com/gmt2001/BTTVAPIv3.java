@@ -1,5 +1,3 @@
-/* astyle --style=java --indent=spaces=4 */
-
 /*
  * Copyright (C) 2016-2019 phantombot.tv
  *
@@ -16,43 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.illusionaryone;
+package com.gmt2001;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
- * Communicates with the BetterTTV v2 API server.  Currently only
- * supports the GET donations method.
- *
- * @author illusionaryone
+ * @author gmt2001
  */
-public class BTTVAPIv2 {
+public class BTTVAPIv3 {
 
-    private static BTTVAPIv2 instance;
-    private static final String sAPIURL = "https://api.betterttv.net/2";
-    private static final int iHTTPTimeout = 2 * 1000;
+    private static BTTVAPIv3 instance;
+    private static final String BASE_URL = "https://api.betterttv.net/3/cached/";
 
-    public static BTTVAPIv2 instance() {
+    public static BTTVAPIv3 instance() {
         if (instance == null) {
-            instance = new BTTVAPIv2();
+            instance = new BTTVAPIv3();
         }
-        
+
         return instance;
     }
 
-    private BTTVAPIv2() {
+    private BTTVAPIv3() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -73,8 +64,8 @@ public class BTTVAPIv2 {
      * as needed.
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-                                       String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) throws JSONException {
+            String url, int responseCode, String exception,
+            String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -98,8 +89,7 @@ public class BTTVAPIv2 {
             urlConn.setDoInput(true);
             urlConn.setRequestMethod("GET");
             urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                       "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            urlConn.setRequestProperty("User-Agent", "PhantomBotJ/2020");
             urlConn.connect();
 
             if (urlConn.getResponseCode() == 200) {
@@ -112,45 +102,32 @@ public class BTTVAPIv2 {
             jsonText = readAll(rd);
             jsonResult = new JSONObject(jsonText);
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
-        } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
-        } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
-        } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
-        } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
-        } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
+        } catch (IOException | NullPointerException | JSONException ex) {
+            // Generate the return object.
+            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, ex.getClass().getSimpleName(), ex.getMessage(), jsonText);
+            com.gmt2001.Console.err.println("BTTVAPIv3::readJsonFromUrl::Exception: " + ex.getMessage());
         } finally {
-            if (inputStream != null)
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.println("BTTVAPIv2::readJsonFromUrl::Exception: " + ex.getMessage());
+                    com.gmt2001.Console.err.println("BTTVAPIv3::readJsonFromUrl::Exception: " + ex.getMessage());
                 }
+            }
         }
 
-        return(jsonResult);
+        return (jsonResult);
     }
 
     /*
      * Pulls emote information for the local channel.
      *
-     * @param channel
+     * @param channelId
      * @return
      */
-    public JSONObject GetLocalEmotes(String channel) throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/channels/" + channel);
+    public JSONObject GetLocalEmotes(String channelId) throws JSONException {
+        return readJsonFromUrl(BASE_URL + "users/twitch/" + channelId);
     }
 
     /*
@@ -159,8 +136,6 @@ public class BTTVAPIv2 {
      * @return
      */
     public JSONObject GetGlobalEmotes() throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/emotes");
+        return readJsonFromUrl(BASE_URL + "emotes/global");
     }
-
-
 }
