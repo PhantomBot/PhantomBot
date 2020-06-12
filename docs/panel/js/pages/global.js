@@ -35,7 +35,7 @@ $(function () {
                     crossDomain: true,
                     success: function () {
                         document.cookie = 'selectedbot=null';
-                        window.location = '/panel/login';
+                        window.location = window.location.href + 'login';
                     },
                     error: function (xhr, status, thrown) {
                         toastr.error('Logout request failed: ' + status + " > " + thrown, '', { timeOut: 0 });
