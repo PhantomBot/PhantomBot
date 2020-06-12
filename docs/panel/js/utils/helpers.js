@@ -1150,7 +1150,17 @@ $(function() {
     };
     
     helpers.getBotHost = function() {
-        return document.cookie.substr(12);
+        var hash = window.location.hash.substr(1);
+        var kvs = hash.split("&");
+        var hashmap = [];
+        var spl;
+
+        for (var i = 0; i < kvs.length; i++) {
+            spl = kvs[i].split("=", 2);
+            hashmap[spl[0]] = spl[1];
+        }
+
+        return hashmap["selectedbot"];
     }
 
     // Export.

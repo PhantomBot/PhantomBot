@@ -97,8 +97,7 @@
                                                     pass: password
                                                 },
                                                 success: function () {
-                                                    document.cookie = 'selectedbot=' + hostname + ':' + port;
-                                                    window.location = '../';
+                                                    window.location = '../#selectedbot=' + hostname + ':' + port;
                                                 },
                                                 error: function (xhr, status, thrown) {
                                                     $('#error-box').removeClass('hide');
