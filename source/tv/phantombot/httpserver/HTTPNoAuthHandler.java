@@ -83,7 +83,15 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+            HttpResponseStatus status;
+
+            if (req.uri().contains("/remote")) {
+                status = HttpResponseStatus.NO_CONTENT;
+            } else {
+                status = HttpResponseStatus.SEE_OTHER;
+            }
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
 
             if (req.uri().contains("logout=true")) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
@@ -96,27 +104,32 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; Path=/");
             }
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
-
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().sslEnabled) {
-                host = "https://" + host;
+            if (req.uri().contains("/remote")) {
+                com.gmt2001.Console.debug.println("204");
             } else {
-                host = "http://" + host;
+                String host = req.headers().get(HttpHeaderNames.HOST);
+
+                if (host == null) {
+                    host = "";
+                } else if (HTTPWSServer.instance().sslEnabled) {
+                    host = "https://" + host;
+                } else {
+                    host = "http://" + host;
+                }
+
+                String kickback;
+
+                if (req.uri().contains("kickback=")) {
+                    kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
+                } else {
+                    kickback = "/panel";
+                }
+
+                res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
+
+                com.gmt2001.Console.debug.println("303");
             }
 
-            String kickback;
-
-            if (req.uri().contains("kickback=")) {
-                kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
-            } else {
-                kickback = "/panel";
-            }
-
-            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
-
-            com.gmt2001.Console.debug.println("303");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
