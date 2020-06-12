@@ -1,0 +1,169 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>PhantomBot | Log in</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="/panel/vendors/bootstrap/css/bootstrap.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="/panel/vendors/adminlte/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="/panel/vendors/adminlte/css/skins/skin-purple.min.css">
+        <!-- Google fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <!-- Custom style for the body height -->
+        <style>
+            body {
+                height: auto;
+            }
+        </style>
+        <script type="text/javascript" language="javascript">
+            function doLogin() {
+                $('#error-box').addClass('hide');
+                $('#error-br').addClass('hide');
+
+                var hostname = $('#hostname').val();
+                var port = $('#port').val();
+                var username = $('#username').val();
+                var password = $('#password').val();
+
+                if (hostname === undefined || hostname.length === 0) {
+                    $('#error-box').removeClass('hide');
+                    $('#error-br').removeClass('hide');
+                    $('#error-box').html('Bot IP or Hostname Required');
+                    return;
+                }
+
+                if (port === undefined || port.length === 0 || isNaN(parseInt(port)) || parseInt(port) < 1 || parseInt(port) > 65536) {
+                    $('#error-box').removeClass('hide');
+                    $('#error-br').removeClass('hide');
+                    $('#error-box').html('Valid Bot Port Required');
+                    return;
+                }
+
+                if (username === undefined || username.length === 0) {
+                    $('#error-box').removeClass('hide');
+                    $('#error-br').removeClass('hide');
+                    $('#error-box').html('Username Required');
+                    return;
+                }
+
+                if (password === undefined || password.length === 0) {
+                    $('#error-box').removeClass('hide');
+                    $('#error-br').removeClass('hide');
+                    $('#error-box').html('Password Required');
+                    return;
+                }
+
+                $.ajax(
+                        {
+                            type: 'GET',
+                            url: 'http://' + hostname + ':' + port + '/sslcheck',
+                            crossDomain: true,
+                            dataType: 'text',
+                            success: function (sslStatus) {
+                                if (sslStatus === "false") {
+                                    $('#error-box').removeClass('hide');
+                                    $('#error-br').removeClass('hide');
+                                    $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required');
+                                } else {
+                                    $.ajax(
+                                            {
+                                                type: 'POST',
+                                                url: 'https://' + hostname + ':' + port + '/panel/login/remote',
+                                                xhrFields: {
+                                                    withCredentials: true
+                                                },
+                                                crossDomain: true,
+                                                data: {
+                                                    user: username,
+                                                    pass: password
+                                                },
+                                                success: function () {
+                                                    document.cookie = 'selectedbot=' + hostname + ':' + port;
+                                                    window.location = '/panel';
+                                                },
+                                                error: function (xhr, status, thrown) {
+                                                    $('#error-box').removeClass('hide');
+                                                    $('#error-br').removeClass('hide');
+                                                    $('#error-box').html('Login request failed: ' + status + " > " + thrown);
+                                                }
+                                            }
+                                    );
+                                }
+                            },
+                            error: function (xhr, status, thrown) {
+                                $('#error-box').removeClass('hide');
+                                $('#error-br').removeClass('hide');
+                                $('#error-box').html('Login request failed: ' + status + " > " + thrown);
+                            }
+                        }
+                );
+            }
+        </script>
+    </head>
+
+    <!-- Main body -->
+    <body class="hold-transition login-page">
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="https://phantombot.tv"><b>Phantom</b>Bot</a>
+            </div>
+
+            <div class="login-box-body">
+                <p class="login-box-msg">Log in to start your session</p>
+
+                <div class="alert-error text-center hide" id="error-box"></div>
+                <br id="error-br" class="hide" />
+
+                <form>
+                    <div class="form-group">
+                        <input type="text" id="hostname" name="hostname" class="form-control" placeholder="Bot IP or Hostname">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="port" name="port" class="form-control" placeholder="Bot Port">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="username" name="user" class="form-control" placeholder="Username">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" id="password" name="pass" class="form-control" placeholder="Password">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4 pull-right">
+                            <button type="button" id="login-button" class="btn btn-primary btn-block btn-flat" onclick="doLogin();">Login</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- this could link to a how-to reset the password guide -->
+                <!-- <a href="#">Unable to login?</a><br> -->
+            </div>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="/panel/vendors/jquery/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="/panel/vendors/bootstrap/js/bootstrap.min.js"></script>
+    </body>
+</html>

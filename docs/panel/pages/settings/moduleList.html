@@ -1,0 +1,61 @@
+<!--
+    Copyright (C) 2016-2019 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Overwrite styles -->
+    <style>
+        .dataTables_filter {
+            float: right;
+            text-align: right;
+        }
+    </style>
+
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title.-->
+        <h1>Bot Modules</h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Settings</li>
+            <li class="active">Modules</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#twitch_modules" data-toggle="tab">Twitch</a></li>
+                <li><a href="#discord_modules" id="discord_modules_t" data-toggle="tab">Discord</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Twitch Modules -->
+                <div class="tab-pane active" id="twitch_modules">
+                    <table id="twitchModuleTable" class="table table-bordered table-hover"></table>
+                </div>
+
+                <!-- Discord Modules -->
+                <div class="tab-pane" id="discord_modules">
+                    <table id="discordModuleTable" class="table table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- moduleList -->
+    <script src="/panel/js/pages/settings/moduleList.js"></script>
+</main>
