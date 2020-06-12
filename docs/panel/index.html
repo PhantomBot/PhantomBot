@@ -25,6 +25,7 @@
         <title>PhantomBot Dashboard</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
         <!-- Discord Icon -->
@@ -525,11 +526,15 @@
                 $('body').append($('<script>', {
                     'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
                 }));
-                setTimeout(function () {
-                    $('body').append($('<script/>', {
-                        'src': 'js/index.jss'
+                var panelTmr = setInterval(function () {
+                    if (panelSettings === undefined) {
+                        return;
+                    }
+                    $('body').append($('<script>', {
+                        'src': 'js/index.js'
                     }));
-                }, 1000);
+                    clearInterval(panelTmr);
+                }, 500);
             });
         </script>
     </body>
