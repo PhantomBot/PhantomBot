@@ -98,12 +98,12 @@
                                                     pass: password
                                                 },
                                                 success: function () {
-                                                    window.location = '../#selectedbot=' + hostname + ':' + port;
+                                                    window.location = window.location.origin + window.location.pathname + '../#selectedbot=' + hostname + ':' + port;
                                                 },
                                                 error: function (xhr, status, thrown) {
                                                     $('#error-box').removeClass('hide');
                                                     $('#error-br').removeClass('hide');
-                                                    $('#error-box').html('Login request failed: ' + status + " > " + thrown);
+                                                    $('#error-box').html('Login request failed: [' + xhr.status + ']' + status + " > " + thrown);
                                                 }
                                             }
                                     );
@@ -112,7 +112,7 @@
                             error: function (xhr, status, thrown) {
                                 $('#error-box').removeClass('hide');
                                 $('#error-br').removeClass('hide');
-                                $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required,  or is not responding<br />' + status + ' > ' + thrown);
+                                $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required,  or is not responding<br />[' + xhr.status + ']' + status + ' > ' + thrown);
                             }
                         }
                 );

@@ -34,11 +34,10 @@ $(function () {
                     url: 'https://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
                     crossDomain: true,
                     success: function () {
-                        document.cookie = 'selectedbot=null';
-                        window.location = window.location.href + 'login';
+                        window.location = window.location.origin + window.location.pathname + 'login';
                     },
                     error: function (xhr, status, thrown) {
-                        toastr.error('Logout request failed: ' + status + " > " + thrown, '', { timeOut: 0 });
+                        toastr.error('Logout request failed: [' + xhr.status + ']' + status + " > " + thrown, '', { timeOut: 0 });
                     }
                 }
         );
