@@ -63,6 +63,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+
             String host = req.headers().get(HttpHeaderNames.HOST);
 
             if (host == null) {
@@ -73,8 +75,10 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 host = "http://" + host;
             }
 
-            com.gmt2001.Console.debug.println("421");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MISDIRECTED_REQUEST, ("Authenticated request attempted, please direct request to: " + host + "/dbquery").getBytes(), null));
+            res.headers().set(HttpHeaderNames.LOCATION, host + "/dbquery");
+
+            com.gmt2001.Console.debug.println("303");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
@@ -101,9 +105,9 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             } else {
                 host = "http://" + host;
             }
-            
+
             String kickback;
-            
+
             if (req.uri().contains("kickback=")) {
                 kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
             } else {
