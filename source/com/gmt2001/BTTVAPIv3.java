@@ -76,7 +76,7 @@ public class BTTVAPIv3 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
+    private static JSONObject readJsonFromUrl(String urlAddress, boolean isJSONArray) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -100,7 +100,11 @@ public class BTTVAPIv3 {
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             jsonText = readAll(rd);
-            jsonResult = new JSONObject(jsonText);
+            if (isJSONArray) {
+                jsonResult.put("data", jsonText);
+            } else {
+                jsonResult = new JSONObject(jsonText);
+            }
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (IOException | NullPointerException | JSONException ex) {
             // Generate the return object.
@@ -127,7 +131,7 @@ public class BTTVAPIv3 {
      * @return
      */
     public JSONObject GetLocalEmotes(String channelId) throws JSONException {
-        return readJsonFromUrl(BASE_URL + "users/twitch/" + channelId);
+        return readJsonFromUrl(BASE_URL + "users/twitch/" + channelId, false);
     }
 
     /*
@@ -136,6 +140,6 @@ public class BTTVAPIv3 {
      * @return
      */
     public JSONObject GetGlobalEmotes() throws JSONException {
-        return readJsonFromUrl(BASE_URL + "emotes/global");
+        return readJsonFromUrl(BASE_URL + "emotes/global", true);
     }
 }
