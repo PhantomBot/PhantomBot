@@ -95,7 +95,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             if (req.uri().contains("/remote")) {
                 status = HttpResponseStatus.NO_CONTENT;
-                sameSite = " SameSite=None;";
+                sameSite = "; SameSite=None";
             } else {
                 status = HttpResponseStatus.SEE_OTHER;
             }
@@ -103,14 +103,14 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
 
             if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? ";" + sameSite + " Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST)) {
                 Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
                 String user = post.getOrDefault("user", "");
                 String pass = post.getOrDefault("pass", "");
 
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? ";" + sameSite + " Secure" : "") + "; HttpOnly; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
             if (req.uri().contains("/remote")) {
