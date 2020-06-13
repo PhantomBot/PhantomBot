@@ -91,7 +91,7 @@
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
             timerTime = parseInt(args[i]);
             timeout = setTimeout(function () {
-                close();
+                draw();
             }, (timerTime * 6e4));
             timerMessage = $.lang.get('shufflesystem.common.timer', timerTime);
         }
@@ -153,7 +153,10 @@
             return;
         }
 
-        close(sender);
+        if (status) {
+            close(sender);
+        }
+
         var username = $.randElement(entries);
 
         $.inidb.incr("shufflewins", username, 1);
@@ -170,6 +173,7 @@
         var request = $.getUserRequest(username);
 
         // Bump users song in the queue
+        request[0].setShuffleFlag();
         $.currentPlaylist().addToQueue(request[0], 0);
         $.getConnectedPlayerClient().pushSongList();
     }

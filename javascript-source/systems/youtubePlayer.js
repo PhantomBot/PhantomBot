@@ -187,7 +187,9 @@
                 videoLength = -1,
                 license = 0,
                 embeddable = 0,
-                bumped = false;
+                bumped = false,
+                shuffle = false
+                ;
 
         this.found = false;
 
@@ -213,6 +215,14 @@
 
         this.isBump = function () {
             return bumped;
+        };
+
+        this.setShuffleFlag = function () {
+            shuffle = true;
+        };
+
+        this.isShuffle = function () {
+            return shuffle;
         };
 
         /**
@@ -1147,7 +1157,8 @@
                         "title": youtubeObject.getVideoTitle() + '',
                         "duration": youtubeObject.getVideoLengthMMSS() + '',
                         "requester": youtubeObject.getOwner() + '',
-                        "bump": youtubeObject.isBump() + ''
+                        "bump": youtubeObject.isBump() + '',
+                        "shuffle": youtubeObject.isShuffle() + ''
                     });
                 }
                 client.songList(JSON.stringify(jsonList));
