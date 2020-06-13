@@ -95,14 +95,14 @@
                                 <!-- Panel user -->
                                 <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <img src="img/logo.png" class="user-image">
+                                        <img src="img/logo.png" class="user-image" id="user-image1">
 
                                         <span class="hidden-xs" id="main-name">PhantomBot</span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <!-- User image -->
                                         <li class="user-header" style="background-color: #6441a5; height: auto;">
-                                            <img src="img/logo.png" class="img-circle" id="user-image">
+                                            <img src="img/logo.png" class="img-circle" id="user-image2">
 
                                             <p class="panel-admin" id="second-name">
                                                 PhantomBot
@@ -538,7 +538,8 @@
                         if (panelSettings === undefined) {
                             return;
                         }
-                        $('#user-image').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
+                        $('#user-image1').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
+                        $('#user-image2').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
                         $('body').append($('<script>', {
                             'src': 'js/index.js'
                         }));
