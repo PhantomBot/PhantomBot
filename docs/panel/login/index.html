@@ -35,7 +35,55 @@
                 height: auto;
             }
         </style>
-        <script type="text/javascript" language="javascript">
+    </head>
+
+    <!-- Main body -->
+    <body class="hold-transition login-page">
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="https://phantombot.tv"><b>Phantom</b>Bot</a>
+            </div>
+
+            <div class="login-box-body">
+                <p class="login-box-msg">Log in to start your session<br/><br/>This version of the panel is entirely client-side.
+                    <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser</p>
+
+                <div class="alert-error text-center hide" id="error-box"></div>
+                <br id="error-br" class="hide" />
+
+                <form>
+                    <div class="form-group">
+                        <input type="text" id="hostname" name="hostname" class="form-control" placeholder="Bot IP or Hostname">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="port" name="port" class="form-control" placeholder="Bot Port">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="username" name="user" class="form-control" placeholder="Username">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" id="password" name="pass" class="form-control" placeholder="Password">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4 pull-right">
+                            <button type="button" id="login-button" class="btn btn-primary btn-block btn-flat" onclick="doLogin();">Login</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- this could link to a how-to reset the password guide -->
+                <!-- <a href="#">Unable to login?</a><br> -->
+            </div>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="../vendors/jquery/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="../vendors/bootstrap/js/bootstrap.min.js"></script>
+               <script type="text/javascript" language="javascript">
             function doLogin() {
                 $('#error-box').addClass('hide');
                 $('#error-br').addClass('hide');
@@ -107,6 +155,8 @@
                                                                 },
                                                                 crossDomain: true,
                                                                 success: function () {
+                                                                    window.localStorage.setItem('bothostname', hostname);
+                                                                    window.localStorage.setItem('botport', port);
                                                                     window.location = window.location.origin + window.location.pathname + '../#selectedbot=' + hostname + ':' + port;
                                                                 },
                                                                 error: function (xhr, status, thrown) {
@@ -134,53 +184,14 @@
                         }
                 );
             }
+            $(function () {
+                setTimeout(function () {
+                    if (window.localStorage.getItem('bothostname')) {
+                        $('#hostname').val(window.localStorage.getItem('bothostname'));
+                        $('#port').val(window.localStorage.getItem('botport'));
+                    }
+                }, 500);
+            });
         </script>
-    </head>
-
-    <!-- Main body -->
-    <body class="hold-transition login-page">
-        <div class="login-box">
-            <div class="login-logo">
-                <a href="https://phantombot.tv"><b>Phantom</b>Bot</a>
-            </div>
-
-            <div class="login-box-body">
-                <p class="login-box-msg">Log in to start your session<br/><br/>This version of the panel is entirely client-side. Your credentials will only be transmitted directly to your bot</p>
-
-                <div class="alert-error text-center hide" id="error-box"></div>
-                <br id="error-br" class="hide" />
-
-                <form>
-                    <div class="form-group">
-                        <input type="text" id="hostname" name="hostname" class="form-control" placeholder="Bot IP or Hostname">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" id="port" name="port" class="form-control" placeholder="Bot Port">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" id="username" name="user" class="form-control" placeholder="Username">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="password" id="password" name="pass" class="form-control" placeholder="Password">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xs-4 pull-right">
-                            <button type="button" id="login-button" class="btn btn-primary btn-block btn-flat" onclick="doLogin();">Login</button>
-                        </div>
-                    </div>
-                </form>
-                <!-- this could link to a how-to reset the password guide -->
-                <!-- <a href="#">Unable to login?</a><br> -->
-            </div>
-        </div>
-
-        <!-- jQuery 3 -->
-        <script src="../vendors/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 3.3.7 -->
-        <script src="../vendors/bootstrap/js/bootstrap.min.js"></script>
     </body>
 </html>
