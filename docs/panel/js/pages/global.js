@@ -32,12 +32,15 @@ $(function () {
                 {
                     type: 'GET',
                     url: 'https://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     crossDomain: true,
                     success: function () {
                         window.location = window.location.origin + window.location.pathname + 'login';
                     },
                     error: function (xhr, status, thrown) {
-                        toastr.error('Logout request failed: [' + xhr.status + ']' + status + " > " + thrown, '', { timeOut: 0 });
+                        toastr.error('Logout request failed: [' + xhr.status + ']' + status + " > " + thrown, '', {timeOut: 0});
                     }
                 }
         );
