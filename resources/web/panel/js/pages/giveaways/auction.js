@@ -40,7 +40,7 @@ $(run = function () {
                 'frameborder': '0',
                 'scrolling': 'no',
                 'style': 'min-width: 100%; min-height: 493px;',
-                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '') + '&parent=' + location.hostname
+                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
             $('#twitch-chat-auction').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');

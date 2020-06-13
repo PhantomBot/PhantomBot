@@ -306,7 +306,7 @@ $(run = function () {
                 'frameborder': '0',
                 'scrolling': 'no',
                 'style': 'width: 100%; height: 561px; margin-bottom: -5px;',
-                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '') + '&parent=' + location.hostname
+                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
             $('#twitch-chat-betting').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
