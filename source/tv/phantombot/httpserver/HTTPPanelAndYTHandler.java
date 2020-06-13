@@ -63,6 +63,12 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             return;
         }
 
+        if (req.uri().startsWith("/panel/checklogin")) {
+            com.gmt2001.Console.debug.println("204");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null));
+            return;
+        }
+
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {

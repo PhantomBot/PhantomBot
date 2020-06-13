@@ -526,14 +526,24 @@
                 $('body').append($('<script>', {
                     'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
                 }));
+                var panelTmrIterations = 0;
                 var panelTmr = setInterval(function () {
-                    if (panelSettings === undefined) {
-                        return;
+                    try {
+                        panelTmrIterations++;
+                        if (panelTmrIterations >= 60) {
+                            window.location = window.location.origin + window.location.pathname + 'login';
+                            clearInterval(panelTmr);
+                            return;
+                        }
+                        if (panelSettings === undefined) {
+                            return;
+                        }
+                        $('body').append($('<script>', {
+                            'src': 'js/index.js'
+                        }));
+                        clearInterval(panelTmr);
+                    } catch (e) {
                     }
-                    $('body').append($('<script>', {
-                        'src': 'js/index.js'
-                    }));
-                    clearInterval(panelTmr);
                 }, 500);
             });
         </script>
