@@ -22,6 +22,8 @@ import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -64,8 +66,13 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/panel/checklogin")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+
             com.gmt2001.Console.debug.println("204");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
