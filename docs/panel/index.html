@@ -102,7 +102,7 @@
                                     <ul class="dropdown-menu">
                                         <!-- User image -->
                                         <li class="user-header" style="background-color: #6441a5; height: auto;">
-                                            <img src="img/logo.png" class="img-circle">
+                                            <img src="img/logo.png" class="img-circle" id="user-image">
 
                                             <p class="panel-admin" id="second-name">
                                                 PhantomBot
@@ -538,6 +538,7 @@
                         if (panelSettings === undefined) {
                             return;
                         }
+                        $('#user-image').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
                         $('body').append($('<script>', {
                             'src': 'js/index.js'
                         }));
