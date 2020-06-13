@@ -102,6 +102,9 @@
                                                             {
                                                                 type: 'GET',
                                                                 url: 'https://' + hostname + ':' + port + '/panel/checklogin',
+                                                                xhrFields: {
+                                                                    withCredentials: true
+                                                                },
                                                                 crossDomain: true,
                                                                 success: function () {
                                                                     window.location = window.location.origin + window.location.pathname + '../#selectedbot=' + hostname + ':' + port;
