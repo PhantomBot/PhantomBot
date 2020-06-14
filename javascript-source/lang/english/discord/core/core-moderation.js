@@ -59,5 +59,5 @@ $.lang.register('moderation.cleanup.done', 'Deleted $1 messages!');
 $.lang.register('moderation.logs.toggle.usage', 'Usage: !moderation logs [toggle / channel] - Will toggle Twitch moderation logs being posted in Discord.');
 $.lang.register('moderation.logs.toggle', 'Twitch moderation logs have been $1. **[Requires bot restart]**');
 $.lang.register('moderation.logs.channel.usage', 'Usage: !moderation logs channel [channel name]');
-$.lang.register('moderation.logs.channel.set', 'Twitch moderation log announcements will now be made in channel #$1');
+$.lang.register('moderation.logs.channel.set', 'Twitch moderation log announcements will now be made in channel $1');
 $.lang.register('moderation.cbenni.toggle', 'Cbenni link display for moderation has been $1.');
