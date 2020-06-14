@@ -688,9 +688,9 @@
                         return;
                     }
 
-                    modLogChannel = args.splice(2).join(' ').replace('#', '').toLowerCase();
+                    modLogChannel = $.discord.sanitizeChannelName(args.splice(2).join(' '));
                     $.setIniDbString('discordSettings', 'modLogChannel', modLogChannel);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.set', modLogChannel));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.set', args.splice(2).join(' ')));
                 }
             }
         }

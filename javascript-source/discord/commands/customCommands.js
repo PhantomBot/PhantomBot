@@ -416,7 +416,6 @@
             }
 
             action = action.replace('!', '').toLowerCase();
-            subAction = String(subAction).replace(/#/g, '').toLowerCase();
 
             if (!$.discord.commandExists(action)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.404'));
@@ -450,12 +449,12 @@
                 i;
 
             for (i in keys) {
-                key.push(keys[i].replace('#', ''));
+                key.push($.discord.sanitizeChannelName(keys[i]));
             }
 
-            $.inidb.set('discordChannelcom', action, subAction);
+            $.inidb.set('discordChannelcom', action, key.join(','));
             $.discord.updateCommandChannel(action);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, key.join(', ')));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, subAction.replace(',', ', ')));
         }
 
         /**

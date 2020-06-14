@@ -127,9 +127,9 @@
                 return;
             }
 
-            channelName = action.replace('#', '').toLowerCase();
+            channelName = $.discord.sanitizeChannelName(action);
             $.setIniDbString('discordSettings', 'clipsChannel', channelName);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.set', channelName));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.set', action));
         }
 
         /*
