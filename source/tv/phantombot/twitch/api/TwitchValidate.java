@@ -46,7 +46,17 @@ public class TwitchValidate {
     // Timeout which to wait for a response before killing it (5 seconds).
     private static final int TIMEOUT_TIME = 5000;
     private final List<String> scopesC = new ArrayList<>();
+    private String clientidC = "";
+    private String loginC = "";
+    private String useridC = "";
     private final List<String> scopesA = new ArrayList<>();
+    private String clientidA = "";
+    private String loginA = "";
+    private String useridA = "";
+    private final List<String> scopesT = new ArrayList<>();
+    private String clientidT = "";
+    private String loginT = "";
+    private String useridT = "";
 
     /**
      * This class constructor.
@@ -177,7 +187,8 @@ public class TwitchValidate {
      */
     public void validateAPI(String oAuthToken, String type) {
         try {
-            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, false);
+            scopesA.clear();
+            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 0);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
@@ -186,7 +197,18 @@ public class TwitchValidate {
 
     public void validateChat(String oAuthToken, String type) {
         try {
-            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, true);
+            scopesC.clear();
+            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 1);
+            new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
+        }
+    }
+
+    public void validateCustom(String oAuthToken, String type) {
+        try {
+            scopesT.clear();
+            ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 2);
             new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
@@ -201,12 +223,56 @@ public class TwitchValidate {
         return new ArrayList<>(scopesC);
     }
 
+    public String getChatClientID() {
+        return this.clientidC;
+    }
+
+    public String getChatLogin() {
+        return this.loginC;
+    }
+
+    public String getChatUserID() {
+        return this.useridC;
+    }
+
     public boolean hasAPIScope(String scope) {
         return scopesA.contains(scope);
     }
 
     public List<String> getAPIScopes() {
         return new ArrayList<>(scopesA);
+    }
+
+    public String getAPIClientID() {
+        return this.clientidA;
+    }
+
+    public String getAPILogin() {
+        return this.loginA;
+    }
+
+    public String getAPIUserID() {
+        return this.useridA;
+    }
+
+    public boolean hasCustomScope(String scope) {
+        return scopesT.contains(scope);
+    }
+
+    public List<String> getCustomScopes() {
+        return new ArrayList<>(scopesT);
+    }
+
+    public String getCustomClientID() {
+        return this.clientidT;
+    }
+
+    public String getCustomLogin() {
+        return this.loginT;
+    }
+
+    public String getCustomUserID() {
+        return this.useridT;
     }
 
     /**
@@ -216,12 +282,12 @@ public class TwitchValidate {
 
         private final String oAuthToken;
         private final String type;
-        private final boolean isChat;
+        private final int tokenType;
 
-        public ValidateRunnable(String oAuthToken, String type, boolean isChat) {
+        public ValidateRunnable(String oAuthToken, String type, int tokenType) {
             this.oAuthToken = oAuthToken.replace("oauth:", "");
             this.type = type;
-            this.isChat = isChat;
+            this.tokenType = tokenType;
         }
 
         @Override
@@ -244,9 +310,68 @@ public class TwitchValidate {
 
                 if (requestObj.has("scopes")) {
                     JSONArray scopesa = requestObj.getJSONArray("scopes");
+                    switch (tokenType) {
+                        case 1:
+                            scopesa.iterator().forEachRemaining(obj -> {
+                                scopesC.add((String) obj);
+                            });
+                            break;
+                        case 2:
+                            scopesa.iterator().forEachRemaining(obj -> {
+                                scopesT.add((String) obj);
+                            });
+                            break;
+                        default:
+                            scopesa.iterator().forEachRemaining(obj -> {
+                                scopesA.add((String) obj);
+                            });
+                            break;
+                    }
                     scopesa.iterator().forEachRemaining(obj -> {
-                        (isChat ? scopesC : scopesA).add((String) obj);
+                        (tokenType == 1 ? scopesC : (tokenType == 2 ? scopesT : scopesA)).add((String) obj);
                     });
+                }
+
+                if (requestObj.has("client_id")) {
+                    switch (tokenType) {
+                        case 1:
+                            clientidC = requestObj.getString("client_id");
+                            break;
+                        case 2:
+                            clientidT = requestObj.getString("client_id");
+                            break;
+                        default:
+                            clientidA = requestObj.getString("client_id");
+                            break;
+                    }
+                }
+
+                if (requestObj.has("login")) {
+                    switch (tokenType) {
+                        case 1:
+                            loginC = requestObj.getString("login");
+                            break;
+                        case 2:
+                            loginT = requestObj.getString("login");
+                            break;
+                        default:
+                            loginA = requestObj.getString("login");
+                            break;
+                    }
+                }
+
+                if (requestObj.has("user_id")) {
+                    switch (tokenType) {
+                        case 1:
+                            useridC = requestObj.getString("user_id");
+                            break;
+                        case 2:
+                            useridT = requestObj.getString("user_id");
+                            break;
+                        default:
+                            useridA = requestObj.getString("user_id");
+                            break;
+                    }
                 }
 
                 com.gmt2001.Console.out.println("Validated Twitch " + type + " OAUTH Token.");
