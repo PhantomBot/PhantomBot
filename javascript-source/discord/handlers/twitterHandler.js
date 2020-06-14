@@ -104,9 +104,9 @@
                     return;
                 }
 
-                channelName = subAction.replace('#', '').toLowerCase();
+                channelName = $.discord.sanitizeChannelName(subAction);
                 $.inidb.set('discordSettings', 'twitterChannel', channelName);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.channel.set', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.channel.set', subAction));
             }
         }
     });

@@ -152,6 +152,24 @@
         return $.discordAPI.addRole(role, username);
     }
 
+    function sanitizeChannelName(channel) {
+        channel = channel.trim();
+
+        if (channel.substr(0, 1) === '<') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(0, 1) === '#') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(channel.length - 1, 1) === '>') {
+            channel = channel.substr(0, channel.length - 1);
+        }
+
+        return channel;
+    }
+
     /**
      * @function handleDeleteReaction
      * 
@@ -399,6 +417,7 @@
         setRole: setRole,
         say: say,
         handleDeleteReaction: handleDeleteReaction,
+        sanitizeChannelName: sanitizeChannelName,
         resolve: {
             global: getUserMentionOrChannel,
             getUserMentionOrChannel: getUserMentionOrChannel

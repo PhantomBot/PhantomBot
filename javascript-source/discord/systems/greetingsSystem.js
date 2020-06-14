@@ -166,9 +166,9 @@
                     return;
                 }
 
-                channelName = subAction.replace('#', '').toLowerCase();
+                channelName = $.discord.sanitizeChannelName(subAction);
                 $.setIniDbString('discordSettings', 'greetingsChannel', channelName);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.channel.set', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.channel.set', subAction));
             }
 
             /**

@@ -283,9 +283,9 @@
                     return;
                 }
 
-                channelName = subAction.replace('#', '').toLowerCase();
+                channelName = $.discord.sanitizeChannelName(subAction);
                 $.inidb.set('discordSettings', 'subChannel', channelName);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.channel.set', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.channel.set', subAction));
             }
         }
     });
