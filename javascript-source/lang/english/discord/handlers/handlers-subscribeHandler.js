@@ -29,7 +29,7 @@ $.lang.register('discord.subscribehandler.prime.sub.message.set', 'Twitch Prime 
 $.lang.register('discord.subscribehandler.resub.message.usage', 'Usage: !subscribehandler resubmessage [message] - Tags: (name) (months)');
 $.lang.register('discord.subscribehandler.resub.message.set', 'Re-subscriber annoucement message set to: $1');
 $.lang.register('discord.subscribehandler.channel.usage', 'Usage: !subscribehandler channel [channel name]');
-$.lang.register('discord.subscribehandler.channel.set', 'Subscriber annoucements will now be made in channel #$1');
+$.lang.register('discord.subscribehandler.channel.set', 'Subscriber annoucements will now be made in channel $1');
 $.lang.register('discord.subscribehandler.resubscriber.embedtitle', 'New Resubscriber!');
 $.lang.register('discord.subscribehandler.subscriber.embedtitle', 'New Subscriber!');
 $.lang.register('discord.subscribehandler.giftsubscriber.embedtitle', 'New Gifted Subscription!');

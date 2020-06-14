@@ -20,5 +20,5 @@ $.lang.register('discord.tipeeestreamhandler.toggle', 'TipeeeStream donation ann
 $.lang.register('discord.tipeeestreamhandler.message.usage', 'Usage: !tipeeestreamhandler message [message] - Tags: (name) (amount) (currency) (formattedamount) (message)');
 $.lang.register('discord.tipeeestreamhandler.message.set', 'TipeeeStream donation message set to: $1');
 $.lang.register('discord.tipeeestreamhandler.channel.usage', 'Usage: !tipeeestreamhandler channel [channel name]');
-$.lang.register('discord.tipeeestreamhandler.channel.set', 'TipeeeStream donation announcements will now be made in channel #$1');
+$.lang.register('discord.tipeeestreamhandler.channel.set', 'TipeeeStream donation announcements will now be made in channel $1');
 $.lang.register('discord.tipeeestreamhandler.embed.title', 'New Tip!');

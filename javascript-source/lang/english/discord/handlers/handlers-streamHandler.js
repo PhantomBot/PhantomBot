@@ -26,7 +26,7 @@ $.lang.register('discord.streamhandler.game.toggle', 'Game change announcements 
 $.lang.register('discord.streamhandler.game.message.usage', 'Usage: !streamhandler gamemessage [message] - Tags: (name) (url)');
 $.lang.register('discord.streamhandler.game.message.set', 'Game change announcement message set to: $1');
 $.lang.register('discord.streamhandler.channel.usage', 'Usage: !streamhandler channel [channel name]');
-$.lang.register('discord.streamhandler.channel.set', 'Stream annoucements will now be made in channel #$1');
+$.lang.register('discord.streamhandler.channel.set', 'Stream annoucements will now be made in channel $1');
 $.lang.register('discord.streamhandler.delete.toggle', 'Automatically delete the online message after the stream ends and the offline message when a new stream starts: $1');
 $.lang.register('discord.streamhandler.bot.game.toggle', 'Bot stream status has been $1.');
 $.lang.register('discord.streamhandler.common.title', 'Stream Status');
