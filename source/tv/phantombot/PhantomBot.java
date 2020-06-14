@@ -47,7 +47,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -499,7 +498,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.whisperLimit = Double.parseDouble(this.pbProperties.getProperty("whisperlimit60", "60.0"));
 
         /* Set the client id for the twitch api to use */
-        this.clientId = this.pbProperties.getProperty("clientid", "7wpchwtqz7pvivc3qbdn1kajz42tdmb");
+        this.clientId = this.pbProperties.getProperty("clientid", "");
 
         /* Set any DB backup options. */
         this.backupDBAuto = this.pbProperties.getProperty("backupdbauto", this.pbProperties.getProperty("backupsqliteauto", "true")).equalsIgnoreCase("true");
@@ -560,15 +559,15 @@ public final class PhantomBot implements Listener {
             dataStore.CreateIndexes();
         }
 
-        /* Set the client Id in the Twitch api. */
-        TwitchAPIv5.instance().SetClientID(this.clientId);
-
         /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
             TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
         }
         
+        /* Set the client Id in the Twitch api. */
+        TwitchAPIv5.instance().SetClientID(this.clientId.isBlank() ? (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID()) : this.clientId);
+
         /* Set the Bitly token. */
         if (!BitlyAPIKey.isEmpty() && !BitlyGUID.isEmpty()) {
             BitlyAPIv4.instance().setAPIKey(BitlyAPIKey);
