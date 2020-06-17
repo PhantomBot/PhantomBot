@@ -101,7 +101,7 @@
                     result: String($.randRange(1, 100)),
                     cache: false
                 };
-            } else if ((match = args.match(/\s(\d+), (\d+)/))) {
+            } else if ((match = args.match(/^\s(\d+), (\d+)$/))) {
                 return {
                     result: String($.randRange(parseInt(match[1]), parseInt(match[2]))),
                     cache: false
@@ -113,9 +113,13 @@
         // (n:int=tag:str): the n-th argument if given else to the be expanded tag
         function buildArgs(n) {
             return function (args, event) {
+                var arg = event.getArgs()[n - 1];
                 if (!args) {
-                    return {result: event.getArgs()[n - 1] !== undefined ? String(event.getArgs()[n - 1]) : ''};
+                    return {result: arg !== undefined ? String(arg) : ''};
                 } else if ((match = args.match(/^=(.+)$/))) {
+                    if (arg !== undefined) {
+                        return {result: String(arg)};
+                    }
                     return {
                         result: '(' + escapeTags(match[1]) + ')',
                         raw: true
