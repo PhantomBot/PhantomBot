@@ -266,7 +266,7 @@
         // (customapi url:str): http GET url and output returned text (escaped by default)
         // $1-$9 in url will be expanded to the command's arguments
         function customapi(args, event) {
-            if ((match = args.match(/^\s([\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+)$/))) {
+            if ((match = args.match(/^\s(.+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
                     match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
@@ -306,7 +306,7 @@
                 response,
                 responsePart,
                 result = '';
-            if ((match = args.match(/^ ([\w\.:\/\$=\?\&\-]+)\s([\w\W]+)$/))) {
+            if ((match = args.match(/^ (\S+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
                     match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
