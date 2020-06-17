@@ -1,0 +1,253 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>PhantomBot | OAuth</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" href="../panel/vendors/font-awesome/css/font-awesome.min.css">
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="../panel/vendors/bootstrap/css/bootstrap.min.css">
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../panel/vendors/adminlte/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="../panel/vendors/adminlte/css/skins/skin-purple.min.css">
+        <!-- Google fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <!-- Custom style for the body height -->
+        <style>
+            body {
+                height: auto;
+            }
+            .btn {
+                display:inline-block;
+                height:48px;
+                line-height:46px;
+                font-size:14px;
+                border:1px solid transparent;
+                border-radius:24px;
+                padding:0 30px;
+                margin:10px 8px 10px 0;
+                cursor:pointer;
+                background-image:none;
+                white-space:nowrap;
+                -ms-user-select:none;
+                user-select:none;
+                -webkit-transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                -o-transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                background-color:#6441a5;
+            }
+            .btn:hover {
+                background-color:#3a2560;
+                text-decoration:none;
+                outline:0
+            }
+            .btn:focus {
+                outline:0
+            }
+        </style>
+    </head>
+
+    <!-- Main body -->
+    <body class="hold-transition login-page">
+        <div class="login-box" style="width: 1000px;">
+            <div class="login-logo">
+                <a href="https://phantombot.tv"><b>Phantom</b>Bot</a>
+            </div>
+
+            <div class="login-box-body">
+                <div class="alert-success text-center page-header hide" id="success-box"></div>
+                <br id="success-br" class="hide" />
+
+                <div>
+                    Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
+                    <br />
+                    <div style="padding-left: 25px;">
+                        <list>
+                        <li><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                        <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                        </list>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div>
+                    The following permissions are requested for the <div class="text-bold" style="display: inline;">bot's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                    <br />
+                    <div style="padding-left: 25px;">
+                        <ul id="scopes-bot">
+                        </ul>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div>
+                    The following permissions are requested for the <div class="text-bold" style="display: inline;">broadcaster's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                    <br />
+                    <div style="padding-left: 25px;">
+                        <ul id="scopes-broadcaster">
+                        </ul>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <a id="connect-bot" class="btn btn-primary">
+                    <i class="fa fa-twitch"></i>
+                    Connect with Twitch Bot
+                </a>&nbsp;<a id="connect-caster" class="btn btn-primary">
+                    <i class="fa fa-twitch"></i>
+                    Connect with Twitch Broadcaster
+                </a>
+            </div>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="../panel/vendors/jquery/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="../panel/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" language="javascript">
+            $(function () {
+                var scopesBot = {
+                    "chat:read": "[Helix] View live Stream Chat and Rooms messages",
+                    "chat:edit": "[Helix] Send live Stream Chat and Rooms messages",
+                    "channel:moderate": "[Helix] Perform moderation actions in a channel",
+                    "whispers:read": "[Helix] View your whisper messages",
+                    "whispers:edit": "[Helix] Send whisper messages"
+                };
+
+                var scopesBroadcaster = {
+                    "channel_editor": "[v5] Write access to channel metadata (game, status, etc)",
+                    "channel_commercial": "[v5] Access to trigger commercials on channel",
+                    "channel_subscriptions": "[v5] Read access to all subscribers to your channel",
+                    "user:read:broadcast": "[Helix] View your broadcasting configuration, including extension configurations",
+                    "user:edit:broadcast": "[Helix] Edit your channel's broadcast configuration, including extension configuration. (This scope implies user:read:broadcast capability.)",
+                    "chat:read": "[Helix] View live Stream Chat and Rooms messages",
+                    "channel:moderate": "[Helix] Perform moderation actions in a channel",
+                    "channel:read:subscriptions": "[Helix] Get a list of all subscribers to your channel and check if a user is subscribed to your channel",
+                    "channel:read:redemptions": "[Helix] View your channel points custom reward redemptions"
+                };
+
+                function addScopeItem(type, scope, description) {
+                    $('#scopes-' + type).append(
+                            $('<li/>', {
+                                'html': $('<div/>', {
+                                    'class': 'text-bold',
+                                    'style': 'display: inline;',
+                                    'text': scope
+                                })
+                            }).append(' - ' + description)
+                            );
+                }
+
+                for (x in scopesBot) {
+                    addScopeItem('bot', x, scopesBot[x]);
+                }
+
+                for (x in scopesBroadcaster) {
+                    addScopeItem('broadcaster', x, scopesBot[x]);
+                }
+
+                var queryString = window.location.hash, // Query string that starts with ?
+                        queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
+                        queryMap = new Map(), // Create a new map for save our keys and values.
+                        baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
+                        clientID = '26zr06lmku74srltt7qprwbotaxm91',
+                        redirectURI = window.location.origin + window.location.pathname,
+                        state;
+
+                for (var i = 0; i < queryParts.length; i++) {
+                    var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
+                            value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
+
+                    if (key.length > 0 && value.length > 0) {
+                        queryMap.set(key.toLowerCase(), value);
+                    }
+                }
+
+                if (queryMap.size > 0) {
+                    if (queryMap.has('access_token') && queryMap.has('state')) {
+                        // Get the state.
+                        state = window.localStorage.getItem('state');
+
+                        if (queryMap.get('state') === state) {
+                            $('#success-box').removeClass('hide');
+                            $('#success-br').removeClass('hide');
+                            $('#success-box').html('Your ' + window.localStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
+                                            'class': 'form-control',
+                                            'type': 'text',
+                                            'readonly': true,
+                                            'style': 'display:inline; width: 280px; text-align: center;',
+                                            'value': queryMap.get('access_token')
+                                        }));
+
+                            // Remove the state.
+                            window.localStorage.removeItem('state');
+                            window.localStorage.removeItem('state-type');
+                        }
+                    }
+                } else {
+                    // Generates the state.
+                    function generateState(type) {
+                        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                                state = '';
+
+                        for (var i = 0; i < 40; i++) {
+                            state += possible.charAt(Math.floor(Math.random() * possible.length));
+                        }
+
+                        // Save the state.
+                        window.localStorage.setItem('state', state);
+                        window.localStorage.setItem('state-type', type);
+
+                        return state;
+                    }
+
+                    // Connect with Twitch button bot.
+                    $('#connect-bot').on('click', function () {
+                        var scopes = '';
+                        for (var x in scopesBot) {
+                            if (scopes.length > 0) {
+                                scopes = scopes + '+';
+                            }
+
+                            scopes = scopes + x;
+                        }
+
+                        window.location = baseAPIUri + '?response_type=token&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
+                    });
+
+                    // Connect with Twitch button caster.
+                    $('#connect-caster').on('click', function () {
+                        var scopes = '';
+                        for (var x in scopesBroadcaster) {
+                            if (scopes.length > 0) {
+                                scopes = scopes + '+';
+                            }
+
+                            scopes = scopes + x;
+                        }
+
+                        window.location = baseAPIUri + '?response_type=token&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>

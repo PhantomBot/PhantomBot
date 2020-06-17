@@ -87,6 +87,13 @@
                     <i class="fas fa-lock"></i>
                 </span>
             </div>
+            <div class="launcher" data-toggle="tooltip" data-placement="right" title="Click to launch the OAuth generator page." id="oauth-tab">
+                <span id="middle">
+                    <i id="fontawesome" class="fas fa-key" aria-hidden="true"></i>
+
+                    <span>Generate PhantomBot OAuth</span>
+                </span>
+            </div>
 
         <!-- Copyright footer -->
         <footer id="copyright">
@@ -113,6 +120,10 @@
                 // Generate panel tab.
                 $('#panel-tab').wrapInner($('<a/>', {
                     'href': getWindowUrl('panel/login')
+                }));
+
+                $('#oauth-tab').wrapInner($('<a/>', {
+                    'href': getWindowUrl('oauth')
                 }));
 
                 // Start tooltips.
