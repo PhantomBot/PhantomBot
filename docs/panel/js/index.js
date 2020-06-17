@@ -17,7 +17,7 @@
 
 // Main socket and functions.
 $(function() {
-    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel', null, { reconnectInterval: 500 }),
+    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};

@@ -83,7 +83,7 @@
         <script src="../vendors/jquery/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="../vendors/bootstrap/js/bootstrap.min.js"></script>
-               <script type="text/javascript" language="javascript">
+        <script type="text/javascript" language="javascript">
             function doLogin() {
                 $('#error-box').addClass('hide');
                 $('#error-br').addClass('hide');
@@ -162,7 +162,7 @@
                                                                 error: function (xhr, status, thrown) {
                                                                     $('#error-box').removeClass('hide');
                                                                     $('#error-br').removeClass('hide');
-                                                                    $('#error-box').html('Invalid Login');
+                                                                    $('#error-box').html('Invalid Login' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
                                                                 }
                                                             }
                                                     );
@@ -170,7 +170,7 @@
                                                 error: function (xhr, status, thrown) {
                                                     $('#error-box').removeClass('hide');
                                                     $('#error-br').removeClass('hide');
-                                                    $('#error-box').html('Login request failed: [' + xhr.status + ']' + status + " > " + thrown);
+                                                    $('#error-box').html('Login attempt failed' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
                                                 }
                                             }
                                     );
@@ -179,7 +179,7 @@
                             error: function (xhr, status, thrown) {
                                 $('#error-box').removeClass('hide');
                                 $('#error-br').removeClass('hide');
-                                $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required,  or is not responding<br />[' + xhr.status + ']' + status + ' > ' + thrown);
+                                $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required, or is not responding' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
                             }
                         }
                 );
@@ -189,6 +189,21 @@
                     if (window.localStorage.getItem('bothostname')) {
                         $('#hostname').val(window.localStorage.getItem('bothostname'));
                         $('#port').val(window.localStorage.getItem('botport'));
+                    }
+                    var hash = window.location.hash.substr(1);
+                    var kvs = hash.split("&");
+                    var hashmap = [];
+                    var spl;
+
+                    for (var i = 0; i < kvs.length; i++) {
+                        spl = kvs[i].split("=", 2);
+                        hashmap[spl[0]] = spl[1];
+                    }
+
+                    if (hashmap["connectFail"] !== undefined && hashmap["connectFail"] === "true") {
+                        $('#error-box').removeClass('hide');
+                        $('#error-br').removeClass('hide');
+                        $('#error-box').html('Timed out connecting to the bot');
                     }
                 }, 500);
             });

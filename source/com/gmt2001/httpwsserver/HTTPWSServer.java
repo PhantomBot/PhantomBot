@@ -25,16 +25,29 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import tv.phantombot.PhantomBot;
 
 /**
  * Provides a HTTP 1.1 server with WebSocket support
@@ -57,11 +70,18 @@ public final class HTTPWSServer {
     private Channel ch;
 
     public boolean sslEnabled = false;
+    private boolean autoSSL = false;
+    private SslContext sslCtx;
+    private KeyStore ks = null;
+    private String sslFile = null;
+    private String sslPass = null;
+    private Date nextAutoSslCheck = new Date();
 
     /**
      * Gets the server instance.
      *
-     * You should always call the parameterized version, {@link HTTPWSServer#instance(String, int, boolean, String, String)}, at least once before this one
+     * You should always call the parameterized version, {@link HTTPWSServer#instance(String, int, boolean, String, String)}, at least once before
+     * this one
      *
      * @return An initialized {@link HTTPWSServer}
      */
@@ -99,23 +119,27 @@ public final class HTTPWSServer {
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      */
     private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
-        final SslContext sslCtx;
-
         try {
-            if (useHttps && sslFile != null && !sslFile.isBlank()) {
-                KeyStore ks = KeyStore.getInstance("JKS");
-                try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
-                    ks.load(inputStream, sslPass.toCharArray());
+            if (useHttps) {
+                this.sslFile = sslFile;
+                this.sslPass = sslPass;
 
-                    KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-                    kmf.init(ks, sslPass.toCharArray());
+                ks = KeyStore.getInstance("JKS");
+                ks.load(null, this.sslPass.toCharArray());
 
-                    TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-                    tmf.init(ks);
+                if (sslFile == null || sslFile.isBlank()) {
+                    this.autoSSL = true;
+                    this.sslFile = "./config/selfkey.jks";
+                    this.sslPass = "pbselfsign";
 
-                    sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
-                    sslEnabled = true;
+                    if (!Files.exists(Paths.get(this.sslFile))) {
+                        this.generateAutoSsl();
+                    }
                 }
+
+                this.reloadSslContext();
+
+                sslEnabled = true;
             } else {
                 sslCtx = null;
             }
@@ -123,7 +147,7 @@ public final class HTTPWSServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(group)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new HTTPWSServerInitializer(sslCtx));
+                    .childHandler(new HTTPWSServerInitializer());
 
             if (ipOrHostname == null || ipOrHostname.isBlank()) {
                 ch = b.bind(port).sync().channel();
@@ -134,6 +158,111 @@ public final class HTTPWSServer {
             com.gmt2001.Console.err.printStackTrace(ex);
             group.shutdownGracefully();
         }
+    }
+
+    /**
+     * Manages generation of the AutoSsl certificate
+     */
+    private void generateAutoSsl() {
+        try {
+            KeyPair kp = null;
+            if (this.ks != null) {
+                Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
+                if (key instanceof PrivateKey) {
+                    // Get certificate of public key
+                    Certificate cert = ks.getCertificate("phantombot");
+
+                    // Get public key
+                    PublicKey publicKey = cert.getPublicKey();
+
+                    // Return a key pair
+                    kp = new KeyPair(publicKey, (PrivateKey) key);
+                }
+            }
+
+            if (kp == null) {
+                kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
+            }
+
+            String dn = SelfSignedX509CertificateGenerator.generateDistinguishedName("PhantomBot." + PhantomBot.instance().getBotName());
+
+            X509Certificate cert = SelfSignedX509CertificateGenerator.generateCertificate(dn, kp, SelfSignedX509CertificateGenerator.RECOMMENDED_VALIDITY_DAYS, SelfSignedX509CertificateGenerator.RECOMMENDED_SIG_ALGO);
+
+            ks.setKeyEntry("phantombot", kp.getPrivate(), "pbselfsign".toCharArray(), new Certificate[]{cert});
+
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
+                ks.store(outputStream, "pbselfsign".toCharArray());
+            }
+
+            this.reloadSslContext();
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            this.nextAutoSslCheck = cal.getTime();
+        } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Reloads the SslContext
+     *
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws KeyStoreException
+     * @throws UnrecoverableKeyException
+     */
+    private void reloadSslContext() throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
+        try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+            ks.load(inputStream, this.sslPass.toCharArray());
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, this.sslPass.toCharArray());
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(this.ks);
+
+            sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
+        }
+    }
+
+    /**
+     * Checks if the AutoSsl certificate requires renewal, and triggers it
+     */
+    private void renewAutoSsl() {
+        try {
+            if (this.ks != null) {
+                Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
+                if (key instanceof PrivateKey) {
+                    // Get certificate of public key
+                    X509Certificate cert = (X509Certificate) ks.getCertificate("phantombot");
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.DAY_OF_MONTH, 1);
+                    this.nextAutoSslCheck = cal.getTime();
+                    cal.add(Calendar.DAY_OF_MONTH, 29);
+
+                    if (cal.getTime().after(cert.getNotAfter())) {
+                        this.generateAutoSsl();
+                    }
+                }
+            }
+        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Triggers an AutoSsl renewal check, if enabled, and returns the current SslContext
+     *
+     * @return the current SslContext
+     */
+    SslContext getSslContext() {
+        if (this.autoSSL && new Date().after(this.nextAutoSslCheck)) {
+            this.renewAutoSsl();
+        }
+
+        return this.sslCtx;
     }
 
     /**
