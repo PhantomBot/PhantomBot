@@ -86,7 +86,7 @@ public final class HTTPWSServer {
      * @return An initialized {@link HTTPWSServer}
      */
     public static HTTPWSServer instance() {
-        return instance(null, 25000, false, null, null);
+        return instance(null, 25000, false, null, null, null);
     }
 
     /**
@@ -100,9 +100,9 @@ public final class HTTPWSServer {
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      * @return An initialized {@link HTTPWSServer}
      */
-    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
+    public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
         if (INSTANCE == null) {
-            INSTANCE = new HTTPWSServer(ipOrHostname, port, useHttps, sslFile, sslPass);
+            INSTANCE = new HTTPWSServer(ipOrHostname, port, useHttps, sslFile, sslPass, botName);
         }
 
         return INSTANCE;
@@ -118,7 +118,7 @@ public final class HTTPWSServer {
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
      */
-    private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass) {
+    private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
         try {
             if (useHttps) {
                 this.sslFile = sslFile;
@@ -133,7 +133,7 @@ public final class HTTPWSServer {
                     this.sslPass = "pbselfsign";
 
                     if (!Files.exists(Paths.get(this.sslFile))) {
-                        this.generateAutoSsl();
+                        this.generateAutoSsl(botName);
                     }
                 }
 
@@ -160,31 +160,31 @@ public final class HTTPWSServer {
         }
     }
 
+    private void generateAutoSsl() {
+        this.generateAutoSsl(PhantomBot.instance().getBotName());
+    }
+
     /**
      * Manages generation of the AutoSsl certificate
      */
-    private void generateAutoSsl() {
+    private void generateAutoSsl(String botName) {
         try {
             KeyPair kp = null;
-            if (this.ks != null) {
-                Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
-                if (key instanceof PrivateKey) {
-                    // Get certificate of public key
-                    Certificate cert = ks.getCertificate("phantombot");
+            Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
+            if (key instanceof PrivateKey) {
+                // Get certificate of public key
+                Certificate cert = ks.getCertificate("phantombot");
 
-                    // Get public key
-                    PublicKey publicKey = cert.getPublicKey();
+                // Get public key
+                PublicKey publicKey = cert.getPublicKey();
 
-                    // Return a key pair
-                    kp = new KeyPair(publicKey, (PrivateKey) key);
-                }
-            }
-
-            if (kp == null) {
+                // Return a key pair
+                kp = new KeyPair(publicKey, (PrivateKey) key);
+            } else {
                 kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
             }
 
-            String dn = SelfSignedX509CertificateGenerator.generateDistinguishedName("PhantomBot." + PhantomBot.instance().getBotName());
+            String dn = SelfSignedX509CertificateGenerator.generateDistinguishedName("PhantomBot." + botName);
 
             X509Certificate cert = SelfSignedX509CertificateGenerator.generateCertificate(dn, kp, SelfSignedX509CertificateGenerator.RECOMMENDED_VALIDITY_DAYS, SelfSignedX509CertificateGenerator.RECOMMENDED_SIG_ALGO);
 
