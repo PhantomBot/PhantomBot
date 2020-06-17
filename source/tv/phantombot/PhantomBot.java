@@ -446,21 +446,6 @@ public final class PhantomBot implements Listener {
         this.httpsFileName = this.pbProperties.getProperty("httpsFileName", "");
         this.httpsPassword = this.pbProperties.getProperty("httpsPassword", "");
 
-        /* Verify SSL file if useHttps is enabled. */
-        if (this.useHttps) {
-            if (this.httpsFileName.equals("")) {
-                com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not defined.");
-                com.gmt2001.Console.err.println("Terminating PhantomBot");
-                PhantomBot.exitError();
-            }
-
-            if (!new File (httpsFileName).exists()) {
-                com.gmt2001.Console.err.println("HTTPS is enabled but the Java Keystore (httpsFileName) is not present: " + httpsFileName);
-                com.gmt2001.Console.err.println("Terminating PhantomBot");
-                PhantomBot.exitError();
-            }
-        }
-
         /* Set the timeZone */
         PhantomBot.timeZone = this.pbProperties.getProperty("logtimezone", "GMT");
 
