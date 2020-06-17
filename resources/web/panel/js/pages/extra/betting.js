@@ -300,7 +300,7 @@ $(run = function () {
             return;
         }
 
-        if (location.protocol.toLowerCase().startsWith('https')) {
+        if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
             // Add Twitch chat.
             $('#twitch-chat-betting').html($('<iframe/>', {
                 'frameborder': '0',
@@ -309,7 +309,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#twitch-chat-betting').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#twitch-chat-betting').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
             $('#twitch-chat-betting').addClass('box-body');
         }
     });
