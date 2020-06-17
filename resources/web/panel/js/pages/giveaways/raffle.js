@@ -56,7 +56,7 @@ $(run = function () {
             });
         };
 
-        if (location.protocol.toLowerCase().startsWith('https')) {
+        if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
             // Add Twitch chat.
             $('#raffle-chat').html($('<iframe/>', {
                 'frameborder': '0',
@@ -65,7 +65,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
             $('#raffle-chat').addClass('box-body');
         }
 
