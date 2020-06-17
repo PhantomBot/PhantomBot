@@ -531,13 +531,15 @@
                     try {
                         panelTmrIterations++;
                         if (panelTmrIterations >= 60) {
-                            window.location = window.location.origin + window.location.pathname + 'login';
+                            window.location = window.location.origin + window.location.pathname + 'login/#connectFail=true';
                             clearInterval(panelTmr);
                             return;
                         }
+
                         if (panelSettings === undefined) {
                             return;
                         }
+
                         $('#user-image1').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
                         $('#user-image2').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
                         $('body').append($('<script>', {
