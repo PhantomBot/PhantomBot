@@ -23,7 +23,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
-import io.netty.handler.ssl.OptionalSslHandler;
 import io.netty.handler.ssl.SslContext;
 
 /**
@@ -34,18 +33,10 @@ import io.netty.handler.ssl.SslContext;
 class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
-     * The SSL context to use
-     */
-    private final SslContext sslCtx;
-
-    /**
      * Constructor
-     *
-     * @param sslCtx Either {@code null} or a prepared {@link SslContext}
      */
-    public HTTPWSServerInitializer(SslContext sslCtx) {
+    public HTTPWSServerInitializer() {
         super();
-        this.sslCtx = sslCtx;
     }
 
     /**
@@ -58,8 +49,9 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
 
+        SslContext sslCtx = HTTPWSServer.instance().getSslContext();
         if (sslCtx != null) {
-            pipeline.addLast(new HttpOptionalSslHandler(sslCtx));
+            pipeline.addLast("sslhandler", new HttpOptionalSslHandler(sslCtx));
         }
 
         pipeline.addLast(new HttpServerCodec());
