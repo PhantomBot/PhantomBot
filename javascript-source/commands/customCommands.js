@@ -410,7 +410,13 @@
             if ((match = args.match(/^ (.*)$/))) {
                 return {result: encodeURI(match[1])};
             }
+        }
 
+        // (encodeurlparam paramter:str): like encodeurl but also ecapes "&", "=", "+", "/", etc.
+        function encodeurlparam(args) {
+            if ((match = args.match(/^ (.*)$/))) {
+                return {result: encodeURIComponent(match[1])};
+            }
         }
 
         // (followage): send message how long sender of command is following this channel and exit
@@ -975,6 +981,7 @@
             'downtime': downtime,
             'echo': echo,
             'encodeurl': encodeurl,
+            'encodeurlparam': encodeurlparam,
             'followage': followage,
             'followdate': followdate,
             'follows': follows,
