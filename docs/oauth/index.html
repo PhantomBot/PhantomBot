@@ -122,26 +122,56 @@
         <script src="../panel/vendors/jquery/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="../panel/vendors/bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" language="javascript">
+        <script type="text/javascript">
             $(function () {
                 var scopesBot = {
-                    "chat:read": "[Helix] View live Stream Chat and Rooms messages",
-                    "chat:edit": "[Helix] Send live Stream Chat and Rooms messages",
-                    "channel:moderate": "[Helix] Perform moderation actions in a channel",
-                    "whispers:read": "[Helix] View your whisper messages",
-                    "whispers:edit": "[Helix] Send whisper messages"
+                    "chat:read": {
+                        "desc": "[Helix] View live Stream Chat and Rooms messages",
+                        "tooltip": "Used to login to chat and read messages"
+                    },
+                    "chat:edit": {
+                        "desc": "[Helix] Send live Stream Chat and Rooms messages",
+                        "tooltip": "Used to send responses in chat"
+                    },
+                    "channel:moderate": {
+                        "desc": "[Helix] Perform moderation actions in a channel",
+                        "tooltip": "Used to perform moderation actions (purge, timeout, ban)"
+                    },
+                    "whispers:read": {
+                        "desc": "[Helix] View your whisper messages",
+                        "tooltip": "Used to receive whispers to the bot"
+                    },
+                    "whispers:edit": {
+                        "desc": "[Helix] Send whisper messages",
+                        "tooltip": "Used to send whispers from the bot"
+                    }
                 };
 
                 var scopesBroadcaster = {
-                    "channel_editor": "[v5] Write access to channel metadata (game, status, etc)",
-                    "channel_commercial": "[v5] Access to trigger commercials on channel",
-                    "channel_subscriptions": "[v5] Read access to all subscribers to your channel",
-                    "user:read:broadcast": "[Helix] View your broadcasting configuration, including extension configurations",
-                    "user:edit:broadcast": "[Helix] Edit your channel's broadcast configuration, including extension configuration. (This scope implies user:read:broadcast capability.)",
-                    "chat:read": "[Helix] View live Stream Chat and Rooms messages",
-                    "channel:moderate": "[Helix] Perform moderation actions in a channel",
-                    "channel:read:subscriptions": "[Helix] Get a list of all subscribers to your channel and check if a user is subscribed to your channel",
-                    "channel:read:redemptions": "[Helix] View your channel points custom reward redemptions"
+                    "channel_editor": {
+                        "desc": "[v5] Write access to channel metadata (game, status, etc)",
+                        "tooltip": "Used to change the title/game, if the bot is editor"
+                    },
+                    "channel_commercial": {
+                        "desc": "[v5] Access to trigger commercials on channel",
+                        "tooltip": "Used to trigger commercials on partnered streams"
+                    },
+                    "channel_subscriptions": {
+                        "desc": "[v5] Read access to all subscribers to your channel",
+                        "tooltip": "Used to get the current subscriber count. Can also be used by custom scripts to query Twitch for a list of subscribers"
+                    },
+                    "chat:read": {
+                        "desc": "[Helix] View live Stream Chat and Rooms messages",
+                        "tooltip": "Used by the second IRC connection to watch for host notifications"
+                    },
+                    "channel:moderate": {
+                        "desc": "[Helix] Perform moderation actions in a channel",
+                        "tooltip": "Used to watch for moderation actions in PubSub"
+                    },
+                    "channel:read:redemptions": {
+                        "desc": "[Helix] View your channel points custom reward redemptions",
+                        "tooltip": "Used to watch for redeption of custom Channel Points rewards in PubSub"
+                    }
                 };
 
                 function addScopeItem(type, scope, description) {
@@ -152,7 +182,13 @@
                                     'style': 'display: inline;',
                                     'text': scope
                                 })
-                            }).append(' - ' + description)
+                            }).append(' - ' + description.desc)
+                                    .append($('<i/>', {
+                                    'class': 'fa fa-question-circle',
+                                    'aria-hidden': 'true',
+                                    'data-toggle': 'tooltip',
+                                    'title': description.tooltip
+                                }))
                             );
                 }
 
@@ -161,7 +197,7 @@
                 }
 
                 for (x in scopesBroadcaster) {
-                    addScopeItem('broadcaster', x, scopesBot[x]);
+                    addScopeItem('broadcaster', x, scopesBroadcaster[x]);
                 }
 
                 var queryString = window.location.hash, // Query string that starts with ?
@@ -190,12 +226,12 @@
                             $('#success-box').removeClass('hide');
                             $('#success-br').removeClass('hide');
                             $('#success-box').html('Your ' + window.localStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
-                                            'class': 'form-control',
-                                            'type': 'text',
-                                            'readonly': true,
-                                            'style': 'display:inline; width: 280px; text-align: center;',
-                                            'value': queryMap.get('access_token')
-                                        }));
+                                'class': 'form-control',
+                                'type': 'text',
+                                'readonly': true,
+                                'style': 'display:inline; width: 280px; text-align: center;',
+                                'value': queryMap.get('access_token')
+                            }));
 
                             // Remove the state.
                             window.localStorage.removeItem('state');
@@ -247,6 +283,8 @@
                         window.location = baseAPIUri + '?response_type=token&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
                     });
                 }
+
+                $('[data-toggle="tooltip"]').tooltip();
             });
         </script>
     </body>
