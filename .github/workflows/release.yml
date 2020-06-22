@@ -81,7 +81,6 @@ jobs:
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
         echo Zip Lin
         ls
-        ls $FOLDERFULL
         mv -v $FOLDERLIN $FOLDERFULL
         ls
         ls $FOLDERFULL
