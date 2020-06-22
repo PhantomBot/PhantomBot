@@ -4,14 +4,10 @@ on:
     branches:
       - '*'
       - '!edge'
-    tags:
-      - '*'
   pull_request:
     branches:
       - '*'
       - '!edge'
-    tags:
-      - '*'
 jobs:
   buildtest:
     name: Test Build on ${{ matrix.os }} with JDK 11.0.4
