@@ -45,6 +45,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
+ARG TARGETPLATFORM
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
 
@@ -52,6 +53,9 @@ COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-3.2.0/." "${BASEDIR}/"
 
 RUN cd "${BASEDIR}" \
     && rm -rf \
+    && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi
+    && if [ "${TARGETPLATFORM}" = "linux/arm64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi
+    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/launch.bat ; fi
     && mkdir "${DATADIR}/scripts" \
     && mkdir "${DATADIR}/scripts/custom" \
     && mkdir "${DATADIR}/scripts/discord" \
