@@ -80,20 +80,16 @@ jobs:
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
         echo Zip Lin
-        rm -rf $FOLDERFULL
-        mv $FOLDERLIN $FOLDERFULL
+        mv -v $FOLDERLIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         echo Zip Win
-        rm -rf $FOLDERFULL
-        mv $FOLDERWIN $FOLDERFULL
+        mv -v $FOLDERWIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
         echo Zip Mac
-        rm -rf $FOLDERFULL
-        mv $FOLDERMAC $FOLDERFULL
+        mv -v $FOLDERMAC $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
         echo Zip Arm
-        rm -rf $FOLDERFULL
-        mv $FOLDERARM $FOLDERFULL
+        mv -v $FOLDERARM $FOLDERFULL
         zip -m -9 -X -r $FOLDERARM.zip $FOLDERFULL
     - name: Upload Asset (Full)
       uses: actions/upload-release-asset@v1
