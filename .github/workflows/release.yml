@@ -80,10 +80,8 @@ jobs:
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
         echo Zip Lin
-        ls
+        ls $FOLDERLIN
         mv -v $FOLDERLIN $FOLDERFULL
-        ls
-        ls $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         echo Zip Win
         mv -v $FOLDERWIN $FOLDERFULL
