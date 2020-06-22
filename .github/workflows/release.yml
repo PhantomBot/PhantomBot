@@ -48,9 +48,9 @@ jobs:
     - name: Set up environment variables
       id: build_env
       run: |
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-        echo "##[set-output name=version;]$(echo ${GITHUB_REF:1})"
-        echo "##[set-output name=revision;]$(echo ${GITHUB_SHA##*/})"
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REF:10})"
+        echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
+        echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
     - name: Prep Ant script
       env:
         BRANCH: ${{ steps.build_env.outputs.branch }}
