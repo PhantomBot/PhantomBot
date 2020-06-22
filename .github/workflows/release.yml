@@ -80,15 +80,19 @@ jobs:
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
         echo Zip Lin
+        rm -rf $FOLDERFULL
         mv $FOLDERLIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         echo Zip Win
+        rm -rf $FOLDERFULL
         mv $FOLDERWIN $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
         echo Zip Mac
+        rm -rf $FOLDERFULL
         mv $FOLDERMAC $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
         echo Zip Arm
+        rm -rf $FOLDERFULL
         mv $FOLDERARM $FOLDERFULL
         zip -m -9 -X -r $FOLDERARM.zip $FOLDERFULL
     - name: Upload Asset (Full)
@@ -102,6 +106,8 @@ jobs:
         asset_content_type: application/zip
     - name: Upload Asset (Linux)
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ format('dist/PhantomBot-{0}-lin.zip', steps.build_env.outputs.version) }}
@@ -109,6 +115,8 @@ jobs:
         asset_content_type: application/zip
     - name: Upload Asset (Windows)
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ format('dist/PhantomBot-{0}-win.zip', steps.build_env.outputs.version) }}
@@ -116,6 +124,8 @@ jobs:
         asset_content_type: application/zip
     - name: Upload Asset (macOS)
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ format('dist/PhantomBot-{0}-mac.zip', steps.build_env.outputs.version) }}
@@ -123,6 +133,8 @@ jobs:
         asset_content_type: application/zip
     - name: Upload Asset (ARM)
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ format('dist/PhantomBot-{0}-arm.zip', steps.build_env.outputs.version) }}
