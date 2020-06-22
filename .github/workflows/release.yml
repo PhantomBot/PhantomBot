@@ -78,19 +78,19 @@ jobs:
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARM --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
         cd dist
         echo Zip Full
-        zip -m -9 -X -r $FOLDERFULL $FOLDERFULL
+        zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
         echo Zip Lin
         mv $FOLDERLIN $FOLDERFULL
-        zip -m -9 -X -r $FOLDERLIN $FOLDERFULL
+        zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         echo Zip Win
         mv $FOLDERWIN $FOLDERFULL
-        zip -m -9 -X -r $FOLDERWIN $FOLDERFULL
+        zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
         echo Zip Mac
         mv $FOLDERMAC $FOLDERFULL
-        zip -m -9 -X -r $FOLDERMAC $FOLDERFULL
+        zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
         echo Zip Arm
         mv $FOLDERARM $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARM $FOLDERFULL
+        zip -m -9 -X -r $FOLDERARM.zip $FOLDERFULL
     - name: Upload Asset (Full)
       uses: actions/upload-release-asset@v1
       env:
