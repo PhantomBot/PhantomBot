@@ -179,7 +179,7 @@
         if (message.match(/\([1-9]=[^)]+\)/g)) {
             var rge, t;
             for (var i = 1; i < 10; i++) {
-                rge = new RegExp(quoteRegex("\(" + i + "=[^)]+\)"));
+                rge = new RegExp("\\(" + i + "=[^)]+\\)");
                 t = message.match(rge);
                 if (t != null) {
                     if (event.getArgs()[i - 1] !== undefined) {
@@ -196,7 +196,7 @@
         if (message.match(/\([1-9]\|[^)]+\)/g)) {
             var rge, t;
             for (var i = 1; i < 10; i++) {
-                rge = new RegExp(quoteRegex("\(" + i + "\|[^)]+\)"));
+                rge = new RegExp("\\(" + i + "|[^)]+\\)");
                 t = message.match(rge);
                 if (t != null) {
                     if (event.getArgs()[i - 1] !== undefined) {
