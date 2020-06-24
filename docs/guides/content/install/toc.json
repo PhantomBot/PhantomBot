@@ -1,0 +1,9 @@
+{
+    "subfolders": {
+    },
+    "pages": {
+        "windows": "Windows",
+        "linux": "Linux",
+        "mac": "macOS"
+    }
+}
