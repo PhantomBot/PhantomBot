@@ -28,7 +28,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/purple/pace-theme-minimal.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
     </head>
 
@@ -36,14 +36,14 @@
         <div class="wrapper">
             <!-- Header -->
             <header class="main-header">
+                <div class="logo">
+                        <img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
                 <nav class="navbar navbar-static-top">
                     <div class="container-fluid">
-                        <div class="navbar-header">
-                            <img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span>
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                        </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
                         <div class="collapse navbar-collapse" id="navbar-collapse">
@@ -193,14 +193,14 @@
                 function setActiveRecursive(path, removing) {
                     var folder = path.substring(0, path.lastIndexOf('-'));
 
-                    if (folder !== 'content' && folder.length > 0) {
+                    if (folder.includes('-')) {
                         if (removing) {
                             $('#' + folder + '-tree').removeClass('active');
                         } else {
                             $('#' + folder + '-tree').addClass('active');
                         }
 
-                        setActiveRecursive(path, true, removing);
+                        setActiveRecursive(path, removing);
                     }
                 }
 
@@ -218,7 +218,7 @@
                     });
                 }
 
-                $().ajaxStart(function() { Pace.restart(); });
+                $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
                 loadGuide('content/guides');
