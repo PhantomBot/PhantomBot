@@ -137,7 +137,7 @@
                 md.use(window.iframify);
                 
                 function loadMenuRecursive(path, tree) {
-                    $().ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
+                    $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
                         'dataType': 'json',
                         'global': false,
                         'success': function (data) {
@@ -191,7 +191,7 @@
                 }
 
                 function loadGuide(path) {
-                    $().ajax(window.location.origin + window.location.pathname + path + '.md', {
+                    $.ajax(window.location.origin + window.location.pathname + path + '.md', {
                         'dataType': 'text',
                         'success': function (data) {
                             $('#content-pane').html(md.render(data));
