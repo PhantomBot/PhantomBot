@@ -209,7 +209,6 @@
                 };
 
                 function addScopeItem(type, scope, description) {
-                    var x;
                     $('#scopes-' + type).append(
                             $('<li/>', {
                                 'html': $('<div/>', {
@@ -227,6 +226,7 @@
                             );
                 }
 
+                var x;
                 for (x in scopesBot) {
                     addScopeItem('bot', x, scopesBot[x]);
                 }
