@@ -64,15 +64,14 @@
         <div class="wrapper">
             <!-- Header -->
             <header class="main-header">
-                <div class="logo">
-                        <img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span>
-                        <button type="button" class="btn btn-primary" data-toggle="push-menu">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </div>
                 <nav class="navbar navbar-static-top">
                     <div class="container-fluid">
-
+                        <div class="navbar-header">
+                          <img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span>
+                          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                          </button>
+                        </div>
                         <!-- Collect the nav links, forms, and other content for toggling -->
                         <div class="collapse navbar-collapse" id="navbar-collapse">
                             <ul class="nav navbar-nav navbar-right">
@@ -85,16 +84,6 @@
                     <!-- /.container-fluid -->
                 </nav>
             </header>
-
-            <aside class="main-sidebar">
-                <section class="sidebar">
-                    <!-- List of all tabs. No new tabs should be added. -->
-                    <!-- Everything else should be put in the extra tab (for the main build) thanks <3 -->
-
-                    <ul class="sidebar-menu" data-widget="tree" id="guide-menu" style="white-space: normal;">
-                    </ul>
-                </section>
-            </aside>
 
             <!-- Main content -->
             <aside class="content-wrapper">
@@ -142,10 +131,10 @@
                                             <br />
                                             <br />
                                             <a id="connect-bot" class="btn btn-primary twitchbtn">
-                                                <i class="fa fa-twitch"></i>
+                                                <i class="fab fa-twitch"></i>
                                                 Connect with Twitch Bot
                                             </a>&nbsp;<a id="connect-caster" class="btn btn-primary twitchbtn">
-                                                <i class="fa fa-twitch"></i>
+                                                <i class="fab fa-twitch"></i>
                                                 Connect with Twitch Broadcaster
                                             </a>
                         </div>
@@ -219,6 +208,7 @@
                 };
 
                 function addScopeItem(type, scope, description) {
+                    var x;
                     $('#scopes-' + type).append(
                             $('<li/>', {
                                 'html': $('<div/>', {
