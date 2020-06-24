@@ -3,6 +3,7 @@
         "install": "Installation Guides"
     },
     "pages": {
+        "markdown": "Markdown for Guides",
         "guides": "Guides"
     }
 }

@@ -95,23 +95,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/apache.min.js" integrity="sha256-iq067gClvK6U1ogd9z0hReTYs+pBP4eIoS8/VR5jENw=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/bash.min.js" integrity="sha256-sw79dYEL7249/atL1FfUpo546/E7dgWmsdSXW5DBv74=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/java.min.js" integrity="sha256-8/h4olTE7by2GIyl/B8LcH7d0bMNcSTwVDYH/H10SV4=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/javascript.min.js" integrity="sha256-epwrEKDoyGZ+HJspNlSrHiPXaDUsRrEZgS5Se9iKBX4=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/json.min.js" integrity="sha256-6YP8JQrs9CYJQqz+ol+0hZowCn+z/TEvgkayTdzCSkA=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/markdown.min.js" integrity="sha256-4TRNrkY/Lvpm3zo/AixtRxCeYpOxnkaexrbhxfcBghA=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/nginx.min.js" integrity="sha256-mayAdoJCKxa+iWNEZiJA0CTdU6/nTpRtbwZ/YFeLIbA=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/plaintext.min.js" integrity="sha256-XdGv0000G2pil7Wpe+xEMPE/ejncbQJBqjjAoioGt+4=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/properties.min.js" integrity="sha256-kc+jmgjoFmYp5se3BDj/pyxHCOyRnFycnbsph4z5uTo=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/sql.min.js" integrity="sha256-zx3xPLlb2fBuMV2wTQtN/7a43IRCblafbIeZcrCB00k=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/yaml.min.js" integrity="sha256-mJLyfo2i5bbttwYeuiEOjgqo94Wmf1T87obb05SKlGg=" crossorigin="anonymous"></script>
-        <!-- Generate the panel links -->
+        <script src="https://raw.githubusercontent.com/noticeable-app/remarkable-iframify/3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
         <script>
+            'use strict';
             $(function () {
                 var firstPage = '';
-                var Remarkable = require('remarkable');
-                var hljs = require('highlight.js')
+                const { Remarkable, linkify, utils } = window.remarkable;
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
                     xhtmlOut: false, // Use '/' to close single tags (<br />)
@@ -145,6 +134,8 @@
                         return ''; // use external default escaping
                     }
                 });
+                md.use(linkify);
+                md.use(window.iframify);
                 
                 function loadMenuRecursive(path, tree) {
                     $().ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
