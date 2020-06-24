@@ -70,7 +70,6 @@
 
             <!-- Main content -->
             <aside class="content-wrapper">
-                <div>&nbsp;</div>
                 <div id="page-content">
                     <div class="box">
                         <!-- /.box-header -->
@@ -99,7 +98,7 @@
         <script>
             'use strict';
             $(function () {
-                var firstPage = '';
+                var lastPage = 'content-guides-menuitem';
                 const { Remarkable, linkify, utils } = window.remarkable;
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
@@ -146,10 +145,6 @@
                                 loadMenuRecursive(path + x + '/', path.replace('/', '-') + x + '-tree');
                             }
                             for (var x in data.pages) {
-                                if (tree.length === 0) {
-                                    firstPage = path + x;
-                                }
-
                                 addMenuItem(path, tree, x, data.pages[x]);
                             }
                         }
@@ -161,9 +156,10 @@
                         'html': $('<a/>', {
                             'href': '#',
                             'onclick': 'window.loadGuide(\'' + path + file + '\');'
-                        }).append($('<i/>', {
-                                'class': 'fa fa-circle-o'
-                            })).append(' ' + title)
+                            }).append($('<i/>', {
+                                'class': 'far ion fa-circle'
+                            })).append(' ' + title),
+                        'id': path.replace('/', '-') + file + '-menuitem'
                     });
 
                     if (tree.length === 0) {
@@ -183,10 +179,29 @@
                     }).append($('<a/>', {
                         'href': '#',
                         'text': title
-                    })).append($('<ul/>', {
+                        }).append($('<span/>', {
+                            'class': 'pull-right-container'
+                            }).append($('<i/>', {
+                                'class': 'fas fa-angle-left pull-right'
+                            }))
+                        )).append($('<ul/>', {
                         'class': 'treeview-menu',
                         'id': path.replace('/', '-') + folder + '-tree'
                     })));
+                }
+
+                function setActiveRecursive(path, removing) {
+                    var folder = path.substring(0, path.lastIndexOf('-'));
+
+                    if (folder !== 'content' && folder.length > 0) {
+                        if (removing) {
+                            $('#' + folder + '-tree').removeClass('active');
+                        } else {
+                            $('#' + folder + '-tree').addClass('active');
+                        }
+
+                        setActiveRecursive(path, true, removing);
+                    }
                 }
 
                 function loadGuide(path) {
@@ -194,9 +209,16 @@
                         'dataType': 'text',
                         'success': function (data) {
                             $('#content-pane').html(md.render(data));
+                            $('#' + lastPage + '-menuitem').removeClass('active');
+                            setActiveRecursive(lastPage, true);
+                            setActiveRecursive(path.replace('/', '-'), false);
+                            lastPage = path.replace('/', '-');
+                            $('#' + lastPage + '-menuitem').addClass('active');
                         }
                     });
                 }
+
+                $().ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
                 loadGuide('content/guides');
