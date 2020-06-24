@@ -63,7 +63,7 @@
                     <!-- List of all tabs. No new tabs should be added. -->
                     <!-- Everything else should be put in the extra tab (for the main build) thanks <3 -->
 
-                    <ul class="sidebar-menu" data-widget="tree" id="guide-menu">
+                    <ul class="sidebar-menu" data-widget="tree" id="guide-menu" style="white-space: normal;">
                     </ul>
                 </section>
             </aside>
@@ -160,11 +160,10 @@
                     var elm = $('<li/>', {
                         'html': $('<a/>', {
                             'href': '#',
-                            'onclick': 'loadGuide(\'' + path + file + '\');',
-                            'text': $('<i/>', {
+                            'onclick': 'window.loadGuide(\'' + path + file + '\');'
+                        }).append($('<i/>', {
                                 'class': 'fa fa-circle-o'
-                            })
-                        }).append(' ' + title)
+                            })).append(' ' + title)
                     });
 
                     if (tree.length === 0) {
@@ -200,7 +199,9 @@
                 }
 
                 loadMenuRecursive('content/', '');
-                loadGuide(firstPage);
+                loadGuide('content/guides');
+
+                window.loadGuide = loadGuide;
             });
         </script>
     </body>
