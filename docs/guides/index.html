@@ -220,6 +220,8 @@
                     });
                 }
 
+                $(document).ajaxStart(function() { Pace.restart(); });
+
                 loadMenuRecursive('content/', '');
                 loadGuide('content/guides');
 
