@@ -98,7 +98,7 @@
         <script>
             'use strict';
             $(function () {
-                var lastPage = 'content-guides-menuitem';
+                var lastPage = 'content-guides';
                 const { Remarkable, linkify, utils } = window.remarkable;
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
@@ -200,25 +200,25 @@
                             $('#' + folder + '-tree').addClass('active');
                         }
 
-                        setActiveRecursive(path, removing);
+                        setActiveRecursive(folder, removing);
                     }
                 }
 
                 function loadGuide(path) {
-                    $.ajax(window.location.origin + window.location.pathname + path + '.md', {
-                        'dataType': 'text',
-                        'success': function (data) {
-                            $('#content-pane').html(md.render(data));
-                            $('#' + lastPage + '-menuitem').removeClass('active');
-                            setActiveRecursive(lastPage, true);
-                            setActiveRecursive(path.replace('/', '-'), false);
-                            lastPage = path.replace('/', '-');
-                            $('#' + lastPage + '-menuitem').addClass('active');
-                        }
+                    Pace.track(function(){
+                        $.ajax(window.location.origin + window.location.pathname + path + '.md', {
+                            'dataType': 'text',
+                            'success': function (data) {
+                                $('#content-pane').html(md.render(data));
+                                $('#' + lastPage + '-menuitem').removeClass('active');
+                                setActiveRecursive(lastPage, true);
+                                setActiveRecursive(path.replace('/', '-'), false);
+                                lastPage = path.replace('/', '-');
+                                $('#' + lastPage + '-menuitem').addClass('active');
+                            }
+                        });
                     });
                 }
-
-                $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
                 loadGuide('content/guides');
