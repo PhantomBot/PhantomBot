@@ -348,7 +348,7 @@
                                 <ul class="treeview-menu">
                                     <li><a href="#audioHooks.html" data-folder="audio"><i class="fa fa-circle-o"></i> Audio Hooks</a></li>
                                     <!-- For now, as long as the YouTube player module hasn't gotten a rewrite, we will redirect to the player. -->
-                                    <li><a href="/ytplayer" target="_blank"><i class="fa fa-circle-o"></i> Song Requests</a></li>
+                                    <li><a id="sr-link" href="/ytplayer" target="_blank"><i class="fa fa-circle-o"></i> Song Requests</a></li>
                                 </ul>
                             </li>
 
@@ -521,6 +521,7 @@
 
         <script type="text/javascript" language="javascript">
             $(function () {
+                helpers.setBotHost();
                 $('body').append($('<script>', {
                     'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
                 }));
@@ -540,6 +541,7 @@
 
                         $('#user-image1').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
                         $('#user-image2').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
+                        $('#sr-link').attr('href', 'https://' + helpers.getBotHost() + '/ytplayer');
                         $('body').append($('<script>', {
                             'src': 'js/index.js'
                         }));

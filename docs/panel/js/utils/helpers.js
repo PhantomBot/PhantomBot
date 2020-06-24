@@ -1149,7 +1149,7 @@ $(function() {
         return parsedDate;
     };
     
-    helpers.getBotHost = function() {
+    helpers.setBotHost = function() {
         var hash = window.location.hash.substr(1);
         var kvs = hash.split("&");
         var hashmap = [];
@@ -1160,7 +1160,11 @@ $(function() {
             hashmap[spl[0]] = spl[1];
         }
 
-        return hashmap["selectedbot"];
+        window.helpers.selectedbot = hashmap["selectedbot"];
+    }
+    
+    helpers.getBotHost = function() {
+        return window.helpers.selectedbot;
     }
 
     // Export.
