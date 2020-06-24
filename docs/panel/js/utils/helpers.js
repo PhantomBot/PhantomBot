@@ -995,19 +995,19 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/select2/select2.dark.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/AdminLTE.dark.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/skins/skin-purple.dark.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple.min.css'
             }));
 
             // AdminLTE.
@@ -1019,19 +1019,19 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/select2/select2.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/AdminLTE.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/skins/skin-purple.min.css'
+                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple-light.min.css'
             }));
 
             // AdminLTE.
@@ -1149,7 +1149,7 @@ $(function() {
         return parsedDate;
     };
     
-    helpers.getBotHost = function() {
+    helpers.setBotHost = function() {
         var hash = window.location.hash.substr(1);
         var kvs = hash.split("&");
         var hashmap = [];
@@ -1160,7 +1160,11 @@ $(function() {
             hashmap[spl[0]] = spl[1];
         }
 
-        return hashmap["selectedbot"];
+        window.helpers.selectedbot = hashmap["selectedbot"];
+    }
+    
+    helpers.getBotHost = function() {
+        return window.helpers.selectedbot;
     }
 
     // Export.
