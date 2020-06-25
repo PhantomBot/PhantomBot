@@ -21,7 +21,7 @@ $(function() {
     // Load file button
     $('#load-file-button').on('click', function() {
         $.ajax({
-            'url': '/get-lang?webauth=' + getAuth(),
+            'url': 'http://' + helpers.getBotHost() + '/get-lang?webauth=' + getAuth(),
             'type': 'GET',
             'success': function(data) {
                 helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
@@ -32,7 +32,7 @@ $(function() {
                     currentLang = $('#file-to-load').find(':selected').text();
 
                     $.ajax({
-                        'url': '/lang?webauth=' + getAuth(),
+                        'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
                         'type': 'GET',
                         'headers': {
                             'lang-path': $('#file-to-load').find(':selected').text()
@@ -128,7 +128,7 @@ $(function() {
         // Post the lang.
         $.ajax({
             'type': 'PUT',
-            'url': '/lang?webauth=' + getAuth(),
+            'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
             'contentType': 'application/json',
             'headers': {
                 'lang-path': currentLang
