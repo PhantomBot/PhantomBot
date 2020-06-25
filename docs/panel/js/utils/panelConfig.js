@@ -15,6 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+window.panelSettings = {
+    channelName: '',
+    displayName: '',
+    auth: ''
+};
+
 function getChannelName() { return window.panelSettings.channelName; }
 function getAuth() { return window.panelSettings.auth; }
 function getDisplayName() { return window.panelSettings.displayName; }
