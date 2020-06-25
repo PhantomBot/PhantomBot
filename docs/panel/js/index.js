@@ -17,7 +17,22 @@
 
 // Main socket and functions.
 $(function() {
-    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
+    var useWss = false;
+    $.ajax(
+            {
+                type: 'GET',
+                url: 'http://' + helpers.getBotHost() + '/sslcheck',
+                crossDomain: true,
+                dataType: 'text',
+                async: false,
+                success: function (data) {
+                    if (data === 'true') {
+                        useWss = true;
+                    }
+                }
+            }
+    );
+    var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -477,6 +492,11 @@ $(function() {
             }
 
             let message = JSON.parse(e.data);
+
+            if (message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
+                useWss = true;
+                webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
+            }
 
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
