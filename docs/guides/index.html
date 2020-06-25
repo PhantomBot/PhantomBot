@@ -234,7 +234,7 @@
                         hashmap[spl[0]] = spl[1];
                     }
 
-                    if (hashmap.keys().includes('guide')) {
+                    if (hashmap.hasOwnProperty('guide')) {
                         loadGuide(hashmap['guide']);
                         return true;
                     }

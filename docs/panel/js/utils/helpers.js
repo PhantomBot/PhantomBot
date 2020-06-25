@@ -1166,7 +1166,7 @@ $(function() {
     };
 
     helpers.getBotHost = function() {
-        if (helpers.hashmap.keys().includes('selectedbot')) {
+        if (helpers.hashmap.hasOwnProperty('selectedbot')) {
             return helpers.hashmap['selectedbot'];
         } else {
             return '!missing';
@@ -1174,7 +1174,7 @@ $(function() {
     };
 
     helpers.useWsLoad = function() {
-        if (helpers.hashmap.keys().includes('wsload')) {
+        if (helpers.hashmap.hasOwnProperty('wsload')) {
             return helpers.hashmap['wsload'] === 'true';
         } else {
             return false;
