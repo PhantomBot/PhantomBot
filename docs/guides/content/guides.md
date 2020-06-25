@@ -10,6 +10,10 @@ If you are adding a new file, remember to add it to the _toc.json_ file in the s
 
 Guide files must be written in Markdown and have the extension _.md_
 
+You can use the [Remarkable demo](https://jonschlinkert.github.io/remarkable/demo/) to easily write out your Markdown while previewing how it will turn out
+
+**NOTE:** The YouTube embed extension is not in the Remarkable demo, so those will just show as links until your upload to the PhantomBot docs
+
 If you are adding a new folder, remember to create a _toc.json_, and add the new subfolder to the _toc.json_ of the parent folder
 
 The format for _toc.json_ is
@@ -23,4 +27,4 @@ The format for _toc.json_ is
     }
 }
 ```
-**NOTE:** The _pages_ list in the top-level _toc.json_ must be in reverse order, but all other _toc.json_ should have them in regular order
+**NOTE:** The _pages_ list in the top-level _toc.json_ must be in reverse order, but all other _toc.json_ should have them in regular order. _subfolders_ should still be in regular order
