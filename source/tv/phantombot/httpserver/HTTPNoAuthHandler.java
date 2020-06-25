@@ -70,7 +70,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.uri().startsWith("/wsloadcheck")) {
+        if (req.uri().startsWith("/checkwsload")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "true".getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
