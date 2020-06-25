@@ -51,6 +51,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static final AttributeKey<String> ATTR_URI = AttributeKey.valueOf("uri");
     /**
+     * Represents the {@code ATTR_WEBAUTH} attribute
+     */
+    public static final AttributeKey<String> ATTR_WEBAUTH = AttributeKey.valueOf("webauth");
+    /**
      * Represents a {@link Queue} containing all current WS Sessions
      */
     private static final Queue<Channel> WS_SESSIONS = new ConcurrentLinkedQueue<>();
@@ -105,6 +109,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 ctx.close();
             } else {
                 ctx.channel().attr(ATTR_URI).set(ruri);
+                ctx.channel().attr(ATTR_WEBAUTH).set(HttpServerPageHandler.parseCookies(hc.requestHeaders()).getOrDefault("webauth", null));
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());
