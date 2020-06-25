@@ -3,6 +3,7 @@
     },
     "pages": {
         "markdown": "Markdown for Guides",
-        "guides": "Guides"
+        "guides": "Guides",
+        "twitchembeds": "Enable Twitch embeds"
     }
 }
