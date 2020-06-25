@@ -172,6 +172,7 @@
                             url: 'http://' + hostname + ':' + port + '/checkwsload',
                             crossDomain: true,
                             dataType: 'text',
+                            async: false,
                             success: function (data) {
                                 if (data === 'true') {
                                     wsload = true;
