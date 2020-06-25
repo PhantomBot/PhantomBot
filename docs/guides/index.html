@@ -75,7 +75,7 @@
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body" id="content-pane">
-
+                            Loading...
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -99,7 +99,7 @@
         <script>
             'use strict';
             $(function () {
-                var lastPage = 'content-guides';
+                var lastPage = 'null';
                 const { Remarkable, linkify, utils } = window.remarkable;
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
@@ -135,11 +135,12 @@
                 });
                 md.use(linkify);
                 md.use(window.iframify);
-                
+
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
                         'dataType': 'json',
                         'global': false,
+                        'async': false,
                         'success': function (data) {
                             for (var x in data.subfolders) {
                                 addMenuFolder(path, tree, x, data.subfolders[x]);
@@ -215,16 +216,39 @@
                                 setActiveRecursive(lastPage, true);
                                 setActiveRecursive(path.replace('/', '-'), false);
                                 lastPage = path.replace('/', '-');
+                                window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
                             }
                         });
                     });
                 }
 
+                function loadURLGuide() {
+                    var hash = window.location.hash.substr(1);
+                    var kvs = hash.split('&');
+                    var hashmap = [];
+                    var spl;
+
+                    for (var i = 0; i < kvs.length; i++) {
+                        spl = kvs[i].split('=', 2);
+                        hashmap[spl[0]] = spl[1];
+                    }
+
+                    if (hashmap.keys().includes('guide')) {
+                        loadGuide(hashmap['guide']);
+                        return true;
+                    }
+
+                    return false;
+                }
+
                 $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
-                loadGuide('content/guides');
+
+                if (!loadURLGuide()) {
+                    loadGuide('content/guides');
+                }
 
                 window.loadGuide = loadGuide;
 
