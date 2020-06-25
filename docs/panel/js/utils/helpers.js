@@ -1003,7 +1003,7 @@ $(function() {
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css'
+                'href': 'href': '../common/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
@@ -1027,7 +1027,7 @@ $(function() {
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css'
+                'href': '../common/css/AdminLTE.min.css'
             }));
 
             // skins.
