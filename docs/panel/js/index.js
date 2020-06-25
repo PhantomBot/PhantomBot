@@ -514,6 +514,7 @@ $(function() {
 
                     if (helpers.useWsLoad()) {
                         sendToSocket({
+                            remote: true,
                             id: 'initLoad.panelSettings',
                             query: 'panelSettings'
                         });
