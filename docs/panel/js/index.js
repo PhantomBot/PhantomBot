@@ -493,9 +493,10 @@ $(function() {
 
             let message = JSON.parse(e.data);
 
-            if (message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
+            if (message.errors !== undefined && message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
                 useWss = true;
                 webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
+                return;
             }
 
             // Check this message here before doing anything else.
