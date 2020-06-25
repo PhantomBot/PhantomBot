@@ -233,7 +233,7 @@ $(function() {
     // handle auto complete.
     $('#stream-game').easyAutocomplete({
         'url': function (game) {
-            return '/games?webauth=' + getAuth() + '&search=' + game;
+            return 'http://' + helpers.getBotHost() + '/games?webauth=' + getAuth() + '&search=' + game;
         },
         'getValue': 'game',
         'requestDelay': 300,

@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import org.sqlite.SQLiteConfig;
 
 /**
  * Processes HTTP requests and passes successful ones to the appropriate registered final handler
@@ -363,10 +362,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param req The {@link FullHttpRequest} containing the request
      * @return A Map of cookies
      */
-    public static Map<String, String> parseCookies(FullHttpRequest req) {
+    public static Map<String, String> parseCookies(HttpHeaders headers) {
         Map<String, String> cookies = new HashMap<>();
 
-        req.headers().getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
+        headers.getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
             String[] cookie = scookie.split("=", 2);
             cookies.put(cookie[0], cookie[1]);
         }));

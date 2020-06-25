@@ -491,10 +491,26 @@ $(function() {
                         helpers.isAuth = true;
                     }
 
-                    // Load the main page.
-                    $.loadPage('dashboard', 'dashboard.html');
+                    if (helpers.useWsLoad()) {
+                        sendToSocket({
+                            id: 'initLoad.panelSettings',
+                            query: 'panelSettings'
+                        });
+                    } else {
+                        // Load the main page.
+                        $.loadPage('dashboard', 'dashboard.html');
+                    }
                 }
                 return;
+            }
+
+            if (message.id !== undefined) {
+                if (message.id === 'initLoad.panelSettings') {
+                    window.panelSettings.channelName = message.channelName;
+                    window.panelSettings.displayName = message.displayName;
+                    window.panelSettings.auth = message.webauth;
+                    $.loadPage('dashboard', 'dashboard.html');
+                }
             }
 
             // Make sure this isn't a version request.

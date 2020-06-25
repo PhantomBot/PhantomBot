@@ -521,34 +521,48 @@
 
         <script type="text/javascript" language="javascript">
             $(function () {
-                helpers.setBotHost();
-                $('body').append($('<script>', {
-                    'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
-                }));
-                var panelTmrIterations = 0;
-                var panelTmr = setInterval(function () {
-                    try {
-                        panelTmrIterations++;
-                        if (panelTmrIterations >= 60) {
-                            window.location = window.location.origin + window.location.pathname + 'login/#connectFail=true';
+                helpers.parseHashmap();
+                if (helpers.getBotHost() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
+                    return;
+                }
+                function loadScripts() {
+                    $('#user-image1').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
+                    $('#user-image2').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
+                    $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
+                    $('body').append($('<script>', {
+                        'src': 'js/index.js'
+                    }));
+                }
+                if (helpers.useWsLoad()) {
+                    $('body').append($('<script>', {
+                        'src': window.location.origin + window.location.pathname + '/js/utils/panelConfig.js'
+                    }));
+                    loadScripts();
+                } else {
+                    $('body').append($('<script>', {
+                        'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
+                    }));
+                    var panelTmrIterations = 0;
+                    var panelTmr = setInterval(function () {
+                        try {
+                            panelTmrIterations++;
+                            if (panelTmrIterations >= 60) {
+                                window.location = window.location.origin + window.location.pathname + 'login/#connectFail=true';
+                                clearInterval(panelTmr);
+                                return;
+                            }
+
+                            if (panelSettings === undefined) {
+                                return;
+                            }
+
+                            loadScripts();
                             clearInterval(panelTmr);
-                            return;
+                        } catch (e) {
                         }
-
-                        if (panelSettings === undefined) {
-                            return;
-                        }
-
-                        $('#user-image1').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
-                        $('#user-image2').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
-                        $('#sr-link').attr('href', 'https://' + helpers.getBotHost() + '/ytplayer');
-                        $('body').append($('<script>', {
-                            'src': 'js/index.js'
-                        }));
-                        clearInterval(panelTmr);
-                    } catch (e) {
-                    }
-                }, 500);
+                    }, 500);
+                }
             });
         </script>
     </body>
