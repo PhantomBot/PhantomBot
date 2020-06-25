@@ -1,6 +1,8 @@
 # Enable Twitch embeds
 
-Due to changes by Twitch, the chat and live feed panel can no longer be displayed. To make it work:
+Due to changes by Twitch, the chat and live feed panel can no longer be displayed.
+
+To make it work:
 - SSL certificate required
 - URL must not contain numbers
 
@@ -24,4 +26,4 @@ If you run PhantomBot on your PC (localhost):
 
 If you use external IP:
 
-- Use this [link](https://phantombot.github.io/PhantomBot/panel/login/) to access the control panel. If this is your first time using it, you must login into your control panel using IP:port and accept the certificate.
+- Use this [link](https://phantombot.github.io/PhantomBot/panel/login/) to access the control panel. The first time you need to login to the control panel using IP:port, and after this link.
