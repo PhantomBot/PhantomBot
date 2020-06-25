@@ -118,13 +118,10 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         astr = jso.getString("readauth");
                     }
 
-                    if (jso.getString("authenticate").equals(readWriteToken)) {
+                    if (astr.equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
-                    } else if (jso.getString("authenticate").equals(readOnlyToken)) {
-                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
-                    } else if (jso.getString("readauth").equals(readOnlyToken)) {
+                    } else if (astr.equals(readOnlyToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                     }
