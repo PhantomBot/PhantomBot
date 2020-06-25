@@ -44,7 +44,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-audio': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-trash'
+                            'class': 'fas fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -54,7 +54,7 @@ $(run = function() {
                         'title': 'This plays the audio hooks through the panel and not the browser source.',
                         'data-audio': results[i].value,
                         'html': $('<i/>', {
-                            'class': 'fa fa-play'
+                            'class': 'fas fa-play'
                         })
                     })).html()
                 ]);
@@ -132,7 +132,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-command': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-trash'
+                            'class': 'fas fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -140,7 +140,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-command': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-edit'
+                            'class': 'fas fa-edit'
                         })
                     })).html()
                 ]);

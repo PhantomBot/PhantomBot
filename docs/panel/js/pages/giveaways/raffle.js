@@ -30,7 +30,7 @@ $(run = function () {
         // Update the open button to close if the raffle is active.
         if (e['isActive'] === 'true') {
             $('#open-or-close-raffle').html($('<i/>', {
-                'class': 'fa fa-lock'
+                'class': 'fas fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
@@ -128,7 +128,7 @@ $(function () {
                                 toastr.success('Successfully opened the raffle!');
                                 // Update the button.
                                 $('#open-or-close-raffle').html($('<i/>', {
-                                    'class': 'fa fa-lock'
+                                    'class': 'fas fa-lock'
                                 })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                             });
                         })
@@ -142,7 +142,7 @@ $(function () {
                 helpers.temp.loadRaffleList();
                 // Update the button.
                 $('#open-or-close-raffle').html($('<i/>', {
-                    'class': 'fa fa-unlock-alt'
+                    'class': 'fas fa-unlock-alt'
                 })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
             });
         }
@@ -169,7 +169,7 @@ $(function () {
         $('#raffle-table').find('tr:gt(0)').remove();
 
         $('#open-or-close-raffle').html($('<i/>', {
-            'class': 'fa fa-unlock-alt'
+            'class': 'fas fa-unlock-alt'
         })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
 
         // Close raffle but don't pick a winner.

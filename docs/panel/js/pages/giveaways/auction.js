@@ -30,7 +30,7 @@ $(run = function () {
         // Update the open button to close if the raffle is active.
         if (e['isActive'] === 'true') {
             $('#open-or-close-auction').html($('<i/>', {
-                'class': 'fa fa-lock'
+                'class': 'fas fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
@@ -96,7 +96,7 @@ $(function () {
                             toastr.success('Successfully opened the auction!');
                             // Update the button.
                             $('#open-or-close-auction').html($('<i/>', {
-                                'class': 'fa fa-lock'
+                                'class': 'fas fa-lock'
                             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                         });
                     });
@@ -109,7 +109,7 @@ $(function () {
                 helpers.temp.updateStats();
                 // Update the button.
                 $('#open-or-close-auction').html($('<i/>', {
-                    'class': 'fa fa-unlock-alt'
+                    'class': 'fas fa-unlock-alt'
                 })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
             });
         }
@@ -128,7 +128,7 @@ $(function () {
             toastr.success('The auction has been reset.');
 
             $('#open-or-close-auction').html($('<i/>', {
-                'class': 'fa fa-unlock-alt'
+                'class': 'fas fa-unlock-alt'
             })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
         });
     });

@@ -684,7 +684,7 @@ $(function() {
         })).append($('<div/>', {
             'class': 'state p-default'
         }).append($('<i/>', {
-            'class': 'icon fa fa-check'
+            'class': 'icon fas fa-check'
         })).append($('<label/>', {
             'text': text
         })));
@@ -1009,7 +1009,7 @@ $(function() {
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple.min.css'
+                'href': '../common/css/skin-purple.dark.min.css'
             }));
 
             // AdminLTE.
@@ -1033,7 +1033,7 @@ $(function() {
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple-light.min.css'
+                'href': '../common/css/skin-purple.min.css'
             }));
 
             // AdminLTE.
@@ -1083,7 +1083,7 @@ $(function() {
                         }).modal('toggle');
                     }
                 }).append($('<i/>', {
-                    'class': 'fa fa-warning text-yellow'
+                    'class': 'fas fa-exclamation-triangle text-yellow'
                 })).append('Update available')));
             }
         }

@@ -45,7 +45,7 @@ $(function() {
                         'title': 'Deletes the command permission and resets it to default on startup. This does not remove the command unless it doesn\'t exist anymore.',
                         'data-command': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-refresh'
+                            'class': 'fas fa-sync-alt'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -53,7 +53,7 @@ $(function() {
                         'style': 'float: right',
                         'data-command': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-edit'
+                            'class': 'fas fa-edit'
                         })
                     })).html()
                 ]);
