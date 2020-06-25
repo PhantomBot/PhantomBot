@@ -2,8 +2,8 @@
     "subfolders": {
     },
     "pages": {
+        "twitchembeds": "Enable Twitch embeds",
         "markdown": "Markdown for Guides",
-        "guides": "Guides",
-        "twitchembeds": "Enable Twitch embeds"
+        "guides": "Guides"
     }
 }
