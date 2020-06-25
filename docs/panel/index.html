@@ -521,7 +521,11 @@
 
         <script type="text/javascript" language="javascript">
             $(function () {
-                helpers.setBotHost();
+                helpers.parseHashmap();
+                if (helpers.getBotHost() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
+                    return;
+                }
                 $('body').append($('<script>', {
                     'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
                 }));

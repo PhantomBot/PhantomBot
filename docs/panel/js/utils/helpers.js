@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ $(function() {
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
     helpers.PANEL_VERSION = "NONE";
+
+    helpers.hashmap = [];
 
     /*
      * @function adds commas to thousands.
@@ -392,7 +394,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -405,7 +407,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-primary',
             'type': 'button',
@@ -443,7 +445,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -456,7 +458,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-default pull-left',
             'type': 'button',
@@ -765,7 +767,7 @@ $(function() {
             if (isRemoved) {
                 onClose();
                 swal(closeMessage, {
-                    'icon': 'success',
+                    'icon': 'success'
                 });
             }
         });
@@ -1082,7 +1084,7 @@ $(function() {
                     }
                 }).append($('<i/>', {
                     'class': 'fa fa-warning text-yellow'
-                })).append('Update available')))
+                })).append('Update available')));
             }
         }
     };
@@ -1148,24 +1150,52 @@ $(function() {
 
         return parsedDate;
     };
-    
-    helpers.setBotHost = function() {
+
+    helpers.parseHashmap = function() {
         var hash = window.location.hash.substr(1);
-        var kvs = hash.split("&");
+        var kvs = hash.split('&');
         var hashmap = [];
         var spl;
 
         for (var i = 0; i < kvs.length; i++) {
-            spl = kvs[i].split("=", 2);
+            spl = kvs[i].split('=', 2);
             hashmap[spl[0]] = spl[1];
         }
 
-        window.helpers.selectedbot = hashmap["selectedbot"];
-    }
-    
+        helpers.hashmap = hashmap;
+    };
+
     helpers.getBotHost = function() {
-        return window.helpers.selectedbot;
-    }
+        if (helpers.hashmap.keys().includes('selectedbot')) {
+            return helpers.hashmap['selectedbot'];
+        } else {
+            return '!missing';
+        }
+    };
+
+    helpers.useWsLoad = function() {
+        if (helpers.hashmap.keys().includes('wsload')) {
+            return helpers.hashmap['wsload'] === 'true';
+        } else {
+            return false;
+        }
+    };
+
+    helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
+        const startPoll = async resolve => {
+            const startTime = new Date();
+            const result = await promiseFunction()
+
+            if (result) {
+                return resolve();
+            }
+
+            const timeUntilNext = Math.max(pollIntervalMs - (new Date() - startTime), 0);
+            setTimeout(() => startPoll(resolve), timeUntilNext);
+        };
+
+        return new Promise(startPoll);
+    };
 
     // Export.
     window.helpers = helpers;
