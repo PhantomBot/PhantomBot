@@ -33,7 +33,7 @@ $(function() {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "NONE";
+    helpers.PANEL_VERSION = "1.1.0-remote";
 
     helpers.hashmap = [];
 
