@@ -77,8 +77,6 @@ $(function() {
                     if (href !== undefined) {
                         // Set the current tab as active.
                         $.fn.dinamicMenu(href);
-                        // Update URL.
-                        window.history.pushState(null, '', './panel');
                     }
                     helpers.log('Completed ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
                 },

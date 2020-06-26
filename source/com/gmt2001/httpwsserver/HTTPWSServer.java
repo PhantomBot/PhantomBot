@@ -169,7 +169,7 @@ public final class HTTPWSServer {
      */
     private void generateAutoSsl(String botName) {
         try {
-            KeyPair kp = null;
+            KeyPair kp;
             Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
             if (key instanceof PrivateKey) {
                 // Get certificate of public key

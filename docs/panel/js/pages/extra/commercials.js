@@ -28,7 +28,7 @@ $(run = function() {
 
         if (e['commercialtimer'] === 'true') {
             $('#commercials-autotimer-on').html($('<i/>', {
-                'class': 'fa fa-check'
+                'class': 'fas fa-sm fa-check'
             })).append('&nbsp; Update Autotimer');
             $('#commercials-autotimer-off').removeClass('hidden');
         }
@@ -64,7 +64,7 @@ $(function() {
                     toastr.success('Successfully set the autotimer!');
                     // Update the button.
                     $('#commercials-autotimer-on').html($('<i/>', {
-                        'class': 'fa fa-check'
+                        'class': 'fas fa-sm fa-check'
                     })).append('&nbsp; Update Autotimer');
                     $('#commercials-autotimer-off').removeClass('hidden');
                 });
@@ -77,7 +77,7 @@ $(function() {
             toastr.success('Successfully turned off autotimer!');
             // Update the button.
             $('#commercials-autotimer-on').html($('<i/>', {
-                'class': 'fa fa-check'
+                'class': 'fas fa-sm fa-check'
             })).append('&nbsp; Set Autotimer');
             $('#commercials-autotimer-off').addClass('hidden');
         });
