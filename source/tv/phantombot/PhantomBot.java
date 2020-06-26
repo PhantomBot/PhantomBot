@@ -394,7 +394,7 @@ public final class PhantomBot implements Listener {
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
         this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
-        this.useHttps = this.pbProperties.getProperty("usehttps", "true").equalsIgnoreCase("true");
+        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
