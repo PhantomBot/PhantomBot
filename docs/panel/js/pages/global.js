@@ -31,7 +31,7 @@ $(function () {
         $.ajax(
                 {
                     type: 'GET',
-                    url: 'https://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
+                    url: 'http://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
                     xhrFields: {
                         withCredentials: true
                     },

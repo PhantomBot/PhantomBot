@@ -85,7 +85,7 @@ $(run = function() {
             // On play button.
             table.on('click', '.btn-success', function() {
                 let audioHook = $(this).data('audio'),
-                    soundPath = 'https://' + helpers.getBotHost() + '/config/audio-hooks/';
+                    soundPath = 'http://' + helpers.getBotHost() + '/config/audio-hooks/';
 
                 // Load the audio.
                 let audio = new Audio(soundPath + audioHook);
@@ -322,7 +322,7 @@ $(function() {
             'class': 'form-control',
             'id': 'audio-url',
             'readonly': 'readonly',
-            'value': 'https://' + helpers.getBotHost() + '/alerts?allow-audio-hooks=true&allow-alerts=false&audio-hook-volume=0.8',
+            'value': 'http://' + helpers.getBotHost() + '/alerts?allow-audio-hooks=true&allow-alerts=false&audio-hook-volume=0.8',
             'style': 'color: transparent !important; text-shadow: 0 0 5px hsla(0, 0%, 100%, .5);',
             'data-toggle': 'tooltip',
             'title': 'Clicking this box will show the link.',
