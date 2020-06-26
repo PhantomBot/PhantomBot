@@ -63,7 +63,9 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
             res.headers().set(HttpHeaderNames.LOCATION, uri);
 
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            if (origin != null) {
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            }
         
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         } else {
