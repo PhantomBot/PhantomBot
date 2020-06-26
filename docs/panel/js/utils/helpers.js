@@ -1003,7 +1003,7 @@ $(function() {
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'href': '../common/css/AdminLTE.dark.min.css'
+                'href': '../common/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
