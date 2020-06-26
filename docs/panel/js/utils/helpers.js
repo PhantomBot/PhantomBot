@@ -684,7 +684,7 @@ $(function() {
         })).append($('<div/>', {
             'class': 'state p-default'
         }).append($('<i/>', {
-            'class': 'icon fas fa-check'
+            'class': 'icon fas fa-sm fa-check'
         })).append($('<label/>', {
             'text': text
         })));
@@ -1083,7 +1083,7 @@ $(function() {
                         }).modal('toggle');
                     }
                 }).append($('<i/>', {
-                    'class': 'fas fa-exclamation-triangle text-yellow'
+                    'class': 'fas fa-sm fa-exclamation-triangle text-yellow'
                 })).append('Update available')));
             }
         }

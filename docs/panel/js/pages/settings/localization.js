@@ -86,7 +86,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fas fa-trash'
+                                'class': 'fas fa-sm fa-trash'
                             })
                         })).append($('<button/>', {
                             'type': 'button',
@@ -95,7 +95,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fas fa-edit'
+                                'class': 'fas fa-sm fa-edit'
                             })
                         })).html()
                     ]).draw();
@@ -163,7 +163,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fas fa-trash'
+                        'class': 'fas fa-sm fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -172,7 +172,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fas fa-edit'
+                        'class': 'fas fa-sm fa-edit'
                     })
                 })).html()
             ])
@@ -251,7 +251,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fas fa-trash'
+                                    'class': 'fas fa-sm fa-trash'
                                 })
                             })).append($('<button/>', {
                                 'type': 'button',
@@ -260,7 +260,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fas fa-edit'
+                                    'class': 'fas fa-sm fa-edit'
                                 })
                             })).html()
                         ]).draw(false);

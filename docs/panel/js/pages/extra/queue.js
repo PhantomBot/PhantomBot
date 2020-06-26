@@ -45,7 +45,7 @@ $(run = function () {
         // Update the open button to close if the queue is active.
         if (e['isActive'] === 'true') {
             $('#open-or-close-queue').html($('<i/>', {
-                'class': 'fas fa-lock'
+                'class': 'fas fa-sm fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
@@ -101,7 +101,7 @@ $(run = function () {
                             'class': 'btn btn-xs btn-danger',
                             'style': 'float: right',
                             'html': $('<i/>', {
-                                'class': 'fas fa-trash'
+                                'class': 'fas fa-sm fa-trash'
                             }),
                             'click': function () {
                                 socket.wsEvent('rm_queue_user', './systems/queueSystem.js', null,
@@ -161,7 +161,7 @@ $(function () {
                                 toastr.success('Successfully opened the queue!');
                                 // Update the button.
                                 $('#open-or-close-queue').html($('<i/>', {
-                                    'class': 'fas fa-lock'
+                                    'class': 'fas fa-sm fa-lock'
                                 })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                             });
                         });
@@ -173,7 +173,7 @@ $(function () {
                 clearQueueInput();
                 // Update the button.
                 $('#open-or-close-queue').html($('<i/>', {
-                    'class': 'fas fa-unlock-alt'
+                    'class': 'fas fa-sm fa-unlock-alt'
                 })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
             });
         }

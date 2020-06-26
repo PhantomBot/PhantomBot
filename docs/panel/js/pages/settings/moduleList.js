@@ -53,7 +53,7 @@ $(run = function() {
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'html': $('<i/>', {
-                        'class': 'fas fa-trash'
+                        'class': 'fas fa-sm fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -64,7 +64,7 @@ $(run = function() {
                     'data-module': twitchModules[i].module,
                     'data-mtoggle': twitchModules[i].status,
                     'html': $('<i/>', {
-                        'class': 'fas fa-' + (twitchModules[i].status ? 'times' : 'check')
+                        'class': 'fas fa-sm fa-' + (twitchModules[i].status ? 'times' : 'check')
                     })
                 })).html()
             ]);
@@ -152,7 +152,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-module': discordModules[i].module,
                         'html': $('<i/>', {
-                            'class': 'fas fa-trash'
+                            'class': 'fas fa-sm fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -163,7 +163,7 @@ $(run = function() {
                         'data-module': discordModules[i].module,
                         'data-mtoggle': discordModules[i].status,
                         'html': $('<i/>', {
-                            'class': 'fas fa-' + (discordModules[i].status ? 'times' : 'check')
+                            'class': 'fas fa-sm fa-' + (discordModules[i].status ? 'times' : 'check')
                         })
                     })).html()
                 ]);

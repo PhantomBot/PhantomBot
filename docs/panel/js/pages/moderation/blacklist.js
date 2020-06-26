@@ -38,7 +38,7 @@ $(run = function() {
                     'style': 'float: right',
                     'data-blacklist': results[i].key,
                     'html': $('<i/>', {
-                        'class': 'fas fa-trash'
+                        'class': 'fas fa-sm fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -46,7 +46,7 @@ $(run = function() {
                     'style': 'float: right',
                     'data-blacklist': results[i].key,
                     'html': $('<i/>', {
-                        'class': 'fas fa-edit'
+                        'class': 'fas fa-sm fa-edit'
                     })
                 })).html()
             ]);
