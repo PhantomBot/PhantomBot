@@ -88,7 +88,7 @@
                 $.ajax(
                             {
                                 type: 'POST',
-                                url: 'http://' + hostname + ':' + port + '/panel/login/remote',
+                                url: 'https://' + hostname + ':' + port + '/panel/login/remote',
                                 xhrFields: {
                                     withCredentials: true
                                 },
@@ -101,7 +101,7 @@
                                     $.ajax(
                                             {
                                                 type: 'GET',
-                                                url: 'http://' + hostname + ':' + port + '/panel/checklogin',
+                                                url: 'https://' + hostname + ':' + port + '/panel/checklogin',
                                                 xhrFields: {
                                                     withCredentials: true
                                                 },
@@ -166,20 +166,7 @@
                 }
 
                 var wsload = false;
-                $.ajax(
-                        {
-                            type: 'GET',
-                            url: 'http://' + hostname + ':' + port + '/checkwsload',
-                            crossDomain: true,
-                            dataType: 'text',
-                            async: false,
-                            success: function (data) {
-                                if (data === 'true') {
-                                    wsload = true;
-                                }
-                            }
-                        }
-                    );
+                ////Connect to WS for check
 
                 if (wsload) {
                     doLogin(hostname, port, username, password, true);
@@ -187,7 +174,7 @@
                     $.ajax(
                             {
                                 type: 'GET',
-                                url: 'http://' + hostname + ':' + port + '/sslcheck',
+                                url: 'https://' + hostname + ':' + port + '/sslcheck',
                                 crossDomain: true,
                                 dataType: 'text',
                                 success: function (sslStatus) {

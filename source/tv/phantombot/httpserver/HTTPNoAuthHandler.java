@@ -71,15 +71,6 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.uri().startsWith("/checkwsload")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "true".getBytes(), null);
-            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            com.gmt2001.Console.debug.println("200");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
-            return;
-        }
-
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
 

@@ -21,7 +21,7 @@ $(function() {
     $.ajax(
             {
                 type: 'GET',
-                url: 'http://' + helpers.getBotHost() + '/sslcheck',
+                url: 'https://' + helpers.getBotHost() + '/sslcheck',
                 crossDomain: true,
                 dataType: 'text',
                 async: false,
