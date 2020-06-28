@@ -17,7 +17,22 @@
 
 // Main socket and functions.
 $(function() {
-    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
+    var useWss = false;
+    $.ajax(
+            {
+                type: 'GET',
+                url: 'http://' + helpers.getBotHost() + '/sslcheck',
+                crossDomain: true,
+                dataType: 'text',
+                async: false,
+                success: function (data) {
+                    if (data === 'true') {
+                        useWss = true;
+                    }
+                }
+            }
+    );
+    var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -478,6 +493,12 @@ $(function() {
 
             let message = JSON.parse(e.data);
 
+            if (message.errors !== undefined && message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
+                useWss = true;
+                webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
+                return;
+            }
+
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
@@ -491,10 +512,27 @@ $(function() {
                         helpers.isAuth = true;
                     }
 
-                    // Load the main page.
-                    $.loadPage('dashboard', 'dashboard.html');
+                    if (helpers.useWsLoad()) {
+                        sendToSocket({
+                            remote: true,
+                            id: 'initLoad.panelSettings',
+                            query: 'panelSettings'
+                        });
+                    } else {
+                        // Load the main page.
+                        $.loadPage('dashboard', 'dashboard.html');
+                    }
                 }
                 return;
+            }
+
+            if (message.id !== undefined) {
+                if (message.id === 'initLoad.panelSettings') {
+                    window.panelSettings.channelName = message.channelName;
+                    window.panelSettings.displayName = message.displayName;
+                    window.panelSettings.auth = message.webauth;
+                    $.loadPage('dashboard', 'dashboard.html');
+                }
             }
 
             // Make sure this isn't a version request.

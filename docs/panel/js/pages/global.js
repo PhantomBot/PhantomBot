@@ -31,7 +31,7 @@ $(function () {
         $.ajax(
                 {
                     type: 'GET',
-                    url: 'https://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
+                    url: 'http://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
                     xhrFields: {
                         withCredentials: true
                     },
@@ -86,4 +86,31 @@ $(function () {
             }, 3e4);
         }
     });
+
+    $.fn.dinamicMenu = function(t) {
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href !== t;
+        }).parent().removeClass("active");
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href === t;
+        }).parent().addClass("active");
+        $("ul.treeview-menu a").filter(function() {
+            return this.href === t;
+        }).parentsUntil(".sidebar-menu > .treeview-menu > li").addClass("active");
+    };
+
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]',
+        container: "body",
+        trigger: "hover",
+        delay: {
+            show: 400,
+            hide: 30
+        }
+    });
+
+    toastr.options.progressBar = !0
+    toastr.options.preventDuplicates = !1
+    toastr.options.closeButton = !0
+    toastr.options.newestOnTop = !0
 });

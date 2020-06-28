@@ -40,7 +40,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-keyword': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-trash'
+                            'class': 'fas fa-sm fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -48,7 +48,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-keyword': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fa fa-edit'
+                            'class': 'fas fa-sm fa-edit'
                         })
                     })).html()
                 ]);

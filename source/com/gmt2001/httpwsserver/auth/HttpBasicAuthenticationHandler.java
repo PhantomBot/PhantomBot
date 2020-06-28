@@ -104,7 +104,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 return true;
             }
         } else {
-            Map<String, String> cookies = HttpServerPageHandler.parseCookies(req);
+            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
             auth = cookies.getOrDefault("panellogin", null);
 
             if (auth != null) {

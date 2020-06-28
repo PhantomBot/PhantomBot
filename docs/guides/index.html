@@ -27,7 +27,7 @@
         <!-- Fontawesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/AdminLTE.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/css/skins/skin-purple.min.css" />
+        <link rel="stylesheet" href="../common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
     </head>
@@ -39,7 +39,7 @@
                 <div class="logo">
                         <a href="https://phantombot.github.io/PhantomBot/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
                         <button type="button" class="btn btn-primary" data-toggle="push-menu">
-                            <i class="fa fa-bars"></i>
+                            <i class="fas fa-bars"></i>
                         </button>
                     </div>
                 <nav class="navbar navbar-static-top">
@@ -75,7 +75,7 @@
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body" id="content-pane">
-
+                            Loading...
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -99,7 +99,7 @@
         <script>
             'use strict';
             $(function () {
-                var lastPage = 'content-guides';
+                var lastPage = 'null';
                 const { Remarkable, linkify, utils } = window.remarkable;
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
@@ -135,11 +135,12 @@
                 });
                 md.use(linkify);
                 md.use(window.iframify);
-                
+
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
                         'dataType': 'json',
                         'global': false,
+                        'async': false,
                         'success': function (data) {
                             for (var x in data.subfolders) {
                                 addMenuFolder(path, tree, x, data.subfolders[x]);
@@ -215,16 +216,39 @@
                                 setActiveRecursive(lastPage, true);
                                 setActiveRecursive(path.replace('/', '-'), false);
                                 lastPage = path.replace('/', '-');
+                                window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
                             }
                         });
                     });
                 }
 
+                function loadURLGuide() {
+                    var hash = window.location.hash.substr(1);
+                    var kvs = hash.split('&');
+                    var hashmap = [];
+                    var spl;
+
+                    for (var i = 0; i < kvs.length; i++) {
+                        spl = kvs[i].split('=', 2);
+                        hashmap[spl[0]] = spl[1];
+                    }
+
+                    if (hashmap.hasOwnProperty('guide')) {
+                        loadGuide(hashmap['guide']);
+                        return true;
+                    }
+
+                    return false;
+                }
+
                 $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
-                loadGuide('content/guides');
+
+                if (!loadURLGuide()) {
+                    loadGuide('content/guides');
+                }
 
                 window.loadGuide = loadGuide;
 
