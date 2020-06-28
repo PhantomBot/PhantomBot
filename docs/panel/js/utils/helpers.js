@@ -997,7 +997,7 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css'
+                'href': '../common/css/select2.dark.min.css'
             }));
 
             // AdminLTE.
@@ -1021,7 +1021,7 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css'
+                'href': '../common/css/select2.min.css'
             }));
 
             // AdminLTE.
