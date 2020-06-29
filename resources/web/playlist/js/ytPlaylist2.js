@@ -157,6 +157,7 @@ function handleSongList(d) {
         var title = d['songlist'][i]['title'];
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
+        var shuffle = d['songlist'][i]['shuffle'];
         tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
 
         tableData += '<div class="dataRow">';

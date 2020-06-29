@@ -20,14 +20,14 @@
  *
  * Gets donation from the StreamElements API and posts them in Twitch chat.
  */
-(function() {
+(function () {
     var message = $.getSetIniDbString('streamElementsHandler', 'message', $.lang.get('streamElements.donation.new')),
-        toggle = $.getSetIniDbBoolean('streamElementsHandler', 'toggle', false),
-        reward = $.getSetIniDbFloat('streamElementsHandler', 'reward', 0),
-        group = $.getSetIniDbBoolean('streamElementsHandler', 'group', false),
-        groupMin = $.getSetIniDbNumber('streamElementsHandler', 'groupMin', 5),
-        dir = './addons/streamElements',
-        announce = false;
+            toggle = $.getSetIniDbBoolean('streamElementsHandler', 'toggle', false),
+            reward = $.getSetIniDbFloat('streamElementsHandler', 'reward', 0),
+            group = $.getSetIniDbBoolean('streamElementsHandler', 'group', false),
+            groupMin = $.getSetIniDbNumber('streamElementsHandler', 'groupMin', 5),
+            dir = './addons/streamElements',
+            announce = false;
 
     /*
      * @function reloadStreamElements
@@ -43,7 +43,7 @@
     /*
      * @event streamElementsDonationInitialized
      */
-    $.bind('streamElementsDonationInitialized', function(event) {
+    $.bind('streamElementsDonationInitialized', function (event) {
         if (!$.isDirectory(dir)) {
             $.consoleDebug('>> Creating the StreamElements Handler Directory: ' + dir);
             $.mkDir(dir);
@@ -57,17 +57,17 @@
     /*
      * @event streamElementsDonation
      */
-    $.bind('streamElementsDonation', function(event) {
+    $.bind('streamElementsDonation', function (event) {
         var jsonString = event.getJsonString(),
-            JSONObject = Packages.org.json.JSONObject,
-            donationObj = new JSONObject(jsonString),
-            donationID = donationObj.getString('_id'),
-            paramObj = donationObj.getJSONObject('donation'),
-            donationUsername = paramObj.getJSONObject('user').getString('username'),
-            donationCurrency = paramObj.getString('currency'),
-            donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
-            donationAmount = paramObj.getInt('amount'),
-            s = message;
+                JSONObject = Packages.org.json.JSONObject,
+                donationObj = new JSONObject(jsonString),
+                donationID = donationObj.getString('_id'),
+                paramObj = donationObj.getJSONObject('donation'),
+                donationUsername = paramObj.getJSONObject('user').getString('username'),
+                donationCurrency = paramObj.getString('currency'),
+                donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
+                donationAmount = paramObj.getInt('amount'),
+                s = message;
 
         if ($.inidb.exists('donations', donationID)) {
             return;
@@ -124,17 +124,21 @@
                 }
             }
         }
+
+        if (donationAmount > 3) {
+            $.autoBump(donationUsername);
+        }
     });
 
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         /*
          * @commandpath streamelements - Controls various options for donation handling
@@ -218,7 +222,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/streamElementsHandler.js', 'streamelements', 1);
     });
 

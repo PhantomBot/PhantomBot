@@ -19,11 +19,11 @@
  * This script is for announcing bits from Twitch, and rewarding the user with points if the caster wants too.
  *
  */
-(function() {
+(function () {
     var toggle = $.getSetIniDbBoolean('bitsSettings', 'toggle', false),
-        message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
-        minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
-        announceBits = false;
+            message = $.getSetIniDbString('bitsSettings', 'message', '(name) just cheered (amount) bits!'),
+            minimum = $.getSetIniDbNumber('bitsSettings', 'minimum', 0),
+            announceBits = false;
 
     /*
      * @function reloadBits
@@ -37,12 +37,12 @@
     /*
      * @event twitchBits
      */
-    $.bind('twitchBits', function(event) {
+    $.bind('twitchBits', function (event) {
         var username = event.getUsername(),
-            bits = event.getBits(),
-            ircMessage = event.getMessage(),
-            emoteRegexStr = $.twitch.GetCheerEmotesRegex(),
-            s = message;
+                bits = event.getBits(),
+                ircMessage = event.getMessage(),
+                emoteRegexStr = $.twitch.GetCheerEmotesRegex(),
+                s = message;
 
         if (announceBits === false || toggle === false) {
             return;
@@ -59,7 +59,7 @@
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
         }
- 
+
         if (s.match(/\(message\)/g)) {
             s = $.replace(s, '(message)', ircMessage);
             if (emoteRegexStr.length() > 0) {
@@ -75,17 +75,21 @@
 
         $.writeToFile(username + ' ', './addons/bitsHandler/latestCheer.txt', false);
         $.writeToFile(username + ': ' + bits + ' ', './addons/bitsHandler/latestCheer&Bits.txt', false);
+
+        if (bits >= 300) {
+            $.autoBump(username);
+        }
     });
 
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            argsString = event.getArguments(),
-            action = args[0];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                argsString = event.getArguments(),
+                action = args[0];
 
         /*
          * @commandpath bitstoggle - Toggles the bits announcements.
@@ -130,7 +134,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/bitsHandler.js', 'bitstoggle', 1);
         $.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', 1);
         $.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);

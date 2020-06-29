@@ -76,6 +76,7 @@ $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. 
 $.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
 $.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue at position $2.  There is $3 worth of music in the queue');
 $.lang.register('ytplayer.command.songrequest.success.shuffle', 'Your song "$1" has been added to the queue');
+$.lang.register('ytplayer.command.songrequest.success.sotn', 'Your song "$1" has been added to the queue.  It has been bumped for your Song of the Night win last stream!');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');
@@ -174,6 +175,9 @@ $.lang.register('ytplayer.command.edit.mod.usage', 'Usage: !edit user [username]
 $.lang.register('ytplayer.startstream.requests.open', 'Request queue is open');
 $.lang.register('ytplayer.startstream.clearhistory', 'Clearing song history');
 $.lang.register('ytplayer.startstream.shuffle.off', 'Setting the play mode to sequential');
+$.lang.register('ytplayer.startstream.shuffle.on', 'Setting the play mode to shuffle');
 
 $.lang.register('ytplayer.discord.save', '$1, requested by $2 $3');
+$.lang.register('ytplayer.discord.save.history', 'Saving request to Discord - $1 requested by $2');
 
+$.lang.register('ytplayer.autobump.sub', "Your song is automatically getting bumped for your sub!");

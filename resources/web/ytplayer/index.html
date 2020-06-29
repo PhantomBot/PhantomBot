@@ -19,220 +19,220 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <!-- Meta data -->
-    <meta charset="utf-8">
-    <!-- Page title -->
-    <title>Kentobot YouTube Player</title>
-    <!-- Load Bootstrap 4.0 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-    <!-- Load Fontawesome 5.0.4 -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.4/css/all.css">
-    <!-- Bootstrap sliders 10.0.0 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
-    <!-- Toast notifications v2.1.3 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <!-- Load our styles -->
-    <link rel="stylesheet" href="/ytplayer/css/style.css">
-    <!-- Load Google fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-    <!-- Load our favicon -->
-    <link rel="icon" href="/favicon.ico">
-</head>
+    <head>
+        <!-- Meta data -->
+        <meta charset="utf-8">
+        <!-- Page title -->
+        <title>Kentobot YouTube Player</title>
+        <!-- Load Bootstrap 4.0 -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+        <!-- Load Fontawesome 5.0.4 -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+        <!-- Bootstrap sliders 10.0.0 -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
+        <!-- Toast notifications v2.1.3 -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+        <!-- Load our styles -->
+        <link rel="stylesheet" href="/ytplayer/css/style.css">
+        <!-- Load Google fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <!-- Load our favicon -->
+        <link rel="icon" href="/favicon.ico">
+    </head>
 
-<body>
-    <!-- Loader -->
-    <div class="loader"></div>
-    <div id="main" style="display: none;">
-        <!-- Header -->
-        <div class="header">
-            <img class="logo-header" src="/common/images/kentodrum.png">
-        </div>
-        <!-- Container div -->
-        <div class="container-fluid">
-            <!-- Row div -->
-            <div class="row">
-                <!-- Left side -->
-                <section class="col-md-7" id="left-section">
-                    <!-- Player div with all controls -->
-                    <div class="player-section">
-                        <!-- Player frame -->
-                        <div class="yt-frame" id="player-frame"></div>
-                        <!-- Player controls -->
-                        <div class="player-controls">
-                            <!-- Left play, pause, skip, and save button and slider -->
-                            <div class="left-controls">
-                                <!-- Play pause controls -->
-                                <div class="play-pause-controls">
-                                    <div class="btn-group btn-group-justified">
-                                        <!-- Play and pause button handled in js -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="pause-button" data-toggle="tooltip" title="Play song">
-                                            <i class="fas fa-play" id="play-pause-button"></i>
-                                        </button>
-                                        <!-- Next song button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next song">
-                                            <i class="fas fa-fast-forward"></i>
-                                        </button>
-                                        <!-- Add to playlist button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Song of the Night Contender">
-                                            <i class="fas fa-star"></i>
-                                        </button>
-                                        <!-- delete from playlist button -->
-                                        <button type="button" class="btn btn-secondary btn-sm" id="del-cur-playlist-button" data-toggle="tooltip" title="Delete from playlist">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+    <body>
+        <!-- Loader -->
+        <div class="loader"></div>
+        <div id="main" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <img class="logo-header" src="/common/images/kentodrum.png">
+            </div>
+            <!-- Container div -->
+            <div class="container-fluid">
+                <!-- Row div -->
+                <div class="row">
+                    <!-- Left side -->
+                    <section class="col-md-7" id="left-section">
+                        <!-- Player div with all controls -->
+                        <div class="player-section">
+                            <!-- Player frame -->
+                            <div class="yt-frame" id="player-frame"></div>
+                            <!-- Player controls -->
+                            <div class="player-controls">
+                                <!-- Left play, pause, skip, and save button and slider -->
+                                <div class="left-controls">
+                                    <!-- Play pause controls -->
+                                    <div class="play-pause-controls">
+                                        <div class="btn-group btn-group-justified">
+                                            <!-- Play and pause button handled in js -->
+                                            <button type="button" class="btn btn-secondary btn-sm" id="pause-button" data-toggle="tooltip" title="Play song">
+                                                <i class="fas fa-play" id="play-pause-button"></i>
+                                            </button>
+                                            <!-- Next song button -->
+                                            <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next song">
+                                                <i class="fas fa-fast-forward"></i>
+                                            </button>
+                                            <!-- Add to playlist button -->
+                                            <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Song of the Night Contender">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                            <!-- delete from playlist button -->
+                                            <button type="button" class="btn btn-secondary btn-sm" id="del-cur-playlist-button" data-toggle="tooltip" title="Delete from playlist">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress slider -->
+                                    <div class="progress-slider">
+                                        <input type="text" id="progress-slider" />
+                                        <!-- Progress slider value -->
+                                        <span id="progress-slider-value">0:00</span>
                                     </div>
                                 </div>
 
-                                <!-- Progress slider -->
-                                <div class="progress-slider">
-                                    <input type="text" id="progress-slider" />
-                                    <!-- Progress slider value -->
-                                    <span id="progress-slider-value">0:00</span>
+                                <!-- Right volume button and slier -->
+                                <div class="right-controls">
+                                    <!-- Volume controls -->
+                                    <div class="mute-control">
+                                        <!-- Add to playlist button -->
+                                        <button type="button" class="btn btn-secondary btn-sm" id="mute-button" data-toggle="tooltip" title="Mute song">
+                                            <i class="fas fa-volume-down" id="mute-button-icon"></i>
+                                        </button>
+                                    </div>
+                                    <!-- Volume slider -->
+                                    <div class="volume-slider">
+                                        <input type="text" id="volume-slider" />
+                                        <!-- Volume slider value -->
+                                        <span id="volume-slider-value">0%</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Right volume button and slier -->
-                            <div class="right-controls">
-                                <!-- Volume controls -->
-                                <div class="mute-control">
-                                    <!-- Add to playlist button -->
-                                    <button type="button" class="btn btn-secondary btn-sm" id="mute-button" data-toggle="tooltip" title="Mute song">
-                                        <i class="fas fa-volume-down" id="mute-button-icon"></i>
+                            <!-- Video information -->
+                            <div class="video-information">
+                                <p><b>Title:</b> <span id="video-title"></span></p>
+                                <p><b>URL:</b> <span id="video-url"></span></p>
+                                <p><b>Requested by:</b> <span id="user-requester"></span></p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Right side -->
+                    <section class="col-md-5" id="right-section">
+                        <!-- Queue section top panel -->
+                        <div class="queue-section">
+                            <!-- Header with buttons -->
+                            <div class="queue-section-title">Queue
+                                <div class="btn-group btn-group-justified header-button">
+                                    <!-- Add song to queue button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="queue-add-song-button" data-toggle="tooltip" title="Add song">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <!-- Shuffle button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="queue-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
+                                        <i class="fas fa-random"></i>
+                                    </button>
+                                    <!-- Next song button -->
+                                    <!-- <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next random song">
+                                        <i class="fas fa-fast-forward"></i>
+                                    </button> -->
+                                    <!-- Settings button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="settings-button" data-toggle="tooltip" title="Settings">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <!-- Clear queue button -->
+                                    <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Clear queue">
+                                       <i class="fas fa-trash"></i>
+                                   </button> -->
+                                </div>
+                            </div>
+                            <!-- Devider -->
+                            <div class="devider"></div>
+                            <!-- Queue table -->
+                            <div class="queue-table">
+                                <table id="queue-table-content" style="width: 100%;">
+                                    <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th style="width: 50%;">Song</th>
+                                        <th style="width: 15%;">Duration</th>
+                                        <th style="width: 15%;">Requester</th>
+                                        <th style="width: 10%; text-align: right; padding-right: 16px;">Actions</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Playlist -->
+                        <div class="playlist-section">
+                            <!-- Header with buttons -->
+                            <div class="queue-section-title">Playlist <span id="playlist-name"></span>
+                                <div class="btn-group btn-group-justified header-button">
+                                    <!-- Add song to playlist button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="playlist-add-song-button" data-toggle="tooltip" title="Add song">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <!-- Shuffle button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="playlist-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
+                                        <i class="fas fa-random"></i>
+                                    </button>
+                                    <!-- Load playlist button -->
+                                    <button type="button" class="btn btn-secondary btn-sm" id="load-playlist-button" data-toggle="tooltip" title="Load playlist">
+                                        <i class="fas fa-upload"></i>
                                     </button>
                                 </div>
-                                <!-- Volume slider -->
-                                <div class="volume-slider">
-                                    <input type="text" id="volume-slider" />
-                                    <!-- Volume slider value -->
-                                    <span id="volume-slider-value">0%</span>
-                                </div>
+                            </div>
+                            <!-- Devider -->
+                            <div class="devider"></div>
+                            <!-- Playlist section bottom panel -->
+                            <div class="playlist-table" id="playlist-table-id">
+                                <table id="playlist-table-content" style="width: 100%; overflow: scroll;">
+                                    <tbody id="playlist-content">
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 70%;">Song</th>
+                                            <th style="width: 15%;">Duration</th>
+                                            <th style="width: 10%;">Actions</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                        <!-- Playlist -->
 
-                        <!-- Video information -->
-                        <div class="video-information">
-                            <p><b>Title:</b> <span id="video-title"></span></p>
-                            <p><b>URL:</b> <span id="video-url"></span></p>
-                            <p><b>Requested by:</b> <span id="user-requester"></span></p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Right side -->
-                <section class="col-md-5" id="right-section">
-                    <!-- Queue section top panel -->
-                    <div class="queue-section">
-                        <!-- Header with buttons -->
-                        <div class="queue-section-title">Queue
-                            <div class="btn-group btn-group-justified header-button">
-                                <!-- Add song to queue button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="queue-add-song-button" data-toggle="tooltip" title="Add song">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <!-- Shuffle button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="queue-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
-                                    <i class="fas fa-random"></i>
-                                </button>
-                                 <!-- Next song button -->
-                                <!-- <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next random song">
-                                    <i class="fas fa-fast-forward"></i>
-                                </button> -->
-                                <!-- Settings button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="settings-button" data-toggle="tooltip" title="Settings">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <!-- Clear queue button -->
-                                <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Clear queue">
-                                   <i class="fas fa-trash"></i>
-                               </button> -->
-                            </div>
-                        </div>
-                        <!-- Devider -->
-                        <div class="devider"></div>
-                        <!-- Queue table -->
-                        <div class="queue-table">
-                            <table id="queue-table-content" style="width: 100%;">
-                                <tr>
-                                    <th style="width: 5%;">#</th>
-                                    <th style="width: 50%;">Song</th>
-                                    <th style="width: 15%;">Duration</th>
-                                    <th style="width: 15%;">Requester</th>
-                                    <th style="width: 10%; text-align: right; padding-right: 16px;">Actions</th>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- Playlist -->
-                    <div class="playlist-section">
-                        <!-- Header with buttons -->
-                        <div class="queue-section-title">Playlist <span id="playlist-name"></span>
-                            <div class="btn-group btn-group-justified header-button">
-                                <!-- Add song to playlist button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-add-song-button" data-toggle="tooltip" title="Add song">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <!-- Shuffle button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="playlist-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
-                                    <i class="fas fa-random"></i>
-                                </button>
-                                <!-- Load playlist button -->
-                                <button type="button" class="btn btn-secondary btn-sm" id="load-playlist-button" data-toggle="tooltip" title="Load playlist">
-                                    <i class="fas fa-upload"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Devider -->
-                        <div class="devider"></div>
-                        <!-- Playlist section bottom panel -->
-                        <div class="playlist-table" id="playlist-table-id">
-                            <table id="playlist-table-content" style="width: 100%; overflow: scroll;">
-                            	<tbody id="playlist-content">
-                               		<tr>
-                               		    <th style="width: 5%;">#</th>
-                               		    <th style="width: 70%;">Song</th>
-                               		    <th style="width: 15%;">Duration</th>
-                               		    <th style="width: 10%;">Actions</th>
-                               		</tr>
-                               	</tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- Playlist -->
-                    
-                </section>
+                    </section>
+                </div>
             </div>
+
+            <!-- Copyright bar -->
+            <footer class="copyright">
+                <a href="https://phantombot.tv">PhantomBot</a> &copy; 2016 -
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+            </footer>
         </div>
 
-        <!-- Copyright bar -->
-        <footer class="copyright">
-            <a href="https://phantombot.tv">PhantomBot</a> &copy; 2016 -
-            <script>
-            	document.write(new Date().getFullYear());
-            </script>
-        </footer>
-    </div>
-
-    <!-- Load jQuery 3.3.0 -->
-    <script src="https://code.jquery.com/jquery-3.3.0.min.js"></script>
-    <!-- Load tether 1.4.0 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-    <!-- Load Bootstrap 4.0 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-    <!-- Bootstrap sliders 10.0.0 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
-    <!-- Toast notifications v2.1.3 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <!-- Clusterize -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.18.0/clusterize.min.js"></script>
-    <!-- Load the player config file -->
-    <script src="/ytplayer/js/playerConfig.js"></script>
-    <!-- Helper functions -->
-    <script src="/ytplayer/js/util/helpers.js"></script>
-    <!-- Load the main player script -->
-    <script src="/ytplayer/js/index.js"></script>
-    <!-- Load the websocket -->
-    <script src="/ytplayer/js/util/socket.js"></script>
-</body>
+        <!-- Load jQuery 3.3.0 -->
+        <script src="https://code.jquery.com/jquery-3.3.0.min.js"></script>
+        <!-- Load tether 1.4.0 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+        <!-- Load Bootstrap 4.0 -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap sliders 10.0.0 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+        <!-- Toast notifications v2.1.3 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <!-- Clusterize -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.18.0/clusterize.min.js"></script>
+        <!-- Load the player config file -->
+        <script src="/ytplayer/js/playerConfig.js"></script>
+        <!-- Helper functions -->
+        <script src="/ytplayer/js/util/helpers.js"></script>
+        <!-- Load the main player script -->
+        <script src="/ytplayer/js/index.js"></script>
+        <!-- Load the websocket -->
+        <script src="/ytplayer/js/util/socket.js"></script>
+    </body>
 
 </html>

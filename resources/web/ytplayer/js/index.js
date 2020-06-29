@@ -233,12 +233,31 @@ $(function () {
             table.find('tr:gt(0)').remove();
 
             for (let i = 0; i < songlist.length; i++) {
+
+                if (songlist[i].shuffle == "true") {
+                    console.log("Song is a shuffle");
+                }
+
                 let row = $('<tr/>');
 
-                // Add position.
-                row.append($('<td/>', {
-                    'text': i + 1
-                }));
+                if (songlist[i].bump == "true") {
+                    row.append($('<td/>', {
+                        'html': $('<i/>', {
+                            'class': 'fas fa-star'
+                        })
+                    }));
+                } else if (songlist[i].shuffle == "true") {
+                    row.append($('<td/>', {
+                        'html': $('<i/>', {
+                            'class': 'fas fa-dice'
+                        })
+                    }));
+                } else {
+                    // Add position.
+                    row.append($('<td/>', {
+                        'text': i + 1
+                    }));
+                }
 
                 // Add song name.
                 row.append($('<td/>', {
@@ -363,8 +382,10 @@ $(function () {
                 player.API.loadVideoById(e.play, 0, 'medium');
                 toastr.success('Now playing: ' + (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
             }
-	   
+
             document.title = 'Kentobot Player - ' + e.title + ' - ' + e.requester;
+
+
 
             // Update the value under the slider.
             $('#progress-slider-value').html(e.duration);
@@ -481,9 +502,9 @@ $(function () {
         player.updateState(2);
         // Skip the song.
         player.skipSong();
-        
+
         document.title = 'Kentobot Player - ' + player.temp.title + ' - ' + player.temp.requester;
-     
+
     });
 
     // Mute button.

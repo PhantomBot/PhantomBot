@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+(function () {
     var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
-        newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
-        raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
-        raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
-        raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
-        raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
+            newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
+            raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
+            raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
+            raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
+            raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
 
     /*
      * @function Reloads the raid variables from the panel.
@@ -146,12 +146,12 @@
     /*
      * @event twitchRaid
      */
-    $.bind('twitchRaid', function(event) {
+    $.bind('twitchRaid', function (event) {
         var username = event.getUsername(),
-            viewers = event.getViewers(),
-            hasRaided = false,
-            raidObj,
-            message;
+                viewers = event.getViewers(),
+                hasRaided = false,
+                raidObj,
+                message;
 
         if (raidToggle === true) {
             // If the user has raided before.
@@ -190,6 +190,8 @@
             }
 
             $.say(message);
+
+            $.autoBump(username);
         }
 
         // Add reward.
@@ -204,12 +206,12 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('raid')) {
             if (action === undefined) {
@@ -313,7 +315,7 @@
 
                 if ($.inidb.exists('incoming_raids', subAction.toLowerCase())) {
                     var raidObj = JSON.parse($.inidb.get('incoming_raids', subAction.toLowerCase())),
-                        displayName = $.username.resolve(subAction);
+                            displayName = $.username.resolve(subAction);
 
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.lookup.user', displayName, raidObj.totalRaids, new Date(raidObj.lastRaidTime).toLocaleString(), raidObj.lastRaidViewers));
                 } else {
@@ -334,7 +336,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/raidHandler.js', 'raid', 1);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'toggle', 1);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setreward', 1);
