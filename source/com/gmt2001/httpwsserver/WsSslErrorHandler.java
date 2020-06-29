@@ -60,8 +60,8 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
         if (evt instanceof HandshakeComplete) {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("errors").array().object()
-                    .key("status").value("403")
-                    .key("title").value("Forbidden")
+                    .key("status").value("426")
+                    .key("title").value("Upgrade Required")
                     .key("detail").value("WSS Required")
                     .endObject().endArray().endObject();
 
