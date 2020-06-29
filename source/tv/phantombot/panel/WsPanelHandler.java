@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class WsPanelHandler implements WsFrameHandler {
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
-        authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10);
+        this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10);
     }
 
     @Override
@@ -261,9 +261,9 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
             jsonObject.key("webauth").value(ctx.channel().attr(WebSocketFrameHandler.ATTR_WEBAUTH).get());
         } else if (query.equalsIgnoreCase("loadLang")) {
-            jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getString("lang-path")));
-        } else if (query.equalsIgnoreCase("saveLang")) {
-            LangFileUpdater.updateCustomLang(jso.getString("content"), jso.getString("lang-path"));
+            jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
+        } else if (query.equalsIgnoreCase("saveLang") && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+            LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"));
         } else if (query.equalsIgnoreCase("getLangList")) {
             jsonObject.key("langList").array();
             for (String langFile : LangFileUpdater.getLangFiles()) {
@@ -274,7 +274,7 @@ public class WsPanelHandler implements WsFrameHandler {
             try {
                 jsonObject.key("games").array();
                 String data = Files.readString(Paths.get("./web/panel/js/utils/gamesList.txt"));
-                String search = jso.getString("search").toLowerCase();
+                String search = jso.getJSONObject("params").getString("search").toLowerCase();
 
                 for (String g : data.split("\n")) {
                     if (g.toLowerCase().startsWith(search)) {

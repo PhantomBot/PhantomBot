@@ -1173,14 +1173,6 @@ $(function() {
         }
     };
 
-    helpers.useWsLoad = function() {
-        if (helpers.hashmap.hasOwnProperty('wsload')) {
-            return helpers.hashmap['wsload'] === 'true';
-        } else {
-            return false;
-        }
-    };
-
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
         const startPoll = async resolve => {
             const startTime = new Date();

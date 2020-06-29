@@ -453,6 +453,25 @@ $(function() {
         }
     };
 
+    /*
+     * @function Sends a remote panel query.
+     *
+     * @param {String}   query_id
+     * @param {String}   query
+     * @param {Object}   params
+     * @param {Function} callback
+     */
+    socket.doRemote = function(query_id, query, params, callback) {
+        generateCallBack(query_id, [], true, false, callback);
+
+        sendToSocket({
+            remote: true,
+            id: query_id,
+            query: query,
+            params: params
+        });
+    }
+
     // WebSocket events.
 
     /*
@@ -512,16 +531,11 @@ $(function() {
                         helpers.isAuth = true;
                     }
 
-                    if (helpers.useWsLoad()) {
-                        sendToSocket({
-                            remote: true,
-                            id: 'initLoad.panelSettings',
-                            query: 'panelSettings'
-                        });
-                    } else {
-                        // Load the main page.
-                        $.loadPage('dashboard', 'dashboard.html');
-                    }
+                    sendToSocket({
+                        remote: true,
+                        id: 'initLoad.panelSettings',
+                        query: 'panelSettings'
+                    });
                 }
                 return;
             }
