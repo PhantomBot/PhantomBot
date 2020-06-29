@@ -6,12 +6,5 @@
         "twitchembeds": "Enable Twitch embeds",
         "markdown": "Markdown for Guides",
         "guides": "Guides"
-    },
-    "setupbot": {
-        "windows": "Windows",
-        "centos": "CentOS",
-        "ubuntu": "Ubuntu",
-        "macos": "MacOS",
-        "updatebot": "How To Update"
     }
 }
