@@ -523,8 +523,13 @@
         <script type="text/javascript" language="javascript">
             $(function () {
                 helpers.parseHashmap();
+                helpers.setupAuth();
                 if (helpers.getBotHost() === '!missing') {
                     window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
+                    return;
+                }
+                if (getAuth() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
                     return;
                 }
                 $('#user-image1').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');

@@ -1165,12 +1165,15 @@ $(function() {
         helpers.hashmap = hashmap;
     };
 
+    helpers.setupAuth = function() {
+        window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
+    }
+
     helpers.getBotHost = function() {
-        if (helpers.hashmap.hasOwnProperty('selectedbot')) {
-            return helpers.hashmap['selectedbot'];
-        } else {
-            return '!missing';
-        }
+        var bothostname = window.localStorage.getItem('bothostname') || '';
+        var botport = window.localStorage.getItem('botport') || 25000;
+
+        return bothostname.length > 0 ? bothostname + ':' + botport : '!missing';
     };
 
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {

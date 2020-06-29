@@ -470,7 +470,11 @@ $(function() {
             query: query,
             params: params
         });
-    }
+    };
+    
+    socket.close = function() {
+        webSocket.close();
+    };
 
     // WebSocket events.
 
@@ -512,7 +516,7 @@ $(function() {
 
             let message = JSON.parse(e.data);
 
-            if (message.errors !== undefined && message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
+            if (message.errors !== undefined && message.errors[0].status === '426') {
                 useWss = true;
                 webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
                 return;
@@ -544,7 +548,6 @@ $(function() {
                 if (message.id === 'initLoad.panelSettings') {
                     window.panelSettings.channelName = message.channelName;
                     window.panelSettings.displayName = message.displayName;
-                    window.panelSettings.auth = message.webauth;
                     $.loadPage('dashboard', 'dashboard.html');
                 }
             }

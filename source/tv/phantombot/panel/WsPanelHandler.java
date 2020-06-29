@@ -259,7 +259,6 @@ public class WsPanelHandler implements WsFrameHandler {
         if (query.equalsIgnoreCase("panelSettings")) {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
-            jsonObject.key("webauth").value(ctx.channel().attr(WebSocketFrameHandler.ATTR_WEBAUTH).get());
         } else if (query.equalsIgnoreCase("loadLang")) {
             jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
         } else if (query.equalsIgnoreCase("saveLang") && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {

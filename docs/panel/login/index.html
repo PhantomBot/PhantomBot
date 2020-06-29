@@ -49,7 +49,8 @@
                     <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser</p>
 
                 <div class="alert-error text-center hide" id="error-box"></div>
-                <br id="error-br" class="hide" />
+                <div class="alert-success text-center hide" id="success-box"></div>
+                <br id="alert-br" class="hide" />
 
                 <form>
                     <div class="form-group">
@@ -83,54 +84,57 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
         <script type="text/javascript">
-            function doLogin(hostname, port, username, password, wsload) {
-                $.ajax(
-                            {
-                                type: 'POST',
-                                url: 'https://' + hostname + ':' + port + '/panel/login/remote',
-                                xhrFields: {
-                                    withCredentials: true
-                                },
-                                crossDomain: true,
-                                data: {
-                                    user: username,
-                                    pass: password
-                                },
-                                success: function () {
-                                    $.ajax(
-                                            {
-                                                type: 'GET',
-                                                url: 'https://' + hostname + ':' + port + '/panel/checklogin',
-                                                xhrFields: {
-                                                    withCredentials: true
-                                                },
-                                                crossDomain: true,
-                                                success: function () {
-                                                    window.localStorage.setItem('bothostname', hostname);
-                                                    window.localStorage.setItem('botport', port);
-                                                    window.location = window.location.origin + window.location.pathname + '../#selectedbot=' + hostname + ':' + port + '&wsload=' + (wsload ? 'true' : 'false');
-                                                },
-                                                error: function (xhr, status, thrown) {
-                                                    $('#error-box').removeClass('hide');
-                                                    $('#error-br').removeClass('hide');
-                                                    $('#error-box').html('Invalid Login' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
-                                                }
-                                            }
-                                    );
-                                },
-                                error: function (xhr, status, thrown) {
-                                    $('#error-box').removeClass('hide');
-                                    $('#error-br').removeClass('hide');
-                                    $('#error-box').html('Login attempt failed' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
-                                }
-                            }
-                    );
+            function doLogin(hostname, port, username, password, useWss) {
+                var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + hostname + ':' + port + '/ws/panel/login?target=' + hostname + ':' + port, null, {maxReconnectAttempts: 1});
+                webSocket.onopen = function () {
+                    Pace.restart();
+
+                    webSocket.send(JSON.stringify({
+                        remote: true,
+                        query: 'login',
+                        params: {
+                            type: 'Auth',
+                            user: username,
+                            pass: password
+                        }
+                    }));
+                };
+                
+                webSocket.onmessage = function(e) {
+                    let message = JSON.parse(e.data);
+
+                    if (message.errors !== undefined) {
+                        if (message.errors[0].status === '426') {
+                            useWss = true;
+                            webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + hostname + ':' + port + '/ws/panel/login?target=' + hostname + ':' + port;
+                        } else if (message.errors[0].status === '401') {
+                            $('#error-box').removeClass('hide');
+                            $('#alert-br').removeClass('hide');
+                            $('#error-box').html('Invalid Login');
+                            webSocket.close();
+                        } else {
+                            $('#error-box').removeClass('hide');
+                            $('#alert-br').removeClass('hide');
+                            $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
+                            webSocket.close();
+                        }
+                    } else {
+                        var webauth = message.authtoken;
+                        webSocket.close();
+                        window.localStorage.setItem('bothostname', hostname);
+                        window.localStorage.setItem('botport', port);
+                        window.sessionStorage.setItem('webauth', webauth);
+                        window.location = window.location.origin + window.location.pathname + '../';
+                    }
+                };
             }
 
             function login() {
                 $('#error-box').addClass('hide');
-                $('#error-br').addClass('hide');
+                $('#success-box').addClass('hide');
+                $('#alert-br').addClass('hide');
 
                 var hostname = $('#hostname').val();
                 var port = $('#port').val();
@@ -139,69 +143,50 @@
 
                 if (hostname === undefined || hostname.length === 0) {
                     $('#error-box').removeClass('hide');
-                    $('#error-br').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
                     $('#error-box').html('Bot IP or Hostname Required');
                     return;
                 }
 
                 if (port === undefined || port.length === 0 || isNaN(parseInt(port)) || parseInt(port) < 1 || parseInt(port) > 65536) {
                     $('#error-box').removeClass('hide');
-                    $('#error-br').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
                     $('#error-box').html('Valid Bot Port Required');
                     return;
                 }
 
                 if (username === undefined || username.length === 0) {
                     $('#error-box').removeClass('hide');
-                    $('#error-br').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
                     $('#error-box').html('Username Required');
                     return;
                 }
 
                 if (password === undefined || password.length === 0) {
                     $('#error-box').removeClass('hide');
-                    $('#error-br').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
                     $('#error-box').html('Password Required');
                     return;
                 }
 
-                var wsload = false;
-                ////Connect to WS for check
-
-                if (wsload) {
-                    doLogin(hostname, port, username, password, true);
-                } else {
-                    $.ajax(
-                            {
-                                type: 'GET',
-                                url: 'https://' + hostname + ':' + port + '/sslcheck',
-                                crossDomain: true,
-                                dataType: 'text',
-                                success: function (sslStatus) {
-                                    if (sslStatus === 'false') {
-                                        $('#error-box').removeClass('hide');
-                                        $('#error-br').removeClass('hide');
-                                        $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required');
-                                    } else {
-                                        doLogin(hostname, port, username, password, false);
-                                    }
-                                },
-                                error: function (xhr, status, thrown) {
-                                    $('#error-box').removeClass('hide');
-                                    $('#error-br').removeClass('hide');
-                                    $('#error-box').html('The bot you are attempting to connect to does not use SSL, which is required, or is not responding' + (xhr.status > 0 ? '<br />[' + xhr.status + ']' : '') + (status > 0 ? '<br />>>' + status + '<<' : '') + (thrown.length > 0 ? '<br />!!' + thrown + '!!' : ''));
-                                }
+                $.ajax(
+                        {
+                            type: 'GET',
+                            url: 'https://' + hostname + ':' + port + '/sslcheck',
+                            crossDomain: true,
+                            dataType: 'text',
+                            success: function (sslStatus) {
+                                doLogin(hostname, port, username, password, sslStatus === 'true');
+                            },
+                            error: function () {
+                                doLogin(hostname, port, username, password, false);
                             }
-                    );
-                }
+                        }
+                );
             }
 
             $(function () {
                 setTimeout(function () {
-                    if (window.localStorage.getItem('bothostname')) {
-                        $('#hostname').val(window.localStorage.getItem('bothostname'));
-                        $('#port').val(window.localStorage.getItem('botport'));
-                    }
                     var hash = window.location.hash.substr(1);
                     var kvs = hash.split('&');
                     var hashmap = [];
@@ -212,16 +197,45 @@
                         hashmap[spl[0]] = spl[1];
                     }
 
+                    if (hashmap['logoutSuccess'] !== undefined && hashmap['logoutSuccess'] === 'true') {
+                        $('#success-box').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
+                        $('#success-box').html('Successfully logged out');
+                    }
+
                     if (hashmap['connectFail'] !== undefined && hashmap['connectFail'] === 'true') {
                         $('#error-box').removeClass('hide');
-                        $('#error-br').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
                         $('#error-box').html('Timed out connecting to the bot');
                     }
 
                     if (hashmap['missingBot'] !== undefined && hashmap['missingBot'] === 'true') {
                         $('#error-box').removeClass('hide');
-                        $('#error-br').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
                         $('#error-box').html('The selected bot hostname was missing from the panel URL, please login again');
+                    }
+
+                    if (hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true') {
+                        $('#error-box').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
+                        $('#error-box').html('Your session has expired, please login again');
+                    }
+
+                    if (hashmap['bothostname'] !== undefined && hashmap['bothostname'].length > 0) {
+                        window.localStorage.setItem('bothostname', hashmap['bothostname']);
+                    }
+
+                    if (hashmap['botport'] !== undefined && hashmap['botport'].length > 0 && !isNaN(parseInt(hashmap['botport']))
+                            && parseInt(hashmap['botport']) >= 1 && parseInt(hashmap['botport']) <= 65536) {
+                        window.localStorage.setItem('botport', hashmap['botport']);
+                    }
+
+                    if (window.localStorage.getItem('bothostname')) {
+                        $('#hostname').val(window.localStorage.getItem('bothostname'));
+                    }
+
+                    if (window.localStorage.getItem('botport')) {
+                        $('#port').val(window.localStorage.getItem('botport'));
                     }
                 }, 500);
             });
