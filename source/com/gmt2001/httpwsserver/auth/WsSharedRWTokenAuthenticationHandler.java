@@ -91,16 +91,6 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
         ctx.channel().attr(ATTR_AUTH_ATTEMPTS).set(ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() + 1);
 
-        if (ctx.channel().attr(WebSocketFrameHandler.ATTR_WEBAUTH).get() != null) {
-            if (ctx.channel().attr(WebSocketFrameHandler.ATTR_WEBAUTH).get().equals(readWriteToken)) {
-                ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
-            } else if (ctx.channel().attr(WebSocketFrameHandler.ATTR_WEBAUTH).get().equals(readOnlyToken)) {
-                ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
-            }
-        }
-
         String astr = "";
 
         if (frame instanceof TextWebSocketFrame) {

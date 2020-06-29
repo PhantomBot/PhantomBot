@@ -107,66 +107,44 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 validCredentials = user.equals(PhantomBot.instance().getProperties().getProperty("paneluser", "panel")) && pass.equals(PhantomBot.instance().getProperties().getProperty("panelpassword", "panel"));
             }
 
-            if (req.uri().contains("/remote")) {
-                status = HttpResponseStatus.NO_CONTENT;
-                sameSite = "; SameSite=None";
-            } else {
-                status = HttpResponseStatus.SEE_OTHER;
-            }
-
             if (!validCredentials) {
                 status = HttpResponseStatus.UNAUTHORIZED;
+            } else {
+                status = HttpResponseStatus.SEE_OTHER;
             }
 
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
 
             if (req.uri().contains("logout=true")) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "webauth=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST) && validCredentials) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
-
-                if (req.uri().contains("/remote")) {
-                    res.headers().add(HttpHeaderNames.SET_COOKIE, "webauth=" + PhantomBot.instance().getProperties().getProperty("webauth") + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
-                }
             }
 
-            if (req.uri().contains("/remote")) {
-                String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            String host = req.headers().get(HttpHeaderNames.HOST);
 
-                if (validCredentials) {
-                    com.gmt2001.Console.debug.println("204");
-                } else {
-                    com.gmt2001.Console.debug.println("401");
-                }
+            if (host == null) {
+                host = "";
+            } else if (HTTPWSServer.instance().sslEnabled) {
+                host = "https://" + host;
             } else {
-                String host = req.headers().get(HttpHeaderNames.HOST);
+                host = "http://" + host;
+            }
 
-                if (host == null) {
-                    host = "";
-                } else if (HTTPWSServer.instance().sslEnabled) {
-                    host = "https://" + host;
-                } else {
-                    host = "http://" + host;
-                }
+            String kickback;
 
-                String kickback;
+            if (req.uri().contains("kickback=")) {
+                kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
+            } else {
+                kickback = "/panel";
+            }
 
-                if (req.uri().contains("kickback=")) {
-                    kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
-                } else {
-                    kickback = "/panel";
-                }
+            if (validCredentials) {
+                res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
 
-                if (validCredentials) {
-                    res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
-
-                    com.gmt2001.Console.debug.println("303");
-                } else {
-                    com.gmt2001.Console.debug.println("401");
-                }
+                com.gmt2001.Console.debug.println("303");
+            } else {
+                com.gmt2001.Console.debug.println("401");
             }
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
