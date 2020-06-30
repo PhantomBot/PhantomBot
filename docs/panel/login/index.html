@@ -122,14 +122,13 @@
                             $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
                             webSocket.close();
                         }
-                    } else {
+                    } else if (message.authtoken !== undefined) {
                         var webauth = message.authtoken;
-                        console.log(message);
                         webSocket.close();
                         window.localStorage.setItem('bothostname', hostname);
                         window.localStorage.setItem('botport', port);
                         window.sessionStorage.setItem('webauth', webauth);
-                        //window.location = window.location.origin + window.location.pathname + '../';
+                        window.location = window.location.origin + window.location.pathname + '../';
                     }
                 };
             }
