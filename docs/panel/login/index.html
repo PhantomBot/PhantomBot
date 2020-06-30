@@ -27,7 +27,7 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="../../common/css/AdminLTE.dark.min.css" />
         <link rel="stylesheet" href="../../common/css/skin-purple.dark.min.css" />
-        <link rel="stylesheet" href="../common/css/pace.min.css" />
+        <link rel="stylesheet" href="../../common/css/pace.min.css" />
         <!-- Google fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
         <!-- Custom style for the body height -->
@@ -124,11 +124,12 @@
                         }
                     } else {
                         var webauth = message.authtoken;
+                        console.log(message);
                         webSocket.close();
                         window.localStorage.setItem('bothostname', hostname);
                         window.localStorage.setItem('botport', port);
                         window.sessionStorage.setItem('webauth', webauth);
-                        window.location = window.location.origin + window.location.pathname + '../';
+                        //window.location = window.location.origin + window.location.pathname + '../';
                     }
                 };
             }
