@@ -88,8 +88,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
         <script type="text/javascript">
-            function doLogin(hostname, port, username, password, useWss) {
-                var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + hostname + ':' + port + '/ws/panel/login?target=' + hostname + ':' + port, null, {maxReconnectAttempts: 1});
+            function doLogin(hostname, port, username, password) {
+                var webSocket = new WebSocket('wss://' + hostname + ':' + port + '/ws/panel/login?target=' + hostname + ':' + port);
                 webSocket.onopen = function () {
                     Pace.restart();
 
@@ -108,23 +108,20 @@
                     let message = JSON.parse(e.data);
 
                     if (message.errors !== undefined) {
-                        if (message.errors[0].status === '426') {
-                            useWss = true;
-                            webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + hostname + ':' + port + '/ws/panel/login?target=' + hostname + ':' + port;
-                        } else if (message.errors[0].status === '401') {
+                        if (message.errors[0].status === '401') {
                             $('#error-box').removeClass('hide');
                             $('#alert-br').removeClass('hide');
                             $('#error-box').html('Invalid Login');
-                            webSocket.close();
+                            webSocket.close(1000);
                         } else {
                             $('#error-box').removeClass('hide');
                             $('#alert-br').removeClass('hide');
                             $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
-                            webSocket.close();
+                            webSocket.close(1000);
                         }
                     } else if (message.authtoken !== undefined) {
                         var webauth = message.authtoken;
-                        webSocket.close();
+                        webSocket.close(1000);
                         window.localStorage.setItem('bothostname', hostname);
                         window.localStorage.setItem('botport', port);
                         window.sessionStorage.setItem('webauth', webauth);
@@ -178,68 +175,80 @@
                             crossDomain: true,
                             dataType: 'text',
                             success: function (sslStatus) {
-                                doLogin(hostname, port, username, password, sslStatus === 'true');
+                                if (sslStatus === 'true') {
+                                    doLogin(hostname, port, username, password);
+                                } else {
+                                    $('#error-box').removeClass('hide');
+                                    $('#alert-br').removeClass('hide');
+                                    $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
+                                }
                             },
                             error: function () {
-                                doLogin(hostname, port, username, password, false);
+                                $('#error-box').removeClass('hide');
+                                $('#alert-br').removeClass('hide');
+                                $('#error-box').html('Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
                             }
                         }
                 );
             }
 
             $(function () {
-                setTimeout(function () {
-                    var hash = window.location.hash.substr(1);
-                    var kvs = hash.split('&');
-                    var hashmap = [];
-                    var spl;
+                var hash = window.location.hash.substr(1);
+                var kvs = hash.split('&');
+                var hashmap = [];
+                var spl;
 
-                    for (var i = 0; i < kvs.length; i++) {
-                        spl = kvs[i].split('=', 2);
-                        hashmap[spl[0]] = spl[1];
-                    }
+                for (var i = 0; i < kvs.length; i++) {
+                    spl = kvs[i].split('=', 2);
+                    hashmap[spl[0]] = spl[1];
+                }
 
-                    if (hashmap['logoutSuccess'] !== undefined && hashmap['logoutSuccess'] === 'true') {
-                        $('#success-box').removeClass('hide');
-                        $('#alert-br').removeClass('hide');
-                        $('#success-box').html('Successfully logged out');
-                    }
+                if (hashmap['logoutSuccess'] !== undefined && hashmap['logoutSuccess'] === 'true') {
+                    $('#success-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#success-box').html('Successfully logged out');
+                }
 
-                    if (hashmap['connectFail'] !== undefined && hashmap['connectFail'] === 'true') {
-                        $('#error-box').removeClass('hide');
-                        $('#alert-br').removeClass('hide');
-                        $('#error-box').html('Timed out connecting to the bot');
-                    }
+                if (hashmap['connectFail'] !== undefined && hashmap['connectFail'] === 'true') {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').html('Timed out connecting to the bot');
+                }
 
-                    if (hashmap['missingBot'] !== undefined && hashmap['missingBot'] === 'true') {
-                        $('#error-box').removeClass('hide');
-                        $('#alert-br').removeClass('hide');
-                        $('#error-box').html('The selected bot hostname was missing from the panel URL, please login again');
-                    }
+                if (hashmap['sslFail'] !== undefined && hashmap['sslFail'] === 'true') {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
+                }
 
-                    if (hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true') {
-                        $('#error-box').removeClass('hide');
-                        $('#alert-br').removeClass('hide');
-                        $('#error-box').html('Your session has expired, please login again');
-                    }
+                if (hashmap['missingBot'] !== undefined && hashmap['missingBot'] === 'true') {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').html('The selected bot hostname was missing from the panel URL, please login again');
+                }
 
-                    if (hashmap['bothostname'] !== undefined && hashmap['bothostname'].length > 0) {
-                        window.localStorage.setItem('bothostname', hashmap['bothostname']);
-                    }
+                if (hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true') {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').html('Your session has expired, please login again');
+                }
 
-                    if (hashmap['botport'] !== undefined && hashmap['botport'].length > 0 && !isNaN(parseInt(hashmap['botport']))
-                            && parseInt(hashmap['botport']) >= 1 && parseInt(hashmap['botport']) <= 65536) {
-                        window.localStorage.setItem('botport', hashmap['botport']);
-                    }
+                if (hashmap['bothostname'] !== undefined && hashmap['bothostname'].length > 0) {
+                    window.localStorage.setItem('bothostname', hashmap['bothostname']);
+                }
 
-                    if (window.localStorage.getItem('bothostname')) {
-                        $('#hostname').val(window.localStorage.getItem('bothostname'));
-                    }
+                if (hashmap['botport'] !== undefined && hashmap['botport'].length > 0 && !isNaN(parseInt(hashmap['botport']))
+                        && parseInt(hashmap['botport']) >= 1 && parseInt(hashmap['botport']) <= 65536) {
+                    window.localStorage.setItem('botport', hashmap['botport']);
+                }
 
-                    if (window.localStorage.getItem('botport')) {
-                        $('#port').val(window.localStorage.getItem('botport'));
-                    }
-                }, 500);
+                if (window.localStorage.getItem('bothostname')) {
+                    $('#hostname').val(window.localStorage.getItem('bothostname'));
+                }
+
+                if (window.localStorage.getItem('botport')) {
+                    $('#port').val(window.localStorage.getItem('botport'));
+                }
             });
         </script>
     </body>

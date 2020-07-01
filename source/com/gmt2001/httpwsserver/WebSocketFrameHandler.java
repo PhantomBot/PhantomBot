@@ -24,7 +24,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.AttributeKey;
@@ -101,7 +103,8 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                         .key("detail").value("The URI path '" + hc.requestUri() + "' does not have a valid handler")
                         .endObject().endArray().endObject();
 
-                ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+                WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+                WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();
             } else {
                 ctx.channel().attr(ATTR_URI).set(ruri);
@@ -123,6 +126,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         com.gmt2001.Console.debug.printOrLogStackTrace(cause);
+        WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.INTERNAL_SERVER_ERROR));
         ctx.close();
     }
 
@@ -179,6 +183,27 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     }
 
     /**
+     * Creates and prepares a Close {@link WebSocketFrame} for transmission
+     *
+     * @param content The {@link WebSocketCloseStatus} to send
+     * @return A {@link WebSocketFrame} that is ready to transmit
+     */
+    public static WebSocketFrame prepareCloseWebSocketFrame(WebSocketCloseStatus status) {
+        return new CloseWebSocketFrame(status);
+    }
+
+    /**
+     * Creates and prepares a Close {@link WebSocketFrame} for transmission
+     *
+     * @param content The close status code to send
+     * @param reason The reason string to send
+     * @return A {@link WebSocketFrame} that is ready to transmit
+     */
+    public static WebSocketFrame prepareCloseWebSocketFrame(int status, String reason) {
+        return new CloseWebSocketFrame(status, reason);
+    }
+
+    /**
      * Transmits a {@link WebSocketFrame} back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
@@ -213,6 +238,14 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
                 c.writeAndFlush(resframe.copy());
             }
+        });
+    }
+
+    static void closeAllWsSessions() {
+        WebSocketFrame resframe = WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.ENDPOINT_UNAVAILABLE);
+        WS_SESSIONS.forEach((c) -> {
+            c.writeAndFlush(resframe.copy());
+            c.close();
         });
     }
 

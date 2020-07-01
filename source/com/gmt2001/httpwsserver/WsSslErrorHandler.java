@@ -19,6 +19,7 @@ package com.gmt2001.httpwsserver;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import org.json.JSONStringer;
@@ -65,7 +66,8 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
                     .key("detail").value("WSS Required")
                     .endObject().endArray().endObject();
 
-            ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+            WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+            WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
             ctx.close();
         }
     }
@@ -79,6 +81,7 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         com.gmt2001.Console.debug.printOrLogStackTrace(cause);
+        WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.INTERNAL_SERVER_ERROR));
         ctx.close();
     }
 }

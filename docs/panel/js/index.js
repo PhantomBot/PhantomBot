@@ -17,7 +17,6 @@
 
 // Main socket and functions.
 $(function() {
-    var useWss = false;
     $.ajax(
             {
                 type: 'GET',
@@ -26,13 +25,16 @@ $(function() {
                 dataType: 'text',
                 async: false,
                 success: function (data) {
-                    if (data === 'true') {
-                        useWss = true;
+                    if (data === 'false') {
+                        window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
                     }
+                },
+                error: function () {
+                    window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
                 }
             }
     );
-    var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
+    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -473,7 +475,7 @@ $(function() {
     };
     
     socket.close = function() {
-        webSocket.close();
+        webSocket.close(1000);
     };
 
     // WebSocket events.
@@ -515,12 +517,6 @@ $(function() {
             }
 
             let message = JSON.parse(e.data);
-
-            if (message.errors !== undefined && message.errors[0].status === '426') {
-                useWss = true;
-                webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
-                return;
-            }
 
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {

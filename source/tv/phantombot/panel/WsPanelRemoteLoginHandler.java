@@ -22,6 +22,7 @@ import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsNoAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +62,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         JSONStringer jsonObject = new JSONStringer();
+        boolean isError = false;
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
 
@@ -75,7 +77,8 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                         .key("detail").value("Unable to parse frame as JSON object")
                         .endObject().endArray().endObject();
 
-                ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.INTERNAL_SERVER_ERROR));
                 ctx.close();
                 com.gmt2001.Console.err.logStackTrace(ex);
                 return;
@@ -92,6 +95,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                             .key("title").value("Unauthorized")
                             .key("detail").value("Invalid Credentials")
                             .endObject().endArray().endObject();
+                    isError = true;
                 }
             } else {
                 jsonObject.object().key("errors").array().object()
@@ -99,6 +103,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                         .key("title").value("Not Acceptable")
                         .key("detail").value("Query not acceptable")
                         .endObject().endArray().endObject();
+                isError = true;
             }
         } else {
             jsonObject.object().key("errors").array().object()
@@ -106,9 +111,15 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                     .key("title").value("Not Acceptable")
                     .key("detail").value("Only Text frames are allowed")
                     .endObject().endArray().endObject();
+            isError = true;
         }
 
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        if (isError) {
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+        } else {
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.NORMAL_CLOSURE));
+        }
         ctx.close();
     }
 }
