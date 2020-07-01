@@ -44,8 +44,6 @@ services:
     #   dockerfile: Dockerfile
     container_name: phantombot-nightly
     image: gmt2001/phantombot-nightly:latest
-    ports:
-      - "25000:25000"
     restart: always
     volumes:
       - /opt/PhantomBot/addons
