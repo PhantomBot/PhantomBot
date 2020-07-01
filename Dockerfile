@@ -1,5 +1,5 @@
 #  
-# Copyright (C) 2016-2019 phantombot.tv
+# Copyright (C) 2016-2020 phantombot.tv
 #  
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ RUN cd "${BUILDDIR}" \
 FROM diamol/openjdk:latest
 
 ARG PROJECT_NAME=PhantomBot
+ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
@@ -49,7 +50,7 @@ ARG TARGETPLATFORM
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
 
-COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-3.2.0/." "${BASEDIR}/"
+COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
 
 RUN cd "${BASEDIR}" \
     && rm -rf \

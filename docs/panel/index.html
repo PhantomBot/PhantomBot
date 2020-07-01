@@ -29,17 +29,17 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
         <!-- Bootstrap 3.3.7 -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../common/css/bootstrap.min.css" />
         <!-- Datatables -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-bs/2.1.1/dataTables.bootstrap.min.css" />
+        <link rel="stylesheet" href="../common/css/dataTables.bootstrap.min.css" />
         <!-- Toastr -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" />
+        <link rel="stylesheet" href="../common/css/toastr.min.css" />
         <!-- Pace theme -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css" />
+        <link rel="stylesheet" href="../common/css/pace.min.css" />
         <!-- Pretty Checkbox -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretty-checkbox/3.0.0/pretty-checkbox.min.css" />
+        <link rel="stylesheet" href="../common/css/pretty-checkbox.min.css" />
         <!-- Easy auto comeplete -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.min.css" />
+        <link rel="stylesheet" href="../common/css/easy-autocomplete.min.css" />
         <!-- Loader -->
         <link rel="stylesheet" href="css/main.min.css">
         <!-- Google Font -->
@@ -516,53 +516,28 @@
         <script src="js/utils/helpers.js"></script>
         <!-- Ajax page loader -->
         <script src="js/utils/ajaxLoader.js"></script>
+        <script src="js/utils/panelConfig.js"></script>
         <!-- Reconnecting socket. -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
 
         <script type="text/javascript" language="javascript">
             $(function () {
                 helpers.parseHashmap();
+                helpers.setupAuth();
                 if (helpers.getBotHost() === '!missing') {
                     window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
                     return;
                 }
-                function loadScripts() {
-                    $('#user-image1').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
-                    $('#user-image2').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
-                    $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
-                    $('body').append($('<script>', {
-                        'src': 'js/index.js'
-                    }));
+                if (getAuth() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+                    return;
                 }
-                if (helpers.useWsLoad()) {
-                    $('body').append($('<script>', {
-                        'src': window.location.origin + window.location.pathname + 'js/utils/panelConfig.js'
-                    }));
-                    loadScripts();
-                } else {
-                    $('body').append($('<script>', {
-                        'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
-                    }));
-                    var panelTmrIterations = 0;
-                    var panelTmr = setInterval(function () {
-                        try {
-                            panelTmrIterations++;
-                            if (panelTmrIterations >= 60) {
-                                window.location = window.location.origin + window.location.pathname + 'login/#connectFail=true';
-                                clearInterval(panelTmr);
-                                return;
-                            }
-
-                            if (panelSettings === undefined) {
-                                return;
-                            }
-
-                            loadScripts();
-                            clearInterval(panelTmr);
-                        } catch (e) {
-                        }
-                    }, 500);
-                }
+                $('#user-image1').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
+                $('#user-image2').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
+                $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
+                $('body').append($('<script>', {
+                    'src': 'js/index.js'
+                }));
             });
         </script>
     </body>

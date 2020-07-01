@@ -286,6 +286,7 @@ public final class HTTPWSServer {
      * Shuts down the server, with a grace period for ongoing requests to finish
      */
     public void close() {
+        WebSocketFrameHandler.closeAllWsSessions();
         ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
     }
