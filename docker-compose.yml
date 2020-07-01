@@ -18,6 +18,9 @@
 version: '3'
 services:
   phantombot:
+    # build: 
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: phantombot-nightly
     image: gmt2001/phantombot-nightly:latest
     ports:

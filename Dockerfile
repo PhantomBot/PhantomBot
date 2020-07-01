@@ -73,7 +73,8 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/logs" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
-    && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom"
+    && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
+    && chmod u+x ./java-runtime-linux/bin/java
 
 VOLUME "${DATADIR}"
 
@@ -81,4 +82,4 @@ WORKDIR "${BASEDIR}"
 
 EXPOSE 25000
 
-CMD ["sh", "launch-service.sh"]
+CMD ["bash", "launch-service.sh"]
