@@ -22,6 +22,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
+ARG ANT_ARGS=
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN mkdir -p "${BUILDDIR}" \
@@ -36,7 +37,7 @@ RUN mkdir -p "${BUILDDIR}" \
 COPY . "${BUILDDIR}"
 
 RUN cd "${BUILDDIR}" \
-    && ant jar
+    && ant -noinput -buildfile build.xml ${ANT_ARGS} jar
 
 # Application container
 FROM diamol/openjdk:latest
