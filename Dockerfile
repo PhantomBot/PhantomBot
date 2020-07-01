@@ -76,7 +76,7 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
     && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
-    && chmod u+x ./java-runtime-linux/bin/java
+    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then chmod u+x ./java-runtime-linux/bin/java ; fi
 
 VOLUME "${DATADIR}"
 
