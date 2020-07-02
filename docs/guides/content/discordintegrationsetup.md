@@ -1,15 +1,15 @@
 # Discord Integration Setup
 
-## Creating a Discord Bot Account
+### Creating a Discord Bot Account
 
 **If you have a Discord bot account already, you can skip this step**
 
-1. Use the following link `https://discord.com/developers/applications`
+1. Use the following link https://discord.com/developers/applications
 2. Click *New Application*, set name and click *Create*
 3. Go to *Bot*, click Add Bot - *Yes, do it!*
 4. Turn 2 toggles on *Privileged Gateway Intents*
 
-## Getting and Setup Bot token
+### Getting and Setup Bot token
 
 1. In the *TOKEN* under the nickname, click *Copy* and paste code to safe location.
 2. Open file `BotName\config\botlogin.txt`
@@ -18,7 +18,7 @@
 
 The Discord button will appear in the control panel on the left tab.
 
-## Invite Bot to Discord Server
+### Invite Bot to Discord Server
 
 1. Go to your *Discord Application* -> *OAuth2*
 2. In *OAuth2 URL Generator* check the box on *Bot*

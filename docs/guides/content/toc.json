@@ -1,5 +1,6 @@
 {
     "subfolders": {
+        "setupbot": "Setup and Update"
     },
     "pages": {
         "discordintegrationsetup": "Discord Integration Setup",
