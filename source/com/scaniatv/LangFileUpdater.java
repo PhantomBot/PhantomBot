@@ -72,8 +72,8 @@ public final class LangFileUpdater {
         
         stringArray = convertLangMapToJSONArray(
             getCustomAndDefaultLangMap(
-                getLang(DEFAULT_LANG_ROOT + langFile),
-                getLang(CUSTOM_LANG_ROOT + langFile)
+                getLang(DEFAULT_LANG_ROOT + langFile.replaceAll("..", "").replaceAll("%", "_")),
+                getLang(CUSTOM_LANG_ROOT + langFile.replaceAll("..", "").replaceAll("%", "_"))
             )
         );
         
@@ -101,7 +101,7 @@ public final class LangFileUpdater {
         }
         
         try {
-            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/");
+            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/").replaceAll("..", "").replaceAll("%", "_");
             
             File file = new File(langFile);
             boolean exists = true;
@@ -185,7 +185,7 @@ public final class LangFileUpdater {
      */
     private static String getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
-        langFile = langFile.replaceAll("\\\\", "/");
+        langFile = langFile.replaceAll("\\\\", "/").replaceAll("..", "").replaceAll("%", "_");
         
         if (new File(langFile).exists()) {
             try {

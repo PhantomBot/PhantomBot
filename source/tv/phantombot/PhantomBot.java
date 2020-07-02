@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot;
 
 import com.gmt2001.TwitchAPIv5;
@@ -40,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -99,6 +99,7 @@ import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
 public final class PhantomBot implements Listener {
+
     /* Bot Information */
     private String botName;
     private String channelName;
@@ -149,7 +150,7 @@ public final class PhantomBot implements Listener {
     private String twitterConsumerSecret;
     private String twitterConsumerToken;
     private Boolean twitterAuthenticated;
-    
+
     /* Bitly Information */
     private String BitlyAPIKey = "";
     private String BitlyGUID = "";
@@ -193,7 +194,7 @@ public final class PhantomBot implements Listener {
     /* Sockets */
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
-    
+
     /* PhantomBot Information */
     private static PhantomBot instance;
     private static Boolean reloadScripts = false;
@@ -424,7 +425,7 @@ public final class PhantomBot implements Listener {
         this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
         this.streamElementsID = this.pbProperties.getProperty("streamelementsid", "");
         this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
-        
+
         /* Set the Bitly variables */
         this.BitlyAPIKey = this.pbProperties.getProperty("bitlyapikey", "");
         this.BitlyGUID = this.pbProperties.getProperty("bitlyguid", "");
@@ -517,7 +518,7 @@ public final class PhantomBot implements Listener {
             /* Convert to MySql */
             if (IniStore.hasDatabase(dataStoreConfig) && IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), IniStore.instance());
-            } else if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0  && MySQLStore.instance().GetFileList().length == 0) {
+            } else if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
         } else if (dataStoreType.equalsIgnoreCase("h2store")) {
@@ -550,7 +551,7 @@ public final class PhantomBot implements Listener {
             TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
             TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
         }
-        
+
         /* Set the client Id in the Twitch api. */
         TwitchAPIv5.instance().SetClientID(this.clientId.isBlank() ? (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID()) : this.clientId);
 
@@ -641,14 +642,24 @@ public final class PhantomBot implements Listener {
         return RepoVersion.getPrereleaseBuild();
     }
 
+    public static String GetExecutionPath() {
+        try {
+            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toString();
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return "";
+        }
+    }
+
     /**
      * Enables or disables the debug mode.
      *
      * @param {boolean} debug
      */
     public static void setDebugging(Boolean debug) {
-        if (debug)
+        if (debug) {
             com.gmt2001.Console.out.println("Debug Mode Enabled");
+        }
         PhantomBot.enableDebugging = debug;
     }
 
@@ -658,8 +669,9 @@ public final class PhantomBot implements Listener {
      * @param {boolean} debug
      */
     public static void setDebuggingLogOnly(Boolean debug) {
-        if (debug)
+        if (debug) {
             com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
+        }
         PhantomBot.enableDebugging = debug;
         PhantomBot.enableDebuggingLogOnly = debug;
     }
@@ -780,7 +792,7 @@ public final class PhantomBot implements Listener {
      */
     public String getBotInformation() {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
-               + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + getBotInfo() + "\r\n\r\n";
     }
 
     /**
@@ -855,8 +867,12 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            if (!new File ("./web/ytplayer/").exists()) new File ("./web/ytplayer/").mkdirs();
-            if (!new File ("./web/ytplayer/js").exists()) new File ("./web/ytplayer/js").mkdirs();
+            if (!new File("./web/ytplayer/").exists()) {
+                new File("./web/ytplayer/").mkdirs();
+            }
+            if (!new File("./web/ytplayer/js").exists()) {
+                new File("./web/ytplayer/js").mkdirs();
+            }
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -880,8 +896,12 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            if (!new File ("./web/playlist/").exists()) new File ("./web/playlist/").mkdirs();
-            if (!new File ("./web/playlist/js").exists()) new File ("./web/playlist/js").mkdirs();
+            if (!new File("./web/playlist/").exists()) {
+                new File("./web/playlist/").mkdirs();
+            }
+            if (!new File("./web/playlist/js").exists()) {
+                new File("./web/playlist/js").mkdirs();
+            }
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/playlist/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -909,8 +929,12 @@ public final class PhantomBot implements Listener {
             data += "function getDisplayName() { return panelSettings.displayName; }\r\n";
 
             /* Create a new file if it does not exist */
-            if (!new File ("./web/panel/").exists()) new File ("./web/panel/").mkdirs();
-            if (!new File ("./web/panel/js").exists()) new File ("./web/panel/js").mkdirs();
+            if (!new File("./web/panel/").exists()) {
+                new File("./web/panel/").mkdirs();
+            }
+            if (!new File("./web/panel/js").exists()) {
+                new File("./web/panel/js").mkdirs();
+            }
 
             byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
 
@@ -938,8 +962,12 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return panelSettings.http; }\r\n";
 
             /* Create a new file if it does not exist */
-            if (!new File ("./web/common/").exists()) new File ("./web/common/").mkdirs();
-            if (!new File ("./web/common/js").exists()) new File ("./web/common/js").mkdirs();
+            if (!new File("./web/common/").exists()) {
+                new File("./web/common/").mkdirs();
+            }
+            if (!new File("./web/common/js").exists()) {
+                new File("./web/common/js").mkdirs();
+            }
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/common/js/wsConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -1086,7 +1114,6 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-
         com.gmt2001.Console.out.print("\r\n");
         print("Closing the database...");
         dataStore.dispose();
@@ -1213,7 +1240,9 @@ public final class PhantomBot implements Listener {
         }
     }
 
-    /** Handle commands */
+    /**
+     * Handle commands
+     */
     public void handleCommand(String username, String command) {
         String arguments = "";
 
@@ -1226,7 +1255,9 @@ public final class PhantomBot implements Listener {
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
     }
 
-    /** Handle commands */
+    /**
+     * Handle commands
+     */
     public void handleCommandSync(String username, String command) {
         String arguments = "";
 
@@ -1239,10 +1270,12 @@ public final class PhantomBot implements Listener {
         EventBus.instance().post(new CommandEvent(username, command, arguments));
     }
 
-    /** Load up main */
+    /**
+     * Load up main
+     */
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
-        
+
         // Move user files.
         moveUserConfig();
 
@@ -1252,11 +1285,11 @@ public final class PhantomBot implements Listener {
         }
 
         /* Print the user dir */
-        com.gmt2001.Console.out.println("The working directory is: " + System.getProperty("user.dir"));
+        com.gmt2001.Console.out.println("The working directory is: " + GetExecutionPath());
 
-        com.gmt2001.Console.out.println("Detected Java " + System.getProperty("java.version") + " running on " +
-                                        System.getProperty("os.name") + " " + System.getProperty("os.version") +
-                                        " (" + System.getProperty("os.arch") + ")");
+        com.gmt2001.Console.out.println("Detected Java " + System.getProperty("java.version") + " running on "
+                + System.getProperty("os.name") + " " + System.getProperty("os.version")
+                + " (" + System.getProperty("os.arch") + ")");
 
         /* If prompted, now that the version has been reported, exit. */
         if (args.length > 0) {
@@ -1288,26 +1321,31 @@ public final class PhantomBot implements Listener {
     }
 
     private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
-        if(enableRhinoDebugger)
+        if (enableRhinoDebugger) {
             com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
+        }
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
     }
 
     private static void setReloadScripts(Boolean reloadScripts) {
-        if (reloadScripts)
+        if (reloadScripts) {
             com.gmt2001.Console.out.println("Enabling Script Reloading");
+        }
         PhantomBot.reloadScripts = reloadScripts;
 
     }
 
     private static void setSilentScriptsLoad(Boolean silentScriptsLoad) {
-        if (silentScriptsLoad)
+        if (silentScriptsLoad) {
             com.gmt2001.Console.out.println("Enabling Silent Script Load");
+        }
         PhantomBot.silentScriptsLoad = silentScriptsLoad;
 
     }
 
-    /** gen a random string */
+    /**
+     * gen a random string
+     */
     public static String generateRandomString(int length) {
         String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         char[] randomChars = randomAllowed.toCharArray();
@@ -1333,7 +1371,7 @@ public final class PhantomBot implements Listener {
         service.scheduleAtFixedRate(() -> {
             try {
                 Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
-                
+
                 String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
                 if (newVersionInfo != null) {
                     try {
@@ -1347,7 +1385,7 @@ public final class PhantomBot implements Listener {
                     } catch (InterruptedException ex) {
                         com.gmt2001.Console.err.printStackTrace(ex);
                     }
-                    
+
                     if (webEnabled) {
                         dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
                     }
@@ -1360,7 +1398,9 @@ public final class PhantomBot implements Listener {
         }, 0, 24, TimeUnit.HOURS);
     }
 
-    /** Set the twitch cache */
+    /**
+     * Set the twitch cache
+     */
     public void setTwitchCacheReady(String twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
@@ -1373,7 +1413,7 @@ public final class PhantomBot implements Listener {
         if (!this.dataStore.canBackup()) {
             return;
         }
-        
+
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
@@ -1454,8 +1494,8 @@ public final class PhantomBot implements Listener {
      * Method to export a Java list to a csv file.
      *
      * @param {String[]} headers
-     * @param {List}     values
-     * @param {String}   fileName
+     * @param {List} values
+     * @param {String} fileName
      */
     public void toCSV(String[] headers, List<String[]> values, String fileName) {
         StringBuilder builder = new StringBuilder();

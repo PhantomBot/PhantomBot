@@ -78,6 +78,8 @@ public class IniStore extends DataStore implements ActionListener {
     private String validatefName(String fName) {
         fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
 
+        fName = fName.replaceAll("%.", "_");
+
         return fName;
     }
 
