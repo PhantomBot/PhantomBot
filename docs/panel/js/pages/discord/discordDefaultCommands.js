@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ $(run = function() {
                             'title': 'Deletes the command permission and resets it to default on startup. This does not remove the command unless it doesn\'t exist anymore.',
                             'data-command': results[i].key,
                             'html': $('<i/>', {
-                                'class': 'fa fa-refresh'
+                                'class': 'fas fa-sm fa-sync-alt'
                             })
                         })).append($('<button/>', {
                             'type': 'button',
@@ -76,7 +76,7 @@ $(run = function() {
                             'style': 'float: right',
                             'data-command': results[i].key,
                             'html': $('<i/>', {
-                                'class': 'fa fa-edit'
+                                'class': 'fas fa-sm fa-edit'
                             })
                         })).html()
                     ]);

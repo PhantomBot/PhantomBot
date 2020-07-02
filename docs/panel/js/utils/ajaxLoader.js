@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,6 @@ $(function() {
                     if (href !== undefined) {
                         // Set the current tab as active.
                         $.fn.dinamicMenu(href);
-                        // Update URL.
-                        window.history.pushState(null, '', './panel');
                     }
                     helpers.log('Completed ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
                 },

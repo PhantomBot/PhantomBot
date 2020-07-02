@@ -16,8 +16,10 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
+import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
 import org.json.JSONException;
@@ -75,9 +77,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with the
-     * appropriate frames to continue the authentication sequence, or an {@code Unauthorized} frame if authentication has been fully attempted and
-     * failed
+     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with the appropriate
+     * frames to continue the authentication sequence, or an {@code Unauthorized} frame if authentication has been fully attempted and failed
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -108,13 +109,10 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         astr = jso.getString("readauth");
                     }
 
-                    if (jso.getString("authenticate").equals(readWriteToken)) {
+                    if (astr.equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
-                    } else if (jso.getString("authenticate").equals(readOnlyToken)) {
-                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
-                    } else if (jso.getString("readauth").equals(readOnlyToken)) {
+                    } else if (astr.equals(readOnlyToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                     }
@@ -136,6 +134,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
             com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
             com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
             com.gmt2001.Console.debug.println("Got: >" + astr + "<");
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
             ctx.close();
         }
 
@@ -144,6 +143,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.FALSE);
+        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
     }
 }

@@ -169,7 +169,7 @@ public final class HTTPWSServer {
      */
     private void generateAutoSsl(String botName) {
         try {
-            KeyPair kp = null;
+            KeyPair kp;
             Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
             if (key instanceof PrivateKey) {
                 // Get certificate of public key
@@ -286,6 +286,7 @@ public final class HTTPWSServer {
      * Shuts down the server, with a grace period for ongoing requests to finish
      */
     public void close() {
+        WebSocketFrameHandler.closeAllWsSessions();
         ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
     }

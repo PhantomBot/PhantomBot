@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ $(run = function() {
 
         if (e['commercialtimer'] === 'true') {
             $('#commercials-autotimer-on').html($('<i/>', {
-                'class': 'fa fa-check'
+                'class': 'fas fa-sm fa-check'
             })).append('&nbsp; Update Autotimer');
             $('#commercials-autotimer-off').removeClass('hidden');
         }
@@ -64,7 +64,7 @@ $(function() {
                     toastr.success('Successfully set the autotimer!');
                     // Update the button.
                     $('#commercials-autotimer-on').html($('<i/>', {
-                        'class': 'fa fa-check'
+                        'class': 'fas fa-sm fa-check'
                     })).append('&nbsp; Update Autotimer');
                     $('#commercials-autotimer-off').removeClass('hidden');
                 });
@@ -77,7 +77,7 @@ $(function() {
             toastr.success('Successfully turned off autotimer!');
             // Update the button.
             $('#commercials-autotimer-on').html($('<i/>', {
-                'class': 'fa fa-check'
+                'class': 'fas fa-sm fa-check'
             })).append('&nbsp; Set Autotimer');
             $('#commercials-autotimer-off').addClass('hidden');
         });

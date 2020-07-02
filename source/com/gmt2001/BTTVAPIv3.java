@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -101,7 +102,7 @@ public class BTTVAPIv3 {
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             jsonText = readAll(rd);
             if (isJSONArray) {
-                jsonResult.put("data", jsonText);
+                jsonResult.put("data", new JSONArray(jsonText));
             } else {
                 jsonResult = new JSONObject(jsonText);
             }
