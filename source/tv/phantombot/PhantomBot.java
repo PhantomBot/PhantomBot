@@ -86,6 +86,7 @@ import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
 import tv.phantombot.panel.WsPanelHandler;
+import tv.phantombot.panel.WsPanelRemoteLoginHandler;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
@@ -394,7 +395,7 @@ public final class PhantomBot implements Listener {
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
         this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
-        this.useHttps = this.pbProperties.getProperty("usehttps", "false").equalsIgnoreCase("true");
+        this.useHttps = this.pbProperties.getProperty("usehttps", "true").equalsIgnoreCase("true");
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -803,6 +804,7 @@ public final class PhantomBot implements Listener {
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
+            new WsPanelRemoteLoginHandler(panelUsername, panelPassword, webOAuthThro, webOAuth).register();
 
             /* Is the music toggled on? */
             if (musicEnabled) {

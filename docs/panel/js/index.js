@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,24 @@
 
 // Main socket and functions.
 $(function() {
-    var useWss = false;
     $.ajax(
             {
                 type: 'GET',
-                url: 'http://' + helpers.getBotHost() + '/sslcheck',
+                url: 'https://' + helpers.getBotHost() + '/sslcheck',
                 crossDomain: true,
                 dataType: 'text',
                 async: false,
                 success: function (data) {
-                    if (data === 'true') {
-                        useWss = true;
+                    if (data === 'false') {
+                        window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
                     }
+                },
+                error: function () {
+                    window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
                 }
             }
     );
-    var webSocket = new ReconnectingWebSocket('ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
+    var webSocket = new ReconnectingWebSocket('wss://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -453,6 +455,29 @@ $(function() {
         }
     };
 
+    /*
+     * @function Sends a remote panel query.
+     *
+     * @param {String}   query_id
+     * @param {String}   query
+     * @param {Object}   params
+     * @param {Function} callback
+     */
+    socket.doRemote = function(query_id, query, params, callback) {
+        generateCallBack(query_id, [], true, false, callback);
+
+        sendToSocket({
+            remote: true,
+            id: query_id,
+            query: query,
+            params: params
+        });
+    };
+    
+    socket.close = function() {
+        webSocket.close(1000);
+    };
+
     // WebSocket events.
 
     /*
@@ -493,12 +518,6 @@ $(function() {
 
             let message = JSON.parse(e.data);
 
-            if (message.errors !== undefined && message.errors[0].status === '403' && message.errors[0].detail === 'WSS Required') {
-                useWss = true;
-                webSocket.url = 'ws' + (useWss ? 's' : '') + '://' + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost()
-                return;
-            }
-
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
@@ -512,16 +531,11 @@ $(function() {
                         helpers.isAuth = true;
                     }
 
-                    if (helpers.useWsLoad()) {
-                        sendToSocket({
-                            remote: true,
-                            id: 'initLoad.panelSettings',
-                            query: 'panelSettings'
-                        });
-                    } else {
-                        // Load the main page.
-                        $.loadPage('dashboard', 'dashboard.html');
-                    }
+                    sendToSocket({
+                        remote: true,
+                        id: 'initLoad.panelSettings',
+                        query: 'panelSettings'
+                    });
                 }
                 return;
             }
@@ -530,7 +544,6 @@ $(function() {
                 if (message.id === 'initLoad.panelSettings') {
                     window.panelSettings.channelName = message.channelName;
                     window.panelSettings.displayName = message.displayName;
-                    window.panelSettings.auth = message.webauth;
                     $.loadPage('dashboard', 'dashboard.html');
                 }
             }

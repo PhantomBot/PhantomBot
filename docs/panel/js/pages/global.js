@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,22 +28,10 @@ $(function () {
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function () {
-        $.ajax(
-                {
-                    type: 'GET',
-                    url: 'http://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: function () {
-                        window.location = window.location.origin + window.location.pathname + 'login';
-                    },
-                    error: function (xhr, status, thrown) {
-                        toastr.error('Logout request failed: [' + xhr.status + ']' + status + " > " + thrown, '', {timeOut: 0});
-                    }
-                }
-        );
+        toastr.info('Signing out...', '', { timeOut: 0 });
+        socket.close();
+        window.sessionStorage.removeItem("webauth");
+        window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
     });
 
     // Load the display name.
