@@ -39,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -642,10 +643,12 @@ public final class PhantomBot implements Listener {
     }
 
     public static String GetExecutionPath() {
-        String absolutePath = PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
-        absolutePath = absolutePath.replaceAll("%20", " "); // Surely need to do this here
-        return absolutePath;
+        try {
+            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toString();
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return "";
+        }
     }
 
     /**
