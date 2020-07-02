@@ -113,7 +113,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
 
-        if (uri.contains("..")) {
+        if (URLDecoder.decode(uri, Charset.forName("UTF-8")).contains("..")) {
             return null;
         }
 
