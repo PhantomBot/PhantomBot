@@ -2,6 +2,7 @@
     "subfolders": {
     },
     "pages": {
+        "discordintegrationsetup": "Discord Integration Setup",
         "twitchembeds": "Enable Twitch embeds",
         "markdown": "Markdown for Guides",
         "guides": "Guides"
