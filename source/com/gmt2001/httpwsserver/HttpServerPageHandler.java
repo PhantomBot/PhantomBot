@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -81,7 +82,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             return;
         }
 
-        HttpRequestHandler h = determineHttpRequestHandler(req.uri());
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+        HttpRequestHandler h = determineHttpRequestHandler(qsd.path());
 
         if (h != null) {
             if (h.getAuthHandler().checkAuthorization(ctx, req)) {
