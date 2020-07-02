@@ -2,7 +2,7 @@
 
 You need a user which has root privileges on the server to get this working! If you don't have root privileges, you may encounter unsolvable problems during setup. But it's possible to get the bot running without them.
 
-## 1. Get your system ready
+### 1. Get your system ready
 
 First thing is to make sure, that your system is up to date. Before we install anything, we check if this is the case.
 
@@ -10,7 +10,7 @@ Type into the terminal or your SSH client:
 
 `yum update`
 
-## 2. Create a PhantomBot user
+### 2. Create a PhantomBot user
 
 NEVER run this type of applications as root or root-user! Provide only necessary privileges to keep your server secure!
 
@@ -23,7 +23,7 @@ To create a new user and the corresponding home directory you have to type the f
 Please take a good password! Nothing like 123 or similar are really secure!
 Now we have created the user and the home directory for him.
 
-## 3. Installing PhantomBot
+### 3. Installing PhantomBot
 
 Now we’re ready to install PhantomBot into our botuser directory.
 First, add the bot to the wheel group.
@@ -52,7 +52,7 @@ To make future updates a bit easier, we have to rename the PhantomBot folder.
 
 `mv PhantomBot-X.X.X phantombot`
 
-The last thing we need to do is to assign the right privileges to make the launch.sh and launch-service.sh files executable.
+The last thing we need to do is to assign the right privileges to make the launch.sh and java-runtime files executable.
 
 `cd phantombot`
 
@@ -70,7 +70,7 @@ After the bot is configured you can press the following keys and follow the rest
 
 `Ctrl + C`
 
-## 4. Setting up a systemd Unit
+### 4. Setting up a systemd Unit
 
 Create a new file called phantombot.service as root.
 
@@ -108,14 +108,14 @@ On the end of the file add this:
 
 `botuser ALL=NOPASSWD: /bin/systemctl start phantombot, /bin/systemctl stop phantombot, /bin/systemctl restart phantombot, /bin/systemctl status phantombot`
 
-Now the user “botuser” should have the rights to run the specific commands to start|stop|restart|status PhantomBot.
+Now the user *botuser* should have the rights to run the specific commands to start|stop|restart|status PhantomBot.
 Let’s try it!
 
 Switch to our botuser:
 
 `su - botuser`
 
-Then as “botuser” try:
+Then as *botuser* try:
 
 `sudo systemctl start phantombot`
 
@@ -127,10 +127,10 @@ Then as “botuser” try:
 
 If you have set up all correct it will start|stop|restart|status PhantomBot.
 
-After PhantomBot is started, you can find your Control Panel under “YOUR-SERVER-IP:25000/panel”.
+After PhantomBot is started, you can find your Control Panel under *YOUR-SERVER-IP:25000/panel*.
 Make sure you open the following port on your server: `25000`.
 
-## 5. Opening the Panel Ports
+### 5. Opening the Panel Ports
 
 First you’ll want to enable your firewall. Centos 7 can have it disabled by default, even when disabled the port won’t be opened.
 
@@ -148,7 +148,7 @@ Reload the firewall after to apply your changes.
 
 `sudo firewall-cmd --reload`
 
-## Extra - Backup every 24 hours
+### Extra - Backup every 24 hours
 
 `su - botuser`
 

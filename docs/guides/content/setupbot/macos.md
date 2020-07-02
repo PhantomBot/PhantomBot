@@ -8,7 +8,7 @@
 
 **Make sure you mod the bot in your channel or it will not talk in chat. /mod my_bot_name.**
 
-## Detailed instructions based on OS X 10.11.4
+### Detailed instructions based on OS X 10.11.4
 
 1. Download the bot from [here](https://github.com/PhantomBot/PhantomBot/releases/latest/).
 
@@ -30,6 +30,8 @@
 
 `chmod u+x launch.sh`
 
+`sudo chmod u+x ./java-runtime-macos/bin/java`
+
 6. Once that’s done, launch *PhantomBot*.
 
 8. Follow the steps on screen. It will ask you for the bot username, use the username you created earlier.
@@ -39,7 +41,7 @@ And now your bot should be connected to your channel! You can find a list of com
 
 9. Type `exit` and hit Enter in the bot console to shut it down gracefully.
 
-## Launch PhantomBot faster
+### Launch PhantomBot faster
 
 - go to Documents/PhantomBot -> right-click launch.sh -> “Open With” -> “Other…” -> search for Terminal and select it -> check “Always Open With” -> hit “Open” (Note: Enable All Applications might have to be selected rather than Enable Recommended Applications)
 - next time you wanna launch it: go to Documents/PhantomBot -> right-click launch.sh -> “Open” -> click “Open”
