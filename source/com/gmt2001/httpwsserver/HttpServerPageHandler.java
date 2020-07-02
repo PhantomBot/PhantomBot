@@ -90,6 +90,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 h.handleRequest(ctx, req);
             }
         } else {
+            com.gmt2001.Console.debug.println("404 " + req.method().asciiName() + ": " + qsd.path());
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
         }
     }

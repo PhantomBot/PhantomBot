@@ -103,6 +103,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                         .key("detail").value("The URI path '" + hc.requestUri() + "' does not have a valid handler")
                         .endObject().endArray().endObject();
 
+                com.gmt2001.Console.debug.println("404 WS: " + hc.requestUri());
                 WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
                 WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();

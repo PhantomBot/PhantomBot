@@ -102,8 +102,8 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         try {
             Path p = Paths.get(".", path);
 
-            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "addons"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "logs"))) {
+            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./addons"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;
