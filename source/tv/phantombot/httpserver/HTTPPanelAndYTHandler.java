@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -86,6 +87,12 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
                 path = path + "/index.html";
                 p = Paths.get("./web/", path);
+            }
+
+            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))) {
+                com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                return;
             }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
