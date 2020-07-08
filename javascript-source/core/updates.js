@@ -877,9 +877,9 @@
         $.inidb.set('updates', 'installedv3.0.1', 'true');
     }
 
-    /* version 3.2 updates */
-    if (!$.inidb.exists('updates', 'installedv3.2') || $.inidb.get('updates', 'installedv3.2') != 'true') {
-        $.consoleLn('Starting PhantomBot update 3.2 updates...');
+    /* version 3.3.0 updates */
+    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
 
         $.consoleLn('Updating keywords...');
         var keys = $.inidb.GetKeyList('keywords', ''),
@@ -917,8 +917,8 @@
             $.inidb.set('keywords', newKeywords[i].key, JSON.stringify(newKeywords[i].json));
         }
 
-        $.consoleLn('PhantomBot update 3.2 completed!');
-        $.inidb.set('updates', 'installedv3.2', 'true');
+        $.consoleLn('PhantomBot update 3.3.0 completed!');
+        $.inidb.set('updates', 'installedv3.3.0', 'true');
     }
 
     /**
