@@ -850,4 +850,5 @@
     $.getPointsMessage = getPointsMessage;
     $.updateSettings = updateSettings;
     $.setTempBonus = setTempBonus;
+    $.giveAll = giveAll;
 })();
