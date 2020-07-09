@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('channelpointshandler.usage', 'Usage: !channelpoints [transfer / giveall / emoteonly / timeout / botcommand]');
+$.lang.register('channelpointshandler.usage', 'Usage: !channelpoints [transfer / giveall / emoteonly / timeout]');
 
 $.lang.register('channelpointshandler.transfer.setup', 'When a transfer redemption is claimed, user will be given a set amount of points. To configure please use "!channelpoints transfer config".');
 $.lang.register('channelpointshandler.transfer.setup.enabled', 'Transfer redemptions are registered to $1 and user will receive $2 points for each redemption.');
@@ -42,7 +42,7 @@ $.lang.register('channelpointshandler.giveall.config.on', 'Channel points give a
 $.lang.register('channelpointshandler.giveall.config.off', 'Channel points give all config complete. Give all is registered to $1 reward.');
 
 $.lang.register('channelpointshandler.emoteonly.setup', 'When an emote only redemption is claimed, all users in chat will be given a set amount of points. To configure please use "!channelpoints emoteonly config".');
-$.lang.register('channelpointshandler.emoteonly.setup.enabled', 'Emote only chat redemptions are registered to $1 and users receive $2 points for each redemption.');
+$.lang.register('channelpointshandler.emoteonly.setup.enabled', 'emote only chat redemptions are registered to $1 and chat will be put in emote-only mode for $2 seconds for each redemption.');
 $.lang.register('channelpointshandler.emoteonly.setup.disabled', 'Emote only chat redemptions are currently disabled. Use "!channelpoints emoteonly toggle" to enable.');
 $.lang.register('channelpointshandler.emoteonly.usage', 'When an emote only chat channel point redemption is claimed, chat will be placed in emote only mode for a set duration. Usage: !channelpoints emoteonly [config / toggle / duration]');
 $.lang.register('channelpointshandler.emoteonly.id', 'Emote only cannot be enabled as the reward ID has not been set. Please use [!channelpoints emoteonly config] to set ID.');
@@ -64,13 +64,3 @@ $.lang.register('channelpointshandler.timeout.duration.usage', 'Channel points r
 $.lang.register('channelpointshandler.timeout.duration.message', 'Channel points redemption timeout will timeout stated user for $1 seconds.');
 $.lang.register('channelpointshandler.timeout.config.on', 'Channel points timeout config active. Please redeem desired item then type: !channelpoints timeout config');
 $.lang.register('channelpointshandler.timeout.config.off', 'Channel points timeout config complete. Timeout is registered to $1 reward.');
-
-$.lang.register('channelpointshandler.botcommand.setup', 'When an add bot command redemption is claimed, the bot command instructed by user will be added to the bot. To configure please use "!channelpoints botcommand config".');
-$.lang.register('channelpointshandler.botcommand.setup.enabled', 'Add bot command redemptions are registered to $1.');
-$.lang.register('channelpointshandler.botcommand.setup.disabled', 'Add bot command redemptions are currently disabled. Use "!channelpoints botcommand toggle" to enable.');
-$.lang.register('channelpointshandler.botcommand.usage', 'When an add bot command channel point redemption is claimed, the bot command instructed by user will be added to the bot. Usage: !channelpoints botcommand [config / toggle / duration]');
-$.lang.register('channelpointshandler.botcommand.id', 'Add bot command cannot be enabled as the reward ID has not been set. Please use [!channelpoints botcommand config] to set ID.');
-$.lang.register('channelpointshandler.botcommand.enabled', 'Channel points redemption add bot command enabled for reward $1.');
-$.lang.register('channelpointshandler.botcommand.disabled', 'Channel points redemption add bot command disabled.');
-$.lang.register('channelpointshandler.botcommand.config.on', 'Channel points add bot command config active. Please redeem desired item then type: !channelpoints botcommand config');
-$.lang.register('channelpointshandler.botcommand.config.off', 'Channel points add bot command config complete. Add bot command is registered to $1 reward.');
