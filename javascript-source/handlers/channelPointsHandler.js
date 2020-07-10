@@ -428,6 +428,7 @@
         if (rewardID.equals(timeoutID)){
             if (timeoutToggle === true) {
                 com.gmt2001.Console.debug.println("timeoutRunStart");
+                userInput = $.user.sanitize(userInput);
                 $.say('/timeout ' + userInput + ' ' + timeoutDuration);
                 $.say(userInput + ' has been timed out for ' + timeoutDuration + ' seconds by ' + displayName);
                 return;
