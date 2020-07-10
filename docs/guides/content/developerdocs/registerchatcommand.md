@@ -11,7 +11,7 @@ If a comand is not registered as a chat command it will not trigger the command 
 
 ## Group ID Values
 
-The group ID sets the permissions in chat for the command usage.
+The group ID sets the default permissions in chat for the command usage.
 
 - Caster = 0
 - Administrator = 1
@@ -22,7 +22,7 @@ The group ID sets the permissions in chat for the command usage.
 - Regular = 6
 - Viewer = 7
 
-I no group ID is given the command permission will default to 7 (viewer).
+If no group ID is given the command permission will default to 7 (viewer).
 
 ## Example
 
