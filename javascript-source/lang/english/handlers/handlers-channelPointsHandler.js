@@ -16,6 +16,7 @@
  */
 
 $.lang.register('channelpointshandler.usage', 'Usage: !channelpoints [transfer / giveall / emoteonly / timeout]');
+$.lang.register('channelpointshandler.nan', 'Input must be a number, please try again.');
 
 $.lang.register('channelpointshandler.transfer.setup', 'When a transfer redemption is claimed, user will be given a set amount of points. To configure please use "!channelpoints transfer config".');
 $.lang.register('channelpointshandler.transfer.setup.enabled', 'Transfer redemptions are registered to $1 and user will receive $2 points for each redemption.');

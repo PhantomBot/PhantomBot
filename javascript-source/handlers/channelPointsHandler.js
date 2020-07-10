@@ -130,6 +130,10 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.amount.usage', transferAmount));
                         return;
                     }
+                    if (isNaN(args[2])){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
+                        return;
+                    }
                     transferAmount = args[2];
                     $.setIniDbNumber('channelPointsSettings', 'transferAmount', transferAmount);
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.amount.message', transferAmount));
@@ -186,6 +190,10 @@
                 if (args[1].equalsIgnoreCase('amount')) {
                     if (args[2] === undefined) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.usage', giveAllAmount));
+                        return;
+                    }
+                    if (isNaN(args[2])){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
                         return;
                     }
                     giveAllAmount = args[2];
@@ -248,6 +256,10 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.duration.usage', emoteOnlyDuration));
                         return;
                     }
+                    if (isNaN(args[2])){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
+                        return;
+                    }
                     emoteOnlyDuration = args[2];
                     $.setIniDbNumber('channelPointsSettings', 'emoteOnlyDuration', emoteOnlyDuration);
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.duration.message', emoteOnlyDuration));
@@ -305,6 +317,10 @@
                 if (args[1].equalsIgnoreCase('duration')) {
                     if (args[2] === undefined) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.duration.usage', timeoutDuration));
+                        return;
+                    }
+                    if (isNaN(args[2])){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
                         return;
                     }
                     timeoutDuration = args[2];
