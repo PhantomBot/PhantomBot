@@ -37,7 +37,7 @@
             <!-- Header -->
             <header class="main-header">
                 <div class="logo">
-                        <a href="https://phantombot.github.io/PhantomBot/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                        <a href="https://phantombot.tv/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
                         <button type="button" class="btn btn-primary" data-toggle="push-menu">
                             <i class="fas fa-bars"></i>
                         </button>
@@ -50,7 +50,6 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a data-toggle="tooltip" data-placement="bottom" title="GitHub" href="https://github.com/PhantomBot/PhantomBot"><i class="fab fa-github fa-lg"></i></a></li>
                                 <li><a data-toggle="tooltip" data-placement="bottom" title="Discord" href="https://discord.gg/rkPqDuK"><i class="fab fa-discord fa-lg"></i></a></li>
-                                <li><a data-toggle="tooltip" data-placement="bottom" title="Community Forum" href="https://community.phantom.bot"><i class="fab fa-discourse fa-lg"></i></a></li>
                             </ul>
                         </div>
                         <!-- /.navbar-collapse -->
@@ -144,7 +143,7 @@
                         'success': function (data) {
                             for (var x in data.subfolders) {
                                 addMenuFolder(path, tree, x, data.subfolders[x]);
-                                loadMenuRecursive(path + x + '/', path.replace('/', '-') + x + '-tree');
+                                loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
                             }
                             for (var x in data.pages) {
                                 addMenuItem(path, tree, x, data.pages[x]);
@@ -161,7 +160,7 @@
                             }).append($('<i/>', {
                                 'class': 'far ion fa-circle'
                             })).append(' ' + title),
-                        'id': path.replace('/', '-') + file + '-menuitem'
+                        'id': path.replace(/\//g, '-') + file + '-menuitem'
                     });
 
                     if (tree.length === 0) {
@@ -188,7 +187,7 @@
                             }))
                         )).append($('<ul/>', {
                         'class': 'treeview-menu',
-                        'id': path.replace('/', '-') + folder + '-tree'
+                        'id': path.replace(/\//g, '-') + folder + '-tree'
                     })));
                 }
 
@@ -214,8 +213,8 @@
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
-                                setActiveRecursive(path.replace('/', '-'), false);
-                                lastPage = path.replace('/', '-');
+                                setActiveRecursive(path.replace(/\//g, '-'), false);
+                                lastPage = path.replace(/\//g, '-');
                                 window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
                             }
