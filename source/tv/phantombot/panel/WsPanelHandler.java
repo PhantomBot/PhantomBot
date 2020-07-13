@@ -21,9 +21,12 @@ import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.scaniatv.LangFileUpdater;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.base64.Base64;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -259,6 +262,16 @@ public class WsPanelHandler implements WsFrameHandler {
         if (query.equalsIgnoreCase("panelSettings")) {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
+        } else if (query.equalsIgnoreCase("userLogo")) {
+            try (FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
+                jsonObject.key("results").array().object().key("logo").value(Base64.encode(Unpooled.copiedBuffer(inputStream.readAllBytes()))).endObject().endArray();
+            } catch (IOException ex) {
+                jsonObject.array().object().key("errors").array().object()
+                        .key("status").value("500")
+                        .key("title").value("Internal Server Error")
+                        .key("detail").value("IOException: " + ex.getMessage())
+                        .endObject().endArray().endObject().endArray();
+            }
         } else if (query.equalsIgnoreCase("loadLang")) {
             jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
         } else if (query.equalsIgnoreCase("saveLang") && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {

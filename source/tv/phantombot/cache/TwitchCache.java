@@ -354,7 +354,7 @@ public class TwitchCache implements Runnable {
                     logoLink = streamObj.getString("logo");
                     this.logoLink = logoLink;
                     if (new File("./web/panel").isDirectory()) {
-                        ImgDownload.downloadHTTPTo(logoLink, "./web/panel/img/logo.png");
+                        ImgDownload.downloadHTTPTo(logoLink, "./web/panel/img/logo.jpeg");
                     }
                 }
 

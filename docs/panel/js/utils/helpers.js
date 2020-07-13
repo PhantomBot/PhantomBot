@@ -1175,6 +1175,15 @@ $(function() {
 
         return bothostname.length > 0 ? bothostname + ':' + botport : '!missing';
     };
+    
+    helpers.getUserLogo = function() {
+      socket.doRemote('userLogo', 'userLogo', {}, function(e) {
+          if (!e[0].errors) {
+              $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+              $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+          }
+      });
+    };
 
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
         const startPoll = async resolve => {
