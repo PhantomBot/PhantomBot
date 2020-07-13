@@ -1,0 +1,11 @@
+{
+    "subfolders": {
+    },
+    "pages": {
+        "commands": "Built-In Command List",
+        "discord-commands": "Build-In Discord Command List",
+        "command-variables": "Custom Command Variables",
+        "discord-command-variables": "Discord Custom Command Variables"
+    }
+}
+

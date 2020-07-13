@@ -410,12 +410,12 @@
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
-            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+            consoleLn('https://discord.gg/YKvMd78');
         } else if ($.isPrerelease) {
             consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
             consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
         } else {
-            consoleLn('For support please visit: https://community.phantombot.tv');
+            consoleLn('For support please visit: https://discord.gg/YKvMd78');
         }
         consoleLn('');
     }
