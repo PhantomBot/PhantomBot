@@ -60,7 +60,7 @@ Once you have done this and the bot's main page has loaded, your done with this 
 
 ### Launch the PhantomBot Remote Panel
 
-Once SSL is setup and trusted, just navigate to [PhantomBot - GitHub.io](https://phantombot.github.io/PhantomBot/) and launch the panel from there.
+Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.tv/) and launch the panel from there.
 
 &nbsp;
 

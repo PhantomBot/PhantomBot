@@ -1,10 +1,12 @@
 {
     "subfolders": {
-        "setupbot": "Setup and Update"
+        "setupbot": "Setup and Update",
+        "commands": "Commands"
     },
     "pages": {
+        "youtubesetup": "YouTube Setup",
         "discordintegrationsetup": "Discord Integration Setup",
-        "twitchembeds": "Enable Twitch embeds",
+        "twitchembeds": "Enable Twitch Embeds",
         "markdown": "Markdown for Guides",
         "guides": "Guides"
     }

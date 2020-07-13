@@ -532,8 +532,6 @@
                     window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
                     return;
                 }
-                $('#user-image1').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
-                $('#user-image2').attr('src', 'http://' + helpers.getBotHost() + '/panel/img/logo.png');
                 $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
                 $('body').append($('<script>', {
                     'src': 'js/index.js'

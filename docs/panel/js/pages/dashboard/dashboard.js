@@ -332,6 +332,17 @@ $(function() {
         });
     });
 
+    // Handle sending as bot.
+    $('#dashboard-btn-msg-bot').on('click', function() {
+        if ($('#msg-bot').val() === "") {
+            toastr.error('Please enter a message');
+            return;
+        }
+        socket.sendCommand('msg-bot', 'echo ' + $('#msg-bot').val(), function() {
+            toastr.success('Successfully sent a message as the bot!');
+        });
+    });
+
     // Mouse hover/leave event log.
     $('.event-log').on('mouseenter mouseleave', function(event) {
         canScroll = event.type === 'mouseleave';
