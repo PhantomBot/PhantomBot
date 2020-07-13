@@ -21,6 +21,7 @@ import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.scaniatv.LangFileUpdater;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.base64.Base64;
@@ -28,6 +29,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -264,7 +266,11 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
             try (FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
-                jsonObject.key("results").array().object().key("logo").value(Base64.encode(Unpooled.copiedBuffer(inputStream.readAllBytes()))).endObject().endArray();
+                ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
+                ByteBuf buf2 = Base64.encode(buf);
+                jsonObject.key("results").array().object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject().endArray();
+                buf2.release();
+                buf.release();
             } catch (IOException ex) {
                 jsonObject.array().object().key("errors").array().object()
                         .key("status").value("500")

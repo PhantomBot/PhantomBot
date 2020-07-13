@@ -1178,6 +1178,9 @@ $(function() {
     
     helpers.getUserLogo = function() {
       socket.doRemote('userLogo', 'userLogo', {}, function(e) {
+          helpers.log(e, helpers.DEBUG_STATES.DEBUG);
+          helpers.log(!e[0].errors, helpers.DEBUG_STATES.DEBUG);
+          helpers.log(e[0].logo, helpers.DEBUG_STATES.DEBUG);
           if (!e[0].errors) {
               $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
               $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
