@@ -545,6 +545,7 @@ $(function() {
                     window.panelSettings.channelName = message.channelName;
                     window.panelSettings.displayName = message.displayName;
                     $.loadPage('dashboard', 'dashboard.html');
+                    helpers.getUserLogo();
                 }
             }
 
