@@ -265,6 +265,7 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
+            jsonObject.key("query_id").value(uniqueID);
             try (FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
                 ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
                 ByteBuf buf2 = Base64.encode(buf);
