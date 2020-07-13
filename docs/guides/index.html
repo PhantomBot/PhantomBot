@@ -143,7 +143,7 @@
                         'success': function (data) {
                             for (var x in data.subfolders) {
                                 addMenuFolder(path, tree, x, data.subfolders[x]);
-                                loadMenuRecursive(path + x + '/', path.replace('/', '-') + x + '-tree');
+                                loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
                             }
                             for (var x in data.pages) {
                                 addMenuItem(path, tree, x, data.pages[x]);
@@ -160,7 +160,7 @@
                             }).append($('<i/>', {
                                 'class': 'far ion fa-circle'
                             })).append(' ' + title),
-                        'id': path.replace('/', '-') + file + '-menuitem'
+                        'id': path.replace(/\//g, '-') + file + '-menuitem'
                     });
 
                     if (tree.length === 0) {
@@ -187,7 +187,7 @@
                             }))
                         )).append($('<ul/>', {
                         'class': 'treeview-menu',
-                        'id': path.replace('/', '-') + folder + '-tree'
+                        'id': path.replace(/\//g, '-') + folder + '-tree'
                     })));
                 }
 
@@ -213,8 +213,8 @@
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
-                                setActiveRecursive(path.replace('/', '-'), false);
-                                lastPage = path.replace('/', '-');
+                                setActiveRecursive(path.replace(/\//g, '-'), false);
+                                lastPage = path.replace(/\//g, '-');
                                 window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
                             }
