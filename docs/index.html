@@ -43,16 +43,6 @@
                         <i class="fas fa-bars"></i>
                       </button>
                     </div>
-
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="navbar-collapse">
-                      <ul class="nav navbar-nav navbar-right">
-                          <li><a data-toggle="tooltip" data-placement="bottom" title="GitHub" href="https://github.com/PhantomBot/PhantomBot"><i class="fab fa-github fa-lg"></i></a></li>
-                          <li><a data-toggle="tooltip" data-placement="bottom" title="Discord" href="https://discord.gg/rkPqDuK"><i class="fab fa-discord fa-lg"></i></a></li>
-                          <li><a data-toggle="tooltip" data-placement="bottom" title="Community Forum" href="https://community.phantom.bot"><i class="fab fa-discourse fa-lg"></i></a></li>
-                      </ul>
-                    </div>
-                    <!-- /.navbar-collapse -->
                   </div>
                   <!-- /.container-fluid -->
                 </nav>
@@ -62,6 +52,51 @@
             <aside class="content-wrapper">
                 <div>&nbsp;</div>
                 <div id="page-content">
+                    <div class="col-md-4">
+                        <div class="box box-solid box-primary" id="github-tab">
+                          <div class="box-header with-border">
+                            <i class="fab fa-github"></i>
+                            <h3 class="box-title">PhantomBot on GitHub</h3>
+                            <!-- /.box-tools -->
+                          </div>
+                          <!-- /.box-header -->
+                          <div class="box-body">
+                            View the code and contribute to PhantomBot
+                          </div>
+                          <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-solid box-primary" id="download-tab">
+                          <div class="box-header with-border">
+                            <i class="fas fa-download"></i>
+                            <h3 class="box-title">Download PhantomBot</h3>
+                            <!-- /.box-tools -->
+                          </div>
+                          <!-- /.box-header -->
+                          <div class="box-body">
+                            Download the latest release
+                          </div>
+                          <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-solid box-primary" id="discord-tab">
+                          <div class="box-header with-border">
+                            <i class="fab fa-discord"></i>
+                            <h3 class="box-title">PhantomBot Discord</h3>
+                            <!-- /.box-tools -->
+                          </div>
+                          <!-- /.box-header -->
+                          <div class="box-body">
+                            Discuss PhantomBot and get support from others
+                          </div>
+                          <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
                     <div class="col-md-4">
                         <div class="box box-solid box-primary" id="panel-tab">
                           <div class="box-header with-border">
@@ -138,7 +173,22 @@
                 };
 
                 // Generate panel tab.
-                $('#panel-tab').click(function() {
+                $('#github-tab').click(function() {
+                    window.location = 'https://github.com/phantombot/PhantomBot';
+                });
+                $('#github-tab').css('cursor', 'pointer');
+				
+				$('#download-tab').click(function() {
+                    window.location = 'https://github.com/PhantomBot/PhantomBot/releases/latest';
+                });
+                $('#download-tab').css('cursor', 'pointer');
+				
+				$('#discord-tab').click(function() {
+                    window.location = 'https://discord.gg/rkPqDuK';
+                });
+                $('#discord-tab').css('cursor', 'pointer');
+				
+				$('#panel-tab').click(function() {
                     window.location = getWindowUrl('panel/login');
                 });
                 $('#panel-tab').css('cursor', 'pointer');
