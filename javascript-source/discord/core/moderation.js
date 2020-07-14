@@ -184,7 +184,7 @@
             obj = {},
             i;
 
-        obj['**Timeout_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Timeout_placed_on:**'] = '[' + username + '](https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase() + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
         obj['**Time:**'] = time + ' seconds.';
