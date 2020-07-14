@@ -68,7 +68,6 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-
         if (req.method().equals(HttpMethod.PUT)) {
             if (req.headers().contains("lang-path")) {
                 putLang(ctx, req);
@@ -411,8 +410,10 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
     private void handleLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.headers().contains("lang-path")) {
+            com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, LangFileUpdater.getCustomLang(req.headers().get("lang-path")).getBytes(Charset.forName("UTF-8")), "plain"));
         } else {
+            com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": get-lang");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", LangFileUpdater.getLangFiles()).getBytes(Charset.forName("UTF-8")), "plain"));
         }
     }
@@ -432,12 +433,14 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             PhantomBot.instance().getSession().say(msg);
         }
 
+        com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": irc " + user + " -> " + msg);
         HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "event posted".getBytes(Charset.forName("UTF-8")), "plain"));
     }
 
     private void putLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         LangFileUpdater.updateCustomLang(req.content().toString(Charset.forName("UTF-8")), req.headers().get("lang-path"));
 
+        com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
         HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(Charset.forName("UTF-8")), "plain"));
     }
 
