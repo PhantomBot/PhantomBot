@@ -9,7 +9,7 @@ can also be integrated with many services such as [Twitter](https://twitter.com/
 [StreamTip](https://streamtip.com/) and [TwitchAlerts](https://twitchalerts.com/)!
 
 ## What do I need to run PhantomBot?
-As of right now, PhantomBot requires [Java 8 or Java 7](https://www.java.com/en/download/) to run.
+As of right now, PhantomBot requires Java 11 to run. This is included with the bot for Windows, Linux amd64, and macOS.
 
 
 ## What do I need to run the Control Panel?
