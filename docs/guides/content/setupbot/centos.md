@@ -56,7 +56,7 @@ The last thing we need to do is to assign the right privileges to make the launc
 
 `cd phantombot`
 
-`sudo chmod u+x ./launch.sh ./java-runtime-linux/bin/java`
+`sudo chmod u+x ./launch.sh ./launch-service.sh ./java-runtime-linux/bin/java`
 
 `sudo chown -R botuser:botuser *`
 
