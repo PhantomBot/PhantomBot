@@ -5,6 +5,7 @@
         "setupbot": "Setup and Update",
     },
     "pages": {
+        "youtubesetup": "YouTube Setup",
         "discordintegrationsetup": "Discord Integration Setup",
         "twitchembeds": "Enable Twitch embeds",
         "markdown": "Markdown for Guides",
