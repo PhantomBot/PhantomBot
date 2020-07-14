@@ -693,6 +693,8 @@
     /**
      * Taken from: https://jsperf.com/replace-vs-split-join-vs-replaceall/95s
      *
+     * Implementation of string.replaceAll
+     *
      * @function replace
      * @export $
      * @param {string}
@@ -707,6 +709,17 @@
         return parts.join('');
     }
 
+    /**
+     * Taken from: https://github.com/tc39/proposal-string-matchall
+     * 
+     * Implementation of string.matchAll
+     * 
+     * @function matchAll
+     * @export $
+     * @param {type} str
+     * @param {type} regex
+     * @returns {Array}
+     */
     function matchAll(str, regex) {
         var matches = [];
         str.replace(regex, function () {
