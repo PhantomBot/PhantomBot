@@ -49,7 +49,7 @@ The last thing we need to do is to assign the right privileges to make the launc
 
 `cd phantombot`
 
-`chmod u+x ./launch.sh ./java-runtime-linux/bin/java`
+`chmod u+x ./launch.sh ./launch-service.sh ./java-runtime-linux/bin/java`
 
 Now we are ready to launch PhantomBot. You can run the bot with:
 
@@ -69,11 +69,20 @@ Create a new file called phantombot.service. I use nano, but you can also use vi
 
 Paste this into the file:
 ```
-[Unit] Description=PhantomBot After=network.target remote-fs.target nss-lookup.target
+[Unit]
+Description=PhantomBot
+After=network.target remote-fs.target nss-lookup.target
 
-[Service] User=botuser Group=botuser Restart=on-failure RestartSec=30 ExecStart=/home/botuser/phantombot/launch-service.sh KillSignal=SIGTERM
+[Service]
+User=botuser
+Group=botuser
+Restart=on-failure
+RestartSec=30
+ExecStart=/home/botuser/phantombot/launch-service.sh
+KillSignal=SIGTERM
 
-[Install] WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 ```
 After this, we have to install the created file to run at boot as a service.
 
