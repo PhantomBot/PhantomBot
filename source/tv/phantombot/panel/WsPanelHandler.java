@@ -312,7 +312,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
                 for (String g : data.split("\n")) {
                     if (g.toLowerCase().startsWith(search)) {
-                        jsonObject.object().key("game").value(g.replace("\r", "")).endObject();
+                        jsonObject.value(g.replace("\r", ""));
                     }
                 }
             } catch (IOException ex) {

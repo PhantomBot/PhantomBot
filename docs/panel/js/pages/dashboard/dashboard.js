@@ -232,36 +232,39 @@ $(function () {
 $(function () {
     // handle auto complete.
     var gameSearch = '';
+    var games = [];
     $('#stream-game').easyAutocomplete({
         'url': function (game) {
             gameSearch = game;
             return window.location;
         },
         'ajaxSettings': {
-            'dataFilter': function () {
-                var games = [];
+            'dataType': 'text',
+            'dataFilter': async() => {
                 var isDone = false;
                 socket.doRemote('games', 'games', {
                     'search': gameSearch
                 }, function (e) {
                     if (e.length > 0 && !e[0].errors) {
                         games = e;
+                    } else {
+                        games = [];
                     }
                     isDone = true;
                 });
 
-                (async() => {
-                    var checkIfGamesDoneAsync = async () => {
-                        return isDone;
-                    };
+                var checkIfGamesDoneAsync = async () => {
+                    return isDone;
+                };
 
-                    await helpers.promisePoll(() => checkIfGamesDoneAsync());
-                })();
+                await helpers.promisePoll(() => checkIfGamesDoneAsync(), {pollIntervalMs: 250});
 
                 return games;
             }
         },
-        'getValue': 'game',
+        'listLocation': function (data) {
+            return games;
+        },
         'requestDelay': 300,
         'list': {
             'match': {
