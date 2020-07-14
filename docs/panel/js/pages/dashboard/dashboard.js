@@ -238,7 +238,7 @@ $(function () {
             return window.location;
         },
         'ajaxSettings': {
-            'dataFilter': function () {
+            'dataFilter': async function () {
                 var games = [];
                 var isDone = false;
                 socket.doRemote('games', 'games', {
