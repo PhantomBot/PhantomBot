@@ -2,7 +2,7 @@
     "subfolders": {
         "developerdocs": "Developer Documentation",
         "commands": "Commands",
-        "setupbot": "Setup and Update",
+        "setupbot": "Setup and Update"
     },
     "pages": {
         "youtubesetup": "YouTube Setup",
