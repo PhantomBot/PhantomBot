@@ -238,7 +238,7 @@ $(function () {
             return window.location;
         },
         'ajaxSettings': {
-            'dataFilter': async function () {
+            'dataFilter': function () {
                 var games = [];
                 var isDone = false;
                 socket.doRemote('games', 'games', {
@@ -250,12 +250,14 @@ $(function () {
                     isDone = true;
                 });
 
-                checkIfGamesDoneAsync = async () => {
-                    return isDone;
-                };
+                (async() => {
+                    var checkIfGamesDoneAsync = async () => {
+                        return isDone;
+                    };
 
-                await helpers.promisePoll(() => checkIfGamesDoneAsync());
-                
+                    await helpers.promisePoll(() => checkIfGamesDoneAsync());
+                })();
+
                 return games;
             }
         },
