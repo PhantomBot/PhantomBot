@@ -142,9 +142,9 @@
 
         if (message.match(/\(pointtouser\)/)) {
             if (event.getArgs()[0] !== undefined) {
-                message = $.replace(message, '(pointtouser)', (String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '') + ' -> '));
+                message = $.replace(message, '(pointtouser)', $.username.resolve(String(event.getArgs()[0]).replace(/[^a-zA-Z0-9_@]/ig, '')) + ' -> ');
             } else {
-                message = $.replace(message, '(pointtouser)', $.userPrefix(event.getSender(), true));
+                message = $.replace(message, '(pointtouser)', $.username.resolve(event.getSender()) + ' -> ');
             }
         }
 
