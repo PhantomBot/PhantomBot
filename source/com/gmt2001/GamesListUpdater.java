@@ -85,8 +85,10 @@ public class GamesListUpdater {
 
         List<String> data = new ArrayList<>();
         try {
-            List<String> odata = Files.readAllLines(Paths.get("./web/panel/js/utils/gamesList.txt"));
-            data.addAll(odata);
+            if (myVersion > 0) {
+                List<String> odata = Files.readAllLines(Paths.get("./web/panel/js/utils/gamesList.txt"));
+                data.addAll(odata);
+            }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
