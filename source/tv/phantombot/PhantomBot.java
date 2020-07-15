@@ -16,6 +16,7 @@
  */
 package tv.phantombot;
 
+import com.gmt2001.GamesListUpdater;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
@@ -1368,6 +1369,12 @@ public final class PhantomBot implements Listener {
                 } else {
                     dataStore.del("settings", "newrelease_info");
                 }
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+
+            try {
+                GamesListUpdater.update();
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
