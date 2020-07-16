@@ -10,7 +10,7 @@ NOTE: If you access your panel at _localhost:25000_, the port number requirement
 
 If you are not interested in the Twitch chat and live feed panels, you do not need to make any changes to your bot.
 
-There are 3 methods for fixing the embeds.
+There are three methods for fixing the embeds:
 
 ## Method 1: PhantomBot Remote Panel
 
@@ -36,7 +36,7 @@ Connect to your bot's built-in webserver (eg. `https://192.168.0.2:25000/`) and 
 
 Your browser should provide a _More_ or a _Details_ button which will then reveal some kind of _Proceed Anyway_ or _Accept Risk & Continue_ button.
 
-Once you have done this and the bot's main page has loaded, your done with this step.
+Once you have done this and the bot's main page has loaded, you're done with this step.
 
 ##### macOS
 
@@ -60,7 +60,7 @@ Once you have done this and the bot's main page has loaded, your done with this 
 
 ### Launch the PhantomBot Remote Panel
 
-Once SSL is setup and trusted, just navigate to [PhantomBot - GitHub.io](https://phantombot.github.io/PhantomBot/) and launch the panel from there.
+Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.tv/) and launch the panel from there.
 
 &nbsp;
 

@@ -1076,7 +1076,7 @@ $(function() {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                                 $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://community.phantombot.tv/t/how-to-update-phantombot').append('this guide')[0].outerHTML +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.tv/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                                 ' on how to properly update PhantomBot.</b>'
                         })), function() {
                             $('#pb-update').modal('toggle');
@@ -1174,6 +1174,15 @@ $(function() {
         var botport = window.localStorage.getItem('botport') || 25000;
 
         return bothostname.length > 0 ? bothostname + ':' + botport : '!missing';
+    };
+    
+    helpers.getUserLogo = function() {
+      socket.doRemote('userLogo', 'userLogo', {}, function(e) {
+          if (!e[0].errors) {
+              $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+              $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+          }
+      });
     };
 
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {

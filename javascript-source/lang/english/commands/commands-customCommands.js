@@ -69,4 +69,4 @@ $.lang.register('customcommands.reset.change.fail', 'Invalid counter value: $1')
 $.lang.register('customcommands.reset.change.success', 'The counter for !$1 has been set to $2.');
 $.lang.register('customcommands.botcommands', 'Commands: $1');
 $.lang.register('customcommands.botcommands.error', 'Provide a number to find a page.');
-$.lang.register('customcommands.botcommands.total', 'Total Pages: $1 [See also: https://phantombot.tv/commands]');
+$.lang.register('customcommands.botcommands.total', 'Total Pages: $1 [See also: https://phantombot.tv/guides/#guide=content/commands/commands]');

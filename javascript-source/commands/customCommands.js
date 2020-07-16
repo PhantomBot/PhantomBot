@@ -694,7 +694,7 @@
                     }
                 }
             }
-            customAPIReturnString = getCustomAPIValue(regExCheck[1]);
+            customAPIReturnString = getCustomAPIValue(encodeURI(regExCheck[1]));
         }
 
         // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
@@ -718,7 +718,7 @@
                     }
                 }
             }
-            origCustomAPIResponse = getCustomAPIValue(regExCheck[1]);
+            origCustomAPIResponse = getCustomAPIValue(encodeURI(regExCheck[1]));
             jsonItems = regExCheck[2].split(' ');
             for (var j = 0; j < jsonItems.length; j++) {
                 if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
@@ -806,7 +806,7 @@
         } else {
             commandGroup = $.getSubcommandGroup(command, subcommand);
         }
-        
+
         switch(commandGroup) {
             case 0:
                 allowed = $.isCaster(username);
@@ -833,7 +833,7 @@
                 allowed = true;
                 break;
         }
-        
+
         return allowed ? 0 : (subcommand === '' ? 1 : 2);
     }
 

@@ -5,7 +5,7 @@
         "windows": "Windows",
         "centos": "CentOS",
         "ubuntu": "Ubuntu",
-        "macos": "MacOS",
+        "macos": "macOS",
         "updatebot": "How To Update"
     }
 }

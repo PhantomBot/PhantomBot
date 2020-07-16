@@ -25,8 +25,6 @@ import com.gmt2001.datastore.IniStore;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.httpwsserver.HTTPWSServer;
-import com.illusionaryone.BitlyAPIv4;
-import com.illusionaryone.DataRenderServiceAPIv1;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -173,10 +171,6 @@ public final class PhantomBot implements Listener {
 
     /* Discord Configuration */
     private String discordToken = "";
-
-    /* PhantomBot Commands API Configuration */
-    private String dataRenderServiceAPIToken = "";
-    private String dataRenderServiceAPIURL = "";
 
     /* Caches */
     private FollowersCache followersCache;
@@ -430,10 +424,6 @@ public final class PhantomBot implements Listener {
         this.BitlyAPIKey = this.pbProperties.getProperty("bitlyapikey", "");
         this.BitlyGUID = this.pbProperties.getProperty("bitlyguid", "");
 
-        /* Set the PhantomBot Commands API variables */
-        this.dataRenderServiceAPIToken = this.pbProperties.getProperty("datarenderservicetoken", "");
-        this.dataRenderServiceAPIURL = this.pbProperties.getProperty("datarenderserviceurl", "https://drs.phantombot.tv");
-
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
         this.mySqlUser = this.pbProperties.getProperty("mysqluser", "");
@@ -555,12 +545,6 @@ public final class PhantomBot implements Listener {
         /* Set the client Id in the Twitch api. */
         TwitchAPIv5.instance().SetClientID(this.clientId.isBlank() ? (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID()) : this.clientId);
 
-        /* Set the Bitly token. */
-        if (!BitlyAPIKey.isEmpty() && !BitlyGUID.isEmpty()) {
-            BitlyAPIv4.instance().setAPIKey(BitlyAPIKey);
-            BitlyAPIv4.instance().setGUID(BitlyGUID);
-        }
-
         /* Validate the chat OAUTH token. */
         TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
 
@@ -586,12 +570,6 @@ public final class PhantomBot implements Listener {
             StreamElementsAPIv2.instance().SetJWT(streamElementsJWT);
             StreamElementsAPIv2.instance().SetID(streamElementsID);
             StreamElementsAPIv2.instance().SetLimit(streamElementsLimit);
-        }
-
-        /* Set the PhantomBot Commands authentication key. */
-        if (!dataRenderServiceAPIToken.isEmpty()) {
-            DataRenderServiceAPIv1.instance().setAPIURL(dataRenderServiceAPIURL);
-            DataRenderServiceAPIv1.instance().setAPIKey(dataRenderServiceAPIToken);
         }
 
         /* Start things and start loading the scripts. */
@@ -1001,7 +979,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("panelsocketserver", panelHandler, 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("shortenURL", BitlyAPIv4.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", isNightly(), 0);
@@ -1011,7 +988,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
-        Script.global.defineProperty("dataRenderServiceAPI", DataRenderServiceAPIv1.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
         Script.global.defineProperty("moderation", Moderation.instance(), 0);
 

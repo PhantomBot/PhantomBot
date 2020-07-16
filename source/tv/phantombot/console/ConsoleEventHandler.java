@@ -545,7 +545,7 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand apioauth - Updates the API oauth.
          */
         if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
+            System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth/ while logged as the caster: ");
 
             String apiOAuth = System.console().readLine().trim();
 

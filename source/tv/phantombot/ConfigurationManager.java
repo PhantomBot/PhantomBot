@@ -276,12 +276,8 @@ public class ConfigurationManager {
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-            com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
-            com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
-            com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
-            com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
+            com.gmt2001.Console.out.print("If you have any issues please join our Discord!\r\n");
+            com.gmt2001.Console.out.print("Discord: https://discord.gg/YKvMd78\r\n");
             com.gmt2001.Console.out.print("\r\n");
 
             final String os = System.getProperty("os.name").toLowerCase();
@@ -289,14 +285,14 @@ public class ConfigurationManager {
             // Detect Windows, MacOS, Linux or any other operating system.
             if (os.startsWith("win")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://community.phantombot.tv/t/windows-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.tv/guides/#guide=content/setupbot/windows");
             } else if (os.startsWith("mac")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://community.phantombot.tv/t/macos-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.tv/guides/#guide=content/setupbot/macos");
             } else {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.tv/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.tv/guides/#guide=content/setupbot/centos");
             }
 
             com.gmt2001.Console.out.print("\r\n\r\n\r\n");

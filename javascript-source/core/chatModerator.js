@@ -334,7 +334,7 @@
             whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            whiteList.push(keys[i]);
+            whiteList.push(keys[i] + '');
         }
     }
 
@@ -1024,7 +1024,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
                     return;
                 }
-                var link = argString.split(' ').slice(1).join(' ').toLowerCase();
+                var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
                 whiteList.push(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
