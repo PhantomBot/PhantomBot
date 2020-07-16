@@ -2,7 +2,7 @@
 
 **These command variables can be used in any  custom command.**
 
-<br>
+_ _
 
 #### **`(sender)`:**
 - This will be replace in your  command response with the username who triggered the command.
@@ -14,7 +14,7 @@ User: !hello
 Bot: Hello, User!
 ```
 
-<br>
+_ _
 
 ####  **`(@sender)`:**
 - This will be replace in your command response with the username  who triggered the command in a Twitch \\"ping\\" format
@@ -26,7 +26,7 @@ User: !hello
 Bot: @User, you're awesome!
 ```
 
-<br>
+_ _
 
 ####  **`(touser)`:**
 - This will be replace with the username who triggered the command  if no username is mentioned after the command.
@@ -41,7 +41,7 @@ User: !twitter User2
 Bot: User2 Hey! Follow my Twitter!
 ```
 
-<br>
+_ _
 
 ####  **`(pointtouser)`:**
 - This works just like \\"(touser)\\" but adds an arrow pointing  to the command text when a user is added after the command.
@@ -56,7 +56,7 @@ User: !facebook User2
 Bot: User2 -> like my Facebook  page!
 ```
 
-<br>
+_ _
 
 #### **`(#)`:**
 - Generates a random number from 0 to 100.
@@ -68,7 +68,7 @@ User: !lucky
 Bot: Your lucky number is  7
 ```
 
-<br>
+_ _
 
 #### **`(1)`:**
 - Specific argument after a command. This is  limited to 9 arguments currently.
@@ -80,7 +80,7 @@ User: !love monkeys
 Bot: User loves monkeys.
 ```
 
-<br>
+_ _
 
 #### **`(price)`:**
 -  Will give you the current cost of that command.
@@ -92,7 +92,7 @@ User: !cost
 Bot: This command costs  10 points
 ```
 
-<br>
+_ _
 
 #### **`(1=)`:**
 - This will give you the first command  argument if it is not empty. It will be replaced with any command variable after  the `=` if it is empty.
@@ -107,7 +107,7 @@ User: !love
 Bot: The love between User and RandomUserFromChat  is 1%
 ```
 
-<br>
+_ _
 
 #### **`(age)`:**
 - This will tell you have long a channel  has been on Twitch.
@@ -122,7 +122,7 @@ User: !age User2
 Bot: @User,  user2 has been on Twitch since December 25, 2010.
 ```
 
-<br>
+_ _
 
 #### **`(random)`:**
 -  Will give a random person's name from chat.
@@ -134,7 +134,7 @@ User: !poke
 Bot: /me pokes  User2 with a long wooden stick.
 ```
 
-<br>
+_ _
 
 #### **`(pointname)`:**
 - Current  points name that is set.
@@ -146,7 +146,7 @@ User: !pointsname
 Bot: User current  points name is set to: points
 ```
 
-<br>
+_ _
 
 #### **`(uptime)`:**
 - Current stream  uptime.
@@ -158,7 +158,7 @@ User: !uptime
 Bot: @User, PhantomBot has been live  for 2 hours, 3 minutes and 30 seconds.
 ```
 
-<br>
+_ _
 
 #### **`(game)`:**
 - Current  game set on Twitch.
@@ -170,7 +170,7 @@ User: !game
 Bot: @User, current game is: Programming
 ``
 
-<br>
+_ _
 
 ####  **`(status)`:**
 - Current status set on Twitch.
@@ -182,7 +182,7 @@ User: !status
 Bot: @User, current  status is: Fun programming!
 ``
 
-<br>
+_ _
 
 #### **`(viewers)`:**
 - Current viewers  on Twitch.
@@ -194,7 +194,7 @@ User: !viewers
 Bot: We current have 600 viewers watching  us!
 ``
 
-<br>
+_ _
 
 #### **`(follows)`:**
 - Current follows on Twitch.
@@ -206,7 +206,7 @@ User: !follows
 Bot: We current  have 1000 followers!
 ``
 
-<br>
+_ _
 
 #### **`(count)`:**
 - increases the count  on the command and will give you the current count.
@@ -218,7 +218,7 @@ User: !spam
 Bot: Chat has been  spammed 5050 times.
 ``
 
-<br>
+_ _
 
 #### **`(offlineonly)`:**
 - This will make  that command only work when the stream is offline. 
@@ -228,7 +228,7 @@ Bot: Chat has been  spammed 5050 times.
 Caster:  !addcom !downtime The stream as been offline for (downtime). (offlineonly)
 ``
 
-<br>
+_ _
 
 ####  **`(onlineonly)`:**
 - This will make that command only work when the stream is  online. 
@@ -238,7 +238,7 @@ Caster:  !addcom !downtime The stream as been offline for (downtime). (offlineon
 Caster: !addcom !uptime (pointtouser) (channelname)  has been live for (uptime). (onlineonly)
 ``
 
-<br>
+_ _
 
 #### **`(code=)`:**
 -  This will generate a random code, add the code length you want after the `=`
@@ -250,7 +250,7 @@ User: !code
 Bot: A1D4f
 ``
 
-<br>
+_ _
 
 #### **`(gamesplayed)`:**
 -  This will give you the games you've played in the current stream.
@@ -262,7 +262,7 @@ User: !gamesplayed
 Bot:  Games played in this stream: Creative - 00:00, Programming - 02:30
 ``
 
-<br>
+_ _
 
 ####  **`(randomrank)`:**
 - This will give you a random person that is in chat with there  rank name.
@@ -274,7 +274,7 @@ User: !poke
 Bot: /me Pokes Master User2 with a bar of soap.
 ``
 
-<br>
+_ _
 
 ####  **`(senderrank)`:**
 - This will give the sender name with his rank.
@@ -286,7 +286,7 @@ User: !poke
 Bot: /me  Pokes Master User with a bar of soap.
 ``
 
-<br>
+_ _
 
 #### **`(gameonly=)`:**
 -  Will make that command only work when your stream game is set to it.
@@ -296,7 +296,7 @@ Bot: /me  Pokes Master User with a bar of soap.
 Caster:  !addcom !lang Currently programming in JavaScript (gameonly=Programming)
 ``
 
-<br>
+_ _
 
 ####  **`(readfile)`:**
 - Will read that file. Note it must be in the bots `addons` folder.
@@ -308,7 +308,7 @@ User:  !lastfollow
 Bot: Last follower was User
 ``
 
-<br>
+_ _
 
 #### **`(echo)`:**
 - Will  say anything as the bot. Note commands such as `/timeout` and `/ban` will work.
@@ -320,7 +320,7 @@ User: !echo test test
 Bot: test test
 ``
 
-<br>
+_ _
 
 ####  **`(followage)`:**
 - Tells you how long you have been following the channel, you  can also check the time of another user.
@@ -332,7 +332,7 @@ User: !followage
 Bot: @User, user has been following channel PhantomBot  since March 29, 2016. (340 days)
 ``
 
-<br>
+_ _
 
 #### **`(titleinfo)`:**
 - Gives  you the current title set on Twitch with the current uptime.
@@ -344,7 +344,7 @@ User: !title
 Bot: @User,  Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
 ``
 
-<br>
+_ _
 
 ####  **`(gameinfo)`:**
 - Gives you the current title set on Twitch with the current  uptime.
@@ -356,7 +356,7 @@ User: !game
 Bot: @User, Current game: Programming Playtime: 3 hours,  20 minutes and 35 seconds.
 ``
 
-<br>
+_ _
 
 #### **`(gameinfo)`:**
 - Gives you the  current game set on Twitch with the current playtime.
@@ -368,7 +368,7 @@ User: !game
 Bot: @User,  Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
 ``
 
-<br>
+_ _
 
 ####  **`(playtime)`:**
 - Tells you how long you've been playing the current game set  on Twitch for.
@@ -380,7 +380,7 @@ User: !playtime
 Bot: Current playtime: 30 minutes.
 ``
 
-<br>
+_ _
 
 ####  **`(countdown=)`:**
 - Tells you how long you've been playing the current game set  on Twitch for.
@@ -392,7 +392,7 @@ User: !count
 Bot: 20 hours, 30 minutes and 55 seconds.
 ``
 
-<br>
+_ _
 
 ####  **`(writefile)`:**
 - Will write the text to that file, note that most of the tags  will work in the text. Append can be true or false, if false it will always replace  the first line.
@@ -402,7 +402,7 @@ Bot: 20 hours, 30 minutes and 55 seconds.
 Caster: !addcom !settxt (writefile test.txt,  true, (echo))
 ``
 
-<br>
+_ _
 
 #### **`(adminonlyedit)`:**
 - Makes a command only  editable by bot admins.
@@ -412,7 +412,7 @@ Caster: !addcom !settxt (writefile test.txt,  true, (echo))
 Caster: !addcom !playtime Current  playtime: (playtime). (adminonlyedit)
 ``
 
-<br>
+_ _
 
 #### **`(playsound)`:**
 -  Will play that sound name with that command.
@@ -422,12 +422,12 @@ Caster: !addcom !playtime Current  playtime: (playtime). (adminonlyedit)
 Caster: !addcom  !good Played sound goodgood (playsound goodgood)
 ``
 
-<br>
+_ _
 
 #### **`(channelname)`:**
 -  Gives you the current channel name.
 
-<br>
+_ _
 
 ## Custom API and Custom API JSON:
 To  allow for a great deal of flexibility with PhantomBot, we are happy to provide new  tags for custom commands.
