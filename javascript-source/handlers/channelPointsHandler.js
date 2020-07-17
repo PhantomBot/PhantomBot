@@ -21,8 +21,7 @@
  */
 
 (function () {
-    var pointName = $.pointNameMultiple
-        transferToggle = $.getSetIniDbBoolean('channelPointsSettings', 'transferToggle', false),
+    var transferToggle = $.getSetIniDbBoolean('channelPointsSettings', 'transferToggle', false),
         transferAmount = $.getSetIniDbNumber('channelPointsSettings', 'transferAmount', 0),
         transferID = $.getSetIniDbString('channelPointsSettings', 'transferID', 'noIDSet'),
         transferConfig = $.getSetIniDbBoolean('channelPointsSettings', 'transferConfig', false),
@@ -43,7 +42,8 @@
         timeoutDuration = $.getSetIniDbNumber('channelPointsSettings', 'timeoutDuration', 0),
         timeoutID = $.getSetIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet'),
         timeoutConfig = $.getSetIniDbBoolean('channelPointsSettings', 'timeoutConfig', false),
-        timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet');
+        timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet'),
+        pointName = $.pointNameMultiple;
 
     /*
      * @function updateChannelPointsConfig
@@ -83,7 +83,40 @@
 
         if (command.equalsIgnoreCase('channelpoints')) {
             if (action === undefined) {
+                if (transferToggle === false && giveAllToggle === false && emoteOnlyToggle === false && timeoutToggle === false) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.notenabled'));
+                    return;
+                }
+                var config;
+                if (transferToggle === true) {
+                    config += ' transfer';
+                }
+                if (giveAllToggle === true) {
+                    config += ' giveall';
+                }
+                if (emoteOnlyToggle === true) {
+                    config += ' emoteonly';
+                }
+                if (timeoutToggle === true) {
+                    config += ' timeout';
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.current', config));
+                return;
+            }
+
+            /*
+             * @commandpath usage
+             */
+            if (action.equalsIgnoreCase('usage')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.usage'));
+                return;
+            }
+
+            /*
+             * @commandpath info
+             */
+            if (action.equalsIgnoreCase('info')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.info'));
                 return;
             }
 
@@ -92,33 +125,35 @@
              */
             if (action.equalsIgnoreCase('transfer')) {
                 if (args[1] === undefined) {
-                    if (transferID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.setup'));
+
+                    if (transferToggle === false) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.info'));
                         return;
                     }
-                    $.say($.whisperPrefix(sender) + (transferToggle ? $.lang.get('channelPointsHandler.transfer.setup.enabled', transferReward, transferAmount) : $.lang.get('channelPointsHandler.transfer.setup.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.current', transferReward, transferAmount));
                     return;
                 }
 
                 /*
-                 * @commandpath transfer help
+                 * @commandpath transfer usage
                  */
-                if (args[1].equalsIgnoreCase('help')) {
+                if (args[1].equalsIgnoreCase('usage')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.usage'));
                     return;
                 }
 
                 /*
-                 * @commandpath transfer toggle
+                 * @commandpath transfer config
                  */
-                if (args[1].equalsIgnoreCase('toggle')) {
-                    if (transferID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.id'));
+                if (args[1].equalsIgnoreCase('config')) {
+                    transferConfig = !transferConfig;
+                    $.setIniDbBoolean('channelPointsSettings', 'transferConfig', transferConfig);
+                    if (transferConfig === true){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.config.start'));
                         return;
                     }
-                    transferToggle = !transferToggle;
-                    $.setIniDbBoolean('channelPointsSettings', 'transferToggle', transferToggle);
-                    $.say($.whisperPrefix(sender) + (transferToggle ? $.lang.get('channelPointsHandler.transfer.enabled', transferReward) : $.lang.get('channelPointsHandler.transfer.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                    // config is closed when reward is successfully redeemed please see reward ID config in channel point events below
                     return;
                 }
 
@@ -127,10 +162,14 @@
                  */
                 if (args[1].equalsIgnoreCase('amount')) {
                     if (args[2] === undefined) {
+                        if (transferAmount === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.amount.notset'));
+                            return;
+                        }
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.amount.usage', transferAmount));
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[2])) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
                         return;
                     }
@@ -140,174 +179,217 @@
                 }
 
                 /*
-                 * @commandpath transfer config
+                 * @commandpath transfer toggle
                  */
-                if (args[1].equalsIgnoreCase('config')) {
-                    transferConfig = !transferConfig;
-                    $.setIniDbBoolean('channelPointsSettings', 'transferConfig', transferConfig);
-                    $.say($.whisperPrefix(sender) + (transferConfig ? $.lang.get('channelPointsHandler.transfer.config.on') : $.lang.get('channelPointsHandler.transfer.config.off', transferReward)));
+                if (args[1].equalsIgnoreCase('toggle')) {
+                    if (transferToggle === false){
+                        if (transferID.equals('noIDSet')) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.toggle.id'));
+                            return;
+                        }
+                        if (transferAmount === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.toggle.amount'));
+                            return;
+                        }
+                    }
+                    transferToggle = !transferToggle;
+                    $.setIniDbBoolean('channelPointsSettings', 'transferToggle', transferToggle);
+                    $.say($.whisperPrefix(sender) + (transferToggle ? $.lang.get('channelPointsHandler.transfer.enabled', transferReward) : $.lang.get('channelPointsHandler.transfer.disabled')));
                     return;
                 }
             }
-
             /*
-             * @commandpath giveAll
+             * @commandpath giveall
              */
             if (action.equalsIgnoreCase('giveall')) {
                 if (args[1] === undefined) {
-                    if (giveAllID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.setup'));
+
+                    if (giveAllToggle === false) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.info'));
+                        return;
                     }
-                    $.say($.whisperPrefix(sender) + (giveAllToggle ? $.lang.get('channelPointsHandler.giveall.setup.enabled', giveAllReward, giveAllAmount) : $.lang.get('channelPointsHandler.giveall.setup.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.current', giveAllReward, giveAllAmount));
                     return;
                 }
-
                 /*
-                 * @commandpath giveAll help
+                 * @commandpath giveall usage
                  */
-                if (args[1].equalsIgnoreCase('help')) {
+                if (args[1].equalsIgnoreCase('usage')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.usage'));
                     return;
                 }
 
                 /*
-                 * @commandpath giveAll toggle
-                 */
-                if (args[1].equalsIgnoreCase('toggle')) {
-                    if (giveAllID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.id'));
-                        return;
-                    }
-                    giveAllToggle = !giveAllToggle;
-                    $.setIniDbBoolean('channelPointsSettings', 'giveAllToggle', giveAllToggle);
-                    $.say($.whisperPrefix(sender) + (giveAllToggle ? $.lang.get('channelPointsHandler.giveall.enabled', giveAllReward) : $.lang.get('channelPointsHandler.giveall.disabled')));
-                    return;
-                }
-
-                /*
-                 * @commandpath giveAll amount
-                 */
-                if (args[1].equalsIgnoreCase('amount')) {
-                    if (args[2] === undefined) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.usage', giveAllAmount));
-                        return;
-                    }
-                    if (isNaN(args[2])){
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
-                        return;
-                    }
-                    giveAllAmount = args[2];
-                    $.setIniDbNumber('channelPointsSettings', 'giveAllAmount', giveAllAmount);
-                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.message', giveAllAmount));
-                    return;
-                }
-
-                /*
-                 * @commandpath giveAll config
+                 * @commandpath giveall config
                  */
                 if (args[1].equalsIgnoreCase('config')) {
                     giveAllConfig = !giveAllConfig;
                     $.setIniDbBoolean('channelPointsSettings', 'giveAllConfig', giveAllConfig);
-                    $.say($.whisperPrefix(sender) + (giveAllConfig ? $.lang.get('channelPointsHandler.giveall.config.on') : $.lang.get('channelPointsHandler.giveall.config.off', giveAllReward)));
+                    if (giveAllConfig === true) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.config.start'));
+                        return;
+                    }
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                    // config is closed when reward is successfully redeemed please see reward ID config in channel point events below
+                    return;
+                }
+
+                /*
+                 * @commandpath giveall amount
+                 */
+                if (args[1].equalsIgnoreCase('amount')) {
+                    if (args[2] === undefined) {
+                        if (giveAllAmount === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.notset'));
+                            return;
+                        }
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.usage', giveAllAmount));
+                        return;
+                    }
+                    if (isNaN(args[2])) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
+                        return;
+                    }
+                    giveAllAmount = args[2];
+                    $.setIniDbNumber('channelPointsSettings', 'giveallAmount', giveAllAmount);
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.amount.message', giveAllAmount));
+                }
+
+                /*
+                 * @commandpath giveall toggle
+                 */
+                if (args[1].equalsIgnoreCase('toggle')) {
+                    if (giveAllToggle === false) {
+                        if (giveAllID.equals('noIDSet')) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.toggle.id'));
+                            return;
+                        }
+                        if (giveAllAmount === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.toggle.amount'));
+                            return;
+                        }
+                    }
+                    giveAllToggle = !giveAllToggle;
+                    $.setIniDbBoolean('channelPointsSettings', 'giveallToggle', giveAllToggle);
+                    $.say($.whisperPrefix(sender) + (giveAllToggle ? $.lang.get('channelPointsHandler.giveall.enabled', giveAllReward) : $.lang.get('channelPointsHandler.giveall.disabled')));
                     return;
                 }
             }
 
             /*
-             * @commandpath emoteOnly
+             * @commandpath emoteonly
              */
             if (action.equalsIgnoreCase('emoteonly')) {
                 if (args[1] === undefined) {
-                    if (emoteOnlyID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.setup'));
+
+                    if (emoteOnlyToggle === false) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.info'));
                         return;
                     }
-                    $.say($.whisperPrefix(sender) + (emoteOnlyToggle ? $.lang.get('channelPointsHandler.emoteOnly.setup.enabled', emoteOnlyReward, emoteOnlyDuration) : $.lang.get('channelPointsHandler.emoteOnly.setup.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.current', emoteOnlyReward, emoteOnlyDuration));
                     return;
                 }
 
                 /*
-                 * @commandpath emoteOnly help
+                 * @commandpath emoteonly usage
                  */
-                if (args[1].equalsIgnoreCase('help')) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.usage'));
+                if (args[1].equalsIgnoreCase('usage')) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.usage'));
                     return;
                 }
 
                 /*
-                 * @commandpath emoteOnly toggle
+                 * @commandpath emoteonly config
                  */
-                if (args[1].equalsIgnoreCase('toggle')) {
-                    if (emoteOnlyID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.id'));
+                if (args[1].equalsIgnoreCase('config')) {
+                    emoteOnlyConfig = !emoteOnlyConfig;
+                    $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyConfig', emoteOnlyConfig);
+                    if (emoteOnlyConfig === true){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.config.start'));
                         return;
                     }
-                    emoteOnlyToggle = !emoteOnlyToggle;
-                    $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyToggle', emoteOnlyToggle);
-                    $.say($.whisperPrefix(sender) + (emoteOnlyToggle ? $.lang.get('channelPointsHandler.emoteOnly.enabled', emoteOnlyReward) : $.lang.get('channelPointsHandler.emoteOnly.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                    // config is closed when reward is successfully redeemed please see reward ID config in channel point events below
                     return;
                 }
 
                 /*
-                 * @commandpath emoteOnly duration
+                 * @commandpath emoteonly duration
                  */
                 if (args[1].equalsIgnoreCase('duration')) {
                     if (args[2] === undefined) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.duration.usage', emoteOnlyDuration));
+                        if (emoteOnlyDuration === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.duration.notset'));
+                            return;
+                        }
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.duration.usage', emoteOnlyDuration));
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[2])) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
                         return;
                     }
                     emoteOnlyDuration = args[2];
                     $.setIniDbNumber('channelPointsSettings', 'emoteOnlyDuration', emoteOnlyDuration);
-                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteOnly.duration.message', emoteOnlyDuration));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.duration.message', emoteOnlyDuration));
                 }
 
                 /*
-                 * @commandpath emoteOnly config
+                 * @commandpath emoteonly toggle
                  */
-                if (args[1].equalsIgnoreCase('config')) {
-                    emoteOnlyConfig = !emoteOnlyConfig;
-                    $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyConfig', emoteOnlyConfig);
-                    $.say($.whisperPrefix(sender) + (emoteOnlyConfig ? $.lang.get('channelPointsHandler.emoteOnly.config.on') : $.lang.get('channelPointsHandler.emoteOnly.config.off', emoteOnlyReward)));
-                    return
+                if (args[1].equalsIgnoreCase('toggle')) {
+                    if (emoteOnlyToggle === false){
+                        if (emoteOnlyID.equals('noIDSet')) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.toggle.id'));
+                            return;
+                        }
+                        if (emoteOnlyDuration === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.toggle.duration'));
+                            return;
+                        }
+                    }
+                    emoteOnlyToggle = !emoteOnlyToggle;
+                    $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyToggle', emoteOnlyToggle);
+                    $.say($.whisperPrefix(sender) + (emoteOnlyToggle ? $.lang.get('channelPointsHandler.emoteonly.enabled', emoteOnlyReward) : $.lang.get('channelPointsHandler.emoteonly.disabled')));
+                    return;
                 }
             }
 
             /*
              * @commandpath timeout
              */
+
             if (action.equalsIgnoreCase('timeout')) {
                 if (args[1] === undefined) {
-                    if (timeoutID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.setup'));
+
+                    if (timeoutToggle === false) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.info'));
                         return;
                     }
-                    $.say($.whisperPrefix(sender) + (timeoutToggle ? $.lang.get('channelPointsHandler.timeout.setup.enabled', timeoutReward, timeoutDuration) : $.lang.get('channelPointsHandler.timeout.setup.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.current', timeoutReward, timeoutDuration));
                     return;
                 }
 
                 /*
-                 * @commandpath timeout help
+                 * @commandpath timeout usage
                  */
-                if (args[1].equalsIgnoreCase('help')) {
+                if (args[1].equalsIgnoreCase('usage')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.usage'));
                     return;
                 }
 
                 /*
-                 * @commandpath timeout toggle
+                 * @commandpath timeout config
                  */
-                if (args[1].equalsIgnoreCase('toggle')) {
-                    if (timeoutID.equals('noIDSet')) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.id'));
+                if (args[1].equalsIgnoreCase('config')) {
+                    timeoutConfig = !timeoutConfig;
+                    $.setIniDbBoolean('channelPointsSettings', 'timeoutConfig', timeoutConfig);
+                    if (timeoutConfig === true){
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.config.start'));
                         return;
                     }
-                    timeoutToggle = !timeoutToggle;
-                    $.setIniDbBoolean('channelPointsSettings', 'timeoutToggle', timeoutToggle);
-                    $.say($.whisperPrefix(sender) + (timeoutToggle ? $.lang.get('channelPointsHandler.timeout.enabled', timeoutReward) : $.lang.get('channelPointsHandler.timeout.disabled')));
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                    // config is closed when reward is successfully redeemed please see reward ID config in channel point events below
                     return;
                 }
 
@@ -316,10 +398,14 @@
                  */
                 if (args[1].equalsIgnoreCase('duration')) {
                     if (args[2] === undefined) {
+                        if (timeoutDuration === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.duration.notset'));
+                            return;
+                        }
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.duration.usage', timeoutDuration));
                         return;
                     }
-                    if (isNaN(args[2])){
+                    if (isNaN(args[2])) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.nan'));
                         return;
                     }
@@ -329,15 +415,26 @@
                 }
 
                 /*
-                 * @commandpath timeout config
+                 * @commandpath timeout toggle
                  */
-                if (args[1].equalsIgnoreCase('config')) {
-                    timeoutConfig = !timeoutConfig;
-                    $.setIniDbBoolean('channelPointsSettings', 'timeoutConfig', timeoutConfig);
-                    $.say($.whisperPrefix(sender) + (timeoutConfig ? $.lang.get('channelPointsHandler.timeout.config.on') : $.lang.get('channelPointsHandler.timeout.config.off', timeoutReward)));
-                    return
+                if (args[1].equalsIgnoreCase('toggle')) {
+                    if (timeoutToggle === false){
+                        if (timeoutID.equals('noIDSet')) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.toggle.id'));
+                            return;
+                        }
+                        if (timeoutDuration === 0){
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.toggle.duration'));
+                            return;
+                        }
+                    }
+                    timeoutToggle = !timeoutToggle;
+                    $.setIniDbBoolean('channelPointsSettings', 'timeoutToggle', timeoutToggle);
+                    $.say($.whisperPrefix(sender) + (timeoutToggle ? $.lang.get('channelPointsHandler.timeout.enabled', timeoutReward) : $.lang.get('channelPointsHandler.timeout.disabled')));
+                    return;
                 }
             }
+
         }
     })
 
@@ -362,38 +459,52 @@
          * reward ID config
          */
         if (transferConfig === true) {
-            com.gmt2001.Console.debug.println("transferConfig");
             transferID = rewardID;
             transferReward = rewardTitle;
             $.setIniDbBoolean('channelPointsSettings', 'transferID', transferID);
             $.setIniDbBoolean('channelPointsSettings', 'transferReward', transferReward);
+            transferConfig = false;
+            $.setIniDbBoolean('channelPointsSettings', 'transferConfig', transferConfig);
+            $.say($.lang.get('channelPointsHandler.transfer.config.complete', transferReward));
             return;
         }
 
         if (giveAllConfig === true) {
-            com.gmt2001.Console.debug.println("giveAllConfig");
             giveAllID = rewardID;
             giveAllReward = rewardTitle;
             $.setIniDbBoolean('channelPointsSettings', 'giveAllID', giveAllID);
             $.setIniDbBoolean('channelPointsSettings', 'giveAllReward', giveAllReward);
+            giveAllConfig = false;
+            $.setIniDbBoolean('channelPointsSettings', 'giveAllConfig', giveAllConfig);
+            $.say($.lang.get('channelPointsHandler.giveAll.config.complete', giveAllReward));
             return;
         }
 
         if (emoteOnlyConfig === true) {
-            com.gmt2001.Console.debug.println("emoteOnlyConfig");
             emoteOnlyID = rewardID;
             emoteOnlyReward = rewardTitle;
             $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyID', emoteOnlyID);
             $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyReward', emoteOnlyReward);
+            emoteOnlyConfig = false;
+            $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyConfig', emoteOnlyConfig);
+            $.say($.lang.get('channelPointsHandler.emoteOnly.config.complete', emoteOnlyReward));
             return;
         }
 
         if (timeoutConfig === true) {
-            com.gmt2001.Console.debug.println("timeoutConfig");
+            if (userInput.equals('')){
+                $.say($.lang.get('channelPointsHandler.timeout.nouserinput'));
+                timeoutConfig = false;
+                $.setIniDbBoolean('channelPointsSettings', 'timeoutConfig', timeoutConfig);
+                return;
+            }
             timeoutID = rewardID;
             timeoutReward = rewardTitle;
             $.setIniDbBoolean('channelPointsSettings', 'timeoutID', timeoutID);
             $.setIniDbBoolean('channelPointsSettings', 'timeoutReward', timeoutReward);
+            timeoutConfig = false;
+            $.setIniDbBoolean('channelPointsSettings', 'timeoutConfig', timeoutConfig);
+            $.say($.lang.get('channelPointsHandler.timeout.config.complete', timeoutReward));
             return;
         }
 
