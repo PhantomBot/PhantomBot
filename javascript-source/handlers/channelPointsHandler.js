@@ -574,6 +574,7 @@
                 userInput = $.user.sanitize(userInput);
                 $.say('/timeout ' + userInput + ' ' + timeoutDuration);
                 $.say(userInput + ' has been timed out for ' + timeoutDuration + ' seconds by ' + displayName);
+                //TODO add check to ensure user is in chat
                 return;
             }
         }
