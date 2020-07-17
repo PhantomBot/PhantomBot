@@ -87,7 +87,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.notenabled'));
                     return;
                 }
-                var config;
+                var config = '';
                 if (transferToggle === true) {
                     config += ' transfer';
                 }
@@ -150,6 +150,10 @@
                     $.setIniDbBoolean('channelPointsSettings', 'transferConfig', transferConfig);
                     if (transferConfig === true){
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.transfer.config.start'));
+                        transferID = 'noIDSet';
+                        transferReward = 'noNameSet';
+                        $.setIniDbBoolean('channelPointsSettings', 'transferID', transferID);
+                        $.setIniDbBoolean('channelPointsSettings', 'transferReward', transferReward);
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
@@ -227,6 +231,10 @@
                     $.setIniDbBoolean('channelPointsSettings', 'giveAllConfig', giveAllConfig);
                     if (giveAllConfig === true) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.giveall.config.start'));
+                        giveAllID = 'noIDSet';
+                        giveAllReward = 'noNameSet';
+                        $.setIniDbBoolean('channelPointsSettings', 'giveAllID', giveAllID);
+                        $.setIniDbBoolean('channelPointsSettings', 'giveAllReward', giveAllReward);
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
@@ -306,6 +314,10 @@
                     $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyConfig', emoteOnlyConfig);
                     if (emoteOnlyConfig === true){
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.emoteonly.config.start'));
+                        emoteOnlyID = 'noIDSet';
+                        emoteOnlyReward = 'noNameSet';
+                        $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyID', emoteOnlyID);
+                        $.setIniDbBoolean('channelPointsSettings', 'emoteOnlyReward', emoteOnlyReward);
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
@@ -386,6 +398,10 @@
                     $.setIniDbBoolean('channelPointsSettings', 'timeoutConfig', timeoutConfig);
                     if (timeoutConfig === true){
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.timeout.config.start'));
+                        timeoutID = 'noIDSet';
+                        timeoutReward = 'noNameSet';
+                        $.setIniDbBoolean('channelPointsSettings', 'timeoutID', timeoutID);
+                        $.setIniDbBoolean('channelPointsSettings', 'timeoutReward', timeoutReward);
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
