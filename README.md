@@ -1,5 +1,5 @@
 
-# <img alt="PhantomBot" src="https://phantombot.tv/common/images/brand.png" width="600px"/>
+# <img alt="PhantomBot" src="https://phantom.bot/common/images/brand.png" width="600px"/>
 
 ![Java CI](https://github.com/PhantomBot/PhantomBot/workflows/Java%20CI/badge.svg)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/YKvMd78)
