@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,7 @@
             obj = {},
             i;
 
-        obj['**Timeout_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Timeout_placed_on:**'] = '[' + username + '](https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase() + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
         obj['**Time:**'] = time + ' seconds.';

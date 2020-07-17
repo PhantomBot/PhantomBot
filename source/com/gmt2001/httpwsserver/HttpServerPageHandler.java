@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import org.sqlite.SQLiteConfig;
 
 /**
  * Processes HTTP requests and passes successful ones to the appropriate registered final handler
@@ -82,13 +82,15 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             return;
         }
 
-        HttpRequestHandler h = determineHttpRequestHandler(req.uri());
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+        HttpRequestHandler h = determineHttpRequestHandler(qsd.path());
 
         if (h != null) {
             if (h.getAuthHandler().checkAuthorization(ctx, req)) {
                 h.handleRequest(ctx, req);
             }
         } else {
+            com.gmt2001.Console.debug.println("404 " + req.method().asciiName() + ": " + qsd.path());
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
         }
     }
@@ -114,7 +116,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
 
-        if (uri.contains("..")) {
+        if (URLDecoder.decode(uri, Charset.forName("UTF-8")).contains("..")) {
             return null;
         }
 
@@ -363,10 +365,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param req The {@link FullHttpRequest} containing the request
      * @return A Map of cookies
      */
-    public static Map<String, String> parseCookies(FullHttpRequest req) {
+    public static Map<String, String> parseCookies(HttpHeaders headers) {
         Map<String, String> cookies = new HashMap<>();
 
-        req.headers().getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
+        headers.getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
             String[] cookie = scookie.split("=", 2);
             cookies.put(cookie[0], cookie[1]);
         }));

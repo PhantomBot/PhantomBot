@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ $(function() {
     // Load file button
     $('#load-file-button').on('click', function() {
         $.ajax({
-            'url': '/get-lang?webauth=' + getAuth(),
+            'url': 'http://' + helpers.getBotHost() + '/get-lang?webauth=' + getAuth(),
             'type': 'GET',
             'success': function(data) {
                 helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
@@ -32,7 +32,7 @@ $(function() {
                     currentLang = $('#file-to-load').find(':selected').text();
 
                     $.ajax({
-                        'url': '/lang?webauth=' + getAuth(),
+                        'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
                         'type': 'GET',
                         'headers': {
                             'lang-path': $('#file-to-load').find(':selected').text()
@@ -86,7 +86,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fa fa-trash'
+                                'class': 'fas fa-sm fa-trash'
                             })
                         })).append($('<button/>', {
                             'type': 'button',
@@ -95,7 +95,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fa fa-edit'
+                                'class': 'fas fa-sm fa-edit'
                             })
                         })).html()
                     ]).draw();
@@ -128,7 +128,7 @@ $(function() {
         // Post the lang.
         $.ajax({
             'type': 'PUT',
-            'url': '/lang?webauth=' + getAuth(),
+            'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
             'contentType': 'application/json',
             'headers': {
                 'lang-path': currentLang
@@ -163,7 +163,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fa fa-trash'
+                        'class': 'fas fa-sm fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -172,7 +172,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fa fa-edit'
+                        'class': 'fas fa-sm fa-edit'
                     })
                 })).html()
             ])
@@ -251,7 +251,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fa fa-trash'
+                                    'class': 'fas fa-sm fa-trash'
                                 })
                             })).append($('<button/>', {
                                 'type': 'button',
@@ -260,7 +260,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fa fa-edit'
+                                    'class': 'fas fa-sm fa-edit'
                                 })
                             })).html()
                         ]).draw(false);

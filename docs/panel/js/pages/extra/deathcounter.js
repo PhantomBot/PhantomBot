@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ $(function() {
             'class': 'form-control',
             'id': 'death-url',
             'readonly': 'readonly',
-            'value': 'https://' + helpers.getBotHost() + '/addons/deathctr/deathctr.txt?refresh=true&webauth=' + getAuth(),
+            'value': 'http://' + helpers.getBotHost() + '/addons/deathctr/deathctr.txt?refresh=true&webauth=' + getAuth(),
             'style': 'color: transparent !important; text-shadow: 0 0 5px hsla(0, 0%, 100%, .5);',
             'data-toggle': 'tooltip',
             'title': 'Clicking this box will show the link. DO NOT share this link with anyone as it has sensitive information.',

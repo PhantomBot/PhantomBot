@@ -4,10 +4,6 @@ Die deutsche Übersetzung für PhantomBot findest Du unter
 
 https://github.com/PhantomBotDE/PhantomBotDE
 
-den PhantomBot Forumsbeitrag findest Du unter
-
-https://community.phantombot.tv/t/3872
-
 
 Sollten Probleme, Fragen, Fehler oder Verbesserungsvorschläge auftauchen,
 kannst Du diese im Forum oder auf GitHub posten.

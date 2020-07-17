@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 import tv.phantombot.RepoVersion;
@@ -178,11 +179,43 @@ public class GitHubAPIv3 {
         if (!jsonArray.getJSONObject(0).has("assets")) {
             return null;
         }
-        JSONArray assetsArray = jsonArray.getJSONObject(0).getJSONArray("assets");
-        if (!assetsArray.getJSONObject(0).has("browser_download_url")) {
-            return null;
+
+        String os = "";
+        String osname = System.getProperty("os.name").toLowerCase();
+
+        if (osname.contains("win")) {
+            os = "-win";
+        } else if (osname.contains("mac")) {
+            os = "-mac";
+        } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
+            if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
+                os = "-arm";
+            } else {
+                os = "-lin";
+            }
         }
-        return new String[] { tagName, assetsArray.getJSONObject(0).getString("browser_download_url") };
+
+        JSONArray assetsArray = jsonArray.getJSONObject(0).getJSONArray("assets");
+        Pattern p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
+        int i;
+        boolean found = false;
+        for (i = 0; i < assetsArray.length(); i++) {
+            if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip", Pattern.CASE_INSENSITIVE);
+            for (i = 0; i < assetsArray.length(); i++) {
+                if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
+                    break;
+                }
+            }
+        }
+
+        return new String[] { tagName, assetsArray.getJSONObject(i).getString("browser_download_url") };
     }
 
 }

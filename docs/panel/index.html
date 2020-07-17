@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2019 phantombot.tv
+    Copyright (C) 2016-2020 phantombot.tv
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,21 +27,19 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" href="../favicon.ico" type="image/x-icon">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-        <!-- Discord Icon -->
-        <link rel="stylesheet" href="vendors/font-awesome/css/discord.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
         <!-- Bootstrap 3.3.7 -->
-        <link rel="stylesheet" href="vendors/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../common/css/bootstrap.min.css" />
         <!-- Datatables -->
-        <link rel="stylesheet" href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../common/css/dataTables.bootstrap.min.css" />
         <!-- Toastr -->
-        <link rel="stylesheet" href="vendors/toastr/toastr.min.css">
+        <link rel="stylesheet" href="../common/css/toastr.min.css" />
         <!-- Pace theme -->
-        <link rel="stylesheet" href="vendors/PACE/pace.min.css">
+        <link rel="stylesheet" href="../common/css/pace.min.css" />
         <!-- Pretty Checkbox -->
-        <link rel="stylesheet" href="vendors/pretty-checkbox/pretty-checkbox.min.css">
+        <link rel="stylesheet" href="../common/css/pretty-checkbox.min.css" />
         <!-- Easy auto comeplete -->
-        <link rel="stylesheet" href="vendors/EasyAutocomplete-1.3.5/easy-autocomplete.min.css">
+        <link rel="stylesheet" href="../common/css/easy-autocomplete.min.css" />
         <!-- Loader -->
         <link rel="stylesheet" href="css/main.min.css">
         <!-- Google Font -->
@@ -70,7 +68,7 @@
 
                     <!-- Sidebar toggle -->
                     <nav class="navbar navbar-static-top">
-                        <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <a href="javascript:void(0);" class="fas sidebar-toggle" style='font-family: "Font Awesome 5 Free";line-height: unset;' data-toggle="push-menu" role="button">
                             <span class="sr-only">Toggle navigation</span>
                         </a>
 
@@ -79,7 +77,7 @@
                             <ul class="nav navbar-nav">
                                 <!-- Notification warning -->
                                 <li class="dropdown notifications-menu">
-                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o"></i>
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="far fa-bell"></i>
                                         <span class="label label-warning" id="notifications-amount" style="display: none;">1</span>
                                     </a>
                                     <ul class="dropdown-menu">
@@ -118,7 +116,7 @@
                                 </li>
                                 <!-- Settings button -->
                                 <li>
-                                    <a href="javascript:void(0);" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                                    <a href="javascript:void(0);" data-toggle="control-sidebar"><i class="fas fa-sm fa-cogs"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -138,235 +136,235 @@
                             <!-- Main dashboard tab -->
                             <li class="treeview active">
                                 <a href="#dashboard.html" data-folder="dashboard">
-                                    <i class="fa fa-dashboard"></i> <span> Dashboard</span>
+                                    <i class="fas fa-sm fa-tachometer-alt ion"></i> <span> Dashboard</span>
                                 </a>
                             </li>
 
                             <!-- Commands tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-exclamation" style="padding-left: 3px;"></i> <span> Commands</span>
+                                    <i class="fas fa-sm fa-exclamation ion" style="padding-left: 3px;"></i> <span> Commands</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#custom.html" data-folder="commands"><i class="fa fa-circle-o"></i> Custom</a></li>
-                                    <li><a href="#aliases.html" data-folder="commands"><i class="fa fa-circle-o"></i> Aliases</a></li>
-                                    <li><a href="#default.html" data-folder="commands"><i class="fa fa-circle-o"></i> Default</a></li>
+                                    <li><a href="#custom.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
+                                    <li><a href="#aliases.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Aliases</a></li>
+                                    <li><a href="#default.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Default</a></li>
                                 </ul>
                             </li>
 
                             <!-- Moderation tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-shield"></i> <span> Moderation</span>
+                                    <i class="fas fa-sm fa-shield-alt ion"></i> <span> Moderation</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#filters.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Filters</a></li>
-                                    <li><a href="#whitelist.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Whitelist</a></li>
-                                    <li><a href="#blacklist.html" data-folder="moderation"><i class="fa fa-circle-o"></i> Blacklist</a></li>
+                                    <li><a href="#filters.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Filters</a></li>
+                                    <li><a href="#whitelist.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Whitelist</a></li>
+                                    <li><a href="#blacklist.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Blacklist</a></li>
                                 </ul>
                             </li>
 
                             <!-- Permission tab -->
                             <li class="treeview">
                                 <a href="#permissions.html" data-folder="permissions">
-                                    <i class="fa fa-lock"></i> <span> Permissions</span>
+                                    <i class="fas fa-sm fa-lock ion"></i> <span> Permissions</span>
                                 </a>
                             </li>
 
                             <!-- Timers tab -->
                             <li class="treeview">
                                 <a href="#timers.html" data-folder="timers">
-                                    <i class="fa fa-clock-o"></i> <span> Timers</span>
+                                    <i class="far fa-sm fa-clock ion"></i> <span> Timers</span>
                                 </a>
                             </li>
 
                             <!-- Alerts tab -->
                             <li class="treeview">
                                 <a href="#alerts.html" data-folder="alerts">
-                                    <i class="fa fa-bullhorn"></i> <span> Alerts</span>
+                                    <i class="fas fa-sm fa-bullhorn ion"></i> <span> Alerts</span>
                                 </a>
                             </li>
 
                             <!-- Soon -->
                             <!-- <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-bullhorn"></i> <span> Alerts</span>
+                                    <i class="fas fa-sm fa-bullhorn"></i> <span> Alerts</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#alerts.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Chat</a></li>
-                                    <li><a href="#stream.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Stream</a></li>
+                                    <li><a href="#alerts.html" data-folder="alerts"><i class="far fa-sm fa-circle ion"></i> Chat</a></li>
+                                    <li><a href="#stream.html" data-folder="alerts"><i class="far fa-sm fa-circle ion"></i> Stream</a></li>
                                 </ul>
                             </li> -->
 
                             <!-- Loyalty tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-star"></i> <span> Loyalty</span>
+                                    <i class="fas fa-sm fa-star ion"></i> <span> Loyalty</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#currency.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Currency</a></li>
-                                    <li><a href="#loyalty.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Loyalty</a></li>
-                                    <li><a href="#leaderboard.html" data-folder="loyalty"><i class="fa fa-circle-o"></i> Leaderboard</a></li>
+                                    <li><a href="#currency.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Currency</a></li>
+                                    <li><a href="#loyalty.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Loyalty</a></li>
+                                    <li><a href="#leaderboard.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Leaderboard</a></li>
                                 </ul>
                             </li>
 
                             <!-- Ranking tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-user"></i> <span> Ranking</span>
+                                    <i class="fas fa-sm fa-user ion"></i> <span> Ranking</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#globalRanks.html" data-folder="ranking"><i class="fa fa-circle-o"></i> Global</a></li>
-                                    <li><a href="#customRanks.html" data-folder="ranking"><i class="fa fa-circle-o"></i> Custom</a></li>
+                                    <li><a href="#globalRanks.html" data-folder="ranking"><i class="far fa-sm fa-circle ion"></i> Global</a></li>
+                                    <li><a href="#customRanks.html" data-folder="ranking"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
                                 </ul>
                             </li>
 
                             <!-- Quotes tab -->
                             <li class="treeview">
                                 <a href="#quotes.html" data-folder="quotes">
-                                    <i class="fa fa-quote-right"></i> <span> Quotes</span>
+                                    <i class="fas fa-sm fa-quote-right ion"></i> <span> Quotes</span>
                                 </a>
                             </li>
 
                             <!-- Keywords tab -->
                             <li class="treeview">
                                 <a href="#keywords.html" data-folder="keywords">
-                                    <i class="fa fa-key"></i> <span> Keywords</span>
+                                    <i class="fas fa-sm fa-key ion"></i> <span> Keywords</span>
                                 </a>
                             </li>
 
                             <!-- Games tab -->
                             <li class="treeview">
                                 <a href="#games.html" data-folder="games">
-                                    <i class="fa fa-gamepad"></i> <span> Games</span>
+                                    <i class="fas fa-sm fa-gamepad ion"></i> <span> Games</span>
                                 </a>
                             </li>
 
                             <!-- Giveaways tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-gift"></i> <span> Giveaways</span>
+                                    <i class="fas fa-sm fa-gift ion"></i> <span> Giveaways</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#raffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Raffle</a></li>
-                                    <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Ticket Raffle</a></li>
-                                    <li><a href="#auction.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Auction</a></li>
+                                    <li><a href="#raffle.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Raffle</a></li>
+                                    <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Ticket Raffle</a></li>
+                                    <li><a href="#auction.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Auction</a></li>
                                 </ul>
                             </li>
 
                             <!-- Discord tab -->
                             <li class="treeview" id="discord_index_tab">
                                 <a href="#">
-                                    <i class="demo-icon icon-discord"></i> <span> Discord</span>
+                                    <i class="fab fa-discord ion"></i> <span> Discord</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
                                     <li class="treeview">
-                                        <a href="#"><i class="fa fa-circle-o"></i> Commands
+                                        <a href="#"><i class="far fa-sm fa-circle ion"></i> Commands
                                             <span class="pull-right-container">
-                                                <i class="fa fa-angle-left pull-right"></i>
+                                                <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                             </span>
                                         </a>
                                         <ul class="treeview-menu">
-                                            <li><a href="#discordCustomCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Custom</a></li>
-                                            <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Default</a></li>
+                                            <li><a href="#discordCustomCommands.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
+                                            <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Default</a></li>
                                         </ul>
                                     </li>
 
                                     <!-- For IO and his promotion system:
                                     From what I saw, you might need multiple tabs like the one above, since you
                                     allow a "blacklist" of users. -->
-                                    <!-- <li><a href="#discordPromotion.html" data-folder="discord"><i class="fa fa-circle-o"></i> Promotion</a></li> -->
+                                    <!-- <li><a href="#discordPromotion.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Promotion</a></li> -->
 
-                                    <li><a href="#discordAlerts.html" data-folder="discord"><i class="fa fa-circle-o"></i> Alerts</a></li>
-                                    <li><a href="#discordLogs.html" data-folder="discord"><i class="fa fa-circle-o"></i> Logging</a></li>
-                                    <li><a href="#discordKeywords.html" data-folder="discord"><i class="fa fa-circle-o"></i> Keywords</a></li>
-                                    <li><a href="#discordGames.html" data-folder="discord"><i class="fa fa-circle-o"></i> Games</a></li>
+                                    <li><a href="#discordAlerts.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Alerts</a></li>
+                                    <li><a href="#discordLogs.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Logging</a></li>
+                                    <li><a href="#discordKeywords.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Keywords</a></li>
+                                    <li><a href="#discordGames.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Games</a></li>
                                 </ul>
                             </li>
 
                             <!-- Hisotry tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-history"></i> <span> History</span>
+                                    <i class="fas fa-sm fa-history ion"></i> <span> History</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#tipsHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Tips</a></li>
-                                    <li><a href="#hostHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Hosts</a></li>
-                                    <li><a href="#raidHistory.html" data-folder="history"><i class="fa fa-circle-o"></i> Raids</a></li>
+                                    <li><a href="#tipsHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Tips</a></li>
+                                    <li><a href="#hostHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Hosts</a></li>
+                                    <li><a href="#raidHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Raids</a></li>
                                 </ul>
                             </li>
 
                             <!-- Extra tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-magic"></i> <span> Extra</span>
+                                    <i class="fas fa-sm fa-magic ion"></i> <span> Extra</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#commercials.html" data-folder="extra"><i class="fa fa-circle-o"></i> Automatic Commercials</a></li>
-                                    <li><a href="#dualstream.html" data-folder="extra"><i class="fa fa-circle-o"></i> Dual Stream</a></li>
-                                    <li><a href="#deathcounter.html" data-folder="extra"><i class="fa fa-circle-o"></i> Death Counter</a></li>
-                                    <li><a href="#highlights.html" data-folder="extra"><i class="fa fa-circle-o"></i> Highlights</a></li>
-                                    <li><a href="#betting.html" data-folder="extra"><i class="fa fa-circle-o"></i> Betting</a></li>
-                                    <li><a href="#polls.html" data-folder="extra"><i class="fa fa-circle-o"></i> Polls</a></li>
-                                    <li><a href="#queue.html" data-folder="extra"><i class="fa fa-circle-o"></i> Queue</a></li>
+                                    <li><a href="#commercials.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Automatic Commercials</a></li>
+                                    <li><a href="#dualstream.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Dual Stream</a></li>
+                                    <li><a href="#deathcounter.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Death Counter</a></li>
+                                    <li><a href="#highlights.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Highlights</a></li>
+                                    <li><a href="#betting.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Betting</a></li>
+                                    <li><a href="#polls.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Polls</a></li>
+                                    <li><a href="#queue.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Queue</a></li>
                                 </ul>
                             </li>
 
                             <!-- Audio tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-music"></i> <span> Audio</span>
+                                    <i class="fas fa-sm fa-music ion"></i> <span> Audio</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#audioHooks.html" data-folder="audio"><i class="fa fa-circle-o"></i> Audio Hooks</a></li>
+                                    <li><a href="#audioHooks.html" data-folder="audio"><i class="far fa-sm fa-circle ion"></i> Audio Hooks</a></li>
                                     <!-- For now, as long as the YouTube player module hasn't gotten a rewrite, we will redirect to the player. -->
-                                    <li><a href="/ytplayer" target="_blank"><i class="fa fa-circle-o"></i> Song Requests</a></li>
+                                    <li><a id="sr-link" href="/ytplayer" target="_blank"><i class="far fa-sm fa-circle ion"></i> Song Requests</a></li>
                                 </ul>
                             </li>
 
                             <!-- Settings tab -->
                             <li class="treeview">
                                 <a href="#">
-                                    <i class="fa fa-cog"></i> <span> Settings</span>
+                                    <i class="fas fa-sm fa-cog ion"></i> <span> Settings</span>
                                     <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="#botSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Bot</a></li>
-                                    <li><a href="#commandSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Commands</a></li>
-                                    <li><a href="#moduleList.html" data-folder="settings"><i class="fa fa-circle-o"></i> Modules</a></li>
-                                    <li><a href="#localization.html" data-folder="settings"><i class="fa fa-circle-o"></i> Localization</a></li>
+                                    <li><a href="#botSettings.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Bot</a></li>
+                                    <li><a href="#commandSettings.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Commands</a></li>
+                                    <li><a href="#moduleList.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Modules</a></li>
+                                    <li><a href="#localization.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Localization</a></li>
                                 </ul>
                             </li>
 
@@ -376,7 +374,7 @@
                             <!-- Help tab -->
                             <li class="treeview">
                                 <a href="#help.html" data-folder="help">
-                                    <i class="fa fa-life-ring"></i> <span>Help</span>
+                                    <i class="fas fa-sm fa-life-ring ion"></i> <span>Help</span>
                                 </a>
                             </li>
                         </ul>
@@ -394,17 +392,17 @@
                 <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
                     <!-- First tab -->
                     <li class="active">
-                        <a href="#main-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a>
+                        <a href="#main-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-wrench"></i></a>
                     </li>
 
                     <!-- Second tab -->
                     <li>
-                        <a href="#second-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-home"></i></a>
+                        <a href="#second-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-home"></i></a>
                     </li>
 
                     <!-- Third tab -->
                     <li class="disabled">
-                        <a class="disabled" href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
+                        <a class="disabled" href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-cogs"></i></a>
                     </li>
                 </ul>
 
@@ -419,7 +417,7 @@
                                 <div class="pretty p-icon pull-right" style="margin-right: 0px;">
                                     <input type="checkbox" id="dark-mode-toggle"/>
                                     <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
+                                        <i class="icon fas fa-sm fa-check"></i>
                                         <label></label>
                                     </div>
                                 </div>
@@ -439,7 +437,7 @@
                                 <div class="pretty p-icon pull-right" style="margin-right: 0px;">
                                     <input type="checkbox" id="toggle-chat"/>
                                     <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
+                                        <i class="icon fas fa-sm fa-check"></i>
                                         <label></label>
                                     </div>
                                 </div>
@@ -454,7 +452,7 @@
                                 <div class="pretty p-icon pull-right" style="margin-right: 0px;">
                                     <input type="checkbox" data-layout="fixed" id="toggle-player"/>
                                     <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
+                                        <i class="icon fas fa-sm fa-check"></i>
                                         <label></label>
                                     </div>
                                 </div>
@@ -469,7 +467,7 @@
                                 <div class="pretty p-icon pull-right" style="margin-right: 0px;">
                                     <input type="checkbox" id="toggle-reverse-events"/>
                                     <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
+                                        <i class="icon fas fa-sm fa-check"></i>
                                         <label></label>
                                     </div>
                                 </div>
@@ -496,59 +494,48 @@
         </div>
 
         <!-- jQuery 3 -->
-        <script src="vendors/jquery/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
-        <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
         <!-- Pace -->
-        <script src="vendors/PACE/pace.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
         <!-- Toastr -->
-        <script src="vendors/toastr/toastr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
         <!-- AdminLTE App -->
-        <script src="vendors/adminlte/js/adminlte.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
         <!-- Select2 -->
-        <script src="vendors/select2/select2.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
         <!-- Sweetalert -->
-        <script src="vendors/sweetalert/sweetalert.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
         <!-- Datatables -->
-        <script src="vendors/datatables.net-bs/js/jquery.dataTables.min.js"></script>
-        <script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-bs/2.1.1/dataTables.bootstrap.min.js"></script>
         <!-- Easy auto comeplete -->
-        <script src="vendors/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.min.js"></script>
         <!-- Helpers -->
         <script src="js/utils/helpers.js"></script>
         <!-- Ajax page loader -->
         <script src="js/utils/ajaxLoader.js"></script>
+        <script src="js/utils/panelConfig.js"></script>
         <!-- Reconnecting socket. -->
-        <script src="../common/reconnecting-websocket/reconnectingWS.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
 
         <script type="text/javascript" language="javascript">
             $(function () {
+                helpers.parseHashmap();
+                helpers.setupAuth();
+                if (helpers.getBotHost() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
+                    return;
+                }
+                if (getAuth() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+                    return;
+                }
+                $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
                 $('body').append($('<script>', {
-                    'src': 'https://' + helpers.getBotHost() + '/panel/js/utils/panelConfig.js'
+                    'src': 'js/index.js'
                 }));
-                var panelTmrIterations = 0;
-                var panelTmr = setInterval(function () {
-                    try {
-                        panelTmrIterations++;
-                        if (panelTmrIterations >= 60) {
-                            window.location = window.location.origin + window.location.pathname + 'login/#connectFail=true';
-                            clearInterval(panelTmr);
-                            return;
-                        }
-
-                        if (panelSettings === undefined) {
-                            return;
-                        }
-
-                        $('#user-image1').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
-                        $('#user-image2').attr('src', 'https://' + helpers.getBotHost() + '/panel/img/logo.png');
-                        $('body').append($('<script>', {
-                            'src': 'js/index.js'
-                        }));
-                        clearInterval(panelTmr);
-                    } catch (e) {
-                    }
-                }, 500);
             });
         </script>
     </body>

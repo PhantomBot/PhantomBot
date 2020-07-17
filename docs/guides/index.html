@@ -1,0 +1,260 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>PhantomBot | Guides</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Favicon -->
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
+        <!-- Bootstrap 3.3.7 css -->
+        <link rel="stylesheet" href="../common/css/bootstrap.min.css" />
+        <!-- Google font -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <!-- Fontawesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../common/css/AdminLTE.dark.min.css" />
+        <link rel="stylesheet" href="../common/css/skin-purple.dark.min.css" />
+        <link rel="stylesheet" href="../common/css/pace.min.css" />
+		 <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
+    </head>
+
+    <body class="skin-purple">
+        <div class="wrapper">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="logo">
+                        <a href="https://phantombot.tv/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                        <button type="button" class="btn btn-primary" data-toggle="push-menu">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                <nav class="navbar navbar-static-top">
+                    <div class="container-fluid">
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="navbar-collapse">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="GitHub" href="https://github.com/PhantomBot/PhantomBot"><i class="fab fa-github fa-lg"></i></a></li>
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="Discord" href="https://discord.gg/YKvMd78"><i class="fab fa-discord fa-lg"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    <!-- List of all tabs. No new tabs should be added. -->
+                    <!-- Everything else should be put in the extra tab (for the main build) thanks <3 -->
+
+                    <ul class="sidebar-menu" data-widget="tree" id="guide-menu" style="white-space: normal;">
+                    </ul>
+                </section>
+            </aside>
+
+            <!-- Main content -->
+            <aside class="content-wrapper">
+                <div id="page-content">
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body" id="content-pane">
+                            Loading...
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </aside>
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
+            </footer>
+        </div>
+
+        <!-- Load jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Load Bootsrap 3.3.7 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
+        <script>
+            'use strict';
+            $(function () {
+                var lastPage = 'null';
+                const { Remarkable, linkify, utils } = window.remarkable;
+                var md = new Remarkable('full', {
+                    html: false, // Enable HTML tags in source
+                    xhtmlOut: false, // Use '/' to close single tags (<br />)
+                    breaks: false, // Convert '\n' in paragraphs into <br>
+                    langPrefix: 'language-', // CSS language prefix for fenced blocks
+                    linkTarget: '', // set target to open link in
+
+                    // Enable some language-neutral replacements + quotes beautification
+                    typographer: true,
+
+                    // Double + single quotes replacement pairs, when typographer enabled,
+                    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+                    quotes: '“”‘’',
+
+                    // Highlighter function. Should return escaped HTML,
+                    // or '' if input not changed
+                    highlight: function (str, lang) {
+                        if (lang && hljs.getLanguage(lang)) {
+                            try {
+                                return hljs.highlight(lang, str).value;
+                            } catch (__) {
+                            }
+                        }
+
+                        try {
+                            return hljs.highlightAuto(str).value;
+                        } catch (__) {
+                        }
+
+                        return ''; // use external default escaping
+                    }
+                });
+                md.use(linkify);
+                md.use(window.iframify);
+
+                function loadMenuRecursive(path, tree) {
+                    $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
+                        'dataType': 'json',
+                        'global': false,
+                        'async': false,
+                        'success': function (data) {
+                            for (var x in data.subfolders) {
+                                addMenuFolder(path, tree, x, data.subfolders[x]);
+                                loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
+                            }
+                            for (var x in data.pages) {
+                                addMenuItem(path, tree, x, data.pages[x]);
+                            }
+                        }
+                    });
+                }
+
+                function addMenuItem(path, tree, file, title) {
+                    var elm = $('<li/>', {
+                        'html': $('<a/>', {
+                            'href': '#',
+                            'onclick': 'window.loadGuide(\'' + path + file + '\');'
+                            }).append($('<i/>', {
+                                'class': 'far ion fa-circle'
+                            })).append(' ' + title),
+                        'id': path.replace(/\//g, '-') + file + '-menuitem'
+                    });
+
+                    if (tree.length === 0) {
+                        $('#guide-menu').prepend(elm);
+                    } else {
+                        $('#' + tree).append(elm);
+                    }
+                }
+
+                function addMenuFolder(path, tree, folder, title) {
+                    if (tree.length === 0) {
+                        tree = 'guide-menu';
+                    }
+
+                    $('#' + tree).append($('<li/>', {
+                        'class': 'treeview'
+                    }).append($('<a/>', {
+                        'href': '#',
+                        'text': title
+                        }).append($('<span/>', {
+                            'class': 'pull-right-container'
+                            }).append($('<i/>', {
+                                'class': 'fas fa-angle-left pull-right'
+                            }))
+                        )).append($('<ul/>', {
+                        'class': 'treeview-menu',
+                        'id': path.replace(/\//g, '-') + folder + '-tree'
+                    })));
+                }
+
+                function setActiveRecursive(path, removing) {
+                    var folder = path.substring(0, path.lastIndexOf('-'));
+
+                    if (folder.includes('-')) {
+                        if (removing) {
+                            $('#' + folder + '-tree').removeClass('active');
+                        } else {
+                            $('#' + folder + '-tree').addClass('active');
+                        }
+
+                        setActiveRecursive(folder, removing);
+                    }
+                }
+
+                function loadGuide(path) {
+                    Pace.track(function(){
+                        $.ajax(window.location.origin + window.location.pathname + path + '.md', {
+                            'dataType': 'text',
+                            'success': function (data) {
+                                $('#content-pane').html(md.render(data));
+                                $('#' + lastPage + '-menuitem').removeClass('active');
+                                setActiveRecursive(lastPage, true);
+                                setActiveRecursive(path.replace(/\//g, '-'), false);
+                                lastPage = path.replace(/\//g, '-');
+                                window.location.hash = 'guide=' + path;
+                                $('#' + lastPage + '-menuitem').addClass('active');
+                            }
+                        });
+                    });
+                }
+
+                function loadURLGuide() {
+                    var hash = window.location.hash.substr(1);
+                    var kvs = hash.split('&');
+                    var hashmap = [];
+                    var spl;
+
+                    for (var i = 0; i < kvs.length; i++) {
+                        spl = kvs[i].split('=', 2);
+                        hashmap[spl[0]] = spl[1];
+                    }
+
+                    if (hashmap.hasOwnProperty('guide')) {
+                        loadGuide(hashmap['guide']);
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                $(document).ajaxStart(function() { Pace.restart(); });
+
+                loadMenuRecursive('content/', '');
+
+                if (!loadURLGuide()) {
+                    loadGuide('content/guides');
+                }
+
+                window.loadGuide = loadGuide;
+
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </body>
+</html>
+

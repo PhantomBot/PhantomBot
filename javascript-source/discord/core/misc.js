@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Guidelines for merging thing on our repo for this module:
  *  - Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
- *  - To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
+ *  - To register command to our command list please add a comment starting with @discordcommandpath before the command info.
  *  - Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {

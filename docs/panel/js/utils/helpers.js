@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,9 @@ $(function() {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "NONE";
+    helpers.PANEL_VERSION = "1.1.0-remote";
+
+    helpers.hashmap = [];
 
     /*
      * @function adds commas to thousands.
@@ -392,7 +394,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -405,7 +407,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-primary',
             'type': 'button',
@@ -443,7 +445,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -456,7 +458,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-default pull-left',
             'type': 'button',
@@ -682,7 +684,7 @@ $(function() {
         })).append($('<div/>', {
             'class': 'state p-default'
         }).append($('<i/>', {
-            'class': 'icon fa fa-check'
+            'class': 'icon fas fa-sm fa-check'
         })).append($('<label/>', {
             'text': text
         })));
@@ -765,7 +767,7 @@ $(function() {
             if (isRemoved) {
                 onClose();
                 swal(closeMessage, {
-                    'icon': 'success',
+                    'icon': 'success'
                 });
             }
         });
@@ -995,19 +997,19 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/select2/select2.dark.min.css'
+                'href': '../common/css/select2.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/AdminLTE.dark.min.css'
+                'href': '../common/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/skins/skin-purple.dark.min.css'
+                'href': '../common/css/skin-purple.dark.min.css'
             }));
 
             // AdminLTE.
@@ -1019,19 +1021,19 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/select2/select2.min.css'
+                'href': '../common/css/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/AdminLTE.min.css'
+                'href': '../common/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': 'vendors/adminlte/css/skins/skin-purple.min.css'
+                'href': '../common/css/skin-purple.min.css'
             }));
 
             // AdminLTE.
@@ -1074,15 +1076,15 @@ $(function() {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                                 $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://community.phantombot.tv/t/how-to-update-phantombot').append('this guide')[0].outerHTML +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.tv/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                                 ' on how to properly update PhantomBot.</b>'
                         })), function() {
                             $('#pb-update').modal('toggle');
                         }).modal('toggle');
                     }
                 }).append($('<i/>', {
-                    'class': 'fa fa-warning text-yellow'
-                })).append('Update available')))
+                    'class': 'fas fa-sm fa-exclamation-triangle text-yellow'
+                })).append('Update available')));
             }
         }
     };
@@ -1148,20 +1150,56 @@ $(function() {
 
         return parsedDate;
     };
-    
-    helpers.getBotHost = function() {
+
+    helpers.parseHashmap = function() {
         var hash = window.location.hash.substr(1);
-        var kvs = hash.split("&");
+        var kvs = hash.split('&');
         var hashmap = [];
         var spl;
 
         for (var i = 0; i < kvs.length; i++) {
-            spl = kvs[i].split("=", 2);
+            spl = kvs[i].split('=', 2);
             hashmap[spl[0]] = spl[1];
         }
 
-        return hashmap["selectedbot"];
+        helpers.hashmap = hashmap;
+    };
+
+    helpers.setupAuth = function() {
+        window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
     }
+
+    helpers.getBotHost = function() {
+        var bothostname = window.localStorage.getItem('bothostname') || '';
+        var botport = window.localStorage.getItem('botport') || 25000;
+
+        return bothostname.length > 0 ? bothostname + ':' + botport : '!missing';
+    };
+    
+    helpers.getUserLogo = function() {
+      socket.doRemote('userLogo', 'userLogo', {}, function(e) {
+          if (!e[0].errors) {
+              $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+              $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+          }
+      });
+    };
+
+    helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
+        const startPoll = async resolve => {
+            const startTime = new Date();
+            const result = await promiseFunction()
+
+            if (result) {
+                return resolve();
+            }
+
+            const timeUntilNext = Math.max(pollIntervalMs - (new Date() - startTime), 0);
+            setTimeout(() => startPoll(resolve), timeUntilNext);
+        };
+
+        return new Promise(startPoll);
+    };
 
     // Export.
     window.helpers = helpers;

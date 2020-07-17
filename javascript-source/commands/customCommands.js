@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
         CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
-    RegExp.quote = function (str) {
+    function quoteRegex (str) {
         return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
     };
 
@@ -179,7 +179,7 @@
         if (message.match(/\([1-9]=[^)]+\)/g)) {
             var rge, t;
             for (var i = 1; i < 10; i++) {
-                rge = new RegExp(RegExp.quote("\(" + i + "=[^)]+\)"));
+                rge = new RegExp("\\(" + i + "=[^)]+\\)");
                 t = message.match(rge);
                 if (t != null) {
                     if (event.getArgs()[i - 1] !== undefined) {
@@ -196,7 +196,7 @@
         if (message.match(/\([1-9]\|[^)]+\)/g)) {
             var rge, t;
             for (var i = 1; i < 10; i++) {
-                rge = new RegExp(RegExp.quote("\(" + i + "\|[^)]+\)"));
+                rge = new RegExp("\\(" + i + "|[^)]+\\)");
                 t = message.match(rge);
                 if (t != null) {
                     if (event.getArgs()[i - 1] !== undefined) {
@@ -694,7 +694,7 @@
                     }
                 }
             }
-            customAPIReturnString = getCustomAPIValue(regExCheck[1]);
+            customAPIReturnString = getCustomAPIValue(encodeURI(regExCheck[1]));
         }
 
         // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
@@ -718,7 +718,7 @@
                     }
                 }
             }
-            origCustomAPIResponse = getCustomAPIValue(regExCheck[1]);
+            origCustomAPIResponse = getCustomAPIValue(encodeURI(regExCheck[1]));
             jsonItems = regExCheck[2].split(' ');
             for (var j = 0; j < jsonItems.length; j++) {
                 if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
@@ -806,7 +806,7 @@
         } else {
             commandGroup = $.getSubcommandGroup(command, subcommand);
         }
-        
+
         switch(commandGroup) {
             case 0:
                 allowed = $.isCaster(username);
@@ -833,7 +833,7 @@
                 allowed = true;
                 break;
         }
-        
+
         return allowed ? 0 : (subcommand === '' ? 1 : 2);
     }
 

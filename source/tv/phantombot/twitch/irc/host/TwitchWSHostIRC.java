@@ -363,7 +363,7 @@ public class TwitchWSHostIRC {
                     com.gmt2001.Console.out.println("");
                     com.gmt2001.Console.out.println("Wrong API OAuth detected.");
                     com.gmt2001.Console.out.println("The API OAuth belongs to another account.");
-                    com.gmt2001.Console.out.println("Please obtain new API OAuth at with your channel account: https://phantombot.tv/oauth");
+                    com.gmt2001.Console.out.println("Please obtain new API OAuth at with your channel account: https://phantombot.tv/oauth/");
                     com.gmt2001.Console.out.println("Now disabling host module.");
                     com.gmt2001.Console.out.println("");
                     PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
@@ -375,7 +375,7 @@ public class TwitchWSHostIRC {
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && badOauth == false) {
                 com.gmt2001.Console.out.println("");
                 com.gmt2001.Console.out.println("API OAuth not allowed to gather host data.");
-                com.gmt2001.Console.out.println("Please obtain new API OAuth at: https://phantombot.tv/oauth");
+                com.gmt2001.Console.out.println("Please obtain new API OAuth at: https://phantombot.tv/oauth/");
                 com.gmt2001.Console.out.println("Now disabling host module.");
                 com.gmt2001.Console.out.println("");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");

@@ -176,7 +176,7 @@ $(function() {
                                     'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
                                 }));
                             } else if (e.hasChat) {
-                                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
+                                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
                                 $('#twitch-chat-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-chat-box').addClass('off');
@@ -192,7 +192,7 @@ $(function() {
                                     'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                                 }));
                             } else if (e.hasPlayer) {
-                                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
+                                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
                                 $('#twitch-player-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-player-box').addClass('off');
@@ -332,6 +332,17 @@ $(function() {
         });
     });
 
+    // Handle sending as bot.
+    $('#dashboard-btn-msg-bot').on('click', function() {
+        if ($('#msg-bot').val() === "") {
+            toastr.error('Please enter a message');
+            return;
+        }
+        socket.sendCommand('msg-bot', 'echo ' + $('#msg-bot').val(), function() {
+            toastr.success('Successfully sent a message as the bot!');
+        });
+    });
+
     // Mouse hover/leave event log.
     $('.event-log').on('mouseenter mouseleave', function(event) {
         canScroll = event.type === 'mouseleave';
@@ -358,7 +369,7 @@ $(function() {
                     $('#twitch-player-box').prop('class', 'col-md-12');
                 }
             } else if (checked) {
-                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
+                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
                 $('#twitch-player-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-chat-iframe').html().length > 0) {
@@ -397,7 +408,7 @@ $(function() {
                     $('#twitch-chat-box').prop('class', 'col-md-12');
                 }
             } else if (checked) {
-                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443.');
+                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
                 $('#twitch-chat-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-player-iframe').html().length > 0) {

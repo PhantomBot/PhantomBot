@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ $(function() {
     // handle auto complete.
     $('#stream-game').easyAutocomplete({
         'url': function (game) {
-            return '/games?webauth=' + getAuth() + '&search=' + game;
+            return 'http://' + helpers.getBotHost() + '/games?webauth=' + getAuth() + '&search=' + game;
         },
         'getValue': 'game',
         'requestDelay': 300,
@@ -329,6 +329,17 @@ $(function() {
         }
         socket.sendCommand('instant_commercial', 'commercial ' + $('#instant-commercial-length').val() + ($('#instant-commercial-silent').is(':checked') ? ' silent' : ''), function() {
             toastr.success('Successfully ran a commercial!');
+        });
+    });
+
+    // Handle sending as bot.
+    $('#dashboard-btn-msg-bot').on('click', function() {
+        if ($('#msg-bot').val() === "") {
+            toastr.error('Please enter a message');
+            return;
+        }
+        socket.sendCommand('msg-bot', 'echo ' + $('#msg-bot').val(), function() {
+            toastr.success('Successfully sent a message as the bot!');
         });
     });
 

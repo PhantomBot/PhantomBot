@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,22 +28,10 @@ $(function () {
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function () {
-        $.ajax(
-                {
-                    type: 'GET',
-                    url: 'https://' + helpers.getBotHost() + '/panel/login/remote?logout=true',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: function () {
-                        window.location = window.location.origin + window.location.pathname + 'login';
-                    },
-                    error: function (xhr, status, thrown) {
-                        toastr.error('Logout request failed: [' + xhr.status + ']' + status + " > " + thrown, '', {timeOut: 0});
-                    }
-                }
-        );
+        toastr.info('Signing out...', '', { timeOut: 0 });
+        socket.close();
+        window.sessionStorage.removeItem("webauth");
+        window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
     });
 
     // Load the display name.
@@ -86,4 +74,31 @@ $(function () {
             }, 3e4);
         }
     });
+
+    $.fn.dinamicMenu = function(t) {
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href !== t;
+        }).parent().removeClass("active");
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href === t;
+        }).parent().addClass("active");
+        $("ul.treeview-menu a").filter(function() {
+            return this.href === t;
+        }).parentsUntil(".sidebar-menu > .treeview-menu > li").addClass("active");
+    };
+
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]',
+        container: "body",
+        trigger: "hover",
+        delay: {
+            show: 400,
+            hide: 30
+        }
+    });
+
+    toastr.options.progressBar = !0
+    toastr.options.preventDuplicates = !1
+    toastr.options.closeButton = !0
+    toastr.options.newestOnTop = !0
 });
