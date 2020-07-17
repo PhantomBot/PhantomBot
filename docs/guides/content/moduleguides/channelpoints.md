@@ -28,6 +28,11 @@ Once the reward is setup, as explained above, the bot will automatically perform
 points reward redemptions.
 
 ### Troubleshooting
+
+**Bot Cannot See Channel Points Redemptions**
+
 Reading channel point redemptions requires the bot to have more permissions that previous versions of PhantomBot. During 
 channel points config, if the bot is not able to read the redemption you may need to update your oath token with more 
 permissions.
+
+If you need any more help please ask in the [PhantomBot Discord](https://discord.com/invite/YKvMd78). 
