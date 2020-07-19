@@ -83,3 +83,36 @@ Once you restart the bot you can access the panel without using a port number (e
 If you are running the bot on a server that already has a running webserver with SSL enabled, you can lookup how to setup a reverse proxy on a subdomain that links to the bot's webserver.
 
 If you have the webserver and a domain, but have not yet setup SSL, consider looking into [Let's Encrypt](https://letsencrypt.org/) and using the [Certbot](https://certbot.eff.org/) client to get a free basic SSL certificate for life.
+
+#### NGINX Sample Config
+
+```
+upstream phantombot {
+    server 127.0.0.1:25000;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name <servername>;
+    return 301 https://$server_name;
+}
+
+server {
+    listen              443 ssl http2;
+    server_name         <servername>;
+    large_client_header_buffers 4 32k;
+    ssl_certificate /etc/letsencrypt/live/<domain>/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/<domain>/privkey.pem; # managed by Certbot
+    ssl_protocols       TLSv1.3;
+    ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
+ 
+    location / {
+        proxy_pass http://phantombot;
+    }
+ 
+    error_log /var/log/nginx/twitch_error.log;
+    access_log /var/log/nginx/twitch_access.log;
+}
+```
+Edit the corresponding fields as you needs, `<servername>`, and `<domain>`.
