@@ -76,10 +76,10 @@ ___Bold Italic___
 #### Image
 **Syntax:**
 ```markdown
-![PB Logo](https://phantombot.tv/common/images/logo.png)
+![PB Logo](https://phantombot.github.io/PhantomBot/common/images/logo.png)
 ```
 
-**Output:** ![PB Logo](https://phantombot.tv/common/images/logo.png)
+**Output:** ![PB Logo](https://phantombot.github.io/PhantomBot/common/images/logo.png)
 
 &nbsp;
 

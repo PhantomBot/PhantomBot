@@ -38,9 +38,9 @@ services:
       # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # Twitch bot user (Required)
       - PHANTOMBOT_USER=
-      # Twitch bot user OAuth token (https://twitchapps.com/tmi/) (Required)
+      # Twitch bot user OAuth token (https://phantombot.github.io/PhantomBot/oauth/) (Required)
       - PHANTOMBOT_OAUTH=
-      # Twitch caster channel OAuth token (https://phantombot.tv/oauth/)
+      # Twitch caster channel OAuth token (https://phantombot.github.io/PhantomBot/oauth/)
       # - PHANTOMBOT_APIOAUTH=
       # Twitch caster channel (Required)
       - PHANTOMBOT_CHANNEL=
