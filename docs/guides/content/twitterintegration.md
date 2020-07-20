@@ -25,7 +25,8 @@
 	 twitter_secret_token=Access token secret
 	 ```
 
-5. Replace the Text **_after the =_** respectively to the Value of your *Keys and Tokens from Twitter* and *Twitter Account* with your *Twitter Name*
+4. Replace the Text **_after the =_** respectively to the Value of your *Keys and Tokens from Twitter* 
+5. Change *Twitter Account* to *your* Twitter Name
 6. Save file and start/restart bot
 
 You can now Enable and Configure your Twitter Settings under *Alerts* and *Discord -> Alerts* respectively.
