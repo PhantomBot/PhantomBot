@@ -14,7 +14,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html style="height: auto; min-height: 100%;">
     <head>
         <title>PhantomBot</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -31,17 +31,14 @@
         <link rel="stylesheet" href="common/css/pace.min.css" />
     </head>
 
-    <body class="skin-purple layout-top-nav fixed">
-        <div class="wrapper">
+    <body class="skin-purple layout-top-nav fixed" style="height: auto; min-height: 100%;">
+        <div class="wrapper" style="height: auto; min-height: 100%;">
             <!-- Header -->
             <header class="main-header">
                 <nav class="navbar navbar-static-top">
                   <div class="container-fluid">
                     <div class="navbar-header">
                       <img class="navbar-brand" alt="PhantomBot" src="common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span>
-                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-                        <i class="fas fa-bars"></i>
-                      </button>
                     </div>
                   </div>
                   <!-- /.container-fluid -->
@@ -49,116 +46,116 @@
             </header>
 
             <!-- Main content -->
-            <aside class="content-wrapper">
-                <div>&nbsp;</div>
-                <div id="page-content">
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="github-tab">
-                          <div class="box-header with-border">
-                            <i class="fab fa-github"></i>
-                            <h3 class="box-title">PhantomBot on GitHub</h3>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            View the code and contribute to PhantomBot
-                          </div>
-                          <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="download-tab">
-                          <div class="box-header with-border">
-                            <i class="fas fa-download"></i>
-                            <h3 class="box-title">Download PhantomBot</h3>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            Download the latest release
-                          </div>
-                          <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="discord-tab">
-                          <div class="box-header with-border">
-                            <i class="fab fa-discord"></i>
-                            <h3 class="box-title">PhantomBot Discord</h3>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            Discuss PhantomBot and get support from others
-                          </div>
-                          <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="panel-tab">
-                          <div class="box-header with-border">
-                            <i class="fas fa-desktop"></i>
-                            <h3 class="box-title">PhantomBot Control Panel</h3>
-                            <div class="box-tools pull-right">
-                              <!-- Buttons, labels, and many other things can be placed here! -->
-                              <!-- Here is a label for example -->
-                              <i class="fas fa-lock"></i>
+            <div class="content-wrapper">
+                <div class="content">
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="github-tab">
+                                <div class="box-header with-border">
+                                    <i class="fab fa-github"></i>
+                                    <h3 class="box-title">PhantomBot on GitHub</h3>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    View the code and contribute to PhantomBot
+                                </div>
+                                <!-- /.box-body -->
                             </div>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            Launch the PhantomBot control panel
-                          </div>
-                          <!-- /.box-body -->
+                            <!-- /.box -->
                         </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="oauth-tab">
-                          <div class="box-header with-border">
-                            <i class="fas fa-key"></i>
-                            <h3 class="box-title">OAuth Generator</h3>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            Generate OAuth tokens for Twitch Chat and Twitch API
-                          </div>
-                          <!-- /.box-body -->
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="download-tab">
+                                <div class="box-header with-border">
+                                    <i class="fas fa-download"></i>
+                                    <h3 class="box-title">Download PhantomBot</h3>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    Download the latest release
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
                         </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="guides-tab">
-                          <div class="box-header with-border">
-                            <i class="fas fa-book"></i>
-                            <h3 class="box-title">Guides</h3>
-                            <!-- /.box-tools -->
-                          </div>
-                          <!-- /.box-header -->
-                          <div class="box-body">
-                            Guides to setting up and using various features
-                          </div>
-                          <!-- /.box-body -->
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="discord-tab">
+                                <div class="box-header with-border">
+                                    <i class="fab fa-discord"></i>
+                                    <h3 class="box-title">PhantomBot Discord</h3>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    Discuss PhantomBot and get support from others
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
                         </div>
-                        <!-- /.box -->
-                    </div>
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="panel-tab">
+                                <div class="box-header with-border">
+                                    <i class="fas fa-desktop"></i>
+                                    <h3 class="box-title">PhantomBot Control Panel</h3>
+                                    <div class="box-tools pull-right">
+                                        <!-- Buttons, labels, and many other things can be placed here! -->
+                                        <!-- Here is a label for example -->
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    Launch the PhantomBot control panel
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="oauth-tab">
+                                <div class="box-header with-border">
+                                    <i class="fas fa-key"></i>
+                                    <h3 class="box-title">OAuth Generator</h3>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    Generate OAuth tokens for Twitch Chat and Twitch API
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box box-solid box-primary" id="guides-tab">
+                                <div class="box-header with-border">
+                                    <i class="fas fa-book"></i>
+                                    <h3 class="box-title">Guides</h3>
+                                    <!-- /.box-tools -->
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    Guides to setting up and using various features
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
                 </div>
-            </aside>
-            <footer class="main-footer" style="position: absolute; bottom: 0px; width: 100%;">
-                <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
+            </div>
+            <footer class="main-footer">
+                    <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
             </footer>
         </div>
 
         <!-- Load jQuery -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
         <!-- Load Bootsrap 3.3.7 -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js" integrity="sha512-ePSfiGQMIzYzXVQLqWoVC3yxVEHIM5Y3EGh9jPNxpf+hPuLtzPdxJX+lTC3ziPMlDgc5OsM4JThxGwN2DkWEeA==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js" integrity="sha512-4LW2vmg8t+drPiNqhkUrtVZ3M/UCyhEhVasHYx7d+mXKjcw/G0BSuQ78FnkzPyWU23QBXtTUrKoPmX95KTLE4A==" crossorigin="anonymous"></script>
         <!-- Generate the panel links -->
         <script>
             $(function() {
