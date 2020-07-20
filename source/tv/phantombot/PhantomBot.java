@@ -1372,8 +1372,9 @@ public final class PhantomBot implements Listener {
             }
 
             try {
+                Thread.sleep(30000);
                 GamesListUpdater.update();
-            } catch (JSONException ex) {
+            } catch (InterruptedException | JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }, 0, 24, TimeUnit.HOURS);
