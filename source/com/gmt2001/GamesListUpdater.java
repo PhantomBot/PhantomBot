@@ -138,7 +138,7 @@ public class GamesListUpdater {
             try {
                 com.gmt2001.Console.debug.println("Writing gamesList.txt version " + myVersion + "...");
                 Files.write(Paths.get("./web/panel/js/utils/gamesList.txt"), data);
-                com.gmt2001.Console.debug.println("Saved" + data.size() + " entries");
+                com.gmt2001.Console.debug.println("Saved " + data.size() + " entries");
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
                 return;
