@@ -25,12 +25,14 @@ import java.util.concurrent.TimeUnit;
  * @author gmt2001
  */
 public class ExponentialBackoff {
+
     private static final int MIN_STEPS = 10;
     private final long minIntervalMS;
     private final long maxIntervalMS;
     private long lastIntervalMS = 0L;
     private int lastIntervalIterations = 0;
     private int uniqueIterations = 0;
+    private int totalIterations = 0;
 
     /**
      *
@@ -48,6 +50,7 @@ public class ExponentialBackoff {
     public void Backoff() {
         try {
             this.determineNextInterval();
+            this.totalIterations++;
             Thread.sleep(this.lastIntervalMS);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
@@ -56,10 +59,12 @@ public class ExponentialBackoff {
 
     /**
      * Calls the specified Runnable once the next interval expires
+     *
      * @param command The Runnable to callback
      */
     public void BackoffAsync(Runnable command) {
         this.determineNextInterval();
+        this.totalIterations++;
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.schedule(command, this.lastIntervalMS, TimeUnit.MILLISECONDS);
     }
@@ -71,6 +76,15 @@ public class ExponentialBackoff {
         this.lastIntervalIterations = 0;
         this.lastIntervalMS = 0L;
         this.uniqueIterations = 0;
+        this.totalIterations = 0;
+    }
+
+    /**
+     * Returns the total number of times the backoff has been used since the last reset
+     * @return
+     */
+    public int GetTotalIterations() {
+        return this.totalIterations;
     }
 
     private void determineNextInterval() {
@@ -80,9 +94,9 @@ public class ExponentialBackoff {
             this.uniqueIterations++;
         }
 
-        int numSteps = (int)Math.ceil((this.maxIntervalMS - this.minIntervalMS) / (this.minIntervalMS * 1.0));
+        int numSteps = (int) Math.ceil((this.maxIntervalMS - this.minIntervalMS) / (this.minIntervalMS * 1.0));
         if (numSteps < MIN_STEPS) {
-            int stepDiv = (int)Math.floor((MIN_STEPS - numSteps) / (numSteps - 1));
+            int stepDiv = (int) Math.floor((MIN_STEPS - numSteps) / (numSteps - 1));
 
             if (this.lastIntervalIterations < stepDiv) {
                 nextInterval = this.lastIntervalMS;
