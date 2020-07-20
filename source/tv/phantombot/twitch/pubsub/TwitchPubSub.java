@@ -220,15 +220,15 @@ public class TwitchPubSub {
          * send a PING request every 4.9 minutes. Twitch recommends every 5 minutes.
          */
         private void startTimer() {
-            timer.schedule(new PingTask(), 7000, 294000);
+            this.timer.schedule(new PingTask(), 7000, 294000);
         }
 
         /**
          * This purges the ping timer. It is used when the user tries to connect with a bad oauth token.
          */
         private void closeTimer() {
-            timer.cancel();
-            timer.purge();
+            this.timer.cancel();
+            this.timer.purge();
         }
 
         /**
@@ -331,12 +331,12 @@ public class TwitchPubSub {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
-                    String[] type = new String[]{"chat_moderator_actions." + botId + "." + channelId};
+                    String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? "" : this.botId + ".") + this.channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
 
                     topics.put("topics", type);
-                    topics.put("auth_token", oAuth.replace("oauth:", ""));
+                    topics.put("auth_token", this.oAuth.replace("oauth:", ""));
                     jsonObject.put("type", "LISTEN");
                     jsonObject.put("nonce", "moderator");
                     jsonObject.put("data", topics);
@@ -346,12 +346,12 @@ public class TwitchPubSub {
                 }
 
                 if (TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) {
-                    String[] type2 = new String[]{"channel-points-channel-v1." + channelId};
+                    String[] type2 = new String[]{"channel-points-channel-v1." + this.channelId};
                     JSONObject jsonObject2 = new JSONObject();
                     JSONObject topics2 = new JSONObject();
 
                     topics2.put("topics", type2);
-                    topics2.put("auth_token", oAuth.replace("oauth:", ""));
+                    topics2.put("auth_token", this.oAuth.replace("oauth:", ""));
                     jsonObject2.put("type", "LISTEN");
                     jsonObject2.put("nonce", "redemptions");
                     jsonObject2.put("data", topics2);
@@ -382,7 +382,7 @@ public class TwitchPubSub {
             }
 
             com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
-            twitchPubSub.reconnect();
+            this.twitchPubSub.reconnect();
         }
 
         /**
@@ -430,7 +430,7 @@ public class TwitchPubSub {
 
                 if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
                     com.gmt2001.Console.out.println("Received RECONNECT from Twitch PubSub");
-                    twitchPubSub.reconnect();
+                    this.twitchPubSub.reconnect();
                     return;
                 }
 
