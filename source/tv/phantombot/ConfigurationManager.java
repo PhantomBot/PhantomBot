@@ -285,14 +285,14 @@ public class ConfigurationManager {
             // Detect Windows, MacOS, Linux or any other operating system.
             if (os.startsWith("win")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.tv/guides/#guide=content/setupbot/windows");
+                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
             } else if (os.startsWith("mac")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.tv/guides/#guide=content/setupbot/macos");
+                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
             } else {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.tv/guides/#guide=content/setupbot/ubuntu\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.tv/guides/#guide=content/setupbot/centos");
+                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
             }
 
             com.gmt2001.Console.out.print("\r\n\r\n\r\n");
@@ -310,7 +310,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
                 com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
                 com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
-                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
 
                 startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
@@ -322,7 +322,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
                 com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
                 com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
-                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter your OAuth token: ");
 
                 startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());

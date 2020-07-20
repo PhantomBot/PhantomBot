@@ -21,7 +21,7 @@ During setup, you will be provided with links to authorise the bot for both your
 a channel editor, and for the bot account. If you need to change the oath tokens for any reason they can be found in 
 your botlogin.txt file in your PhantomBot folder. The `apioauth=` line is for the oath token for you, the broadcaster, 
 and the `oath=` line is for the bot channel. To update either token simple generate a new token 
-[here](https://phantombot.tv/oauth/), paste in into the relevant line after the `=` then restart the bot.
+[here](https://phantombot.github.io/PhantomBot/oauth/), paste in into the relevant line after the `=` then restart the bot.
 
 
 ## I Get an Illegal Option Error? (OSX)

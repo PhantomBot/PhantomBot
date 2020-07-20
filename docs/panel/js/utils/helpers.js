@@ -1076,7 +1076,7 @@ $(function() {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                                 $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.tv/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                                 ' on how to properly update PhantomBot.</b>'
                         })), function() {
                             $('#pb-update').modal('toggle');
@@ -1185,6 +1185,7 @@ $(function() {
       });
     };
 
+    //https://stackoverflow.com/a/57380742
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
         const startPoll = async resolve => {
             const startTime = new Date();
@@ -1200,6 +1201,12 @@ $(function() {
 
         return new Promise(startPoll);
     };
+    
+    helpers.toggleDebug = function() {
+        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') != 1 ? 1 : 0);
+        helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
+        helpers.log('Debug Output set to ' + helpers.DEBUG_STATE, helpers.LOG_TYPE.FORCE);
+    }
 
     // Export.
     window.helpers = helpers;

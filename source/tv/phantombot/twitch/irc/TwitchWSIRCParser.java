@@ -157,16 +157,16 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    public void parseData(String rawMessage) {
+    public void parseData(String rawMessage, TwitchWSIRC client) {
         try {
             if (rawMessage.contains("\n")) {
                 String[] messageList = rawMessage.split("\n");
 
                 for (String message : messageList) {
-                    parseLine(message);
+                    parseLine(message, client);
                 }
             } else {
-                parseLine(rawMessage);
+                parseLine(rawMessage, client);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to parse Twitch message: [" + ex.getMessage() + "] \n\n {" + rawMessage + "}");
@@ -232,12 +232,21 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    private void parseLine(String rawMessage) {
+    private void parseLine(String rawMessage, TwitchWSIRC client) {
         Map<String, String> tags = new HashMap<>();
         String messageParts[] = rawMessage.split(" :", 3);
         String username = "";
         String message = "";
         String event;
+
+        if (rawMessage.startsWith("PONG")) {
+            client.gotPong();
+            return;
+        }
+
+        if (rawMessage.startsWith("PING")) {
+            return;
+        }
 
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {
@@ -577,7 +586,7 @@ public class TwitchWSIRCParser implements Runnable {
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
                     com.gmt2001.Console.out.println();
                     com.gmt2001.Console.out.println("[ERROR] oAuth token doesn't match the bot's Twitch account name.");
-                    com.gmt2001.Console.out.println("[ERROR] Please go to http://twitchapps.com/tmi and generate a new token.");
+                    com.gmt2001.Console.out.println("[ERROR] Please go to https://phantombot.github.io/PhantomBot/oauth/ and generate a new token.");
                     com.gmt2001.Console.out.println("[ERROR] Be sure to go to twitch.tv and login as the bot before getting the token.");
                     com.gmt2001.Console.out.println("[ERROR] After, open the botlogin.txt file and replace the oauth= value with the token.");
                     com.gmt2001.Console.out.println();

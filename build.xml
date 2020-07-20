@@ -227,7 +227,7 @@
                 <attribute name="Implementation-Title" value="${ant.project.name}" />
                 <attribute name="Implementation-Version" value="${version}" />
                 <attribute name="Implementation-Revision" value="${git.revision}" />
-                <attribute name="Implementation-URL" value="https://phantombot.tv" />
+                <attribute name="Implementation-URL" value="https://phantombot.github.io/PhantomBot" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
             </manifest>

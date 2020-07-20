@@ -372,7 +372,7 @@ $(function() {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
                     toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
-                                 '<a href="https://phantombot.tv/guides/#guide=content/youtubesetup">here' +
+                                 '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/youtubesetup">here' +
                                  '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
                                  {timeOut: 0, extendedTimeOut: 0});
                 }

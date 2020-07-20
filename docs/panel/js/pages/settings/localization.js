@@ -19,38 +19,27 @@ $(function() {
     var currentLang = '';
 
     // Load file button
-    $('#load-file-button').on('click', function() {
-        $.ajax({
-            'url': 'http://' + helpers.getBotHost() + '/get-lang?webauth=' + getAuth(),
-            'type': 'GET',
-            'success': function(data) {
-                helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add select box.
-                .append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', data.split('\n'))), function() {
-                    currentLang = $('#file-to-load').find(':selected').text();
-
-                    $.ajax({
-                        'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
-                        'type': 'GET',
-                        'headers': {
-                            'lang-path': $('#file-to-load').find(':selected').text()
-                        },
-                        'success': function(data) {
-                            // Load the file
-                            loadLang(JSON.parse(data));
-                            // Alert the user.
-                            toastr.success('Successfully loaded the file!');
-                            // Close the modal.
-                            $('#edit-lang').modal('toggle');
-                            // Enable the insert and save buttons.
-                            $('#save-button').prop('disabled', false);
-                            $('#add-line-button').prop('disabled', false);
-                        }
-                    })
-                }).modal('toggle');
-            }
+    $('#load-file-button').on('click', function () {
+        socket.doRemote('getLangList', 'getLangList', {}, function (e) {
+            helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
+                'role': 'form'
+            })
+                    // Add select box.
+                    .append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', e)), function () {
+                currentLang = $('#file-to-load').find(':selected').text();
+                socket.doRemote('loadLang', 'loadLang', {
+                    'lang-path': $('#file-to-load').find(':selected').text()
+                }, function (e) {
+                    loadLang(JSON.parse(e[0].langFile));
+                    // Alert the user.
+                    toastr.success('Successfully loaded the file!');
+                    // Close the modal.
+                    $('#edit-lang').modal('toggle');
+                    // Enable the insert and save buttons.
+                    $('#save-button').prop('disabled', false);
+                    $('#add-line-button').prop('disabled', false);
+                });
+            }).modal('toggle');
         });
     });
 
@@ -125,21 +114,14 @@ $(function() {
             }
         }
 
-        // Post the lang.
-        $.ajax({
-            'type': 'PUT',
-            'url': 'http://' + helpers.getBotHost() + '/lang?webauth=' + getAuth(),
-            'contentType': 'application/json',
-            'headers': {
-                'lang-path': currentLang
-            },
-            'data': JSON.stringify(dataObj),
-            'success': function(data, text, xhr) {
-                if (xhr.status === 200) {
-                    toastr.success('Successfully saved the lang!');
-                } else {
-                    toastr.success('Faled to save the lang.');
-                }
+        socket.doRemote('saveLang', 'saveLang', {
+            'lang-path': $('#file-to-load').find(':selected').text(),
+            'content': JSON.stringify(dataObj)
+        }, function (e) {
+            if (!e[0].errors) {
+                toastr.success('Successfully saved the lang!');
+            } else {
+                toaster.error(e[0].errors[0].status + ' ' + e[0].errors[0].title + '<br>' + e[0].errors[0].detail, 'Failed to save the lang');
             }
         });
     });

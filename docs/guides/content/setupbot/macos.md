@@ -2,7 +2,7 @@
 
 1. You will need a Twitch account for your bot. [Create one here](https://www.twitch.tv/signup). We do not recommend using your streaming account.
 
-2. Once you have the account, you will need to get a oauth token from [Twitch Apps](https://phantombot.tv/oauth/). This will allow the bot to login to your newly created Twitch account.
+2. Once you have the account, you will need to get a oauth token from [Twitch Apps](https://phantombot.github.io/PhantomBot/oauth/). This will allow the bot to login to your newly created Twitch account.
 
 3. Once you connect with Twitch on that page it will give you a oauth token, make sure to copy it.
 

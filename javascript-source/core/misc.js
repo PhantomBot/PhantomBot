@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+(function () {
     var currentHostTarget = '',
-        respond = getSetIniDbBoolean('settings', 'response_@chat', true),
-        action = getSetIniDbBoolean('settings', 'response_action', false),
-        secureRandom = new java.security.SecureRandom(),
-        reg = new RegExp(/^@\w+,\s?$/),
-        timeout = 0;
+            respond = getSetIniDbBoolean('settings', 'response_@chat', true),
+            action = getSetIniDbBoolean('settings', 'response_action', false),
+            secureRandom = new java.security.SecureRandom(),
+            reg = new RegExp(/^@\w+,\s?$/),
+            timeout = 0;
 
     /*
      * @function reloadMisc
@@ -300,42 +300,42 @@
 
         try {
             var HttpRequest = Packages.com.gmt2001.HttpRequest,
-                HashMap = Packages.java.util.HashMap,
-                JSONObject = Packages.org.json.JSONObject,
-                json = new JSONObject('{}'),
-                parameters = new JSONObject('{}'),
-                header = new HashMap(1),
-                id = rand(65535),
-                request;
+                    HashMap = Packages.java.util.HashMap,
+                    JSONObject = Packages.org.json.JSONObject,
+                    json = new JSONObject('{}'),
+                    parameters = new JSONObject('{}'),
+                    header = new HashMap(1),
+                    id = rand(65535),
+                    request;
 
             header.put('Content-Type', 'application/json-rpc');
 
             parameters
-                .put('apiKey', '0d710311-5840-45dd-be83-82904de87c5d')
-                .put('n', 1)
-                .put('min', min)
-                .put('max', max)
-                .put('replacement', true)
-                .put('base', 10);
+                    .put('apiKey', '0d710311-5840-45dd-be83-82904de87c5d')
+                    .put('n', 1)
+                    .put('min', min)
+                    .put('max', max)
+                    .put('replacement', true)
+                    .put('base', 10);
 
             json
-                .put('jsonrpc', '2.0')
-                .put('method', 'generateIntegers')
-                .put('params', parameters)
-                .put('id', id);
+                    .put('jsonrpc', '2.0')
+                    .put('method', 'generateIntegers')
+                    .put('params', parameters)
+                    .put('id', id);
 
             request = HttpRequest.getData(
-                HttpRequest.RequestType.GET,
-                'https://api.random.org/json-rpc/1/invoke',
-                json.toString(),
-                header
-            );
+                    HttpRequest.RequestType.GET,
+                    'https://api.random.org/json-rpc/1/invoke',
+                    json.toString(),
+                    header
+                    );
 
             if (request.success) {
                 var data = new JSONObject(request.content)
-                    .getJSONObject('result')
-                    .getJSONObject('random')
-                    .getJSONArray('data');
+                        .getJSONObject('result')
+                        .getJSONObject('random')
+                        .getJSONArray('data');
 
                 if (data.length() > 0) {
                     return data.getInt(0);
@@ -397,7 +397,7 @@
      */
     function getOrdinal(number) {
         var s = ["th", "st", "nd", "rd"],
-            v = number % 100;
+                v = number % 100;
         return (number + (s[(v - 20) % 10] || s[v] || s[0]));
     }
 
@@ -597,10 +597,10 @@
      */
     function paginateArray(array, langKey, sep, whisper, sender, display_page) {
         var idx,
-            output = '',
-            maxlen,
-            hasNoLang = langKey.startsWith('NULL'),
-            pageCount = 0;
+                output = '',
+                maxlen,
+                hasNoLang = langKey.startsWith('NULL'),
+                pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
@@ -654,10 +654,10 @@
      */
     function paginateArrayDiscord(array, langKey, sep, channel, sender, display_page) {
         var idx,
-            output = '',
-            maxlen,
-            hasNoLang = langKey.startsWith('NULL'),
-            pageCount = 0;
+                output = '',
+                maxlen,
+                hasNoLang = langKey.startsWith('NULL'),
+                pageCount = 0;
 
         if (display_page === undefined) {
             display_page = 0;
@@ -693,6 +693,8 @@
     /**
      * Taken from: https://jsperf.com/replace-vs-split-join-vs-replaceall/95s
      *
+     * Implementation of string.replaceAll
+     *
      * @function replace
      * @export $
      * @param {string}
@@ -705,6 +707,29 @@
         }
         parts.push(str.slice(prev));
         return parts.join('');
+    }
+
+    /**
+     * Taken from: https://github.com/tc39/proposal-string-matchall
+     * 
+     * Implementation of string.matchAll
+     * 
+     * @function matchAll
+     * @export $
+     * @param {type} str
+     * @param {type} regex
+     * @returns {Array}
+     */
+    function matchAll(str, regex) {
+        var matches = [];
+        str.replace(regex, function () {
+            var match = Array.prototype.slice.call(arguments, 0, -2);
+            match.input = arguments[arguments.length - 1];
+            match.index = arguments[arguments.length - 2];
+            matches.push(match);
+        });
+
+        return matches;
     }
 
     /**
@@ -755,6 +780,7 @@
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
     $.replace = replace;
+    $.matchAll = matchAll;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;

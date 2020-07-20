@@ -40,7 +40,7 @@ You should know your bot account name already. So that should be easy. Next up i
 
 To get the Bot OAuth token, make sure you are logged in to twitch with the **account you created for the bot** This token allows the bot to connect to Twitch. When you’ve done that, go to the following url:
 
-https://phantombot.tv/oauth/
+https://phantombot.github.io/PhantomBot/oauth/
 
 Click `Connect with Twitch Bot`, then click `Authorize`, and copy the code to a safe location. The code should look something like this:
 
@@ -50,7 +50,7 @@ Click `Connect with Twitch Bot`, then click `Authorize`, and copy the code to a 
 
 To get the Caster OAuth token, make sure you are logged in to Twitch with **your own account** This token allows the bot to change your stream title and game, or pull other useful information. When you’re logged in, go to the following url:
 
-https://phantombot.tv/oauth/
+https://phantombot.github.io/PhantomBot/oauth/
 
 Click `Connect with Twitch Broadcaster`, then click `Authorize`, and copy the code to a safe location. The code should look something like this:
 
@@ -100,4 +100,4 @@ To login, use the username and password you set during the initial startup.
 ### What now?
 
 From here on out you can check out the rest of the docs for help on how to run PhantomBot.
-You can also find a full command list at https://phantombot.tv/guides/#guide=content/commands/commands.
+You can also find a full command list at https://phantombot.github.io/PhantomBot/guides/#guide=content/commands/commands.

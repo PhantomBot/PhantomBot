@@ -30,6 +30,17 @@ The bot will automatically generate and renew this certificate for you as long a
 
 Since the SSL certificate is self-signed, your browser/OS will not trust it by default.
 
+##### OBS
+
+**NOTE:** These instructions are written for Windows, but the idea of adding the extra launch parameter remains the same for other OSes.
+
+1. Open a File Explorer window and navigate to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\OBS Studio (Or whichever shortcut you use to launch OBS Studio)
+2. Right-click the shortcut and hit Properties
+3. In the Target box, add  --ignore-certificate-errors to the end
+So it should look similar to "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors (NOTE: The positioning of the quotes " is very important)
+
+**NOTE:** If you then use that shortcut to launch OBS Studio, it should disable validity checking of SSL Certificates, with the obvious downside that it won't protect you from other websites having bad or malicious SSL certificates either.
+
 ##### Windows and Linux
 
 Connect to your bot's built-in webserver (eg. `https://192.168.0.2:25000/`) and your browser will warn you about the certificate being untrusted.
@@ -60,7 +71,7 @@ Once you have done this and the bot's main page has loaded, you're done with thi
 
 ### Launch the PhantomBot Remote Panel
 
-Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.tv/) and launch the panel from there.
+Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.github.io/PhantomBot/) and launch the panel from there.
 
 &nbsp;
 
@@ -88,22 +99,22 @@ If you have the webserver and a domain, but have not yet setup SSL, consider loo
 
 ```
 upstream phantombot {
-    server 127.0.0.1:25000;
+    server 127.0.0.1:25000; # set this to the IP:Baseport of the bot
 }
 
 server {
     listen 80;
     listen [::]:80;
-    server_name <servername>;
+    server_name <servername>; # Server name is the domain or sub-domain
     return 301 https://$server_name;
 }
 
 server {
     listen              443 ssl http2;
-    server_name         <servername>;
-    large_client_header_buffers 4 32k;
-    ssl_certificate /etc/letsencrypt/live/<domain>/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/<domain>/privkey.pem; # managed by Certbot
+    server_name         <servername>; # Server name is the domain or sub-domain
+    large_client_header_buffers 4 32k; # Very important to prevent unexplained 400 errors
+    ssl_certificate /etc/letsencrypt/live/<domain>/fullchain.pem; # managed by Certbot, replace with the appropriate path
+    ssl_certificate_key /etc/letsencrypt/live/<domain>/privkey.pem; # managed by Certbot, replace with the appropriate path
     ssl_protocols       TLSv1.3;
     ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
  

@@ -260,50 +260,70 @@ public class WsPanelHandler implements WsFrameHandler {
         String query = jso.has("query") ? jso.getString("query") : "";
 
         jsonObject.object().key("id").value(uniqueID);
+        jsonObject.key("query_id").value(uniqueID);
 
         if (query.equalsIgnoreCase("panelSettings")) {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
             jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
-            jsonObject.key("query_id").value(uniqueID);
+            jsonObject.key("results").array();
             try (FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
                 ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
                 ByteBuf buf2 = Base64.encode(buf);
-                jsonObject.key("results").array().object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject().endArray();
+                jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();
                 buf2.release();
                 buf.release();
             } catch (IOException ex) {
-                jsonObject.array().object().key("errors").array().object()
+                jsonObject.object().key("errors").array().object()
                         .key("status").value("500")
                         .key("title").value("Internal Server Error")
                         .key("detail").value("IOException: " + ex.getMessage())
-                        .endObject().endArray().endObject().endArray();
+                        .endObject().endArray().endObject();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
+            jsonObject.endArray();
         } else if (query.equalsIgnoreCase("loadLang")) {
+            jsonObject.key("results").array().object();
             jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
-        } else if (query.equalsIgnoreCase("saveLang") && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
-            LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"));
+            jsonObject.endObject().endArray();
+        } else if (query.equalsIgnoreCase("saveLang")) {
+            jsonObject.key("results").array();
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+                LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"));
+            } else {
+                jsonObject.object().key("errors").array().object()
+                        .key("status").value("403")
+                        .key("title").value("Forbidden")
+                        .key("detail").value("Read-only Connection")
+                        .endObject().endArray().endObject();
+            }
+            jsonObject.endArray();
         } else if (query.equalsIgnoreCase("getLangList")) {
-            jsonObject.key("langList").array();
+            jsonObject.key("results").array();
             for (String langFile : LangFileUpdater.getLangFiles()) {
                 jsonObject.value(langFile);
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("games")) {
+            jsonObject.key("results").array();
             try {
-                jsonObject.key("games").array();
                 String data = Files.readString(Paths.get("./web/panel/js/utils/gamesList.txt"));
                 String search = jso.getJSONObject("params").getString("search").toLowerCase();
 
                 for (String g : data.split("\n")) {
                     if (g.toLowerCase().startsWith(search)) {
-                        jsonObject.object().key("game").value(g.replace("\r", "")).endObject();
+                        jsonObject.value(g.replace("\r", ""));
                     }
                 }
-                jsonObject.endArray();
             } catch (IOException ex) {
+                jsonObject.object().key("errors").array().object()
+                        .key("status").value("500")
+                        .key("title").value("Internal Server Error")
+                        .key("detail").value("IOException: " + ex.getMessage())
+                        .endObject().endArray().endObject();
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+            jsonObject.endArray();
         }
 
         jsonObject.endObject();

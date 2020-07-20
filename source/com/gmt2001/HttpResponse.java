@@ -33,4 +33,13 @@ public class HttpResponse {
     public int httpCode;
     public boolean success;
     public String exception;
+
+    @Override
+    public String toString() {
+        if (exception != null && !exception.isEmpty()) {
+            return type.name() + " " + url + " {" + post + "} -> EXCEPTION " + exception;
+        }
+
+        return type.name() + " " + url + " {" + post + "} -> " + httpCode + " " + content;
+    }
 }
