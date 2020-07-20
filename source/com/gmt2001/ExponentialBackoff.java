@@ -28,7 +28,6 @@ public class ExponentialBackoff {
     private static final int MIN_STEPS = 10;
     private final long minIntervalMS;
     private final long maxIntervalMS;
-    private final long stepMS;
     private long lastIntervalMS = 0L;
     private int lastIntervalIterations = 0;
     private int uniqueIterations = 0;
@@ -37,12 +36,10 @@ public class ExponentialBackoff {
      *
      * @param minIntervalMS Minimum backoff interval, in MS
      * @param maxIntervalMS Maximum backoff interval, in MS
-     * @param stepMS Amount of time to advance interval by (multiplied by unique steps), in MS
      */
-    public ExponentialBackoff(long minIntervalMS, long maxIntervalMS, long stepMS) {
+    public ExponentialBackoff(long minIntervalMS, long maxIntervalMS) {
         this.minIntervalMS = minIntervalMS;
         this.maxIntervalMS = maxIntervalMS;
-        this.stepMS = stepMS;
     }
 
     /**
@@ -83,18 +80,18 @@ public class ExponentialBackoff {
             this.uniqueIterations++;
         }
 
-        int numSteps = (int)Math.ceil((maxIntervalMS - minIntervalMS) / (stepMS * 1.0));
+        int numSteps = (int)Math.ceil((this.maxIntervalMS - this.minIntervalMS) / (this.minIntervalMS * 1.0));
         if (numSteps < MIN_STEPS) {
             int stepDiv = (int)Math.floor((MIN_STEPS - numSteps) / (numSteps - 1));
 
             if (this.lastIntervalIterations < stepDiv) {
                 nextInterval = this.lastIntervalMS;
             } else {
-                nextInterval = this.lastIntervalMS + (this.stepMS * this.uniqueIterations);
+                nextInterval = this.lastIntervalMS + (this.minIntervalMS * this.uniqueIterations);
                 this.lastIntervalIterations = 0;
             }
         } else {
-            nextInterval = this.lastIntervalMS + (this.stepMS * this.uniqueIterations);
+            nextInterval = this.lastIntervalMS + (this.minIntervalMS * this.uniqueIterations);
         }
 
         if (this.lastIntervalMS < this.minIntervalMS) {
