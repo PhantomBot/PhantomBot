@@ -1340,37 +1340,35 @@ public final class PhantomBot implements Listener {
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
-        if (RepoVersion.getBuildType().startsWith("edge") || RepoVersion.getBuildType().startsWith("custom")) {
-            return;
-        }
-
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
-            try {
-                Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
+            if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
+                try {
+                    Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
-                if (newVersionInfo != null) {
-                    try {
-                        Thread.sleep(6000);
-                        print("");
-                        print("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                        print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                        print("Download Link: " + newVersionInfo[1]);
-                        print("A reminder will be provided in 24 hours!");
-                        print("");
-                    } catch (InterruptedException ex) {
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
+                    String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                    if (newVersionInfo != null) {
+                        try {
+                            Thread.sleep(6000);
+                            print("");
+                            print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                            print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                            print("Download Link: " + newVersionInfo[1]);
+                            print("A reminder will be provided in 24 hours!");
+                            print("");
+                        } catch (InterruptedException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        }
 
-                    if (webEnabled) {
-                        dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                        if (webEnabled) {
+                            dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                        }
+                    } else {
+                        dataStore.del("settings", "newrelease_info");
                     }
-                } else {
-                    dataStore.del("settings", "newrelease_info");
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
                 }
-            } catch (JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
             }
 
             try {

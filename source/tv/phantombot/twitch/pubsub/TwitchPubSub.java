@@ -155,6 +155,8 @@ public class TwitchPubSub {
         private final int channelId;
         private final String oAuth;
         private final int botId;
+        private boolean hasModerator = false;
+        private boolean hasRedemptions = false;
 
         /**
          * Constructor for the PubSubWS class.
@@ -329,13 +331,14 @@ public class TwitchPubSub {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
-                    String[] type = new String[]{"chat_moderator_actions." + channelId};
+                    String[] type = new String[]{"chat_moderator_actions." + botId + "." + channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
 
                     topics.put("topics", type);
                     topics.put("auth_token", oAuth.replace("oauth:", ""));
                     jsonObject.put("type", "LISTEN");
+                    jsonObject.put("nonce", "moderator");
                     jsonObject.put("data", topics);
 
                     send(jsonObject.toString());
@@ -350,6 +353,7 @@ public class TwitchPubSub {
                     topics2.put("topics", type2);
                     topics2.put("auth_token", oAuth.replace("oauth:", ""));
                     jsonObject2.put("type", "LISTEN");
+                    jsonObject2.put("nonce", "redemptions");
                     jsonObject2.put("data", topics2);
 
                     send(jsonObject2.toString());
@@ -370,9 +374,14 @@ public class TwitchPubSub {
         @Override
         public void onClose(int code, String reason, boolean remote) {
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
-
             closeTimer();
+
+            if (remote && !this.hasModerator && !this.hasRedemptions) {
+                com.gmt2001.Console.out.println("Disconnected from Twitch PubSub due to no valid topic subscriptions");
+                return;
+            }
+
+            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
             twitchPubSub.reconnect();
         }
 
@@ -404,8 +413,24 @@ public class TwitchPubSub {
                     return;
                 }
 
+                if (messageObj.getString("type").equalsIgnoreCase("response")) {
+                    if (messageObj.getString("nonce").equalsIgnoreCase("moderator")) {
+                        this.hasModerator = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
+                        com.gmt2001.Console.debug.println("Got chat_moderator_actions response " + this.hasModerator);
+                    } else if (messageObj.getString("nonce").equalsIgnoreCase("redemptions")) {
+                        this.hasRedemptions = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
+                        com.gmt2001.Console.debug.println("Got channel-points-channel-v1 response " + this.hasRedemptions);
+                    }
+                }
+
                 if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                    return;
+                }
+
+                if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
+                    com.gmt2001.Console.out.println("Received RECONNECT from Twitch PubSub");
+                    twitchPubSub.reconnect();
                     return;
                 }
 
