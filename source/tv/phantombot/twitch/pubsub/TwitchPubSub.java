@@ -21,10 +21,12 @@
  */
 package tv.phantombot.twitch.pubsub;
 
+import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.Logger;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +49,8 @@ import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {
 
+    private static final long BACKOFF_RESET_MS = 300000L;
+    private static final int BACKOFF_MAX = 20;
     private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
     private final Map<String, String> messageCache = new ConcurrentHashMap<>();
     private final Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
@@ -54,6 +58,8 @@ public class TwitchPubSub {
     private TwitchPubSubWS twitchPubSubWS;
     private boolean reconnecting = false;
     private ReentrantLock lock = new ReentrantLock();
+    private long lastConnectAttempt = 0L;
+    private ExponentialBackoff backoff = new ExponentialBackoff(1000, 120000);
 
     /**
      * This starts the PubSub instance.
@@ -93,6 +99,7 @@ public class TwitchPubSub {
 
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
+            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
             if (!this.twitchPubSubWS.connectWSS(false)) {
                 throw new Exception("Failed to connect to PubSub.");
             }
@@ -115,7 +122,7 @@ public class TwitchPubSub {
     /**
      * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
      */
-    public void reconnect() {
+    public void reconnect(boolean isRequested) {
         if (lock.isLocked()) {
             return;
         }
@@ -123,7 +130,22 @@ public class TwitchPubSub {
         lock.lock();
         try {
             new Thread(() -> {
-                TwitchPubSub.instance(channel).doReconnect();
+                if (!isRequested) {
+                    if ((Calendar.getInstance().getTimeInMillis() - this.lastConnectAttempt) >= BACKOFF_RESET_MS) {
+                        this.backoff.Reset();
+                    }
+
+                    if (this.backoff.GetTotalIterations() >= BACKOFF_MAX) {
+                        com.gmt2001.Console.out.println("Failed to reconnect to PubSub, aborting...");
+                        return;
+                    }
+
+                    this.backoff.BackoffAsync(() -> {
+                        TwitchPubSub.instance(channel).doReconnect();
+                    });
+                } else {
+                    TwitchPubSub.instance(channel).doReconnect();
+                }
             }).start();
         } finally {
             lock.unlock();
@@ -137,6 +159,7 @@ public class TwitchPubSub {
 
         try {
             reconnecting = true;
+            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
             this.twitchPubSubWS.reconnectBlocking();
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -381,8 +404,8 @@ public class TwitchPubSub {
                 return;
             }
 
-            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
-            this.twitchPubSub.reconnect();
+            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying soon...");
+            this.twitchPubSub.reconnect(false);
         }
 
         /**
@@ -430,7 +453,7 @@ public class TwitchPubSub {
 
                 if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
                     com.gmt2001.Console.out.println("Received RECONNECT from Twitch PubSub");
-                    this.twitchPubSub.reconnect();
+                    this.twitchPubSub.reconnect(true);
                     return;
                 }
 
