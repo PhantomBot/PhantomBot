@@ -508,10 +508,11 @@ public class DiscordUtil {
         Flux<Member> members = DiscordAPI.getGuild().getMembers();
 
         if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(userName);
             com.gmt2001.Console.debug.println(members.count().block());
         }
 
-        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName));
+        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName) || user.getMention().equalsIgnoreCase(userName) || user.getNicknameMention().equalsIgnoreCase(userName));
 
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(filteredMembers.count().block());
