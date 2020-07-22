@@ -37,7 +37,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -508,10 +508,11 @@ public class DiscordUtil {
         Flux<Member> members = DiscordAPI.getGuild().getMembers();
 
         if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(userName);
             com.gmt2001.Console.debug.println(members.count().block());
         }
 
-        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName));
+        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName) || user.getMention().equalsIgnoreCase(userName) || user.getNicknameMention().equalsIgnoreCase(userName));
 
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(filteredMembers.count().block());
@@ -564,7 +565,20 @@ public class DiscordUtil {
      * @return {Role}
      */
     public Mono<Role> getRoleAsync(String roleName) {
-        return DiscordAPI.getGuild().getRoles().filter(role -> role.getName().equalsIgnoreCase(roleName)).take(1).single();
+        Flux<Role> roles = DiscordAPI.getGuild().getRoles();
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(roleName);
+            com.gmt2001.Console.debug.println(roles.count().block());
+        }
+
+        Flux<Role> filteredRoles = roles.filter(role -> role.getName().equalsIgnoreCase(roleName) || role.getMention().equalsIgnoreCase(roleName));
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(filteredRoles.count().block());
+        }
+
+        return filteredRoles.take(1).single();
     }
 
     @Deprecated
@@ -641,7 +655,7 @@ public class DiscordUtil {
         }
 
         user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
-            Set<Snowflake> rolesSf = Collections.<Snowflake>emptySet();
+            Set<Snowflake> rolesSf = new HashSet<>();
 
             for (Role role : roles) {
                 rolesSf.add(role.getId());
@@ -652,7 +666,7 @@ public class DiscordUtil {
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
-        });
+        }).subscribe();
     }
 
     /**
