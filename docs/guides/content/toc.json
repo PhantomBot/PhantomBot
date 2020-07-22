@@ -1,6 +1,7 @@
 {
     "subfolders": {
         "developerdocs": "Developer Documentation",
+        "moduleguides": "Module Guides",
         "commands": "Commands",
         "setupbot": "Setup and Update"
     },
