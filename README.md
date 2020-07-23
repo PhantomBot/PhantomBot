@@ -1,3 +1,7 @@
+## PhantomBotDE wird nicht von PhantomBot selbst betrieben und supportet.
+### PhantomBot selbst bietet hier für keine Hilfe an!
+### [Hier bekommst du Hilfe für PhantomBotDE](https://discord.gg/hBJMXCe)
+
 
 # <img alt="PhantomBotDE" src="/.github/logo.png" width="600px"/>
 
@@ -9,10 +13,10 @@
 | PhantomBot   | [![](https://img.shields.io/github/release/phantombot/phantombot.svg?style=for-the-badge)](https://github.com/PhantomBot/PhantomBot/releases/latest) |
 | PhantomBotDE | [![](https://img.shields.io/github/release-pre/PhantomBotDE/PhantomBotDE.svg?style=for-the-badge)](https://github.com/PhantomBotDE/PhantomBotDE/releases/latest) |
 
-[**PhantomBot**](https://phantombot.tv) ist ein Twitch Chat-Bot powered by Java. 
-PhantomBot hat viele moderne Eigenschaften standardmäßig, wie zum beispiel ein eingebautes Webpanel, verbesserte Moderation, Minispiele für den Chat, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, einen Musikpalyer mit Songrequest Funktion [und mehr](https://phantombot.tv/features)! PhantomBot kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
+[**PhantomBotDE**](https://phantombot.tv) ist ein Twitch Chat-Bot powered by Java. 
+PhantomBot hat viele moderne Eigenschaften standardmäßig, wie zum beispiel ein eingebautes Webpanel, verbesserte Moderation, Minispiele für den Chat, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, einen Musikpalyer mit Songrequest Funktion [und mehr](https://phantombot.tv/features)! PhantomBotDE kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
 
-Dies ist der deutsche Fork von PhantomBot, wir übersetzten immer die neuste Version sobald die größten Bugs behoben sind.
+Dies ist der deutsche Fork von PhantomBotDE, wir übersetzten immer die neuste Version sobald die größten Bugs behoben sind.
 
 Zusätzliche Funktionalität wird durch die Verwendung von [Community erstellten Modulen](https://community.phantombot.tv/c/custom-modules) ermöglicht.
 
@@ -35,7 +39,7 @@ Zusätzliche Funktionalität wird durch die Verwendung von [Community erstellten
 
 ## Vorraussetzungen
 
-PhantomBot benötigt folgende Software installiert:
+PhantomBotDE benötigt folgende Software installiert:
 
 * [Java 8](https://www.java.com/en/download/)
 
@@ -47,7 +51,7 @@ Bitte gucken sie sich die Platform-spezifische installations Dokumentation an.
   * [CentOS 7](https://community.phantombot.tv/t/centos-7-setup-guide/62)
 * [macOS](https://community.phantombot.tv/t/macos-setup-guide/63)
 
-## PhantomBot aktualisieren
+## PhantomBotDE aktualisieren
 
 Eine detaillierte Aktualisierungsanleitung ist in unserer [Dokumentation](https://community.phantombot.tv/t/how-to-update-phantombot/) vorhanden.
 
@@ -57,7 +61,7 @@ Eine detaillierte Aktualisierungsanleitung ist in unserer [Dokumentation](https:
 PhantomBotDE ist lizensiert unter der [**GNU General Public License v3 (GPL-3)**](https://www.gnu.org/copyleft/gpl.html).
 
 ## Screenshots
-![(https://i.imgur.com/FZZPADf.png)"PhantomBot Konsole"](https://i.imgur.com/FZZPADf.png "Die Konsole")
-![(https://i.imgur.com/eTHkJCX.png)"PhantomBot Bedienpanel"](https://i.imgur.com/eTHkJCX.png "Das Bedienpanel")
-![(https://i.imgur.com/mDygRrZ.png)PhantomBot YouTube Player"](https://i.imgur.com/mDygRrZ.png "Der YouTube Player")
-![(https://i.imgur.com/tRCyFJA.png)"Die Öffentlich einsehbare Playlist & Songrequest Warteschlange"](https://i.imgur.com/tRCyFJA.png "PhantomBot Öffentlich einsehbare Playlist & Songrequest Warteschlange")
+![(https://i.imgur.com/FZZPADf.png)"PhantomBotDE Konsole"](https://i.imgur.com/FZZPADf.png "Die Konsole")
+![(https://i.imgur.com/eTHkJCX.png)"PhantomBotDE Bedienpanel"](https://i.imgur.com/eTHkJCX.png "Das Bedienpanel")
+![(https://i.imgur.com/mDygRrZ.png)"PhantomBotDE YouTube Player"](https://i.imgur.com/mDygRrZ.png "Der YouTube Player")
+![(https://i.imgur.com/tRCyFJA.png)"Die Öffentlich einsehbare Playlist & Songrequest Warteschlange"](https://i.imgur.com/tRCyFJA.png "PhantomBotDE Öffentlich einsehbare Playlist & Songrequest Warteschlange")
