@@ -126,7 +126,7 @@
                     }
                     return {
                         result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
-                        raw: true
+                        raw: $.equalsIgnoreCase(match[1], '=')
                     };
                 }
             }
