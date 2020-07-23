@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -416,7 +416,6 @@
             }
 
             action = action.replace('!', '').toLowerCase();
-            subAction = String(subAction).replace(/#/g, '').toLowerCase();
 
             if (!$.discord.commandExists(action)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.404'));
@@ -450,12 +449,12 @@
                 i;
 
             for (i in keys) {
-                key.push('#' + keys[i]);
+                key.push($.discord.sanitizeChannelName(keys[i]));
             }
 
-            $.inidb.set('discordChannelcom', action, subAction);
+            $.inidb.set('discordChannelcom', action, key.join(','));
             $.discord.updateCommandChannel(action);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, key.join(', ')));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, subAction.replace(',', ', ')));
         }
 
         /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -334,7 +334,7 @@
             whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            whiteList.push(keys[i]);
+            whiteList.push(keys[i] + '');
         }
     }
 
@@ -498,7 +498,7 @@
         function checkLink(link, whiteListItem) {
             var baseLink = link.match(/[^.]*[^/]*/)[0];
             var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
-            var matches = Array.from(link.matchAll(itemRe));
+            var matches = $.matchAll(link, itemRe);
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
                 var matchEnd = matches[k].index + matches[k][0].length;
@@ -1024,7 +1024,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
                     return;
                 }
-                var link = argString.split(' ').slice(1).join(' ').toLowerCase();
+                var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
                 whiteList.push(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+(function () {
     var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
-        newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
-        raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
-        raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
-        raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
-        raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
+            newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
+            raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
+            raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
+            raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
+            raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
 
     /*
      * @function Reloads the raid variables from the panel.
@@ -146,12 +146,12 @@
     /*
      * @event twitchRaid
      */
-    $.bind('twitchRaid', function(event) {
+    $.bind('twitchRaid', function (event) {
         var username = event.getUsername(),
-            viewers = event.getViewers(),
-            hasRaided = false,
-            raidObj,
-            message;
+                viewers = event.getViewers(),
+                hasRaided = false,
+                raidObj,
+                message;
 
         if (raidToggle === true) {
             // If the user has raided before.
@@ -189,6 +189,27 @@
                 message = $.replace(message, '(times)', raidObj.totalRaids);
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+                if (message == '') {
+                    return null;
+                }
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+                if (message == '') {
+                    return null;
+                }
+            }
+
             $.say(message);
         }
 
@@ -204,12 +225,12 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('raid')) {
             if (action === undefined) {
@@ -313,7 +334,7 @@
 
                 if ($.inidb.exists('incoming_raids', subAction.toLowerCase())) {
                     var raidObj = JSON.parse($.inidb.get('incoming_raids', subAction.toLowerCase())),
-                        displayName = $.username.resolve(subAction);
+                            displayName = $.username.resolve(subAction);
 
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.lookup.user', displayName, raidObj.totalRaids, new Date(raidObj.lastRaidTime).toLocaleString(), raidObj.lastRaidViewers));
                 } else {
@@ -334,7 +355,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/raidHandler.js', 'raid', 1);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'toggle', 1);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setreward', 1);

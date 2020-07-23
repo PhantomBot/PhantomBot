@@ -1,0 +1,543 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!-- Set the default charset -->
+        <meta charset="utf-8">
+        <!-- Tell IE to use the latest render engine -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- Main title -->
+        <title>PhantomBot Dashboard</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="../common/css/bootstrap.min.css" />
+        <!-- Datatables -->
+        <link rel="stylesheet" href="../common/css/dataTables.bootstrap.min.css" />
+        <!-- Toastr -->
+        <link rel="stylesheet" href="../common/css/toastr.min.css" />
+        <!-- Pace theme -->
+        <link rel="stylesheet" href="../common/css/pace.min.css" />
+        <!-- Pretty Checkbox -->
+        <link rel="stylesheet" href="../common/css/pretty-checkbox.min.css" />
+        <!-- Easy auto comeplete -->
+        <link rel="stylesheet" href="../common/css/easy-autocomplete.min.css" />
+        <!-- Loader -->
+        <link rel="stylesheet" href="css/main.min.css">
+        <!-- Google Font -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <!-- More css is loaded via JavaScript -->
+    </head>
+
+    <!-- Main body -->
+    <body class="hold-transition skin-purple sidebar-mini">
+        <!-- Page loader -->
+        <div class="loader"></div>
+        <!-- Pace -->
+        <div class="pace pace-inactive">
+            <div class="pace-activity"></div>
+        </div>
+
+        <div class="main" style="display: none;">
+            <!-- Header -->
+            <div class="wrapper">
+                <header class="main-header">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <span class="logo-mini"><b>P</b>B</span>
+                        <span class="logo-lg"><b>Phantom</b>Bot</span>
+                    </div>
+
+                    <!-- Sidebar toggle -->
+                    <nav class="navbar navbar-static-top">
+                        <a href="javascript:void(0);" class="fas sidebar-toggle" style='font-family: "Font Awesome 5 Free";line-height: unset;' data-toggle="push-menu" role="button">
+                            <span class="sr-only">Toggle navigation</span>
+                        </a>
+
+                        <!-- Panel settings -->
+                        <div class="navbar-custom-menu">
+                            <ul class="nav navbar-nav">
+                                <!-- Notification warning -->
+                                <li class="dropdown notifications-menu">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="far fa-bell"></i>
+                                        <span class="label label-warning" id="notifications-amount" style="display: none;">1</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="header">You have <span id="notifications-total" data-isset="false">0</span> notification(s)</li>
+                                        <li>
+                                            <ul class="menu" id="notifications-menu-ul">
+                                                <!-- New notifications added in JavaScript. -->
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- Panel user -->
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="img/logo.png" class="user-image" id="user-image1">
+
+                                        <span class="hidden-xs" id="main-name">PhantomBot</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <!-- User image -->
+                                        <li class="user-header" style="background-color: #6441a5; height: auto;">
+                                            <img src="img/logo.png" class="img-circle" id="user-image2">
+
+                                            <p class="panel-admin" id="second-name">
+                                                PhantomBot
+                                            </p>
+                                        </li>
+                                        <!-- Menu Footer-->
+                                        <li class="user-footer">
+                                            <div class="pull-right">
+                                                <a href="#" class="btn btn-primary btn-flat" id="sign-out-btn">Sign out</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <!-- Settings button -->
+                                <li>
+                                    <a href="javascript:void(0);" data-toggle="control-sidebar"><i class="fas fa-sm fa-cogs"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
+
+                <!-- Left side column. contains the logo and sidebar -->
+                <aside class="main-sidebar">
+                    <section class="sidebar">
+                        <!-- List of all tabs. No new tabs should be added. -->
+                        <!-- Everything else should be put in the extra tab (for the main build) thanks <3 -->
+
+                        <ul class="sidebar-menu" data-widget="tree">
+                            <!-- Devider -->
+                            <li class="header">MAIN NAVIGATION</li>
+
+                            <!-- Main dashboard tab -->
+                            <li class="treeview active">
+                                <a href="#dashboard.html" data-folder="dashboard">
+                                    <i class="fas fa-sm fa-tachometer-alt ion"></i> <span> Dashboard</span>
+                                </a>
+                            </li>
+
+                            <!-- Commands tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-exclamation ion" style="padding-left: 3px;"></i> <span> Commands</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#custom.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
+                                    <li><a href="#aliases.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Aliases</a></li>
+                                    <li><a href="#default.html" data-folder="commands"><i class="far fa-sm fa-circle ion"></i> Default</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Moderation tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-shield-alt ion"></i> <span> Moderation</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#filters.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Filters</a></li>
+                                    <li><a href="#whitelist.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Whitelist</a></li>
+                                    <li><a href="#blacklist.html" data-folder="moderation"><i class="far fa-sm fa-circle ion"></i> Blacklist</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Permission tab -->
+                            <li class="treeview">
+                                <a href="#permissions.html" data-folder="permissions">
+                                    <i class="fas fa-sm fa-lock ion"></i> <span> Permissions</span>
+                                </a>
+                            </li>
+
+                            <!-- Timers tab -->
+                            <li class="treeview">
+                                <a href="#timers.html" data-folder="timers">
+                                    <i class="far fa-sm fa-clock ion"></i> <span> Timers</span>
+                                </a>
+                            </li>
+
+                            <!-- Alerts tab -->
+                            <li class="treeview">
+                                <a href="#alerts.html" data-folder="alerts">
+                                    <i class="fas fa-sm fa-bullhorn ion"></i> <span> Alerts</span>
+                                </a>
+                            </li>
+
+                            <!-- Soon -->
+                            <!-- <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-bullhorn"></i> <span> Alerts</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#alerts.html" data-folder="alerts"><i class="far fa-sm fa-circle ion"></i> Chat</a></li>
+                                    <li><a href="#stream.html" data-folder="alerts"><i class="far fa-sm fa-circle ion"></i> Stream</a></li>
+                                </ul>
+                            </li> -->
+
+                            <!-- Loyalty tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-star ion"></i> <span> Loyalty</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#currency.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Currency</a></li>
+                                    <li><a href="#loyalty.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Loyalty</a></li>
+                                    <li><a href="#leaderboard.html" data-folder="loyalty"><i class="far fa-sm fa-circle ion"></i> Leaderboard</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Ranking tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-user ion"></i> <span> Ranking</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#globalRanks.html" data-folder="ranking"><i class="far fa-sm fa-circle ion"></i> Global</a></li>
+                                    <li><a href="#customRanks.html" data-folder="ranking"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Quotes tab -->
+                            <li class="treeview">
+                                <a href="#quotes.html" data-folder="quotes">
+                                    <i class="fas fa-sm fa-quote-right ion"></i> <span> Quotes</span>
+                                </a>
+                            </li>
+
+                            <!-- Keywords tab -->
+                            <li class="treeview">
+                                <a href="#keywords.html" data-folder="keywords">
+                                    <i class="fas fa-sm fa-key ion"></i> <span> Keywords</span>
+                                </a>
+                            </li>
+
+                            <!-- Games tab -->
+                            <li class="treeview">
+                                <a href="#games.html" data-folder="games">
+                                    <i class="fas fa-sm fa-gamepad ion"></i> <span> Games</span>
+                                </a>
+                            </li>
+
+                            <!-- Giveaways tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-gift ion"></i> <span> Giveaways</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#raffle.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Raffle</a></li>
+                                    <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Ticket Raffle</a></li>
+                                    <li><a href="#auction.html" data-folder="giveaways"><i class="far fa-sm fa-circle ion"></i> Auction</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Discord tab -->
+                            <li class="treeview" id="discord_index_tab">
+                                <a href="#">
+                                    <i class="fab fa-discord ion"></i> <span> Discord</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li class="treeview">
+                                        <a href="#"><i class="far fa-sm fa-circle ion"></i> Commands
+                                            <span class="pull-right-container">
+                                                <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                            </span>
+                                        </a>
+                                        <ul class="treeview-menu">
+                                            <li><a href="#discordCustomCommands.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Custom</a></li>
+                                            <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Default</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- For IO and his promotion system:
+                                    From what I saw, you might need multiple tabs like the one above, since you
+                                    allow a "blacklist" of users. -->
+                                    <!-- <li><a href="#discordPromotion.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Promotion</a></li> -->
+
+                                    <li><a href="#discordAlerts.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Alerts</a></li>
+                                    <li><a href="#discordLogs.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Logging</a></li>
+                                    <li><a href="#discordKeywords.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Keywords</a></li>
+                                    <li><a href="#discordGames.html" data-folder="discord"><i class="far fa-sm fa-circle ion"></i> Games</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Hisotry tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-history ion"></i> <span> History</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#tipsHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Tips</a></li>
+                                    <li><a href="#hostHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Hosts</a></li>
+                                    <li><a href="#raidHistory.html" data-folder="history"><i class="far fa-sm fa-circle ion"></i> Raids</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Extra tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-magic ion"></i> <span> Extra</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#commercials.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Automatic Commercials</a></li>
+                                    <li><a href="#dualstream.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Dual Stream</a></li>
+                                    <li><a href="#deathcounter.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Death Counter</a></li>
+                                    <li><a href="#highlights.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Highlights</a></li>
+                                    <li><a href="#betting.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Betting</a></li>
+                                    <li><a href="#polls.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Polls</a></li>
+                                    <li><a href="#queue.html" data-folder="extra"><i class="far fa-sm fa-circle ion"></i> Queue</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Audio tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-music ion"></i> <span> Audio</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#audioHooks.html" data-folder="audio"><i class="far fa-sm fa-circle ion"></i> Audio Hooks</a></li>
+                                    <!-- For now, as long as the YouTube player module hasn't gotten a rewrite, we will redirect to the player. -->
+                                    <li><a id="sr-link" href="/ytplayer" target="_blank"><i class="far fa-sm fa-circle ion"></i> Song Requests</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Settings tab -->
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fas fa-sm fa-cog ion"></i> <span> Settings</span>
+                                    <span class="pull-right-container">
+                                        <i class="fas fa-sm fa-angle-left ion pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#botSettings.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Bot</a></li>
+                                    <li><a href="#commandSettings.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Commands</a></li>
+                                    <li><a href="#moduleList.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Modules</a></li>
+                                    <li><a href="#localization.html" data-folder="settings"><i class="far fa-sm fa-circle ion"></i> Localization</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Devider -->
+                            <li class="header">HELP &#38; SUPPORT</li>
+
+                            <!-- Help tab -->
+                            <li class="treeview">
+                                <a href="#help.html" data-folder="help">
+                                    <i class="fas fa-sm fa-life-ring ion"></i> <span>Help</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                </aside>
+
+                <!-- Content Wrapper. Contains page content -->
+                <aside class="content-wrapper">
+                    <div id="page-content"></div>
+                </aside>
+            </div>
+
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                    <!-- First tab -->
+                    <li class="active">
+                        <a href="#main-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-wrench"></i></a>
+                    </li>
+
+                    <!-- Second tab -->
+                    <li>
+                        <a href="#second-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-home"></i></a>
+                    </li>
+
+                    <!-- Third tab -->
+                    <li class="disabled">
+                        <a class="disabled" href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fas fa-sm fa-cogs"></i></a>
+                    </li>
+                </ul>
+
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <!-- First tab. -->
+                    <div id="main-side-tab" class="tab-pane active">
+                        <h4 class="control-sidebar-heading">Layout Options</h4>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0px;">
+                                    <input type="checkbox" id="dark-mode-toggle"/>
+                                    <div class="state p-default">
+                                        <i class="icon fas fa-sm fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                Dark Mode
+                            </label>
+
+                            <p>Activate the panel's dark mode.</p>
+                        </div>
+                    </div>
+
+                    <!-- Middle tab -->
+                    <div id="second-side-tab" class="tab-pane">
+                        <h4 class="control-sidebar-heading">Dashboard Page</h4>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0px;">
+                                    <input type="checkbox" id="toggle-chat"/>
+                                    <div class="state p-default">
+                                        <i class="icon fas fa-sm fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                Show Twitch Chat
+                            </label>
+
+                            <p>Show or hide Twitch chat.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0px;">
+                                    <input type="checkbox" data-layout="fixed" id="toggle-player"/>
+                                    <div class="state p-default">
+                                        <i class="icon fas fa-sm fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                Show Twitch Player
+                            </label>
+
+                            <p>Show or hide the player.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0px;">
+                                    <input type="checkbox" id="toggle-reverse-events"/>
+                                    <div class="state p-default">
+                                        <i class="icon fas fa-sm fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                Reverse Sort Events
+                            </label>
+
+                            <p>Show events in reverse order.</p>
+                        </div>
+                    </div>
+
+                    <!-- Last tab -->
+                    <div id="third-side-tab" class="tab-pane">
+                        <h4 class="control-sidebar-heading">General Settings</h4>
+
+                        <div class="form-group">
+
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Sidebar control. This is required to fill it the side of the screen. -->
+            <div class="control-sidebar-bg"></div>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+        <!-- Pace -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+        <!-- Toastr -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+        <!-- Select2 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+        <!-- Sweetalert -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+        <!-- Datatables -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-bs/2.1.1/dataTables.bootstrap.min.js"></script>
+        <!-- Easy auto comeplete -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.min.js"></script>
+        <!-- Helpers -->
+        <script src="js/utils/helpers.js"></script>
+        <!-- Ajax page loader -->
+        <script src="js/utils/ajaxLoader.js"></script>
+        <script src="js/utils/panelConfig.js"></script>
+        <!-- Reconnecting socket. -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+
+        <script type="text/javascript" language="javascript">
+            $(function () {
+                helpers.parseHashmap();
+                helpers.setupAuth();
+                if (helpers.getBotHost() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingBot=true';
+                    return;
+                }
+                if (getAuth() === '!missing') {
+                    window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+                    return;
+                }
+                $('#sr-link').attr('href', 'http://' + helpers.getBotHost() + '/ytplayer');
+                $('body').append($('<script>', {
+                    'src': 'js/index.js'
+                }));
+            });
+        </script>
+    </body>
+
+</html>

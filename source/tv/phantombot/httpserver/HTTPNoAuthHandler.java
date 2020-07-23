@@ -62,7 +62,18 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        if (req.uri().startsWith("/sslcheck")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled ? "true" : "false").getBytes(), null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            com.gmt2001.Console.debug.println("200");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+
             String host = req.headers().get(HttpHeaderNames.HOST);
 
             if (host == null) {
@@ -73,23 +84,41 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 host = "http://" + host;
             }
 
-            com.gmt2001.Console.debug.println("421");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MISDIRECTED_REQUEST, ("Authenticated request attempted, please direct request to: " + host + "/dbquery").getBytes(), null));
+            res.headers().set(HttpHeaderNames.LOCATION, host + "/dbquery");
+
+            com.gmt2001.Console.debug.println("303");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
         if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+            HttpResponseStatus status;
+            String sameSite = "";
+            boolean validCredentials = true;
+            String user = "";
+            String pass = "";
 
-            if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
-            } else if (req.method().equals(HttpMethod.POST)) {
+            if (req.method().equals(HttpMethod.POST)) {
                 Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
-                String user = post.getOrDefault("user", "");
-                String pass = post.getOrDefault("pass", "");
+                user = post.getOrDefault("user", "");
+                pass = post.getOrDefault("pass", "");
 
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" : "") + "; HttpOnly; Path=/");
+                validCredentials = user.equals(PhantomBot.instance().getProperties().getProperty("paneluser", "panel")) && pass.equals(PhantomBot.instance().getProperties().getProperty("panelpassword", "panel"));
+            }
+
+            if (!validCredentials) {
+                status = HttpResponseStatus.UNAUTHORIZED;
+            } else {
+                status = HttpResponseStatus.SEE_OTHER;
+            }
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
+
+            if (req.uri().contains("logout=true")) {
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+            } else if (req.method().equals(HttpMethod.POST) && validCredentials) {
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
             String host = req.headers().get(HttpHeaderNames.HOST);
@@ -101,18 +130,23 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             } else {
                 host = "http://" + host;
             }
-            
+
             String kickback;
-            
+
             if (req.uri().contains("kickback=")) {
                 kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
             } else {
                 kickback = "/panel";
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
+            if (validCredentials) {
+                res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
 
-            com.gmt2001.Console.debug.println("303");
+                com.gmt2001.Console.debug.println("303");
+            } else {
+                com.gmt2001.Console.debug.println("401");
+            }
+
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
@@ -138,6 +172,19 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
                 path = path + "/index.html";
                 p = Paths.get(start, path);
+            }
+
+            if ((!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
+                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
+                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))
+                    || (p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel"))
+                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/vendors"))
+                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/css"))
+                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/login")))
+                    || p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/ytplayer"))) {
+                com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                return;
             }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {

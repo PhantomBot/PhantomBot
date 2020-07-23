@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@
       customCommands = [],
       ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
       CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+
+    function quoteRegex (str) {
+        return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+    };
 
     /*
      * @function getCustomAPIValue
@@ -116,12 +120,12 @@
                 var arg = event.getArgs()[n - 1];
                 if (!args) {
                     return {result: arg !== undefined ? String(arg) : ''};
-                } else if ((match = args.match(/^=(.+)$/))) {
+                } else if ((match = args.match(/^[=\|](.+)$/))) {
                     if (arg !== undefined) {
                         return {result: String(arg)};
                     }
                     return {
-                        result: '(' + escapeTags(match[1]) + ')',
+                        result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
                         raw: true
                     };
                 }
@@ -285,7 +289,7 @@
                     return {result: $.lang.get('customcommands.customapi.404', cmd)};
                 }
                 return {
-                    result: String(getCustomAPIValue(match[1])),
+                    result: String(getCustomAPIValue(encodeURI(match[1]))),
                     cache: false
                 };
             }
@@ -326,7 +330,7 @@
                 }
 
                 result = '';
-                response = getCustomAPIValue(match[1]);
+                response = getCustomAPIValue(encodeURI(match[1]));
                 jsonItems = match[2].split(' ');
                 for (j = 0; j < jsonItems.length; j++) {
                     if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
@@ -591,7 +595,7 @@
 
         // (playsound hook:str): play a sound hook
         function playsound(args) {
-            if ((match = args.match(/^\s([a-zA-Z1-9_]+)$/))) {
+            if ((match = args.match(/^\s([a-zA-Z0-9_]+)$/))) {
                 if (!$.audioHookExists(match[1])) {
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return {result: $.lang.get('customcommands.playsound.404', match[1])};
@@ -625,9 +629,9 @@
         function pointtouser(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 if (match[1]) {
-                    temp = match[1].replace(/[^a-zA-Z0-9_@]/g, '') + ' -> ';
+                    temp = $.username.resolve(match[1].replace(/[^a-zA-Z0-9_@]/g, '')) + ' -> ';
                 } else {
-                    temp = String($.userPrefix(event.getSender(), true));
+                    temp = $.username.resolve(event.getSender()) + ' -> ';
                 }
                 return {result: temp};
             }
@@ -1048,7 +1052,7 @@
             transformed,
             transformCache = {};
         message += '';  // make sure this is a JS string, not a Java string
-        while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s=()]*)([\s=](?:\\\(|\\\)|[^()])*)?\))/))) {
+        while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s\|=()]*)([\s=\|](?:\\\(|\\\)|[^()])*)?\))/))) {
             var wholeMatch = match[1],
                 tagName = match[2],
                 tagArgs = match[3] ? unescapeTags(match[3]) : '';

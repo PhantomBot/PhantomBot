@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@
                     if (accounts[keys[i]].code == code && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
                         $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
 
-                        $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', $.channelName));
+                        $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', sender.toLowerCase()));
                         delete accounts[keys[i]];
                         return;
                     }

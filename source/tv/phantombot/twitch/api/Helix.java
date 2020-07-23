@@ -54,6 +54,7 @@ public class Helix {
     private int currentRateLimit = 120;
     // The user's oauth token -- this is required.
     private final String oAuthToken;
+    private final String clientid;
     
     /**
      * This class constructor.
@@ -62,6 +63,7 @@ public class Helix {
      */
     public Helix(String oAuthToken) {
         this.oAuthToken = oAuthToken.replace("oauth:", "");
+        this.clientid = TwitchValidate.instance().getAPIClientID();
         
         // Set the default exception handler thread.
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -225,7 +227,15 @@ public class Helix {
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             // Add our headers.
             connection.addRequestProperty("Content-Type", CONTENT_TYPE);
-            connection.addRequestProperty("Authorization", "Bearer " + oAuthToken);
+
+            if (!clientid.isEmpty()) {
+                connection.addRequestProperty("Client-ID", clientid);
+            }
+
+            if (!oAuthToken.isEmpty()) {
+                connection.addRequestProperty("Authorization", "Bearer " + oAuthToken);
+            }
+
             connection.addRequestProperty("User-Agent", USER_AGENT);
             // Add our request method.
             connection.setRequestMethod(type.name());

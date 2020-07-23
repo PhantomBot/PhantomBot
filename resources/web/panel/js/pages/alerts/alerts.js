@@ -73,7 +73,7 @@ $(function() {
                 'If a message should be said in the channel when someone follows. This also toggles the reward.'))
             // Add the the text area for the follow message.
             .append(helpers.getTextAreaGroup('follow-message', 'text', 'Follow Message', '', e.followMessage,
-                'Message said when someone follows the channel. Tags: (name) and (reward)', false))
+                'Message said when someone follows the channel. Tags: (name), (alert), (playsound), and (reward)', false))
             // Add the the box for the reward.
             .append(helpers.getInputGroup('follow-reward', 'number', 'Follow Reward', '', e.followReward,
                 'Reward given to users who follow the channel.'))
@@ -138,7 +138,7 @@ $(function() {
                     'If a message should be said in the channel when someone subscribes. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('sub-msg', 'text', 'Subscription Message', '', e.subscribeMessage,
-                    'Message said when someone subscribes to the channel. Tags: (name) (plan), and (reward)', false))
+                    'Message said when someone subscribes to the channel. Tags: (name), (alert), (playsound), (plan), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('sub-reward', 'number', 'Subscription Reward', '', e.subscribeReward,
                     'Reward given to the user when they subscribe to the channel or get a gifted subscription, subscribe with Twitch Prime.'))))
@@ -151,7 +151,7 @@ $(function() {
                     'If a message should be said in the channel when someone subscribes with Twitch Prime. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('primesub-msg', 'text', 'Prime Subscription Message', '', e.primeSubscribeMessage,
-                    'Message said when someone subscribes to the channel with Twitch Prime. Tags: (name), (plan), and (reward)', false))))
+                    'Message said when someone subscribes to the channel with Twitch Prime. Tags: (name), (alert), (playsound), (plan), and (reward)', false))))
             // Append third collapsible accordion.
             .append(helpers.getCollapsibleAccordion('main-3', 'Re-subscription Settings', $('<form/>', {
                     'role': 'form'
@@ -161,7 +161,7 @@ $(function() {
                     'If a message should be said in the channel when someone resubscribes. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('resub-msg', 'text', 'Re-subscription Message', '', e.reSubscribeMessage,
-                    'Message said when someone resubscribes to the channel. Tags: (name), (plan), (months), (customemote), and (reward)', false))
+                    'Message said when someone resubscribes to the channel. Tags: (name), (alert), (playsound), (plan), (months), (customemote), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('resub-reward', 'number', 'Re-subscription Reward', '', e.reSubscribeReward,
                     'Reward given to the user when they resubscribe to the channel.'))
@@ -177,7 +177,7 @@ $(function() {
                     'If a message should be said in the channel when someone gifts a subscription. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('gifsub-msg', 'text', 'Gift Subscription Message', '', e.giftSubMessage,
-                    'Message said when someone resubscribes to the channel. Tags: (name), (recipient), (plan), (months), and (reward)', false))
+                    'Message said when someone gifts a subscription to the channel. Tags: (name), (alert), (playsound), (recipient), (plan), (months), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('gifsub-reward', 'number', 'Gift Subscription Reward', '', e.giftSubReward,
                     'Reward given to the user who bought the subscription.'))))
@@ -190,7 +190,7 @@ $(function() {
                     'If a message should be said in the channel when someone gifts multiple subscriptions. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('mass-gifsub-msg', 'text', 'Mystery Gift Subscription Message', '', e.massGiftSubMessage,
-                    'Message said when someone gifts multiple subscriptions to the channel. Tags: (name), (amount), and (reward)', false))
+                    'Message said when someone gifts multiple subscriptions to the channel. Tags: (name), (alert), (playsound), (amount), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('mass-gifsub-reward', 'number', 'Mystery Gift Subscription Reward', '', e.massGiftSubReward,
                     'Reward given to the user who bought the subscription. This is a multiplier. (reward * amount gifted)'))))
@@ -203,7 +203,7 @@ $(function() {
                     'If a message should be said in the channel when someone gifts an anonymous subscription. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('anon-gifsub-msg', 'text', 'Anonymous Gift Subscription Message', '', e.giftAnonSubMessage,
-                    'Message said when someone gifts an anonymous gifts a subscription to the channel. Tags: (name), (plan), (amount), and (reward)', false))
+                    'Message said when someone anonymously gifts a subscription to the channel. Tags: (name), (alert), (playsound), (plan), (amount), and (reward)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('anon-gifsub-reward', 'number', 'Anonymous Gift Subscription Reward', '', e.subscribeReward,
                     'Reward given to the user who the subscription was gifted to. This is the same as the normal subscriptions reward', true))))
@@ -216,7 +216,7 @@ $(function() {
                     'If a message should be said in the channel when an anonymous user gifts multiple subscriptions. This also toggles the reward.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('anon-mass-gifsub-msg', 'text', 'Anonymous Gift Mystery Subscription Message', '', e.massAnonGiftSubMessage,
-                    'Message said when someone gifts an anonymous gifts subscriptions to the channel. Tags: (name), and (amount)', false))))
+                    'Message said when someone anonymously mass gifts subscriptions to the channel. Tags: (name), and (amount)', false))))
             // Tier settings
             .append(helpers.getCollapsibleAccordion('main-8', 'Tier Settings', $('<form/>', {
                     'role': 'form'
@@ -315,7 +315,7 @@ $(function() {
                     'If a message should be said in the channel when someone hosts the channel.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('host-msg', 'text', 'Host Message', '', e.hostMessage,
-                    'Message said when someone Hosts to the channel. Tags: (name), (reward), and (viewers)', false))
+                    'Message said when someone Hosts the channel. Tags: (name), (alert), (playsound), (reward), and (viewers)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('host-reward', 'number', 'Host Reward', '', e.hostReward,
                     'Reward given to the user when they hosts to the channel.'))))
@@ -328,7 +328,7 @@ $(function() {
                     'If a message should be said in the channel when someone auto-hosts the channel.'))
                 // Append message box for the message
                 .append(helpers.getTextAreaGroup('autohost-msg', 'text', 'Auto-Host Message', '', e.autoHostMessage,
-                    'Message said when someone auto-hosts the channel. Tags: (name), (reward), and (viewers)', false))
+                    'Message said when someone auto-hosts the channel. Tags: (name), (alert), (playsound), (reward), and (viewers)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('autohost-reward', 'number', 'Auto-Host Reward', '', e.autoHostReward,
                     'Reward given to the user when they auto-hosts the channel.'))))
@@ -401,7 +401,7 @@ $(function() {
                 'If a message should be said in the channel when someone cheers.'))
             // Add the the text area for the bits message.
             .append(helpers.getTextAreaGroup('bits-message', 'text', 'Bits Message', '', e.message,
-                'Message said when someone cheers in the the channel. Tags: (name), (message), and (amount)', false))
+                'Message said when someone cheers in the the channel. Tags: (name), (alert), (playsound), (message), and (amount)', false))
             // Add the box for the reward.
             .append(helpers.getInputGroup('bits-minimum', 'number', 'Bits Minimum', '', e.minimum, 'Amount of bits needed to trigger the alert.')),
             function() { // Callback once the user clicks save.
@@ -447,7 +447,7 @@ $(function() {
                 'If a message should be said in the channel when someone creates a clip.'))
             // Add the text area for the clips message.
             .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Message', '', e.message,
-                'Message said when someone creates a clip. Tags: (name), (title), and (url)', false)),
+                'Message said when someone creates a clip. Tags: (name), (alert), (playsound), (title), and (url)', false)),
             function() { // Callback once the user clicks save.
                 let clipToggle = $('#clip-toggle').find(':selected').text() === 'Yes',
                     clipMsg = $('#clip-message');
@@ -497,10 +497,10 @@ $(function() {
                     'If people who raid your channel should be noticed by the bot with a message.'))
                 // Add the text area for the new raid message.
                 .append(helpers.getTextAreaGroup('new-raid-message', 'text', 'New Raider Message', '', e.newRaidIncMessage,
-                    'Message said when someone raids your channel for the first time. Tags: (username), (viewers), (url), (reward) and (game)', false))
+                    'Message said when someone raids your channel for the first time. Tags: (username), (alert), (playsound), (viewers), (url), (reward) and (game)', false))
                 // Add the text area for the raid message.
                 .append(helpers.getTextAreaGroup('raid-message', 'text', 'Raider Message', '', e.raidIncMessage,
-                    'Message said when someone raids your channel. Tags: (username), (viewers), (url), (times), (reward) and (game)', false))
+                    'Message said when someone raids your channel. Tags: (username), (alert), (playsound), (viewers), (url), (times), (reward) and (game)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('raid-reward', 'number', 'Raid Reward', '', e.raidReward,
                     'Reward given to the users who raid your channel.'))))

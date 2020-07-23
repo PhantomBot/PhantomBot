@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -875,6 +875,50 @@
 
         $.consoleLn('PhantomBot update 3.0.1 completed!');
         $.inidb.set('updates', 'installedv3.0.1', 'true');
+    }
+
+    /* version 3.3.0 updates */
+    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
+
+        $.consoleLn('Updating keywords...');
+        var keys = $.inidb.GetKeyList('keywords', ''),
+            newKeywords = [],
+            key,
+            json,
+            i,
+            strippedKeys = {};
+
+        for (i = 0; i < keys.length; i++) {
+            key = keys[i];
+            json = JSON.parse($.inidb.get('keywords', key));
+            if (json.isRegex) {
+                json.isCaseSensitive = true;
+                key = key.replace('regex:', '');
+                json.keyword = json.keyword.replace('regex:', '');
+            } else {
+                json.isCaseSensitive = false;
+            }
+            if (strippedKeys.hasOwnProperty(key)) {
+                throw 'Could not update keywords list. The keyword "' +  key +
+                      '" exists both as regex and as plain keyword. ' +
+                      "Please resolve the conflict and restart phantombot.";
+            }
+            strippedKeys[key] = true;
+            newKeywords.push({
+                key: key,
+                json: json
+            });
+        }
+
+        $.inidb.RemoveFile('keywords');
+
+        for (i = 0; i < newKeywords.length; i++) {
+            $.inidb.set('keywords', newKeywords[i].key, JSON.stringify(newKeywords[i].json));
+        }
+
+        $.consoleLn('PhantomBot update 3.3.0 completed!');
+        $.inidb.set('updates', 'installedv3.3.0', 'true');
     }
 
     /**

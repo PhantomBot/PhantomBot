@@ -1,0 +1,325 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>PhantomBot | OAuth</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Favicon -->
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
+        <!-- Bootstrap 3.3.7 css -->
+        <link rel="stylesheet" href="../common/css/bootstrap.min.css" />
+        <!-- Google font -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <!-- Fontawesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="../common/css/AdminLTE.dark.min.css" />
+        <link rel="stylesheet" href="../common/css/skin-purple.dark.min.css" />
+        <link rel="stylesheet" href="../common/css/pace.min.css" />
+        <style>
+            .twitchbtn {
+                display:inline-block;
+                height:48px;
+                line-height:46px;
+                font-size:14px;
+                border:1px solid transparent;
+                border-radius:24px;
+                padding:0 30px;
+                margin:10px 8px 10px 0;
+                cursor:pointer;
+                background-image:none;
+                white-space:nowrap;
+                -ms-user-select:none;
+                user-select:none;
+                -webkit-transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                -o-transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                transition:color 0.3s ease-out,background-color 0.3s ease-out;
+                background-color:#6441a5;
+            }
+            .twitchbtn:hover {
+                background-color:#3a2560;
+                text-decoration:none;
+                outline:0
+            }
+            .twitchbtn:focus {
+                outline:0
+            }
+        </style>
+    </head>
+
+    <body class="skin-purple layout-top-nav">
+        <div class="wrapper">
+            <!-- Header -->
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a href="https://phantombot.github.io/PhantomBot/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fas fa-bars"></i>
+                          </button>
+                        </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="navbar-collapse">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="GitHub" href="https://github.com/PhantomBot/PhantomBot"><i class="fab fa-github fa-lg"></i></a></li>
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="Discord" href="https://discord.gg/YKvMd78"><i class="fab fa-discord fa-lg"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+
+            <!-- Main content -->
+            <aside class="content-wrapper">
+                <div id="page-content">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <i class="fas fa-key"></i>
+                            <h3 class="box-title">PhantomBot OAuth Generator</h3>
+                            <!-- /.box-tools -->
+                          </div>
+                        <div class="box-body" id="content-pane">
+                            <div class="alert-success text-center page-header hide" id="success-box"></div>
+                                            <br id="success-br" class="hide" />
+
+                                            <div>
+                                                Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
+                                                <br />
+                                                <div style="padding-left: 25px;">
+                                                    <list>
+                                                    <li><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                                    <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                                    </list>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <br />
+                                            <div>
+                                                The following permissions are requested for the <div class="text-bold" style="display: inline;">bot's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                                                <br />
+                                                <div style="padding-left: 25px;">
+                                                    <ul id="scopes-bot">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <br />
+                                            <div>
+                                                The following permissions are requested for the <div class="text-bold" style="display: inline;">broadcaster's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                                                <br />
+                                                <div style="padding-left: 25px;">
+                                                    <ul id="scopes-broadcaster">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <br />
+                                            <a id="connect-bot" class="btn btn-primary twitchbtn">
+                                                <i class="fab fa-twitch"></i>
+                                                Connect with Twitch Bot
+                                            </a>&nbsp;<a id="connect-caster" class="btn btn-primary twitchbtn">
+                                                <i class="fab fa-twitch"></i>
+                                                Connect with Twitch Broadcaster
+                                            </a>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </aside>
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
+            </footer>
+        </div>
+
+        <!-- Load jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Load Bootsrap 3.3.7 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+        <script>
+            'use strict';
+            $(function () {
+                var scopesBot = {
+                    "chat:read": {
+                        "desc": "[Helix] View live Stream Chat and Rooms messages",
+                        "tooltip": "Used to login to chat and read messages"
+                    },
+                    "chat:edit": {
+                        "desc": "[Helix] Send live Stream Chat and Rooms messages",
+                        "tooltip": "Used to send responses in chat"
+                    },
+                    "channel:moderate": {
+                        "desc": "[Helix] Perform moderation actions in a channel",
+                        "tooltip": "Used to perform moderation actions (purge, timeout, ban)"
+                    },
+                    "whispers:read": {
+                        "desc": "[Helix] View your whisper messages",
+                        "tooltip": "Used to receive whispers to the bot"
+                    },
+                    "whispers:edit": {
+                        "desc": "[Helix] Send whisper messages",
+                        "tooltip": "Used to send whispers from the bot"
+                    }
+                };
+
+                var scopesBroadcaster = {
+                    "channel_editor": {
+                        "desc": "[v5] Write access to channel metadata (game, status, etc)",
+                        "tooltip": "Used to change the title/game"
+                    },
+                    "channel_commercial": {
+                        "desc": "[v5] Access to trigger commercials on channel",
+                        "tooltip": "Used to trigger commercials on partnered streams"
+                    },
+                    "channel_subscriptions": {
+                        "desc": "[v5] Read access to all subscribers to your channel",
+                        "tooltip": "Used to get the current subscriber count. Can also be used by custom scripts to query Twitch for a list of subscribers"
+                    },
+                    "chat:read": {
+                        "desc": "[Helix] View live Stream Chat and Rooms messages",
+                        "tooltip": "Used by the second chat connection to watch for host notifications"
+                    },
+                    "channel:moderate": {
+                        "desc": "[Helix] Perform moderation actions in a channel",
+                        "tooltip": "Used to watch for moderation actions in PubSub"
+                    },
+                    "channel:read:redemptions": {
+                        "desc": "[Helix] View your channel points custom reward redemptions",
+                        "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub"
+                    }
+                };
+
+                function addScopeItem(type, scope, description) {
+                    $('#scopes-' + type).append(
+                            $('<li/>', {
+                                'html': $('<div/>', {
+                                    'class': 'text-bold',
+                                    'style': 'display: inline;',
+                                    'text': scope
+                                })
+                            }).append(' - ' + description.desc + ' ')
+                                    .append($('<i/>', {
+                                    'class': 'fas fa-question-circle',
+                                    'aria-hidden': 'true',
+                                    'data-toggle': 'tooltip',
+                                    'title': description.tooltip
+                                }))
+                            );
+                }
+
+                var x;
+                for (x in scopesBot) {
+                    addScopeItem('bot', x, scopesBot[x]);
+                }
+
+                for (x in scopesBroadcaster) {
+                    addScopeItem('broadcaster', x, scopesBroadcaster[x]);
+                }
+
+                var queryString = window.location.hash, // Query string that starts with ?
+                        queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
+                        queryMap = new Map(), // Create a new map for save our keys and values.
+                        baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
+                        clientID = '26zr06lmku74srltt7qprwbotaxm91',
+                        redirectURI = window.location.origin + window.location.pathname,
+                        state;
+
+                for (var i = 0; i < queryParts.length; i++) {
+                    var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
+                            value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
+
+                    if (key.length > 0 && value.length > 0) {
+                        queryMap.set(key.toLowerCase(), value);
+                    }
+                }
+
+                if (queryMap.size > 0) {
+                    if (queryMap.has('access_token') && queryMap.has('state')) {
+                        // Get the state.
+                        state = window.localStorage.getItem('state');
+
+                        if (queryMap.get('state') === state) {
+                            $('#success-box').removeClass('hide');
+                            $('#success-br').removeClass('hide');
+                            $('#success-box').html('Your ' + window.localStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
+                                'class': 'form-control',
+                                'type': 'text',
+                                'readonly': true,
+                                'style': 'display:inline; width: 280px; text-align: center;',
+                                'value': queryMap.get('access_token')
+                            }));
+
+                            // Remove the state.
+                            window.localStorage.removeItem('state');
+                            window.localStorage.removeItem('state-type');
+                        }
+                    }
+                } else {
+                    // Generates the state.
+                    function generateState(type) {
+                        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                                state = '';
+
+                        for (var i = 0; i < 40; i++) {
+                            state += possible.charAt(Math.floor(Math.random() * possible.length));
+                        }
+
+                        // Save the state.
+                        window.localStorage.setItem('state', state);
+                        window.localStorage.setItem('state-type', type);
+
+                        return state;
+                    }
+
+                    // Connect with Twitch button bot.
+                    $('#connect-bot').on('click', function () {
+                        var scopes = '';
+                        for (var x in scopesBot) {
+                            if (scopes.length > 0) {
+                                scopes = scopes + '+';
+                            }
+
+                            scopes = scopes + x;
+                        }
+
+                        window.location = baseAPIUri + '?response_type=token&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
+                    });
+
+                    // Connect with Twitch button caster.
+                    $('#connect-caster').on('click', function () {
+                        var scopes = '';
+                        for (var x in scopesBroadcaster) {
+                            if (scopes.length > 0) {
+                                scopes = scopes + '+';
+                            }
+
+                            scopes = scopes + x;
+                        }
+
+                        window.location = baseAPIUri + '?response_type=token&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+                    });
+                }
+
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </body>
+</html>

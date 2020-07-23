@@ -1,0 +1,11 @@
+{
+    "subfolders": {
+    },
+    "pages": {
+        "windows": "Windows",
+        "centos": "CentOS",
+        "ubuntu": "Ubuntu",
+        "macos": "macOS",
+        "updatebot": "How To Update"
+    }
+}

@@ -2,7 +2,7 @@
 
 <!--
 
-Copyright (C) 2016-2019 phantombot.tv
+Copyright (C) 2016-2020 phantombot.tv
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <info organisation="tv.phantombot" module="phantombot" revision="custom" status="integration" branch="custom">
         <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
         <repository name="PhantomBot" url="https://github.com/PhantomBot/PhantomBot" artifacts="true"/>
-        <description homepage="https://phantombot.tv/">
+        <description homepage="https://phantombot.github.io/PhantomBot/">
             PhantomBot is a Twitch chat bot powered by Java.
             PhantomBot has many modern features out of the box such as a built-in webpanel,
             enhanced moderation, games, a point system, raffles, custom commands, a music player, and more!
@@ -43,14 +43,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.3.2"/>
-        <dependency org="com.h2database" name="h2" rev="1.4.199"/>
+        <dependency org="com.h2database" name="h2" rev="1.4.200"/>
         <dependency org="joda-time" name="joda-time" rev="2.4"/>
         <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>
         <dependency org="net.engio" name="mbassador" rev="1.3.2"/>
-        <dependency org="mysql" name="mysql-connector-java" rev="5.1.48"/>
-        <dependency org="org.json" name="json" rev="20190722"/>
-        <dependency org="org.mozilla" name="rhino" rev="1.7.7"/>
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.28.0"/>
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.49"/>
+        <dependency org="org.json" name="json" rev="20200518"/>
+        <dependency org="org.mozilla" name="rhino" rev="1.7.12"/>
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.31.1"/>
         <dependency org="org.twitter4j" name="twitter4j-core" rev="4.0.4"/>
     </dependencies>
 </ivy-module>

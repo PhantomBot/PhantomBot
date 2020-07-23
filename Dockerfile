@@ -1,5 +1,5 @@
 #  
-# Copyright (C) 2016-2019 phantombot.tv
+# Copyright (C) 2016-2020 phantombot.tv
 #  
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
+ARG ANT_ARGS=
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN mkdir -p "${BUILDDIR}" \
@@ -36,22 +37,27 @@ RUN mkdir -p "${BUILDDIR}" \
 COPY . "${BUILDDIR}"
 
 RUN cd "${BUILDDIR}" \
-    && ant jar
+    && ant -noinput -buildfile build.xml ${ANT_ARGS} jar
 
 # Application container
 FROM diamol/openjdk:latest
 
 ARG PROJECT_NAME=PhantomBot
+ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
+ARG TARGETPLATFORM
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
 
-COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-3.1.2/." "${BASEDIR}/"
+COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
 
 RUN cd "${BASEDIR}" \
     && rm -rf \
+    && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi \
+    && if [ "${TARGETPLATFORM}" = "linux/arm64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi \
+    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/launch.bat ; fi \
     && mkdir "${DATADIR}/scripts" \
     && mkdir "${DATADIR}/scripts/custom" \
     && mkdir "${DATADIR}/scripts/discord" \
@@ -69,7 +75,8 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/logs" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
-    && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom"
+    && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
+    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then chmod u+x ./java-runtime-linux/bin/java ; fi
 
 VOLUME "${DATADIR}"
 
@@ -77,4 +84,4 @@ WORKDIR "${BASEDIR}"
 
 EXPOSE 25000
 
-CMD ["sh", "launch-service.sh"]
+CMD ["bash", "launch-service.sh"]

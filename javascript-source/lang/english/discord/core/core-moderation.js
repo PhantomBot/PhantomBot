@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantombot.tv
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup / logs / togglecbenni]');
+$.lang.register('moderation.usage', 'Usage: !moderation [links / caps / spam / blacklist / whitelist / cleanup / logs]');
 $.lang.register('moderation.links.usage', 'Usage: !moderation links [toggle / permittime]');
 $.lang.register('moderation.links.toggle', 'Link moderation has been $1.');
 $.lang.register('moderation.links.permit.time.usage', 'Usage: !moderation links permittime [seconds]');
@@ -59,5 +59,4 @@ $.lang.register('moderation.cleanup.done', 'Deleted $1 messages!');
 $.lang.register('moderation.logs.toggle.usage', 'Usage: !moderation logs [toggle / channel] - Will toggle Twitch moderation logs being posted in Discord.');
 $.lang.register('moderation.logs.toggle', 'Twitch moderation logs have been $1. **[Requires bot restart]**');
 $.lang.register('moderation.logs.channel.usage', 'Usage: !moderation logs channel [channel name]');
-$.lang.register('moderation.logs.channel.set', 'Twitch moderation log announcements will now be made in channel #$1');
-$.lang.register('moderation.cbenni.toggle', 'Cbenni link display for moderation has been $1.');
+$.lang.register('moderation.logs.channel.set', 'Twitch moderation log announcements will now be made in channel $1');

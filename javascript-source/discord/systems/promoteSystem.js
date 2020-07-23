@@ -153,13 +153,13 @@
                     return;
                 }
             
-                promoteChannel = args[1].replace('#', '').toLowerCase();
+                promoteChannel = $.discord.sanitizeChannelName(args[1]);
                 if (promoteChannel.equals('clear')) {
                     $.inidb.set('promotesettings', 'channel', '');
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.cleared'));
                 } else {
                     $.inidb.set('promotesettings', 'channel', promoteChannel);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.success', promoteChannel));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.success', args[1]));
                 }
                 return;
             }
@@ -170,14 +170,14 @@
                     return;
                 }
             
-                streamChannel = args[1].replace('#', '').toLowerCase();
+                streamChannel = $.discord.sanitizeChannelName(args[1]);
                 if (streamChannel.equals('clear')) {
                     streamChannel = '';
                     $.inidb.set('promotesettings', 'streamchannel', '');
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.cleared'));
                 } else {
                     $.inidb.set('promotesettings', 'streamchannel', streamChannel);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.success', streamChannel));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.success', args[1]));
                 }
                 return;
             }

@@ -1,0 +1,52 @@
+<!--
+    Copyright (C) 2016-2020 phantombot.tv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Settings</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fas fa-sm fa-tachometer-alt ion"></i> Home</a></li>
+            <li class="active">Localization</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Localization</h3>
+            </div>
+            <form role="form">
+                <!-- Box content -->
+                <div class="box-body">
+                    <div class="btn-toolbar pull-right">
+                        <button class="btn btn-success btn-sm" type="button" id="save-button" data-toggle="tooltip"
+                            title="Save this current lang file." disabled><i class="far fa-sm fa-save"></i>&nbsp; Save</button>
+                        <button class="btn btn-warning btn-sm" type="button" id="add-line-button"
+                            data-toggle="tooltip" title="Add a new lang entry to this file." disabled><i class="fas fa-sm fa-plus"></i>&nbsp; Add Line</button>
+                        <button class="btn btn-primary btn-sm" type="button" id="load-file-button" data-toggle="tooltip"
+                            title="Load a lang file to edit."><i class="fas fa-sm fa-edit"></i>&nbsp; Edit File</button>
+                    </div>
+
+                    <table id="langTable" class="table table-bordered table-hover"></table>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- localization -->
+    <script src="js/pages/settings/localization.js"></script>
+</main>

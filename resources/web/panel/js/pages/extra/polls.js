@@ -16,23 +16,23 @@
  */
 
 // Function that querys all of the data we need.
-$(function() {
+$(function () {
     // Chart configs. This should not be changed.
-    let chartConfig = {"type": "pie", "data": {"datasets": [{"data": [], "backgroundColor": []}], "labels": [] }, "options": {"responsive": false, "title": {"display": true}}},
-        chartContext = $('#poll-chart').get(0).getContext('2d'),
-        chart = new Chart(chartContext, chartConfig),
-        isActive = false;
+    let chartConfig = {"type": "pie", "data": {"datasets": [{"data": [], "backgroundColor": []}], "labels": []}, "options": {"responsive": false, "title": {"display": true}}},
+            chartContext = $('#poll-chart').get(0).getContext('2d'),
+            chart = new Chart(chartContext, chartConfig),
+            isActive = false;
 
     /*
      * @function Inits the chart.
      */
-    const initChart = function() {
+    const initChart = function () {
         socket.getDBValues('get_poll_options', {
             tables: ['pollPanel', 'pollPanel'],
             keys: ['options', 'title']
-        }, true, function(e) {
+        }, true, function (e) {
             if (e.options !== null) {
-                socket.getDBTableValues('get_poll_votes', 'pollVotes', function(votes) {
+                socket.getDBTableValues('get_poll_votes', 'pollVotes', function (votes) {
                     // Set the chart title.
                     chartConfig.options.title.text = e.title;
                     // Set the labels.
@@ -65,8 +65,8 @@ $(function() {
     /*
      * @function Updates the chart during a poll.
      */
-    const updateChart = function() {
-        socket.getDBValue('get_poll_active_update', 'pollPanel', 'isActive', function(e) {
+    const updateChart = function () {
+        socket.getDBValue('get_poll_active_update', 'pollPanel', 'isActive', function (e) {
             if (e.pollPanel === 'false' || e.pollPanel === null) {
                 isActive = false;
                 return;
@@ -80,8 +80,8 @@ $(function() {
                 return;
             }
 
-            socket.getDBValue('get_poll_options_update', 'pollPanel', 'options', function(e) {
-                socket.getDBTableValues('get_poll_votes_update', 'pollVotes', function(votes) {
+            socket.getDBValue('get_poll_options_update', 'pollPanel', 'options', function (e) {
+                socket.getDBTableValues('get_poll_votes_update', 'pollVotes', function (votes) {
                     // Get all the data.
                     let ops = e.pollPanel.split(',');
 
@@ -108,11 +108,11 @@ $(function() {
      *
      * @param {Function} callback
      */
-    const resetPoll = function(callback) {
+    const resetPoll = function (callback) {
         socket.removeDBValues('reset_poll_options', {
             tables: ['pollPanel', 'pollPanel'],
             keys: ['options', 'isActive']
-        }, function() {
+        }, function () {
             // Reset the chart.
             resetChart();
             // Update the chart.
@@ -131,7 +131,7 @@ $(function() {
     /*
      * @function Resets the chart.
      */
-    const resetChart = function() {
+    const resetChart = function () {
         // Mark as not acive.
         isActive = false;
         // Reset the title.
@@ -145,7 +145,7 @@ $(function() {
     };
 
     // Reset poll button.
-    $('#reset-poll').on('click', function() {
+    $('#reset-poll').on('click', function () {
         resetPoll();
 
         if (isActive) {
@@ -155,8 +155,8 @@ $(function() {
     });
 
     // Close poll button.
-    $('#close-poll').on('click', function() {
-        socket.sendCommand('end_poll_cmd', 'poll close', function() {
+    $('#close-poll').on('click', function () {
+        socket.sendCommand('end_poll_cmd', 'poll close', function () {
             // Mark as not acive.
             isActive = false;
             // Alert the user.
@@ -165,52 +165,52 @@ $(function() {
     });
 
     // Open poll button.
-    $('#open-poll').on('click', function() {
+    $('#open-poll').on('click', function () {
         helpers.getModal('poll-open', 'Open Poll', 'Open', $('<form/>', {
             'role': 'form'
         })
-        // Append poll title.
-        .append(helpers.getTextAreaGroup('poll-title', 'text', 'Title', 'What is your favorite color?', '', 'Title of the poll.'))
-        // Append options.
-        .append(helpers.getInputGroup('poll-options', 'text', 'Options', 'Red, Green, Blue', '',
-            'Options to be voted on. Each option should be seperated with a comma and space.'))
-        // Append timer.
-        .append(helpers.getInputGroup('poll-timer', 'number', 'Timer (Seconds)', '', '0',
-            'How long in seconds the poll will be opened for. Default is until closed.'))
-        // Append min votes.
-        .append(helpers.getInputGroup('poll-votes', 'number', 'Minimum Votes', '', '1',
-            'How many votes it takes to choose a winning option. Default is one.')),
-        function() { // callback function.
-            let title = $('#poll-title'),
-                options = $('#poll-options'),
-                timer = $('#poll-timer'),
-                votes = $('#poll-votes');
+                // Append poll title.
+                .append(helpers.getTextAreaGroup('poll-title', 'text', 'Title', 'What is your favorite color?', '', 'Title of the poll.'))
+                // Append options.
+                .append(helpers.getInputGroup('poll-options', 'text', 'Options', 'Red, Green, Blue', '',
+                        'Options to be voted on. Each option should be seperated with a comma and space.'))
+                // Append timer.
+                .append(helpers.getInputGroup('poll-timer', 'number', 'Timer (Seconds)', '', '0',
+                        'How long in seconds the poll will be opened for. Default is until closed.'))
+                // Append min votes.
+                .append(helpers.getInputGroup('poll-votes', 'number', 'Minimum Votes', '', '1',
+                        'How many votes it takes to choose a winning option. Default is one.')),
+                function () { // callback function.
+                    let title = $('#poll-title'),
+                            options = $('#poll-options'),
+                            timer = $('#poll-timer'),
+                            votes = $('#poll-votes');
 
-            switch (false) {
-                case helpers.handleInputString(title):
-                case helpers.handleInputString(options):
-                case helpers.handleInputNumber(timer, 0):
-                case helpers.handleInputNumber(votes, 1):
-                    break;
-                default:
-                    // Reset the chart.
-                    resetChart();
-                    // Open the poll.
-                    socket.sendCommand('open_poll_cmd',
-                        'poll open "' + title.val() + '" "' + options.val() + '" ' + timer.val() + ' ' + votes.val(), function() {
-                        // Close the modal.
-                        $('#poll-open').modal('toggle');
-                        // Alert the user.
-                        toastr.success('Successfully opened the poll!');
-                    });
-            }
-        }).modal('toggle');
+                    switch (false) {
+                        case helpers.handleInputString(title):
+                        case helpers.handleInputString(options):
+                        case helpers.handleInputNumber(timer, 0):
+                        case helpers.handleInputNumber(votes, 1):
+                            break;
+                        default:
+                            // Reset the chart.
+                            resetChart();
+                            // Open the poll.
+                            socket.sendCommand('open_poll_cmd',
+                                    'poll open "' + title.val() + '" "' + options.val() + '" ' + timer.val() + ' ' + votes.val(), function () {
+                                // Close the modal.
+                                $('#poll-open').modal('toggle');
+                                // Alert the user.
+                                toastr.success('Successfully opened the poll!');
+                            });
+                    }
+                }).modal('toggle');
     });
 
     // Module toggle.
-    $('#pollSystemModuleToggle').on('change', function() {
+    $('#pollSystemModuleToggle').on('change', function () {
         socket.sendCommandSync('poll_system_module_toggle_cmd',
-            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/pollSystem.js', run);
+                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/pollSystem.js', run);
     });
 
     // Update the chart every 5 seconds.
@@ -218,20 +218,24 @@ $(function() {
 });
 
 // Handles the module toggle.
-$(run = function() {
-    socket.getDBValue('poll_module_status', 'modules', './systems/pollSystem.js', function(e) {
+$(run = function () {
+    socket.getDBValue('poll_module_status', 'modules', './systems/pollSystem.js', function (e) {
         if (!helpers.handleModuleLoadUp('pollSystemModule', e.modules)) {
             // Remove the chat.
             $('#twitch-chat-poll').find('iframe').remove();
             return;
         }
-
-        // Add Twitch chat.
-        $('#twitch-chat-poll').html($('<iframe/>', {
-            'frameborder': '0',
-            'scrolling': 'no',
-            'style': 'width: 100%; height: 561px; margin-bottom: -5px;',
-            'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
-        }));
+        if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
+            // Add Twitch chat.
+            $('#twitch-chat-poll').html($('<iframe/>', {
+                'frameborder': '0',
+                'scrolling': 'no',
+                'style': 'width: 100%; height: 561px; margin-bottom: -5px;',
+                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
+            }));
+        } else {
+            $('#twitch-chat-poll').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">this guide</a>.');
+            $('#twitch-chat-poll').addClass('box-body');
+        }
     });
 });
