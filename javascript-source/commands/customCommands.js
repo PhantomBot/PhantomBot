@@ -1126,6 +1126,10 @@
         return message;
     }
 
+    function addTagTransformer(tag, transformer) {
+        transformers[tag.toLowerCase()] = transformer;
+    }
+
     /*
      * @function permCom
      *
@@ -1895,6 +1899,7 @@
     $.priceCom = priceCom;
     $.getCommandPrice = getCommandPrice;
     $.tags = tags;
+    $.addTagTransformer = addTagTransformer;
     $.getCommandPay = getCommandPay;
     $.payCom = payCom;
     $.command = {
