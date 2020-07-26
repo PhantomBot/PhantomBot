@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+(function () {
     // Pre-build regular expressions.z
     var reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
-      customCommands = [],
-      ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
-      CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+            customCommands = [],
+            ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
 
-    function quoteRegex (str) {
+    function quoteRegex(str) {
         return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-    };
+    }
+    ;
 
     /*
      * @function getCustomAPIValue
@@ -89,13 +90,13 @@
 
     var transformers = (function () {
         var cmd,
-            flag,
-            i,
-            j,
-            keys,
-            match,
-            temp,
-            transformers;
+                flag,
+                i,
+                j,
+                keys,
+                match,
+                temp,
+                transformers;
 
         // (#): a random integer from 1 to 100
         // (# a:int, b:int): a random integer from a to b
@@ -179,8 +180,8 @@
         // (code=length:int): random code of of given lenght composed of a-zA-Z0-9
         function code(args) {
             var code,
-                length,
-                temp = '';
+                    length,
+                    temp = '';
             if ((match = args.match(/^=([1-9]\d*)$/))) {
                 code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 length = parseInt(match[1]);
@@ -304,12 +305,12 @@
         var JSONObject = Packages.org.json.JSONObject;
         function customapijson(args, event) {
             var customJSONStringTag,
-                jsonCheckList,
-                jsonItems,
-                jsonObject,
-                response,
-                responsePart,
-                result = '';
+                    jsonCheckList,
+                    jsonItems,
+                    jsonObject,
+                    response,
+                    responsePart,
+                    result = '';
             if ((match = args.match(/^ (\S+) (.+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
@@ -429,7 +430,7 @@
         // leading @ will be stripped from user if present
         function followage(args, event) {
             var channel,
-                user;
+                    user;
             if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
                 user = (match[1] || String(event.getSender())).replace(/^@/, '');
                 channel = (match[2] || String($.channelName)).replace(/^@/, '');
@@ -444,7 +445,7 @@
         // leading @ will be stripped from user if present
         function followdate(args, event) {
             var channel,
-                user;
+                    user;
             if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
                 user = (match[1] || String(event.getSender())).replace(/^@/, '');
                 channel = (match[2] || String($.channelName)).replace(/^@/, '');
@@ -469,7 +470,7 @@
         // (gameinfo): similar to (game) but include game time if online
         function gameinfo(args) {
             var game,
-                playtime;
+                    playtime;
             if (!args) {
                 game = $.getGame($.channelName);
                 if (!game.trim()) {
@@ -528,7 +529,7 @@
         // (keywordcount keyword:str): increase the keyword count for the given keyword and return new count
         function keywordcount(args) {
             var keyword,
-                keywordInfo;
+                    keywordInfo;
             if ((match = args.match(/^\s(.+)$/))) {
                 keyword = match[1];
                 if ($.inidb.exists('keywords', keyword)) {
@@ -716,7 +717,7 @@
         // (repeat n:int, message:str): repeat the message n times
         function repeat(args) {
             var MAX_COUNTER_VALUE = 30,
-                n;
+                    n;
             if ((match = args.match(/^\s([1-9]\d*),\s(.*)$/))) {
                 if (!match[2]) {
                     return {result: ''};
@@ -771,7 +772,7 @@
         // (team_member_followers team:str, membername:str): number of followers of user membername in your given team
         function team_member_followers(args) {
             var teamObj,
-                teamMember;
+                    teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
@@ -790,7 +791,7 @@
         // (team_member_game team:str, membername:str): game user membername in your given team currently plays
         function team_member_game(args) {
             var teamObj,
-                teamMember;
+                    teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
@@ -809,7 +810,7 @@
         // (team_member_url team:str, membername:str): url of user membername in your given team currently plays
         function team_member_url(args) {
             var teamObj,
-                teamMember;
+                    teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
@@ -1046,45 +1047,66 @@
      * @param {string} message
      * @return {string}
      */
-    function tags(event, message, atEnabled) {
+    function tags(event, message, atEnabled, localTransformers, disableGlobalTransformers) {
         var match,
-            tagFound = false,
-            transformed,
-            transformCache = {};
+                tagFound = false,
+                transformed,
+                transformCache = {};
+
+        if (disableGlobalTransformers === undefined) {
+            disableGlobalTransformers = false;
+        }
+
+        if (localTransformers === undefined) {
+            localTransformers = {};
+        }
+
         message += '';  // make sure this is a JS string, not a Java string
         while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s\|=()]*)([\s=\|](?:\\\(|\\\)|[^()])*)?\))/))) {
             var wholeMatch = match[1],
-                tagName = match[2].toLowerCase(),
-                tagArgs = match[3] ? unescapeTags(match[3]) : '';
+                    tagName = match[2].toLowerCase(),
+                    tagArgs = match[3] ? unescapeTags(match[3]) : '',
+                    thisTagFound = false;
             if (transformCache.hasOwnProperty(wholeMatch)) {
                 $.replace(message, wholeMatch, transformCache[wholeMatch]);
-            } else if (transformers.hasOwnProperty(tagName)
-                       && (transformed = transformers[tagName](tagArgs, event))) {
-                tagFound = true;
-                if (transformed.hasOwnProperty('cancel') && transformed.cancel) {
-                    return null;
-                }
-                if (!transformed.hasOwnProperty('raw') || !transformed.raw) {
-                    transformed.result = escapeTags(transformed.result)
-                }
-                if (transformed.hasOwnProperty('cache') && transformed.cache) {
-                    transformCache[wholeMatch] = transformed.result;
-                    message = $.replace(message, wholeMatch, transformed.result);
-                } else {
-                    // only replace the first appearance
-                    message = message.replace(wholeMatch, transformed.result);
+                thisTagFound = true;
+            } else {
+                if (localTransformers.hasOwnProperty(tagName)
+                        && (transformed = localTransformers[tagName](tagArgs, event))) {
+                    thisTagFound = true;
+                } else if (!disableGlobalTransformers && transformers.hasOwnProperty(tagName)
+                        && (transformed = transformers[tagName](tagArgs, event))) {
+                    thisTagFound = true;
                 }
 
-            } else {
+                if (thisTagFound) {
+                    tagFound = true;
+                    if (transformed.hasOwnProperty('cancel') && transformed.cancel) {
+                        return null;
+                    }
+                    if (!transformed.hasOwnProperty('raw') || !transformed.raw) {
+                        transformed.result = escapeTags(transformed.result)
+                    }
+                    if (transformed.hasOwnProperty('cache') && transformed.cache) {
+                        transformCache[wholeMatch] = transformed.result;
+                        message = $.replace(message, wholeMatch, transformed.result);
+                    } else {
+                        // only replace the first appearance
+                        message = message.replace(wholeMatch, transformed.result);
+                    }
+                }
+            }
+
+            if (!thisTagFound) {
                 message = $.replace(message, wholeMatch, '\\(' + wholeMatch.slice(1, -1) + '\\)');
             }
         }
 
         // custom commands without tags can be directed towards users by mods
         if (tagFound === -1
-            && atEnabled
-            && event.getArgs()[0] !== undefined
-            && $.isModv3(event.getSender(), event.getTags())) {
+                && atEnabled
+                && event.getArgs()[0] !== undefined
+                && $.isModv3(event.getSender(), event.getTags())) {
             return event.getArgs()[0] + ' -> ' + unescapeTags(message);
         }
 
@@ -1121,7 +1143,7 @@
             commandGroup = $.getSubcommandGroup(command, subcommand);
         }
 
-        switch(commandGroup) {
+        switch (commandGroup) {
             case 0:
                 allowed = $.isCaster(username);
                 break;
@@ -1198,11 +1220,11 @@
         subCommand = subCommand.toLowerCase();
         subCommandAction = subCommandAction.toLowerCase();
         return parseInt($.inidb.exists('pricecom', command + ' ' + subCommand + ' ' + subCommandAction) ?
-            $.inidb.get('pricecom', command + ' ' + subCommand + ' ' + subCommandAction) :
-            $.inidb.exists('pricecom', command + ' ' + subCommand) ?
-            $.inidb.get('pricecom', command + ' ' + subCommand) :
-            $.inidb.exists('pricecom', command) ?
-            $.inidb.get('pricecom', command) : 0);
+                $.inidb.get('pricecom', command + ' ' + subCommand + ' ' + subCommandAction) :
+                $.inidb.exists('pricecom', command + ' ' + subCommand) ?
+                $.inidb.get('pricecom', command + ' ' + subCommand) :
+                $.inidb.exists('pricecom', command) ?
+                $.inidb.get('pricecom', command) : 0);
     }
 
     /*
@@ -1222,7 +1244,7 @@
     function addComRegisterCommands() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
             var commands = $.inidb.GetKeyList('command', ''),
-                i;
+                    i;
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
                     customCommands[commands[i]] = $.inidb.get('command', commands[i]);
@@ -1238,7 +1260,7 @@
     function addComRegisterAliases() {
         if ($.bot.isModuleEnabled('./commands/customCommands.js')) {
             var aliases = $.inidb.GetKeyList('aliases', ''),
-                i;
+                    i;
             for (i in aliases) {
                 if (!$.commandExists(aliases[i])) {
                     $.registerChatCommand('./commands/customCommands.js', aliases[i], $.getIniDbNumber('permcom', aliases[i], 7));
@@ -1251,13 +1273,13 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argsString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                argsString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         /*
          * This handles custom commands, no command path is needed.
@@ -1515,7 +1537,7 @@
                 });
 
                 var list = $.inidb.GetKeyList('aliases', ''),
-                    i;
+                        i;
 
                 for (i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
@@ -1579,7 +1601,7 @@
                 $.inidb.set('pricecom', action, subAction);
 
                 var list = $.inidb.GetKeyList('aliases', ''),
-                    i;
+                        i;
 
                 for (i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
@@ -1649,7 +1671,7 @@
             $.inidb.set('paycom', action, subAction);
 
             var list = $.inidb.GetKeyList('aliases', ''),
-                i;
+                    i;
 
             for (i in list) {
                 if (list[i].equalsIgnoreCase(action)) {
@@ -1667,8 +1689,8 @@
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),
-                aliases = $.inidb.GetKeyList('aliases', ''),
-                cmdList = [];
+                    aliases = $.inidb.GetKeyList('aliases', ''),
+                    cmdList = [];
 
             for (idx in cmds) {
                 if (!$.inidb.exists('disabledCommands', cmds[idx])) {
@@ -1701,9 +1723,9 @@
          */
         if (command.equalsIgnoreCase('botcommands')) {
             var cmds = $.inidb.GetKeyList('permcom', ''),
-                idx,
-                totalPages,
-                cmdList = [];
+                    idx,
+                    totalPages,
+                    cmdList = [];
 
             for (idx in cmds) {
                 if (cmds[idx].indexOf(' ') !== -1) {
@@ -1820,7 +1842,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./commands/customCommands.js', 'addcom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'pricecom', 2);
         $.registerChatCommand('./commands/customCommands.js', 'paycom', 2);
@@ -1840,7 +1862,7 @@
     /*
      * @event webPanelSocketUpdate
      */
-    $.bind('webPanelSocketUpdate', function(event) {
+    $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             if (event.getArgs()[0] == 'remove') {
                 if (customCommands[event.getArgs()[1].toLowerCase()] !== undefined) {
