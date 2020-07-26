@@ -158,6 +158,10 @@
      * @return {String}
      */
     function getCommandScript(command) {
+        if (commands[command] === undefined) {
+            return "Undefined";
+        }
+
         return commands[command].script;
     }
 
