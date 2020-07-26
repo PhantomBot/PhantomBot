@@ -120,7 +120,7 @@
                 var arg = event.getArgs()[n - 1];
                 if (!args) {
                     return {result: arg !== undefined ? String(arg) : ''};
-                } else if ((match = args.match(/^[=\|](.+)$/))) {
+                } else if ((match = args.match(/^([=\|])(.+)$/))) {
                     if (arg !== undefined) {
                         return {result: String(arg)};
                     }
