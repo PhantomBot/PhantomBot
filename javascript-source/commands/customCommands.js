@@ -1054,7 +1054,7 @@
         message += '';  // make sure this is a JS string, not a Java string
         while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s\|=()]*)([\s=\|](?:\\\(|\\\)|[^()])*)?\))/))) {
             var wholeMatch = match[1],
-                tagName = match[2],
+                tagName = match[2].toLowerCase(),
                 tagArgs = match[3] ? unescapeTags(match[3]) : '';
             if (transformCache.hasOwnProperty(wholeMatch)) {
                 $.replace(message, wholeMatch, transformCache[wholeMatch]);
