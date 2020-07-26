@@ -250,6 +250,18 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         });
     }
 
+    public static Queue<Channel> getWsSessions(String uri) {
+        Queue<Channel> sessions = new ConcurrentLinkedQueue<>();
+
+        WS_SESSIONS.forEach((c) -> {
+            if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
+                sessions.add(c);
+            }
+        });
+
+        return sessions;
+    }
+
     /**
      * Registers a WS URI path to a {@link WsFrameHandler}
      *
