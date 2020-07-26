@@ -310,7 +310,7 @@
                 response,
                 responsePart,
                 result = '';
-            if ((match = args.match(/^ (\S+)$/))) {
+            if ((match = args.match(/^ (\S+) (.+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
                     match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
