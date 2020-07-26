@@ -1053,6 +1053,10 @@
                 transformed,
                 transformCache = {};
 
+        if (atEnabled === undefined) {
+            atEnabled = false;
+        }
+
         if (disableGlobalTransformers === undefined) {
             disableGlobalTransformers = false;
         }
