@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM diamol/openjdk:jdk as builder
+FROM adoptopenjdk:11-jdk-hotspot-bionic as builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG BASEDIR=/opt/${PROJECT_NAME}
@@ -40,7 +40,7 @@ RUN cd "${BUILDDIR}" \
     && ant -noinput -buildfile build.xml ${ANT_ARGS} jar
 
 # Application container
-FROM diamol/openjdk:latest
+FROM adoptopenjdk:11-jre-hotspot-bionic
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
