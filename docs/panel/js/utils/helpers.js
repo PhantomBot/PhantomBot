@@ -1166,6 +1166,13 @@ $(function() {
     };
 
     helpers.setupAuth = function() {
+        if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires')) {
+            if (window.localStorage.getItem('expires') > Date.now()) {
+                window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
+            } else {
+                window.sessionStorage.removeItem('webauth');
+            }
+        }
         window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
     }
 
