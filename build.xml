@@ -3,7 +3,7 @@
 
     <!--
 
-    Copyright (C) 2016-2020 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.2.3" />
+    <property name="version" value="3.3.0" />
     <!-- Please see this for version numbers: https://semver.org/ -->
     <property name="webpanel.version" value="1.1.0" />
     <property name="src" location="source" />
