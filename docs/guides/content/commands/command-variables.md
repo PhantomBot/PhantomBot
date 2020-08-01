@@ -70,6 +70,18 @@ Bot: Your lucky number is  7
 
 &nbsp;
 
+#### **`(# x, y)`:**
+- Generates a random number from x to y.
+
+**Example:**
+```
+Caster:  !addcom !lucky Your lucky number is (# 250, 500)
+User: !lucky
+Bot: Your lucky number is 487
+```
+
+&nbsp;
+
 #### **`(1)`:**
 - Specific argument after a command. This is  limited to 9 arguments currently.
 
