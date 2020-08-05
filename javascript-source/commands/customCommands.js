@@ -859,7 +859,7 @@
         function team_random_member(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
-                teamObj = $.twitchteamscache.getTeam(teamName);
+                teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {result: String(teamObj.getRandomMember())};
                 } else {
@@ -872,7 +872,7 @@
         function team_url(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
-                teamObj = $.twitchteamscache.getTeam(teamName);
+                teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {result: String(teamObj.getUrl())};
                 } else {
