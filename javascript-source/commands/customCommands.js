@@ -122,6 +122,8 @@
          * @formula (n:int) the n-th argument (escaped by default)
          * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
          * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
+         * @raw sometimes
+         * @cached
          */
         function buildArgs(n) {
             return function (args, event) {
@@ -130,11 +132,15 @@
                     return {result: arg !== undefined ? String(arg) : ''};
                 } else if ((match = args.match(/^([=\|])(.*)$/))) {
                     if (arg !== undefined) {
-                        return {result: String(arg)};
+                        return {
+                            result: String(arg),
+                            cache: true
+                        };
                     }
                     return {
                         result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
-                        raw: $.equalsIgnoreCase(match[1], '=')
+                        raw: $.equalsIgnoreCase(match[1], '='),
+                        cache: true
                     };
                 }
             };
@@ -143,10 +149,14 @@
         /*
          * @transformer atSender
          * @formula (@sender) '@<Sender's Name>, '
+         * @cached
          */
         function atSender(args, event) {
             if (!args) {
-                return {result: String($.userPrefix(event.getSender(), true))};
+                return {
+                    result: String($.userPrefix(event.getSender(), true)),
+                    cache: true
+                };
             }
         }
 
@@ -169,7 +179,7 @@
         function age(args, event) {
             if (!args) {
                 $.getChannelAge(event);
-                return {cancel: 'true'};
+                return {cancel: true};
             }
         }
 
@@ -205,7 +215,10 @@
          */
         function channelname(args) {
             if (!args) {
-                return {result: String($.username.resolve($.channelName))};
+                return {
+                    result: String($.username.resolve($.channelName)),
+                    cache: true
+                };
             }
         }
 
@@ -287,6 +300,7 @@
          * @transformer countdown
          * @formula (countdown=datetime:str) shows the time remaining until the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         * @cached
          */
         function countdown(args) {
             if ((match = args.match(/^=(.*)$/))) {
@@ -295,7 +309,10 @@
                     return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
                 }
                 temp -= Date.parse($.getLocalTime());
-                return {result: String($.getCountString(temp / 1000, false))};
+                return {
+                    result: String($.getCountString(temp / 1000, false)),
+                    cache: true
+                };
             }
         }
 
@@ -303,6 +320,7 @@
          * @transformer countup
          * @formula (countup=datetime:str) shows the time elapsed since the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         * @cached
          */
         function countup(args) {
             if ((match = args.match(/^=(.*)$/))) {
@@ -311,7 +329,10 @@
                     return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
                 }
                 temp = Date.parse($.getLocalTime()) - temp;
-                return {result: String($.getCountString(temp / 1000, true))};
+                return {
+                    result: String($.getCountString(temp / 1000, true)),
+                    cache: true
+                };
             }
         }
 
@@ -320,10 +341,14 @@
          * @formula (currenttime timezone:str, format:str) shows the current date/time in given timezone, using the provided output format
          * @notes for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html
          * @notes for information about accepted timezone strings, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/TimeZone.html
+         * @cached
          */
         function currenttime(args) {
             if ((match = args.match(/^ (.+), (.*)$/))) {
-                return {result: String($.getCurrentLocalTimeString(match[2], match[1]))};
+                return {
+                    result: String($.getCurrentLocalTimeString(match[2], match[1])),
+                    cache: true
+                };
             }
         }
 
@@ -464,10 +489,14 @@
         /*
          * @transformer downtime
          * @formula (downtime) how long the channel has been offline
+         * @cached
          */
         function downtime(args) {
             if (!args) {
-                return {result: String($.getStreamDownTime())};
+                return {
+                    result: String($.getStreamDownTime()),
+                    cache: true
+                };
             }
         }
 
@@ -484,20 +513,28 @@
         /*
          * @transformer encodeurl
          * @formula (encodeurl url:str) url encode the given url
+         * @cached
          */
         function encodeurl(args) {
             if ((match = args.match(/^ (.*)$/))) {
-                return {result: encodeURI(match[1])};
+                return {
+                    result: encodeURI(match[1]),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer encodeurlparam
          * @formula (encodeurlparam paramter:str) like encodeurl but also ecapes "&", "=", "+", "/", etc.
+         * @cached
          */
         function encodeurlparam(args) {
             if ((match = args.match(/^ (.*)$/))) {
-                return {result: encodeURIComponent(match[1])};
+                return {
+                    result: encodeURIComponent(match[1]),
+                    cache: true
+                };
             }
         }
 
@@ -524,6 +561,7 @@
          * @formula (followdate) the date the sender of this command last followed this channel
          * @formula (followdate user:str) the date the provided user last followed this channel
          * @formula (followdate user:str channel:str) the date the provided user last followed the provided channel
+         * @cached
          */
         function followdate(args, event) {
             var channel,
@@ -531,33 +569,45 @@
             if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
                 user = (match[1] || String(event.getSender())).replace(/^@/, '');
                 channel = (match[2] || String($.channelName)).replace(/^@/, '');
-                return {result: String($.getFollowDate(event.getSender(), user, channel))};
+                return {
+                    result: String($.getFollowDate(event.getSender(), user, channel)),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer follows
          * @formula (follows) number of follower of this channel
+         * @cached
          */
         function follows(args) {
             if (!args) {
-                return {result: String($.getFollows($.channelName))};
+                return {
+                    result: String($.getFollows($.channelName)),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer game
          * @formula (game) currently played game
+         * @cached
          */
         function game(args) {
             if (!args) {
-                return {result: String($.getGame($.channelName))};
+                return {
+                    result: String($.getGame($.channelName)),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer gameinfo
          * @formula (gameinfo) similar to (game) but include game time if online
+         * @cached
          */
         function gameinfo(args) {
             var game,
@@ -565,11 +615,20 @@
             if (!args) {
                 game = $.getGame($.channelName);
                 if (!game.trim()) {
-                    return {result: $.lang.get('streamcommand.game.no.game')};
+                    return {
+                        result: $.lang.get('streamcommand.game.no.game'),
+                        cache: true
+                    };
                 } else if (!$.isOnline($.channelName) || !(playtime = $.getPlayTime())) {
-                    return {result: $.lang.get('streamcommand.game.offline', game)};
+                    return {
+                        result: $.lang.get('streamcommand.game.offline', game),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('streamcommand.game.online', $.getGame($.channelName), playtime)};
+                    return {
+                        result: $.lang.get('streamcommand.game.online', $.getGame($.channelName), playtime),
+                        cache: true
+                    };
                 }
             }
         }
@@ -592,6 +651,7 @@
          * @transformer gamesplayed
          * @formula (gamesplayed) list games played in current stream; if offline, cancels the command
          * @cancels sometimes
+         * @cached
          */
         function gamesplayed(args, event) {
             if (!args) {
@@ -599,7 +659,10 @@
                     $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
                     return {cancel: true};
                 }
-                return {result: String($.getGamesPlayed())};
+                return {
+                    result: String($.getGamesPlayed()),
+                    cache: true
+                };
             }
         }
 
@@ -623,12 +686,16 @@
          * @transformer hours
          * @formula (hours) number of hours sender has spent in chat
          * @formula (hours user:str) number of hours the provided user has spent in chat
+         * @cached
          */
         function hours(args, event) {
             var user;
             if ((match = args.match(/^(?: (.*))?$/))) {
                 user = (match[1] || String(event.getSender())).replace(/^@/, '');
-                return {result: String($.getUserTime(user) / 3600)};
+                return {
+                    result: String($.getUserTime(user) / 3600),
+                    cache: true
+                };
             }
         }
 
@@ -659,13 +726,20 @@
         /*
          * @transformer lasttip
          * @formula (lasttip) last tip message
+         * @cached
          */
         function lasttip(args) {
             if (!args) {
                 if ($.inidb.exists('donations', 'last_donation_message')) {
-                    return {result: String($.inidb.get('donations', 'last_donation_message'))};
+                    return {
+                        result: String($.inidb.get('donations', 'last_donation_message')),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('customcommands.lasttip.404')};
+                    return {
+                        result: $.lang.get('customcommands.lasttip.404'),
+                        cache: true
+                    };
                 }
             }
         }
@@ -704,6 +778,7 @@
          * @transformer pay
          * @formula (pay) outputs the number of points the sender has gained by using this command
          * @formula (pay command:str) outputs the number of points the sender would gain if they use the specified command
+         * @cached
          */
         function pay(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
@@ -713,7 +788,10 @@
                 } else {
                     temp = 0;
                 }
-                return {result: String($.getPointsString(temp))};
+                return {
+                    result: String($.getPointsString(temp)),
+                    cache: true
+                };
             }
         }
 
@@ -736,6 +814,7 @@
          * @transformer playtime
          * @formula (playtime) how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
          * @cancels sometimes
+         * @cached
          */
         function playtime(args, event) {
             if (!args) {
@@ -743,7 +822,10 @@
                     $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
                     return {cancel: true};
                 }
-                return {result: String($.getPlayTime() || '')}
+                return {
+                    result: String($.getPlayTime() || ''),
+                    cache: true
+                }
             }
         }
 
@@ -761,6 +843,7 @@
          * @transformer pointtouser
          * @formula (pointtouser) sender + ' -> '
          * @formula (pointtouser user:str) user + ' -> '
+         * @cached
          */
         function pointtouser(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
@@ -769,7 +852,10 @@
                 } else {
                     temp = $.username.resolve(event.getSender()) + ' -> ';
                 }
-                return {result: temp};
+                return {
+                    result: temp,
+                    cache: true
+                };
             }
         }
 
@@ -777,11 +863,15 @@
          * @transformer points
          * @formula (points) points of the sender
          * @formula (points user:str) points of the given user
+         * @cached
          */
         function points(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 match[1] = match[1] ? match[1].replace(/^@/, '') : event.getSender();
-                return {result: String($.getUserPoints(match[1]))};
+                return {
+                    result: String($.getUserPoints(match[1])),
+                    cache: true
+                };
             }
         }
 
@@ -789,6 +879,7 @@
          * @transformer price
          * @formula (price) the number of points the sender paid to use this command
          * @formula (price command:str) the number of points the sender would pay if they use the specified command
+         * @cached
          */
         function price(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
@@ -798,7 +889,10 @@
                 } else {
                     temp = 0;
                 }
-                return {result: String($.getPointsString(temp))};
+                return {
+                    result: String($.getPointsString(temp)),
+                    cache: true
+                };
             }
         }
 
@@ -840,15 +934,22 @@
          * @transformer readfile
          * @formula (readfile filename:str) first line of the specified file
          * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+         * @cached
          */
         function readfile(args) {
             var fileName;
             if ((match = args.match(/^ (.+)$/))) {
                 fileName = './addons/' + match[1].replace(/\.\./g, '');
                 if (!$.fileExists(fileName)) {
-                    return {result: $.lang.get('customcommands.file.404', fileName)};
+                    return {
+                        result: $.lang.get('customcommands.file.404', fileName),
+                        cache: true
+                    };
                 }
-                return {result: String($.readFile(fileName)[0] || '')};
+                return {
+                    result: String($.readFile(fileName)[0] || ''),
+                    cache: true
+                };
             }
         }
 
@@ -873,6 +974,7 @@
          * @transformer repeat
          * @formula (repeat n:int, message:str) repeat the message n times (copy/paste)
          * @note the value of n is limited to a maximum of 30
+         * @cached
          */
         function repeat(args) {
             var MAX_COUNTER_VALUE = 30,
@@ -892,47 +994,66 @@
                 for (i = 0; i < n; i++) {
                     temp.push(match[2]);
                 }
-                return {result: temp.join(' ')};
+                return {
+                    result: temp.join(' '),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer sender
          * @formula (sender) the sender's display name
+         * @cached
          */
         function sender(args, event) {
             if (!args) {
-                return {result: String($.username.resolve(event.getSender()))};
+                return {
+                    result: String($.username.resolve(event.getSender())),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer senderrank
          * @formula (senderrank) the sender's display name, prefixed with their rank
+         * @cached
          */
         function senderrank(args, event) {
             if (!args) {
-                return {result: String($.resolveRank(event.getSender()))};
+                return {
+                    result: String($.resolveRank(event.getSender())),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer senderrankonly
          * @formula (senderrankonl) the sender's rank
+         * @cached
          */
         function senderrankonly(args, event) {
             if (!args) {
-                return {result: String($.getRank(event.getSender()))};
+                return {
+                    result: String($.getRank(event.getSender())),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer status
          * @formula (status) the current stream title
+         * @cached
          */
         function status(args) {
             if (!args) {
-                return {result: String($.getStatus($.channelName))};
+                return {
+                    result: String($.getStatus($.channelName)),
+                    cache: true
+                };
             }
         }
 
@@ -940,16 +1061,21 @@
          * @transformer subscribers
          * @formula (subscribers) number of subscribers of this channel
          * @notes only works if the apioauth in botlogin.txt belongs to the broadcaster
+         * @cached
          */
         function subscribers(args) {
             if (!args) {
-                return {result: String($.getSubscriberCount() + ' ')};
+                return {
+                    result: String($.getSubscriberCount() + ' '),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer team_member_followers
          * @formula (team_member_followers team:str, membername:str) number of followers of user membername in the provided team
+         * @cached
          */
         function team_member_followers(args) {
             var teamObj,
@@ -959,12 +1085,21 @@
                 if (teamObj != null) {
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
-                        return {result: String(teamMember.get('followers'))};
+                        return {
+                            result: String(teamMember.get('followers')),
+                            cache: true
+                        };
                     } else {
-                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                        return {
+                            result: $.lang.get('customcommands.teamapi.member.404', match[1]),
+                            cache: true
+                        };
                     }
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[2]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -972,6 +1107,7 @@
         /*
          * @treansformer team_member_game
          * @formula (team_member_game team:str, membername:str) game user membername in the provided team currently plays
+         * @cached
          */
         function team_member_game(args) {
             var teamObj,
@@ -981,12 +1117,21 @@
                 if (teamObj != null) {
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
-                        return {result: String(teamMember.getString('game'))};
+                        return {
+                            result: String(teamMember.getString('game')),
+                            cache: true
+                        };
                     } else {
-                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                        return {
+                            result: $.lang.get('customcommands.teamapi.member.404', match[1]),
+                            cache: true
+                        };
                     }
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[2]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -994,6 +1139,7 @@
         /*
          * @transformer team_member_url
          * @formula (team_member_url team:str, membername:str) url of user membername in the provided team
+         * @cached
          */
         function team_member_url(args) {
             var teamObj,
@@ -1003,12 +1149,21 @@
                 if (teamObj != null) {
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
-                        return {result: String(teamMember.getString('url'))};
+                        return {
+                            result: String(teamMember.getString('url')),
+                            cache: true
+                        };
                     } else {
-                        return {result: $.lang.get('customcommands.teamapi.member.404', match[1])};
+                        return {
+                            result: $.lang.get('customcommands.teamapi.member.404', match[1]),
+                            cache: true
+                        };
                     }
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[2])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[2]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1016,15 +1171,22 @@
         /*
          * @transformer team_members
          * @formula (team_members team:str) number of members in the provided team
+         * @cached
          */
         function team_members(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
-                    return {result: String(teamObj.getTotalMembers())};
+                    return {
+                        result: String(teamObj.getTotalMembers()),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[1]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1032,15 +1194,22 @@
         /*
          * @transformer team_name
          * @formula (team_name team:str) name of the provided team
+         * @cached
          */
         function team_name(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
-                    return {result: String(teamObj.getName())};
+                    return {
+                        result: String(teamObj.getName()),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[1]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1054,9 +1223,15 @@
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
-                    return {result: String(teamObj.getRandomMember())};
+                    return {
+                        result: String(teamObj.getRandomMember()),
+                        cache: false
+                    };
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[1]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1064,15 +1239,22 @@
         /*
          * @transformer team_url
          * @formula (team_url team:str) url to the provided team
+         * @cached
          */
         function team_url(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
-                    return {result: String(teamObj.getUrl())};
+                    return {
+                        result: String(teamObj.getUrl()),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('customcommands.teamapi.team.404', match[1])};
+                    return {
+                        result: $.lang.get('customcommands.teamapi.team.404', match[1]),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1080,17 +1262,27 @@
         /*
          * @transformer titleinfo
          * @formula (titleinfo) title + uptime if online
+         * @cached
          */
         function titleinfo(args) {
             var status;
             if (!args) {
                 status = $.getStatus($.channelName);
                 if (!status.trim()) {
-                    return {result: $.lang.get('streamcommand.title.no.title')};
+                    return {
+                        result: $.lang.get('streamcommand.title.no.title'),
+                        cache: true
+                    };
                 } else if (!$.isOnline($.channelName)) {
-                    return {result: $.lang.get('streamcommand.title.offline', status)};
+                    return {
+                        result: $.lang.get('streamcommand.title.offline', status),
+                        cache: true
+                    };
                 } else {
-                    return {result: $.lang.get('streamcommand.title.online', status, String($.getStreamUptime($.channelName)))};
+                    return {
+                        result: $.lang.get('streamcommand.title.online', status, String($.getStreamUptime($.channelName))),
+                        cache: true
+                    };
                 }
             }
         }
@@ -1099,6 +1291,7 @@
          * @transformer touser
          * @formula (touser) sender's display name
          * @formula (touser name:str) provided user's display name
+         * @cached
          */
         function touser(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
@@ -1107,19 +1300,26 @@
                 } else {
                     temp = event.getSender();
                 }
-                return {result: String($.username.resolve(temp))};
+                return {
+                    result: String($.username.resolve(temp)),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer unescape
          * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
-         * @notes this may reveal more valid command tags, which will then be processed
          * @raw
+         * @cached
          */
         function unescape(args) {
             if ((match = args.match(/^ (.*)$/))) {
-                return {result: match[1], raw: true};
+                return {
+                    result: match[1],
+                    raw: true,
+                    cache: true
+                };
             }
         }
 
@@ -1127,6 +1327,7 @@
          * @transformer uptime
          * @formula (uptime) how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
          * @cancels sometimes
+         * @cached
          */
         function uptime(args, event) {
             if (!args) {
@@ -1134,7 +1335,10 @@
                     $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
                     return {cancel: true};
                 }
-                return {result: $.getStreamUptime($.channelName)};
+                return {
+                    result: $.getStreamUptime($.channelName),
+                    cache: true
+                };
             }
         }
 
@@ -1161,20 +1365,28 @@
         /*
          * @transformer viewers
          * @formula (viewers) number of current viewers
+         * @cached
          */
         function viewers(args) {
             if (!args) {
-                return {result: String($.getViewers($.channelName) + ' ')};
+                return {
+                    result: String($.getViewers($.channelName) + ' '),
+                    cache: true
+                };
             }
         }
 
         /*
          * @transformer views
          * @formula (views) number of total view count for the stream
+         * @cached
          */
         function views(args) {
             if (!args) {
-                return {result: String($.twitchcache.getViews())};
+                return {
+                    result: String($.twitchcache.getViews()),
+                    cache: true
+                };
             }
         }
 
