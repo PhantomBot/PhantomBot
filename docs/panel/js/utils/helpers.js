@@ -1210,7 +1210,7 @@ $(function() {
     };
     
     helpers.toggleDebug = function() {
-        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') != 1 ? 1 : 0);
+        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') != '1' ? '1' : '0');
         helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
         helpers.log('Debug Output set to ' + helpers.DEBUG_STATE, helpers.LOG_TYPE.FORCE);
     }
