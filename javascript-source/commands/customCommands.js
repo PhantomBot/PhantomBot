@@ -1144,14 +1144,17 @@
          * @cancels sometimes
          */
         function useronly(args, event) {
-            if ((match = args.match(/^=(.*)$/))) {
-                if (!event.getSender().equalsIgnoreCase(match[1])) {
-                    if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                        $.say($.whisperPrefix(event.getSender()) + $.lang.get('cmd.useronly', match[1]));
+            if (args.match(/^=(.*)$/).length > 0) {
+                match = args.match(/(\w+)/);
+                for (var x in match) {
+                    if (event.getSender().equalsIgnoreCase(x)) {
+                        return {result: ''};
                     }
-                    return {cancel: true};
                 }
-                return {result: ''};
+                if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                    $.say($.whisperPrefix(event.getSender()) + $.lang.get('cmd.useronly', args.substring(1)));
+                }
+                return {cancel: true};
             }
         }
 
