@@ -726,6 +726,9 @@
                 if (n > MAX_COUNTER_VALUE) {
                     n = MAX_COUNTER_VALUE;
                 }
+                if (n < 1) {
+                    n = 1;
+                }
                 temp = [];
                 for (i = 0; i < n; i++) {
                     temp.push(match[2]);
