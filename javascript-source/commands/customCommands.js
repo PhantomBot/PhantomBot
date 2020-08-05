@@ -98,8 +98,11 @@
                 temp,
                 transformers;
 
-        // (#): a random integer from 1 to 100
-        // (# a:int, b:int): a random integer from a to b
+        /*
+         * @transformer randomInt
+         * @formula (#) a random integer from 1 to 100, inclusive
+         * @formula (# a:int, b:int) a random integer from a to b, inclusive
+         */
         function randomInt(args) {
             if (!args) {
                 return {
@@ -114,8 +117,12 @@
             }
         }
 
-        // (n:int): the n-th argument (escaped by default)
-        // (n:int=tag:str): the n-th argument if given else to the be expanded tag
+        /*
+         * @transformer buildArgs
+         * @formula (n:int) the n-th argument (escaped by default)
+         * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
+         * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
+         */
         function buildArgs(n) {
             return function (args, event) {
                 var arg = event.getArgs()[n - 1];
@@ -130,24 +137,35 @@
                         raw: $.equalsIgnoreCase(match[1], '=')
                     };
                 }
-            }
+            };
         }
 
-        // (@sender): '@<Sender's Name>, '
+        /*
+         * @transformer atSender
+         * @formula (@sender) '@<Sender's Name>, '
+         */
         function atSender(args, event) {
             if (!args) {
                 return {result: String($.userPrefix(event.getSender(), true))};
             }
         }
 
-        // (adminonlyedit): ''
+        /*
+         * @transformer adminonlyedit
+         * @formula (adminonlyedit) returns blank
+         * @notes metatag that prevents anyone but the broadcaster or admins from editing the command
+         */
         function adminonlyedit(args) {
             if (!args) {
                 return {result: ''};
             }
         }
 
-        // (age): output the channel's age and exit
+        /*
+         * @transformer age
+         * @formula (age) outputs the age of the broadcaster's Twitch account
+         * @cancels
+         */
         function age(args, event) {
             if (!args) {
                 $.getChannelAge(event);
@@ -155,7 +173,15 @@
             }
         }
 
-        // (alert name:str): fire off the given alert
+        /*
+         * @transformer alert
+         * @formula (alert fileName:str) sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
+         * @formula (alert fileName:str, durationSeconds:int) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
+         * @formula (alert fileName:str, durationSeconds:int, volume:float) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
+         * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
+         * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
+         * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
+         */
         function alert(args) {
             if ((match = args.match(/^ ([,.\w\W]+)$/))) {
                 $.panelsocketserver.alertImage(match[1]);
@@ -163,21 +189,30 @@
             }
         }
 
-        // (baresender): the message's sender
+        /*
+         * @transformer baresender
+         * @formula (baresender) the login name of the message's sender
+         */
         function baresender(args, event) {
             if (!args) {
                 return {result: String(event.getSender())};
             }
         }
 
-        // (channelname): name of the twitch channel
+        /*
+         * @transformer channelname
+         * @formula (channelname) the display name of the Twitch channel
+         */
         function channelname(args) {
             if (!args) {
                 return {result: String($.username.resolve($.channelName))};
             }
         }
 
-        // (code=length:int): random code of of given lenght composed of a-zA-Z0-9
+        /*
+         * @transformer code
+         * @formula (code=length:int) random code of the given length composed of a-zA-Z0-9
+         */
         function code(args) {
             var code,
                     length,
@@ -191,12 +226,16 @@
                 return {
                     result: temp,
                     cache: false
-                }
+                };
             }
         }
 
-        // (command name:str): execute command with given name and pass no args then exit
-        // (command name:str args:str): execute command with given name and pass args then exit
+        /*
+         * @transformer command
+         * @formula (command name:str) execute command with given name and pass no args
+         * @formula (command name:str args:str) execute command with given name and pass args
+         * @cancels
+         */
         function command(args, event) {
             var argStr;
             if ((match = args.match(/^\s(\S+)(?:\s(.*))?$/))) {
@@ -211,8 +250,12 @@
             }
         }
 
-        // (commandslist): lists custom commands (paginated) and exit.
-        // (commandslist prefix:str): prefix + lists custom commands (paginated) and exit.
+        /*
+         * @transformer commandslist
+         * @formula (commandslist) lists custom commands (paginated)
+         * @formula (commandslist prefix:str) lists custom commands (paginated) with a prefix in the output
+         * @cancels
+         */
         function commandslist(args, event) {
             var prefix;
             if ((match = args.match(/^(?:\s(.*))?$/))) {
@@ -229,7 +272,10 @@
             }
         }
 
-        // (count): increases the count of how often this command has been called and output new count
+        /*
+         * @transformer count
+         * @formula (count) increases the count of how often this command has been called and output new count
+         */
         function count(args, event) {
             if (!args) {
                 $.inidb.incr('commandCount', event.getCommand(), 1);
@@ -237,7 +283,11 @@
             }
         }
 
-        // (countdown=datetime:str): count down to given datetime
+        /*
+         * @transformer countdown
+         * @formula (countdown=datetime:str) shows the time remaining until the given datetime
+         * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         */
         function countdown(args) {
             if ((match = args.match(/^=(.*)$/))) {
                 temp = Date.parse(match[1]);
@@ -249,7 +299,11 @@
             }
         }
 
-        // (countup=datetime:str): count up to given datetime
+        /*
+         * @transformer countup
+         * @formula (countup=datetime:str) shows the time elapsed since the given datetime
+         * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         */
         function countup(args) {
             if ((match = args.match(/^=(.*)$/))) {
                 temp = Date.parse(match[1]);
@@ -261,15 +315,24 @@
             }
         }
 
-        // (currenttime timezone:str, format:str): current date/time in given timezone
+        /*
+         * @transformer currenttime
+         * @formula (currenttime timezone:str, format:str) shows the current date/time in given timezone, using the provided output format
+         * @notes for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html
+         * @notes for information about accepted timezone strings, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/TimeZone.html
+         */
         function currenttime(args) {
             if ((match = args.match(/^ (.+), (.*)$/))) {
                 return {result: String($.getCurrentLocalTimeString(match[2], match[1]))};
             }
         }
 
-        // (customapi url:str): http GET url and output returned text (escaped by default)
-        // $1-$9 in url will be expanded to the command's arguments
+        /*
+         * @transformer customapi
+         * @formula (customapi url:str) http GET url and output returned text (escaped by default)
+         * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
+         * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
+         */
         function customapi(args, event) {
             if ((match = args.match(/^\s(.+)$/))) {
                 cmd = event.getCommand();
@@ -296,11 +359,13 @@
             }
         }
 
-        // (customapijson url:str specs:str): httpGet url and extract json info according to specs (escaped by default)
-        // Design Note.  As of this comment, this parser only supports parsing out of objects, it does not
-        // support parsing of arrays, especially walking arrays.  If that needs to be done, please write
-        // a custom JavaScript.  We limit $1 - $9 as well; 10 or more arguments being passed by users to an
-        // API seems like overkill.  Even 9 does, to be honest.
+        /*
+         * @transformer customapijson
+         * @formula (customapijson url:str specs:str) httpGet url and extract json info according to specs (escaped by default)
+         * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
+         * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
+         * @notes the response must be a JSONObject. arrays are only supported with a known index, walking arrays is not supported
+         */
         var reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
         var JSONObject = Packages.org.json.JSONObject;
         function customapijson(args, event) {
@@ -396,38 +461,53 @@
             }
         }
 
-        // (downtime): how long the channel has been offline
+        /*
+         * @transformer downtime
+         * @formula (downtime) how long the channel has been offline
+         */
         function downtime(args) {
             if (!args) {
                 return {result: String($.getStreamDownTime())};
             }
         }
 
-        // (echo): all arguments passed to the command
+        /*
+         * @transformer echo
+         * @formula (echo) all arguments passed to the command
+         */
         function echo(args, event) {
             if (!args) {
-                return {result: event.getArguments() ? String(event.getArguments()) : ''}
+                return {result: event.getArguments() ? String(event.getArguments()) : ''};
             }
         }
 
-        // (encodeurl url:str): url encode the given url
+        /*
+         * @transformer encodeurl
+         * @formula (encodeurl url:str) url encode the given url
+         */
         function encodeurl(args) {
             if ((match = args.match(/^ (.*)$/))) {
                 return {result: encodeURI(match[1])};
             }
         }
 
-        // (encodeurlparam paramter:str): like encodeurl but also ecapes "&", "=", "+", "/", etc.
+        /*
+         * @transformer encodeurlparam
+         * @formula (encodeurlparam paramter:str) like encodeurl but also ecapes "&", "=", "+", "/", etc.
+         */
         function encodeurlparam(args) {
             if ((match = args.match(/^ (.*)$/))) {
                 return {result: encodeURIComponent(match[1])};
             }
         }
 
-        // (followage): send message how long sender of command is following this channel and exit
-        // (followage user:str): send message how long given user is following this channel and exit
-        // (followage user:str channel:str): send message how long given user is following given channel and exit
-        // leading @ will be stripped from user if present
+        /*
+         * @transformer followage
+         * @formula (followage) sends a message denoting how long the sender of command is following this channel
+         * @formula (followage user:str) sends a message denoting how long the provided user is following this channel
+         * @formula (followage user:str channel:str) sends a message denoting how long the provided user is following the provided channel
+         * @cancels
+         */
         function followage(args, event) {
             var channel,
                     user;
@@ -439,10 +519,12 @@
             }
         }
 
-        // (followdate): date since when sender of command is following this channel
-        // (followdate user:str): date since when given user is following this channel
-        // (followdate user:str channel:str): date since when given user is following given channel
-        // leading @ will be stripped from user if present
+        /*
+         * @transformer followdate
+         * @formula (followdate) the date the sender of this command last followed this channel
+         * @formula (followdate user:str) the date the provided user last followed this channel
+         * @formula (followdate user:str channel:str) the date the provided user last followed the provided channel
+         */
         function followdate(args, event) {
             var channel,
                     user;
@@ -453,21 +535,30 @@
             }
         }
 
-        // (follows): number of follower of this channel
+        /*
+         * @transformer follows
+         * @formula (follows) number of follower of this channel
+         */
         function follows(args) {
             if (!args) {
-                return {result: String($.getFollows($.channelName))}
+                return {result: String($.getFollows($.channelName))};
             }
         }
 
-        // (game): currently played game
+        /*
+         * @transformer game
+         * @formula (game) currently played game
+         */
         function game(args) {
             if (!args) {
                 return {result: String($.getGame($.channelName))};
             }
         }
 
-        // (gameinfo): similar to (game) but include game time if online
+        /*
+         * @transformer gameinfo
+         * @formula (gameinfo) similar to (game) but include game time if online
+         */
         function gameinfo(args) {
             var game,
                     playtime;
@@ -483,7 +574,11 @@
             }
         }
 
-        // (gameonly=name:str): exit if current game of this channel does not match
+        /*
+         * @transformer gameonly
+         * @formula (gameonly=name:str) cancels the command if the current game does not exactly match the one provided
+         * @cancels sometimes
+         */
         function gameonly(args) {
             if ((match = args.match(/^=(.*)$/))) {
                 if (!$.getGame($.channelName).equalsIgnoreCase(match[1])) {
@@ -493,7 +588,11 @@
             }
         }
 
-        // (gamesplayed): list games played in current stream; if offline, tell sender so and exit
+        /*
+         * @transformer gamesplayed
+         * @formula (gamesplayed) list games played in current stream; if offline, cancels the command
+         * @cancels sometimes
+         */
         function gamesplayed(args, event) {
             if (!args) {
                 if (!$.isOnline($.channelName)) {
@@ -504,7 +603,11 @@
             }
         }
 
-        // (help=message:str): say message and exit if no arguments are passed to the command; '' otherwise
+        /*
+         * @formula help
+         * @formula (help=message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
+         * @cancels sometimes
+         */
         function help(args, event) {
             if ((match = args.match(/^=(.*)$/))) {
                 if (event.getArgs()[0] === undefined) {
@@ -516,8 +619,11 @@
             }
         }
 
-        // (hours): number of hours sender has spent watching the channel
-        // (hours user:str): number of hours the given sender has spent in this channel's chat
+        /*
+         * @transformer hours
+         * @formula (hours) number of hours sender has spent in chat
+         * @formula (hours user:str) number of hours the provided user has spent in chat
+         */
         function hours(args, event) {
             var user;
             if ((match = args.match(/^(?: (.*))?$/))) {
@@ -526,7 +632,10 @@
             }
         }
 
-        // (keywordcount keyword:str): increase the keyword count for the given keyword and return new count
+        /*
+         * @transformer keywordcount
+         * @formula (keywordcount keyword:str) increase the keyword count for the given keyword and return new count
+         */
         function keywordcount(args) {
             var keyword,
                     keywordInfo;
@@ -547,7 +656,10 @@
             }
         }
 
-        // (lasttip): last tip message
+        /*
+         * @transformer lasttip
+         * @formula (lasttip) last tip message
+         */
         function lasttip(args) {
             if (!args) {
                 if ($.inidb.exists('donations', 'last_donation_message')) {
@@ -558,7 +670,11 @@
             }
         }
 
-        // (offlineonly): exit if channel is not offline else ''
+        /*
+         * @transformer offlineonly
+         * @formula (offlineonly) if the channel is not offline, cancels the command
+         * @cancels sometimes
+         */
         function offlineonly(args, event) {
             if (!args) {
                 if ($.isOnline($.channelName)) {
@@ -569,7 +685,11 @@
             }
         }
 
-        // (onlineonly): exit if channel is not online else ''
+        /*
+         * @transformer onlineonly
+         * @formula (onlineonly) if the channel is not online, cancels the command
+         * @cancels sometimes
+         */
         function onlineonly(args, event) {
             if (!args) {
                 if (!$.isOnline($.channelName)) {
@@ -580,8 +700,11 @@
             }
         }
 
-        // (pay): how much points this command will give
-        // (pay command:str): how much points the given command will give
+        /*
+         * @transformer pay
+         * @formula (pay) outputs the number of points the sender has gained by using this command
+         * @formula (pay command:str) outputs the number of points the sender would gain if they use the specified command
+         */
         function pay(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 cmd = match[1] || event.getCommand();
@@ -594,7 +717,10 @@
             }
         }
 
-        // (playsound hook:str): play a sound hook
+        /*
+         * @transformer playsound
+         * @formula (playsound hook:str) plays a sound hook on the alerts overlay
+         */
         function playsound(args) {
             if ((match = args.match(/^\s([a-zA-Z0-9_]+)$/))) {
                 if (!$.audioHookExists(match[1])) {
@@ -606,8 +732,11 @@
             }
         }
 
-        // (playtime): how long this channel has streamed current game
-        //             if currently offline, tell sender and exit
+        /*
+         * @transformer playtime
+         * @formula (playtime) how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
+         * @cancels sometimes
+         */
         function playtime(args, event) {
             if (!args) {
                 if (!$.isOnline($.channelName)) {
@@ -618,15 +747,21 @@
             }
         }
 
-        // (pointname): the plural name of you loyalty points
+        /*
+         * @transformer pointname
+         * @formula (pointname) the plural name of the loyalty points
+         */
         function pointname(args) {
             if (!args) {
                 return {result: String($.pointNameMultiple)};
             }
         }
 
-        // (pointtouser): like (@sender)
-        // (pointtouser user:str): user name + ' -> '
+        /*
+         * @transformer pointtouser
+         * @formula (pointtouser) sender + ' -> '
+         * @formula (pointtouser user:str) user + ' -> '
+         */
         function pointtouser(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 if (match[1]) {
@@ -638,8 +773,11 @@
             }
         }
 
-        // (points): points of the sender
-        // (points user:str): points of the given user; leading @ will be stripped
+        /*
+         * @transformer points
+         * @formula (points) points of the sender
+         * @formula (points user:str) points of the given user
+         */
         function points(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 match[1] = match[1] ? match[1].replace(/^@/, '') : event.getSender();
@@ -647,8 +785,11 @@
             }
         }
 
-        // (price): how much points this command costs
-        // (price command:str): how much points the given command costs
+        /*
+         * @transformer price
+         * @formula (price) the number of points the sender paid to use this command
+         * @formula (price command:str) the number of points the sender would pay if they use the specified command
+         */
         function price(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 cmd = match[1] || event.getCommand();
@@ -661,7 +802,10 @@
             }
         }
 
-        // (random): random user in chat or the bot's name if chat is empty
+        /*
+         * @transformer random
+         * @formula (random) random user in chat, or the bot's name if chat is empty
+         */
         function random(args) {
             if (!args) {
                 try {
@@ -675,7 +819,10 @@
             }
         }
 
-        // (randomrank): a random user in chat or the bot if chat is empty + their rank
+        /*
+         * @transformer randomrank
+         * @formula (randomrank) random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
+         */
         function randomrank(args) {
             if (!args) {
                 try {
@@ -689,7 +836,11 @@
             }
         }
 
-        // (readfile filename:str): first line of file addons/filename
+        /*
+         * @transformer readfile
+         * @formula (readfile filename:str) first line of the specified file
+         * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+         */
         function readfile(args) {
             var fileName;
             if ((match = args.match(/^ (.+)$/))) {
@@ -701,7 +852,11 @@
             }
         }
 
-        // (readfilerand filename:str): random line of file addons/filename
+        /*
+         * @transformer readfilerand
+         * @formula (readfilerand filename:str) random line of the specified file
+         * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+         */
         function readfilerand(args) {
             var fileName;
             if ((match = args.match(/^ (.+)$/))) {
@@ -714,7 +869,11 @@
             }
         }
 
-        // (repeat n:int, message:str): repeat the message n times
+        /*
+         * @transformer repeat
+         * @formula (repeat n:int, message:str) repeat the message n times (copy/paste)
+         * @note the value of n is limited to a maximum of 30
+         */
         function repeat(args) {
             var MAX_COUNTER_VALUE = 30,
                     n;
@@ -737,42 +896,61 @@
             }
         }
 
-        // (sender): the sender's name
+        /*
+         * @transformer sender
+         * @formula (sender) the sender's display name
+         */
         function sender(args, event) {
             if (!args) {
                 return {result: String($.username.resolve(event.getSender()))};
             }
         }
 
-        // (senderrank): sender's rank + ' ' + sender's name
+        /*
+         * @transformer senderrank
+         * @formula (senderrank) the sender's display name, prefixed with their rank
+         */
         function senderrank(args, event) {
             if (!args) {
                 return {result: String($.resolveRank(event.getSender()))};
             }
         }
 
-        // (senderrankonly): sender's rank
+        /*
+         * @transformer senderrankonly
+         * @formula (senderrankonl) the sender's rank
+         */
         function senderrankonly(args, event) {
             if (!args) {
                 return {result: String($.getRank(event.getSender()))};
             }
         }
 
-        // (status): twitch status of this channel
+        /*
+         * @transformer status
+         * @formula (status) the current stream title
+         */
         function status(args) {
             if (!args) {
                 return {result: String($.getStatus($.channelName))};
             }
         }
 
-        // (subscribers): number of subscribers of this channel
+        /*
+         * @transformer subscribers
+         * @formula (subscribers) number of subscribers of this channel
+         * @notes only works if the apioauth in botlogin.txt belongs to the broadcaster
+         */
         function subscribers(args) {
             if (!args) {
                 return {result: String($.getSubscriberCount() + ' ')};
             }
         }
 
-        // (team_member_followers team:str, membername:str): number of followers of user membername in your given team
+        /*
+         * @transformer team_member_followers
+         * @formula (team_member_followers team:str, membername:str) number of followers of user membername in the provided team
+         */
         function team_member_followers(args) {
             var teamObj,
                     teamMember;
@@ -791,7 +969,10 @@
             }
         }
 
-        // (team_member_game team:str, membername:str): game user membername in your given team currently plays
+        /*
+         * @treansformer team_member_game
+         * @formula (team_member_game team:str, membername:str) game user membername in the provided team currently plays
+         */
         function team_member_game(args) {
             var teamObj,
                     teamMember;
@@ -810,7 +991,10 @@
             }
         }
 
-        // (team_member_url team:str, membername:str): url of user membername in your given team currently plays
+        /*
+         * @transformer team_member_url
+         * @formula (team_member_url team:str, membername:str) url of user membername in the provided team
+         */
         function team_member_url(args) {
             var teamObj,
                     teamMember;
@@ -829,7 +1013,10 @@
             }
         }
 
-        // (team_members team:str): number of members in your given team
+        /*
+         * @transformer team_members
+         * @formula (team_members team:str) number of members in the provided team
+         */
         function team_members(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
@@ -842,7 +1029,10 @@
             }
         }
 
-        // (team_name team:str): name of your given team
+        /*
+         * @transformer team_name
+         * @formula (team_name team:str) name of the provided team
+         */
         function team_name(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
@@ -855,7 +1045,10 @@
             }
         }
 
-        // (team_random_member team:str): random member of your given team
+        /*
+         * @transformer team_random_member
+         * @formula (team_random_member team:str) random member of the provided team
+         */
         function team_random_member(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
@@ -868,7 +1061,10 @@
             }
         }
 
-        // (team_url team:str): url to your given team
+        /*
+         * @transformer team_url
+         * @formula (team_url team:str) url to the provided team
+         */
         function team_url(args) {
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
@@ -881,7 +1077,10 @@
             }
         }
 
-        // (titleinfo): title + uptime if online
+        /*
+         * @transformer titleinfo
+         * @formula (titleinfo) title + uptime if online
+         */
         function titleinfo(args) {
             var status;
             if (!args) {
@@ -896,8 +1095,11 @@
             }
         }
 
-        // (touser): sender's name
-        // (touser name:str): given user's name
+        /*
+         * @transformer touser
+         * @formula (touser) sender's display name
+         * @formula (touser name:str) provided user's display name
+         */
         function touser(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
                 if (match[1]) {
@@ -909,16 +1111,23 @@
             }
         }
 
-        // (unescape str:str): unescape \\ \( \) to \ ( ) respectively
-        // NOTE: this might cause more substitutions and should only be applied
-        // to trusted strings.
+        /*
+         * @transformer unescape
+         * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
+         * @notes this may reveal more valid command tags, which will then be processed
+         * @raw
+         */
         function unescape(args) {
             if ((match = args.match(/^ (.*)$/))) {
                 return {result: match[1], raw: true};
             }
         }
 
-        // (uptime): how long the channel has been streaming this session. If offline, notify user and exit.
+        /*
+         * @transformer uptime
+         * @formula (uptime) how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
+         * @cancels sometimes
+         */
         function uptime(args, event) {
             if (!args) {
                 if (!$.isOnline($.channelName)) {
@@ -929,9 +1138,11 @@
             }
         }
 
-        // (useronly=name:str): if sender does not match, tell user so
-        //                      (given permComMsgEnabled in settings is set) and exit;
-        //                      '' otherwise.
+        /*
+         * @transformer useronly
+         * @formula (useronly=name:str) only allows the given user to use the command; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
+         * @cancels sometimes
+         */
         function useronly(args, event) {
             if ((match = args.match(/^=(.*)$/))) {
                 if (!event.getSender().equalsIgnoreCase(match[1])) {
@@ -944,22 +1155,31 @@
             }
         }
 
-        // (viewers): number of current viewers
+        /*
+         * @transformer viewers
+         * @formula (viewers) number of current viewers
+         */
         function viewers(args) {
             if (!args) {
                 return {result: String($.getViewers($.channelName) + ' ')};
             }
         }
 
-        // (views): number of total views
+        /*
+         * @transformer views
+         * @formula (views) number of total view count for the stream
+         */
         function views(args) {
             if (!args) {
                 return {result: String($.twitchcache.getViews())};
             }
         }
 
-        // (writefile filename:str, append:bool, text:str): write text to addons/filename
-        //                                                  if append is 'true', append to file else overwrite
+        /*
+         * @transformer writefile
+         * @formula (writefile filename:str, append:bool, text:str) writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
+         * @notes files will be placed in the addons folder, or a subfolder therein specified by the filename parameter
+         */
         function writefile(args) {
             var fileName;
             if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
@@ -1034,7 +1254,7 @@
             'useronly': useronly,
             'viewers': viewers,
             'views': views,
-            'writefile': writefile,
+            'writefile': writefile
         };
         for (i = 1; i <= 9; i++) {
             transformers[String(i)] = buildArgs(i);
