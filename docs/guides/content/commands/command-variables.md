@@ -4,6 +4,10 @@
 
 &nbsp;
 
+<!-- toc -->
+
+&nbsp;
+
 #### **`(sender)`:**
 - This will be replace in your  command response with the username who triggered the command.
 
@@ -459,7 +463,7 @@ Bot: 10 subscribers!
 
 &nbsp;
 
-### Team tags:
+#### Team tags:
 - `(team_members <team_name>)` - Number of participants
 - `(team_url <team_name>)` - Link to team
 - `(team_name <team_name>)` - Full team name
@@ -482,10 +486,10 @@ Caster: !keyword add uptime command:uptime
 
 &nbsp;
 
-## Custom API and Custom API JSON:
+#### Custom API and Custom API JSON:
 To  allow for a great deal of flexibility with PhantomBot, we are happy to provide new  tags for custom commands.
 
-### Custom API:
+##### Custom API:
 
 `!addcom` tag: **(customapi URL)**
 *URL*  may contain *$1...$9* to pass parameters from chat as input to the URL.
@@ -494,7 +498,7 @@ The **customapi**  tag will pull a given URL and display the information exactly
 `!addcom joke  (customapi http://not.real.com/joke.php?name=$1)`
 This would send a request and  pass *name* with a value given as the first parameter to *!joke* in chat. Note that  if a *$1...$9* parameter is given, the bot will require parameters before executing  the command.
 
-### Custom API JSON:
+##### Custom API JSON:
 
 `!addcom` tag: **(customapijson URL key  | object.key | object.object...key | {literal string} ...)**
 *URL* may contain  *$1...$9* to pass parameters from chat as input to the URL.
@@ -508,14 +512,14 @@ The  **customapijson** tag will pull a given URL and expects to receive a JSON o
 
 The  above will create a new command that queries the given API and returns the value  associated with the <em>joke</em> key.
 
-#### Another example:
+###### Another example:
 (customapijson  http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name  {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})`
 
 The  above will create a new command that queries the given API and requires a parameter  to be given in to the command. In this instance, a weather API is queried and the  return string will be:
 **Weather for city name**: *(current weather)*
 **Temps**:  *Temp in F, Temp in C*
 
-#### To step through a bit further:
+###### To step through a bit further:
 *location.name* parses  the top level <em>location</em> object and then returns the value associated with  the *name* key.
 *current.condition.text* parses the top level *current* object  and then moves to the *condition* object to return the value associated with the  *text* key.
 *current.temp_f and current_temp_c* parse the top level *current* object  and return the value associated with the given keys, *temp_f* and *temp_c*.
