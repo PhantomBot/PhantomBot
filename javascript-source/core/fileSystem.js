@@ -307,7 +307,7 @@
         var p = Paths.get(path);
 
         for (var x in validPaths) {
-            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, x))) {
+            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, validPaths[x]))) {
                 return false;
             }
         }
