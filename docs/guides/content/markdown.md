@@ -215,7 +215,7 @@ function(param) {
 - `apache` - Apache HTTPd Configuration
 - `bash` - Bash Script
 - `css` - Cascading Style Sheet
-- `ini` - INI COnfiguration File
+- `ini` - INI Configuration File
 - `java` - Java
 - `javascript` - JavaScript
 - `json` - JSON Object

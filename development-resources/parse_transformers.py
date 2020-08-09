@@ -17,10 +17,10 @@
 
 # /*
 #  * @[|local]transformer functionName
-#  * @formula... (tag[|:type][|=|\|][| var:type...]) description
+#  * @formula... (tag[|:type][|=|\|][| var:type...]) description?
 #  * @notes?... text
 #  * multi-line allowed
-#  * @example?... code block
+#  * @example?... text
 #  * multi-line allowed
 #  * @raw?[| sometimes]
 #  * @cached?
@@ -31,6 +31,8 @@
 
 import copy
 import os
+
+md_path = "./docs/guides/content/commands/command-variables.md"
 
 gtransformers = []
 ltransformers = []
@@ -132,9 +134,112 @@ def parse_file(fpath, lines):
                     if "sometimes" in line:
                         transformer["cancelsSometimes"] = True
 
+def output_transformer(transformer, hlevel):
+    lines = []
+    h = "#"
+    while h.len() < hlevel:
+        h = h + "#"
+    lines.append(h + " " + transformer["function"] + '\n')
+    lines.append('\n')
+    lines.append("Defined in script: _" + transformer["script"] + "_" + '\n')
+    lines.append('\n')
+    lines.append("**Formulas:**" + '\n')
+    lines.append('\n')
+    for formula in transformer["formulas"]:
+        line = "- `" + formula["formula"] + "`"
+        if formula["desc"].len() > 0:
+            line = line + " - " + formula["desc"]
+        lines.append(line + '\n')
+    if transformer["notes"].len() > 0:
+        lines.append('\n')
+        for note in transformer["notes"]:
+            lines.append('\n')
+            first = True
+            for nline in note:
+                if first:
+                    first = False
+                    lines.append("> _NOTE: " + nline + "_" + '\n')
+                else:
+                    lines.append(">" + '\n')
+                    lines.append("> _" + nline + "_" + '\n')
+    if transformer["examples"].len() > 0:
+        lines.append('\n')
+        for example in transformer["examples"]:
+            lines.append('\n')
+            lines.append("**Example:**" + '\n')
+            lines.append("```text" + '\n')
+            for eline in example:
+                lines.append(eline + '\n')
+            lines.append("```" + '\n')
+    lines.append('\n')
+    lines.append('Raw?[^raw]&nbsp; | Cached?[^cached]&nbsp; | Cancels?[^cancels]\n')
+    lines.append('-------|-----------|----------\n')
+    line = ""
+    if transformer["raw"]:
+        if transformer["rawSometimes"]:
+            line = line + "Sometimes | "
+        else:
+            line = line + "Yes | "
+    else:
+        line = line + "No | "
+    if transformer["cached"]:
+        line = line + "Yes | "
+    else:
+        line = line + "No | "
+    if transformer["cancels"]:
+        if transformer["cancelsSometimes"]:
+            line = line + "Sometimes"
+        else:
+            line = line + "Yes"
+    else:
+        line = line + "No"
+    lines.append(line + '\n')
+    lines.append('\n')
+    lines.append("&nbsp;" + '\n')
+    lines.append('\n')
+    return lines
+
 for subdir, dirs, files in os.walk("./javascript-source"):
     for fname in files:
         fpath = subdir + os.sep + fname
         if fpath.endswith(".js"):
             with open(fpath) as js_file:
                 parse_file(fpath, [line.rstrip('\n') for line in js_file])
+
+lines = []
+
+with open(md_path) as md_file:
+    oldlines = [line.rstrip('\n') for line in md_file]
+
+for line in oldlines:
+    lines.append(line + '\n')
+    if "<!-- tocstop -->" in line:
+        break
+
+lines.append('\n')
+lines.append("&nbsp;" + '\n')
+lines.append('\n')
+lines.append("## Global Command Tags" + '\n')
+lines.append('\n')
+lines.append("[^raw]: If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped" + '\n')
+lines.append('\n')
+lines.append("[^cached]: If _Yes_, the results of this tag, with the exact arguments presented, are temporarily cached and will not be re-processed for the rest of the current command, speeding up execution if the tag is used multiple times. The cache is cleared after every command execution" + '\n')
+lines.append('\n')
+lines.append("[^cancels]: If _Yes_, this tag will cancel execution of the command, but may still send output through chat, ignoring any formatting in the command. If _Sometimes_, then some return conditions may cancel execution of the command" + '\n')
+lines.append('\n')
+
+for transformer in gtransformers:
+    lines.extend(output_transformer(transformer), 3)
+
+if ltransformers.len() > 0:
+    lines.append("## Local Command Tags" + '\n')
+    lines.append('\n')
+    lines.append("_These command tags are only available in the scripts which defined them_" + '\n')
+    lines.append('\n')
+    lines.append("_Some scripts may also restrict the use of global command tags_" + '\n')
+    lines.append('\n')
+    for transformer in ltransformers:
+        lines.extend(output_transformer(transformer), 3)
+
+with open(md_path, "w") as md_file:
+    md_file.writelines(lines)
