@@ -520,7 +520,7 @@ The  above will create a new command that queries the given API and requires a p
 **Temps**:  *Temp in F, Temp in C*
 
 ###### To step through a bit further:
-*location.name* parses  the top level <em>location</em> object and then returns the value associated with  the *name* key.
+*location.name* parses  the top level **location** object and then returns the value associated with  the *name* key.
 *current.condition.text* parses the top level *current* object  and then moves to the *condition* object to return the value associated with the  *text* key.
 *current.temp_f and current_temp_c* parse the top level *current* object  and return the value associated with the given keys, *temp_f* and *temp_c*.
 *{Weather  for}, {:}, {Temps:}, {F} and {C}* are literal strings that are printed out.
