@@ -1301,17 +1301,17 @@
          * @cached
          */
         function touser(args, event) {
-            if ((match = args.match(/^(?:\s(.*))?$/))) {
-                if (match[1]) {
-                    temp = match[1].replace(/[^a-zA-Z0-9_@]/g, '');
-                } else {
-                    temp = event.getSender();
-                }
-                return {
-                    result: String($.username.resolve(temp)),
-                    cache: true
-                };
+            temp = '';
+            if (event.getArgs().length > 0) {
+                temp = event.getArgs()[0].replace(/[^a-zA-Z0-9_@]/g, '');
             }
+            if (temp.length === 0) {
+                temp = event.getSender();
+            }
+            return {
+                result: String($.username.resolve(temp)),
+                cache: true
+            };
         }
 
         /*
