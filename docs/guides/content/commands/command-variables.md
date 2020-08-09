@@ -508,12 +508,12 @@ This would send a request and  pass *name* with a value given as the first param
 *{literal string}* is text to place between queried values.
 
 The  **customapijson** tag will pull a given URL and expects to receive a JSON object  from the web service. An understanding of JSON objects is highly recommended in  order to know what to use as the mapping guide. Note that the JSON parser will not  attempt to traverse arrays and find specific elements, this will only select objects  and a key. The key must relate to an integer or string value. The following is an  example:
-!addcom yomomma (customapijson http://api.yomomma.info/ joke)`
+`!addcom yomomma (customapijson http://api.yomomma.info/ joke)`
 
 The  above will create a new command that queries the given API and returns the value  associated with the <em>joke</em> key.
 
 ###### Another example:
-(customapijson  http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name  {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})`
+`(customapijson  http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name  {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})`
 
 The  above will create a new command that queries the given API and requires a parameter  to be given in to the command. In this instance, a weather API is queried and the  return string will be:
 **Weather for city name**: *(current weather)*

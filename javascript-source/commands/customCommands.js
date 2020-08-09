@@ -1075,6 +1075,7 @@
         /*
          * @transformer team_member_followers
          * @formula (team_member_followers team:str, membername:str) number of followers of user membername in the provided team
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_member_followers(args) {
@@ -1105,8 +1106,9 @@
         }
 
         /*
-         * @treansformer team_member_game
+         * @transformer team_member_game
          * @formula (team_member_game team:str, membername:str) game user membername in the provided team currently plays
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_member_game(args) {
@@ -1139,6 +1141,7 @@
         /*
          * @transformer team_member_url
          * @formula (team_member_url team:str, membername:str) url of user membername in the provided team
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_member_url(args) {
@@ -1171,6 +1174,7 @@
         /*
          * @transformer team_members
          * @formula (team_members team:str) number of members in the provided team
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_members(args) {
@@ -1194,6 +1198,7 @@
         /*
          * @transformer team_name
          * @formula (team_name team:str) name of the provided team
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_name(args) {
@@ -1217,6 +1222,7 @@
         /*
          * @transformer team_random_member
          * @formula (team_random_member team:str) random member of the provided team
+         * @notes the team parameter should be the url slug for the team
          */
         function team_random_member(args) {
             var teamObj;
@@ -1239,6 +1245,7 @@
         /*
          * @transformer team_url
          * @formula (team_url team:str) url to the provided team
+         * @notes the team parameter should be the url slug for the team
          * @cached
          */
         function team_url(args) {
