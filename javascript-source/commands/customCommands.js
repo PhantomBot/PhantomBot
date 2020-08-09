@@ -102,6 +102,9 @@
          * @transformer randomInt
          * @formula (#) a random integer from 1 to 100, inclusive
          * @formula (# a:int, b:int) a random integer from a to b, inclusive
+         * @example Caster: !addcom !lucky Your lucky number is (#)
+         * User: !lucky
+         * Bot: Your lucky number is 7
          */
         function randomInt(args) {
             if (!args) {
@@ -122,6 +125,9 @@
          * @formula (n:int) the n-th argument (escaped by default)
          * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
          * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
+         * @example Caster: !addcom !love (sender) loves (1).
+         * User: !love monkeys
+         * Bot: User loves monkeys.
          * @raw sometimes
          * @cached
          */
@@ -149,6 +155,9 @@
         /*
          * @transformer atSender
          * @formula (@sender) '@<Sender's Name>, '
+         * @example Caster: !addcom !hello (@sender) you are awesome!
+         * User: !hello
+         * Bot: @User, you're awesome!
          * @cached
          */
         function atSender(args, event) {
@@ -164,6 +173,7 @@
          * @transformer adminonlyedit
          * @formula (adminonlyedit) returns blank
          * @notes metatag that prevents anyone but the broadcaster or admins from editing the command
+         * @example Caster: !addcom !playtime Current playtime: (playtime). (adminonlyedit)
          */
         function adminonlyedit(args) {
             if (!args) {
@@ -173,7 +183,13 @@
 
         /*
          * @transformer age
-         * @formula (age) outputs the age of the broadcaster's Twitch account
+         * @formula (age) outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
+         * @example Caster: !addcom !age (age)
+         * User: !age
+         * Bot: @User, user has been on Twitch since April 19, 2009.
+         *
+         * User: !age User2
+         * Bot: @User, user2 has been on Twitch since December 25, 2010.
          * @cancels
          */
         function age(args, event) {
@@ -191,6 +207,7 @@
          * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
          * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
          * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
+         * @example Caster: !addcom !banana (alert banana.gif)
          */
         function alert(args) {
             if ((match = args.match(/^ ([,.\w\W]+)$/))) {
@@ -225,6 +242,9 @@
         /*
          * @transformer code
          * @formula (code=length:int) random code of the given length composed of a-zA-Z0-9
+         * @example Caster: !addcom !code (code=5)
+         * User: !code
+         * Bot: A1D4f
          */
         function code(args) {
             var code,
@@ -288,6 +308,9 @@
         /*
          * @transformer count
          * @formula (count) increases the count of how often this command has been called and output new count
+         * @example Caster:  !addcom !spam Chat has been spammed (count) times
+         * User: !spam
+         * Bot: Chat has been spammed 5050 times.
          */
         function count(args, event) {
             if (!args) {
@@ -300,6 +323,9 @@
          * @transformer countdown
          * @formula (countdown=datetime:str) shows the time remaining until the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         * @example Caster: !addcom !count Time Left: (countdown=December 23 2017 23:59:59 GMT+0200)
+         * User: !count
+         * Bot: Time Left: 20 hours, 30 minutes and 55 seconds.
          * @cached
          */
         function countdown(args) {
@@ -320,6 +346,9 @@
          * @transformer countup
          * @formula (countup=datetime:str) shows the time elapsed since the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+         * @example Caster: !addcom !ago You missed it by (countup=December 23 2017 23:59:59 GMT+0200)
+         * User: !ago
+         * Bot: You missed it by 20 hours, 30 minutes and 55 seconds.
          * @cached
          */
         function countup(args) {
@@ -357,6 +386,10 @@
          * @formula (customapi url:str) http GET url and output returned text (escaped by default)
          * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
          * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
+         * @notes this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage
+         * @example Caster: !addcom !joke (customapi http://not.real.com/joke.php?name=$1)
+         * User: !joke bear
+         * Bot: These jokes are un-bear-able
          */
         function customapi(args, event) {
             if ((match = args.match(/^\s(.+)$/))) {
@@ -390,6 +423,10 @@
          * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
          * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
          * @notes the response must be a JSONObject. arrays are only supported with a known index, walking arrays is not supported
+         * @notes multiple specs can be provided, separated by spaces; curly braces can be used to enclose literal strings
+         * @example Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
+         * User: !weather 80314
+         * Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
          */
         var reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
         var JSONObject = Packages.org.json.JSONObject;
@@ -503,6 +540,9 @@
         /*
          * @transformer echo
          * @formula (echo) all arguments passed to the command
+         * @example Caster: !addcom !echo (echo)
+         * User: !echo test test
+         * Bot: test test
          */
         function echo(args, event) {
             if (!args) {
@@ -543,6 +583,9 @@
          * @formula (followage) sends a message denoting how long the sender of command is following this channel
          * @formula (followage user:str) sends a message denoting how long the provided user is following this channel
          * @formula (followage user:str channel:str) sends a message denoting how long the provided user is following the provided channel
+         * @example Caster: !addcom !followage (followage)
+         * User: !followage
+         * Bot: @User, user has been following channel PhantomBot since March 29, 2016. (340 days)
          * @cancels
          */
         function followage(args, event) {
@@ -579,6 +622,9 @@
         /*
          * @transformer follows
          * @formula (follows) number of follower of this channel
+         * @example Caster: !addcom !follows We currently have (follows) followers!
+         * User: !follows
+         * Bot: We currently have 1000 followers!
          * @cached
          */
         function follows(args) {
@@ -593,6 +639,9 @@
         /*
          * @transformer game
          * @formula (game) currently played game
+         * @example Caster: !addcom !game (pointtouser) current  game is: (game)
+         * User: !game
+         * Bot: User -> current game is: Programming
          * @cached
          */
         function game(args) {
@@ -607,6 +656,9 @@
         /*
          * @transformer gameinfo
          * @formula (gameinfo) similar to (game) but include game time if online
+         * @example Caster: !addcom !game (pointtouser) Current game: (gameinfo).
+         * User: !game
+         * Bot: User -> Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
          * @cached
          */
         function gameinfo(args) {
@@ -649,7 +701,10 @@
 
         /*
          * @transformer gamesplayed
-         * @formula (gamesplayed) list games played in current stream; if offline, cancels the command
+         * @formula (gamesplayed) list games played in current stream, and the approximate uptime when each game was started; if offline, cancels the command
+         * @example Caster: !addcom !gamesplayed Games played in this stream: (gamesplayed)
+         * User: !gamesplayed
+         * Bot: Games played in this stream: Creative - 00:00, Programming - 02:30
          * @cancels sometimes
          * @cached
          */
@@ -747,6 +802,7 @@
         /*
          * @transformer offlineonly
          * @formula (offlineonly) if the channel is not offline, cancels the command
+         * @example Caster: !addcom !downtime The stream as been offline for (downtime). (offlineonly)
          * @cancels sometimes
          */
         function offlineonly(args, event) {
@@ -762,6 +818,7 @@
         /*
          * @transformer onlineonly
          * @formula (onlineonly) if the channel is not online, cancels the command
+         * @example Caster: !addcom !uptime (pointtouser) (channelname) has been live for (uptime). (onlineonly)
          * @cancels sometimes
          */
         function onlineonly(args, event) {
@@ -798,6 +855,7 @@
         /*
          * @transformer playsound
          * @formula (playsound hook:str) plays a sound hook on the alerts overlay
+         * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
          */
         function playsound(args) {
             if ((match = args.match(/^\s([a-zA-Z0-9_]+)$/))) {
@@ -813,6 +871,9 @@
         /*
          * @transformer playtime
          * @formula (playtime) how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
+         * @example Caster: !addcom !playtime Current playtime: (playtime).
+         * User: !playtime
+         * Bot: Current playtime: 30 minutes.
          * @cancels sometimes
          * @cached
          */
@@ -832,6 +893,9 @@
         /*
          * @transformer pointname
          * @formula (pointname) the plural name of the loyalty points
+         * @example Caster: !addcom !pointsname (sender) current points name is set to: (pointname)
+         * User: !pointsname
+         * Bot: User current points name is set to: points
          */
         function pointname(args) {
             if (!args) {
@@ -843,6 +907,12 @@
          * @transformer pointtouser
          * @formula (pointtouser) sender + ' -> '
          * @formula (pointtouser user:str) user + ' -> '
+         * @example Caster:  !addcom !facebook (pointtouser) like my Facebook page!
+         * User: !facebook
+         * Bot: User ->  like my Facebook page!
+         *
+         * User: !facebook User2
+         * Bot: User2 -> like my Facebook  page!
          * @cached
          */
         function pointtouser(args, event) {
@@ -879,6 +949,9 @@
          * @transformer price
          * @formula (price) the number of points the sender paid to use this command
          * @formula (price command:str) the number of points the sender would pay if they use the specified command
+         * @example Caster: !addcom !cost This command costs (price) (pointname)
+         * User: !cost
+         * Bot: This command costs 10 points
          * @cached
          */
         function price(args, event) {
@@ -899,6 +972,9 @@
         /*
          * @transformer random
          * @formula (random) random user in chat, or the bot's name if chat is empty
+         * @example Caster: !addcom !poke /me pokes (random) with a long wooden stick.
+         * User: !poke
+         * Bot: /me pokes User2 with a long wooden stick.
          */
         function random(args) {
             if (!args) {
@@ -916,6 +992,9 @@
         /*
          * @transformer randomrank
          * @formula (randomrank) random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
+         * @example Caster: !addcom !poke /me Pokes (randomrank) with a bar of soap.
+         * User: !poke
+         * Bot: /me Pokes Master User2 with a bar of soap.
          */
         function randomrank(args) {
             if (!args) {
@@ -934,6 +1013,9 @@
          * @transformer readfile
          * @formula (readfile filename:str) first line of the specified file
          * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+         * @example Caster: !addcom !lastfollow Last follower was (readfile ./followHandler/latestFollower.txt)
+         * User: !lastfollow
+         * Bot: Last follower was User
          * @cached
          */
         function readfile(args) {
@@ -1004,6 +1086,9 @@
         /*
          * @transformer sender
          * @formula (sender) the sender's display name
+         * @example Caster: !addcom !hello Hello, (sender)!
+         * User: !hello
+         * Bot: Hello, User!
          * @cached
          */
         function sender(args, event) {
@@ -1018,6 +1103,9 @@
         /*
          * @transformer senderrank
          * @formula (senderrank) the sender's display name, prefixed with their rank
+         * @example Caster: !addcom !poke /me Pokes (senderrank) with a bar of soap.
+         * User: !poke
+         * Bot: /me Pokes Master User with a bar of soap.
          * @cached
          */
         function senderrank(args, event) {
@@ -1031,7 +1119,7 @@
 
         /*
          * @transformer senderrankonly
-         * @formula (senderrankonl) the sender's rank
+         * @formula (senderrankonly) the sender's rank
          * @cached
          */
         function senderrankonly(args, event) {
@@ -1046,6 +1134,9 @@
         /*
          * @transformer status
          * @formula (status) the current stream title
+         * @example Caster: !addcom !status (pointtouser) current status is: (status)
+         * User: !status
+         * Bot: User -> current status is: Fun programming!
          * @cached
          */
         function status(args) {
@@ -1060,6 +1151,9 @@
         /*
          * @transformer subscribers
          * @formula (subscribers) number of subscribers of this channel
+         * @example Caster: !addcom !subs (subscribers) subscribers!
+         * User: !subs
+         * Bot: 10 subscribers!
          * @notes only works if the apioauth in botlogin.txt belongs to the broadcaster
          * @cached
          */
@@ -1269,6 +1363,9 @@
         /*
          * @transformer titleinfo
          * @formula (titleinfo) title + uptime if online
+         * @example Caster: !addcom !title (pointtouser) Current title: (titleinfo).
+         * User: !title
+         * Bot: User -> Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
          * @cached
          */
         function titleinfo(args) {
@@ -1296,8 +1393,13 @@
 
         /*
          * @transformer touser
-         * @formula (touser) sender's display name
-         * @formula (touser name:str) provided user's display name
+         * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
+         * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
+         * User: !twitter
+         * Bot: User Hey! Follow my Twitter!
+         *
+         * User: !twitter User2
+         * Bot: User2 Hey! Follow my Twitter!
          * @cached
          */
         function touser(args, event) {
@@ -1334,6 +1436,9 @@
          * @transformer uptime
          * @formula (uptime) how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
          * @cancels sometimes
+         * @example Caster: !addcom !uptime (pointtouser) (channelname) has been live for (uptime).
+         * User: !uptime
+         * Bot: @User, PhantomBot has been live for 2 hours, 3 minutes and 30 seconds.
          * @cached
          */
         function uptime(args, event) {
@@ -1372,6 +1477,9 @@
         /*
          * @transformer viewers
          * @formula (viewers) number of current viewers
+         * @example Caster: !addcom !viewers We currently have (viewers) viewers watching us!
+         * User: !viewers
+         * Bot: We currently have 600 viewers watching us!
          * @cached
          */
         function viewers(args) {
@@ -1401,6 +1509,7 @@
          * @transformer writefile
          * @formula (writefile filename:str, append:bool, text:str) writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
          * @notes files will be placed in the addons folder, or a subfolder therein specified by the filename parameter
+         * @example Caster: !addcom !settxt (writefile test.txt, true, (echo))
          */
         function writefile(args) {
             var fileName;
