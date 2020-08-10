@@ -213,7 +213,9 @@ public class DiscordUtil {
         if (channel != null) {
             return channel.createMessage(msg
                     -> msg.setEmbed(embed)
-            ).doOnError(com.gmt2001.Console.err::printStackTrace).onErrorReturn(null)
+            ).doOnError(e -> {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }).onErrorReturn(null)
                     .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             if (iteration >= MAX_ITERATION) {
