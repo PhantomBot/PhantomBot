@@ -22,22 +22,3 @@ jobs:
       run: sudo apt-get install ant
     - name: Build with Ant
       run: ant -noinput -buildfile build.xml test
-  parsecommandtags:
-    name: Parse command tags on ubuntu-latest with Python 3.x
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-        architecture: 'x64'
-    - name: Execute Script
-      run: python3 development-resources/parse_transformers.py
-    - name: Commit Changes
-      uses: EndBug/add-and-commit@v4
-      with:
-        message: 'Updated the custom command tags guide'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
