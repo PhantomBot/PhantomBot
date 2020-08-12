@@ -77,7 +77,7 @@ def parse_file(fpath, lines):
             if state >= 5 and state <= 7:
                 ltransformers.append(transformer)
             state = 0
-        if line.startswith("* ") and line.len() > 2 and state > 0:
+        if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
             if line.startswith("@transformer"):
                 state = 2
@@ -101,12 +101,12 @@ def parse_file(fpath, lines):
                     line = line[9:].strip()
                     desc_pos = line.find(") ")
                     if desc_pos == -1:
-                        desc_pos = line.len()
+                        desc_pos = len(line)
                     else:
                         desc_pos = desc_pos + 1
                     formula = {}
                     formula["formula"] = line[0:desc_pos].strip()
-                    if desc_pos < line.len():
+                    if desc_pos < len(line):
                         formula["desc"] = line[desc_pos:].strip()
                     else:
                         formula["desc"] = ""
@@ -137,7 +137,7 @@ def parse_file(fpath, lines):
 def output_transformer(transformer, hlevel):
     lines = []
     h = "#"
-    while h.len() < hlevel:
+    while len(h) < hlevel:
         h = h + "#"
     lines.append(h + " " + transformer["function"] + '\n')
     lines.append('\n')
@@ -147,10 +147,10 @@ def output_transformer(transformer, hlevel):
     lines.append('\n')
     for formula in transformer["formulas"]:
         line = "- `" + formula["formula"] + "`"
-        if formula["desc"].len() > 0:
+        if len(formula["desc"]) > 0:
             line = line + " - " + formula["desc"]
         lines.append(line + '\n')
-    if transformer["notes"].len() > 0:
+    if len(transformer["notes"]) > 0:
         lines.append('\n')
         for note in transformer["notes"]:
             lines.append('\n')
@@ -162,7 +162,7 @@ def output_transformer(transformer, hlevel):
                 else:
                     lines.append(">" + '\n')
                     lines.append("> _" + nline + "_" + '\n')
-    if transformer["examples"].len() > 0:
+    if len(transformer["examples"]) > 0:
         lines.append('\n')
         for example in transformer["examples"]:
             lines.append('\n')
@@ -203,12 +203,12 @@ for subdir, dirs, files in os.walk("./javascript-source"):
     for fname in files:
         fpath = subdir + os.sep + fname
         if fpath.endswith(".js"):
-            with open(fpath) as js_file:
+            with open(fpath, encoding="utf8") as js_file:
                 parse_file(fpath, [line.rstrip('\n') for line in js_file])
 
 lines = []
 
-with open(md_path) as md_file:
+with open(md_path, encoding="utf8") as md_file:
     oldlines = [line.rstrip('\n') for line in md_file]
 
 for line in oldlines:
@@ -229,9 +229,9 @@ lines.append("[^cancels]: If _Yes_, this tag will cancel execution of the comman
 lines.append('\n')
 
 for transformer in gtransformers:
-    lines.extend(output_transformer(transformer), 3)
+    lines.extend(output_transformer(transformer, 3))
 
-if ltransformers.len() > 0:
+if len(ltransformers) > 0:
     lines.append("## Local Command Tags" + '\n')
     lines.append('\n')
     lines.append("_These command tags are only available in the scripts which defined them_" + '\n')
@@ -239,7 +239,7 @@ if ltransformers.len() > 0:
     lines.append("_Some scripts may also restrict the use of global command tags_" + '\n')
     lines.append('\n')
     for transformer in ltransformers:
-        lines.extend(output_transformer(transformer), 3)
+        lines.extend(output_transformer(transformer, 3))
 
-with open(md_path, "w") as md_file:
+with open(md_path, "w", encoding="utf8") as md_file:
     md_file.writelines(lines)
