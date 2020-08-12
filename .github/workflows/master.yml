@@ -1,4 +1,4 @@
-name: Java CI
+name: Command Tag Guide Update
 on:
   push:
     branches:
