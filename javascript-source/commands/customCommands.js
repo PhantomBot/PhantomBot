@@ -905,9 +905,8 @@
 
         /*
          * @transformer pointtouser
-         * @formula (pointtouser) sender + ' -> '
-         * @formula (pointtouser user:str) user + ' -> '
-         * @example Caster:  !addcom !facebook (pointtouser) like my Facebook page!
+         * @formula (pointtouser) user + ' -> '; uses sender's display name if no other is provided
+         * @example Caster: !addcom !facebook (pointtouser) like my Facebook page!
          * User: !facebook
          * Bot: User ->  like my Facebook page!
          *
@@ -916,17 +915,17 @@
          * @cached
          */
         function pointtouser(args, event) {
-            if ((match = args.match(/^(?:\s(.*))?$/))) {
-                if (match[1]) {
-                    temp = $.username.resolve(match[1].replace(/[^a-zA-Z0-9_@]/g, '')) + ' -> ';
-                } else {
-                    temp = $.username.resolve(event.getSender()) + ' -> ';
-                }
-                return {
-                    result: temp,
-                    cache: true
-                };
+            temp = '';
+            if (event.getArgs().length > 0) {
+                temp = event.getArgs()[0].replace(/[^a-zA-Z0-9_@]/g, '');
             }
+            if (temp.length === 0) {
+                temp = event.getSender();
+            }
+            return {
+                result: String($.username.resolve(temp)) + ' -> ',
+                cache: true
+            };
         }
 
         /*
