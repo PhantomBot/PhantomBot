@@ -82,12 +82,12 @@ def parse_file(fpath, lines):
             if line.startswith("@transformer"):
                 state = 2
                 transformer = copy.deepcopy(transformer_template)
-                transformer["script"] = fpath
+                transformer["script"] = fpath.replace('\\', '/')
                 transformer["function"] = line[13:].strip()
             if line.startswith("@localtransformer"):
                 state = 5
                 transformer = copy.deepcopy(transformer_template)
-                transformer["script"] = fpath
+                transformer["script"] = fpath.replace('\\', '/')
                 transformer["function"] = line[18:].strip()
             if state > 1:
                 if state != 2 and state != 5 and line.startswith("@"):
@@ -158,10 +158,10 @@ def output_transformer(transformer, hlevel):
             for nline in note:
                 if first:
                     first = False
-                    lines.append("> _NOTE: " + nline + "_" + '\n')
+                    lines.append("_NOTE: " + nline + "_" + '\n')
                 else:
-                    lines.append(">" + '\n')
-                    lines.append("> _" + nline + "_" + '\n')
+                    lines.append('\n')
+                    lines.append("_" + nline + "_" + '\n')
     if len(transformer["examples"]) > 0:
         lines.append('\n')
         for example in transformer["examples"]:
@@ -221,9 +221,9 @@ lines.append("&nbsp;" + '\n')
 lines.append('\n')
 lines.append("## Global Command Tags" + '\n')
 lines.append('\n')
-lines.append("[^raw]: If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped" + '\n')
+lines.append("[^raw]: **Raw:** If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped" + '\n')
 lines.append('\n')
-lines.append("[^cached]: If _Yes_, the results of this tag, with the exact arguments presented, are temporarily cached and will not be re-processed for the rest of the current command, speeding up execution if the tag is used multiple times. The cache is cleared after every command execution" + '\n')
+lines.append("[^cached]: **Cached:** If _Yes_, the results of this tag, with the exact arguments presented, are temporarily cached and will not be re-processed for the rest of the current command, speeding up execution if the tag is used multiple times. The cache is cleared after every command execution" + '\n')
 lines.append('\n')
 lines.append("[^cancels]: If _Yes_, this tag will cancel execution of the command, but may still send output through chat, ignoring any formatting in the command. If _Sometimes_, then some return conditions may cancel execution of the command" + '\n')
 lines.append('\n')
@@ -231,7 +231,11 @@ lines.append('\n')
 for transformer in gtransformers:
     lines.extend(output_transformer(transformer, 3))
 
+lines = lines[:len(lines) - 2]
+
 if len(ltransformers) > 0:
+    lines.append("---" + '\n')
+    lines.append('\n')
     lines.append("## Local Command Tags" + '\n')
     lines.append('\n')
     lines.append("_These command tags are only available in the scripts which defined them_" + '\n')
@@ -240,6 +244,8 @@ if len(ltransformers) > 0:
     lines.append('\n')
     for transformer in ltransformers:
         lines.extend(output_transformer(transformer, 3))
+
+lines = lines[:len(lines) - 2]
 
 with open(md_path, "w", encoding="utf8") as md_file:
     md_file.writelines(lines)

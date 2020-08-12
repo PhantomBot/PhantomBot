@@ -174,7 +174,33 @@
                         return '<h' + tokens[idx].hLevel + ' id=' + window.markdownToc.slugify(tokens[idx + 1].content) + '>';
                     };
                 });
-window.md = md;
+                md.use(function(md) {
+                    let footnoterefs = {};
+                    md.renderer.rules.footnote_ref = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        if (!footnoterefs.hasOwnProperty(n)) {
+                            footnoterefs[n] = 0;
+                        }
+                        footnoterefs[n]++;
+                        return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+                    };
+                    md.renderer.rules.footnote_anchor = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
+                            return '';
+                        }
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
+                    };
+                });
+
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
                         'dataType': 'json',
@@ -267,7 +293,7 @@ window.md = md;
                                             }
                                         }
 
-                                        let href = '#' + newhash + '&jumpto=' + slug;
+                                        let href = '#' + newhash + (newhash.length > 0 ? '&' : '') + 'jumpto=' + slug;
                                         token.content = '[' + anchor + '](' + href + ')';
                                         return token;
                                     }
@@ -320,7 +346,7 @@ window.md = md;
                         }
                     }
 
-                    window.location.hash = '#' + newhash;
+                    window.location.hash = '#' + (newhash.length > 0 ? '' : 'jumpto=top' + new Date().getTime()) + newhash;
                     $('header')[0].scrollIntoView({behavior: 'smooth'});
                 }
 
