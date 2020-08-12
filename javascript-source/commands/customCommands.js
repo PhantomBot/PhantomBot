@@ -112,7 +112,7 @@
                     result: String($.randRange(1, 100)),
                     cache: false
                 };
-            } else if ((match = args.match(/^\s(\d+), (\d+)$/))) {
+            } else if ((match = args.match(/^\s(\d+),\s?(\d+)$/))) {
                 return {
                     result: String($.randRange(parseInt(match[1]), parseInt(match[2]))),
                     cache: false
@@ -241,8 +241,8 @@
 
         /*
          * @transformer code
-         * @formula (code=length:int) random code of the given length composed of a-zA-Z0-9
-         * @example Caster: !addcom !code (code=5)
+         * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
+         * @example Caster: !addcom !code (code 5)
          * User: !code
          * Bot: A1D4f
          */
@@ -250,7 +250,7 @@
             var code,
                     length,
                     temp = '';
-            if ((match = args.match(/^=([1-9]\d*)$/))) {
+            if ((match = args.match(/^(?:=|\s)([1-9]\d*)$/))) {
                 code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 length = parseInt(match[1]);
                 for (i = 0; i < length; i++) {
@@ -321,15 +321,15 @@
 
         /*
          * @transformer countdown
-         * @formula (countdown=datetime:str) shows the time remaining until the given datetime
+         * @formula (countdown datetime:str) shows the time remaining until the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
-         * @example Caster: !addcom !count Time Left: (countdown=December 23 2017 23:59:59 GMT+0200)
+         * @example Caster: !addcom !count Time Left: (countdown December 23 2017 23:59:59 GMT+0200)
          * User: !count
          * Bot: Time Left: 20 hours, 30 minutes and 55 seconds.
          * @cached
          */
         function countdown(args) {
-            if ((match = args.match(/^=(.*)$/))) {
+            if ((match = args.match(/^(?:=|\s)(.*)$/))) {
                 temp = Date.parse(match[1]);
                 if (isNaN(temp)) {
                     return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
@@ -344,15 +344,15 @@
 
         /*
          * @transformer countup
-         * @formula (countup=datetime:str) shows the time elapsed since the given datetime
+         * @formula (countup datetime:str) shows the time elapsed since the given datetime
          * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
-         * @example Caster: !addcom !ago You missed it by (countup=December 23 2017 23:59:59 GMT+0200)
+         * @example Caster: !addcom !ago You missed it by (countup December 23 2017 23:59:59 GMT+0200)
          * User: !ago
          * Bot: You missed it by 20 hours, 30 minutes and 55 seconds.
          * @cached
          */
         function countup(args) {
-            if ((match = args.match(/^=(.*)$/))) {
+            if ((match = args.match(/^(?:=|\s)(.*)$/))) {
                 temp = Date.parse(match[1]);
                 if (isNaN(temp)) {
                     return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
@@ -592,8 +592,14 @@
             var channel,
                     user;
             if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
-                user = (match[1] || String(event.getSender())).replace(/^@/, '');
-                channel = (match[2] || String($.channelName)).replace(/^@/, '');
+                user = (match[1] || '').replace(/^@/, '');
+                channel = (match[2] || '').replace(/^@/, '');
+                if (user.length === 0) {
+                    user = String(event.getSender());
+                }
+                if (channel.length === 0) {
+                    channel = String($.channelName);
+                }
                 $.getFollowAge(event.getSender(), user, channel);
                 return {cancel: true};
             }
@@ -610,8 +616,14 @@
             var channel,
                     user;
             if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
-                user = (match[1] || String(event.getSender())).replace(/^@/, '');
-                channel = (match[2] || String($.channelName)).replace(/^@/, '');
+                user = (match[1] || '').replace(/^@/, '');
+                channel = (match[2] || '').replace(/^@/, '');
+                if (user.length === 0) {
+                    user = String(event.getSender());
+                }
+                if (channel.length === 0) {
+                    channel = String($.channelName);
+                }
                 return {
                     result: String($.getFollowDate(event.getSender(), user, channel)),
                     cache: true
@@ -687,15 +699,34 @@
 
         /*
          * @transformer gameonly
-         * @formula (gameonly=name:str) cancels the command if the current game does not exactly match the one provided
+         * @formula (gameonly name:str) cancels the command if the current game does not exactly match the one provided; multiple games can be provided, separated by |
+         * @formula (gameonly !! name:str) cancels the command if the current game exactly matches the one provided; multiple games can be provided, separated by |
          * @cancels sometimes
          */
         function gameonly(args) {
-            if ((match = args.match(/^=(.*)$/))) {
-                if (!$.getGame($.channelName).equalsIgnoreCase(match[1])) {
-                    return {cancel: true};
+            if (args.match(/^(?:=|\s)(.*)$/).length > 0) {
+                args = args.substring(1);
+                var negate = false;
+                if (args.match(/^(!!\s)/).length > 0) {
+                    args = args.substring(3);
+                    negate = true;
                 }
-                return {result: ''};
+                var game = $.getGame($.channelName);
+                match = args.match(/([^|]+)/);
+                for (var x in match) {
+                    if (game.equalsIgnoreCase(match[x])) {
+                        if (negate) {
+                            return {cancel: true};
+                        } else {
+                            return {result: ''};
+                        }
+                    }
+                }
+                if (!negate) {
+                    return {cancel: true};
+                } else {
+                    return {result: ''};
+                }
             }
         }
 
@@ -723,11 +754,11 @@
 
         /*
          * @formula help
-         * @formula (help=message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
+         * @formula (help message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
          * @cancels sometimes
          */
         function help(args, event) {
-            if ((match = args.match(/^=(.*)$/))) {
+            if ((match = args.match(/^(?:=|\s)(.*)$/))) {
                 if (event.getArgs()[0] === undefined) {
                     $.say(match[1]);
                     return {cancel: true};
@@ -746,7 +777,10 @@
         function hours(args, event) {
             var user;
             if ((match = args.match(/^(?: (.*))?$/))) {
-                user = (match[1] || String(event.getSender())).replace(/^@/, '');
+                user = (match[1] || '').replace(/^@/, '');
+                if (user.length === 0) {
+                    user = String(event.getSender());
+                }
                 return {
                     result: String($.getUserTime(user) / 3600),
                     cache: true
@@ -839,7 +873,10 @@
          */
         function pay(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
-                cmd = match[1] || event.getCommand();
+                cmd = match[1] || '';
+                if (cmd.length === 0) {
+                    cmd = event.getCommand();
+                }
                 if ($.inidb.exists('paycom', cmd)) {
                     temp = $.inidb.get('paycom', cmd);
                 } else {
@@ -936,9 +973,13 @@
          */
         function points(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
-                match[1] = match[1] ? match[1].replace(/^@/, '') : event.getSender();
+                var user;
+                user = (match[1] || '').replace(/^@/, '');
+                if (user.length === 0) {
+                    user = String(event.getSender());
+                }
                 return {
-                    result: String($.getUserPoints(match[1])),
+                    result: String($.getUserPoints(user)),
                     cache: true
                 };
             }
@@ -955,7 +996,10 @@
          */
         function price(args, event) {
             if ((match = args.match(/^(?:\s(.*))?$/))) {
-                cmd = match[1] || event.getCommand();
+                cmd = match[1] || '';
+                if (cmd.length === 0) {
+                    cmd = event.getCommand();
+                }
                 if ($.inidb.exists('pricecom', cmd)) {
                     temp = $.inidb.get('pricecom', cmd);
                 } else {
@@ -1060,7 +1104,7 @@
         function repeat(args) {
             var MAX_COUNTER_VALUE = 30,
                     n;
-            if ((match = args.match(/^\s([1-9]\d*),\s(.*)$/))) {
+            if ((match = args.match(/^\s([1-9]\d*),\s?(.*)$/))) {
                 if (!match[2]) {
                     return {result: ''};
                 }
@@ -1455,14 +1499,24 @@
 
         /*
          * @transformer useronly
-         * @formula (useronly=name:str) only allows the given user to use the command; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
+         * @formula (useronly name:str) only allows the given user to use the command; multiple users separated by spaces is allowed; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
+         * @notes use @moderators as one of the user names to allow all moderators and admins
+         * @notes use @admins as one of the user names to allow all admins
          * @cancels sometimes
          */
         function useronly(args, event) {
-            if (args.match(/^=(.*)$/).length > 0) {
-                match = args.match(/(\w+)/);
+            if (args.match(/^(?:=|\s)(.*)$/).length > 0) {
+                match = args.match(/(@?\w+)/);
                 for (var x in match) {
-                    if (event.getSender().equalsIgnoreCase(x)) {
+                    if (match[x].match(/^@moderators$/).length > 0) {
+                        if ($.isModv3(event.getSender(), event.getTags())) {
+                            return {result: ''};
+                        }
+                    } else if (match[x].match(/^@admins$/).length > 0) {
+                        if ($.isAdmin(event.getSender())) {
+                            return {result: ''};
+                        }
+                    } else if (event.getSender().equalsIgnoreCase(match[x])) {
                         return {result: ''};
                     }
                 }
