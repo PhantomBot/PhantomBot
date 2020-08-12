@@ -172,20 +172,20 @@ def output_transformer(transformer, hlevel):
                 lines.append(eline + '\n')
             lines.append("```" + '\n')
     lines.append('\n')
-    lines.append('Raw?[^raw]&nbsp; | Cached?[^cached]&nbsp; | Cancels?[^cancels]\n')
+    lines.append('Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]\n')
     lines.append('-------|-----------|----------\n')
     line = ""
     if transformer["raw"]:
         if transformer["rawSometimes"]:
-            line = line + "Sometimes | "
+            line = line + "Sometimes&nbsp;&nbsp; | "
         else:
-            line = line + "Yes | "
+            line = line + "Yes&nbsp;&nbsp; | "
     else:
-        line = line + "No | "
+        line = line + "No&nbsp;&nbsp; | "
     if transformer["cached"]:
-        line = line + "Yes | "
+        line = line + "Yes&nbsp;&nbsp; | "
     else:
-        line = line + "No | "
+        line = line + "No&nbsp;&nbsp; | "
     if transformer["cancels"]:
         if transformer["cancelsSometimes"]:
             line = line + "Sometimes"
@@ -231,9 +231,10 @@ lines.append('\n')
 for transformer in gtransformers:
     lines.extend(output_transformer(transformer, 3))
 
-lines = lines[:len(lines) - 2]
+lines = lines[:len(lines) - 3]
 
 if len(ltransformers) > 0:
+    lines.append('\n')
     lines.append("---" + '\n')
     lines.append('\n')
     lines.append("## Local Command Tags" + '\n')
@@ -244,8 +245,7 @@ if len(ltransformers) > 0:
     lines.append('\n')
     for transformer in ltransformers:
         lines.extend(output_transformer(transformer, 3))
-
-lines = lines[:len(lines) - 2]
+    lines = lines[:len(lines) - 3]
 
 with open(md_path, "w", encoding="utf8") as md_file:
     md_file.writelines(lines)
