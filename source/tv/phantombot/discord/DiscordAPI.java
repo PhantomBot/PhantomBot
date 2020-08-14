@@ -368,6 +368,10 @@ public class DiscordAPI extends DiscordUtil {
                     channel = "#" + ((GuildMessageChannel) iChannel).getName();
                 }
 
+                if (message == null || message.isEmpty()) {
+                    return;
+                }
+
                 com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
 
                 if (message.charAt(0) == '!') {
