@@ -36,7 +36,9 @@ import discord4j.rest.util.Snowflake;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +59,13 @@ import tv.phantombot.discord.DiscordAPI;
 public class DiscordUtil {
 
     private static final int MAX_ITERATION = 5;
+    private static final String[] VALID_PATHS = new String[]{
+        "./addons",
+        "./config/audio-hooks",
+        "./config/gif-alerts",
+        "./logs",
+        "./scripts"
+    };
 
     public DiscordUtil() {
     }
@@ -76,6 +85,19 @@ public class DiscordUtil {
         }
     }
 
+    public boolean isValidFilePath(String fileLocation) {
+        Path p = Paths.get(fileLocation);
+        String executionPath = PhantomBot.GetExecutionPath();
+
+        for (String vp : VALID_PATHS) {
+            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, vp))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
         return sendMessageAsync(channel, message).block();
@@ -93,22 +115,27 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             if (channel.getType() == Channel.Type.DM) {
                 sendPrivateMessage((PrivateChannel) channel, message);
                 return null;
             }
 
-            com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message);
-
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorReturn(null);
+            }).onErrorResume(e -> sendMessageAsync(channel, message, iteration + 1))
+                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendMessageAsync(channel, message, ++iteration);
+            return sendMessageAsync(channel, message, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -167,27 +194,37 @@ public class DiscordUtil {
      * @param message
      */
     public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             channel.getRecipients().take(1).singleOrEmpty().doOnSuccess(user -> {
-                String uname = "";
-                String udisc = "";
+                String uname;
+                String udisc;
 
                 if (user != null) {
                     uname = user.getUsername().toLowerCase();
                     udisc = user.getDiscriminator();
+                } else {
+                    uname = "";
+                    udisc = "";
                 }
-
-                com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
 
                 channel.createMessage(message).doOnError(e -> {
                     com.gmt2001.Console.err.printStackTrace(e);
-                }).subscribe();
+                }).onErrorResume(e -> {
+                    sendPrivateMessage(channel, message, iteration + 1);
+                    return Mono.empty();
+                }).doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message)).subscribe();
             }).subscribe();
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            sendPrivateMessage(channel, message, ++iteration);
+            sendPrivateMessage(channel, message, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -210,18 +247,24 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             return channel.createMessage(msg
                     -> msg.setEmbed(embed)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorReturn(null)
+            }).onErrorResume(e -> sendMessageEmbedAsync(channel, embed, iteration + 1))
                     .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendMessageEmbedAsync(channel, embed, ++iteration);
+            return sendMessageEmbedAsync(channel, embed, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -295,13 +338,20 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
-            if (fileLocation.contains("..")) {
-                com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation that contains '..'");
+            if (!this.isValidFilePath(fileLocation)) {
+                com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation");
                 return null;
             } else {
-                com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
-
                 if (message.isEmpty()) {
                     return channel.createMessage(msg
                             -> {
@@ -313,7 +363,8 @@ public class DiscordUtil {
                     }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorReturn(null);
+                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "]"));
                 } else {
                     return channel.createMessage(msg
                             -> {
@@ -325,14 +376,12 @@ public class DiscordUtil {
                     }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorReturn(null);
+                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message));
                 }
             }
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendFileAsync(channel, message, fileLocation, ++iteration);
+            return sendFileAsync(channel, message, fileLocation, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
