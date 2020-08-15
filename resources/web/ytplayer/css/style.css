@@ -43,7 +43,7 @@ body {
 }
 
 * {
-    font-family: "Roboto", arial;
+    font-family: "Roboto", arial, sans-serif;
     color: var(--text-color);
 }
 
@@ -63,9 +63,9 @@ a:hover {
     margin-bottom: 10px;
     max-width: 100%;
     height: 85px;
-    -webkit-box-shadow: 0px 3px 5px #000;
-    -moz-box-shadow:    0px 3px 5px #000;
-    box-shadow:         0px 3px 5px #000;
+    -webkit-box-shadow: 0 3px 5px #000;
+    -moz-box-shadow:    0 3px 5px #000;
+    box-shadow:         0 3px 5px #000;
     overflow: hidden;
 }
 
@@ -83,7 +83,7 @@ a:hover {
     width: 100%;
     padding-top: 5px;
     text-align: center;
-    bottom: 0px;
+    bottom: 0;
     background-color: var(--tab-color);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
     position: fixed;
@@ -207,10 +207,7 @@ a:hover {
 }
 
 .queue-section-title {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin: 15px;
 }
 
 .devider {
@@ -236,8 +233,6 @@ a:hover {
     left: 50%;
     top: 50%;
     z-index: 1;
-    width: 150px;
-    height: 150px;
     margin: -75px 0 0 -75px;
     border: 16px solid #f2f2f2;
     border-radius: 50%;
@@ -271,14 +266,14 @@ a:hover {
 /* Bootstrap buttons */
 
 .btn {
-    border-radius: 0px;
+    border-radius: 0;
     cursor: pointer;
 }
 
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus {
-    border-radius: 0px;
+    border-radius: 0;
     outline: none;
     box-shadow: none;
 }
@@ -325,7 +320,7 @@ a:hover {
 }
 
 .dropdown-menu {
-    border-radius: 0px;
+    border-radius: 0;
     text-align: left;
     width: 100%;
     background-color: #171717;
@@ -423,7 +418,7 @@ table th {
 /* Modals */
 
 .modal-content {
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .modal-body {
@@ -443,7 +438,7 @@ table th {
 .form-control {
     color: var(--text-color);
     background-color: var(--input-box);
-    border-radius: 0px;
+    border-radius: 0;
     border: 1px solid rgba(70, 70, 70, 0.15);
 }
 
@@ -451,7 +446,7 @@ table th {
     color: var(--text-color);
     background-color: var(--drop-hover);
     border-color: var(--btn-bgn-color);
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .form-control:hover {

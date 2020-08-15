@@ -347,7 +347,8 @@ $(function () {
             } else {
                 htmlObj = $('<img/>', {
                     'src': defaultPath + gifFile,
-                    'style': gifCss
+                    'style': gifCss,
+                    'alt': "Video"
                 });
             }
 

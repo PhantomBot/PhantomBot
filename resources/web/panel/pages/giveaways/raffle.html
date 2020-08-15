@@ -78,7 +78,7 @@
                         <div class="box-body" style="padding-bottom: 90px;">
                         	<!-- Keyword -->
                             <div class="form-group">
-                                <lable>Keyword</lable>
+                                <label>Keyword</label>
                                 <input type="text" class="form-control" id="raffle-keyword" placeholder="!enter"
                                     data-toggle="tooltip" title="Keyword used to enter the raffle. This is not case sensitive."/>
                             </div>
@@ -87,14 +87,14 @@
                             <div class="row">
                             	<div class="col-md-8">
                             		<div class="form-group">
-                            		    <lable id="raffle-cost-title">Cost</lable>
+                            		    <label id="raffle-cost-title">Cost</label>
                             		    <input type="text" class="form-control" id="raffle-cost" value="0"
                             		        data-toggle="tooltip" title="Cost required to enter the raffle. When using time, it will not be deducted from the user."/>
                             		</div>
                             	</div>
                             	<div class="col-md-4">
                             		<div class="form-group">
-                            			<lable>Requirement</lable>
+                            			<label>Requirement</label>
                             			<select class="form-control" id="raffle-req" data-toggle="tooltip" title="If the raffle system should use points or time.">
   											<option selected="selected" value="-usepoints">Points</option>
   											<option value="-usetime">Time</option>
@@ -105,7 +105,7 @@
 
                             <!-- Eligibility -->
                             <div class="form-group">
-                            	<lable>Eligibility</lable>
+                            	<label for="raffle-perm">Eligibility</label>
                             	<select class="form-control" id="raffle-perm">
   									<option value="-subscribers">Subscribers</option>
   									<option value="-followers">Followers</option>
@@ -115,21 +115,21 @@
 
                             <!-- Timer -->
                             <div class="form-group">
-                                <lable>Timer (Minutes)</lable>
+                                <label>Timer (Minutes)</label>
                                 <input type="number" min="0" class="form-control" id="raffle-timer" value="0"
                                     data-toggle="tooltip" title="How long the raffle should be opened for. 0 is until manually closed."/>
                             </div>
 
                             <!-- Regular luck -->
                             <div class="form-group">
-                                <lable>Regular Luck</lable>
+                                <label>Regular Luck</label>
                                 <input type="number" min="1" max="10" class="form-control" id="raffle-reg" value="1"
                                     data-toggle="tooltip" title="How many more times a regular is likely to win."/>
                             </div>
 
                             <!-- Subscriber luck -->
                             <div class="form-group">
-                                <lable>Subscriber Luck</lable>
+                                <label>Subscriber Luck</label>
                                 <input type="number" min="1" max="10" class="form-control" id="raffle-sub" value="1"
                                     data-toggle="tooltip" title="How many more times a subscriber is likely to win."/>
                             </div>
