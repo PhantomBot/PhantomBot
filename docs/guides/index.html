@@ -35,6 +35,33 @@
         <link rel="stylesheet" href="../common/css/pace.min.css" />
 		 <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
+        <style>
+            #back2Top {
+                width: 40px;
+                line-height: 40px;
+                overflow: hidden;
+                z-index: 999;
+                display: none;
+                cursor: pointer;
+                -moz-transform: rotate(270deg);
+                -webkit-transform: rotate(270deg);
+                -o-transform: rotate(270deg);
+                -ms-transform: rotate(270deg);
+                transform: rotate(270deg);
+                position: fixed;
+                bottom: 50px;
+                right: 0;
+                background-color: #191919;
+                color: #ccc;
+                text-align: center;
+                font-size: 30px;
+                text-decoration: none;
+                border-radius: 8px 8px 0px 0px;
+            }
+            #back2Top:hover {
+                color: #aaa;
+            }
+        </style>
     </head>
 
     <body class="skin-purple">
@@ -85,6 +112,7 @@
                     </div>
                     <!-- /.box -->
                 </div>
+                <div id="back2Top" title="Back to top">&#10148;</div>
             </aside>
             <footer class="main-footer">
                 <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
@@ -100,11 +128,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
+        <script src="markdown-toc.js"></script>
         <script>
             'use strict';
             $(function () {
                 var lastPage = 'null';
                 const { Remarkable, linkify, utils } = window.remarkable;
+                var hashmap = [];
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
                     xhtmlOut: false, // Use '/' to close single tags (<br />)
@@ -139,6 +169,37 @@
                 });
                 md.use(linkify);
                 md.use(window.iframify);
+                md.use(function(md) {
+                    md.renderer.rules.heading_open = function(tokens, idx) {
+                        return '<h' + tokens[idx].hLevel + ' id=' + window.markdownToc.slugify(tokens[idx + 1].content) + '>';
+                    };
+                });
+                md.use(function(md) {
+                    let footnoterefs = {};
+                    md.renderer.rules.footnote_ref = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        if (!footnoterefs.hasOwnProperty(n)) {
+                            footnoterefs[n] = 0;
+                        }
+                        footnoterefs[n]++;
+                        return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+                    };
+                    md.renderer.rules.footnote_anchor = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
+                            return '';
+                        }
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
+                    };
+                });
 
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
@@ -215,6 +276,29 @@
                         $.ajax(window.location.origin + window.location.pathname + path + '.md', {
                             'dataType': 'text',
                             'success': function (data) {
+                                data = window.markdownToc.insert(data, {
+                                    filter: function(str, ele, arr) {
+                                        ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
+                                        return true;
+                                    },
+                                    linkify: function(token, anchor, slug, opts) {
+                                        let newhash = '';
+                                        for (let x in hashmap) {
+                                            if (x !== 'jumpto') {
+                                                if (newhash.length > 0) {
+                                                    newhash = newhash + '&';
+                                                }
+
+                                                newhash = newhash + x + '=' + hashmap[x];
+                                            }
+                                        }
+
+                                        let href = '#' + newhash + (newhash.length > 0 ? '&' : '') + 'jumpto=' + slug;
+                                        token.content = '[' + anchor + '](' + href + ')';
+                                        return token;
+                                    }
+                                });
+                                data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
@@ -222,22 +306,26 @@
                                 lastPage = path.replace(/\//g, '-');
                                 window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
+                                jumpToHeader();
                             }
                         });
                     });
                 }
 
-                function loadURLGuide() {
+                function parseHashMap() {
                     var hash = window.location.hash.substr(1);
                     var kvs = hash.split('&');
-                    var hashmap = [];
                     var spl;
+
+                    hashmap = [];
 
                     for (var i = 0; i < kvs.length; i++) {
                         spl = kvs[i].split('=', 2);
                         hashmap[spl[0]] = spl[1];
                     }
+                }
 
+                function loadURLGuide() {
                     if (hashmap.hasOwnProperty('guide')) {
                         loadGuide(hashmap['guide']);
                         return true;
@@ -246,15 +334,63 @@
                     return false;
                 }
 
+                function jumpToTop() {
+                    let newhash = '';
+                    for (let x in hashmap) {
+                        if (x !== 'jumpto') {
+                            if (newhash.length > 0) {
+                                newhash = newhash + '&';
+                            }
+
+                            newhash = newhash + x + '=' + hashmap[x];
+                        }
+                    }
+
+                    window.location.hash = '#' + (newhash.length > 0 ? '' : 'jumpto=top' + new Date().getTime()) + newhash;
+                    $('header')[0].scrollIntoView({behavior: 'smooth'});
+                }
+
+                function jumpToHeader() {
+                    if (hashmap.hasOwnProperty('jumpto')) {
+                        let elm = $('#' + hashmap['jumpto']);
+                        if (elm.length > 0) {
+                            elm[0].scrollIntoView({behavior: 'smooth'});
+                        }
+                    }
+                }
+
                 $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
 
+                parseHashMap();
                 if (!loadURLGuide()) {
                     loadGuide('content/guides');
                 }
 
                 window.loadGuide = loadGuide;
+
+                $(window).bind('hashchange', function() {
+                    parseHashMap();
+                    jumpToHeader();
+                });
+
+                $(window).scroll(function() {
+                    var height = $(window).scrollTop();
+                    if (height > 100) {
+                        $('#back2Top').fadeIn();
+                    } else {
+                        $('#back2Top').fadeOut();
+                    }
+                });
+                $(document).ready(function() {
+                    $("#back2Top").click(function(event) {
+                        event.preventDefault();
+                        jumpToTop();
+                        return false;
+                    });
+
+                });
 
                 $('[data-toggle="tooltip"]').tooltip();
             });

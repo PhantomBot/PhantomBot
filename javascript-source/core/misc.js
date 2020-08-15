@@ -711,9 +711,9 @@
 
     /**
      * Taken from: https://github.com/tc39/proposal-string-matchall
-     * 
+     *
      * Implementation of string.matchAll
-     * 
+     *
      * @function matchAll
      * @export $
      * @param {type} str
@@ -742,6 +742,14 @@
             return '@' + $.username.resolve(username) + ' ';
         }
         return '@' + $.username.resolve(username) + ', ';
+    }
+
+    function javaString(str) {
+        return new Packages.java.lang.String(str);
+    }
+
+    function jsString(str) {
+        return String(str + '');
     }
 
     /** Export functions to API */
@@ -789,4 +797,6 @@
     $.sayWithTimeout = sayWithTimeout;
     $.paginateArrayDiscord = paginateArrayDiscord;
     $.equalsIgnoreCase = equalsIgnoreCase;
+    $.javaString = javaString;
+    $.jsString = jsString;
 })();

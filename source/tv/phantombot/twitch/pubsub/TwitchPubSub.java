@@ -440,13 +440,21 @@ public class TwitchPubSub {
                     if (messageObj.getString("nonce").equalsIgnoreCase("moderator")) {
                         this.hasModerator = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
                         com.gmt2001.Console.debug.println("Got chat_moderator_actions response " + this.hasModerator);
+                        if (!this.hasModerator) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Moderation Feed (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
                     } else if (messageObj.getString("nonce").equalsIgnoreCase("redemptions")) {
                         this.hasRedemptions = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
                         com.gmt2001.Console.debug.println("Got channel-points-channel-v1 response " + this.hasRedemptions);
+                        if (!this.hasRedemptions) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Channel Points (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
                     }
-                }
-
-                if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+                } else if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                     return;
                 }

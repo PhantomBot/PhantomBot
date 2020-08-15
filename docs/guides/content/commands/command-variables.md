@@ -4,521 +4,1303 @@
 
 &nbsp;
 
-#### **`(sender)`:**
-- This will be replace in your  command response with the username who triggered the command.
+<!-- toc -->
 
-**Example:**
-```
-Caster:  !addcom !hello Hello, (sender)!
-User: !hello
-Bot: Hello, User!
-```
+<!-- tocstop -->
 
 &nbsp;
 
-####  **`(@sender)`:**
-- This will be replace in your command response with the username  who triggered the command in a Twitch \\"ping\\" format
+## Global Command Tags
+
+[^raw]: **Raw:** If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped
+
+[^cached]: **Cached:** If _Yes_, the results of this tag, with the exact arguments presented, are temporarily cached and will not be re-processed for the rest of the current command, speeding up execution if the tag is used multiple times. The cache is cleared after every command execution
+
+[^cancels]: If _Yes_, this tag will cancel execution of the command, but may still send output through chat, ignoring any formatting in the command. If _Sometimes_, then some return conditions may cancel execution of the command
+
+### randomInt
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(#)` - a random integer from 1 to 100, inclusive
+- `(# a:int, b:int)` - a random integer from a to b, inclusive
+
 
 **Example:**
-```
-Caster:  !addcom !hello (@sender) you are awesome!
-User: !hello
-Bot: @User, you're awesome!
-```
-
-&nbsp;
-
-####  **`(touser)`:**
-- This will be replace with the username who triggered the command  if no username is mentioned after the command.
-
-**Example:**
-```
-Caster: !addcom  !twitter (touser) Hey! Follow my Twitter!
-User: !twitter
-Bot: User Hey! Follow  my Twitter!
-
-User: !twitter User2
-Bot: User2 Hey! Follow my Twitter!
-```
-
-&nbsp;
-
-####  **`(pointtouser)`:**
-- This works just like \\"(touser)\\" but adds an arrow pointing  to the command text when a user is added after the command.
-
-**Example:**
-```
-Caster:  !addcom !facebook (pointtouser) like my Facebook page!
-User: !facebook
-Bot: @User,  like my Facebook page!
-
-User: !facebook User2
-Bot: User2 -> like my Facebook  page!
-```
-
-&nbsp;
-
-#### **`(#)`:**
-- Generates a random number from 0 to 100.
-
-**Example:**
-```
-Caster:  !addcom !lucky Your lucky number is (#)
+```text
+Caster: !addcom !lucky Your lucky number is (#)
 User: !lucky
-Bot: Your lucky number is  7
+Bot: Your lucky number is 7
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(# x, y)`:**
-- Generates a random number from x to y.
+### buildArgs
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(n:int)` - the n-th argument (escaped by default)
+- `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
+- `(n:int|default:str)` - the n-th argument, if given, else a provided default value
+
 
 **Example:**
-```
-Caster:  !addcom !lucky Your lucky number is (# 250, 500)
-User: !lucky
-Bot: Your lucky number is 487
-```
-
-&nbsp;
-
-#### **`(1)`:**
-- Specific argument after a command. This is  limited to 9 arguments currently.
-
-**Example:**
-```
-Caster: !addcom !love (sender)  loves (1).
+```text
+Caster: !addcom !love (sender) loves (1).
 User: !love monkeys
 Bot: User loves monkeys.
 ```
 
-&nbsp;
-
-#### **`(price)`:**
--  Will give you the current cost of that command.
-
-**Example:**
-```
-Caster: !addcom  !cost This command costs (price) (pointname)
-User: !cost
-Bot: This command costs  10 points
-```
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+Sometimes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(1=)`:**
-- This will give you the first command  argument if it is not empty. It will be replaced with any command variable after  the `=` if it is empty.
+### atSender
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(@sender)` - '@<Sender's Name>, '
+
 
 **Example:**
+```text
+Caster: !addcom !hello (@sender) you are awesome!
+User: !hello
+Bot: @User, you're awesome!
 ```
-Caster: !addcom !love The love between  (sender) and (1=random) is (#)%
-User: !love cookies
-Bot: The love between User  and cookies is 100%
 
-User: !love
-Bot: The love between User and RandomUserFromChat  is 1%
-```
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(age)`:**
-- This will tell you have long a channel  has been on Twitch.
+### adminonlyedit
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(adminonlyedit)` - returns blank
+
+
+_NOTE: metatag that prevents anyone but the broadcaster or admins from editing the command_
+
 
 **Example:**
+```text
+Caster: !addcom !playtime Current playtime: (playtime). (adminonlyedit)
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### age
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(age)` - outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
+
+
+**Example:**
+```text
 Caster: !addcom !age (age)
 User: !age
-Bot:  @User, user has been on Twitch since April 19, 2009.
-
+Bot: @User, user has been on Twitch since April 19, 2009.
 User: !age User2
-Bot: @User,  user2 has been on Twitch since December 25, 2010.
+Bot: @User, user2 has been on Twitch since December 25, 2010.
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 &nbsp;
 
-#### **`(random)`:**
--  Will give a random person's name from chat.
+### alert
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(alert fileName:str)` - sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
+- `(alert fileName:str, durationSeconds:int)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
+- `(alert fileName:str, durationSeconds:int, volume:float)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
+- `(alert fileName:str, durationSeconds:int, volume:float, css:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
+- `(alert fileName:str, durationSeconds:int, volume:float, css:text, message:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
+
+
+_NOTE: if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume_
+
 
 **Example:**
+```text
+Caster: !addcom !banana (alert banana.gif)
 ```
-Caster: !addcom  !poke /me pokes (random) with a long wooden stick.
-User: !poke
-Bot: /me pokes  User2 with a long wooden stick.
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(pointname)`:**
-- Current  points name that is set.
+### baresender
 
-**Example:**
-```
-Caster: !addcom !pointsname (sender)  current points name is set to: (pointname)
-User: !pointsname
-Bot: User current  points name is set to: points
-```
+Defined in script: _./javascript-source/core/commandTags.js_
 
-&nbsp;
+**Formulas:**
 
-#### **`(uptime)`:**
-- Current stream  uptime.
+- `(baresender)` - the login name of the message's sender
 
-**Example:**
-```
-Caster: !addcom !uptime (pointtouser) (channelname)  has been live for (uptime).
-User: !uptime
-Bot: @User, PhantomBot has been live  for 2 hours, 3 minutes and 30 seconds.
-```
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(game)`:**
-- Current  game set on Twitch.
+### channelname
 
-**Example:**
-```
-Caster: !addcom !game (pointtouser) current  game is: (game)
-User: !game
-Bot: @User, current game is: Programming
-```
+Defined in script: _./javascript-source/core/commandTags.js_
 
-&nbsp;
+**Formulas:**
 
-####  **`(status)`:**
-- Current status set on Twitch.
+- `(channelname)` - the display name of the Twitch channel
 
-**Example:**
-```
-Caster: !addcom  !status (pointtouser) current status is: (status)
-User: !status
-Bot: @User, current  status is: Fun programming!
-```
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(viewers)`:**
-- Current viewers  on Twitch.
+### code
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(code length:int)` - random code of the given length composed of a-zA-Z0-9
+
 
 **Example:**
-```
-Caster: !addcom !viewers We current have (viewers)  viewers watching us!
-User: !viewers
-Bot: We current have 600 viewers watching  us!
-```
-
-&nbsp;
-
-#### **`(follows)`:**
-- Current follows on Twitch.
-
-**Example:**
-```
-Caster:  !addcom !follows We current have (follows) followers!
-User: !follows
-Bot: We current  have 1000 followers!
-```
-
-&nbsp;
-
-#### **`(count)`:**
-- increases the count  on the command and will give you the current count.
-
-**Example:**
-```
-Caster:  !addcom !spam Chat has been spammed (count) times
-User: !spam
-Bot: Chat has been  spammed 5050 times.
-```
-
-&nbsp;
-
-#### **`(offlineonly)`:**
-- This will make  that command only work when the stream is offline. 
-
-**Example:**
-```
-Caster:  !addcom !downtime The stream as been offline for (downtime). (offlineonly)
-```
-
-&nbsp;
-
-####  **`(onlineonly)`:**
-- This will make that command only work when the stream is  online. 
-
-**Example:**
-```
-Caster: !addcom !uptime (pointtouser) (channelname)  has been live for (uptime). (onlineonly)
-```
-
-&nbsp;
-
-#### **`(code=)`:**
--  This will generate a random code, add the code length you want after the `=`
-
-**Example:**
-```
-Caster:  !addcom !code (code=5)
+```text
+Caster: !addcom !code (code 5)
 User: !code
 Bot: A1D4f
 ```
 
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
 &nbsp;
 
-#### **`(useronly=)`:**
-- The command will work for a specific user.
+### command
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(command name:str)` - execute command with given name and pass no args
+- `(command name:str args:str)` - execute command with given name and pass args
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 &nbsp;
 
-#### **`(gamesplayed)`:**
--  This will give you the games you've played in the current stream.
+### commandslist
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(commandslist)` - lists custom commands (paginated)
+- `(commandslist prefix:str)` - lists custom commands (paginated) with a prefix in the output
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
+
+&nbsp;
+
+### count
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(count)` - increases the count of how often this command has been called and output new count
+
 
 **Example:**
+```text
+Caster:  !addcom !spam Chat has been spammed (count) times
+User: !spam
+Bot: Chat has been spammed 5050 times.
 ```
-Caster:  !addcom !gamesplayed Games played in this stream: (gamesplayed)
-User: !gamesplayed
-Bot:  Games played in this stream: Creative - 00:00, Programming - 02:30
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-####  **`(randomrank)`:**
-- This will give you a random person that is in chat with there  rank name.
+### countdown
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(countdown datetime:str)` - shows the time remaining until the given datetime
+
+
+_NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
+
 
 **Example:**
+```text
+Caster: !addcom !count Time Left: (countdown December 23 2017 23:59:59 GMT+0200)
+User: !count
+Bot: Time Left: 20 hours, 30 minutes and 55 seconds.
 ```
-Caster: !addcom !poke /me Pokes (randomrank) with  a bar of soap.
-User: !poke
-Bot: /me Pokes Master User2 with a bar of soap.
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-####  **`(senderrank)`:**
-- This will give the sender name with his rank.
+### countup
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(countup datetime:str)` - shows the time elapsed since the given datetime
+
+
+_NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
+
 
 **Example:**
+```text
+Caster: !addcom !ago You missed it by (countup December 23 2017 23:59:59 GMT+0200)
+User: !ago
+Bot: You missed it by 20 hours, 30 minutes and 55 seconds.
 ```
-Caster:  !addcom !poke /me Pokes (senderrank) with a bar of soap.
-User: !poke
-Bot: /me  Pokes Master User with a bar of soap.
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(gameonly=)`:**
--  Will make that command only work when your stream game is set to it.
+### currenttime
 
-**Example:**
-```
-Caster:  !addcom !lang Currently programming in JavaScript (gameonly=Programming)
-```
+Defined in script: _./javascript-source/core/commandTags.js_
 
-&nbsp;
+**Formulas:**
 
-####  **`(readfile)`:**
-- Will read that file. Note it must be in the bots `addons` folder.
+- `(currenttime timezone:str, format:str)` - shows the current date/time in given timezone, using the provided output format
 
-**Example:**
-```
-Caster:  !addcom !lastfollow Last follower was (readfile ./addons/followHandler/latestFollower.txt)
-User:  !lastfollow
-Bot: Last follower was User
-```
+
+_NOTE: for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html_
+
+_NOTE: for information about accepted timezone strings, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/TimeZone.html_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(echo)`:**
-- Will  say anything as the bot. Note commands such as `/timeout` and `/ban` will work.
+### customapi
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(customapi url:str)` - http GET url and output returned text (escaped by default)
+
+
+_NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
+
+_NOTE: if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
+
+_NOTE: this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage_
+
 
 **Example:**
+```text
+Caster: !addcom !joke (customapi http://not.real.com/joke.php?name=$1)
+User: !joke bear
+Bot: These jokes are un-bear-able
 ```
-Caster:  !addcom !echo (echo)
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### customapijson
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs (escaped by default)
+
+
+_NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
+
+_NOTE: if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
+
+_NOTE: the response must be a JSONObject. arrays are only supported with a known index, walking arrays is not supported_
+
+_NOTE: multiple specs can be provided, separated by spaces; curly braces can be used to enclose literal strings_
+
+
+**Example:**
+```text
+Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
+User: !weather 80314
+Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### downtime
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(downtime)` - how long the channel has been offline
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### echo
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(echo)` - all arguments passed to the command
+
+
+**Example:**
+```text
+Caster: !addcom !echo (echo)
 User: !echo test test
 Bot: test test
 ```
 
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
 &nbsp;
 
-####  **`(followage)`:**
-- Tells you how long you have been following the channel, you  can also check the time of another user.
+### encodeurl
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(encodeurl url:str)` - url encode the given url
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### encodeurlparam
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(encodeurlparam paramter:str)` - like encodeurl but also ecapes "&", "=", "+", "/", etc.
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### followage
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(followage)` - sends a message denoting how long the sender of command is following this channel
+- `(followage user:str)` - sends a message denoting how long the provided user is following this channel
+- `(followage user:str channel:str)` - sends a message denoting how long the provided user is following the provided channel
+
 
 **Example:**
-```
-Caster: !addcom !followage  (followage)
+```text
+Caster: !addcom !followage (followage)
 User: !followage
-Bot: @User, user has been following channel PhantomBot  since March 29, 2016. (340 days)
+Bot: @User, user has been following channel PhantomBot since March 29, 2016. (340 days)
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 &nbsp;
 
-#### **`(titleinfo)`:**
-- Gives  you the current title set on Twitch with the current uptime.
+### followdate
 
-**Example:**
-```
-Caster:  !addcom !title (pointtouser) Current title: (titleinfo).
-User: !title
-Bot: @User,  Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
-```
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(followdate)` - the date the sender of this command last followed this channel
+- `(followdate user:str)` - the date the provided user last followed this channel
+- `(followdate user:str channel:str)` - the date the provided user last followed the provided channel
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-####  **`(gameinfo)`:**
-- Gives you the current title set on Twitch with the current  uptime.
+### follows
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(follows)` - number of follower of this channel
+
 
 **Example:**
+```text
+Caster: !addcom !follows We currently have (follows) followers!
+User: !follows
+Bot: We currently have 1000 followers!
 ```
-Caster: !addcom !game (pointtouser) Current game:  (gameinfo).
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### game
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(game)` - currently played game
+
+
+**Example:**
+```text
+Caster: !addcom !game (pointtouser) current  game is: (game)
 User: !game
-Bot: @User, Current game: Programming Playtime: 3 hours,  20 minutes and 35 seconds.
+Bot: User -> current game is: Programming
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(gameinfo)`:**
-- Gives you the  current game set on Twitch with the current playtime.
+### gameinfo
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(gameinfo)` - similar to (game) but include game time if online
+
 
 **Example:**
-```
-Caster:  !addcom !game (pointtouser) Current game: (gameinfo).
+```text
+Caster: !addcom !game (pointtouser) Current game: (gameinfo).
 User: !game
-Bot: @User,  Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
+Bot: User -> Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-####  **`(playtime)`:**
-- Tells you how long you've been playing the current game set  on Twitch for.
+### gameonly
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(gameonly name:str)` - cancels the command if the current game does not exactly match the one provided; multiple games can be provided, separated by |
+- `(gameonly !! name:str)` - cancels the command if the current game exactly matches the one provided; multiple games can be provided, separated by |
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### gamesplayed
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(gamesplayed)` - list games played in current stream, and the approximate uptime when each game was started; if offline, cancels the command
+
 
 **Example:**
+```text
+Caster: !addcom !gamesplayed Games played in this stream: (gamesplayed)
+User: !gamesplayed
+Bot: Games played in this stream: Creative - 00:00, Programming - 02:30
 ```
-Caster: !addcom !playtime Current playtime:  (playtime).
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### hours
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(hours)` - number of hours sender has spent in chat
+- `(hours user:str)` - number of hours the provided user has spent in chat
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### keywordcount
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(keywordcount keyword:str)` - increase the keyword count for the given keyword and return new count
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### lasttip
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(lasttip)` - last tip message
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### offlineonly
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(offlineonly)` - if the channel is not offline, cancels the command
+
+
+**Example:**
+```text
+Caster: !addcom !downtime The stream as been offline for (downtime). (offlineonly)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### onlineonly
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(onlineonly)` - if the channel is not online, cancels the command
+
+
+**Example:**
+```text
+Caster: !addcom !uptime (pointtouser) (channelname) has been live for (uptime). (onlineonly)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### pay
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(pay)` - outputs the number of points the sender has gained by using this command
+- `(pay command:str)` - outputs the number of points the sender would gain if they use the specified command
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### playsound
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(playsound hook:str)` - plays a sound hook on the alerts overlay
+
+
+**Example:**
+```text
+Caster: !addcom !good Played sound goodgood (playsound goodgood)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### playtime
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(playtime)` - how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
+
+
+**Example:**
+```text
+Caster: !addcom !playtime Current playtime: (playtime).
 User: !playtime
 Bot: Current playtime: 30 minutes.
 ```
 
-&nbsp;
-
-####  **`(countdown=)`:**
-- Tells you how long you've been playing the current game set  on Twitch for.
-
-**Example:**
-```
-Caster: !addcom !count (countdown=December  23 2017 23:59:59 GMT+0200)
-User: !count
-Bot: 20 hours, 30 minutes and 55 seconds.
-```
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
-####  **`(writefile)`:**
-- Will write the text to that file, note that most of the tags  will work in the text. Append can be true or false, if false it will always replace  the first line.
+### pointname
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(pointname)` - the plural name of the loyalty points
+
 
 **Example:**
+```text
+Caster: !addcom !pointsname (sender) current points name is set to: (pointname)
+User: !pointsname
+Bot: User current points name is set to: points
 ```
-Caster: !addcom !settxt (writefile test.txt,  true, (echo))
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(adminonlyedit)`:**
-- Makes a command only  editable by bot admins.
+### pointtouser
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(pointtouser)` - user + ' -> '; uses sender's display name if no other is provided
+
 
 **Example:**
+```text
+Caster: !addcom !facebook (pointtouser) like my Facebook page!
+User: !facebook
+Bot: User ->  like my Facebook page!
+User: !facebook User2
+Bot: User2 -> like my Facebook  page!
 ```
-Caster: !addcom !playtime Current  playtime: (playtime). (adminonlyedit)
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-#### **`(playsound)`:**
--  Will play that sound name with that command.
+### points
 
-**Example:**
-```
-Caster: !addcom  !good Played sound goodgood (playsound goodgood)
-```
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(points)` - points of the sender
+- `(points user:str)` - points of the given user
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### price
 
-#### **`(subscribers)`:**
-- Gives the number of Twitch subscribers
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(price)` - the number of points the sender paid to use this command
+- `(price command:str)` - the number of points the sender would pay if they use the specified command
+
 
 **Example:**
+```text
+Caster: !addcom !cost This command costs (price) (pointname)
+User: !cost
+Bot: This command costs 10 points
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### random
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(random)` - random user in chat, or the bot's name if chat is empty
+
+
+**Example:**
+```text
+Caster: !addcom !poke /me pokes (random) with a long wooden stick.
+User: !poke
+Bot: /me pokes User2 with a long wooden stick.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### randomrank
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(randomrank)` - random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
+
+
+**Example:**
+```text
+Caster: !addcom !poke /me Pokes (randomrank) with a bar of soap.
+User: !poke
+Bot: /me Pokes Master User2 with a bar of soap.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### readfile
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(readfile filename:str)` - first line of the specified file
+
+
+_NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
+
+
+**Example:**
+```text
+Caster: !addcom !lastfollow Last follower was (readfile ./followHandler/latestFollower.txt)
+User: !lastfollow
+Bot: Last follower was User
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### readfilerand
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(readfilerand filename:str)` - random line of the specified file
+
+
+_NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### repeat
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(repeat n:int, message:str)` - repeat the message n times (copy/paste)
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### sender
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(sender)` - the sender's display name
+
+
+**Example:**
+```text
+Caster: !addcom !hello Hello, (sender)!
+User: !hello
+Bot: Hello, User!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### senderrank
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(senderrank)` - the sender's display name, prefixed with their rank
+
+
+**Example:**
+```text
+Caster: !addcom !poke /me Pokes (senderrank) with a bar of soap.
+User: !poke
+Bot: /me Pokes Master User with a bar of soap.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### senderrankonly
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(senderrankonly)` - the sender's rank
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### status
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(status)` - the current stream title
+
+
+**Example:**
+```text
+Caster: !addcom !status (pointtouser) current status is: (status)
+User: !status
+Bot: User -> current status is: Fun programming!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### subscribers
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(subscribers)` - number of subscribers of this channel
+
+
+_NOTE: only works if the apioauth in botlogin.txt belongs to the broadcaster_
+
+
+**Example:**
+```text
 Caster: !addcom !subs (subscribers) subscribers!
 User: !subs
 Bot: 10 subscribers!
 ```
 
-&nbsp;
-
-#### **`(channelname)`:**
--  Gives you the current channel name.
-
-&nbsp;
-
-### Team tags:
-- `(team_members <team_name>)` - Number of participants
-- `(team_url <team_name>)` - Link to team
-- `(team_name <team_name>)` - Full team name
-- `(team_random_member <team_name>)` - Random member nickname
-- `(team_member_game <team_name>, <username>)` - The game of the specified member
-- `(team_member_followers <team_name>, <username>)` - Number of followers of the specified member
-- `(team_member_url <team_name>, <username>)` - Link to the specified member
-
-The `<team_name>` should be taken from `twitch.tv/team/teamname` where `teamname` is the correct name.
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-**For key words:**
-- command:command - When the word key is triggered, the command is used
+### team_member_followers
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_member_followers team:str, membername:str)` - number of followers of user membername in the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_member_game
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_member_game team:str, membername:str)` - game user membername in the provided team currently plays
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_member_url
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_member_url team:str, membername:str)` - url of user membername in the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_members
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_members team:str)` - number of members in the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_name
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_name team:str)` - name of the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_random_member
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_random_member team:str)` - random member of the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### team_url
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(team_url team:str)` - url to the provided team
+
+
+_NOTE: the team parameter should be the url slug for the team_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### titleinfo
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(titleinfo)` - title + uptime if online
+
 
 **Example:**
+```text
+Caster: !addcom !title (pointtouser) Current title: (titleinfo).
+User: !title
+Bot: User -> Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
 ```
-Caster: !keyword add uptime command:uptime
-```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-## Custom API and Custom API JSON:
-To  allow for a great deal of flexibility with PhantomBot, we are happy to provide new  tags for custom commands.
+### touser
 
-### Custom API:
+Defined in script: _./javascript-source/core/commandTags.js_
 
-`!addcom` tag: **(customapi URL)**
-*URL*  may contain *$1...$9* to pass parameters from chat as input to the URL.
-The **customapi**  tag will pull a given URL and display the information exactly as it is provided  by the web service. This is useful for web services that return plain text. Do not  use this to return data from a web page, as that will simply spam the chat. Note  that the **URL** may be passed parameters from chat, for example, say a web service  requires a text field to return data, such as a name of a person:
+**Formulas:**
 
-`!addcom joke  (customapi http://not.real.com/joke.php?name=$1)`
-This would send a request and  pass *name* with a value given as the first parameter to *!joke* in chat. Note that  if a *$1...$9* parameter is given, the bot will require parameters before executing  the command.
+- `(touser)` - display name of the user provided as an argument by the sender; sender's display name if no other is provided
 
-### Custom API JSON:
 
-`!addcom` tag: **(customapijson URL key  | object.key | object.object...key | {literal string} ...)**
-*URL* may contain  *$1...$9* to pass parameters from chat as input to the URL.
-*key* is a key to data  on the first node of the returned JSON
-*object.key* provides a JSON object to select  a key from.
-*object.object...key* indicates that many objects may be traversed  to get at a given key.
-*{literal string}* is text to place between queried values.
+**Example:**
+```text
+Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
+User: !twitter
+Bot: User Hey! Follow my Twitter!
+User: !twitter User2
+Bot: User2 Hey! Follow my Twitter!
+```
 
-The  **customapijson** tag will pull a given URL and expects to receive a JSON object  from the web service. An understanding of JSON objects is highly recommended in  order to know what to use as the mapping guide. Note that the JSON parser will not  attempt to traverse arrays and find specific elements, this will only select objects  and a key. The key must relate to an integer or string value. The following is an  example:
-!addcom yomomma (customapijson http://api.yomomma.info/ joke)`
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
-The  above will create a new command that queries the given API and returns the value  associated with the <em>joke</em> key.
+&nbsp;
 
-#### Another example:
-(customapijson  http://api.apixu.com/v1/current.json?key=NOT_PROVIDED&q=$1 {Weather for} location.name  {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})`
+### unescape
 
-The  above will create a new command that queries the given API and requires a parameter  to be given in to the command. In this instance, a weather API is queried and the  return string will be:
-**Weather for city name**: *(current weather)*
-**Temps**:  *Temp in F, Temp in C*
+Defined in script: _./javascript-source/core/commandTags.js_
 
-#### To step through a bit further:
-*location.name* parses  the top level <em>location</em> object and then returns the value associated with  the *name* key.
-*current.condition.text* parses the top level *current* object  and then moves to the *condition* object to return the value associated with the  *text* key.
-*current.temp_f and current_temp_c* parse the top level *current* object  and return the value associated with the given keys, *temp_f* and *temp_c*.
-*{Weather  for}, {:}, {Temps:}, {F} and {C}* are literal strings that are printed out.
+**Formulas:**
 
-Please  note again, that this is a simple implementation for parsing JSON data. If a more  complex JSON is to be parsed or data is to be correlated in some way, then a custom  script or Java module would need to be developed.
+- `(unescape str:str)` - unescape \\ \( \) to \ ( ) respectively
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+Yes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### uptime
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(uptime)` - how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
+
+
+**Example:**
+```text
+Caster: !addcom !uptime (pointtouser) (channelname) has been live for (uptime).
+User: !uptime
+Bot: @User, PhantomBot has been live for 2 hours, 3 minutes and 30 seconds.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### useronly
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(useronly name:str)` - only allows the given user to use the command; multiple users separated by spaces is allowed; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
+
+
+_NOTE: use @moderators as one of the user names to allow all moderators and admins_
+
+_NOTE: use @admins as one of the user names to allow all admins_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### viewers
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(viewers)` - number of current viewers
+
+
+**Example:**
+```text
+Caster: !addcom !viewers We currently have (viewers) viewers watching us!
+User: !viewers
+Bot: We currently have 600 viewers watching us!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### views
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(views)` - number of total view count for the stream
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### writefile
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(writefile filename:str, append:bool, text:str)` - writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
+
+
+_NOTE: files will be placed in the addons folder, or a subfolder therein specified by the filename parameter_
+
+
+**Example:**
+```text
+Caster: !addcom !settxt (writefile test.txt, true, (echo))
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No

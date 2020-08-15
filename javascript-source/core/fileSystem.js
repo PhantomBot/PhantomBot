@@ -24,7 +24,16 @@
     var JFile = java.io.File,
         JFileInputStream = java.io.FileInputStream,
         JFileOutputStream = java.io.FileOutputStream,
-        fileHandles = [];
+        Paths = Packages.java.nio.file.Paths,
+        executionPath = Packages.tv.phantombot.PhantomBot.GetExecutionPath(),
+        fileHandles = [],
+        validPaths = [
+            './addons',
+            './config/audio-hooks',
+            './config/gif-alerts',
+            './logs',
+            './scripts'
+        ];
 
     /**
      * @function readFile
@@ -35,7 +44,7 @@
     function readFile(path) {
         var lines = [];
 
-        if (!fileExists(path)) {
+        if (!fileExists(path) || invalidLocation(path)) {
             return lines;
         }
 
@@ -59,6 +68,10 @@
      * @returns {boolean}
      */
     function mkDir(path) {
+        if (invalidLocation(path)){
+            return false;
+        }
+
         var dir = new JFile(path);
         return dir.mkdir();
     }
@@ -72,6 +85,10 @@
     function moveFile(file, path) {
         var fileO = new JFile(file),
             pathO = new JFile(path);
+
+        if (invalidLocation(file) || invalidLocation(path)) {
+            return;
+        }
 
         if ((fileO != null && pathO != null) || (file != "" && path != "")) {
             try {
@@ -90,6 +107,10 @@
      * @param {boolean} append
      */
     function saveArray(array, path, append) {
+        if (invalidLocation(path)) {
+            return;
+        }
+
         try {
             var fos = new JFileOutputStream(path, append),
                 ps = new java.io.PrintStream(fos),
@@ -131,6 +152,10 @@
             fos,
             ps;
 
+        if (invalidLocation(path)){
+            return;
+        }
+
         closeOpenFiles();
 
         if (fileHandles[path] !== undefined && append) {
@@ -160,6 +185,10 @@
      * @param {string} path
      */
     function touchFile(path) {
+        if (invalidLocation(path)) {
+            return;
+        }
+
         try {
             var fos = new JFileOutputStream(path, true);
             fos.close();
@@ -175,6 +204,10 @@
      * @param {boolean} now
      */
     function deleteFile(path, now) {
+        if (invalidLocation(path)) {
+            return;
+        }
+
         try {
             var f = new JFile(path);
             if (now) {
@@ -194,6 +227,10 @@
      * @returns {boolean}
      */
     function fileExists(path) {
+        if (invalidLocation(path)) {
+            return false;
+        }
+
         try {
             var f = new JFile(path);
             return f.exists();
@@ -210,6 +247,10 @@
      * @returns {Array}
      */
     function findFiles(directory, pattern) {
+        if (invalidLocation(directory)) {
+            return [];
+        }
+
         try {
             var f = new JFile(directory),
                 ret = [];
@@ -235,6 +276,10 @@
      * @returns {boolean}
      */
     function isDirectory(path) {
+        if (invalidLocation(path)) {
+            return false;
+        }
+
         try {
             var f = new JFile(path);
             return f.isDirectory();
@@ -250,8 +295,24 @@
      * @returns {Number}
      */
     function findSize(file) {
+        if (invalidLocation(file)) {
+            return 0;
+        }
+
         var fileO = new JFile(file);
         return fileO.length();
+    }
+
+    function invalidLocation(path) {
+        var p = Paths.get(path);
+
+        for (var x in validPaths) {
+            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, validPaths[x]))) {
+                return false;
+            }
+        }
+
+       return true;
     }
 
     /** Export functions to API */

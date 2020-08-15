@@ -46,8 +46,12 @@
             // Wait a bit to create the roles.
             setTimeout(function() {
                 for (i in users) {
-                    if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
-                        updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                    try {
+                        if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
+                            updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                        }
+                    } catch (e){
+                        $.log.error(e);
                     }
                 }
             }, 5e3);
