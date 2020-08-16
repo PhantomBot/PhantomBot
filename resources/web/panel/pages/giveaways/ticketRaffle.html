@@ -79,8 +79,8 @@
                         <div class="box-body" style="padding-bottom: 90px;">
                             <!-- Command -->
                             <div class="form-group">
-                                <label>Command</label>
-                                <input type="text" class="form-control" value="!tickets"
+                                <label for="ticket-raffle-cmd">Command</label>
+                                <input id="ticket-raffle-cmd" type="text" class="form-control" value="!tickets"
                                     data-toggle="tooltip" title="Command used to buy tickets. This cannot be changed." disabled/>
                             </div>
 
@@ -95,28 +95,28 @@
 
                             <!-- Ticket cost -->
                             <div class="form-group">
-                                <label>Ticket Cost</label>
+                                <label for="ticket-raffle-cost">Ticket Cost</label>
                                 <input type="text" class="form-control" id="ticket-raffle-cost" value="1"
                                     data-toggle="tooltip" title="How much each ticket cost."/>
                             </div>
 
                             <!-- Maximum tickets -->
                             <div class="form-group">
-                                <label>Maximum Allowed Tickets</label>
+                                <label for="ticket-raffle-max">Maximum Allowed Tickets</label>
                                 <input type="text" class="form-control" id="ticket-raffle-max" value="100"
                                     data-toggle="tooltip" title="How many tickets users are allowed to buy."/>
                             </div>
 
                             <!-- Regular luck -->
                             <div class="form-group">
-                                <label>Regulars Ticket Multiplier</label>
+                                <label for="ticket-raffle-reg">Regulars Ticket Multiplier</label>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-reg" value="1"
                                     data-toggle="tooltip" title="Ticket multiplier for regulars. Multiplies the number of tickets the users buys with this number."/>
                             </div>
 
                             <!-- Subscriber luck -->
                             <div class="form-group">
-                                <label>Subscribers Ticket Multiplier</label>
+                                <label for="ticket-raffle-sub">Subscribers Ticket Multiplier</label>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-sub" value="1"
                                     data-toggle="tooltip" title="Ticket multiplier for susbcribers. Multiplies the number of tickets the users buys with this number."/>
                             </div>

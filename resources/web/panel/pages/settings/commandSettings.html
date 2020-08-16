@@ -40,7 +40,7 @@
                 <div class="tab-pane active" id="cmd_settings_messages">
                     <div class="form-group">
                         <!-- Pricecom toggle. -->
-                        <label>Enable Cost Messages</label>
+                        <label for="cmd-cost-messages">Enable Cost Messages</label>
                         <div class="dropdown">
                             <select class="form-control" id="cmd-cost-messages" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If a message should be said in a chat when a user tries to use a command that they don't have points for.">
@@ -52,7 +52,7 @@
 
                     <div class="form-group">
                         <!-- Permcom toggle. -->
-                        <label>Enable Permission Messages</label>
+                        <label for="cmd-perm-messages">Enable Permission Messages</label>
                         <div class="dropdown">
                             <select class="form-control" id="cmd-perm-messages" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If a message should be said in a chat when a user tries to use a command that they don't have permission for.">
@@ -64,7 +64,7 @@
 
                     <div class="form-group">
                         <!-- Permcom toggle. -->
-                        <label>Enable Cooldown Messages</label>
+                        <label for="cmd-cooldown-messages">Enable Cooldown Messages</label>
                         <div class="dropdown">
                             <select class="form-control" id="cmd-cooldown-messages" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If a message should be said in a chat when a user tries to use a command that's still on cooldown.">
@@ -79,7 +79,7 @@
                 <div class="tab-pane" id="cmd_settings_mods">
                     <div class="form-group">
                         <!-- Pricecom mods toggle. -->
-                        <label>Exempt Moderators From Command Costs</label>
+                        <label for="pricecom-mods">Exempt Moderators From Command Costs</label>
                         <div class="dropdown">
                             <select class="form-control" id="pricecom-mods" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If moderators should also pay for commands with a cost. Bot administrators are always ignored.">
@@ -91,7 +91,7 @@
 
                     <div class="form-group">
                         <!-- Cooldown for mods. -->
-                        <label>Exempt Moderators From Command Cooldowns</label>
+                        <label for="cooldown-mods">Exempt Moderators From Command Cooldowns</label>
                         <div class="dropdown">
                             <select class="form-control" id="cooldown-mods" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If moderators should also have command cooldowns.">
@@ -106,7 +106,7 @@
                 <div class="tab-pane" id="cmd_settings_cooldown">
                     <!-- Logs keep days. -->
                     <div class="form-group">
-                        <label>Global Cooldown (Seconds)</label>
+                        <label for="global-cooldown">Global Cooldown (Seconds)</label>
                         <input type="number" class="form-control" id="global-cooldown" data-toggle="tooltip"
                             title="Cooldown given to commands that don't have a custom cooldown. Minimum is 5 seconds."/>
                     </div>
