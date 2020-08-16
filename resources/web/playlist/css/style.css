@@ -239,7 +239,7 @@ table {
     vertical-align: middle;
 }
 
-#songTableTitle {
+.songTableTitle {
     font-family: "Roboto", sans-serif;
     background: #7451b5;
     color: white;

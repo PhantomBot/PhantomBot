@@ -155,3 +155,8 @@ select {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Remove bold on sidebar label */
+.control-sidebar-subheading > label:not([class]) {
+    font-weight: unset;
+}

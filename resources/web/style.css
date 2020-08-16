@@ -46,7 +46,7 @@
     overflow: hidden;
 }
 
-#header-right {
+.header-right {
     margin-top: 40px;
     margin-right: 20px;
     height: 85px;
