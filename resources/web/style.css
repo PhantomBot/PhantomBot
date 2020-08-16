@@ -116,7 +116,7 @@ h1 {
     padding-top: 20px;
     margin-left: 15px;
     font-size: 26px;
-    font-family: Arial, sans-serif;
+    font-family: Roboto, Verdana, Arial, sans-serif;
     display: inline-block;
 }
 
@@ -130,7 +130,7 @@ option:hover {
     cursor: pointer;
 }
 
-#fontawesome {
+.fontawesome {
     width: 30px;
 }
 
@@ -138,7 +138,7 @@ option:hover {
     margin-left: 15px;
 }
 
-#middle {
+.middle {
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
