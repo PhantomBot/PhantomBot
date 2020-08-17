@@ -282,9 +282,9 @@
                                         return true;
                                     },
                                     linkify: function(token, anchor, slug, opts) {
-                                        let newhash = '';
+                                        let newhash = 'guide=' + path;
                                         for (let x in hashmap) {
-                                            if (x !== 'jumpto') {
+                                            if (x !== 'jumpto' && x.length > 0) {
                                                 if (newhash.length > 0) {
                                                     newhash = newhash + '&';
                                                 }
