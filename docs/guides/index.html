@@ -284,7 +284,7 @@
                                     linkify: function(token, anchor, slug, opts) {
                                         let newhash = 'guide=' + path;
                                         for (let x in hashmap) {
-                                            if (x !== 'jumpto' && x.length > 0) {
+                                            if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
                                                 if (newhash.length > 0) {
                                                     newhash = newhash + '&';
                                                 }
@@ -352,10 +352,14 @@
 
                 function jumpToHeader() {
                     if (hashmap.hasOwnProperty('jumpto')) {
-                        let elm = $('#' + hashmap['jumpto']);
-                        if (elm.length > 0) {
-                            elm[0].scrollIntoView({behavior: 'smooth'});
-                        }
+                        jumpTo(hashmap['jumpto']);
+                    }
+                }
+
+                function jumpTo(slug) {
+                    let elm = $('#' + slug);
+                    if (elm.length > 0) {
+                        elm[0].scrollIntoView({behavior: 'smooth'});
                     }
                 }
 
