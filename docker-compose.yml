@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016-2019 phantombot.tv
+# Copyright (C) 2016-2020 phantom.bot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,36 @@
 
 version: '3'
 services:
-  phantombot:
-    container_name: phantombotde
-    image: phantombotde/phantombotde:latest
+
+  caddy:
+    container_name: caddy
+    image: caddy:latest
     ports:
-      - "25000:25000"
+      - 443:443
+    restart: always
+    depends_on:
+      - phantombot
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    command: [
+      "caddy",
+      "reverse-proxy",
+      "--from",
+      "${DOMAIN:-localhost}",
+      "--to",
+      "phantombotde-nightly:25000"
+    ]
+
+  phantombot:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   args:
+    #     PROJECT_VERSION: $PROJECT_VERSION
+    #     TARGETPLATFORM: ${TARGETPLATFORM:-linux/amd64}
+    container_name: phantombotde-nightly
+    #image: gmt2001/phantombot-nightly:latest
     restart: always
     volumes:
       - /opt/PhantomBot/addons
@@ -34,14 +59,18 @@ services:
     environment:
       # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # Twitch bot user (Required)
-      - PHANTOMBOT_USER=
+      PHANTOMBOT_USER:
       # Twitch bot user OAuth token (https://twitchapps.com/tmi/) (Required)
-      - PHANTOMBOT_OAUTH=
-      # Twitch caster channel OAuth token (https://phantombot.tv/oauth/)
-      # - PHANTOMBOT_APIOAUTH=
+      PHANTOMBOT_OAUTH:
+      # Twitch caster channel OAuth token (https://phantom.bot/oauth/)
+      PHANTOMBOT_APIOAUTH:
       # Twitch caster channel (Required)
-      - PHANTOMBOT_CHANNEL=
+      PHANTOMBOT_CHANNEL:
       # Webinterface username
-      #- PHANTOMBOT_PANELUSER=
+      PHANTOMBOT_PANELUSER:
       # Webinterface password
-      #- PHANTOMBOT_PANELPASSWORD=
+      PHANTOMBOT_PANELPASSWORD:
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,8 +141,8 @@ public class ModerationUtil {
         try {
             if (blacklist.has("_total") && blacklist.getInt("_total") > 0) {
                 JSONArray list = blacklist.getJSONArray("list");
-
-
+                
+                
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);

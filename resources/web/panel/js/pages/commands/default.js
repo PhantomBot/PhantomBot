@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ $(function() {
                     .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '', '!' + command, 'Name des Befehls. Dieser kann nicht bearbeitet werden.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers']))
+                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',

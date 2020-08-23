@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -321,7 +321,7 @@ $(function() {
                 'Wenn eine Nachricht im Channel gesendet werden soll, wenn jemand einen Clip erstellt.'))
             // Add the text area for the clips message.
             .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Nachricht', '', e.clipsMessage,
-                'Die Nachricht wird gesendet, wenn jemand einen Clip erstellt. Tags: (Name), (embedurl) - wird als gesamte Nachricht verwendet, und (url)', false))
+                'Die Nachricht wird gesendet, wenn jemand einen Clip erstellt. Tags: (name), (embedurl) - wird als gesamte Nachricht verwendet, und (url)', false))
             // Add the text area for the clips channel.
             .append(helpers.getInputGroup('clip-channel', 'text', 'Alarm Channel', '#alerts', e.clipsChannel,
                 'Der Kanal, in dem die Clips gepostet werden.')),
@@ -372,12 +372,12 @@ $(function() {
             .append(helpers.getCollapsibleAccordion('main-1', 'Online-Einstellungen', $('<form/>', {
                     'role': 'form'
                 })
-            	// Add the toggle for onine alerts.
+            	// Add the toggle for online alerts.
             	.append(helpers.getDropdownGroup('online-toggle', 'Online-Alarme aktivieren', (e.onlineToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                	'If a message should be said in the channel when you go live on Twitch.'))
-            	// Add the toggle for one alerts.
+                	'Wenn eine Nachricht in den Kanal gesendet werden soll, wenn Sie live auf Twitch gehen.'))
+            	// Add the toggle for auto bot streaming status
             	.append(helpers.getDropdownGroup('online-status', 'Bot-Status aktivieren', (e.botGameToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                	'Wenn Sie live gehen, zeigen Sie Ihren Bot als Streaming.'))
+                	'Wenn Sie live gehen, zeigt dein Bot sich als streament an.'))
             	// Add the text area for the online message.
             	.append(helpers.getTextAreaGroup('online-message', 'text', 'Online Nachricht', '', e.onlineMessage,
                 	'Die Nachricht wird gesendet, wenn Sie live gehen. Diese Nachricht ist in einem Embed-Stil. Tags: (name)', false))))
@@ -407,8 +407,11 @@ $(function() {
                 })
                 // Add channel box.
                 .append(helpers.getInputGroup('channel-alert', 'text', 'Alarm Kanal', '#alerts', e.onlineChannel,
-                    'Kanal, in dem alle Alarme gesendet werden sollen.'))))),
-            function() {
+                    'Kanal, in dem alle Alarme gesendet werden sollen.'))
+                // Add the toggle for auto bot streaming status
+                .append(helpers.getDropdownGroup('delete-message', 'Alarme automatisch löschen', (e.deleteMessageToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                    'Löscht die Online-Nachricht automatisch, nachdem der Stream beendet ist, und die Offline-Nachricht, wenn ein neuer Stream gestartet wird.'))))),
+                function() {
             	let onlineToggle = $('#online-toggle').find(':selected').text() === 'Ja',
             		statusToggle = $('#online-status').find(':selected').text() === 'Ja',
             		onlineMessage = $('#online-message'),
@@ -416,7 +419,8 @@ $(function() {
             		offlineMessage = $('#offline-message'),
             		gameToggle = $('#game-toggle').find(':selected').text() === 'Ja',
             		gameMessage = $('#game-message'),
-            		channel = $('#channel-alert');
+            		channel = $('#channel-alert'),
+            		deleteMessageToggle = $('#delete-message').find(':selected').text() === 'Ja';
 
             	switch (false) {
             		case helpers.handleInputString(onlineMessage):
@@ -426,11 +430,12 @@ $(function() {
             		default:
             			socket.updateDBValues('discord_stream_alerts_updater', {
             				tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                    				'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-            				keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage', 'gameToggle',
-                				'gameMessage', 'botGameToggle', 'onlineChannel'],
+                    				'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                    				'discordSettings',],
+            				keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage',
+                				'gameToggle', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle'],
             				values: [onlineToggle, onlineMessage.val(), offlineToggle, offlineMessage.val(),
-            						gameToggle, gameMessage.val(), statusToggle, channel.val()]
+            						gameToggle, gameMessage.val(), statusToggle, channel.val(), deleteMessageToggle]
             			}, function() {
             				socket.wsEvent('discord', './discord/handlers/streamHandler.js', '', [], function() {
                                 // Close the modal.

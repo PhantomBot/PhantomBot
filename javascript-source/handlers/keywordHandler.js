@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
             if (json.isRegex) {
                 try {
-                    json.regexKey = new RegExp(json.keyword.replace('regex:', ''));
+                    json.regexKey = new RegExp(json.keyword, json.isCaseSensitive ? '' : 'i');
                 } catch (ex) {
                     $.log.error('Bad regex detected in keyword [' + keys[i] + ']: ' + ex.message);
                     continue;
@@ -47,22 +47,7 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        var message = event.getMessage(),
-            sender = event.getSender(),
-            messageParts = message.toLowerCase().split(' '),
-            str = '',
-            json;
-
-        // Don't say the keyword if someone tries to remove it.
-        if (message.startsWith('!keyword')) {
-            return;
-        }
-
-        for (var i = 0; i < keywords.length; i++) {
-            json = keywords[i];
-
-            if (json.isRegex) {
-                if (json.regexKey.test(message)) {
+        function executeKeyword(json, event) {
                     // Make sure the keyword isn't on cooldown.
                     if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
                         return;
@@ -77,28 +62,40 @@
                         json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
                         $.say($.tags(event, json.response, false));
                     }
+        }
+
+        var message = event.getMessage(),
+            sender = event.getSender(),
+            messagePartsLower = message.toLowerCase().split(' '),
+            messageParts = message.split(' '),
+            json;
+
+        // Don't say the keyword if someone tries to remove it.
+        if (message.startsWith('!keyword')) {
+            return;
+        }
+
+        for (var i = 0; i < keywords.length; i++) {
+            json = keywords[i];
+
+            if (json.isRegex) {
+                if (json.regexKey.test(message)) {
+                    executeKeyword(json, event);
                     break;
                 }
             } else {
-                for (var idx = 0; idx < messageParts.length; idx++) {
+                var str = '',
+                  caseAdjustedMessageParts = messageParts;
+                if (!json.isCaseSensitive) {
+                    json.keyword = json.keyword.toLowerCase();
+                    caseAdjustedMessageParts = messagePartsLower;
+                }
+                for (var idx = 0; idx < caseAdjustedMessageParts.length; idx++) {
                     // Create a string to match on the keyword.
-                    str += (messageParts[idx] + ' ');
+                    str += (caseAdjustedMessageParts[idx] + ' ');
                     // Either match on the exact word or phrase if it contains it.
-                    if ((json.keyword.includes(' ') && str.includes(json.keyword)) || messageParts[idx].equalsIgnoreCase(json.keyword)) {
-                        // Make sure the keyword isn't on cooldown.
-                        if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
-                            return;
-                        }
-                        // If the keyword is a command, we need to send that command.
-                        else if (json.response.startsWith('command:')) {
-                            $.command.run(sender, json.response.substring(8), '', event.getTags());
-                        }
-                        // Keyword just has a normal response.
-                        else {
-                            json.response = $.replace(json.response, '.*\(keywordcount\s(.*)\).*', '');
-                            json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
-                            $.say($.tags(event, json.response, false));
-                        }
+                    if ((json.keyword.includes(' ') && str.includes(json.keyword)) || (caseAdjustedMessageParts[idx] + '') === (json.keyword + '')) {
+                        executeKeyword(json, event);
                         break;
                     }
                 }
@@ -131,22 +128,40 @@
              * @commandpath keyword add [keyword] [response] - Adds a keyword and a response, use regex: at the start of the response to use regex.
              */
             if (action.equalsIgnoreCase('add')) {
-                if (actionArgs === undefined) {
+                var isRegex = false,
+                    isCaseSensitive = false,
+                    keyword = null,
+                    response = null;
+
+                for (var i = 1; i < args.length; i++) {
+                    if (keyword == null) {
+                        if (args[i].equalsIgnoreCase('--regex')) {
+                            isRegex = true;
+                        } else if (args[i].equalsIgnoreCase('--case-sensitive')) {
+                            isCaseSensitive = true;
+                        } else {
+                            keyword = args[i] + '';
+                        }
+                    } else {
+                        response = args.splice(i).join(' ');
+                        break;
+                    }
+                }
+
+                if (response == null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
                     return;
                 }
 
-                var response = args.splice(2).join(' ');
-                subAction = subAction.toLowerCase();
-
                 var json = JSON.stringify({
-                    keyword: (args[1] + ''),
+                    keyword: keyword,
                     response: response,
-                    isRegex: subAction.startsWith('regex:')
+                    isRegex: isRegex,
+                    isCaseSensitive: isCaseSensitive
                 });
 
-                $.setIniDbString('keywords', subAction, json);
-                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', (args[1] + '')));
+                $.setIniDbString('keywords', keyword, json);
+                $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.added', keyword));
                 loadKeywords();
             }
 

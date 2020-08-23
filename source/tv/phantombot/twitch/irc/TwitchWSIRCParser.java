@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,19 +157,20 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    public void parseData(String rawMessage) {
+    public void parseData(String rawMessage, TwitchWSIRC client) {
         try {
             if (rawMessage.contains("\n")) {
                 String[] messageList = rawMessage.split("\n");
 
                 for (String message : messageList) {
-                    parseLine(message);
+                    parseLine(message, client);
                 }
             } else {
-                parseLine(rawMessage);
+                parseLine(rawMessage, client);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to parse Twitch message: [" + ex.getMessage() + "] \n\n {" + rawMessage + "}");
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -231,12 +232,21 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    private void parseLine(String rawMessage) {
+    private void parseLine(String rawMessage, TwitchWSIRC client) {
         Map<String, String> tags = new HashMap<>();
         String messageParts[] = rawMessage.split(" :", 3);
         String username = "";
         String message = "";
         String event;
+
+        if (rawMessage.startsWith("PONG")) {
+            client.gotPong();
+            return;
+        }
+
+        if (rawMessage.startsWith("PING")) {
+            return;
+        }
 
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {
@@ -484,7 +494,6 @@ public class TwitchWSIRCParser implements Runnable {
             case "Login authentication failed":
                 com.gmt2001.Console.out.println();
                 com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
-                com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
                 com.gmt2001.Console.out.println("Exiting PhantomBot.");
                 com.gmt2001.Console.out.println();
                 PhantomBot.exitError();
@@ -513,12 +522,12 @@ public class TwitchWSIRCParser implements Runnable {
     private void onUserNotice(String message, String username, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             if (tags.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan")));
+                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
             } else if (tags.get("msg-id").equalsIgnoreCase("sub")) {
                 if (tags.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
                     scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months")));
+                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months"), message));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
                 giftedSubscriptionEvents.add(tags);
@@ -577,11 +586,19 @@ public class TwitchWSIRCParser implements Runnable {
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
                     com.gmt2001.Console.out.println();
                     com.gmt2001.Console.out.println("[FEHLER] oAuth Token stimmt nicht mit dem Benutzernamen des Twitch Bots überein.");
-                    com.gmt2001.Console.out.println("[FEHLER] Bitte besuchen Sie http://twitchapps.com/tmi und generieren Sie einen neuen Token.");
+                    com.gmt2001.Console.out.println("[FEHLER] Bitte besuchen Sie https://phantombot.github.io/PhantomBot/oauth/ und generieren Sie einen neuen Token.");
                     com.gmt2001.Console.out.println("[FEHLER] Achten Sie darauf, dass Sie auf twitch.tv gehen und sich als Bot anmelden, bevor Sie das Token beziehen.");
-                    com.gmt2001.Console.out.println("[FEHLER] Öffnen Sie anschließend die Datei botlogin.txt und ersetzen Sie den Wert von 'oauth=' durch den Token.");
+                    com.gmt2001.Console.out.println("[FEHLER] Öffnen Sie anschließend die Datei botlogin.txt und ersetzen Sie den Wert von oauth= durch den Token.");
                     com.gmt2001.Console.out.println();
                 } else {
+                    // Since the "user-type" tag in deprecated and Twitch wants us to reply on badges
+                    // A user can sometimes lose its badge for no reason from one message to another
+                    // So, this could possibly make the bot lose its moderator powers, even though the bot
+                    // is still a mod, so checking the "mod" tag before removing a user's moderator permissions
+                    // is the only way to fix this, an admin or staff member could lose moderation powers from the bot
+                    // for a second if they are not a channel moderator, so the bot would try and time them out if a moderation
+                    // filter is triggered. This fix is only to prevent the bot from losing moderator powers.
+                    if (!tags.containsKey("mod") || !tags.get("mod").equals("1")) {
                     com.gmt2001.Console.out.println();
                     com.gmt2001.Console.out.println("[FEHLER] " + username + " wurde nicht als Moderator erkannt!");
                     com.gmt2001.Console.out.println("[FEHLER] Du musst " + username + " als Channel-Moderator hinzufügen, damit er den Chat moderieren kann.");
@@ -599,4 +616,5 @@ public class TwitchWSIRCParser implements Runnable {
             }
         }
     }
+}
 }

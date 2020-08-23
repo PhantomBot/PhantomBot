@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
             }
             fis.close();
         } catch (e) {
-            $.log.error('Fehler beim öffnen von \'' + path + '\': ' + e);
+            $.log.error('Fehler beim Öffnen von \'' + path + '\': ' + e);
         }
         return lines;
     }
@@ -99,7 +99,7 @@
             }
             fos.close();
         } catch (e) {
-            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
+            $.log.error('Fehler beim Schreiben in \'' + path + '\': ' + e);
         }
     }
 
@@ -150,7 +150,7 @@
             ps.println(line);
             fos.flush();
         } catch (e) {
-            $.log.error('Fehler beim schreiben von \'' + path + '\': ' + e);
+            $.log.error('Fehler beim Schreiben in \'' + path + '\': ' + e);
         }
     }
 
@@ -164,7 +164,7 @@
             var fos = new JFileOutputStream(path, true);
             fos.close();
         } catch (e) {
-            $.log.error('Fehler beim erstellen von \'' + path + '\': ' + e);
+            $.log.error('Fehler beim Erstellen von \'' + path + '\': ' + e);
         }
     }
 
@@ -183,7 +183,7 @@
                 f.deleteOnExit();
             }
         } catch (e) {
-            $.log.error('Fehler beim löschen von \'' + path + '\': ' + e);
+            $.log.error('Fehler beim Löschen von \'' + path + '\': ' + e);
         }
     }
 
@@ -223,7 +223,7 @@
                 return ret;
             }
         } catch (e) {
-            $.log.error('Fehler beim suchen in \'' + directory + '\': ' + e);
+            $.log.error('Fehler bei der Suche in \'' + directory + '\': ' + e);
         }
         return [];
     }

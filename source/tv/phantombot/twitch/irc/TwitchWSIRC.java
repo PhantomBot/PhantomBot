@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,10 @@ public class TwitchWSIRC extends WebSocketClient {
         return false;
     }
 
+    synchronized void gotPong() {
+        lastPong = System.currentTimeMillis();
+    }
+
     /**
      * Callback that is called when we open a connect to Twitch.
      *
@@ -179,18 +183,16 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onMessage(String message) {
-        if (message.startsWith("PONG")) {
-            lastPong = System.currentTimeMillis();
-        } else if (message.startsWith("PING")) {
+        if (message.startsWith("PING")) {
             send("PONG");
-        } else {
+        }
+
             try {
                 new Thread(() -> {
-                    twitchWSIRCParser.parseData(message);
+                twitchWSIRCParser.parseData(message, this);
                 }).start();
             } catch (Exception ex) {
-                twitchWSIRCParser.parseData(message);
-            }
+            twitchWSIRCParser.parseData(message, this);
         }
     }
 }

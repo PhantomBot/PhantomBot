@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,24 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
@@ -140,7 +157,24 @@
                 message = $.replace(message, '(reward)', String(subReward));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
@@ -182,7 +216,25 @@
                 for (i = 0; i < months; i++, emotes.push(customEmote));
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
+
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
             $.addSubUsersList(resubscriber);
             $.restoreSubscriberStatus(resubscriber);
             $.writeToFile(resubscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
@@ -230,7 +282,24 @@
                 message = $.replace(message, '(customemote)', emotes.join(' '));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
 
             $.addSubUsersList(recipient);
             $.restoreSubscriberStatus(recipient);
@@ -273,7 +342,24 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
 
             if (massGiftSubReward > 0) {
                 $.inidb.incr('points', gifter, massGiftSubReward * parseInt(amount));
@@ -312,7 +398,24 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+            }
 
             $.addSubUsersList(recipient);
             $.restoreSubscriberStatus(recipient);
@@ -348,7 +451,24 @@
                 message = $.replace(message, '(plan)', getPlanName(tier));
             }
 
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+            }
+
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+            }
+
+            if (message != '') {
             $.say(message);
+        }
         }
     });
 

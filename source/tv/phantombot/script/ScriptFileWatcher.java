@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public class ScriptFileWatcher implements Runnable {
     public static synchronized ScriptFileWatcher instance() {
         if (instance == null) {
             instance = new ScriptFileWatcher();
-        }
+        } 
         return instance;
     }
 

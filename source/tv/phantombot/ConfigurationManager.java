@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Supplier;
-import java.util.Map.Entry;
 
 public class ConfigurationManager {
 
@@ -123,6 +123,18 @@ public class ConfigurationManager {
             PhantomBot.exitError();
         }
 
+        if (!startProperties.getProperty("allownonascii", "false").equalsIgnoreCase("true")) {
+            for (String propertyKey : startProperties.stringPropertyNames()) {
+                String olds = startProperties.getProperty(propertyKey);
+                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+                if (!olds.equals(news)) {
+                    startProperties.setProperty(propertyKey, news);
+                    changed = true;
+                }
+            }
+        }
+
         /* Check to see if anything changed */
         if (changed) {
             saveChanges(startProperties, BOTLOGIN_TXT_LOCATION);
@@ -207,36 +219,26 @@ public class ConfigurationManager {
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
+     * Sets a default value to a properties object if the requested property does not exist
      * 
      * @param properties   the properties object to be modified
      * @param propertyName the name of the property, which should be set if null
-     * @param defaultValue the default value, to which the property is set, if the
-     *                     property is missing in the properties object
-     * @param setMessage   the message which will be printed if the value is set to
-     *                     the given default value
-     * @return {@code true} if the value has been set to default, {@code false} if
-     *         the value is already present in the properties object
+     * @param defaultValue the default value, to which the property is set, if the property is missing in the properties object
+     * @param setMessage the message which will be printed if the value is set to the given default value
+     * @return {@code true} if the value has been set to default, {@code false} if the value is already present in the properties object
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, String defaultValue, String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
+     * Sets a default value to a properties object if the requested property does not exist
      * 
      * @param properties            the properties object to be modified
-     * @param propertyName          the name of the property, which should be
-     *                              generated if null
-     * @param defaultValueGenerator the generating function, which generates the
-     *                              default value, if the property is missing in the
-     *                              properties object
-     * @param generatedMessage      the message which will be printed if the value
-     *                              is generated
-     * @return {@code true} if the value has been generated, {@code false} if the
-     *         value is already present in the properties object and does not have
+     * @param propertyName the name of the property, which should be generated if null
+     * @param defaultValueGenerator the generating function, which generates the default value, if the property is missing in the properties object
+     * @param generatedMessage the message which will be printed if the value is generated
+     * @return {@code true} if the value has been generated, {@code false} if the value is already present in the properties object and does not have
      *         to be generated
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
@@ -250,14 +252,12 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets a boolean value from the a properties object and prints a message
-     * according to the property name.
+     * Gets a boolean value from the a properties object and prints a message according to the property name.
      * 
      * @param properties   the Properties object to get the boolean value from
      * @param propertyName the name of the property to get
      * @param defaulValue  the default value of the property
-     * @return the value of the property. If parsing the value to a Boolean fails,
-     *         the default value is returned.
+     * @return the value of the property. If parsing the value to a Boolean fails, the default value is returned.
      */
     public static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue) {
         Boolean result = defaulValue;
@@ -275,13 +275,9 @@ public class ConfigurationManager {
         try {
 
             com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("Willkommen beim PhantomBot-Setup-Prozess!\r\n");
-            com.gmt2001.Console.out.print("Wenn du irgendwelche Probleme hast, melde sie bitte in unserem Forum, twittere uns, oder schließe dich unserem Discord an!\r\n");
-            com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Dokumentation: https://docs.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
+            com.gmt2001.Console.out.print("Willkommen beim PhantomBotDE Setup Prozess!\r\n");
+            com.gmt2001.Console.out.print("Wenn du irgendwelche Probleme hast, trete bitte unserer Discord bei!\r\n");
             com.gmt2001.Console.out.print("Discord: https://discord.gg/hBJMXCe\r\n");
-            com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
             com.gmt2001.Console.out.print("\r\n");
 
             final String os = System.getProperty("os.name").toLowerCase();
@@ -289,14 +285,14 @@ public class ConfigurationManager {
             // Detect Windows, MacOS, Linux or any other operating system.
             if (os.startsWith("win")) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät Windows ausgeführt wird.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Windows: https://community.phantombot.tv/t/windows-setup-guide/");
+                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
             } else if (os.startsWith("mac")) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät macOS läuft.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für macOS: https://community.phantombot.tv/t/macos-setup-guide/");
+                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
             } else {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät Linux läuft.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
             }
 
             com.gmt2001.Console.out.print("\r\n\r\n\r\n");
@@ -314,7 +310,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("2. Du brauchst nun einen OAuth-Token, damit der Bot chatten kann.\r\n");
                 com.gmt2001.Console.out.print("Bitte beachten Sie, dass dieser OAuth-Token generiert werden muss, während Sie im Twitch-Konto des Bot angemeldet sind.\r\n");
                 com.gmt2001.Console.out.print("Wenn du nicht als Bot angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Bot an.\r\n");
-                com.gmt2001.Console.out.print("Den OAuth-Token des Bot erhältst du hier: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Den OAuth-Token des Bot erhältst du hier: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Bitte gib den OAuth-Token des Bots ein: ");
 
                 startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
@@ -326,7 +322,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("3. Du brauchst nun deinen Channel OAuth-Token, damit der Bot deinen Titel und dein Spiel ändern kann.\r\n");
                 com.gmt2001.Console.out.print("Bitte beachten Sie, dass dieser OAuth-Token generiert werden muss, während Du in Deinem Caster-Konto angemeldet bist.\r\n");
                 com.gmt2001.Console.out.print("Wenn du nicht als Caster angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Caster an.\r\n");
-                com.gmt2001.Console.out.print("Hol dir deinen OAuth-Token hier: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Hol dir deinen OAuth-Token hier: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Bitte gebe deinen OAuth-Token ein: ");
 
                 startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());
@@ -369,7 +365,7 @@ public class ConfigurationManager {
             Thread.currentThread().interrupt();
         } catch (NullPointerException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.out.println("[ERROR] PhantomBot konnte nicht eingerichtet werden. Wird beendet...");
+            com.gmt2001.Console.out.println("[ERROR] PhantomBotDE konnte nicht eingerichtet werden. Wird beendet...");
             PhantomBot.exitError();
         }
     }

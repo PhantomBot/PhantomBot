@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,16 +50,16 @@ public class DiscordMessageReactionEvent extends DiscordReactionEvent {
         this.event = event;
         this.type = ReactionType.ADD;
     }
-
+    
     /**
      * Class constructor.
-     *
-     * @param event
-     * @param type
+     * 
+     * @param event 
+     * @param type 
      */
     public DiscordMessageReactionEvent(ReactionRemoveEvent event) {
         super(event.getUser().block(), event.getChannel().block());
-
+        
         this.event = event;
         this.type = ReactionType.REMOVE;
     }

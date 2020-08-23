@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ $(run = function() {
                         'class': 'btn btn-xs btn-success',
                         'style': 'float: right',
                         'data-toggle': 'tooltip',
-                        'title': 'Dies spielt die Audio-Hooks durch das Bedienfeld und nicht über die Browser-Quelle ab.',
+                        'title': 'Dadurch werden die Audio-Hooks über das Panel und nicht über die Browserquelle wiedergegeben.',
                         'data-audio': results[i].value,
                         'html': $('<i/>', {
                             'class': 'fa fa-play'
@@ -215,7 +215,7 @@ $(run = function() {
                     .append(helpers.getInputGroup('command-audio', 'text', 'Audio Hook', '', e.audioCommands, 'Audio der abgespielt werden soll. Dieser kann nicht bearbeitet werden.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers']))
+                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -395,7 +395,7 @@ $(function() {
             .append(helpers.getDropdownGroup('command-audio', 'Audio Hook', 'Auswählen eines Audio-Hooks', audioNames, 'Audio-Hook, der abgespielt werden soll, wenn der Befehl ausgeführt wird.'))
             // Append a select option for the command permission.
             .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
-                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'Hosters', 'Regulars', 'Viewers'], 'Benutzer, die den Befehl ausführen können.'))
+                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers'], 'Benutzer, die den Befehl ausführen können.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -436,13 +436,13 @@ $(function() {
                         break;
                     default:
                         if (commandAudio.val() === null) {
-                            toastr.error('Bitte wählen Sie einen gültigen Audio-Hook aus, der abgespielt werden soll.');
+                            toastr.error('Bitte wählen Sie eine gültige Audio-Hook aus, die wiedergegeben werden soll.');
                         } else {
                             // Make sure the command doesn't exist already.
                             socket.getDBValue('audio_command_exists', 'permcom', commandName.val(), function(e) {
                                 // If the command exists we stop here.
                                 if (e.permcom !== null) {
-                                    toastr.error('Der Befehl konnte nicht hinzugefügt werden, da er bereits vorhanden ist.');
+                                    toastr.error('Befehl konnte nicht hinzugefügt werden, da er bereits vorhanden ist.');
                                     return;
                                 }
 

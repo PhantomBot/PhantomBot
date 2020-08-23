@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,28 @@
             donationSay = donationSay.replace('(pointname)', (rewardPoints == 1 ? $.pointNameSingle : $.pointNameMultiple).toLowerCase());
             donationSay = donationSay.replace('(currency)', donationCurrency);
             donationSay = donationSay.replace('(message)', donationMsg);
+
+            if (donationSay.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = donationSay.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                donationSay = (donationSay + '').replace(/\(alert [,.\w\W]+\)/, '');
+                if (donationSay == '') {
+                    return null;
+                }
+            }
+
+            if (donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                donationSay = $.replace(donationSay, donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+                if (donationSay == '') {
+                    return null;
+                }
+            }
+
             $.say(donationSay);
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Guidelines for merging thing on our repo for this module:
  *  - Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
- *  - To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
+ *  - To register command to our command list please add a comment starting with @discordcommandpath before the command info.
  *  - Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
@@ -152,6 +152,24 @@
         return $.discordAPI.addRole(role, username);
     }
 
+    function sanitizeChannelName(channel) {
+        channel = channel.trim();
+
+        if (channel.substr(0, 1) === '<') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(0, 1) === '#') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(channel.length - 1, 1) === '>') {
+            channel = channel.substr(0, channel.length - 1);
+        }
+
+        return channel;
+    }
+
     /**
      * @function handleDeleteReaction
      *
@@ -214,7 +232,9 @@
 
                         say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
                     } catch (ex) {
-                        $.log.error('[DISCORD] Nicht möglich die initReady zum aktivieren des Moduls (' + module.scriptName + ') aufzurufen: ' + ex.message);
+                        $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {
                     say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
@@ -397,6 +417,7 @@
         setRole: setRole,
         say: say,
         handleDeleteReaction: handleDeleteReaction,
+        sanitizeChannelName: sanitizeChannelName,
         resolve: {
             global: getUserMentionOrChannel,
             getUserMentionOrChannel: getUserMentionOrChannel

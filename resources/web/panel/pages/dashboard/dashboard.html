@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2019 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@
 
                             <!-- Run commercial -->
                             <div class="form-group" id="grp-instant-commercial">
-                                <label>Commercial abspielen</label>
+                                <label>Werbespot abspielen</label>
                                 <div class="input-group input-group-md">
                                     <select class="form-control select2 select2-hidden-accessible" id="instant-commercial-length" data-toggle="tooltip" title="Werbespotlänge, in Sekunden." aria-hidden="true">
                                         <option></option>
@@ -192,15 +192,25 @@
                                     </select>
                                     <span class="input-group-addon" style="border: 0;">
                                         <div class="pretty p-icon">
-                                            <input id="instant-commercial-silent" type="checkbox" data-toggle="tooltip" title="If checked, the bot won't announce the commercial in chat.">
+                                            <input id="instant-commercial-silent" type="checkbox" data-toggle="tooltip" title="Wenn diese Option aktiviert ist, wird der Bot den Werbespot nicht im Chat ankündigen.">
                                             <div class="state p-default">
                                                 <i class="icon fa fa-check"></i>
-                                                <label>Silent</label>
+                                                <label>Still</label>
                                             </div>
                                         </div>
                                     </span>
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-instant-commercial" data-candisable="true">Run</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-instant-commercial" data-candisable="true">Ausführen</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Send as bot -->
+                            <div class="form-group">
+                                <label>Nachricht als Bot senden</label>
+                                <div class="input-group input-group-md">
+                                    <input type="text" class="form-control" id="msg-bot" placeholder="Nachricht" data-toggle="tooltip" title="Geben Sie eine Nachricht ein.">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-msg-bot" data-candisable="true">Senden</button>
                                     </span>
                                 </div>
                             </div>

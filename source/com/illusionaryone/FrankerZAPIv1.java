@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ public class FrankerZAPIv1 {
         if (instance == null) {
             instance = new FrankerZAPIv1();
         }
-
+        
         return instance;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,14 +206,21 @@ $(function() {
 
     // Quotes settings button.
     $('#quote-settings-button').on('click', function() {
-        socket.getDBValue('get_quote_settings', 'settings', 'quoteMessage', function(e) {
+        socket.getDBValues('get_quote_settings', {
+            tables: ['settings', 'settings'],
+            keys: ['quoteMessage', 'quoteTwitchNamesToggle']
+        }, true, function(e) {
             helpers.getModal('quote-settings', 'Zitier-Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Quote input.
             .append(helpers.getInputGroup('quote-msg', 'text', 'Zitat Antwort', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)" von (user) ((date))'),
-                'Nachricht, die in den Chat gesendet werden soll, wenn jemand den Zitat-Befehl verwendet. Tags: (id), (quote), (user), (game) und (date)')), function() {// Callback once we click the save button.
-                let quoteMsg = $('#quote-msg');
+                'Nachricht, die in den Chat gesendet werden soll, wenn jemand den Zitat-Befehl verwendet. Tags: (id), (quote), (user), (game) und (date)'))
+                    .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Twitch-Namen erzwingen', (e['quoteTwitchNamesToggle'] !== 'false' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                        'Wenn Namen für Zitate gegen Twitch-Benutzernamen validiert werden sollen. Wenn nicht, können Namen alles sein.')),
+                function() {// Callback once we click the save button.
+                let quoteMsg = $('#quote-msg'),
+                    quoteTwitchNamesToggle = $('#quote-twitch-names-toggle').find(':selected').text() === 'Ja';
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -221,7 +228,11 @@ $(function() {
                         break;
                     default:
                         // Add quote.
-                        socket.updateDBValue('get_quote_settings_update', 'settings', 'quoteMessage', quoteMsg.val(), function() {
+                        socket.updateDBValues('get_quote_settings_update', {
+                            tables: ['settings', 'settings'],
+                            keys: ['quoteMessage', "quoteTwitchNamesToggle"],
+                            values: [quoteMsg.val(), quoteTwitchNamesToggle]
+                        }, function() {
                             // Close the modal.
                             $('#quote-settings').modal('hide');
                             // Alert the user.

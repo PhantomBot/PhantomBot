@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,14 +67,14 @@ public class ScriptManager {
         Script script = scripts.get(scriptFile.toPath().toString());
         try {
             script.reload(false);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             if (scriptFile.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.err.println("Fehler beim Neuladen des Moduls: init.js: " + ex.getMessage());
             } else {
                 com.gmt2001.Console.err.println("Fehler beim Neuladen des Moduls: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
             if (!PhantomBot.getReloadScripts()) {
-                com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Dateie");
+                com.gmt2001.Console.err.println("Beenden von PhantomBot wegen schlechter JavaScript-Datei");
                 PhantomBot.exitError();
             }
             throw new IOException(ex.getMessage());

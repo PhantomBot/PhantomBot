@@ -19,11 +19,11 @@ $.lang.register('discord.promotesystem.cmd.promoteadm.del.success', '$1 will no 
 
 $.lang.register('discord.promotesystem.cmd.promoteadm.channel.nochannel', 'Use which channel for promotions? To remove current channel use !promoteadm channel clear');
 $.lang.register('discord.promotesystem.cmd.promoteadm.channel.cleared', 'Promote channel has been cleared.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.channel.success', 'Promote channel has been set to: #$1'); 
+$.lang.register('discord.promotesystem.cmd.promoteadm.channel.success', 'Promote channel has been set to: $1'); 
 
 $.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.nochannel', 'Use which channel for stream announcements? To remove current channel use !promoteadm streamchannel clear');
 $.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.cleared', 'Stream announcement channel has been cleared.');
-$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.success', 'Stream announcement channel has been set to: #$1');
+$.lang.register('discord.promotesystem.cmd.promoteadm.streamchannel.success', 'Stream announcement channel has been set to: $1');
 
 $.lang.register('discord.promotesystem.cmd.promoteadm.revoke.nouser', 'Revoke the privilege of which user to be able to add themselves?');
 $.lang.register('discord.promotesystem.cmd.promoteadm.revoke.success', '$1 will no longer be promoted and will no longer be able to manage themselves.');

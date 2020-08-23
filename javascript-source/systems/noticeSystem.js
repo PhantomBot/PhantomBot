@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,16 +71,30 @@
     function sendNotice() {
         var EventBus = Packages.tv.phantombot.event.EventBus,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
-            notice = $.inidb.get('notices', 'message_' + RandomNotice);
+            start = RandomNotice,
+            notice = null;
 
-        if (notice == null) {
-            return;
-        }
+        do {
+            notice = $.inidb.get('notices', 'message_' + RandomNotice);
 
         RandomNotice++;
 
         if (RandomNotice >= numberOfNotices) {
             RandomNotice = 0;
+        }
+
+            if (notice && notice.match(/\(gameonly=.*\)/g)) {
+                var game = notice.match(/\(gameonly=(.*)\)/)[1];
+                if ($.getGame($.channelName).equalsIgnoreCase(game)) {
+                    notice = $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
+                } else {
+                    notice = null;
+                }
+            }
+        } while(!notice && start !== RandomNotice);
+
+        if (notice == null) {
+            return;
         }
 
         if (notice.startsWith('command:')) {

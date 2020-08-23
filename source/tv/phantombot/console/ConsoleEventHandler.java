@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -298,6 +299,15 @@ public class ConsoleEventHandler implements Listener {
             }
         }
 
+        if (message.equalsIgnoreCase("channelpointstest")) {
+            EventBus.instance().postAsync(new PubSubChannelPointsEvent(
+                    "id1", "rewardid2", "12345",
+                    "thebestuser", "TheBestUser", "Uber Reward",
+                    50, "Who you gonna call?", "Ghostbusters!", "UNFULLFILLED"
+            ));
+            return;
+        }
+
         /**
          * @consolecommand followertest [username] - Sends a fake follower event.
          */
@@ -333,7 +343,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Führe subscribertest (User: " + randomUser + ") aus");
 
-            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000", ((int) (Math.random() * 100.0)) + "", "No message"));
             return;
         }
 
@@ -357,7 +367,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Führe resubscribertest (User: " + randomUser + ") aus");
 
-            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000", "No message"));
             return;
         }
 
@@ -422,9 +432,9 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Führe cliptest " + randomUser + " aus");
 
             EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, "Some title",
-                new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", " +
-                    "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", " +
-                    "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
+                    new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", "
+                            + "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", "
+                            + "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
             return;
         }
 
@@ -536,7 +546,7 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand apioauth - Updates the API oauth.
          */
         if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Bitte gib deinen oAuth-Token ein, den du auf https://phantombot.tv/oauth generiert hast, während du als Caster angemeldet bist: ");
+            System.out.print("Bitte gib deinen oAuth-Token ein, den du auf https://phantombot.github.io/PhantomBot/oauth/ generiert hast, während du als Caster angemeldet bist: ");
 
             String apiOAuth = System.console().readLine().trim();
 

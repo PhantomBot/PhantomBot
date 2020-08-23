@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,7 @@ $(function() {
             'username': 'log',
             'password': 'out'
         }).done(function() {
-            // Nothing should happen here.
-            alert('Abmeldung fehlgeschlagen.');
+            window.location = '/panel/login?logout=true';
         }).fail(function() {
             // We logged out. We want a 401, this means the old password was dumped (The good one).
             window.location = '/';
@@ -70,7 +69,7 @@ $(function() {
 
             // This timer is global and will never get killed.
             setInterval(function() {
-                helpers.log('Überprüfung der Bot-Version.', helpers.LOG_TYPE.INFO);
+                helpers.log('Ausführen der Bot-Versionsprüfung.', helpers.LOG_TYPE.INFO);
 
                 socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function(e) {
                     if (e.settings !== null) {

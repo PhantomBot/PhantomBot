@@ -4,11 +4,6 @@ You can find the german translation for PhantomBot under
 
 https://github.com/PhantomBotDE/PhantomBotDE
 
-the PhantomBot forum post, you can find under
-
-https://community.phantombot.tv/t/3872
-
-
 If any problems, questions, errors or suggestions for improvement emerge,
 you can post this on the PhantomBot Forums or on GitHub.
 

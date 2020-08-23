@@ -2,7 +2,6 @@
 ### PhantomBot selbst bietet hier für keine Hilfe an!
 ### [Hier bekommst du Hilfe für PhantomBotDE](https://discord.gg/hBJMXCe)
 
-
 # <img alt="PhantomBotDE" src="/.github/logo.png" width="600px"/>
 
 [![Build Status](https://img.shields.io/travis/PhantomBotDE/PhantomBotDE.svg?style=popout)](https://travis-ci.org/PhantomBotDE/PhantomBotDE)
@@ -13,55 +12,57 @@
 | PhantomBot   | [![](https://img.shields.io/github/release/phantombot/phantombot.svg?style=for-the-badge)](https://github.com/PhantomBot/PhantomBot/releases/latest) |
 | PhantomBotDE | [![](https://img.shields.io/github/release-pre/PhantomBotDE/PhantomBotDE.svg?style=for-the-badge)](https://github.com/PhantomBotDE/PhantomBotDE/releases/latest) |
 
-[**PhantomBotDE**](https://phantombot.tv) ist ein Twitch Chat-Bot powered by Java. 
+**PhantomBotDE** ist ein Twitch Chat-Bot powered by Java. 
 PhantomBot hat viele moderne Eigenschaften standardmäßig, wie zum beispiel ein eingebautes Webpanel, verbesserte Moderation, Minispiele für den Chat, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, einen Musikpalyer mit Songrequest Funktion [und mehr](https://phantombot.tv/features)! PhantomBotDE kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [GameWisp](https://gamewisp.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
+
 
 Dies ist der deutsche Fork von PhantomBotDE, wir übersetzten immer die neuste Version sobald die größten Bugs behoben sind.
 
 Zusätzliche Funktionalität wird durch die Verwendung von [Community erstellten Modulen](https://community.phantombot.tv/c/custom-modules) ermöglicht.
 
-<u>**Bitte beachtet das die ursprünglichen Entwickler nur eingeschränkt Support für PhantomBotDE anbieten (können).**</u>
+<u>**Bitte beachtet das die ursprünglichen Entwickler keinen Support für PhantomBotDE anbieten (können).**</u>
 
 ## Links zum ursprünglichen englischen PhantomBot
-* [Get PhantomBot](https://phantombot.tv/ "PhantomBot")
-* [Full Feature List](https://phantombot.tv/features "PhantomBot Features")
-* [Documentation & Installation Instructions](https://docs.phantombot.tv "Documenation and Installation Instructions")
-* [PhantomBot Blog](https://blog.phantombot.tv "PhantomBot Blog")
+* [Get PhantomBot](https://phantom.bot/ "PhantomBot")
+* [Documentation & Installation Instructions](https://phantom.bot/guides/ "Documenation and Installation Instructions")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBot "PhantomBot Twitter")
-* [Community Forums](https://community.phantombot.tv "PhantomBot Community Forums")
+* [Discord Server](https://discord.com/invite/YKvMd78 "PhantomBot Discord Server")
 
 ## Wie kann ich folgen/mitmachen?
 
-* Unsere Feature-Roadmap wird bei [Trello](https://trello.com/b/prjUApDO) verwaltet. Schau dir auch unsere [Versionshistorie](https://phantombot.tv/changelog) an.
-* Wenn du ein Entwickler bist, kannst du dir unseren Quellcode ansehen und Pull-Requests erstellen. Wir bieten eine [Anleitung](https://github.com/PhantomBot/PhantomBot/blob/master/DEVSETUP.md) zur Einrichtung deiner Entwicklungsumgebung.
-* Bitte vergesse nicht einen **watch** dazulassen, und unserem **Repo einen Stern zu geben**! Trete unserer wachsenden [Community](https://community.phantombot.tv) bei, um immer auf dem neusten Stand der Entwicklung zu sein.
+* Schau dir unsere [Versionshistorie](/releases) an.
+* Wenn du ein Entwickler bist, kannst dir den Quellcode ansehen und Pull-Requests einreichen. Wir stellen dir einen [Leitfaden](/development-resources/DEVSETUP.md) zur Einrichtung deiner Entwicklungsumgebung zur Verfügung.
+* Bitte vergesse nicht einen **watch** dazulassen, und unserem **Repo einen Stern zu geben**!
 * Ein großes Dankeschön geht raus an die Leute [die zu dem Projekt beigetragen haben](https://github.com/PhantomBot/PhantomBot/graphs/contributors).
 
 ## Vorraussetzungen
 
-PhantomBotDE benötigt folgende Software installiert:
+PhantomBotDE erfordert die Installation der folgenden Software:
 
-* [Java 8](https://www.java.com/en/download/)
+ARM (Raspberry Pi) oder x86 (32-bit) Architekturen
+* [OpenJDK 11](https://openjdk.java.net/)
+
+x86_64 (64-bit) Architekturen
+* Keine Voraussetzungen
 
 ## Installation
-Bitte gucken sie sich die Platform-spezifische installations Dokumentation an.
-* [Windows](https://community.phantombot.tv/t/windows-setup-guide/60)
+Bitte lesen Sie die plattformspezifische Installationsdokumentation.
+* [Windows](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows)
 * Linux:
-  * [Ubuntu 16.04](https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/61)
-  * [CentOS 7](https://community.phantombot.tv/t/centos-7-setup-guide/62)
-* [macOS](https://community.phantombot.tv/t/macos-setup-guide/63)
+  * [Ubuntu 16.04](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu)
+  * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
+* [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
 
 ## PhantomBotDE aktualisieren
 
-Eine detaillierte Aktualisierungsanleitung ist in unserer [Dokumentation](https://community.phantombot.tv/t/how-to-update-phantombot/) vorhanden.
-
+Detaillierte Upgrade-Anweisungen finden Sie in unserer [Dokumentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
 
 ## License
 
 PhantomBotDE ist lizensiert unter der [**GNU General Public License v3 (GPL-3)**](https://www.gnu.org/copyleft/gpl.html).
 
 ## Screenshots
-![(https://i.imgur.com/FZZPADf.png)"PhantomBotDE Konsole"](https://i.imgur.com/FZZPADf.png "Die Konsole")
-![(https://i.imgur.com/eTHkJCX.png)"PhantomBotDE Bedienpanel"](https://i.imgur.com/eTHkJCX.png "Das Bedienpanel")
-![(https://i.imgur.com/mDygRrZ.png)"PhantomBotDE YouTube Player"](https://i.imgur.com/mDygRrZ.png "Der YouTube Player")
-![(https://i.imgur.com/tRCyFJA.png)"Die Öffentlich einsehbare Playlist & Songrequest Warteschlange"](https://i.imgur.com/tRCyFJA.png "PhantomBotDE Öffentlich einsehbare Playlist & Songrequest Warteschlange")
+![(/.github/images/pbde_cmd.png)"PhantomBotDE Konsole"](/.github/images/pbde_cmd.png "PhantomBotDE Konsole")
+![(/.github/images/pbde_board.png)"PhantomBotDE Bedienpanel"](/.github/images/pbde_board.png "PhantomBotDE Bedienpanel")
+![(/.github/images/pbde_yt.png)"PhantomBotDE YouTube Player"](/.github/images/pbde_yt.png "PhantomBotDE YouTube Player")
+![(/.github/images/pbde_yt_pl.png)"PhantomBotDE YouTube Player Playlist Viewer"](/.github/images/pbde_yt_pl.png "PhantomBotDE YouTube Player Playlist Viewer")

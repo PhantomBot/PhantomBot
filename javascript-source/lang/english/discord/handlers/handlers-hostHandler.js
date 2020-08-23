@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,6 @@ $.lang.register('discord.hosthandler.host.message.set', 'Host message set to: $1
 $.lang.register('discord.hosthandler.autohost.message.usage', 'Usage: !hosthandler autohostmessage [message] - Tags: (name) (viewers)');
 $.lang.register('discord.hosthandler.autohost.message.set', 'Auto-Host message set to: $1.');
 $.lang.register('discord.hosthandler.channel.usage', 'Usage: !hosthandler channel [channel name]');
-$.lang.register('discord.hosthandler.channel.set', 'Host announcements will now be made in channel #$1');
+$.lang.register('discord.hosthandler.channel.set', 'Host announcements will now be made in channel $1');
 $.lang.register('discord.hosthandler.host.embedtitle', 'New Host!');
 $.lang.register('discord.hosthandler.auto.host.embedtitle', 'New Auto-Host!');

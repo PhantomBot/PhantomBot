@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,19 +51,30 @@
             emoteRegExp,
             newEmotesRegExpList = [];
 
-        jsonArray = bttvEmotes.getJSONArray('emotes');
+        jsonArray = bttvEmotes.getJSONArray('data');
         for (i = 0; i < jsonArray.length(); i++) {
-            emote = jsonArray.getJSONObject(i).getString('code').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
+            emote = jsonArray.getJSONObject(i).getString('code');
 
             // Check for emote at the beginning, middle and end of a string.
             emoteRegExp = '\\b' + emote + '\\b';
             newEmotesRegExpList.push(emoteRegExp);
         }
 
-        if (bttvLocalEmotes.has('emotes')) {
-            jsonArray = bttvLocalEmotes.getJSONArray('emotes');
+        if (bttvLocalEmotes.has('channelEmotes')) {
+            jsonArray = bttvLocalEmotes.getJSONArray('channelEmotes');
+        for (i = 0; i < jsonArray.length(); i++) {
+                emote = jsonArray.getJSONObject(i).getString('code');
+
+            // Check for emote at the beginning, middle and end of a string.
+            emoteRegExp = '\\b' + emote + '\\b';
+            newEmotesRegExpList.push(emoteRegExp);
+        }
+        }
+
+        if (bttvLocalEmotes.has('sharedEmotes')) {
+            jsonArray = bttvLocalEmotes.getJSONArray('sharedEmotes');
             for (i = 0; i < jsonArray.length(); i++) {
-                emote = jsonArray.getJSONObject(i).getString('code').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
+                emote = jsonArray.getJSONObject(i).getString('code');
 
                 // Check for emote at the beginning, middle and end of a string.
                 emoteRegExp = '\\b' + emote + '\\b';

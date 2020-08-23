@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@
         var idx = -1;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
+            if (list[i] !== undefined && $.equalsIgnoreCase(list[i], value)) {
                 idx = i;
                 break;
             }
@@ -228,7 +228,7 @@
      * @returns {boolean}
      */
     function isModv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase());
+        return (tags != null && tags != '{}' && tags.get('user-type').length() > 0) || isModeratorCache(username.toLowerCase()) || isOwner(username);
     }
 
     /**
@@ -249,7 +249,7 @@
      * @returns {boolean}
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1'));
+        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
 
     /**
@@ -279,7 +279,7 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('badges').indexOf('vip') !== -1) || getUserGroupId(username.toLowerCase()) == 5;
+        return (tags != null && tags != '{}' && tags.get('vip').equals('1')) || getUserGroupId(username.toLowerCase()) == 5;
     }
 
     /**

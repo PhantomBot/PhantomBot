@@ -3,7 +3,7 @@
 
     <!--
 
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.1.2" />
+    <property name="version" value="3.3.0" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.0.2" />
+    <property name="webpanel.version" value="1.1.0" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -177,6 +177,7 @@
         <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
+            <compilerarg line="--add-exports java.base/sun.security.x509=ALL-UNNAMED" />
             <classpath refid="reference.class.path" />
         </javac>
     </target>
@@ -191,6 +192,7 @@
         <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
+            <compilerarg line="--add-exports java.base/sun.security.x509=ALL-UNNAMED" />
             <classpath refid="reference.class.path" />
         </javac>
     </target>
@@ -225,7 +227,7 @@
                 <attribute name="Implementation-Title" value="${ant.project.name}" />
                 <attribute name="Implementation-Version" value="${version}" />
                 <attribute name="Implementation-Revision" value="${git.revision}" />
-                <attribute name="Implementation-URL" value="https://phantombot.tv" />
+                <attribute name="Implementation-URL" value="https://phantombot.github.io/PhantomBot" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
             </manifest>

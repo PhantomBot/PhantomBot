@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ $(function() {
         try {
             webSocket.send(JSON.stringify(message));
         } catch (ex) {
-            printDebug('Es ist nicht gelungen, eine Nachricht an den Socket zu senden: ' + ex.stack);
+            printDebug('Fehler beim Senden einer Nachricht an den Socket: ' + ex.stack);
         }
     }
 
@@ -119,7 +119,7 @@ $(function() {
             // User need to interact with the page.
             if (err.toString().startsWith('NotAllowedError')) {
                 $('.main-alert').append($('<button/>', {
-                    'html': 'Klicken mich, um Audio-Hooks zu aktivieren.',
+                    'html': 'Klick mich, um Audio-Hooks zu aktivieren.',
                     'style': 'top: 50%; position: absolute; font-size: 30px; font-weight: 30; cursor: pointer;'
                 }).on('click', function() {
                     $(this).remove();
@@ -333,7 +333,7 @@ $(function() {
      * @event Called once the socket opens.
      */
     webSocket.onopen = function() {
-        printDebug('Die Verbindung zum Socket war erfolgreich.', true);
+        printDebug('Erfolgreich mit dem Socket verbunden.', true);
         // Authenticate with the socket.
         sendToSocket({
             authenticate: getAuth()
@@ -344,7 +344,7 @@ $(function() {
      * @event Called when the socket closes.
      */
     webSocket.onclose = function() {
-        printDebug('Vom Socket getrennt..', true);
+        printDebug('Vom Socket getrennt.', true);
     };
 
     /*
@@ -363,11 +363,11 @@ $(function() {
                 // Check for our auth result.
                 if (message.authresult !== undefined) {
                     if (message.authresult === 'true') {
-                        printDebug('Erfolgreiche Authentifizierung mit dem Socket.', true);
+                        printDebug('Erfolgreich mit dem Socket authentifiziert.', true);
                         // Handle this.
                         handleBrowserInteraction()
                     } else {
-                        printDebug('Die Authentifizierung mit dem Socket ist fehlgeschlagen.', true);
+                        printDebug('Fehler beim Authentifizieren mit dem Socket.', true);
                     }
                 } else
 
@@ -378,11 +378,11 @@ $(function() {
 
                 // Message cannot be handled error.
                 else {
-                    printDebug('Die Verarbeitung der Nachricht vom Socket ist fehlgeschlagen: ' + rawMessage);
+                    printDebug('Fehler beim Verarbeiten der Nachricht vom Socket:: ' + rawMessage);
                 }
             }
         } catch (ex) {
-            printDebug('Die Socket-Nachricht konnte nicht verarbeitet werden [' + e.data + ']: ' + e.stack);
+            printDebug('Fehler beim Analysieren der Socket-Nachricht [' + e.data + ']: ' + e.stack);
         }
     };
 

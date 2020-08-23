@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 package tv.phantombot.event.discord.channel;
 
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 import tv.phantombot.event.discord.DiscordEvent;
 
 public abstract class DiscordChannelEvent extends DiscordEvent {
@@ -43,7 +43,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
     protected DiscordChannelEvent(User user, Channel channel) {
         super(user, channel);
     }
-
+    
     /**
      * Abstract constructor.
      *

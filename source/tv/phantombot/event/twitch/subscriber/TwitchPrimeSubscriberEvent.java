@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
         this.subscriber = subscriber;
         this.months = null;
     }
-
+    
         /**
      * Class constructor.
      *
@@ -50,7 +50,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     public String getSubscriber() {
         return this.subscriber;
     }
-
+    
     /**
      * Method that returns the cumulative months.
      *

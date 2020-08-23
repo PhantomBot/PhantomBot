@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ $(run = function() {
                 let json = JSON.parse(results[i].value);
 
                 tableData.push([
-                    json.keyword.replace('regex:', ''),
+                    json.keyword,
                     json.response,
                     $('<div/>', {
                         'class': 'btn-group'
@@ -122,7 +122,10 @@ $(run = function() {
                     .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Schlüsselwort', '',
                         e.keywords.keyword.replace('regex:', ''), 'Schlüsselwort, das eine Antwort auslösen soll.', true)
                         // Append checkbox for if the keyword is regex.
-                        .append(helpers.getCheckBox('keyword-regex', e.keywords.isRegex, 'Regex', 'Wenn das Schlüsselwort regex verwendet.')))
+                        .append(helpers.getCheckBox('keyword-regex', e.keywords.isRegex, 'Regex', 'Wenn das Schlüsselwort regex verwendet.'))
+                        // Append checkbox for it the keyword should be matched case-sensitive
+                        .append(helpers.getCheckBox('keyword-case-sensitive', e.keywords.isCaseSensitive, 'Groß- und Kleinschreibung beachten', 'Wenn das Schlüsselwort/Regex nur übereinstimmen sollte, wenn die Groß-/Kleinschreibung übereinstimmt.'))
+                    )
                     // Append a text box for the keyword response.
                     .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort', '', e.keywords.response, 'Antwort des Schlüsselwortes.'))
                     // Add an advance section that can be opened with a button toggle.
@@ -142,6 +145,7 @@ $(run = function() {
                         let keywordKey = $('#keyword-keyword'),
                             keywordResponse = $('#keyword-response'),
                             isRegex = $('#keyword-regex').is(':checked'),
+                            isCaseSensitive = $('#keyword-case-sensitive').is(':checked'),
                             keywordCooldown = $('#cooldown-count'),
                             keywordCount = $('#keyword-count');
 
@@ -159,11 +163,12 @@ $(run = function() {
                                     // Update the values.
                                     socket.updateDBValues('edit_keyword', {
                                         tables: ['keywords', 'coolkey'],
-                                        keys: [(isRegex ? 'regex:' : '') + keywordKey.val(), (isRegex ? 'regex:' : '') + keywordKey.val()],
+                                        keys: [keywordKey.val(), keywordKey.val()],
                                         values: [JSON.stringify({
-                                            keyword: (isRegex ? 'regex:' : '') + keywordKey.val(),
+                                            keyword: keywordKey.val(),
                                             response: keywordResponse.val(),
                                             isRegex: isRegex,
+                                            isCaseSensitive: isCaseSensitive,
                                             count: keywordCount.val()
                                         }), keywordCooldown.val()]
                                     }, function() {
@@ -173,6 +178,8 @@ $(run = function() {
                                             t.parents('tr').find('td:eq(0)').text(keywordKey.val());
                                             // Update the table.
                                             t.parents('tr').find('td:eq(1)').text(keywordResponse.val());
+                                            // Update the edit and delete buttons
+                                            t.parents('tr').find('td:eq(2) button.btn').data('keyword', keywordKey.val());
                                             // Close the modal.
                                             $('#edit-keyword').modal('hide');
                                             // Alert the user.
@@ -206,7 +213,10 @@ $(function() {
         // Append a text box for keyword
         .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Schlüsselwort', 'PhantomBotDE', '', 'Schlüsselwort, das eine Antwort auslösen kann.', true)
             // Append checkbox for if the keyword is regex.
-            .append(helpers.getCheckBox('keyword-regex', false, 'Regex', 'Wenn das Schlüsselwort regex verwendet.')))
+            .append(helpers.getCheckBox('keyword-regex', false, 'Regex', 'Wenn das Schlüsselwort regex verwendet.'))
+            // Append checkbox for it the keyword should be matched case-sensitive
+            .append(helpers.getCheckBox('keyword-case-sensitive', false, 'Groß- und Kleinschreibung beachten', 'Wenn das Schlüsselwort/Regex nur übereinstimmen sollte, wenn die Groß-/Kleinschreibung übereinstimmt.'))
+        )
         // Append a text box for the keyword response.
         .append(helpers.getTextAreaGroup('keyword-response', 'text', 'Antwort',
             'Schaue Dir PhantomBotDE an, es ist ein großartiger kostenloser und Open-Source-Bot!', '', 'Antwort des Schlüsselwortes.'))
@@ -227,6 +237,7 @@ $(function() {
             let keywordKey = $('#keyword-keyword'),
                 keywordResponse = $('#keyword-response'),
                 isRegex = $('#keyword-regex').is(':checked'),
+                isCaseSensitive = $('#keyword-case-sensitive').is(':checked'),
                 keywordCooldown = $('#cooldown-count'),
                 keywordCount = $('#keyword-count');
 
@@ -242,11 +253,12 @@ $(function() {
                     // Update the values.
                     socket.updateDBValues('add_keyword', {
                         tables: ['keywords', 'coolkey'],
-                        keys: [(isRegex ? 'regex:' : '') + keywordKey.val(), (isRegex ? 'regex:' : '') + keywordKey.val()],
+                        keys: [keywordKey.val(), keywordKey.val()],
                         values: [JSON.stringify({
-                            keyword: (isRegex ? 'regex:' : '') + keywordKey.val(),
+                            keyword: keywordKey.val(),
                             response: keywordResponse.val(),
                             isRegex: isRegex,
+                            isCaseSensitive: isCaseSensitive,
                             count: keywordCount.val()
                         }), keywordCooldown.val()]
                     }, function() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,17 +75,17 @@ public final class User {
     
     /**
      * Class constructor.
-     *
+     * 
      * @param userName The name of the user in lowercase.
      * @param groupID The group ID of the user.
      */
     public User(String userName, int groupID) {
         this.userName = userName.toLowerCase();
         this.groupID = groupID;
-
+        
         this.updateUserStatus(groupID);
     }
-
+    
     /**
      * Class constructor.
      * 
@@ -101,10 +101,10 @@ public final class User {
     
     /**
      * Class constructor.
-     *
+     * 
      * @param userName
      * @param displayName
-     * @param userID
+     * @param userID 
      * @param tags
      */
     public User(String userName, String displayName, String userID, Map<String, String> tags) {
@@ -112,7 +112,7 @@ public final class User {
         this.displayName = sanitizeDisplayName(displayName);
         this.userID = userID;
     }
-
+    
     /**
      * Method that gets the name of the user.
      * 
@@ -231,97 +231,97 @@ public final class User {
     private String sanitizeDisplayName(String name) {
         return name.replaceAll("\\\\s", " ");
     }
-
+    
     /**
      * Method that sets the group ID for the user.
-     *
-     * @param groupID
+     * 
+     * @param groupID 
      */
     public void setGroupID(int groupID) {
         this.groupID = groupID;
         PhantomBot.instance().getDataStore().set("group", getUsername(), String.valueOf(groupID));
     }
-
+    
     /**
      * Method that gets the group ID for the user.
-     *
-     * @return
+     * 
+     * @return 
      */
     public int getGroupID() {
         build(false);
         return groupID;
     }
-
+    
     /**
      * Method that says if this user is the owner of the bot.
-     *
-     * @return
+     * 
+     * @return 
      */
     public boolean isOwner() {
         build(false);
         return (isOwner || isAdministrator);
     }
-
+    
     /**
      * Method that says if this user is an administrator.
-     *
-     * @return
+     * 
+     * @return 
      */
     public boolean isAdministrator() {
         build(false);
         return (isAdministrator || isOwner);
     }
-
+    
     /**
      * Method that says if this user is a moderator.
-     *
-     * @return
+     * 
+     * @return 
      */
     public boolean isModerator() {
         build(false);
         return (isModerator || isAdministrator || isOwner);
     }
-
+    
     /**
      * Method that returns if the user is a donator.
-     * @return
+     * @return 
      */
     public boolean isDonator() {
         build(false);
         return isDonator;
     }
-
+    
     /**
      * Method that returns if the user is a subscriber.
-     * @return
+     * @return 
      */
     public boolean isSubscriber() {
         build(false);
         return isSubscriber;
     }
-
+    
     /**
      * Method that returns if the user is a VIP.
-     * @return
+     * @return 
      */
     public boolean isVIP() {
         build(false);
         return isVIP;
     }
-
+    
     /**
      * Method that returns if the user is a regular.
-     * @return
+     * @return 
      */
     public boolean isRegular() {
         build(false);
         return isRegular;
     }
-
+    
     /***
      * Method that updates the status of the user, either a regular, VIP, sub, mod, etc.
-     *
-     * @param groupID
+     * 
+     * @param groupID 
      */
     public void updateUserStatus(int groupID) {
         // Reset all of the permissions of the user.
@@ -333,7 +333,7 @@ public final class User {
         isVIP = (groupID == 5);
         isRegular = (groupID == 6);
     }
-
+     
     /**
      * Method that builds this object if not done already.
      * 
@@ -344,7 +344,7 @@ public final class User {
             try {
                 // This can query the API or our database.
                 JSONObject user = UsernameCache.instance().getUserData(getUsername());
-
+                
                 // Make sure we got data.
                 if (user.has("_id")) {
                     // Set the display name.
@@ -360,7 +360,7 @@ public final class User {
                 } else {
                     com.gmt2001.Console.err.println("Failed to get data for user: " + getUsername());
                 }
-
+                
                 if (groupID == -1) {
                     String strID = PhantomBot.instance().getDataStore().get("group", getUsername());
                     if (strID != null) {

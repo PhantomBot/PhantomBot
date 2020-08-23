@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,30 @@
         }
 
         if (autoHostToggle === true && viewers >= hostMinCount) {
+            if (s.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
+                if (s == '') {
+                    return null;
+                }
+            }
+
+            if (s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                s = $.replace(s, s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+                if (s == '') {
+                    return null;
+                }
+            }
+
+            if (s != '') {
             $.say(s);
+        }
         }
 
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestAutoHost.txt', false);

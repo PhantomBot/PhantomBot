@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -363,7 +363,7 @@ public class TwitchWSHostIRC {
                     com.gmt2001.Console.out.println("");
                     com.gmt2001.Console.out.println("Falscher API OAuth erkannt.");
                     com.gmt2001.Console.out.println("Der API OAuth gehört zu einem anderen Konto.");
-                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Channel-Account: https://phantombot.tv/oauth");
+                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Channel-Account: https://phantombot.github.io/PhantomBot/oauth/");
                     com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
                     com.gmt2001.Console.out.println("");
                     PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
@@ -375,7 +375,7 @@ public class TwitchWSHostIRC {
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && badOauth == false) {
                 com.gmt2001.Console.out.println("");
                 com.gmt2001.Console.out.println("API OAuth darf keine Hostdaten sammeln.");
-                com.gmt2001.Console.out.println("Bitte beziehen Sie einen neuen API OAuth unter: https://phantombot.tv/oauth");
+                com.gmt2001.Console.out.println("Bitte beziehen Sie einen neuen API OAuth unter: https://phantombot.github.io/PhantomBot/oauth/");
                 com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
                 com.gmt2001.Console.out.println("");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");

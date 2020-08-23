@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,11 @@
  */
 package tv.phantombot.event.discord;
 
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.VoiceChannel;
+import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.TextChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
 import tv.phantombot.event.Event;
 
 public abstract class DiscordEvent extends Event {
@@ -50,7 +50,7 @@ public abstract class DiscordEvent extends Event {
      * @param {User} user
      */
     protected DiscordEvent(User user) {
-        this(user, null);
+        this(user, null, null);
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class DiscordEvent extends Event {
         this.message = null;
         this.channelName = voicechannel.getName();
         this.channelId = voicechannel.getId().asString();
-
+        
         if (user != null) {
             this.username = user.getUsername();
             this.discrim = user.getDiscriminator();
@@ -175,7 +175,7 @@ public abstract class DiscordEvent extends Event {
      * @return {String}
      */
     public String getMessage() {
-        return this.message.getContent().get();
+        return this.message.getContent();
     }
 
     /**

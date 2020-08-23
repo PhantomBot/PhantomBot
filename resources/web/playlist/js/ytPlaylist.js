@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ connection.onopen = function(data) {
     connectedToWS = true;
 
     var jsonObject = {};
-    jsonObject["readauth"] = getAuth();
+    jsonObject["authenticate"] = getAuth();
     connection.send(JSON.stringify(jsonObject));
     debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
 }
@@ -62,14 +62,21 @@ connection.onmessage = function(e) {
 
     debugMsg('connection.onmessage(' + e.data + ')');
 
-    if (messageObject['authresult'] === false) {
+    if (messageObject.ping !== undefined) {
+        connection.send(JSON.stringify({
+            pong: "pong"
+        }));
+        return;
+    }
+
+    if (messageObject['authresult'] === 'false') {
         if (!messageObject['authresult']) {
             newAlert('WS Auth Failed', 'Reload page, if that fails, let the caster know', 'danger', 0);
             return;
         }
         return;
     }
-    if (messageObject['authresult'] === true) {
+    if (messageObject['authresult'] === 'true') {
         refreshData();
     }
 

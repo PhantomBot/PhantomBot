@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -30,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -40,7 +43,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     private final HttpAuthenticationHandler authHandler;
 
     public HTTPPanelAndYTHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass);
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass, "/panel/login");
     }
 
     @Override
@@ -63,6 +66,17 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             return;
         }
 
+        if (req.uri().startsWith("/panel/checklogin")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+
+            com.gmt2001.Console.debug.println("204");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
@@ -73,6 +87,12 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
                 path = path + "/index.html";
                 p = Paths.get("./web/", path);
+            }
+
+            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))) {
+                com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                return;
             }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {

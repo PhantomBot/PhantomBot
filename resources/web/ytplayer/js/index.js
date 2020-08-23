@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -608,4 +608,14 @@ $(function() {
 
     // Set the player size.
     helpers.setPlayerSize();
+    if (helpers.urlIsIP()) {
+        toaster.warning('Du kannst auf den YouTube-Player zugreifen, indem du eine IP-Adresse in der URL verwenden.<br/><br/>'
+            + 'Die Embed-API von YouTube hasst dies wirklich und weigert sich manchmal zu funktionieren.<br/><br/>Du solltest zur Verwendung eines '
+            + 'Hostnamens, einer Domain oder einer Sub-Domain wechseln, um Probleme zu vermeiden.', 'Potenzieller Konflikt erkannt',
+            {
+                timeOut: 60000,
+                extendedTimeOut: 120000,
+                closeButton: true
+            });
+    }
 });

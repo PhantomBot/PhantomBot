@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,11 +69,11 @@ public final class LangFileUpdater {
      */
     public static String getCustomLang(String langFile) throws JSONException {
         String stringArray;
-        
+
         stringArray = convertLangMapToJSONArray(
             getCustomAndDefaultLangMap(
-                getLang(DEFAULT_LANG_ROOT + langFile),
-                getLang(CUSTOM_LANG_ROOT + langFile)
+                getLang(DEFAULT_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_")),
+                getLang(CUSTOM_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_"))
             )
         );
         
@@ -101,7 +101,7 @@ public final class LangFileUpdater {
         }
         
         try {
-            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/");
+            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
             
             File file = new File(langFile);
             boolean exists = true;
@@ -126,7 +126,7 @@ public final class LangFileUpdater {
                 if (!PhantomBot.getReloadScripts()) {
                     HashMap<String, Script> scripts = ScriptManager.getScripts();
                     String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
-
+                    
                     scripts.values().forEach((script -> {
                         String path = script.getFile().toPath().toString();
 
@@ -185,8 +185,9 @@ public final class LangFileUpdater {
      */
     private static String getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
-        langFile = langFile.replaceAll("\\\\", "/");
-        
+
+        langFile = langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
+
         if (new File(langFile).exists()) {
             try {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {

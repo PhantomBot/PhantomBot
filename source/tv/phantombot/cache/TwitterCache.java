@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,7 @@
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitterAPI;
-import com.illusionaryone.BitlyAPIv4;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
@@ -225,7 +222,7 @@ public class TwitterCache implements Runnable {
         long twitterID = statuses.get(0).getId();
 
         /* Poll latest retweet. */
-        String tweet = "[RT] " + statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = "[RT] " + statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
         updateDBString("last_retweets", tweet);
         EventBus.instance().post(new TwitterEvent(tweet));
 
@@ -300,7 +297,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
         String name = statuses.get(0).getUser().getScreenName();
 
         updateDBLong("lastid_mentions", twitterID);
@@ -329,7 +326,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
 
         updateDBLong("lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
@@ -357,7 +354,7 @@ public class TwitterCache implements Runnable {
         }
 
         long twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + BitlyAPIv4.instance().getShortURL(TwitterAPI.instance().getTwitterURLFromId(twitterID)) + "]";
+        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
 
         updateDBLong("lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);

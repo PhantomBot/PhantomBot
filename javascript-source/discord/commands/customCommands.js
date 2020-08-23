@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@
         }
 
         if (s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)/)) {
-            $.discord.addRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
+            $.discord.setRole(s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[2], s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[1]);
 
             s = $.replace(s, s.match(/\(setrole ([\w\W\s]+), ([\w\W\s]+)\)/)[0], '');
             if (s.length === 0) {
@@ -243,7 +243,7 @@
                         try {
                             customAPIResponse = new JSONObject(origCustomAPIResponse).get(jsonCheckList[0]);
                         } catch (ex) {
-                            $.log.error('Fehler beim Abrufen der Daten von der API: ' + ex.message);
+                            $.log.error('Fehler beim Abrufen von Daten aus der API: ' + ex.message);
                             return $.lang.get('discord.customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
@@ -253,7 +253,7 @@
                                 try {
                                     jsonObject = new JSONObject(origCustomAPIResponse).get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    $.log.error('Fehler beim Abrufen der Daten von der API: ' + ex.message);
+                                    $.log.error('Fehler beim Abrufen von Daten aus der API: ' + ex.message);
                                     return $.lang.get('discord.customcommands.customapijson.err', command);
                                 }
                             } else if (!isNaN(jsonCheckList[i + 1])) {
@@ -267,7 +267,7 @@
                                 try {
                                     jsonObject = jsonObject.get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    $.log.error('Fehler beim Abrufen der Daten von der API: ' + ex.message);
+                                    $.log.error('Fehler beim Abrufen von Daten aus der API: ' + ex.message);
                                     return $.lang.get('discord.customcommands.customapijson.err', command);
                                 }
                             }
@@ -275,7 +275,7 @@
                         try {
                             customAPIResponse = jsonObject.get(jsonCheckList[i]);
                         } catch (ex) {
-                            $.log.error('Fehler beim Abrufen der Daten von der API: ' + ex.message);
+                            $.log.error('Fehler beim Abrufen von Daten aus der API: ' + ex.message);
                             return $.lang.get('discord.customcommands.customapijson.err', command);
                         }
                         customAPIReturnString += " " + customAPIResponse;
@@ -416,7 +416,6 @@
             }
 
             action = action.replace('!', '').toLowerCase();
-            subAction = String(subAction).replace(/#/g, '').toLowerCase();
 
             if (!$.discord.commandExists(action)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.404'));
@@ -450,12 +449,12 @@
                 i;
 
             for (i in keys) {
-                key.push('#' + keys[i]);
+                key.push($.discord.sanitizeChannelName(keys[i]));
             }
 
-            $.inidb.set('discordChannelcom', action, subAction);
+            $.inidb.set('discordChannelcom', action, key.join(','));
             $.discord.updateCommandChannel(action);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, key.join(', ')));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.success', action, subAction.replace(',', ', ')));
         }
 
         /**

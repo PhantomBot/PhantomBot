@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.streamhandler.usage', 'Usage: !streamhandler [toggleonline / onlinemessage / toggleoffline / offlinemessage / togglegame / gamemessage / togglebotstatus / channel]');
+$.lang.register('discord.streamhandler.usage', 'Usage: !streamhandler [toggleonline / onlinemessage / toggleoffline / offlinemessage / togglegame / gamemessage / togglebotstatus / channel / toggledeletemessage]');
 $.lang.register('discord.streamhandler.online.toggle', 'Online announcements have been $1.');
 $.lang.register('discord.streamhandler.online.message.usage', 'Usage: !streamhandler onlinemessage [message] - Tags: (name)');
 $.lang.register('discord.streamhandler.online.message.set', 'Online announcement message set to: $1');
@@ -26,7 +26,8 @@ $.lang.register('discord.streamhandler.game.toggle', 'Game change announcements 
 $.lang.register('discord.streamhandler.game.message.usage', 'Usage: !streamhandler gamemessage [message] - Tags: (name) (url)');
 $.lang.register('discord.streamhandler.game.message.set', 'Game change announcement message set to: $1');
 $.lang.register('discord.streamhandler.channel.usage', 'Usage: !streamhandler channel [channel name]');
-$.lang.register('discord.streamhandler.channel.set', 'Stream annoucements will now be made in channel #$1');
+$.lang.register('discord.streamhandler.channel.set', 'Stream annoucements will now be made in channel $1');
+$.lang.register('discord.streamhandler.delete.toggle', 'Automatically delete the online message after the stream ends and the offline message when a new stream starts: $1');
 $.lang.register('discord.streamhandler.bot.game.toggle', 'Bot stream status has been $1.');
 $.lang.register('discord.streamhandler.common.title', 'Stream Status');
 $.lang.register('discord.streamhandler.common.game', 'Now Playing');

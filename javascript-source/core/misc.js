@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,6 +140,20 @@
                 return str.length;
             }
         }
+    }
+
+    function equalsIgnoreCase(str1, str2) {
+        try {
+            return str1.equalsIgnoreCase(str2);
+        } catch (e) {
+            try {
+                return str1.toLowerCase() == str2.toLowerCase();
+            } catch (e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -328,13 +342,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.log.error('Fehler beim nutzen von random.org: ' + request.exception);
+                    $.log.error('Random.org konnte nicht verwendet werden: ' + request.exception);
                 } else {
-                    $.log.error('Fehler beim nutzen von random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Random.org konnte nicht verwendet werden: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.log.error('Fehler beim nutzen von random.org: ' + error);
+            $.log.error('Random.org konnte nicht verwendet werden: ' + error);
         }
 
         return randRange(min, max);
@@ -677,20 +691,45 @@
     }
 
     /**
+     * Taken from: https://jsperf.com/replace-vs-split-join-vs-replaceall/95s
+     *
+     * Implementation of string.replaceAll
+     *
      * @function replace
      * @export $
      * @param {string}
      */
-    function replace(string, find, replace) {
-        if (find.equals(replace)) {
-            return string;
+    function replace(str, from, to) {
+        var idx, parts = [], l = from.length, prev = 0;
+        for (; ~(idx = str.indexOf(from, prev)); ) {
+            parts.push(str.slice(prev, idx), to);
+            prev = idx + l;
+        }
+        parts.push(str.slice(prev));
+        return parts.join('');
         }
 
-        while (string.indexOf(find) >= 0) {
-            string = string.replace(find, (replace + ''));
-        }
+    /**
+     * Taken from: https://github.com/tc39/proposal-string-matchall
+     *
+     * Implementation of string.matchAll
+     *
+     * @function matchAll
+     * @export $
+     * @param {type} str
+     * @param {type} regex
+     * @returns {Array}
+     */
+    function matchAll(str, regex) {
+        var matches = [];
+        str.replace(regex, function () {
+            var match = Array.prototype.slice.call(arguments, 0, -2);
+            match.input = arguments[arguments.length - 1];
+            match.index = arguments[arguments.length - 2];
+            matches.push(match);
+        });
 
-        return string;
+        return matches;
     }
 
     /**
@@ -741,6 +780,7 @@
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
     $.replace = replace;
+    $.matchAll = matchAll;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;
@@ -748,4 +788,5 @@
     $.getMessageWrites = getMessageWrites;
     $.sayWithTimeout = sayWithTimeout;
     $.paginateArrayDiscord = paginateArrayDiscord;
+    $.equalsIgnoreCase = equalsIgnoreCase;
 })();

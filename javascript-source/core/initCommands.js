@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,8 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', module.getModuleName()));
                     } catch (ex) {
                         $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
@@ -285,7 +287,9 @@
                             $.bot.getHook(module.scriptName, 'initReady').handler();
                         }
                     } catch (ex) {
-                        $.log.error('Aufrufen der initReady Funktion zum aktivieren des Modules (' + module.scriptName + ') nicht möglich: ' + ex);
+                        $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
-import tv.phantombot.PhantomBot;
 import org.json.JSONObject;
 
 public class UsernameCache {
@@ -76,7 +75,7 @@ public class UsernameCache {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
@@ -88,7 +87,7 @@ public class UsernameCache {
     }
 
     public String resolve(String username) {
-        return resolve(username, new HashMap<String, String>());
+        return resolve(username, new HashMap<>());
     }
 
     public String resolve(String username, Map<String, String> tags) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ $(function() {
             // Query panel information.
             socket.getDBValue('dashboard_get_data', 'panelData', 'stream', function(e) {
                 if (e.panelData === null) {
-                    alert('Bitte erlauben Sie dem Bot, die für das Laden dieser Seite benötigten Daten zu generieren. Versuchen Sie es in 60 Sekunden erneut.....');
+                    alert('Bitte erlaube dem Bot, die Daten zu generieren, die benötigt werden, um diese Seite zu laden. Versuche es in 60 Sekunden erneut...');
                     return;
                 }
 
@@ -168,26 +168,32 @@ $(function() {
                             e.hasPlayer = (e.hasPlayer === 'true' || e.hasPlayer === null);
 
                             // Handle adding the chat.
-                            if (e.hasChat) {
+                            if (e.hasChat && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
                                 $('#twitch-chat-iframe').html($('<iframe/>', {
                                     'frameborder': '0',
                                     'scrolling': 'no',
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
+                                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
                                 }));
+                            } else if (e.hasChat) {
+                                $('#twitch-chat-iframe').html('Aufgrund von Änderungen durch Twitch kann das Chat-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBot-Panel und ändest den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">diesem Handbuch</a>.');
+                                $('#twitch-chat-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-chat-box').addClass('off');
                             }
 
                             // Handle adding the player.
-                            if (e.hasPlayer) {
+                            if (e.hasPlayer && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
                                 // Add the player.
                                 $('#twitch-player-iframe').html($('<iframe/>', {
                                     'frameborder': '0',
                                     'scrolling': 'no',
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false'
+                                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                                 }));
+                            } else if (e.hasPlayer) {
+                                $('#twitch-player-iframe').html('Aufgrund von Änderungen durch Twitch kann das Live-Feed-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBotDE-Panel und änderst den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">diesem Handbuch</a>.');
+                                $('#twitch-player-iframe').addClass('box-body');
                             } else {
                                 $('#twitch-player-box').addClass('off');
                             }
@@ -322,7 +328,18 @@ $(function() {
             return;
         }
         socket.sendCommand('instant_commercial', 'commercial ' + $('#instant-commercial-length').val() + ($('#instant-commercial-silent').is(':checked') ? ' silent' : ''), function() {
-            toastr.success('Es lief erfolgreich ein Werbespot!');
+            toastr.success('Successfully ran a commercial!');
+        });
+    });
+
+    // Handle sending as bot.
+    $('#dashboard-btn-msg-bot').on('click', function() {
+        if ($('#msg-bot').val() === "") {
+            toastr.error('Please enter a message');
+            return;
+        }
+        socket.sendCommand('msg-bot', 'echo ' + $('#msg-bot').val(), function() {
+            toastr.success('Successfully sent a message as the bot!');
         });
     });
 
@@ -337,13 +354,23 @@ $(function() {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasPlayer', checked, function() {
-            if (checked) {
+            if (checked && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
                 $('#twitch-player-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false'
+                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                 }));
+                // Handle the box size.
+                if ($('#twitch-chat-iframe').html().length > 0) {
+                    $('#twitch-player-box').prop('class', 'col-md-6').removeClass('off');
+                    $('#twitch-chat-box').prop('class', 'col-md-6');
+                } else {
+                    $('#twitch-player-box').prop('class', 'col-md-12');
+                }
+            } else if (checked) {
+                $('#twitch-player-iframe').html('Aufgrund von Änderungen durch Twitch kann das Live-Feed-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBotDE-Panel und änderst den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">diesem Handbuch</a>.');
+                $('#twitch-player-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-chat-iframe').html().length > 0) {
                     $('#twitch-player-box').prop('class', 'col-md-6').removeClass('off');
@@ -365,14 +392,24 @@ $(function() {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasChat', checked, function() {
-            if (checked) {
+            if (checked && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
                 $('#twitch-chat-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout' : '')
+                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
                 }));
 
+                // Handle the box size.
+                if ($('#twitch-player-iframe').html().length > 0) {
+                    $('#twitch-chat-box').prop('class', 'col-md-6').removeClass('off');
+                    $('#twitch-player-box').prop('class', 'col-md-6');
+                } else {
+                    $('#twitch-chat-box').prop('class', 'col-md-12');
+                }
+            } else if (checked) {
+                $('#twitch-chat-iframe').html('Aufgrund von Änderungen durch Twitch kann das Chat-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBot-Panel und ändest den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/twitchembeds">diesem Handbuch</a>.');
+                $('#twitch-chat-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-player-iframe').html().length > 0) {
                     $('#twitch-chat-box').prop('class', 'col-md-6').removeClass('off');
