@@ -37,11 +37,11 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 import java.util.TimeZone;
 import java.util.TreeSet;
 import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
 
 import tv.phantombot.PhantomBot;
 
@@ -768,7 +768,7 @@ public class ConsoleEventHandler implements Listener {
 
         // Check to see if any settings have been changed.
         if (changed) {
-            Properties outputProperties = new Properties() {
+            CaselessProperties outputProperties = new CaselessProperties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
                     return Collections.enumeration(new TreeSet<>(super.keySet()));
