@@ -29,6 +29,12 @@
 
 # types: str, int, bool
 
+# Uses Doc-comment definition
+
+# /*
+#  * @usestransformers [global] [local]
+#  */
+
 import copy
 import os
 
@@ -36,6 +42,7 @@ md_path = "./docs/guides/content/commands/command-variables.md"
 
 gtransformers = []
 ltransformers = []
+usestransformers = []
 
 transformer_template = {}
 transformer_template["script"] = ""
@@ -49,6 +56,14 @@ transformer_template["cached"] = False
 transformer_template["cancels"] = False
 transformer_template["cancelsSometimes"] = False
 
+usestransformers_template = {}
+usestransformers_template["script"] = ""
+usestransformers_template["hooks"] = []
+usestransformers_hook_template = {}
+usestransformers_hook_template["hook"] = ""
+usestransformers_hook_template["global"] = False
+usestransformers_hook_template["local"] = False
+
 # States
 # 0 = Outside multi-line comment block
 # 1 = Inside multi-line comment block
@@ -58,11 +73,16 @@ transformer_template["cancelsSometimes"] = False
 # 5 = Inside local transformer comment
 # 6 = Inside local transformer note
 # 7 = Inside local transformer example
+# 8 = Uses transformers
 def parse_file(fpath, lines):
     global gtransformers
     global ltransformers
+    global usestransformers
     global transformer_template
+    global usestransformers_template
+    global usestransformers_hook_template
     state = 0
+    usestransformer_index = next((i for i,x in enumerate(usestransformers) if fpath.replace('\\', '/') == x["script"]), -1)
     for line in lines:
         line = line.strip()
         if line == "/*" and state == 0:
@@ -76,7 +96,8 @@ def parse_file(fpath, lines):
                 gtransformers.append(transformer)
             if state >= 5 and state <= 7:
                 ltransformers.append(transformer)
-            state = 0
+            if state < 8:
+                state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
             if line.startswith("@transformer"):
@@ -89,6 +110,20 @@ def parse_file(fpath, lines):
                 transformer = copy.deepcopy(transformer_template)
                 transformer["script"] = fpath.replace('\\', '/')
                 transformer["function"] = line[18:].strip()
+            if line.startswith("@usestransformers"):
+                state = 8
+                if usestransformer_index == -1:
+                    usestransformer = copy.deepcopy(usestransformers_template)
+                    usestransformer["script"] = fpath.replace('\\', '/')
+                    usestransformers.append(usestransformer)
+                    usestransformer_index = next((i for i,x in enumerate(usestransformers) if fpath.replace('\\', '/') == x["script"]), -1)
+                else:
+                    usestransformer = usestransformers[usestransformer_index]
+                usestransformer_hook = copy.deepcopy(usestransformers_hook_template)
+                if "global" in line:
+                    usestransformer_hook["global"] = True
+                if "local" in line:
+                    usestransformer_hook["local"] = True
             if state > 1:
                 if state != 2 and state != 5 and line.startswith("@"):
                     if state == 3 or state == 6:
@@ -133,6 +168,12 @@ def parse_file(fpath, lines):
                     transformer["cancels"] = True
                     if "sometimes" in line:
                         transformer["cancelsSometimes"] = True
+        if line.startswith("$.bind") and state == 8:
+            usestransformer_hook["hook"] = line[line.find("("):line.find(",")].strip("()'\", ")
+            usestransformer["hooks"].append(usestransformer_hook)
+            state = 0
+    if usestransformer_index >= 0:
+        usestransformers[usestransformer_index] = usestransformer
 
 def output_transformer(transformer, hlevel):
     lines = []
@@ -199,6 +240,39 @@ def output_transformer(transformer, hlevel):
     lines.append('\n')
     return lines
 
+def output_usestransformer(usestransformer, hlevel):
+    lines = []
+    h = "#"
+    discord = ""
+    while len(h) < hlevel:
+        h = h + "#"
+    if "/discord/" in usestransformer["script"]:
+        discord = "discord / "
+    lines.append(h + " " + discord + usestransformer["script"][usestransformer["script"].rfind("/") + 1:] + '\n')
+    lines.append('\n')
+    lines.append("Defined in script: _" + usestransformer["script"] + "_" + '\n')
+    h = h + "#"
+    for hook in usestransformer["hooks"]:
+        lines.append('\n')
+        lines.append(h + " " + hook["hook"] + '\n')
+        lines.append('\n')
+        lines.append('Global&nbsp;&nbsp; | Local\n')
+        lines.append('-------|-------\n')
+        line = ""
+        if hook["global"]:
+            line = line + "Yes&nbsp;&nbsp; | "
+        else:
+            line = line + "No&nbsp;&nbsp; | "
+        if hook["local"]:
+            line = line + "Yes"
+        else:
+            line = line + "No"
+        lines.append(line + '\n')
+    lines.append('\n')
+    lines.append("&nbsp;" + '\n')
+    lines.append('\n')
+    return lines
+
 for subdir, dirs, files in os.walk("./javascript-source"):
     for fname in files:
         fpath = subdir + os.sep + fname
@@ -245,6 +319,18 @@ if len(ltransformers) > 0:
     lines.append('\n')
     for transformer in ltransformers:
         lines.extend(output_transformer(transformer, 3))
+    lines = lines[:len(lines) - 3]
+
+if len(usestransformers) > 0:
+    lines.append('\n')
+    lines.append("---" + '\n')
+    lines.append('\n')
+    lines.append("## Transformer Usage" + '\n')
+    lines.append('\n')
+    lines.append("_Indicates whether the hooks in each script use transformers that are global, local, or both_" + '\n')
+    lines.append('\n')
+    for usestransformer in usestransformers:
+        lines.extend(output_usestransformer(usestransformer, 3))
     lines = lines[:len(lines) - 3]
 
 with open(md_path, "w", encoding="utf8") as md_file:
