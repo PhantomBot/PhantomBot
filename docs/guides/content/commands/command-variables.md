@@ -1304,3 +1304,19 @@ Caster: !addcom !settxt (writefile test.txt, true, (echo))
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+---
+
+## Transformer Usage
+
+_Indicates whether the hooks in each script use transformers that are global, local, or both_
+
+### customCommands.js
+
+Defined in script: _./javascript-source/commands/customCommands.js_
+
+#### command
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
