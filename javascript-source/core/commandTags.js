@@ -660,10 +660,10 @@
          * @cancels sometimes
          */
         function gameonly(args) {
-            if (args.match(/^(?:=|\s)(.*)$/).length > 0) {
+            if (args.match(/^(?:=|\s)(.*)$/) != null) {
                 args = args.substring(1);
                 var negate = false;
-                if (args.match(/^(!!\s)/).length > 0) {
+                if (args.match(/^(!!\s)/) != null) {
                     args = args.substring(3);
                     negate = true;
                 }
@@ -1461,14 +1461,14 @@
          * @cancels sometimes
          */
         function useronly(args, event) {
-            if (args.match(/^(?:=|\s)(.*)$/).length > 0) {
+            if (args.match(/^(?:=|\s)(.*)$/) != null) {
                 match = args.match(/(@?\w+)/);
                 for (var x in match) {
-                    if (match[x].match(/^@moderators$/).length > 0) {
+                    if (match[x].match(/^@moderators$/) != null) {
                         if ($.isModv3(event.getSender(), event.getTags())) {
                             return {result: ''};
                         }
-                    } else if (match[x].match(/^@admins$/).length > 0) {
+                    } else if (match[x].match(/^@admins$/) != null) {
                         if ($.isAdmin(event.getSender())) {
                             return {result: ''};
                         }
