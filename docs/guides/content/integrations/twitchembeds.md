@@ -127,3 +127,37 @@ server {
 }
 ```
 Edit the corresponding fields as you needs, `<servername>`, and `<domain>`.
+
+
+#### Apache2.4 Sample Config
+
+```
+<VirtualHost <servername>:80>
+    ServerName <servername>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    RewriteEngine on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName <servername>
+
+    SSLEngine On
+    SSLCertificateFile    <path>
+    SSLCertificateKeyFile <path>
+    SSLCertificateChainFile <path>
+    
+    ProxyRequests On
+    ProxyPass "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPassReverse "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPass "/" "http://127.0.0.1:25000/"
+    ProxyPassReverse "/" "http://127.0.0.1:25000/"
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Edit the corresponding fields as you needs, `<servername>` and `<path>`.
