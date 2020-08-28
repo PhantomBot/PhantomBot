@@ -910,7 +910,7 @@
         function pointtouser(args, event) {
             temp = '';
             if (event.getArgs().length > 0) {
-                temp = event.getArgs()[0].replace(/[^a-zA-Z0-9_@]/g, '');
+                temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
             }
             if (temp.length === 0) {
                 temp = event.getSender();
@@ -1404,7 +1404,7 @@
         function touser(args, event) {
             temp = '';
             if (event.getArgs().length > 0) {
-                temp = event.getArgs()[0].replace(/[^a-zA-Z0-9_@]/g, '');
+                temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
             }
             if (temp.length === 0) {
                 temp = event.getSender();
