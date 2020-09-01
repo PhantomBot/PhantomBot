@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1074,7 +1074,7 @@ $(function() {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                                 $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.tv/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                                 ' on how to properly update PhantomBot.</b>'
                         })), function() {
                             $('#pb-update').modal('toggle');

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,10 @@ import discord4j.rest.util.Snowflake;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -57,6 +59,13 @@ import tv.phantombot.discord.DiscordAPI;
 public class DiscordUtil {
 
     private static final int MAX_ITERATION = 5;
+    private static final String[] VALID_PATHS = new String[]{
+        "./addons",
+        "./config/audio-hooks",
+        "./config/gif-alerts",
+        "./logs",
+        "./scripts"
+    };
 
     public DiscordUtil() {
     }
@@ -76,6 +85,19 @@ public class DiscordUtil {
         }
     }
 
+    public boolean isValidFilePath(String fileLocation) {
+        Path p = Paths.get(fileLocation);
+        String executionPath = PhantomBot.GetExecutionPath();
+
+        for (String vp : VALID_PATHS) {
+            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, vp))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
         return sendMessageAsync(channel, message).block();
@@ -93,22 +115,27 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             if (channel.getType() == Channel.Type.DM) {
                 sendPrivateMessage((PrivateChannel) channel, message);
                 return null;
             }
 
-            com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message);
-
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorReturn(null);
+            }).onErrorResume(e -> sendMessageAsync(channel, message, iteration + 1))
+                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendMessageAsync(channel, message, ++iteration);
+            return sendMessageAsync(channel, message, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -167,27 +194,37 @@ public class DiscordUtil {
      * @param message
      */
     public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             channel.getRecipients().take(1).singleOrEmpty().doOnSuccess(user -> {
-                String uname = "";
-                String udisc = "";
+                String uname;
+                String udisc;
 
                 if (user != null) {
                     uname = user.getUsername().toLowerCase();
                     udisc = user.getDiscriminator();
+                } else {
+                    uname = "";
+                    udisc = "";
                 }
-
-                com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
 
                 channel.createMessage(message).doOnError(e -> {
                     com.gmt2001.Console.err.printStackTrace(e);
-                }).subscribe();
+                }).onErrorResume(e -> {
+                    sendPrivateMessage(channel, message, iteration + 1);
+                    return Mono.empty();
+                }).doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message)).subscribe();
             }).subscribe();
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            sendPrivateMessage(channel, message, ++iteration);
+            sendPrivateMessage(channel, message, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -210,16 +247,24 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
             return channel.createMessage(msg
                     -> msg.setEmbed(embed)
-            ).doOnError(com.gmt2001.Console.err::printStackTrace).onErrorReturn(null)
+            ).doOnError(e -> {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }).onErrorResume(e -> sendMessageEmbedAsync(channel, embed, iteration + 1))
                     .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendMessageEmbedAsync(channel, embed, ++iteration);
+            return sendMessageEmbedAsync(channel, embed, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -293,13 +338,20 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation, int iteration) {
+        if (iteration >= MAX_ITERATION) {
+            throw new IllegalStateException("connection failing");
+        }
+
+        if (iteration > 0) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
+            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        }
+
         if (channel != null) {
-            if (fileLocation.contains("..")) {
-                com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation that contains '..'");
+            if (!this.isValidFilePath(fileLocation)) {
+                com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation");
                 return null;
             } else {
-                com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message);
-
                 if (message.isEmpty()) {
                     return channel.createMessage(msg
                             -> {
@@ -311,7 +363,8 @@ public class DiscordUtil {
                     }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorReturn(null);
+                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "]"));
                 } else {
                     return channel.createMessage(msg
                             -> {
@@ -323,14 +376,12 @@ public class DiscordUtil {
                     }
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorReturn(null);
+                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message));
                 }
             }
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            if (iteration >= MAX_ITERATION) {
-                throw new IllegalStateException("connection failing");
-            }
-            return sendFileAsync(channel, message, fileLocation, ++iteration);
+            return sendFileAsync(channel, message, fileLocation, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -508,10 +559,11 @@ public class DiscordUtil {
         Flux<Member> members = DiscordAPI.getGuild().getMembers();
 
         if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(userName);
             com.gmt2001.Console.debug.println(members.count().block());
         }
 
-        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName));
+        Flux<Member> filteredMembers = members.filter(user -> user.getDisplayName().equalsIgnoreCase(userName) || user.getUsername().equalsIgnoreCase(userName) || user.getMention().equalsIgnoreCase(userName) || user.getNicknameMention().equalsIgnoreCase(userName));
 
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(filteredMembers.count().block());
@@ -564,7 +616,20 @@ public class DiscordUtil {
      * @return {Role}
      */
     public Mono<Role> getRoleAsync(String roleName) {
-        return DiscordAPI.getGuild().getRoles().filter(role -> role.getName().equalsIgnoreCase(roleName)).take(1).single();
+        Flux<Role> roles = DiscordAPI.getGuild().getRoles();
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(roleName);
+            com.gmt2001.Console.debug.println(roles.count().block());
+        }
+
+        Flux<Role> filteredRoles = roles.filter(role -> role.getName().equalsIgnoreCase(roleName) || role.getMention().equalsIgnoreCase(roleName));
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(filteredRoles.count().block());
+        }
+
+        return filteredRoles.take(1).single();
     }
 
     @Deprecated
@@ -641,7 +706,7 @@ public class DiscordUtil {
         }
 
         user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
-            Set<Snowflake> rolesSf = Collections.<Snowflake>emptySet();
+            Set<Snowflake> rolesSf = new HashSet<>();
 
             for (Role role : roles) {
                 rolesSf.add(role.getId());
@@ -652,7 +717,7 @@ public class DiscordUtil {
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
-        });
+        }).subscribe();
     }
 
     /**

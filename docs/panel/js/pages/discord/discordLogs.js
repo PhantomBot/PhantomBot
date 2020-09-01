@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@
 $(function() {
     // Get Discord logging settings.
     socket.getDBValues('get_discord_logging_settings', {
-        tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-        keys: ['modLogs', 'cbenniToggle', 'customCommandLogs', 'modLogChannel']
+        tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+        keys: ['modLogs', 'customCommandLogs', 'modLogChannel']
     }, true, function(e) {
         // Mod toggle.
         $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Yes' : 'No'));
-        // Cbenni toggle.
-        $('#twitch-mod-logviewer').val((e['cbenniToggle'] === 'true' ? 'Yes' : 'No'));
         // Commands toggle.
         $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
         // Log channels
@@ -38,7 +36,6 @@ $(function() {
     // Save button.
     $('#discord-logging-save').on('click', function() {
     	let moderationLogs = $('#twitch-mod-log').find(':selected').text() === 'Yes',
-    		moderationCBenni = $('#twitch-mod-logviewer').find(':selected').text() === 'Yes',
     		customCommandLog = $('#twitch-command-log').find(':selected').text() === 'Yes',
     		logChannel = $('#twitch-mod-channel');
 
@@ -48,9 +45,9 @@ $(function() {
     	    	break;
     	    default:
     	    	socket.updateDBValues('discord_logs_update', {
-    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'chatModerator'],
-        			keys: ['modLogs', 'cbenniToggle', 'customCommandLogs', 'modLogChannel', 'moderationLogs'],
-    	    		values: [moderationLogs, moderationCBenni, customCommandLog, logChannel.val(), moderationLogs]
+    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'chatModerator'],
+        			keys: ['modLogs', 'customCommandLogs', 'modLogChannel', 'moderationLogs'],
+    	    		values: [moderationLogs, customCommandLog, logChannel.val(), moderationLogs]
     	    	}, function() {
     	    		// Update the scripts variables.
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {

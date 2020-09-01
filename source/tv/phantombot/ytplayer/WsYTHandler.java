@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,21 @@ import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -57,6 +65,7 @@ import tv.phantombot.event.ytplayer.YTPlayerVolumeEvent;
 public class WsYTHandler implements WsFrameHandler {
 
     private static final AttributeKey<Boolean> ATTR_IS_PLAYER = AttributeKey.valueOf("isPlayer");
+    private static final AttributeKey<Date> ATTR_LAST_PONG = AttributeKey.valueOf("lastPong");
     private static final String[] ALLOWED_DB_QUERY_TABLES = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
     private static final String[] ALLOWED_DB_UPDATE_TABLES = new String[]{"ytSettings"};
     private final WsAuthenticationHandler authHandler;
@@ -64,9 +73,27 @@ public class WsYTHandler implements WsFrameHandler {
     private int currentState = -10;
     private boolean clientConnected;
     private int bufferCounter;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public WsYTHandler(String ytAuthRO, String ytAuth) {
         authHandler = new WsSharedRWTokenAuthenticationHandler(ytAuthRO, ytAuth, 10);
+        executor.scheduleAtFixedRate(() -> {
+            Queue<Channel> channels = WebSocketFrameHandler.getWsSessions("/ws/ytplayer");
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.SECOND, -12);
+
+            channels.forEach((c) -> {
+                if (c.attr(ATTR_LAST_PONG).get().before(cal.getTime())) {
+                    c.writeAndFlush(WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+                    c.close();
+                } else {
+                    JSONStringer jsonObject = new JSONStringer();
+
+                    jsonObject.object().key("ping").value("ping").endObject();
+                    c.writeAndFlush(WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+                }
+            });
+        }, 3, 3, TimeUnit.SECONDS);
     }
 
     @Override
@@ -83,6 +110,7 @@ public class WsYTHandler implements WsFrameHandler {
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         ctx.channel().attr(ATTR_IS_PLAYER).setIfAbsent(Boolean.FALSE);
+        ctx.channel().attr(ATTR_LAST_PONG).setIfAbsent(new Date());
 
         ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
             if (f.channel().attr(ATTR_IS_PLAYER).get()) {
@@ -276,6 +304,8 @@ public class WsYTHandler implements WsFrameHandler {
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
+        } else if (jso.has("pong")) {
+            ctx.channel().attr(ATTR_LAST_PONG).set(new Date());
         }
     }
 

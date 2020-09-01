@@ -4,6 +4,10 @@ The following Markdown is supported for PhantomBot Guides
 
 &nbsp;
 
+<!-- toc -->
+
+&nbsp;
+
 #### Italic
 **Syntax:**
 ```markdown
@@ -76,10 +80,10 @@ ___Bold Italic___
 #### Image
 **Syntax:**
 ```markdown
-![PB Logo](https://phantombot.tv/common/images/logo.png)
+![PB Logo](https://phantombot.github.io/PhantomBot/common/images/logo.png)
 ```
 
-**Output:** ![PB Logo](https://phantombot.tv/common/images/logo.png)
+**Output:** ![PB Logo](https://phantombot.github.io/PhantomBot/common/images/logo.png)
 
 &nbsp;
 
@@ -211,7 +215,7 @@ function(param) {
 - `apache` - Apache HTTPd Configuration
 - `bash` - Bash Script
 - `css` - Cascading Style Sheet
-- `ini` - INI COnfiguration File
+- `ini` - INI Configuration File
 - `java` - Java
 - `javascript` - JavaScript
 - `json` - JSON Object
@@ -273,6 +277,19 @@ Cell 3,1 | Cell 3,2 | Cell 3,3
 ```markdown
 &nbsp;
 ```
+
+#### Table of Contents
+**Syntax:**
+```markdown
+<!-- toc -->
+```
+
+**Output:**
+_See the top of this guide for an example output_
+
+**NOTE:** There must be a blank line under the tag
+
+**NOTE:** Any headers above the tag will **not** be included
 
 &nbsp;
 

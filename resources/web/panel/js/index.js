@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,7 +314,7 @@ $(function() {
         callback = (callback === undefined ? storeKey : callback);
 
         // Genetate a callback.
-        generateCallBack(callback_id, dataObj.tables, false, false, callback, (typeof storeKey === 'function' ? false : true));
+        generateCallBack(callback_id, dataObj.tables, false, false, callback, (typeof storeKey !== 'function'));
 
         // Start sending the updates to the socket.
         for (let i = 0; i < dataObj.tables.length; i++) {

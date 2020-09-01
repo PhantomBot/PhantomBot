@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@
         quote = String(quote).replace(/"/g, '\'\'');
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
         return newKey;
-    };
+    }
 
     /**
      * @function deleteQuote
@@ -91,18 +91,28 @@
         } else {
             return -1;
         }
-    };
+    }
 
     /**
      * @function getQuote
-     * @param {Number} quoteId
+     * @param {String} quoteId: id or search query
      * @returns {Array}
      */
     function getQuote(quoteId) {
         var quote;
 
-        if (!quoteId || isNaN(quoteId)) {
+        if (!quoteId) {
             quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
+        } else if (isNaN(quoteId)) {
+            quoteId = String(quoteId).toLowerCase();
+            var quotes = $.inidb.GetKeyValueList('quotes', '');
+            var ids = [];
+            for (var i = 0; i < quotes.length; i++) {
+                if (String(quotes[i].getValue()).toLowerCase().indexOf(quoteId) >= 0) {
+                    ids.push(quotes[i].getKey());
+                }
+            }
+            quoteId = ids.length > 0 ? $.randElement(ids) : $.rand(quotes.length);
         }
 
         if ($.inidb.exists('quotes', quoteId)) {
@@ -112,7 +122,7 @@
         } else {
             return [];
         }
-    };
+    }
 
     /**
      * @event command

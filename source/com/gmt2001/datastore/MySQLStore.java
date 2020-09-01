@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ public class MySQLStore extends DataStore {
         fName = validateFname(fName);
 
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (section(30), variable(150)));");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (section(30), variable(150))) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;");
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

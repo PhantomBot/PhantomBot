@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,7 @@ $(function() {
         listeners = [],
         player = {},
         hasAPIKey = true,
-        secondConnection = false,
-        keepAlive;
+        secondConnection = false;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -319,9 +318,6 @@ $(function() {
         $('body').append($('<script/>', {
             src: 'https://www.youtube.com/iframe_api'
         }));
-
-        // Stop websocket from timing out
-        keepAlive = setInterval(function() { socket.send(''); },10000);
     };
 
     /*
@@ -329,9 +325,6 @@ $(function() {
      */
     socket.onclose = (e) => {
         console.error('Connection lost with the websocket.');
-
-        // Clear interval to stop unnecessary calls
-        window.clearInterval(keepAlive);
 
         if (secondConnection) {
             toastr.error('PhantomBot has closed the WebSocket.', '', {timeOut: 0});
@@ -346,6 +339,13 @@ $(function() {
     socket.onmessage = (e) => {
         try {
             let message = JSON.parse(e.data);
+
+            if (message.ping !== undefined) {
+                sendToSocket({
+                    pong: "pong"
+                });
+                return;
+            }
 
             // Check this message here before doing anything else.
             if (message.secondconnection !== undefined) {
@@ -372,7 +372,7 @@ $(function() {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
                     toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
-                                 '<a href="https://phantombot.tv/guides/#guide=content/youtubesetup">here' +
+                                 '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/youtubesetup">here' +
                                  '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
                                  {timeOut: 0, extendedTimeOut: 0});
                 }

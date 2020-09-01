@@ -30,6 +30,17 @@ The bot will automatically generate and renew this certificate for you as long a
 
 Since the SSL certificate is self-signed, your browser/OS will not trust it by default.
 
+##### OBS
+
+**NOTE:** These instructions are written for Windows, but the idea of adding the extra launch parameter remains the same for other OSes.
+
+1. Open a File Explorer window and navigate to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\OBS Studio (Or whichever shortcut you use to launch OBS Studio)
+2. Right-click the shortcut and hit Properties
+3. In the Target box, add  --ignore-certificate-errors to the end
+So it should look similar to "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors (NOTE: The positioning of the quotes " is very important)
+
+**NOTE:** If you then use that shortcut to launch OBS Studio, it should disable validity checking of SSL Certificates, with the obvious downside that it won't protect you from other websites having bad or malicious SSL certificates either.
+
 ##### Windows and Linux
 
 Connect to your bot's built-in webserver (eg. `https://192.168.0.2:25000/`) and your browser will warn you about the certificate being untrusted.
@@ -60,7 +71,7 @@ Once you have done this and the bot's main page has loaded, you're done with thi
 
 ### Launch the PhantomBot Remote Panel
 
-Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.tv/) and launch the panel from there.
+Once SSL is setup and trusted, just navigate to [PhantomBot](https://phantombot.github.io/PhantomBot/) and launch the panel from there.
 
 &nbsp;
 
@@ -83,3 +94,70 @@ Once you restart the bot you can access the panel without using a port number (e
 If you are running the bot on a server that already has a running webserver with SSL enabled, you can lookup how to setup a reverse proxy on a subdomain that links to the bot's webserver.
 
 If you have the webserver and a domain, but have not yet setup SSL, consider looking into [Let's Encrypt](https://letsencrypt.org/) and using the [Certbot](https://certbot.eff.org/) client to get a free basic SSL certificate for life.
+
+#### NGINX Sample Config
+
+```
+upstream phantombot {
+    server 127.0.0.1:25000; # set this to the IP:Baseport of the bot
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name <servername>; # Server name is the domain or sub-domain
+    return 301 https://$server_name;
+}
+
+server {
+    listen              443 ssl http2;
+    server_name         <servername>; # Server name is the domain or sub-domain
+    large_client_header_buffers 4 32k; # Very important to prevent unexplained 400 errors
+    ssl_certificate /etc/letsencrypt/live/<domain>/fullchain.pem; # managed by Certbot, replace with the appropriate path
+    ssl_certificate_key /etc/letsencrypt/live/<domain>/privkey.pem; # managed by Certbot, replace with the appropriate path
+    ssl_protocols       TLSv1.3;
+    ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
+ 
+    location / {
+        proxy_pass http://phantombot;
+    }
+ 
+    error_log /var/log/nginx/twitch_error.log;
+    access_log /var/log/nginx/twitch_access.log;
+}
+```
+Edit the corresponding fields as you needs, `<servername>`, and `<domain>`.
+
+
+#### Apache2.4 Sample Config
+
+```
+<VirtualHost <servername>:80>
+    ServerName <servername>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    RewriteEngine on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName <servername>
+
+    SSLEngine On
+    SSLCertificateFile    <path>
+    SSLCertificateKeyFile <path>
+    SSLCertificateChainFile <path>
+    
+    ProxyRequests On
+    ProxyPass "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPassReverse "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPass "/" "http://127.0.0.1:25000/"
+    ProxyPassReverse "/" "http://127.0.0.1:25000/"
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Edit the corresponding fields as you needs, `<servername>` and `<path>`.

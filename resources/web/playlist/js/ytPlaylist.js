@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,30 +29,30 @@ var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
 function debugMsg(message) {
-    if (DEBUG_MODE) console.log("ytPlaylist::DEBUG::" + message);
+    if (DEBUG_MODE)
+        console.log("ytPlaylist::DEBUG::" + message);
 }
 function logMsg(message) {
     console.log('ytPlaylist::' + message);
 }
 
-connection.onopen = function(data) {
+connection.onopen = function (data) {
     var jsonObject = {};
 
     debugMsg("connection.onopen()");
     connectedToWS = true;
 
-    var jsonObject = {};
     jsonObject["authenticate"] = getAuth();
     connection.send(JSON.stringify(jsonObject));
-    debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject)+")");
+    debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
 
-connection.onclose = function(data) {
+connection.onclose = function (data) {
     debugMsg("connection.onclose()");
     connectedToWS = false;
 }
 
-connection.onmessage = function(e) {
+connection.onmessage = function (e) {
     try {
         var messageObject = JSON.parse(e.data);
     } catch (ex) {
@@ -61,6 +61,13 @@ connection.onmessage = function(e) {
     }
 
     debugMsg('connection.onmessage(' + e.data + ')');
+
+    if (messageObject.ping !== undefined) {
+        connection.send(JSON.stringify({
+            pong: "pong"
+        }));
+        return;
+    }
 
     if (messageObject['authresult'] === 'false') {
         if (!messageObject['authresult']) {
@@ -82,8 +89,8 @@ connection.onmessage = function(e) {
     }
 
     if (messageObject['currentsong'] !== undefined) {
-        handleNewSong(messageObject['currentsong']['title'], messageObject['currentsong']['duration'], 
-                      messageObject['currentsong']['requester'], messageObject['currentsong']['song']);
+        handleNewSong(messageObject['currentsong']['title'], messageObject['currentsong']['duration'],
+                messageObject['currentsong']['requester'], messageObject['currentsong']['song']);
         return;
     }
 
@@ -101,7 +108,7 @@ connection.onmessage = function(e) {
 function handleNewSong(title, duration, requester, id) {
     debugMsg('handleNewSong(' + title + ', ' + duration + ', ' + requester + ')');
     $('#currentSongTable').html('<tr><th>Song Title</th><th>Requester</th><th>Duration</th><th>YouTube ID</th></tr>' +
-                                '<tr><td>' + title + '</td><td>' + requester + '</td><td>' + duration + '</td><td>' + id + '</td></tr>');
+            '<tr><td>' + title + '</td><td>' + requester + '</td><td>' + duration + '</td><td>' + id + '</td></tr>');
 }
 
 function handlePlayList(d) {
@@ -132,14 +139,16 @@ function handleSongList(d) {
 
 // Type is: success (green), info (blue), warning (yellow), danger (red)
 function newAlert(message, title, type, timeout) {
-  debugMsg('newAlert(' + message + ', ' + title + ', ' + type + ', ' + timeout + ')');
-  $('.alert').fadeIn(1000);
-  $('#newAlert').show().html('<div class="alert alert-' + type + '"><button type="button" '+
-                      'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' + 
-                       message + ' [' + title + ']</span></div>');
-  if (timeout != 0) {
-      $('.alert-' + type).delay(timeout).fadeOut(1000, function () { $(this).remove(); });
-  }
+    debugMsg('newAlert(' + message + ', ' + title + ', ' + type + ', ' + timeout + ')');
+    $('.alert').fadeIn(1000);
+    $('#newAlert').show().html('<div class="alert alert-' + type + '"><button type="button" ' +
+            'class="close" data-dismiss="alert" aria-hidden="true"></button><span>' +
+            message + ' [' + title + ']</span></div>');
+    if (timeout != 0) {
+        $('.alert-' + type).delay(timeout).fadeOut(1000, function () {
+            $(this).remove();
+        });
+    }
 }
 
 function refreshData() {

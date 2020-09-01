@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ public class ScriptManager {
             } else {
                 com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
             }
+            com.gmt2001.Console.debug.printStackTrace(ex);
             if (!PhantomBot.getReloadScripts()) {
                 com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
                 PhantomBot.exitError();

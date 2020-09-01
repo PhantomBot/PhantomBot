@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,12 @@
  */
 package tv.phantombot.twitch.pubsub;
 
+import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.Logger;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +49,8 @@ import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {
 
+    private static final long BACKOFF_RESET_MS = 300000L;
+    private static final int BACKOFF_MAX = 20;
     private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
     private final Map<String, String> messageCache = new ConcurrentHashMap<>();
     private final Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
@@ -54,6 +58,8 @@ public class TwitchPubSub {
     private TwitchPubSubWS twitchPubSubWS;
     private boolean reconnecting = false;
     private ReentrantLock lock = new ReentrantLock();
+    private long lastConnectAttempt = 0L;
+    private ExponentialBackoff backoff = new ExponentialBackoff(1000, 120000);
 
     /**
      * This starts the PubSub instance.
@@ -93,6 +99,7 @@ public class TwitchPubSub {
 
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
+            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
             if (!this.twitchPubSubWS.connectWSS(false)) {
                 throw new Exception("Failed to connect to PubSub.");
             }
@@ -115,7 +122,7 @@ public class TwitchPubSub {
     /**
      * Try to reconnect to the PubSub websocket when the connection is closed with some logic.
      */
-    public void reconnect() {
+    public void reconnect(boolean isRequested) {
         if (lock.isLocked()) {
             return;
         }
@@ -123,7 +130,22 @@ public class TwitchPubSub {
         lock.lock();
         try {
             new Thread(() -> {
-                TwitchPubSub.instance(channel).doReconnect();
+                if (!isRequested) {
+                    if ((Calendar.getInstance().getTimeInMillis() - this.lastConnectAttempt) >= BACKOFF_RESET_MS) {
+                        this.backoff.Reset();
+                    }
+
+                    if (this.backoff.GetTotalIterations() >= BACKOFF_MAX) {
+                        com.gmt2001.Console.out.println("Failed to reconnect to PubSub, aborting...");
+                        return;
+                    }
+
+                    this.backoff.BackoffAsync(() -> {
+                        TwitchPubSub.instance(channel).doReconnect();
+                    });
+                } else {
+                    TwitchPubSub.instance(channel).doReconnect();
+                }
             }).start();
         } finally {
             lock.unlock();
@@ -137,6 +159,7 @@ public class TwitchPubSub {
 
         try {
             reconnecting = true;
+            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
             this.twitchPubSubWS.reconnectBlocking();
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -155,6 +178,8 @@ public class TwitchPubSub {
         private final int channelId;
         private final String oAuth;
         private final int botId;
+        private boolean hasModerator = false;
+        private boolean hasRedemptions = false;
 
         /**
          * Constructor for the PubSubWS class.
@@ -218,15 +243,15 @@ public class TwitchPubSub {
          * send a PING request every 4.9 minutes. Twitch recommends every 5 minutes.
          */
         private void startTimer() {
-            timer.schedule(new PingTask(), 7000, 294000);
+            this.timer.schedule(new PingTask(), 7000, 294000);
         }
 
         /**
          * This purges the ping timer. It is used when the user tries to connect with a bad oauth token.
          */
         private void closeTimer() {
-            timer.cancel();
-            timer.purge();
+            this.timer.cancel();
+            this.timer.purge();
         }
 
         /**
@@ -329,13 +354,14 @@ public class TwitchPubSub {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
-                    String[] type = new String[]{"chat_moderator_actions." + channelId};
+                    String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? "" : this.botId + ".") + this.channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
 
                     topics.put("topics", type);
-                    topics.put("auth_token", oAuth.replace("oauth:", ""));
+                    topics.put("auth_token", this.oAuth.replace("oauth:", ""));
                     jsonObject.put("type", "LISTEN");
+                    jsonObject.put("nonce", "moderator");
                     jsonObject.put("data", topics);
 
                     send(jsonObject.toString());
@@ -343,13 +369,14 @@ public class TwitchPubSub {
                 }
 
                 if (TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) {
-                    String[] type2 = new String[]{"channel-points-channel-v1." + channelId};
+                    String[] type2 = new String[]{"channel-points-channel-v1." + this.channelId};
                     JSONObject jsonObject2 = new JSONObject();
                     JSONObject topics2 = new JSONObject();
 
                     topics2.put("topics", type2);
-                    topics2.put("auth_token", oAuth.replace("oauth:", ""));
+                    topics2.put("auth_token", this.oAuth.replace("oauth:", ""));
                     jsonObject2.put("type", "LISTEN");
+                    jsonObject2.put("nonce", "redemptions");
                     jsonObject2.put("data", topics2);
 
                     send(jsonObject2.toString());
@@ -370,10 +397,15 @@ public class TwitchPubSub {
         @Override
         public void onClose(int code, String reason, boolean remote) {
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying in 10 seconds");
-
             closeTimer();
-            twitchPubSub.reconnect();
+
+            if (remote && !this.hasModerator && !this.hasRedemptions) {
+                com.gmt2001.Console.out.println("Disconnected from Twitch PubSub due to no valid topic subscriptions");
+                return;
+            }
+
+            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying soon...");
+            this.twitchPubSub.reconnect(false);
         }
 
         /**
@@ -404,8 +436,32 @@ public class TwitchPubSub {
                     return;
                 }
 
-                if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+                if (messageObj.getString("type").equalsIgnoreCase("response")) {
+                    if (messageObj.getString("nonce").equalsIgnoreCase("moderator")) {
+                        this.hasModerator = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
+                        com.gmt2001.Console.debug.println("Got chat_moderator_actions response " + this.hasModerator);
+                        if (!this.hasModerator) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Moderation Feed (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
+                    } else if (messageObj.getString("nonce").equalsIgnoreCase("redemptions")) {
+                        this.hasRedemptions = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
+                        com.gmt2001.Console.debug.println("Got channel-points-channel-v1 response " + this.hasRedemptions);
+                        if (!this.hasRedemptions) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Channel Points (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
+                    }
+                } else if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                    return;
+                }
+
+                if (messageObj.getString("type").equalsIgnoreCase("reconnect")) {
+                    com.gmt2001.Console.out.println("Received RECONNECT from Twitch PubSub");
+                    this.twitchPubSub.reconnect(true);
                     return;
                 }
 

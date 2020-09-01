@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,6 +248,18 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             c.writeAndFlush(resframe.copy());
             c.close();
         });
+    }
+
+    public static Queue<Channel> getWsSessions(String uri) {
+        Queue<Channel> sessions = new ConcurrentLinkedQueue<>();
+
+        WS_SESSIONS.forEach((c) -> {
+            if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
+                sessions.add(c);
+            }
+        });
+
+        return sessions;
     }
 
     /**

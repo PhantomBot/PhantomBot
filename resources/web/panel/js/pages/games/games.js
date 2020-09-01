@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,6 @@ $(function() {
                     case helpers.handleInputNumber(joinTime, 30):
                     case helpers.handleInputNumber(cooldownTime, 10):
                     case helpers.handleInputNumber(gainPercent, 1):
-                    case helpers.handleInputNumber(joinTime, 30):
                     case helpers.handleInputNumber(minBet, 1):
                     case helpers.handleInputNumber(maxBet, 1):
                         break;

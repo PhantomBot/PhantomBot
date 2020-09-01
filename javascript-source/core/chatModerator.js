@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -498,7 +498,7 @@
         function checkLink(link, whiteListItem) {
             var baseLink = link.match(/[^.]*[^/]*/)[0];
             var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
-            var matches = Array.from(link.matchAll(itemRe));
+            var matches = $.matchAll(link, itemRe);
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
                 var matchEnd = matches[k].index + matches[k][0].length;

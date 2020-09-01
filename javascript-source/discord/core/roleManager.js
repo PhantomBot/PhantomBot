@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,12 @@
             // Wait a bit to create the roles.
             setTimeout(function() {
                 for (i in users) {
-                    if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
-                        updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                    try {
+                        if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
+                            updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                        }
+                    } catch (e){
+                        $.log.error(e);
                     }
                 }
             }, 5e3);
@@ -82,7 +86,8 @@
         // Only update the user's role if there's a new one.
         for (i in roles) {
             if (!hasRole(currentRoles, roles[i], true)) {
-                $.discordAPI.editUserRoles(id, $.discordAPI.getRoleObjects(roles));
+                var roleObjs = $.discordAPI.getRoleObjects(roles);
+                $.discordAPI.editUserRoles(id, roleObjs);
                 $.setIniDbString('discordRoles', id, newRoles);
                 return;
             }
@@ -101,9 +106,15 @@
             for (i in keys) {
                 group = $.getIniDbString('groups', keys[i]).trim();
 
-                if (!$.inidb.exists('blacklistedDiscordRoles', group.toLowerCase()) && !$.discordAPI.getRole(group)) {
+                var hasTheRole = false;
+
+                try {
+                    hasTheRole = $.discordAPI.getRole(group) != null;
+                } catch(e){}
+
+                if (!$.inidb.exists('blacklistedDiscordRoles', group.toLowerCase()) && !hasTheRole) {
                     $.discordAPI.createRole(group);
-                } else if ($.discordAPI.getRole(group) && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
+                } else if (hasTheRole && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
                     $.discordAPI.deleteRole(group);
                 }
             }
@@ -120,10 +131,16 @@
             for (i in keys) {
                 rank = $.getIniDbString('ranksMapping', keys[i]).trim();
 
-                if (!$.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase()) && !$.discordAPI.getRole(rank)) {
+                var hasTheRole = false;
+
+                try {
+                    hasTheRole = $.discordAPI.getRole(rank) != null;
+                } catch(e){}
+
+                if (!$.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase()) && !hasTheRole) {
                     $.discordAPI.createRole(rank);
                     $.setIniDbString('discordRanks', rank, keys[i]);
-                } else if ($.discordAPI.getRole(rank) && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
+                } else if (hasTheRole && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
                     $.discordAPI.deleteRole(rank);
                     $.inidb.del('discordRanks', rank);
                 }

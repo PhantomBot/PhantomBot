@@ -1,13 +1,12 @@
 {
     "subfolders": {
-        "developerdocs": "Developer Documentation",
+        "setupbot": "Setup and Update",
+        "integrations": "Bot Integrations",
         "commands": "Commands",
-        "setupbot": "Setup and Update"
+        "moduleguides": "Module Guides",
+        "developerdocs": "Developer Documentation"
     },
     "pages": {
-        "youtubesetup": "YouTube Setup",
-        "discordintegrationsetup": "Discord Integration Setup",
-        "twitchembeds": "Enable Twitch embeds",
         "markdown": "Markdown for Guides",
         "guides": "Guides",
         "faq": "FAQ"

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ $(function() {
             'role': 'form'
         })
         // Append box for the whitelist.
-        .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', 'https://phantombot.tv', '', 'Url that will be whitelisted.')), function() {
+        .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', 'https://phantombot.github.io/PhantomBot', '', 'Url that will be whitelisted.')), function() {
             let whitelist = $('#whitelist-name');
 
             // Handle each input to make sure they have a value.

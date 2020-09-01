@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package tv.phantombot;
 
+import com.gmt2001.GamesListUpdater;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
@@ -49,7 +50,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -213,7 +213,7 @@ public final class PhantomBot implements Listener {
     private Boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
-    private Properties pbProperties;
+    private CaselessProperties pbProperties;
     private Boolean legacyServers = false;
     private Boolean backupDBAuto = false;
     private int backupDBHourFrequency = 0;
@@ -293,7 +293,7 @@ public final class PhantomBot implements Listener {
      * @return {string} bot website
      */
     public String getWebSite() {
-        return "https://phantombot.tv/";
+        return "https://phantombot.github.io/PhantomBot/";
     }
 
     /**
@@ -346,7 +346,7 @@ public final class PhantomBot implements Listener {
      *
      * @param Properties Properties object which configures the PhantomBot instance.
      */
-    public PhantomBot(Properties pbProperties) {
+    public PhantomBot(CaselessProperties pbProperties) {
 
         /* Set the exeption handler */
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -778,7 +778,7 @@ public final class PhantomBot implements Listener {
      *
      * @return
      */
-    public Properties getProperties() {
+    public CaselessProperties getProperties() {
         return this.pbProperties;
     }
 
@@ -1275,7 +1275,7 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        Properties startProperties = ConfigurationManager.getConfiguration();
+        CaselessProperties startProperties = ConfigurationManager.getConfiguration();
 
         setStaticFields(startProperties);
 
@@ -1283,7 +1283,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    private static void setStaticFields(Properties startProperties) {
+    private static void setStaticFields(CaselessProperties startProperties) {
         /* Check to enable debug mode */
         PhantomBot.setDebugging(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGON, false));
         /* Check to enable debug to File */
@@ -1339,36 +1339,41 @@ public final class PhantomBot implements Listener {
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
-        if (RepoVersion.getBuildType().startsWith("edge") || RepoVersion.getBuildType().startsWith("custom")) {
-            return;
-        }
-
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
-            try {
-                Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
+            if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
+                try {
+                    Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
-                if (newVersionInfo != null) {
-                    try {
-                        Thread.sleep(6000);
-                        print("");
-                        print("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                        print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                        print("Download Link: " + newVersionInfo[1]);
-                        print("A reminder will be provided in 24 hours!");
-                        print("");
-                    } catch (InterruptedException ex) {
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
+                    String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                    if (newVersionInfo != null) {
+                        try {
+                            Thread.sleep(6000);
+                            print("");
+                            print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                            print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                            print("Download Link: " + newVersionInfo[1]);
+                            print("A reminder will be provided in 24 hours!");
+                            print("");
+                        } catch (InterruptedException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        }
 
-                    if (webEnabled) {
-                        dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                        if (webEnabled) {
+                            dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                        }
+                    } else {
+                        dataStore.del("settings", "newrelease_info");
                     }
-                } else {
-                    dataStore.del("settings", "newrelease_info");
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
                 }
-            } catch (JSONException ex) {
+            }
+
+            try {
+                Thread.sleep(30000);
+                GamesListUpdater.update();
+            } catch (InterruptedException | JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }, 0, 24, TimeUnit.HOURS);
