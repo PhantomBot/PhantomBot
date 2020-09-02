@@ -106,6 +106,10 @@ public class MySQLStore extends DataStore {
             fName = fName + "$";
         }
 
+        if (fName.length() > 64) {
+            fName = fName.substring(0, 64);
+        }
+
         return fName;
     }
 
