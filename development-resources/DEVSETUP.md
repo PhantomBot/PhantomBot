@@ -9,7 +9,7 @@ It's very global, so you might need to take some extra steps to get it to work f
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Check out your fork and open it in your favorite IDE.
-2. Set the project Java SDK to [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
+2. Set the project Java SDK to [11.0.4](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 3. Import `build.xml` into your [ANT](http://ant.apache.org/) task manager.
 
 DONE! Happy coding <3
@@ -21,7 +21,7 @@ You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Open up IntelliJ, so you have the start screen.  
   From there you can check out (Check out from Version Control) your fork and open it up.
-3. Open up a file from `./source/` where IntelliJ will ask you for a project SDK. Use SDK [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
+3. Open up a file from `./source/` where IntelliJ will ask you for a project SDK. Use SDK [11.0.4](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 4. Next up mark the directories `./source` and `./javascript-source` as "Sources Root".  
   *"Mark Directory As" in the context menu.*
 5. Import `build.xml` into the ANT task manager.  
