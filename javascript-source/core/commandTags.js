@@ -1020,7 +1020,7 @@
         function readfile(args) {
             var fileName;
             if ((match = args.match(/^ (.+)$/))) {
-                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                fileName = './addons/' + $.replace(match[1], '..', '');
                 if (!$.fileExists(fileName)) {
                     return {
                         result: $.lang.get('customcommands.file.404', fileName),
@@ -1042,7 +1042,7 @@
         function readfilerand(args) {
             var fileName;
             if ((match = args.match(/^ (.+)$/))) {
-                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                fileName = './addons/' + $.replace(match[1], '..', '');
                 if (!$.fileExists(fileName)) {
                     return {result: $.lang.get('customcommands.file.404', fileName)};
                 }
@@ -1523,7 +1523,7 @@
         function writefile(args) {
             var fileName;
             if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
-                fileName = './addons/' + match[1].replace(/\.\./g, '');
+                fileName = './addons/' + $.replace(match[1], '..', '');
                 $.writeToFile(match[3], fileName, match[2] === 'true');
                 return {result: '', cache: false};
             }
