@@ -668,7 +668,7 @@
                     negate = true;
                 }
                 var game = $.getGame($.channelName);
-                match = args.match(/([^|]+)/);
+                match = args.match(/([^|]+)/g);
                 for (var x in match) {
                     if (game.equalsIgnoreCase(match[x])) {
                         if (negate) {
@@ -1462,7 +1462,7 @@
          */
         function useronly(args, event) {
             if (args.match(/^(?:=|\s)(.*)$/) != null) {
-                match = args.match(/(@?\w+)/);
+                match = args.match(/(@?\w+)/g);
                 for (var x in match) {
                     if (match[x].match(/^@moderators$/) != null) {
                         if ($.isModv3(event.getSender(), event.getTags())) {
