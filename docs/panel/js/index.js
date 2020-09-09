@@ -331,7 +331,7 @@ $(function() {
         callback = (callback === undefined ? storeKey : callback);
 
         // Genetate a callback.
-        generateCallBack(callback_id, dataObj.tables, false, false, callback, (typeof storeKey === 'function' ? false : true));
+        generateCallBack(callback_id, dataObj.tables, false, false, callback, (typeof storeKey !== 'function'));
 
         // Start sending the updates to the socket.
         for (let i = 0; i < dataObj.tables.length; i++) {

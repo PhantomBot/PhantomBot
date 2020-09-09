@@ -5,8 +5,6 @@
     left: 50%;
     top: 50%;
     z-index: 1;
-    width: 150px;
-    height: 150px;
     margin: -75px 0 0 -75px;
     border: 16px solid #f2f2f2;
     border-radius: 50%;
@@ -104,7 +102,7 @@
 
 .easy-autocomplete-container ul {
     max-height: 130px;
-    border-color-bottom: #000;
+    border-bottom-color: #000;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -156,4 +154,9 @@ select {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Remove bold on sidebar label */
+.control-sidebar-subheading > label:not([class]) {
+    font-weight: unset;
 }
