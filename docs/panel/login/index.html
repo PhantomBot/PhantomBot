@@ -193,28 +193,7 @@
                                         return;
                                     }
 
-                                    if (window.fetch){
-                                        fetch('http://' + hostname + ':' + port + '/sslcheck').then(response => {
-                                            if (!response.ok) {
-                                                throw new Error("HTTP Request failed with status code " + response.status);
-                                            }
-                                            return response.text();
-                                        }).then(sslStatus => {
-                                            if (sslStatus === 'true') {
-                                                doLogin(hostname, port, username, password, remember);
-                                            } else {
-                                                $('#error-box').removeClass('hide');
-                                                $('#alert-br').removeClass('hide');
-                                                $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantom.bot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
-                                            }
-                                        }).catch(error => {
-                                            $('#error-box').removeClass('hide');
-                                            $('#alert-br').removeClass('hide');
-                                            $('#error-box').html('Connection to the bot timed out or returned a bad status code. Please verify the bot is running, is accessible from this computer over the specified port, and that the hostname/port are correct');
-                                            console.log(error);
-                                        });
-                                    } else {
-                                        $.ajax(
+                                    $.ajax(
                                             {
                                                 type: 'GET',
                                                 url: 'https://' + hostname + ':' + port + '/sslcheck',
@@ -236,7 +215,6 @@
                                                 }
                                             }
                                         );
-                                    }
                                 }
 
                                 $(function () {
