@@ -155,7 +155,7 @@
                                 <label>User Action</label>
                                 <div class="input-group input-group-md">
                                     <input type="text" class="form-control" id="user-action-user" placeholder="Username" data-toggle="tooltip" title="Enter a username.">
-                                    <span class="input-group-btn">
+                                    <div class="input-group-btn">
                                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Actions
                                             <span class="fas fa-sm fa-caret-down"></span>
                                         </button>
@@ -165,13 +165,13 @@
                                             <li class="user-action"><a href="#">Raid</a></li>
                                             <li class="user-action"><a href="#">Host</a></li>
                                         </ul>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Run command -->
                             <div class="form-group">
-                                <label>Run Command</label>
+                                <label for="custom-command-run">Run Command</label>
                                 <select class="form-control select2 select2-hidden-accessible" id="custom-command-run" style="width: 100%;" aria-hidden="true">
                                     <option></option>
                                 </select>
@@ -191,13 +191,13 @@
                                         <option>180</option>
                                     </select>
                                     <span class="input-group-addon" style="border: 0;">
-                                        <div class="pretty p-icon">
+                                        <span class="pretty p-icon">
                                             <input id="instant-commercial-silent" type="checkbox" data-toggle="tooltip" title="If checked, the bot won't announce the commercial in chat.">
-                                            <div class="state p-default">
+                                            <span class="state p-default">
                                                 <i class="icon fas fa-sm fa-check"></i>
                                                 <label>Silent</label>
-                                            </div>
-                                        </div>
+                                            </span>
+                                        </span>
                                     </span>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-instant-commercial" data-candisable="true">Run</button>

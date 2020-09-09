@@ -44,7 +44,7 @@ $(function() {
 						case json.parameters !== undefined:
 							tips.push([
 								json.parameters.username,
-								helpers.getPaddedDateString(new Date(json.created_at.substring(0, json.created_at.indexOf('+'))).toLocaleString()), // We remove the +0200 because Safar fa-smi doesn't like it.
+								helpers.getPaddedDateString(new Date(json.created_at.substring(0, json.created_at.indexOf('+'))).toLocaleString()), // We remove the +0200 because Safari doesn't like it.
 								json.parameters.currency + ' ' + parseFloat(json.parameters.amount).toFixed(2),
 								'TipeeeStream',
 								new Date(json.created_at.substring(0, json.created_at.indexOf('+'))).getTime()

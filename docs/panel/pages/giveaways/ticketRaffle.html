@@ -24,7 +24,7 @@
         <!-- Page title and switch toggle. -->
         <h1>Ticket Raffle
             <label class="switch" data-toggle="tooltip" title="Module toggle">
-                <input type="checkbox" id="ticketRaffleModuleToggle" checked="checked">
+                <input type="checkbox" id="ticketRaffleModuleToggle" checked>
                 <span class="slider round"></span>
             </label>
         </h1>
@@ -79,14 +79,14 @@
                         <div class="box-body" style="padding-bottom: 90px;">
                             <!-- Command -->
                             <div class="form-group">
-                                <lable>Command</lable>
-                                <input type="text" class="form-control" value="!tickets"
+                                <label for="ticket-raffle-cmd">Command</label>
+                                <input id="ticket-raffle-cmd" type="text" class="form-control" value="!tickets"
                                     data-toggle="tooltip" title="Command used to buy tickets. This cannot be changed." disabled/>
                             </div>
 
                             <!-- Eligibility -->
                             <div class="form-group">
-                                <lable>Eligibility</lable>
+                                <label for="ticket-raffle-perm">Eligibility</label>
                                 <select class="form-control" id="ticket-raffle-perm">
                                     <option value="-followers">Followers</option>
                                     <option selected="selected" value="">Everyone</option>
@@ -95,28 +95,28 @@
 
                             <!-- Ticket cost -->
                             <div class="form-group">
-                                <lable>Ticket Cost</lable>
+                                <label for="ticket-raffle-cost">Ticket Cost</label>
                                 <input type="text" class="form-control" id="ticket-raffle-cost" value="1"
                                     data-toggle="tooltip" title="How much each ticket cost."/>
                             </div>
 
                             <!-- Maximum tickets -->
                             <div class="form-group">
-                                <lable>Maximum Allowed Tickets</lable>
+                                <label for="ticket-raffle-max">Maximum Allowed Tickets</label>
                                 <input type="text" class="form-control" id="ticket-raffle-max" value="100"
                                     data-toggle="tooltip" title="How many tickets users are allowed to buy."/>
                             </div>
 
                             <!-- Regular luck -->
                             <div class="form-group">
-                                <lable>Regulars Ticket Multiplier</lable>
+                                <label for="ticket-raffle-reg">Regulars Ticket Multiplier</label>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-reg" value="1"
                                     data-toggle="tooltip" title="Ticket multiplier for regulars. Multiplies the number of tickets the users buys with this number."/>
                             </div>
 
                             <!-- Subscriber luck -->
                             <div class="form-group">
-                                <lable>Subscribers Ticket Multiplier</lable>
+                                <label for="ticket-raffle-sub">Subscribers Ticket Multiplier</label>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-sub" value="1"
                                     data-toggle="tooltip" title="Ticket multiplier for susbcribers. Multiplies the number of tickets the users buys with this number."/>
                             </div>
