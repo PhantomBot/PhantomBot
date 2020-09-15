@@ -829,7 +829,7 @@ public class H2Store extends DataStore {
                 sb.append("?,");
             }
 
-            try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS UNSIGNED) + ? WHERE section = ? AND variable IN (" + sb.deleteCharAt(sb.length() - 1).toString() + ");")) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + ? WHERE section = ? AND variable IN (" + sb.deleteCharAt(sb.length() - 1).toString() + ");")) {
                 statement.setInt(1, Integer.parseUnsignedInt(value));
                 statement.setString(2, section);
                 int i = 3;
