@@ -303,7 +303,7 @@
      */
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
-            blackList = [];
+        blackList = [];
 
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
@@ -328,13 +328,22 @@
 
     /**
      * @function loadWhiteList
+     *
+     * @param {string} url
+     */
+    function addToWhitelist(url) {
+        whiteList.push(new RegExp(url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'));
+    }
+
+    /**
+     * @function loadWhiteList
      */
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
-            whiteList = [];
+        whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            whiteList.push(keys[i] + '');
+            addToWhitelist(keys[i] + '');
         }
     }
 
@@ -497,8 +506,7 @@
     function checkWhiteList(message) {
         function checkLink(link, whiteListItem) {
             var baseLink = link.match(/[^.]*[^/]*/)[0];
-            var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
-            var matches = $.matchAll(link, itemRe);
+            var matches = $.matchAll(link, whiteListItem);
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
                 var matchEnd = matches[k].index + matches[k][0].length;
@@ -1026,7 +1034,7 @@
                 }
                 var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
-                whiteList.push(link);
+                addToWhitelist(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
                 $.log.event('"' + link + '" was added the the whitelist by ' + sender);
             }

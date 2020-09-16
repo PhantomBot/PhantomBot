@@ -40,6 +40,7 @@
      * @returns {boolean}
      */
     function hasLinks(event) {
+        patterns.link.lastIndex = 0;
         return patterns.link.test(event.getMessage());
     }
 
@@ -61,6 +62,7 @@
      * @export $.patternDetector
      */
     function logLastLink(event) {
+        patterns.link.lastIndex = 0;
         $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + patterns.link.exec(event.getMessage())[0]);
     }
 
@@ -190,6 +192,7 @@
      * @returns {boolean}
      */
     function getFakePurge(event) {
+        patterns.fakePurge.lastIndex = 0;
         return patterns.fakePurge.test(String(event.getMessage()).replace(patterns.meCheck, ''));
     }
 
