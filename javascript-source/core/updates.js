@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -554,11 +554,11 @@
 
         $.inidb.RemoveFile('quotes');
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in temp) {
             $.inidb.set('quotes', i, temp[i]);
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
 
         $.inidb.del('modules', './handlers/discordHandler.js');
@@ -643,7 +643,7 @@
         var keys = $.inidb.GetKeyList('points', ''),
             i;
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in keys) {
             if (keys[i].match(/[A-Z]/)) {
                 if ($.inidb.get('points', keys[i]) == null) {
@@ -671,7 +671,7 @@
                 $.consoleLn('[permission] [remove] ' + keys[i]);
             }
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
 
         $.consoleLn('PhantomBot update 2.3.6b completed!');
@@ -828,6 +828,99 @@
         $.inidb.set('updates', 'installedv2.4.2.1', 'true');
     }
 
+    /* version 3.0.1 updates */
+    if (!$.inidb.exists('updates', 'installedv3.0.1') || $.inidb.get('updates', 'installedv3.0.1') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.0.1 updates...');
+
+        if (!$.hasDiscordToken) {
+            while (!$.inidb.exists('discordPermsObj', 'obj')) {
+                try {
+                    java.lang.Thread.sleep(1000);
+                } catch (ex) {
+                    $.log.error('Failed to run update as Discord is not yet connected, please restart PhantomBot...');
+                    return;
+                }
+            }
+
+            var discordCommandPermissions = $.inidb.GetKeyList('discordPermcom', '');
+            var everyoneRoleID = 0;
+            var discordRoles = $.discordAPI.getGuildRoles();
+
+            for (var i = 0; i < discordRoles.size(); i++) {
+                if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
+                    everyoneRoleID = discordRoles.get(i).getId().asString();
+                    break;
+                }
+            }
+
+            for (var i = 0; i < discordCommandPermissions.length; i++) {
+                var permission = $.inidb.get('discordPermcom', discordCommandPermissions[i]);
+                var permissionsObj = {
+                    'roles': [], // Array of string IDs.
+                    'permissions': [] // Array of objects.
+                };
+
+                if ((permission + '').equals('0')) {
+                    permissionsObj.roles.push(everyoneRoleID + '');
+                }
+
+                permissionsObj.permissions.push({
+                    'name': 'Administrator',
+                    'selected': ((permission + '').equals('1') + '')
+                });
+
+                $.inidb.set('discordPermcom', discordCommandPermissions[i], JSON.stringify(permissionsObj));
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.0.1 completed!');
+        $.inidb.set('updates', 'installedv3.0.1', 'true');
+    }
+
+    /* version 3.3.0 updates */
+    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
+
+        $.consoleLn('Updating keywords...');
+        var keys = $.inidb.GetKeyList('keywords', ''),
+            newKeywords = [],
+            key,
+            json,
+            i,
+            strippedKeys = {};
+
+        for (i = 0; i < keys.length; i++) {
+            key = keys[i];
+            json = JSON.parse($.inidb.get('keywords', key));
+            if (json.isRegex) {
+                json.isCaseSensitive = true;
+                key = key.replace('regex:', '');
+                json.keyword = json.keyword.replace('regex:', '');
+            } else {
+                json.isCaseSensitive = false;
+            }
+            if (strippedKeys.hasOwnProperty(key)) {
+                throw 'Could not update keywords list. The keyword "' +  key +
+                      '" exists both as regex and as plain keyword. ' +
+                      "Please resolve the conflict and restart phantombot.";
+            }
+            strippedKeys[key] = true;
+            newKeywords.push({
+                key: key,
+                json: json
+            });
+        }
+
+        $.inidb.RemoveFile('keywords');
+
+        for (i = 0; i < newKeywords.length; i++) {
+            $.inidb.set('keywords', newKeywords[i].key, JSON.stringify(newKeywords[i].json));
+        }
+
+        $.consoleLn('PhantomBot update 3.3.0 completed!');
+        $.inidb.set('updates', 'installedv3.3.0', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName
@@ -877,11 +970,11 @@
     function restoreTableContents(tableName, contents) {
         var i;
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in contents) {
             $.inidb.set(tableName, i, contents[i]);
         }
-        $.inidb.setAutoCommit(true);
+        
         $.inidb.SaveAll(true);
     }
 })();

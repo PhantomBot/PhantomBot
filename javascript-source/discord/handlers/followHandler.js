@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@
             s = $.replace(s, '(name)', follower);
         }
 
-        $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+        $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withColor(20, 184, 102)
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/follow-embed-icon.png')
                     .withTitle($.lang.get('discord.followhandler.follow.embedtitle'))
@@ -118,9 +118,9 @@
                     return;
                 }
 
-                channelName = subAction.replace('#', '').toLowerCase();
+                channelName = $.discord.sanitizeChannelName(subAction);
                 $.inidb.set('discordSettings', 'followChannel', channelName);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.channel.set', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.channel.set', subAction));
             }
         }
     });

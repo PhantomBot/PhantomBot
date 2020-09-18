@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,9 +189,28 @@
                 message = $.replace(message, '(times)', raidObj.totalRaids);
             }
 
-            $.say(message);
+            if (message.match(/\(alert [,.\w\W]+\)/g)) {
+                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
+                $.panelsocketserver.alertImage(filename);
+                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
+                if (message == '') {
+                    return null;
+                }
+            }
 
-            $.autoBump(username);
+            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
+                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return null;
+                }
+                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
+                if (message == '') {
+                    return null;
+                }
+            }
+
+            $.say(message);
         }
 
         // Add reward.
@@ -201,6 +220,8 @@
 
         // Save the raid to the database.
         saveRaidFromUsername(username + '', viewers + '');
+
+        $.autoBump(username, "paid", "raid");
     });
 
     /*

@@ -1,0 +1,104 @@
+<!--
+    Copyright (C) 2016-2020 phantom.bot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Auctions
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="auctionSystemModuleToggle" checked="checked">
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fas fa-sm fa-tachometer-alt ion"></i> Home</a></li>
+            <li>Giveaways</li>
+            <li class="active">Auction</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- Poll menu -->
+            <div class="col-md-8">
+               <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Auction</h3>
+                    </div>
+
+                    <form role="form" id="auctionOptions">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <!-- Minimum bet -->
+                            <div class="form-group">
+                                <lable>Minimum Bets</lable>
+                                <input type="number" min="1" class="form-control" id="auction-bet" value="1"
+                                    data-toggle="tooltip" title="Minimum bets people can place."/>
+                            </div>
+
+                            <!-- Increments -->
+                            <div class="form-group">
+                                <lable>Increments</lable>
+                                <input type="number" min="1" class="form-control" id="auction-inc" value="1"
+                                    data-toggle="tooltip" title="The increments people would use. 5 would allow bets like; 5, 10, 15, 20, 25."/>
+                            </div>
+
+                            <!-- Eligibility -->
+                            <div class="form-group">
+                                <lable>Eligibility</lable>
+                                <select class="form-control" id="auction-perm">
+                                    <option value="subscribers">Subscribers</option>
+                                    <option value="regulars">Regulars</option>
+                                    <option selected="selected" value="viewers">Everyone</option>
+                                </select>
+                            </div>
+
+                            <!-- Timer -->
+                            <div class="form-group">
+                                <lable>Timer (Seconds)</lable>
+                                <input type="number" min="0" class="form-control" id="auction-timer" value="0"
+                                    data-toggle="tooltip" title="How long the auction should be opened for. 0 is until manually closed."/>
+                            </div>
+
+                            <!-- Show results -->
+                            <div class="form-group" style="padding-top: 50px; text-align: center;">
+                                <p style="font-size: 25px;"><b>Top Bidder:</b> <span style="font-size: 20px;" id="auction-top-bidder">PhantomBot</span>
+                                    <b><span style="margin-left: 10%;">Points:</span></b> <span style="font-size: 20px;" id="auction-points">0</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Footer with buttons -->
+                        <div class="box-footer">
+                            <div class="btn-toolbar pull-right">
+                                <button class="btn btn-success" type="button" id="open-or-close-auction"><i class="fas fa-sm fa-unlock-alt"></i>&nbsp; Open</button>
+                                <button class="btn btn-danger" type="button" id="reset-auction"><i class="fas fa-sm fa-trash"></i>&nbsp; Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Twitch chat. -->
+            <div class="col-md-4">
+                <div id="twitch-chat-auction"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- auctions -->
+    <script src="js/pages/giveaways/auction.js"></script>
+</main>

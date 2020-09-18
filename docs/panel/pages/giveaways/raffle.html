@@ -1,0 +1,159 @@
+<!--
+    Copyright (C) 2016-2020 phantom.bot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+	<style>
+		.table>tbody>tr>th {
+			border: none !important;
+		}
+	</style>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title and switch toggle. -->
+        <h1>Raffle
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="raffleModuleToggle" checked="checked">
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fas fa-sm fa-tachometer-alt ion"></i> Home</a></li>
+            <li>Giveaways</li>
+            <li class="active">Raffle</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+        	<!-- Left section -->
+            <div class="col-md-3" id="raffleTable">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Raffle List</h3>
+                    </div>
+
+                    <form role="form" id="raffleListModule">
+                        <!-- Box content -->
+                        <div class="box-body no-padding" style="height: 569px; overflow-x: auto; overflow-y: auto;">
+                            <div id="raffle-list">
+                                <table class="table table-hover table-custom" id="raffle-table" style="width: 100%;">
+                                	<tr>
+                                        <th style="width: 100%;">Username</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Left section -->
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Raffle Options</h3>
+                        <span class="pull-right">
+                        	<a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="Raffle settings" id="raffle-settings">
+                        		<i class="fas fa-sm fa-cogs"></i>
+                        	</a>
+                        </span>
+                    </div>
+
+                    <form role="form" id="raffleModal">
+                        <!-- Box content -->
+                        <div class="box-body" style="padding-bottom: 90px;">
+                        	<!-- Keyword -->
+                            <div class="form-group">
+                                <lable>Keyword</lable>
+                                <input type="text" class="form-control" id="raffle-keyword" placeholder="!enter"
+                                    data-toggle="tooltip" title="Keyword used to enter the raffle. This is not case sensitive."/>
+                            </div>
+
+                            <!-- Cost -->
+                            <div class="row">
+                            	<div class="col-md-8">
+                            		<div class="form-group">
+                            		    <lable id="raffle-cost-title">Cost</lable>
+                            		    <input type="text" class="form-control" id="raffle-cost" value="0"
+                            		        data-toggle="tooltip" title="Cost required to enter the raffle. When using time, it will not be deducted from the user."/>
+                            		</div>
+                            	</div>
+                            	<div class="col-md-4">
+                            		<div class="form-group">
+                            			<lable>Requirement</lable>
+                            			<select class="form-control" id="raffle-req" data-toggle="tooltip" title="If the raffle system should use points or time.">
+  											<option selected="selected" value="-usepoints">Points</option>
+  											<option value="-usetime">Time</option>
+										</select>
+                            		</div>
+                            	</div>
+                            </div>
+
+                            <!-- Eligibility -->
+                            <div class="form-group">
+                            	<lable>Eligibility</lable>
+                            	<select class="form-control" id="raffle-perm">
+  									<option value="-subscribers">Subscribers</option>
+  									<option value="-followers">Followers</option>
+  									<option selected="selected" value="">Everyone</option>
+								</select>
+                            </div>
+
+                            <!-- Timer -->
+                            <div class="form-group">
+                                <lable>Timer (Minutes)</lable>
+                                <input type="number" min="0" class="form-control" id="raffle-timer" value="0"
+                                    data-toggle="tooltip" title="How long the raffle should be opened for. 0 is until manually closed."/>
+                            </div>
+
+                            <!-- Regular luck -->
+                            <div class="form-group">
+                                <lable>Regular Luck</lable>
+                                <input type="number" min="1" max="10" class="form-control" id="raffle-reg" value="1"
+                                    data-toggle="tooltip" title="How many more times a regular is likely to win."/>
+                            </div>
+
+                            <!-- Subscriber luck -->
+                            <div class="form-group">
+                                <lable>Subscriber Luck</lable>
+                                <input type="number" min="1" max="10" class="form-control" id="raffle-sub" value="1"
+                                    data-toggle="tooltip" title="How many more times a subscriber is likely to win."/>
+                            </div>
+                        </div>
+
+                        <!-- Footer with buttons -->
+                        <div class="box-footer">
+                        	<div class="btn-toolbar pull-right">
+                        		<button class="btn btn-success" type="button" id="open-or-close-raffle"><i class="fas fa-sm fa-unlock-alt"></i>&nbsp; Open</button>
+                        		<button class="btn btn-primary" type="button" id="draw-raffle"><i class="fas fa-sm fa-trophy"></i>&nbsp; Draw</button>
+                        	    <button class="btn btn-danger" type="button" id="reset-raffle"><i class="fas fa-sm fa-trash"></i>&nbsp; Reset</button>
+                        	</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right section -->
+            <div class="col-md-3" style="height: 610px;">
+                <div id="raffle-chat"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- raffle -->
+    <script src="js/pages/giveaways/raffle.js"></script>
+</main>

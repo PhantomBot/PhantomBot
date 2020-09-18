@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,7 +201,7 @@
             return timeString;
         }
     }
-    
+
     /**
      * @function getCountString
      * @export $
@@ -488,12 +488,7 @@
             i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
-            $.inidb.setAutoCommit(false);
-            for (i in $.users) {
-                username = $.users[i][0].toLowerCase();
-                $.inidb.incr('time', username, 60);
-            }
-            $.inidb.setAutoCommit(true);
+            $.inidb.IncreaseBatchString('time', '', $.users, '60');
         }
     }, 6e4, 'scripts::systems::timeSystem.js#1');
 
@@ -504,7 +499,7 @@
 
         if (levelWithTime) {
             for (i in $.users) {
-                username = $.users[i][0].toLowerCase();
+                username = $.users[i].toLowerCase();
                 if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && !$.isVIP(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
                     if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
                         $.setUserGroupById(username, regularsGroupId);

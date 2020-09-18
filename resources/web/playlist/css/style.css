@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,24 +132,6 @@ option:hover {
     padding-bottom: 10px;
 }
 
-#requestHistory {
-    display: inline;
-    float: left;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-#queueStatus {
-    display: inline;
-    float: left;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
 #copyright {
     font-family: "Roboto", arial;
     display: inline;
@@ -237,35 +219,6 @@ table {
 }
 
 #songTable th {
-    font-family: "Roboto", Sans-serif;
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-
-#requestHistoryTable tr:nth-child(even) {
-    font-family: "Roboto", Sans-serif;
-    background: #CCC;
-    color: black;
-    font-size: 14px;
-}
-
-#requestHistoryTable tr:nth-child(odd) {
-    font-family: "Roboto", Sans-serif;
-    background: #FFF;
-    color: black;
-    font-size: 14px;
-}
-
-#requestHistoryTable td {
-    font-family: "Roboto", Sans-serif;
-    padding: 5px;
-    text-align: left;
-    vertical-align: middle;
-}
-
-#requestHistoryTable th {
     font-family: "Roboto", Sans-serif;
     padding: 5px;
     text-align: left;

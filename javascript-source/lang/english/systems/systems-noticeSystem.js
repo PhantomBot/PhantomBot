@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ $.lang.register('noticehandler.notice-remove-success', 'Notice removed!');
 $.lang.register('noticehandler.notice-add-success', 'Notice added!');
 $.lang.register('noticehandler.notice-add-usage', 'Usage: !notice add (message)');
 $.lang.register('noticehandler.notice-interval-usage', 'Usage: !notice interval (interval)');
-$.lang.register('noticehandler.notice-interval-404', 'Notice interval needs to be more then 2 minutes.');
+$.lang.register('noticehandler.notice-interval-404', 'Notice interval needs to be more then 5 minutes.');
 $.lang.register('noticehandler.notice-inteval-success', 'Notice interval set!');
 $.lang.register('noticehandler.notice-req-success', 'Notice req message set!');
 $.lang.register('noticehandler.notice-req-usage', 'Usage: !notice req (req messages)');

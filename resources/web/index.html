@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +16,7 @@
 
 <html>
     <head>
-        <title>PhantomBot</title>
+        <title>Kentobot</title>
         <!-- Theme color of the page -->
         <meta name="theme-color" content="#570075">
         <!-- Favicon -->
@@ -35,40 +35,12 @@
         <!-- Header -->
         <header class="header">
             <!-- Header logo -->
-            <img id="logo" src="common/images/logo.png"/>
-
-            <!-- Patreon link -->
-            <span>
-                <a target="_blank" href="https://www.patreon.com/phantombot" id="header-right">
-                    <i data-toggle="tooltip" data-placement="bottom" title="Patreon" style="color: white" class="fab fa-patreon fa-lg" aria-hidden="true"></i>
-                </a>
-            </span>
+            <img id="logo" src="common/images/kentodrum.png"/>
 
             <!-- Discord link -->
             <span>
-                <a target="_blank" href="https://discord.gg/rkPqDuK" id="header-right">
+                <a target="_blank" href="https://discord.gg/ct7SE93" id="header-right">
                     <i data-toggle="tooltip" data-placement="bottom" title="Discord" style="color: white" class="fab fa-discord fa-lg" aria-hidden="true"></i>
-                </a>
-            </span>
-
-            <!-- Twitter link -->
-            <span>
-                <a target="_blank" href="https://twitter.com/PhantomBot" id="header-right">
-                    <i data-toggle="tooltip" data-placement="bottom" title="Twitter" style="color: white" class="fab fa-twitter fa-lg" aria-hidden="true"></i>
-                </a>
-            </span>
-
-            <!-- Blog link -->
-            <span>
-                <a target="_blank" href="https://blog.phantombot.tv/" id="header-right">
-                    <i data-toggle="tooltip" data-placement="bottom" title="Blog" style="color: white" class="fas fa-rss fa-lg" aria-hidden="true"></i>
-                </a>
-            </span>
-
-            <!-- Forum link -->
-            <span>
-                <a target="_blank" href="https://community.phantombot.tv" id="header-right">
-                    <i data-toggle="tooltip" data-placement="bottom" title="Community Forum" style="color: white" class="fab fa-discourse fa-lg" aria-hidden="true"></i>
                 </a>
             </span>
         </header>
@@ -79,7 +51,7 @@
                 <span id="middle">
                     <i id="fontawesome" class="fas fa-desktop" aria-hidden="true"></i>
 
-                    <span>Launch PhantomBot Control Panel</span>
+                    <span>Launch Kentobot Control Panel</span>
                 </span>
 
                 <!-- Pad lock saying that this panel requires a password -->
@@ -92,7 +64,7 @@
                 <span id="middle">
                     <i id="fontawesome" class="fab fa-youtube" aria-hidden="true"></i>
 
-                    <span>Launch PhantomBot YouTube Player</span>
+                    <span>Launch Kentobot Song Player</span>
                 </span>
 
                 <!-- Pad lock saying that this panel requires a password -->
@@ -104,14 +76,14 @@
             <div class="launcher" data-toggle="tooltip" data-placement="right" title="Click to launch the playlist." id="playlist-tab">
                 <span id="middle">
                     <i id="fontawesome" class="fas fa-music" aria-hidden="true"></i>
-                    <span>Launch PhantomBot YouTube Playlist Viewer</span>
+                    <span>Launch Kentobot Song Request Queue Viewer</span>
                 </span>
             </div>
         </div>
 
         <!-- Copyright footer -->
         <footer id="copyright">
-            <a href="https://phantombot.tv" style="color: #6441a5;">phantombot.tv</a> &copy; 2016 - <script>document.write(new Date().getFullYear());</script>
+            Powered By <a href="https://phantombot.github.io/PhantomBot" style="color: #6441a5;">phantom.bot</a> &copy; 2016 - <script>document.write(new Date().getFullYear());</script>
         </footer>
 
         <!-- Load jQuery 1.11.3 -->
@@ -120,35 +92,35 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <!-- Generate the panel links -->
         <script>
-            $(function() {
-                /**
-                 * @function Gets the window URL for a specific path.
-                 *
-                 * @param  {String} path
-                 * @return {String}
-                 */
-                const getWindowUrl = function(path) {
-                    return window.location.protocol + '//' + window.location.host + '/' + path;
-                };
+                $(function () {
+                    /**
+                     * @function Gets the window URL for a specific path.
+                     *
+                     * @param  {String} path
+                     * @return {String}
+                     */
+                    const getWindowUrl = function (path) {
+                        return window.location.protocol + '//' + window.location.host + '/' + path;
+                    };
 
-                // Generate panel tab.
-                $('#panel-tab').wrapInner($('<a/>', {
-                    'href': getWindowUrl('panel')
-                }));
+                    // Generate panel tab.
+                    $('#panel-tab').wrapInner($('<a/>', {
+                        'href': getWindowUrl('panel')
+                    }));
 
-                // Generate YouTube tab.
-                $('#yt-tab').wrapInner($('<a/>', {
-                    'href': getWindowUrl('ytplayer')
-                }));
+                    // Generate YouTube tab.
+                    $('#yt-tab').wrapInner($('<a/>', {
+                        'href': getWindowUrl('ytplayer')
+                    }));
 
-                // Generate playlist tab.
-                $('#playlist-tab').wrapInner($('<a/>', {
-                    'href': getWindowUrl('playlist')
-                }));
+                    // Generate playlist tab.
+                    $('#playlist-tab').wrapInner($('<a/>', {
+                        'href': getWindowUrl('playlist')
+                    }));
 
-                // Start tooltips.
-                $('[data-toggle="tooltip"]').tooltip();
-            });
+                    // Start tooltips.
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
         </script>
     </body>
 </html>

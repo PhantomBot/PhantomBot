@@ -8,7 +8,7 @@ This section is for all IDE's not mentioned in this guide.
 It's very global, so you might need to take some extra steps to get it to work for you.
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
-2. Check out your for and open it in your favorite IDE.
+2. Check out your fork and open it in your favorite IDE.
 2. Set the project Java SDK to [1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 3. Import `build.xml` into your [ANT](http://ant.apache.org/) task manager.
 

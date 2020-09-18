@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@
 $(function () {
     var cluster = null,
             timer = null;
-
-
 
     /*
      * @function Loads the player page.
@@ -233,13 +231,9 @@ $(function () {
             table.find('tr:gt(0)').remove();
 
             for (let i = 0; i < songlist.length; i++) {
-
-                if (songlist[i].shuffle == "true") {
-                    console.log("Song is a shuffle");
-                }
-
                 let row = $('<tr/>');
 
+                // Add position.
                 if (songlist[i].bump == "true") {
                     row.append($('<td/>', {
                         'html': $('<i/>', {
@@ -386,7 +380,6 @@ $(function () {
             document.title = 'Kentobot Player - ' + e.title + ' - ' + e.requester;
 
 
-
             // Update the value under the slider.
             $('#progress-slider-value').html(e.duration);
 
@@ -502,9 +495,6 @@ $(function () {
         player.updateState(2);
         // Skip the song.
         player.skipSong();
-
-        document.title = 'Kentobot Player - ' + player.temp.title + ' - ' + player.temp.requester;
-
     });
 
     // Mute button.
@@ -618,12 +608,6 @@ $(function () {
         player.shufflePlaylist();
     });
 
-    // Queue shuffle button.
-    $('#queue-shuffle-button').on('click', () => {
-        player.shuffleQueue();
-        toastr.info('Toggling shuffle mode');
-    });
-
     // Enable global tooltips.
     $('body').tooltip({
         selector: '[data-toggle="tooltip"]',
@@ -644,4 +628,14 @@ $(function () {
 
     // Set the player size.
     helpers.setPlayerSize();
+    if (helpers.urlIsIP()) {
+        toaster.warning('You may be accessing the YouTube player by using an IP Address in the URL.<br/><br/>'
+                + 'YouTube\'s embed API really hates this and may refuse to work.<br/><br/>You should switch to using a '
+                + 'Hostname, Domain, or Sub-Domain to avoid issues.', 'Potential Conflict Detected',
+                {
+                    timeOut: 60000,
+                    extendedTimeOut: 120000,
+                    closeButton: true
+                });
+    }
 });

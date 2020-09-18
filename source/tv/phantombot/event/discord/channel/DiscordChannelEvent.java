@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
 
 package tv.phantombot.event.discord.channel;
 
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 import tv.phantombot.event.discord.DiscordEvent;
 
 public abstract class DiscordChannelEvent extends DiscordEvent {
@@ -30,7 +30,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
      *
      * @param {IUser} user
      */
-    protected DiscordChannelEvent(IUser user) {
+    protected DiscordChannelEvent(User user) {
         super(user);
     }
 
@@ -40,7 +40,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
      * @param {IUser}    user
      * @param {IChannel} channel
      */
-    protected DiscordChannelEvent(IUser user, IChannel channel) {
+    protected DiscordChannelEvent(User user, Channel channel) {
         super(user, channel);
     }
     
@@ -51,7 +51,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
      * @param {IChannel} channel
      * @param {IMessage} message
      */
-    protected DiscordChannelEvent(IUser user, IChannel channel, IMessage message) {
+    protected DiscordChannelEvent(User user, Channel channel, Message message) {
         super(user, channel, message);
     }
 }

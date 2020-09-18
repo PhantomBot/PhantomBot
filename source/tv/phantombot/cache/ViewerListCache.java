@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class ViewerListCache implements Runnable {
      * @param  {String} channelName
      * @return {Object}
      */
-    public static ViewerListCache instance(String channelName) {
+    public static synchronized ViewerListCache instance(String channelName) {
         if (instance == null) {
             instance = new ViewerListCache(channelName);
         }

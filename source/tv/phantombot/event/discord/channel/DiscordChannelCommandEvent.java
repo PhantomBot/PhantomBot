@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,11 @@
 
 package tv.phantombot.event.discord.channel;
 
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.IChannel;
-
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 import java.util.LinkedList;
 import java.util.List;
-import sx.blah.discord.handle.obj.IMessage;
 
 public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     private final String arguments;
@@ -39,7 +38,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      * @param {String}   arguments
      * @param {boolean}  isAdmin
      */
-    public DiscordChannelCommandEvent(IUser user, IChannel channel, IMessage message, String command, String arguments, boolean isAdmin) {
+    public DiscordChannelCommandEvent(User user, Channel channel, Message message, String command, String arguments, boolean isAdmin) {
         super(user, channel, message);
 
         this.command = command;
@@ -54,7 +53,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      * @return {String[]}
      */
     private String[] parse() {
-        List<String> tempArgs = new LinkedList<String>();
+        List<String> tempArgs = new LinkedList<>();
         Boolean hasQuote = false;
         String tempString = "";
 

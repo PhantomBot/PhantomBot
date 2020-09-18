@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,12 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import tv.phantombot.PhantomBot;
+import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UsernameCache {
@@ -33,7 +33,7 @@ public class UsernameCache {
         return instance;
     }
 
-    private final Map<String, UserData> cache = Maps.newHashMap();
+    private final Map<String, UserData> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
@@ -75,19 +75,19 @@ public class UsernameCache {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
     
     // This will be implemented later
     // For now it's just to keep another class from throwing errors.
-    public JSONObject getUserData(String username) {
+    public JSONObject getUserData(String username) throws JSONException {
         return new JSONObject("");
     }
 
     public String resolve(String username) {
-        return resolve(username, new HashMap<String, String>());
+        return resolve(username, new HashMap<>());
     }
 
     public String resolve(String username, Map<String, String> tags) {

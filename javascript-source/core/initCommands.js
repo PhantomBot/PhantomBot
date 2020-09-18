@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,8 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.enabled', module.getModuleName()));
                     } catch (ex) {
                         $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.404'));
@@ -243,7 +245,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', module.getModuleName()));
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketRaffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {
@@ -286,6 +288,8 @@
                         }
                     } catch (ex) {
                         $.log.error('Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 }
             }
@@ -309,7 +313,7 @@
                     $.bot.modules[module.scriptName].isEnabled = false;
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketRaffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {

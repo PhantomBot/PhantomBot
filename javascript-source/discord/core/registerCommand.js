@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,43 +62,66 @@
      *
      * @export $.discord
      * @param {string} command
-     * @param {int} permmission
+     * @param {JSON} permission
      */
     function setCommandPermission(command, permission) {
         if (command.includes(' ')) {
             if (subCommandExists(command.split(' ')[0], command.split(' ')[1])) {
-                commands[command.split(' ')[0]].subCommand[command.split(' ')[1]].permission = parseInt(permission);
+                commands[command.split(' ')[0]].subCommand[command.split(' ')[1]].permission = getJSONCommandPermission(command, permission);
             }
         } else {
             if (commandExists(command)) {
-                commands[command].permission = parseInt(permission);
+                commands[command].permission = getJSONCommandPermission(command, permission);
             }
         }
     }
 
-    /**
-     * @function setCommandChannel
+    /*
+     * @function getCommandPermission
      *
-     * @export $.discord
-     * @param {string} command
-     * @param {string} channel
-     * @param {boolean} isToRemove
+     * @info Gets the json for the command permission
      */
-    function setCommandChannel(command, channel, isToRemove) {
-        if (commandExists(command)) {
-            if (isToRemove === true) {
-                delete commands[command].channel[channel];
-            } else {
-                commands[command].channel[channel] = channel;
+    function getJSONCommandPermission(commandStr, permission) {
+        // Already JSON return.
+        if (permission.toString().startsWith('{')) {
+            return permission;
+        }
+
+        // The script sometimes load before discord, so add this.
+        while (!$.inidb.exists('discordPermsObj', 'obj')) {
+            try {
+                java.lang.Thread.sleep(1000);
+            } catch (ex) {
+                $.log.error('Failed to set permission on Discord command as Discord is not connected. Please restart PhantomBot.');
+                return;
             }
         }
-    }
 
-    /**
-     * @function clearChannelCommands
-     */
-    function clearChannelCommands(command) {
-        commands[command].channel = [];
+        // Build a new json object for the permissions of this command.
+        var everyoneRoleID = 0;
+        var discordRoles = $.discordAPI.getGuildRoles();
+        var permissionsObj = {
+            'roles': [],
+            'permissions': []
+        };
+
+        for (var i = 0; i < discordRoles.size(); i++) {
+            if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
+                everyoneRoleID = discordRoles.get(i).getId().asString();
+                break;
+            }
+        }
+
+        if ((permission + '').equals('0')) {
+            permissionsObj.roles.push(everyoneRoleID + '');
+        }
+
+        permissionsObj.permissions.push({
+            'name': 'Administrator',
+            'selected': ((permission + '').equals('1') + '')
+        });
+
+        return JSON.stringify(permissionsObj);
     }
 
     /**
@@ -165,7 +188,7 @@
      */
     function getCommandPermission(command) {
         if (commandExists(command)) {
-            return commands[command].permission;
+            return JSON.parse(commands[command].permission);
         }
         return 0;
     }
@@ -180,32 +203,38 @@
      */
     function getSubCommandPermission(command, subCommand) {
         if (commandExists(command) && subCommandExists(command, subCommand)) {
-            return commands[command].subCommand[subCommand].permission;
+            return JSON.parse(commands[command].subCommand[subCommand].permission);
         }
         return 0;
     }
 
+    function updateCommandChannel(command) {
+        if (commandExists(command)) {
+            commands[command].channels = ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : '');
+        }
+    }
+
     /**
-     * @function getCommandChannel
+     * @function getCommandChannelAllowed
      *
      * @export $.discord
      * @param {string} command
+     * @param {string} channelName
+     * @param {string} channelId
      * @return {string}
      */
-    function getCommandChannel(command, channelObj) {
-        if (commandExists(command)) {
-            if (typeof channelObj === 'object') {
-                if (commands[command].channel[channelObj.getName()] === undefined) {
-                    return commands[command].channel[channelObj.getStringID()]
-                } else {
-                    return commands[command].channel[channelObj.getName()];
-                }
-            } else {
-                return commands[command].channel[channelObj];
-            }
+    function getCommandChannelAllowed(command, channelName, channelId) {
+        if (commandExists(command) && commands[command].channels !== '') {
+            var channels = commands[command].channels;
+            var found = channels.indexOf(channelName + ',') === 0 || channels.indexOf(',' + channelName + ',') >= 0
+                    || (channels.indexOf(channelName) === channels.lastIndexOf(',') + 1 && channels.endsWith(channelName))
+                    || channels.indexOf(channelId + ',') === 0 || channels.indexOf(',' + channelId + ',') >= 0
+                    || (channels.indexOf(channelId) === channels.lastIndexOf(',') + 1 && channels.endsWith(channelId));
+            return found;
 
         }
-        return undefined;
+
+        return true;
     }
 
     /**
@@ -232,26 +261,20 @@
      */
     function registerCommand(scriptFile, command, permission) {
         if (!commandExists(command)) {
+            if ($.inidb.exists('discordPermcom', command)) {
+                permission = $.getIniDbString('discordPermcom', command);
+            } else {
+                permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
+            }
 
             commands[command] = {
-                permission: $.getSetIniDbNumber('discordPermcom', command, permission),
+                permission: getJSONCommandPermission(command, permission),
                 cost: ($.inidb.exists('discordPricecom', command) ? $.inidb.get('discordPricecom', command) : 0),
                 alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
-                channel: [],
+                channels: ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : ''),
                 scriptFile: scriptFile,
                 subCommand: {}
             };
-
-            if ($.inidb.exists('discordChannelcom', command)) {
-                var keys = $.inidb.get('discordChannelcom', command).split(', '),
-                    i;
-
-                for (i in keys) {
-                    commands[command].channel[keys[i]] = keys[i];
-                }
-            } else {
-                commands[command].channel['_default_global_'] = '';
-            }
 
 
             if (commands[command].alias !== '') {
@@ -270,9 +293,14 @@
      */
     function registerSubCommand(command, subCommand, permission) {
         if (commandExists(command) && !subCommandExists(command, subCommand)) {
+            if ($.inidb.exists('discordPermcom', command)) {
+                permission = $.getIniDbString('discordPermcom', command);
+            } else {
+                permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
+            }
 
             commands[command].subCommand[subCommand] = {
-                permission: $.getSetIniDbNumber('discordPermcom', (command + ' ' + subCommand), permission)
+                permission: getJSONCommandPermission((command + ' ' + subCommand), permission)
             };
         }
     }
@@ -316,13 +344,12 @@
     $.discord.unregisterCommand = unregisterCommand;
     $.discord.unregisterSubCommand = unregisterSubCommand;
     $.discord.setCommandPermission = setCommandPermission;
-    $.discord.getCommandChannel = getCommandChannel;
-    $.discord.setCommandChannel = setCommandChannel;
+    $.discord.getCommandChannelAllowed = getCommandChannelAllowed;
+    $.discord.updateCommandChannel = updateCommandChannel;
     $.discord.setCommandCost = setCommandCost;
     $.discord.getCommandCost = getCommandCost;
     $.discord.getCommandAlias = getCommandAlias;
     $.discord.setCommandAlias = setCommandAlias;
     $.discord.aliasExists = aliasExists;
     $.discord.removeAlias = removeAlias;
-    $.discord.clearChannelCommands = clearChannelCommands;
 })();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,22 @@
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.disabled', $.username.resolve($.botName)));
                 }
+            }
+
+            /**
+             * @commandpath greeting setdefault - Set the default greeting message
+             */
+            if (action.equalsIgnoreCase('setdefault')) {
+                message = args.splice(1, args.length - 1).join(' ');
+
+                if (!message) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.admin'));
+                    return;
+                }
+
+                $.inidb.set('greeting', 'defaultJoin', message);
+                defaultJoinMessage = message;
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.default.success', defaultJoinMessage));
             }
 
             /**

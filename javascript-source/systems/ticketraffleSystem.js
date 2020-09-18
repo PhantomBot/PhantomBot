@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,7 +178,7 @@
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             totalEntries++;
         }
-
+	price = times;
         if (tags.getTags().containsKey('subscriber') && tags.getTags().get('subscriber').equals('1')) {
             times *= subTMulti;
         } else if ($.isReg(user)) {
@@ -186,7 +186,7 @@
         }
 
         totalTickets += times;
-        $.inidb.decr('points', user, (times * cost));
+        $.inidb.decr('points', user, (price * cost));
         incr(user.toLowerCase(), times);
 
         for (var i = 0; i < times; i++) {

@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Supplier;
-import java.util.Map.Entry;
 
 public class ConfigurationManager {
 
@@ -48,7 +48,7 @@ public class ConfigurationManager {
 
     static Properties getConfiguration() {
         /* List of properties that must exist. */
-        String[] requiredProperties = new String[] { PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER };
+        String[] requiredProperties = new String[]{PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER};
         String requiredPropertiesErrorMessage = "";
 
         /* Properties configuration */
@@ -121,6 +121,18 @@ public class ConfigurationManager {
             com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
             com.gmt2001.Console.err.println("Exiting PhantomBot");
             PhantomBot.exitError();
+        }
+
+        if (!startProperties.getProperty("allownonascii", "false").equalsIgnoreCase("true")) {
+            for (String propertyKey : startProperties.stringPropertyNames()) {
+                String olds = startProperties.getProperty(propertyKey);
+                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+                if (!olds.equals(news)) {
+                    startProperties.setProperty(propertyKey, news);
+                    changed = true;
+                }
+            }
         }
 
         /* Check to see if anything changed */
@@ -207,37 +219,27 @@ public class ConfigurationManager {
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
-     * 
-     * @param properties   the properties object to be modified
+     * Sets a default value to a properties object if the requested property does not exist
+     *
+     * @param properties the properties object to be modified
      * @param propertyName the name of the property, which should be set if null
-     * @param defaultValue the default value, to which the property is set, if the
-     *                     property is missing in the properties object
-     * @param setMessage   the message which will be printed if the value is set to
-     *                     the given default value
-     * @return {@code true} if the value has been set to default, {@code false} if
-     *         the value is already present in the properties object
+     * @param defaultValue the default value, to which the property is set, if the property is missing in the properties object
+     * @param setMessage the message which will be printed if the value is set to the given default value
+     * @return {@code true} if the value has been set to default, {@code false} if the value is already present in the properties object
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, String defaultValue, String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does
-     * not exist
-     * 
-     * @param properties            the properties object to be modified
-     * @param propertyName          the name of the property, which should be
-     *                              generated if null
-     * @param defaultValueGenerator the generating function, which generates the
-     *                              default value, if the property is missing in the
-     *                              properties object
-     * @param generatedMessage      the message which will be printed if the value
-     *                              is generated
-     * @return {@code true} if the value has been generated, {@code false} if the
-     *         value is already present in the properties object and does not have
-     *         to be generated
+     * Sets a default value to a properties object if the requested property does not exist
+     *
+     * @param properties the properties object to be modified
+     * @param propertyName the name of the property, which should be generated if null
+     * @param defaultValueGenerator the generating function, which generates the default value, if the property is missing in the properties object
+     * @param generatedMessage the message which will be printed if the value is generated
+     * @return {@code true} if the value has been generated, {@code false} if the value is already present in the properties object and does not have
+     * to be generated
      */
     private static Boolean setDefaultIfMissing(Properties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
         Boolean changed = false;
@@ -250,14 +252,12 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets a boolean value from the a properties object and prints a message
-     * according to the property name.
-     * 
-     * @param properties   the Properties object to get the boolean value from
+     * Gets a boolean value from the a properties object and prints a message according to the property name.
+     *
+     * @param properties the Properties object to get the boolean value from
      * @param propertyName the name of the property to get
-     * @param defaulValue  the default value of the property
-     * @return the value of the property. If parsing the value to a Boolean fails,
-     *         the default value is returned.
+     * @param defaulValue the default value of the property
+     * @return the value of the property. If parsing the value to a Boolean fails, the default value is returned.
      */
     public static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue) {
         Boolean result = defaulValue;
@@ -276,12 +276,8 @@ public class ConfigurationManager {
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-            com.gmt2001.Console.out.print("If you have any issues please report them on our forum, Tweet at us, or join our Discord!\r\n");
-            com.gmt2001.Console.out.print("Forum: https://community.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Documentation: https://docs.phantombot.tv/\r\n");
-            com.gmt2001.Console.out.print("Twitter: https://twitter.com/PhantomBot/\r\n");
-            com.gmt2001.Console.out.print("Discord: https://discord.gg/rkPqDuK/\r\n");
-            com.gmt2001.Console.out.print("Support PhantomBot on Patreon: https://phantombot.tv/support/\r\n");
+            com.gmt2001.Console.out.print("If you have any issues please join our Discord!\r\n");
+            com.gmt2001.Console.out.print("Discord: https://discord.gg/YKvMd78\r\n");
             com.gmt2001.Console.out.print("\r\n");
 
             final String os = System.getProperty("os.name").toLowerCase();
@@ -289,14 +285,14 @@ public class ConfigurationManager {
             // Detect Windows, MacOS, Linux or any other operating system.
             if (os.startsWith("win")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://community.phantombot.tv/t/windows-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
             } else if (os.startsWith("mac")) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://community.phantombot.tv/t/macos-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
             } else {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://community.phantombot.tv/t/ubuntu-16-04-lts-setup-guide/\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://community.phantombot.tv/t/centos-7-setup-guide/");
+                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
             }
 
             com.gmt2001.Console.out.print("\r\n\r\n\r\n");
@@ -314,7 +310,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
                 com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
                 com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
-                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://twitchapps.com/tmi/\r\n");
+                com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter the bot's OAuth token: ");
 
                 startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
@@ -326,7 +322,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
                 com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
                 com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
-                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.tv/oauth/\r\n");
+                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
                 com.gmt2001.Console.out.print("Please enter your OAuth token: ");
 
                 startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());

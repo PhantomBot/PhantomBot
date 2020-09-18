@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,4 +33,13 @@ public class HttpResponse {
     public int httpCode;
     public boolean success;
     public String exception;
+
+    @Override
+    public String toString() {
+        if (exception != null && !exception.isEmpty()) {
+            return type.name() + " " + url + " {" + post + "} -> EXCEPTION " + exception;
+        }
+
+        return type.name() + " " + url + " {" + post + "} -> " + httpCode + " " + content;
+    }
 }

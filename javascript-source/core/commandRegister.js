@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,6 +158,10 @@
      * @return {String}
      */
     function getCommandScript(command) {
+        if (commands[command] === undefined) {
+            return "Undefined";
+        }
+
         return commands[command].script;
     }
 
@@ -228,7 +232,7 @@
             } else if (commands[command].groupId == 4) {
                 group = 'Donator';
             } else if (commands[command].groupId == 5) {
-                group = 'Hoster';
+                group = 'VIP';
             } else if (commands[command].groupId == 6) {
                 group = 'Regular';
             } else if (commands[command].groupId == 7) {
@@ -278,7 +282,7 @@
             } else if (commands[command].subcommands[subcommand].groupId == 4) {
                 group = 'Donator';
             } else if (commands[command].subcommands[subcommand].groupId == 5) {
-                group = 'Hoster';
+                group = 'VIP';
             } else if (commands[command].subcommands[subcommand].groupId == 6) {
                 group = 'Regular';
             } else if (commands[command].subcommands[subcommand].groupId == 7) {

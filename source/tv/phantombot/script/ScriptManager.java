@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class ScriptManager {
         Script script = scripts.get(scriptFile.toPath().toString());
         try {
             script.reload(false);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             if (scriptFile.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
             } else {

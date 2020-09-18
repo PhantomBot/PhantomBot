@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('ytplayer.client.404', 'The music player is currently not being used, and song requests are closed!');
+$.lang.register('ytplayer.client.404', 'The YouTube Player is currently not being used, and song requests are disabled!');
 $.lang.register('ytplayer.playlist.404', 'Cannot find playlist [$1]');
 $.lang.register('ytplayer.announce.nextsong', '[\u266B] Now Playing [$1] Requester: $2');
 
 $.lang.register('ytplayer.console.client.connected', '[\u266B] YouTube Player is connected! [\u266B]');
 $.lang.register('ytplayer.console.client.disconnected', '[\u266B] YouTube Player is disconnected! [\u266B]');
 
-$.lang.register('ytplayer.songrequests.enabled', '[\u266B] Song requests are open! [\u266B]');
-$.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have been closed! [\u266B]');
+$.lang.register('ytplayer.songrequests.enabled', '[\u266B] Song requests are enabled! [\u266B]');
+$.lang.register('ytplayer.songrequests.disabled', '[\u266B] Song requests have been disabled! [\u266B]');
 
 $.lang.register('ytplayer.command.volume.get', 'Current YouTube Player Volume: $1');
 $.lang.register('ytplayer.command.volume.set', 'Set YouTube Player Volume: $1');
@@ -74,9 +74,7 @@ $.lang.register('ytplayer.command.findsong.failed', 'Cannot find song with a tit
 $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. Searches song requests if any exist, else current playlist, for first match.');
 
 $.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
-$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue at position $2.  There is $3 worth of music in the queue');
-$.lang.register('ytplayer.command.songrequest.success.shuffle', 'Your song "$1" has been added to the queue');
-$.lang.register('ytplayer.command.songrequest.success.sotn', 'Your song "$1" has been added to the queue.  It has been bumped for your Song of the Night win last stream!');
+$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');
@@ -97,7 +95,6 @@ $.lang.register('ytplayer.command.ytp.usage', 'Usage: !ytp [togglecconly | toggl
 $.lang.register('ytplayer.command.wrongsong.success', 'Removed last requested song: [$1]');
 $.lang.register('ytplayer.command.wrongsong.404', 'No songs found');
 $.lang.register('ytplayer.command.wrongsong.user.success', 'Removed last requested song from $1: [$2]');
-$.lang.register('ytplayer.command.wrongsong.index.success', 'Removed song at position $1: [$2]');
 $.lang.register('ytplayer.command.wrongsong.usage', 'Usage: !wrongsong [user] [username]. Without [user] deletes your last request.');
 
 $.lang.register('ytplayer.command.nextsong.single', 'Next Song: $1');
@@ -107,11 +104,11 @@ $.lang.register('ytplayer.command.nextsong.usage', 'Usage: !nextsong [index numb
 $.lang.register('ytplayer.command.nextsong.404', 'Song request queue is empty.');
 $.lang.register('ytplayer.command.nextsong.range.404', 'No songs found in that range.');
 
-$.lang.register('ytplayer.requestsong.error.maximum.concurrent.requests', 'Only $1 request allowed in the queue at time');
+$.lang.register('ytplayer.requestsong.error.maxrequests', 'Exceeds maximum concurrent requests');
 $.lang.register('ytplayer.requestsong.error.disabled', 'Song requests are disabled');
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');
 $.lang.register('ytplayer.requestsong.error.exists', 'Song is already in queue');
-$.lang.register('ytplayer.requestsong.error.maxlength', 'Song length is $1.  Please keep songs under $2');
+$.lang.register('ytplayer.requestsong.error.maxlength', 'Song length is $1 and exceeds maximum length');
 
 $.lang.register('ytplayer.command.importpl.file.start', 'Import has started, please wait...');
 $.lang.register('ytplayer.command.importpl.file.success', 'Import Complete! Successfully imported $1 songs and failed to import $2 songs from $3 to playlist $4');
@@ -141,43 +138,3 @@ $.lang.register('ytplayer.command.skip.delay', 'Skip is not allowed for a moment
 $.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
 $.lang.register('ytplayer.command.votecount.negative', 'The number of votes needed must be positive!');
 $.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');
-
-// Custom
-$.lang.register('ytplayer.requestsong.error.maximum.total.requests', 'Only $1 songs can be requested per stream per user');
-$.lang.register('ytplayer.command.songcount', 'Kent has played $1 songs');
-$.lang.register('ytplayer.command.queuelimit.usage', 'Usage: !queuelimit [off | max requests]');
-$.lang.register('ytplayer.command.queuelimit.success', 'Maximum number of requests in the queue set to $1');
-$.lang.register('ytplayer.command.queuelimit.success.off', 'Queue limit has been turned off');
-$.lang.register('ytplayer.command.requestlimit.usage', 'Usage: !requestlimit [off | max requests]');
-$.lang.register('ytplayer.command.requestlimit.success', 'Maximum number of requests per stream set to $1');
-$.lang.register('ytplayer.command.requestlimit.success.off', 'Request limit has been turned off');
-$.lang.register('ytplayer.command.requestlimit.length', 'Please refrain from requesting songs that are at over $1 minutes long. If one is requested, it will get removed and you can request a shorter song!')
-
-$.lang.register('ytplayer.command.shuffle', 'Next up is request #$1 - $2, requested by $3');
-
-$.lang.register('ytplayer.command.position.success', 'Your request is at position $1.  $2');
-$.lang.register('ytplayer.command.position.none', 'You do not have any requests in the queue');
-$.lang.register('ytplayer.command.queue.size', 'There are $1 requests currently in the queue');
-
-$.lang.register('ytplayer.queue.empty', 'The queue is empty');
-$.lang.register('ytplayer.command.position.shuffle.on', 'Now shuffling the queue');
-$.lang.register('ytplayer.command.position.shuffle.off', 'Now playing the queue in order');
-$.lang.register('ytplayer.command.position.shuffle', 'The queue is in shuffle mode');
-$.lang.register('ytplayer.command.position.shuffle.disabled', 'The queue is not in shuffle mode. Usage: !musicplayer toggleshuffle');
-
-$.lang.register('ytplayer.command.edit.usage', 'Usage: !edit [YouTube ID | YouTube link | search string]');
-$.lang.register('ytplayer.command.edit.success', 'Your request has been changed to "$1"');
-$.lang.register('ytplayer.command.edit.404', 'You do not have a song in the queue');
-$.lang.register('ytplayer.command.edit.closed', 'Requests are closed and your request could not be changed');
-$.lang.register('ytplayer.command.edit.mod.usage', 'Usage: !edit user [username] [YouTube ID | YouTube link | search string]');
-
-
-$.lang.register('ytplayer.startstream.requests.open', 'Request queue is open');
-$.lang.register('ytplayer.startstream.clearhistory', 'Clearing song history');
-$.lang.register('ytplayer.startstream.shuffle.off', 'Setting the play mode to sequential');
-$.lang.register('ytplayer.startstream.shuffle.on', 'Setting the play mode to shuffle');
-
-$.lang.register('ytplayer.discord.save', '$1, requested by $2 $3');
-$.lang.register('ytplayer.discord.save.history', 'Saving request to Discord - $1 requested by $2');
-
-$.lang.register('ytplayer.autobump.sub', "Your song is automatically getting bumped for your sub!");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,12 @@
  * @author ScaniaTV
  */
 
-$(function () {
-    var socket = new WebSocket((getProtocol() == 'https://' ? 'wss://' : 'ws://') + window.location.host.split(':')[0] + ':' + getPlayerPort()),
-            listeners = [],
-            player = {},
-            hasAPIKey = true,
-            secondConnection = false;
+$(function() {
+    var socket = new WebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer'),
+        listeners = [],
+        player = {},
+        hasAPIKey = true,
+        secondConnection = false;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -150,16 +150,6 @@ $(function () {
         // Update the data.
         sendToSocket({
             command: 'togglerandom'
-        });
-    };
-
-    /*
-     * @function Toggles shuffle on the queue
-     */
-    player.shuffleQueue = () => {
-        // Update the data.
-        sendToSocket({
-            command: 'toggleshuffle'
         });
     };
 
@@ -335,6 +325,7 @@ $(function () {
      */
     socket.onclose = (e) => {
         console.error('Connection lost with the websocket.');
+
         if (secondConnection) {
             toastr.error('PhantomBot has closed the WebSocket.', '', {timeOut: 0});
         } else {
@@ -349,12 +340,19 @@ $(function () {
         try {
             let message = JSON.parse(e.data);
 
+            if (message.ping !== undefined) {
+                sendToSocket({
+                    pong: "pong"
+                });
+                return;
+            }
+
             // Check this message here before doing anything else.
             if (message.secondconnection !== undefined) {
                 if (message.secondconnection === true) {
                     secondConnection = true;
                     toastr.error('PhantomBot rejected the connection due to a player window already being open.', '',
-                            {timeOut: 0, extendedTimeOut: 0});
+                                 {timeOut: 0, extendedTimeOut: 0});
                     console.error('Only one instance allowed.');
                 }
                 return;
@@ -374,9 +372,9 @@ $(function () {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
                     toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
-                            '<a href="https://community.phantombot.tv/t/acquire-youtube-api-key/222">here' +
-                            '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
-                            {timeOut: 0, extendedTimeOut: 0});
+                                 '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/youtubesetup">here' +
+                                 '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
+                                 {timeOut: 0, extendedTimeOut: 0});
                 }
                 return;
             }
@@ -415,8 +413,6 @@ $(function () {
             console.error('Failed to parse message from socket: ' + ex.message);
         }
     }
-
-
 
     // Make the player object global.
     window.player = player;

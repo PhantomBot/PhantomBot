@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,12 +26,12 @@
 
     <!-- Main content -->
     <section class="content">
-        <div class="box box-solid">
+    	<div class="box box-solid">
             <div class="box-header with-border">
-                <label class="switch" data-toggle="tooltip" title="Module toggle">
-                    <input type="checkbox" id="dualStreamModuleToggle" checked="true">
-                    <span class="slider round"></span>
-                </label>
+            	<label class="switch" data-toggle="tooltip" title="Module toggle">
+  					<input type="checkbox" id="dualStreamModuleToggle" checked="true">
+  					<span class="slider round"></span>
+				</label>
 
                 <h3 class="box-title">Dual Stream</h3>
             </div>
@@ -43,12 +43,12 @@
                     <div class="form-group" style="margin-top: 30px;">
                         <label>Dual Stream URL</label>
                         <div class="input-group">
-                            <span class="input-group-addon" id="multi-main">http://kadgar.net/live/</span>
+                            <span class="input-group-addon" id="multi-main">https://multistre.am/</span>
                             <input type="text" class="form-control" id="multi-channels" placeholder="PhantomBot"
-                                   data-toggle="tooltip" title="Channels to be in the multi Twitch URL. Separate each channel with a /" onkeypress="return event.which !== 13;">
+                                data-toggle="tooltip" title="Channels to be in the multi Twitch URL. Separate each channel with a /" onkeypress="return event.which !== 13;">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-primary btn-flat" id="dualstream-copy-btn"
-                                        data-toggle="tooltip" title="Copy the current multi stream link.">Copy</button>
+                                    data-toggle="tooltip" title="Copy the current multi stream link.">Copy</button>
                             </span>
                         </div>
                     </div>
@@ -58,5 +58,5 @@
     </section>
 
     <!-- dualstream -->
-    <script src="panel/js/pages/extra/dualstream.js"></script>
+    <script src="/panel/js/pages/extra/dualstream.js"></script>
 </main>

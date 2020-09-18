@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2018 phantombot.tv
+    Copyright (C) 2016-2020 phantom.bot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,13 @@
 <main>
     <!-- Header -->
     <section class="content-header">
-        <h1>Currency</h1>
+        <h1>Currency
+        <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="pointsModuleToggle" checked="true">
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
         <ol class="breadcrumb">
             <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
             <li>Loyalty</li>
@@ -25,7 +31,7 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" id="pointsModule">
         <div class="row">
             <!-- Left section -->
             <section class="col-lg-6">
@@ -47,7 +53,7 @@
                                                 <lable>Currency Message</lable>
                                                 <input type="text" class="form-control" id="points-message" data-toggle="tooltip"
                                                     title="Message said in chat when someone uses the !points command. Tags: (userprefix), (user), (points),
-                                                        (pointsname), (pointstring), (time), and (rank)"/>
+                                                        (pointsname), (pointsstring), (time), and (rank)"/>
                                             </div>
                                         </div>
                                     </div>
@@ -399,5 +405,5 @@
     </section>
 
     <!-- currency -->
-    <script src="panel/js/pages/loyalty/currency.js"></script>
+    <script src="/panel/js/pages/loyalty/currency.js"></script>
 </main>

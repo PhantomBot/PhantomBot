@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
             $.inidb.set('panelstats', 'gameCount', 1);
             $.inidb.del('streamInfo', 'gamesPlayed');
         }
+        $.inidb.set('streamInfo', 'downtime', String($.systemTime()));
     });
 
     /**
@@ -159,7 +160,7 @@
             return '';
         }
     }
-    
+
     /**
      * @function getLogo
      * @export $
@@ -216,6 +217,7 @@
             var uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
+                $.consoleLn("Fallback uptime");
                 var stream = $.twitch.GetStream(channelName),
                     now = new Date(),
                     createdAtDate,
@@ -449,7 +451,7 @@
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.log.error('Failed to change the game. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
+            $.log.error('Failed to change the game. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }
@@ -478,7 +480,7 @@
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
+            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }
@@ -501,7 +503,7 @@
             $.twitchcache.setCommunities(communities);
             $.inidb.set('streamInfo', 'communities', communities.join(', '));
         } else {
-            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.tv/oauth');
+            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }

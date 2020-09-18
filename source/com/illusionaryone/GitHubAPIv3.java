@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 import tv.phantombot.RepoVersion;
@@ -41,11 +42,15 @@ import org.json.JSONObject;
  */
 public class GitHubAPIv3 {
 
-    private static final GitHubAPIv3 instance = new GitHubAPIv3();
+    private static GitHubAPIv3 instance;
     private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
     private static final int iHTTPTimeout = 2 * 1000;
 
-    public static GitHubAPIv3 instance() {
+    public static synchronized GitHubAPIv3 instance() {
+        if (instance == null) {
+            instance = new GitHubAPIv3();
+        }
+        
         return instance;
     }
 
@@ -71,7 +76,7 @@ public class GitHubAPIv3 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -82,7 +87,7 @@ public class GitHubAPIv3 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) {
+    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -129,6 +134,7 @@ public class GitHubAPIv3 {
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
             com.gmt2001.Console.err.println("GitHubv3API::readJsonFromUrl::Exception: " + ex.getMessage());
@@ -150,7 +156,7 @@ public class GitHubAPIv3 {
      *
      * @return  JSONObject  JSONObject from GitHub
      */
-    public JSONObject GetReleases() {
+    public JSONObject GetReleases() throws JSONException {
         return readJsonFromUrl(sAPIURL + "/releases", true);
     }
 
@@ -159,7 +165,7 @@ public class GitHubAPIv3 {
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
-    public String[] CheckNewRelease() {
+    public String[] CheckNewRelease() throws JSONException {
         JSONObject jsonObject = GetReleases();
         JSONArray jsonArray = jsonObject.getJSONArray("array");
         if (!jsonArray.getJSONObject(0).has("tag_name")) {
@@ -173,11 +179,43 @@ public class GitHubAPIv3 {
         if (!jsonArray.getJSONObject(0).has("assets")) {
             return null;
         }
-        JSONArray assetsArray = jsonArray.getJSONObject(0).getJSONArray("assets");
-        if (!assetsArray.getJSONObject(0).has("browser_download_url")) {
-            return null;
+
+        String os = "";
+        String osname = System.getProperty("os.name").toLowerCase();
+
+        if (osname.contains("win")) {
+            os = "-win";
+        } else if (osname.contains("mac")) {
+            os = "-mac";
+        } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
+            if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
+                os = "-arm";
+            } else {
+                os = "-lin";
+            }
         }
-        return new String[] { tagName, assetsArray.getJSONObject(0).getString("browser_download_url") };
+
+        JSONArray assetsArray = jsonArray.getJSONObject(0).getJSONArray("assets");
+        Pattern p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
+        int i;
+        boolean found = false;
+        for (i = 0; i < assetsArray.length(); i++) {
+            if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip", Pattern.CASE_INSENSITIVE);
+            for (i = 0; i < assetsArray.length(); i++) {
+                if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
+                    break;
+                }
+            }
+        }
+
+        return new String[] { tagName, assetsArray.getJSONObject(i).getString("browser_download_url") };
     }
 
 }

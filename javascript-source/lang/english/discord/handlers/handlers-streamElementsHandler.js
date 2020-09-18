@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,5 +20,5 @@ $.lang.register('discord.streamelementshandler.toggle', 'StreamElements donation
 $.lang.register('discord.streamelementshandler.message.usage', 'Usage: !streamelementshandler message [message] - Tags: (name) (amount) (currency) (message)');
 $.lang.register('discord.streamelementshandler.message.set', 'StreamElements donation message set to: $1');
 $.lang.register('discord.streamelementshandler.channel.usage', 'Usage: !streamelementshandler channel [channel name]');
-$.lang.register('discord.streamelementshandler.channel.set', 'StreamElements donation annoucements will now be made in channel #$1');
+$.lang.register('discord.streamelementshandler.channel.set', 'StreamElements donation annoucements will now be made in channel $1');
 $.lang.register('discord.streamelementshandler.embed.title', 'New Tip!');

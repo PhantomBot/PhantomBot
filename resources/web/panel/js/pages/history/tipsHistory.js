@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ $(function() {
 								json.name,
 								helpers.getPaddedDateString(new Date(parseInt(json.created_at) * 1e3).toLocaleString()),
 								json.currency + ' ' + parseFloat(json.amount).toFixed(2),
-								'StreamLabs'
+								'StreamLabs',
+								parseInt(json.created_at) * 1e3
 							]);
 							break;
 						case json.parameters !== undefined:
@@ -45,7 +46,8 @@ $(function() {
 								json.parameters.username,
 								helpers.getPaddedDateString(new Date(json.created_at.substring(0, json.created_at.indexOf('+'))).toLocaleString()), // We remove the +0200 because Safari doesn't like it.
 								json.parameters.currency + ' ' + parseFloat(json.parameters.amount).toFixed(2),
-								'TipeeeStream'
+								'TipeeeStream',
+								new Date(json.created_at.substring(0, json.created_at.indexOf('+'))).getTime()
 							]);
 							break;
 						case json.createdAt !== undefined && json.donation !== undefined:
@@ -53,7 +55,8 @@ $(function() {
 								json.donation.user.username,
 								helpers.getPaddedDateString(new Date(json.createdAt).toLocaleString()),
 								json.donation.currency + ' ' + parseFloat(json.donation.amount).toFixed(2),
-								'StreamElements'
+								'StreamElements',
+								new Date(json.createdAt).getTime()
 							]);
 							break;
 						case json.user !== undefined && json.user.name !== undefined:
@@ -61,7 +64,8 @@ $(function() {
 								json.user.name,
 								helpers.getPaddedDateString(new Date(json.date).toLocaleString()),
 								json.currencyCode + ' ' + parseFloat(json.amount).toFixed(2),
-								'StreamTip'
+								'StreamTip',
+								new Date(json.date).getTime()
 							]);
 							break;
 					}
@@ -81,9 +85,10 @@ $(function() {
     		],
 			'columns': [
 				{ 'title': 'Username' },
-				{ 'title': 'Date', 'orderData': [1] },
+				{ 'title': 'Date', 'orderData': [4] },
 				{ 'title': 'Amount' },
-				{ 'title': 'Tipping Service' }
+				{ 'title': 'Tipping Service' },
+				{ 'visible': false }
 			]
 		});
 	});

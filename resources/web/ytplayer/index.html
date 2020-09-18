@@ -1,5 +1,5 @@
 <!--
-  Copyright (C) 2016-2018 phantombot.tv
+  Copyright (C) 2016-2020 phantom.bot
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
         <!-- Meta data -->
         <meta charset="utf-8">
         <!-- Page title -->
-        <title>Kentobot YouTube Player</title>
+        <title>Kentobot Song Request Player</title>
         <!-- Load Bootstrap 4.0 -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
         <!-- Load Fontawesome 5.0.4 -->
@@ -70,11 +70,11 @@
                                                 <i class="fas fa-play" id="play-pause-button"></i>
                                             </button>
                                             <!-- Next song button -->
-                                            <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next song">
+                                            <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Skip song">
                                                 <i class="fas fa-fast-forward"></i>
                                             </button>
                                             <!-- Add to playlist button -->
-                                            <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Song of the Night Contender">
+                                            <button type="button" class="btn btn-secondary btn-sm" id="fav-button" data-toggle="tooltip" title="Add to playlist (steal song)">
                                                 <i class="fas fa-star"></i>
                                             </button>
                                             <!-- delete from playlist button -->
@@ -130,14 +130,6 @@
                                     <button type="button" class="btn btn-secondary btn-sm" id="queue-add-song-button" data-toggle="tooltip" title="Add song">
                                         <i class="fas fa-plus"></i>
                                     </button>
-                                    <!-- Shuffle button -->
-                                    <button type="button" class="btn btn-secondary btn-sm" id="queue-shuffle-button" data-toggle="tooltip" title="Shuffle songs">
-                                        <i class="fas fa-random"></i>
-                                    </button>
-                                    <!-- Next song button -->
-                                    <!-- <button type="button" class="btn btn-secondary btn-sm" id="skip-button" data-toggle="tooltip" title="Next random song">
-                                        <i class="fas fa-fast-forward"></i>
-                                    </button> -->
                                     <!-- Settings button -->
                                     <button type="button" class="btn btn-secondary btn-sm" id="settings-button" data-toggle="tooltip" title="Settings">
                                         <i class="fas fa-cog"></i>
@@ -163,6 +155,7 @@
                                 </table>
                             </div>
                         </div>
+
                         <!-- Playlist -->
                         <div class="playlist-section">
                             <!-- Header with buttons -->
@@ -198,15 +191,13 @@
                                 </table>
                             </div>
                         </div>
-                        <!-- Playlist -->
-
                     </section>
                 </div>
             </div>
 
             <!-- Copyright bar -->
             <footer class="copyright">
-                <a href="https://phantombot.tv">PhantomBot</a> &copy; 2016 -
+                <a href="https://phantombot.github.io/PhantomBot">PhantomBot</a> &copy; 2016 -
                 <script>
                     document.write(new Date().getFullYear());
                 </script>

@@ -1,0 +1,146 @@
+<!--
+    Copyright (C) 2016-2020 phantom.bot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <style>
+        .table>tbody>tr>th {
+            border: none !important;
+        }
+    </style>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title and switch toggle. -->
+        <h1>Ticket Raffle
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="ticketRaffleModuleToggle" checked="checked">
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fas fa-sm fa-tachometer-alt ion"></i> Home</a></li>
+            <li>Giveaways</li>
+            <li class="active">Ticket Raffle</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- Left section -->
+            <div class="col-md-3" id="ticketRaffleTable">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Ticket Raffle List</h3>
+                    </div>
+
+                    <form role="form" id="ticketRaffleListModule">
+                        <!-- Box content -->
+                        <div class="box-body no-padding" style="height: 569px; overflow-x: auto; overflow-y: auto;">
+                            <div id="raffle-list">
+                                <table class="table table-hover table-custom" id="ticket-raffle-table" style="width: 100%;">
+                                    <tr>
+                                        <th style="width: 80%;">Username</th>
+                                        <th style="width: 20%;">Tickets</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Left section -->
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Ticket Raffle Options</h3>
+                        <span class="pull-right">
+                            <a href="javascript:void(0)" class="text-muted" data-toggle="tooltip" title="Ticket Raffle settings" id="ticket-raffle-settings">
+                                <i class="fas fa-sm fa-cogs"></i>
+                            </a>
+                        </span>
+                    </div>
+
+                    <form role="form" id="ticketRaffleModal">
+                        <!-- Box content -->
+                        <div class="box-body" style="padding-bottom: 90px;">
+                            <!-- Command -->
+                            <div class="form-group">
+                                <lable>Command</lable>
+                                <input type="text" class="form-control" value="!tickets"
+                                    data-toggle="tooltip" title="Command used to buy tickets. This cannot be changed." disabled/>
+                            </div>
+
+                            <!-- Eligibility -->
+                            <div class="form-group">
+                                <lable>Eligibility</lable>
+                                <select class="form-control" id="ticket-raffle-perm">
+                                    <option value="-followers">Followers</option>
+                                    <option selected="selected" value="">Everyone</option>
+                                </select>
+                            </div>
+
+                            <!-- Ticket cost -->
+                            <div class="form-group">
+                                <lable>Ticket Cost</lable>
+                                <input type="text" class="form-control" id="ticket-raffle-cost" value="1"
+                                    data-toggle="tooltip" title="How much each ticket cost."/>
+                            </div>
+
+                            <!-- Maximum tickets -->
+                            <div class="form-group">
+                                <lable>Maximum Allowed Tickets</lable>
+                                <input type="text" class="form-control" id="ticket-raffle-max" value="100"
+                                    data-toggle="tooltip" title="How many tickets users are allowed to buy."/>
+                            </div>
+
+                            <!-- Regular luck -->
+                            <div class="form-group">
+                                <lable>Regulars Ticket Multiplier</lable>
+                                <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-reg" value="1"
+                                    data-toggle="tooltip" title="Ticket multiplier for regulars. Multiplies the number of tickets the users buys with this number."/>
+                            </div>
+
+                            <!-- Subscriber luck -->
+                            <div class="form-group">
+                                <lable>Subscribers Ticket Multiplier</lable>
+                                <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-sub" value="1"
+                                    data-toggle="tooltip" title="Ticket multiplier for susbcribers. Multiplies the number of tickets the users buys with this number."/>
+                            </div>
+                        </div>
+
+                        <!-- Footer with buttons -->
+                        <div class="box-footer">
+                            <div class="btn-toolbar pull-right">
+                                <button class="btn btn-success" type="button" id="ticket-open-or-close-raffle"><i class="fas fa-sm fa-unlock-alt"></i>&nbsp; Open</button>
+                                <button class="btn btn-primary" type="button" id="ticket-draw-raffle"><i class="fas fa-sm fa-trophy"></i>&nbsp; Draw</button>
+                                <button class="btn btn-danger" type="button" id="ticket-reset-raffle"><i class="fas fa-sm fa-trash"></i>&nbsp; Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right section -->
+            <div class="col-md-3" style="height: 610px;">
+                <div id="ticket-raffle-chat"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- raffle -->
+    <script src="js/pages/giveaways/ticketRaffle.js"></script>
+</main>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,18 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class CustomAPI {
-    private static final CustomAPI instance = new CustomAPI();
+    private static CustomAPI instance;
 
     /*
      * Method to the this instance.
      *
      * @return {Object}
      */
-    public static CustomAPI instance() {
+    public static synchronized CustomAPI instance() {
+        if (instance == null) {
+            instance = new CustomAPI();
+        }
+        
         return instance;
     }
 
@@ -51,7 +55,7 @@ public class CustomAPI {
      * @param  {String} url
      * @return {JSONObject}
      */
-    public JSONObject getJSON(String url) {
+    public JSONObject getJSON(String url) throws JSONException {
         try {
             HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
             if (data.success) {

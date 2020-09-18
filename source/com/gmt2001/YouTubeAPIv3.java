@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ import tv.phantombot.PhantomBot;
  */
 public class YouTubeAPIv3 {
 
-    private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
+    private static YouTubeAPIv3 instance;
     private String apikey = "";
 
     private enum request_type {
@@ -55,7 +55,11 @@ public class YouTubeAPIv3 {
         GET, POST, PUT, DELETE
     };
 
-    public static YouTubeAPIv3 instance() {
+    public static synchronized YouTubeAPIv3 instance() {
+        if (instance == null) {
+            instance = new YouTubeAPIv3();
+        }
+        
         return instance;
     }
 
@@ -81,7 +85,7 @@ public class YouTubeAPIv3 {
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
                                        String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) {
+                                       String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -94,7 +98,7 @@ public class YouTubeAPIv3 {
     @SuppressWarnings( {
         "null", "SleepWhileInLoop", "UseSpecificCatch"
     })
-    private JSONObject GetData(request_type type, String urlAddress) {
+    private JSONObject GetData(request_type type, String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
         InputStream inputStream = null;
         URL urlRaw;
@@ -168,7 +172,7 @@ public class YouTubeAPIv3 {
         this.apikey = apikey;
     }
 
-    public String[] SearchForVideo(String q) {
+    public String[] SearchForVideo(String q) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + q + "]");
 
         if (q.contains("v=") | q.contains("?v=")) {
@@ -181,29 +185,29 @@ public class YouTubeAPIv3 {
             q = matcher.group(1);
         }
 
-        JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
-        if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
-            if (j.toString().contains("Unauthorized")) {
-                com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
-
-                return new String[] { q, "Video Marked Private", "" };
-            }
-
-            if (j.getInt("_http") == 200) {
-                try {
-                    com.gmt2001.Console.debug.println("URL Check Success");
-
-                    String a = j.getString("title");
-                    return new String[] { q, a, "" };
-                } catch (Exception e) {
-                    com.gmt2001.Console.debug.println("Exception: " + e.getMessage());
-
-                    return new String[] { "", "", "" };
-                }
-            }
-        } else {
-            q = q.replaceAll("[^a-zA-Z0-9 ]", "");
-            q = q.replace(" ", "%20");
+//        JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
+//        if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
+//            if (j.toString().contains("Unauthorized")) {
+//                com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
+//
+//                return new String[] { q, "Video Marked Private", "", "" };
+//            }
+//
+//            if (j.getInt("_http") == 200) {
+//                try {
+//                    com.gmt2001.Console.debug.println("URL Check Success");
+//
+//                    String a = j.getString("title");
+//                    return new String[] { q, a, "", "" };
+//                } catch (Exception e) {
+//                    com.gmt2001.Console.debug.println("Exception: " + e.getMessage());
+//
+//                    return new String[] { "", "", "", "" };
+//                }
+//            }
+//        } else {
+//            q = q.replaceAll("[^a-zA-Z0-9 ]", "");
+//            q = q.replace(" ", "%20");
 
             JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {
@@ -213,9 +217,12 @@ public class YouTubeAPIv3 {
                     if (pageInfo.getInt("totalResults") == 0) {
                         com.gmt2001.Console.debug.println("Search API Called: No Results");
 
-                        return new String[] { q, "No Search Results Found", "" };
+                        return new String[] { q, "No Search Results Found", "", "", j2.toString() };
                     }
-
+                    
+//                    com.gmt2001.Console.debug.println("JSON: " + j2.toString(2));
+//                    com.gmt2001.Console.err.println("JSON: " + j2.toString(2));
+                    
                     JSONArray a = j2.getJSONArray("items");
                     if (a.length() > 0) {
                         JSONObject it = a.getJSONObject(0);
@@ -225,30 +232,30 @@ public class YouTubeAPIv3 {
 
                         com.gmt2001.Console.debug.println("Search API Success");
 
-                        return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle") };
+                        return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle"), j2.getString("regionCode") };
                     } else {
                         com.gmt2001.Console.debug.println("Search API Fail: Length == 0");
 
-                        return new String[] { "", "", "" };
+                        return new String[] { "", "", "", "" };
                     }
                 } else {
                     com.gmt2001.Console.debug.println("Search API Fail: HTTP Code " + j2.getInt("_http"));
 
-                    return new String[] { "", "", "" };
+                    return new String[] { "", "", "", "" };
                 }
             } else {
                 com.gmt2001.Console.debug.println("Search API Fail: Returned Failure");
 
-                return new String[] { "", "", "" };
+                return new String[] { "", "", "", "" };
             }
-        }
-
-        com.gmt2001.Console.debug.println("URL Check Fatal Error");
-
-        return new String[] { "", "", "" };
+//        }
+//
+//        com.gmt2001.Console.debug.println("URL Check Fatal Error");
+//
+//        return new String[] { "", "", "","" };
     }
 
-    public int[] GetVideoLength(String id) {
+    public int[] GetVideoLength(String id) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
@@ -298,7 +305,7 @@ public class YouTubeAPIv3 {
         return new int[] { 0, 0, 0 };
     }
 
-    public int[] GetVideoInfo(String id) {
+    public int[] GetVideoInfo(String id) throws JSONException {
         int licenseRetval = 0;
         int embedRetval = 0;
 

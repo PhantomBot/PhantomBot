@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,18 +35,22 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONStringer;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.script.Script;
 
 import tv.phantombot.script.ScriptManager;
 
 public final class LangFileUpdater {
-    private static final LangFileUpdater INSTANCE = new LangFileUpdater();
     private static final String CUSTOM_LANG_ROOT = "./scripts/lang/custom/";
     private static final String DEFAULT_LANG_ROOT = "./scripts/lang/english/";
     
@@ -63,13 +67,13 @@ public final class LangFileUpdater {
      * @param langFile
      * @return 
      */
-    public static String getCustomLang(String langFile) {
+    public static String getCustomLang(String langFile) throws JSONException {
         String stringArray;
-        
+
         stringArray = convertLangMapToJSONArray(
             getCustomAndDefaultLangMap(
-                getLang(DEFAULT_LANG_ROOT + langFile),
-                getLang(CUSTOM_LANG_ROOT + langFile)
+                getLang(DEFAULT_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_")),
+                getLang(CUSTOM_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_"))
             )
         );
         
@@ -82,18 +86,22 @@ public final class LangFileUpdater {
      * @param stringArray 
      * @param langFile 
      */
-    public static void updateCustomLang(String stringArray, String langFile) {
+    public static void updateCustomLang(String stringArray, String langFile) throws JSONException {
         final StringBuilder sb = new StringBuilder();
         final JSONArray array = new JSONArray(stringArray);
         
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             
-            sb.append("$.lang.register('" + obj.getString("id") + "', '" + sanitizeResponse(obj.getString("response")) + "');\n");
+            sb.append("$.lang.register('");
+            sb.append(obj.getString("id"));
+            sb.append("', '");
+            sb.append(sanitizeResponse(obj.getString("response")));
+            sb.append("');\n");
         }
         
         try {
-            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/");
+            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
             
             File file = new File(langFile);
             boolean exists = true;
@@ -114,6 +122,25 @@ public final class LangFileUpdater {
             // If the script doesn't exist, load it.
             if (!exists) {
                 ScriptManager.loadScript(file);
+            } else {
+                if (!PhantomBot.getReloadScripts()) {
+                    HashMap<String, Script> scripts = ScriptManager.getScripts();
+                    String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
+                    
+                    scripts.values().forEach((script -> {
+                        String path = script.getFile().toPath().toString();
+
+                        if (path.contains("lang")) {
+                            if (path.substring(path.indexOf("lang")).equals(matchPath)) {
+                                try {
+                                    script.reload();
+                                } catch (IOException ex) {
+                                    com.gmt2001.Console.err.printStackTrace(ex);
+                                }
+                            }
+                        }
+                    }));
+                }
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -158,8 +185,9 @@ public final class LangFileUpdater {
      */
     private static String getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
-        langFile = langFile.replaceAll("\\\\", "/");
-        
+
+        langFile = langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
+
         if (new File(langFile).exists()) {
             try {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
@@ -220,7 +248,7 @@ public final class LangFileUpdater {
      * @param map
      * @return 
      */
-    private static String convertLangMapToJSONArray(HashMap<String, String> map) {
+    private static String convertLangMapToJSONArray(HashMap<String, String> map) throws JSONException {
         final JSONStringer jsonArray = new JSONStringer();
         
         // Make a new array.
@@ -229,7 +257,11 @@ public final class LangFileUpdater {
         map.forEach((String key, String value) -> {
             final JSONObject obj = new JSONObject();
             
-            jsonArray.object().key("id").value(key).key("response").value(value).endObject();
+            try {
+                jsonArray.object().key("id").value(key).key("response").value(value).endObject();
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         });
         
         // Close the array.

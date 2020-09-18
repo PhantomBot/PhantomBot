@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,14 @@
  *
  * Guidelines for merging thing on our repo for this module:
  *  - Please try not to call the $.discordAPI function out of this script, move all the main functions here and export the function to the $.discord API.
- *  - To register command to our command list https://phantombot.tv/commands/discord please add a comment starting with @discordcommandpath before the command info.
+ *  - To register command to our command list please add a comment starting with @discordcommandpath before the command info.
  *  - Make sure to comment on every function what their name is and the parameters they require and if they return something.
  */
 (function() {
     var embedReg = new RegExp(/\(embed\s([\s\d\w]+),\s([\w\W]+)\)/),
         fileRegMsg = new RegExp(/\(file\s([\w\W]+),\s?([\r\n\w\W]*)\)/),
-        fileReg = new RegExp(/\(file\s([\w\W]+)\)/);
+        fileReg = new RegExp(/\(file\s([\w\W]+)\)/),
+        messageDeleteArray = [];
 
     /**
      * @function userPrefix
@@ -49,7 +50,7 @@
      * @return {boolean}
      */
     function isConnected() {
-        return Packages.tv.phantombot.discord.DiscordAPI.client.isLoggedIn() &&
+        return $.discordAPI.isLoggedIn() &&
         $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED
     }
 
@@ -61,7 +62,7 @@
      * @return {string}
      */
     function getUserMention(username) {
-        return ($.discordAPI.getUser(username) != null ? $.discordAPI.getUser(username).mention() : username);
+        return ($.discordAPI.getUser(username) != null ? $.discordAPI.getUser(username).getMention() : username);
     }
 
     /**
@@ -73,9 +74,9 @@
      */
     function getUserMentionOrChannel(argument) {
         if ($.discordAPI.getUser(username) != null) {
-            return $.discordAPI.getUser(argument).mention();
+            return $.discordAPI.getUser(argument).getMention();
         } else if ($.discordAPI.getChannel(argument) != null) {
-            return $.discordAPI.getChannel(argument).mention();
+            return $.discordAPI.getChannel(argument).getMention();
         } else {
             return argument;
         }
@@ -88,7 +89,7 @@
      * @return {string}
      */
     function getRandomUser() {
-        return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).mention());
+        return ($.discordAPI.getUsers().get($.randRange(0, $.discordAPI.getUsers().size() - 1)).getMention()());
     }
 
     /**
@@ -151,6 +152,48 @@
         return $.discordAPI.addRole(role, username);
     }
 
+    function sanitizeChannelName(channel) {
+        channel = channel.trim();
+
+        if (channel.substr(0, 1) === '<') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(0, 1) === '#') {
+            channel = channel.substr(1);
+        }
+
+        if (channel.substr(channel.length - 1, 1) === '>') {
+            channel = channel.substr(0, channel.length - 1);
+        }
+
+        return channel;
+    }
+
+    /**
+     * @function handleDeleteReaction
+     * 
+     * @param {object} user
+     * @param {object} message
+     * @param {object} commandMessage
+     * @export $.discord
+     */
+    function handleDeleteReaction(user, message, commandMessage) {
+        var xEmoji = Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌');
+        message.addReaction(xEmoji);
+
+        messageDeleteArray[message.getId().asString()] = {
+            lastMessage: message,
+            lastCommandMessage: commandMessage,
+            lastUser: user,
+            timeout: setTimeout(function() {
+                messageDeleteArray[message.getId().asString()].lastMessage.delete().subscribe();
+                messageDeleteArray[message.getId().asString()].lastCommandMessage.delete().subscribe();
+                delete messageDeleteArray[message.getId().asString()];
+            }, 3e4)
+        };
+    }
+
     /**
      * @event discordChannelCommand
      */
@@ -190,6 +233,8 @@
                         say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
                     } catch (ex) {
                         $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {
                     say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.404', subAction));
@@ -266,6 +311,87 @@
     });
 
     /**
+     * @event discordRoleCreated
+     */
+    $.bind('discordRoleCreated', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+
+        permObj.roles.push({
+            'name': event.getDiscordRole().getName() + '',
+            '_id': event.getRoleID() + '',
+            'selected': 'false'
+        });
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
+     * @event discordRoleUpdated
+     */
+    $.bind('discordRoleUpdated', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+
+        for (var i = 0; i < permObj.roles.length; i++) {
+            if (permObj.roles[i]._id.equals(event.getRoleID() + '')) {
+                permObj.roles[i].name = event.getDiscordRole().getName() + '';
+                break;
+            }
+        }
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
+     * @event discordRoleDeleted
+     */
+    $.bind('discordRoleDeleted', function(event) {
+        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+        var commands = $.inidb.GetKeyList('discordPermcom', '');
+
+        for (var i = 0; i < permObj.roles.length; i++) {
+            if (permObj.roles[i]._id.equals(event.getRoleID() + '')) {
+                permObj.roles.splice(i, 1);
+                break;
+            }
+        }
+
+        for (var i = 0; i < commands.length; i++) {
+            var perms = JSON.parse($.inidb.get('discordPermcom', commands[i]));
+
+            if (perms.roles.indexOf((event.getRoleID() + '')) > -1) {
+                perms.roles.splice(perms.roles.indexOf((event.getRoleID() + '')), 1);
+                $.discord.setCommandPermission(commands[i], perms);
+                $.inidb.set('discordPermcom', commands[i], JSON.stringify(perms));
+                break;
+            }
+        }
+
+        $.inidb.set('discordPermsObj', 'obj', JSON.stringify(permObj));
+    });
+
+    /**
+     * @event discordMessageReaction
+     */
+    $.bind('discordMessageReaction', function (event) {
+        var reactionEvent = event.getEvent(),
+                reactionUser = event.getSenderId();
+
+        if (event.getReactionEmoji().asUnicodeEmoji().equals(Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌'))) {
+            var messageID = reactionEvent.getMessage().block().getId().asString(),
+                    messageInArray = messageDeleteArray[messageID];
+            if (messageInArray !== undefined) {
+                if (messageInArray.lastUser.getId().asString().equals(reactionUser) &&
+                        messageInArray.lastMessage.getId().asString().equals(messageID)) {
+                    reactionEvent.getMessage().block().delete().subscribe();
+                    messageInArray.lastCommandMessage.delete().subscribe();
+                    clearTimeout(messageInArray.timeout);
+                    delete messageDeleteArray[messageID];
+                }
+            }
+        }
+    });
+
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {
@@ -290,6 +416,8 @@
         setGame: setGame,
         setRole: setRole,
         say: say,
+        handleDeleteReaction: handleDeleteReaction,
+        sanitizeChannelName: sanitizeChannelName,
         resolve: {
             global: getUserMentionOrChannel,
             getUserMentionOrChannel: getUserMentionOrChannel

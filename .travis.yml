@@ -1,9 +1,10 @@
 language: java
+dist: xenial
 before_install:
   - sudo apt-get -y install ant
 jdk:
-  - openjdk8
+  - openjdk11
+  - oraclejdk11
 notifications:
-  slack: zelakto:YwbCS7lxWrNFsFvNDXaoyLHU
   email: false
 sudo: false

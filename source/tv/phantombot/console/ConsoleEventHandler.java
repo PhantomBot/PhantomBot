@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.console;
 
 import net.engio.mbassy.listener.Handler;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import org.json.JSONException;
 
 import tv.phantombot.PhantomBot;
 
@@ -47,6 +47,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -65,8 +66,8 @@ import tv.phantombot.event.twitter.TwitterRetweetEvent;
 
 import tv.phantombot.script.Script;
 
-
 public class ConsoleEventHandler implements Listener {
+
     private static final ConsoleEventHandler instance = new ConsoleEventHandler();
 
     /**
@@ -91,9 +92,9 @@ public class ConsoleEventHandler implements Listener {
      * @param event
      */
     @Handler
-    public void onConsoleInput(ConsoleInputEvent event) {
+    public void onConsoleInput(ConsoleInputEvent event) throws JSONException {
         // The message said in the console.
-        String message = event.getMessage().replaceAll("!", "").trim();
+        String message = event.getMessage();
         // If settings were changed.
         boolean changed = false;
         // Arguments of the message string.
@@ -107,6 +108,8 @@ public class ConsoleEventHandler implements Listener {
         if (message == null || message.isEmpty()) {
             return;
         }
+
+        message = message.replaceAll("!", "").trim();
 
         // Check for arguments in the message string.
         if (message.contains(" ")) {
@@ -140,7 +143,7 @@ public class ConsoleEventHandler implements Listener {
             }
             return;
         }
-            
+
         /**
          * @consolecommand exportpoints - This command exports points and time to a CSV file.
          */
@@ -148,7 +151,7 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing exportpoints.");
 
             // Top headers of the CSV file.
-            String[] headers = new String[] {"Username", "Seconds", "Points"};
+            String[] headers = new String[]{"Username", "Seconds", "Points"};
             // All points keys.
             String[] keys = dataStore.GetKeyList("points", "");
             // Array to store our values.
@@ -176,7 +179,7 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing createcmdlist.");
 
             // Headers of the CSV file.
-            String[] headers = new String[] {"Command", "Permission", "Module"};
+            String[] headers = new String[]{"Command", "Permission", "Module"};
             // All commands.
             String[] keys = dataStore.GetKeyList("permcom", "");
             // Array to store commands.
@@ -258,7 +261,7 @@ public class ConsoleEventHandler implements Listener {
             datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
-            dataStore.backupSQLite3("phantombot.manual.backup." + timestamp + ".db");
+            dataStore.backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
         }
 
@@ -289,10 +292,19 @@ public class ConsoleEventHandler implements Listener {
             if (argument != null) {
                 EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), argument[0]));
             } else {
-                for (int i = 0 ; i < 30; i++) {
+                for (int i = 0; i < 30; i++) {
                     EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
                 }
             }
+        }
+
+        if (message.equalsIgnoreCase("channelpointstest")) {
+            EventBus.instance().postAsync(new PubSubChannelPointsEvent(
+                    "id1", "rewardid2", "12345",
+                    "thebestuser", "TheBestUser", "Uber Reward",
+                    50, "Who you gonna call?", "Ghostbusters!", "UNFULLFILLED"
+            ));
+            return;
         }
 
         /**
@@ -330,7 +342,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
 
-            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000"));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000", ((int) (Math.random() * 100.0)) + "", "No message"));
             return;
         }
 
@@ -354,7 +366,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
 
-            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000"));
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000", "No message"));
             return;
         }
 
@@ -369,7 +381,7 @@ public class ConsoleEventHandler implements Listener {
             EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, "10", "1000"));
             return;
         }
-        
+
         /**
          * @consolecommand massanongiftsubtest - Test a mass anonymous gift subscription.
          */
@@ -419,9 +431,9 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing cliptest " + randomUser);
 
             EventBus.instance().postAsync(new TwitchClipEvent("https://clips.twitch.tv/ThisIsNotARealClipAtAll", randomUser, "Some title",
-                new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", " +
-                    "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", " +
-                    "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
+                    new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", "
+                            + "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", "
+                            + "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
             return;
         }
 
@@ -533,7 +545,7 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand apioauth - Updates the API oauth.
          */
         if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Please enter you're oauth token that you generated from https://phantombot.tv/oauth while logged as the caster: ");
+            System.out.print("Please enter you're oauth token that you generated from https://phantombot.github.io/PhantomBot/oauth/ while logged as the caster: ");
 
             String apiOAuth = System.console().readLine().trim();
 

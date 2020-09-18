@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,9 @@
         messageTime = $.systemTime(),
         warning = '',
         youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
-        i;
+        i,
+        j,
+        k;
 
     /**
      * @function reloadModeration
@@ -306,14 +308,21 @@
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
 
-            if (json != null && json.isRegex) {
-                json.phrase = new RegExp(json.phrase.replace('regex:', ''));
-            } else {
-                json.phrase = json.phrase.toLowerCase();
-            }
-            json.isBan = parseInt(json.timeout) === -1;
+            if (json != null) {
+                if (json.isRegex) {
+                    try {
+                        json.phrase = new RegExp(json.phrase.replace('regex:', ''));
+                    } catch (ex) {
+                        // Failed to create regex, ignore this and don't make it a blacklist.
+                        continue;
+                    }
+                } else {
+                    json.phrase = json.phrase.toLowerCase();
+                }
+                json.isBan = parseInt(json.timeout) === -1;
 
-            blackList.push(json);
+                blackList.push(json);
+            }
         }
     }
 
@@ -325,7 +334,7 @@
             whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            whiteList.push(keys[i]);
+            whiteList.push(keys[i] + '');
         }
     }
 
@@ -486,8 +495,28 @@
      * @param {string} message
      */
     function checkWhiteList(message) {
-        for (i in whiteList) {
-            if (message.indexOf(whiteList[i]) !== -1) {
+        function checkLink(link, whiteListItem) {
+            var baseLink = link.match(/[^.]*[^/]*/)[0];
+            var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+            var matches = $.matchAll(link, itemRe);
+            for (k = 0; k < matches.length; k++) {
+                var matchStart = matches[k].index;
+                var matchEnd = matches[k].index + matches[k][0].length;
+                if (matchStart < baseLink.length && matchEnd >= baseLink.length) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        var links = $.patternDetector.getLinks(message);
+        for (i = 0; i < whiteList.length; i++) {
+            for (j = 0; j < links.length; j++) {
+                if (checkLink(links[j], whiteList[i])) {
+                    links.splice(j--, 1);
+                }
+            }
+            if (links.length === 0) {
                 return true;
             }
         }
@@ -995,7 +1024,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.add.usage'));
                     return;
                 }
-                var link = argString.split(' ').slice(1).join(' ').toLowerCase();
+                var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
                 whiteList.push(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,7 +435,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.usage'));
                     return;
                 }
-                var retval = $.twitter.updateStatus(args.splice(1).join(' ')) + '';
+                var retval = $.twitter.updateStatus(String(args.splice(1).join(' ')).replace(/\(enter\)/g, '\r\n')) + '';
                 if (retval.equals('true')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(1).join(' ')));
                 } else {

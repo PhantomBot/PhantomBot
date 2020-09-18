@@ -153,13 +153,13 @@
                     return;
                 }
             
-                promoteChannel = args[1].replace('#', '').toLowerCase();
+                promoteChannel = $.discord.sanitizeChannelName(args[1]);
                 if (promoteChannel.equals('clear')) {
                     $.inidb.set('promotesettings', 'channel', '');
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.cleared'));
                 } else {
                     $.inidb.set('promotesettings', 'channel', promoteChannel);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.success', promoteChannel));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.success', args[1]));
                 }
                 return;
             }
@@ -170,14 +170,14 @@
                     return;
                 }
             
-                streamChannel = args[1].replace('#', '').toLowerCase();
+                streamChannel = $.discord.sanitizeChannelName(args[1]);
                 if (streamChannel.equals('clear')) {
                     streamChannel = '';
                     $.inidb.set('promotesettings', 'streamchannel', '');
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.cleared'));
                 } else {
                     $.inidb.set('promotesettings', 'streamchannel', streamChannel);
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.success', streamChannel));
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.success', args[1]));
                 }
                 return;
             }
@@ -305,7 +305,7 @@
                 if (biography.equals('')) {
                     biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
                 }
-                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                               .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                               .withTitle('https://twitch.tv/' + twitchName)
                                               .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
@@ -339,11 +339,7 @@
             start += 100;
             end += 100;
 
-            if (!jsonObject.has('_total') || !jsonObject.has('streams')) {
-                return;
-            }
-    
-            if (jsonObject.getInt('_total') === 0) {
+            if (!jsonObject.has('streams')) {
                 return;
             }
     
@@ -378,7 +374,7 @@
                 if (!$.inidb.exists('promoteonline', twitchID)) {
                     if ($.systemTime() - $.getIniDbNumber('promoteonlinetime', twitchID, 0) >= (6e4 * 5)) {
                         $.inidb.set('promoteonlinetime', twitchID, $.systemTime());
-                        var embedBuilder = new Packages.sx.blah.discord.util.EmbedBuilder();
+                        var embedBuilder = new Packages.tv.phantombot.discord.util.EmbedBuilder();
                         embedBuilder.withThumbnail(logoUrl)
                                     .withTitle($.lang.get('discord.promotesystem.livemsg.title', $.username.resolve(twitchName), twitchName))
                                     .withColor(100, 65, 164)
@@ -437,7 +433,7 @@
             if (biography.equals('')) {
                 biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
-            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                                           .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                                           .withTitle('https://twitch.tv/' + twitchName)
                                           .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))

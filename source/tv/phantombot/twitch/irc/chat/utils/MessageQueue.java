@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 package tv.phantombot.twitch.irc.chat.utils;
 
-import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
@@ -47,7 +46,8 @@ public class MessageQueue implements Runnable {
         // Start a new thread for our final queue.
         this.thread = new Thread(this, "tv.phantombot.wschat.twitch.chat.utils.MessageQueue::run");
         this.thread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        
+        this.thread.setPriority(Thread.MAX_PRIORITY);
+
     }
 
     /**
@@ -67,7 +67,7 @@ public class MessageQueue implements Runnable {
      *
      * @param {boolean} isAllowedToSend
      */
-    public void setAllowSendMessages(boolean isAllowedToSend) {
+    public synchronized void setAllowSendMessages(boolean isAllowedToSend) {
         this.isAllowedToSend = isAllowedToSend;
     }
 
@@ -120,7 +120,7 @@ public class MessageQueue implements Runnable {
             try {
                 // Get the next message in the queue.
                 Message message = queue.take();
-                
+
                 // Set the time we got the message.
                 long time = System.currentTimeMillis();
 
@@ -144,6 +144,7 @@ public class MessageQueue implements Runnable {
                 }
             } catch (WebsocketNotConnectedException ex) {
                 com.gmt2001.Console.err.println("Failed to send message due to being disconnected from Twitch IRC.");
+                this.setAllowSendMessages(false);
                 session.reconnect();
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

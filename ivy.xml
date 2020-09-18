@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+Copyright (C) 2016-2020 phantom.bot
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+
+<ivy-module version="2.0">
+    <info organisation="tv.phantombot" module="phantombot" revision="custom" status="integration" branch="custom">
+        <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
+        <repository name="PhantomBot" url="https://github.com/PhantomBot/PhantomBot" artifacts="true"/>
+        <description homepage="https://phantombot.github.io/PhantomBot/">
+            PhantomBot is a Twitch chat bot powered by Java.
+            PhantomBot has many modern features out of the box such as a built-in webpanel,
+            enhanced moderation, games, a point system, raffles, custom commands, a music player, and more!
+            PhantomBot can also be integrated with many services such as Discord, Twitter, TipeeeStream,
+            StreamLabs and StreamElements!
+
+            Additional functionality is enabled through the use of third-party modules.
+        </description>
+    </info>
+    <configurations defaultconf="default"/>
+    <dependencies>
+        <dependency org="com.discord4j" name="discord4j-core" rev="3.1.0.M2"/>
+        <dependency org="io.netty" name="netty-codec-http" rev="4.1.48.Final" />
+        <dependency org="io.projectreactor.netty" name="reactor-netty" rev="0.9.7.RELEASE" />
+        <dependency org="commons-codec" name="commons-codec" rev="1.9" />
+        <dependency org="commons-io" name="commons-io" rev="2.5"/>
+        <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.3.2"/>
+        <dependency org="com.h2database" name="h2" rev="1.4.200"/>
+        <dependency org="joda-time" name="joda-time" rev="2.4"/>
+        <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>
+        <dependency org="net.engio" name="mbassador" rev="1.3.2"/>
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.49"/>
+        <dependency org="org.json" name="json" rev="20200518"/>
+        <dependency org="org.mozilla" name="rhino" rev="1.7.12"/>
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.31.1"/>
+        <dependency org="org.twitter4j" name="twitter4j-core" rev="4.0.4"/>
+    </dependencies>
+</ivy-module>

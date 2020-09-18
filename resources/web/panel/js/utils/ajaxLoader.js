@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ $(function() {
             // Add the load for the master script.
             $('body').append($('<script>', {
                 'async': true,
-                'src': 'panel/js/pages/global.js'
+                'src': '/panel/js/pages/global.js'
             }));
             helpers.log('Page shown', helpers.LOG_TYPE.DEBUG);
         }
@@ -68,7 +68,7 @@ $(function() {
             $.ajax({
                 cache: false,
                 dataType: 'html',
-                url: 'panel/pages/' + folder + '/' + page,
+                url: '/panel/pages/' + folder + '/' + page,
                 success: function(data) {
                     // Set the new page.
                     $('#page-content').html(data);

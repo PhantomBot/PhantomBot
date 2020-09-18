@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
 
 package tv.phantombot.event.discord.channel;
 
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 
 public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     private final boolean isAdmin;
@@ -32,7 +32,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
      * @param {IMessage} message
      * @param {boolean}  isAdmin
      */
-    public DiscordChannelMessageEvent(IUser user, IChannel channel, IMessage message, boolean isAdmin) {
+    public DiscordChannelMessageEvent(User user, Channel channel, Message message, boolean isAdmin) {
         super(user, channel, message);
         
         this.isAdmin = isAdmin;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ var DEBUG_MODE = false;
 var connectedToWS = false;
 
 var url = window.location.host.split(":");
-var addr = (getProtocol() == 'https://' ? 'wss://' : 'ws://') + url[0] + ':' + getPlayerPort();
+var addr = (getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer';
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
 
@@ -43,7 +43,7 @@ connection.onopen = function (data) {
     connectedToWS = true;
 
     var jsonObject = {};
-    jsonObject["readauth"] = getAuth();
+    jsonObject["authenticate"] = getAuth();
     connection.send(JSON.stringify(jsonObject));
     debugMsg("onPlayerReady::connection.send(" + JSON.stringify(jsonObject) + ")");
 }
@@ -63,14 +63,21 @@ connection.onmessage = function (e) {
 
     debugMsg('connection.onmessage(' + e.data + ')');
 
-    if (messageObject['authresult'] === false) {
+    if (messageObject.ping !== undefined) {
+        connection.send(JSON.stringify({
+            pong: "pong"
+        }));
+        return;
+    }
+
+    if (messageObject['authresult'] === 'false') {
         if (!messageObject['authresult']) {
             newAlert('WS Auth Failed', 'Reload page, if that fails, let the caster know', 'danger', 0);
             return;
         }
         return;
     }
-    if (messageObject['authresult'] === true) {
+    if (messageObject['authresult'] === 'true') {
         refreshData();
     }
 
@@ -106,58 +113,115 @@ connection.onmessage = function (e) {
 
 function handleNewSong(title, duration, requester, id) {
     debugMsg('handleNewSong(' + title + ', ' + duration + ', ' + requester + ')');
-    $('#currentSongTable').html(
-            '<tr><th>Song Title</th><th>Requester</th><th>Duration</th></tr>' +
-            '<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>');
+
+    var html = '<a href="https://youtu.be/' + id + '" target="_blank">' +
+            '<div class="dataRow">' +
+            '<div class="data dataQueueTitle">' + title + '</div>' +
+            '<div class="data dataQueueArtist">' + requester + '</div>' +
+            '<div class="data dataQueueLength">' + duration + '</div>' +
+            '</div></a>';
+
+    $('#currentSongHtml').html(html);
 }
 
 function handlePlayList(d) {
     debugMsg('handlePlayList(' + d + ')');
     $('#playlistTableTitle').html('Current Playlist: ' + d['playlistname']);
-    var tableData = '<tr><th>Song Title</th></tr>';
+    var tableData = '';
     for (var i in d['playlist']) {
         var id = d['playlist'][i]['song'];
         var title = d['playlist'][i]['title'];
         //var requester = d['playlist'][i]['requester'];
 
-        tableData += '<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td></tr>';
+        tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
+
+        tableData += '<div class="dataRow">';
+
+        // Title Column
+        tableData += '<div class="data dataQueueTitleShortened">' + title + '</div>';
+
+        // Requester Column
+        tableData += '<div class="data dataQueueArtist"></div>';
+
+        // Length Column
+        tableData += '<div class="data dataQueueLength"></div>';
+
+        tableData += '</div></a>';
+
     }
-    $('#playlistTable').html(tableData);
+
+    $('#contendersHtml').html(tableData);
 }
 
 function handleSongList(d) {
     debugMsg('handleSongList(' + d + ')');
-    var tableData = '<tr><th>Position</th><th>Song Title</th><th>Requester</th><th>Duration</th></tr>';
+    var tableData = "";
     for (var i in d['songlist']) {
         var playerIndex = parseInt(i, 10) + 1;
         var bumped = d['songlist'][i]['bump'];
+        var shuffle = d['songlist'][i]['shuffle'];
         var id = d['songlist'][i]['song'];
         var title = d['songlist'][i]['title'];
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
-        tableData += '<tr><td>' + playerIndex;
+        var shuffle = d['songlist'][i]['shuffle'];
+        tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
+
+        tableData += '<div class="dataRow">';
+        // Position Column
+        tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
 
         if (bumped == "true") {
             tableData += ' <i class="fas fa-star"></i>';
+        } else if (shuffle == "true") {
+            tableData += ' <i class="fas fa-dice"></i>';
         }
+        tableData += '</div>';
 
-        tableData += '</td><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>';
+        // Title Column
+        tableData += '<div class="data dataQueueTitleShortened">' + title + '</div>';
+
+        // Requester Column
+        tableData += '<div class="data dataQueueArtist">' + requester + '</div>';
+
+        // Length Column
+        tableData += '<div class="data dataQueueLength">' + duration + '</div>';
+
+        tableData += '</div></a>';
     }
-    $('#songTable').html(tableData);
+    $('#requestQueueHtml').html(tableData);
 }
 
 function handleSongHistoryList(d) {
     debugMsg('handleSongHistoryList(' + d + ')');
-    var tableData = '<tr><th>Song Title</th><th>Requester</th><th>Duration</th></tr>';
+    var tableData = '';
     for (var i in d['requestHistory']) {
-//        var playerIndex = parseInt(i, 10) + 1;
+        var playerIndex = parseInt(i, 10) + 1;
         var id = d['requestHistory'][i]['song'];
         var title = d['requestHistory'][i]['title'];
         var duration = d['requestHistory'][i]['duration'];
         var requester = d['requestHistory'][i]['requester'];
-        tableData += '<tr><td><a href="https://youtu.be/' + id + '" target="_blank">' + title + '</a></td><td>' + requester + '</td><td>' + duration + '</td></tr>';
+
+        tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
+
+        tableData += '<div class="dataRow">';
+
+        // Position Column
+        tableData += '<div class="data dataQueuePosition"> #' + playerIndex + '</div>';
+
+        // Title Column
+        tableData += '<div class="data dataQueueTitleShortened">' + title + '</div>';
+
+        // Requester Column
+        tableData += '<div class="data dataQueueArtist">' + requester + '</div>';
+
+        // Length Column
+        tableData += '<div class="data dataQueueLength">' + duration + '</div>';
+
+        tableData += '</div></a>';
+
     }
-    $('#requestHistoryTable').html(tableData);
+    $('#requestHistoryHtml').html(tableData);
 }
 
 // Type is: success (green), info (blue), warning (yellow), danger (red)

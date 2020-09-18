@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
         }
 
         if (event.getMentionUser() != null) {
-            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
                 .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
@@ -54,7 +54,7 @@
                 .build());
         } else {
             // Send the message as an embed.
-            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                 .withTitle($.twitter.getUsername())
                 .withUrl('https://twitter.com/' + $.twitter.getUsername())
                 .withColor(31, 158, 242)
@@ -104,9 +104,9 @@
                     return;
                 }
 
-                channelName = subAction.replace('#', '').toLowerCase();
+                channelName = $.discord.sanitizeChannelName(subAction);
                 $.inidb.set('discordSettings', 'twitterChannel', channelName);
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.channel.set', channelName));
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.twitterhandler.channel.set', subAction));
             }
         }
     });

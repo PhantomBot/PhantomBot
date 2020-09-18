@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,13 +18,11 @@ package tv.phantombot.cache;
 
 import com.scaniatv.StreamElementsAPIv2;
 
-import com.google.common.collect.Maps;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,10 +35,10 @@ import tv.phantombot.event.streamelements.donate.StreamElementsDonationInitializ
 
 public class StreamElementsCache implements Runnable {
 
-    private static final Map<String, StreamElementsCache> instances = Maps.newHashMap();
+    private static final Map<String, StreamElementsCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
     private final String channel;
-    private Map<String, JSONObject> cache = Maps.newHashMap();
+    private Map<String, JSONObject> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
@@ -148,7 +146,7 @@ public class StreamElementsCache implements Runnable {
      * Updates the cache by calling the TipeeeStream API.
      */
     private void updateCache() throws Exception {
-        Map<String, JSONObject> newCache = Maps.newHashMap();
+        Map<String, JSONObject> newCache = new ConcurrentHashMap<>();
         JSONObject jsonResult;
         JSONObject object;
         JSONArray donations = null;

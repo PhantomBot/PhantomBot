@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,27 +19,24 @@
 
 package tv.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.BTTVAPIv3;
 import com.illusionaryone.FrankerZAPIv1;
-import com.illusionaryone.BTTVAPIv2;
-import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import tv.phantombot.PhantomBot;
+import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class EmotesCache implements Runnable {
 
     private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
     private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 60;
-    private static final Map<String, EmotesCache> instances = Maps.newHashMap();
+    private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
         if (instance == null) {
@@ -55,7 +52,6 @@ public class EmotesCache implements Runnable {
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
-    private int id = 0;
     private boolean killed = false;
     private int loopSleep = 0;
 
@@ -113,7 +109,7 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) {
+    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) throws JSONException {
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
@@ -145,12 +141,11 @@ public class EmotesCache implements Runnable {
     }
 
     private void updateCache() throws Exception {
-        JSONObject twitchJsonResult = null;
-        JSONObject bttvJsonResult = null;
-        JSONObject bttvLocalJsonResult = null;
-        JSONObject ffzJsonResult = null;
-        JSONObject ffzLocalJsonResult = null;
-        String emotesModEnabled = "";
+        JSONObject bttvJsonResult;
+        JSONObject bttvLocalJsonResult;
+        JSONObject ffzJsonResult;
+        JSONObject ffzLocalJsonResult;
+        String emotesModEnabled;
 
         emotesModEnabled = PhantomBot.instance().getDataStore().GetString("chatModerator", "", "emotesToggle");
 
@@ -177,13 +172,13 @@ public class EmotesCache implements Runnable {
          * }
          */
 
-        bttvJsonResult = BTTVAPIv2.instance().GetGlobalEmotes();
+        bttvJsonResult = BTTVAPIv3.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Emotes");
             return;
         }
 
-        bttvLocalJsonResult = BTTVAPIv2.instance().GetLocalEmotes(this.channel);
+        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(UsernameCache.instance().getID(this.channel));
         if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
             return;
@@ -202,15 +197,7 @@ public class EmotesCache implements Runnable {
         }
 
         com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
-        EventBus.instance().post(new EmotesGetEvent(twitchJsonResult, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
-        System.gc();
-
-        /* Set these to null to save memory */
-        twitchJsonResult = null;
-        bttvJsonResult = null;
-        bttvLocalJsonResult = null;
-        ffzJsonResult = null;
-        ffzLocalJsonResult = null;
+        EventBus.instance().post(new EmotesGetEvent(null, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
     }
 
     public void kill() {
@@ -218,8 +205,8 @@ public class EmotesCache implements Runnable {
     }
 
     public static void killall() {
-        for (Entry<String, EmotesCache> instance : instances.entrySet()) {
+        instances.entrySet().forEach((instance) -> {
             instance.getValue().kill();
-        }
+        });
     }
 }

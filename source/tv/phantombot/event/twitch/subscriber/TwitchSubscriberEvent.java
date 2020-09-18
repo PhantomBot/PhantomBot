@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +21,21 @@ import tv.phantombot.event.twitch.TwitchEvent;
 public class TwitchSubscriberEvent extends TwitchEvent {
     private final String subscriber;
     private final String plan;
-
-    /**
-     * Class constructor.
-     *
-     * @param {String} subscriber
-     */
-    public TwitchSubscriberEvent(String subscriber) {
-        this.subscriber = subscriber;
-        this.plan = null;
-    }
+    private final String months;
+    private final String message;
 
     /**
      * Class constructor.
      *
      * @param {String} subscriber
      * @param {String} plan
+     * @param {String} message
      */
-    public TwitchSubscriberEvent(String subscriber, String plan) {
+    public TwitchSubscriberEvent(String subscriber, String plan, String months, String message) {
         this.subscriber = subscriber;
         this.plan = plan;
+        this.months = months;
+        this.message = message;
     }
 
     /**
@@ -59,5 +54,18 @@ public class TwitchSubscriberEvent extends TwitchEvent {
      */
     public String getPlan() {
         return this.plan;
+    }
+
+    /**
+     * Method that returns the cumulative months.
+     *
+     * @return {String} months
+     */
+    public String getMonths() {
+        return this.months;
+    }
+    
+    public String getMessage() {
+        return this.message;
     }
 }

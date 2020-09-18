@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,7 +314,11 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                if (ex.javaException !== undefined) {
+                    $.consoleLn("Sending stack trace to error log...");
+                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                }
             }
         } else {
             for (i in hook.handlers) {
@@ -322,7 +326,11 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        if (ex.javaException !== undefined) {
+                            $.consoleLn("Sending stack trace to error log...");
+                            Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                        }
                     }
                 }
             }
@@ -406,12 +414,12 @@
         if ($.isNightly) {
             consoleLn('PhantomBot Nightly Build - No Support is Provided');
             consoleLn('Please report bugs including the date of the Nightly Build and Repo Version to:');
-            consoleLn('https://community.phantombot.tv/c/support/bug-reports');
+            consoleLn('https://discord.gg/YKvMd78');
         } else if ($.isPrerelease) {
             consoleLn('PhantomBot Pre-Release Build - Please Report Bugs and Issues Found');
             consoleLn('When reporting bugs or issues, please remember to say that this is a pre-release build.');
         } else {
-            consoleLn('For support please visit: https://community.phantombot.tv');
+            consoleLn('For support please visit: https://discord.gg/YKvMd78');
         }
         consoleLn('');
     }
@@ -434,10 +442,6 @@
          */
         $api.on($script, 'ircChannelMessage', function (event) {
             callHook('ircChannelMessage', event, false);
-
-            if (isModuleEnabled('./handlers/panelHandler.js')) {
-                $.panelDB.updateChatLinesDB(event.getSender());
-            }
         });
 
         /*
@@ -477,26 +481,33 @@
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
                 var alias = $.getIniDbString('aliases', command),
-                        aliasArguments = '';
+                        aliasCommand,
+                        aliasArguments,
+                        subcmd,
+                        parts;
 
                 if (alias.indexOf(';') === -1) {
-                    var parts = alias.split(' ', 2);
+                    parts = alias.split(' ');
+                    aliasCommand = parts.shift();
+                    aliasArguments = parts.join(' ');
 
-                    $.command.run(sender, parts[0], ((parts[1] !== undefined ? parts[1] : '') + ' ' + args.join(' ')), event.getTags());
+                    $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
                 } else {
-                    var parts = alias.split(';');
+                    parts = alias.split(';');
 
                     for (var i = 0; i < parts.length; i++) {
-                        command = parts[i].split(' ');
+                        subcmd = parts[i].split(' ');
+                        aliasCommand = subcmd.shift();
+                        aliasArguments = subcmd.join(' ');
 
-                        $.command.run(sender, command[0], ((command[1] !== undefined ? command[1] : '') + ' ' + args.join(' ')), event.getTags());
+                        $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
                     }
                 }
                 return;
             } else
 
             // Check the command permission.
-            if ($.permCom(sender, command, subCommand) !== 0) {
+            if ($.permCom(sender, command, subCommand, event.getTags()) !== 0) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', (!$.subCommandExists(command, subCommand) ? $.getCommandGroupName(command) : $.getSubCommandGroupName(command, subCommand))), $.getIniDbBoolean('settings', 'permComMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to the user not having permission for it.');
                 return;
@@ -504,7 +515,7 @@
 
             // Check the command cooldown.
             if ($.coolDown.get(command, sender, isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             } else
@@ -522,7 +533,9 @@
             // Decrease or add points after the command is sent to not slow anything down.
             if ($.priceCom(sender, command, subCommand, isMod) === 0) {
                 $.inidb.decr('points', sender, $.getCommandPrice(command, subCommand, ''));
-            } else if ($.payCom(command) === 0) {
+            }
+
+            if ($.payCom(command) === 0) {
                 $.inidb.incr('points', sender, $.getCommandPay(command));
             }
         });
@@ -533,7 +546,7 @@
         $api.on($script, 'discordChannelCommand', function (event) {
             var username = event.getUsername(),
                     command = event.getCommand(),
-                    channel = event.getDiscordChannel(),
+                    user = event.getDiscordUser(),
                     channelName = event.getChannel(),
                     channelId = event.getChannelId(),
                     isAdmin = event.isAdmin(),
@@ -548,7 +561,26 @@
                 command = event.setCommand($.discord.getCommandAlias(command));
             }
 
-            if (isAdmin == false && $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : '')) !== 0) {
+            // Check permissions.
+            var perm = $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''));
+            var hasPerms = false;
+
+            // If more permissions are added, we'll have to use a loop here.
+            if (perm.permissions.length > 0 && perm.permissions[0].selected.equals('true') && isAdmin == true) {
+                hasPerms = true;
+            } else if (perm.roles.length > 0 && (perm.roles[0].indexOf('0') !== -1 || perm.roles[0].indexOf($.discordAPI.getGuild().getId().asString()) !== -1)) {
+                hasPerms = true;
+            } else {
+                for (var i = 0; i < perm.roles.length; i++) {
+                    if (user.getRoleIds().contains($.discordAPI.getRoleByID(perm.roles[i]).getId()) == true) {
+                        hasPerms = true;
+                        break;
+                    }
+                }
+            }
+
+            // No permissions, return.
+            if (!hasPerms) {
                 return;
             }
 
@@ -560,12 +592,8 @@
                 return;
             }
 
-            if ($.discord.getCommandChannel(command, channel) === undefined && $.discord.getCommandChannel(command, '_default_global_') === undefined) {
+            if (!$.discord.getCommandChannelAllowed(command, channelName, channelId)) {
                 return;
-            } else {
-                if (($.discord.getCommandChannel(command, channel) !== undefined && (!$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelName) && !$.discord.getCommandChannel(command, channel).equalsIgnoreCase(channelId))) && $.discord.getCommandChannel(command, '_default_global_') != '') {
-                    return;
-                }
             }
 
             callHook('discordChannelCommand', event, false);
@@ -574,6 +602,28 @@
             if ($.discord.getCommandCost(command) > 0) {
                 $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
+        });
+
+        /*
+         * @event discordReady
+         */
+        $api.on($script, 'discordReady', function (event) {
+            var roles = $.discordAPI.getGuildRoles();
+            var perms = {
+                roles: []
+            };
+
+            for (var i = 0; i < roles.size(); i++) {
+                perms.roles.push({
+                    'name': roles.get(i).getName() + '',
+                    '_id': roles.get(i).getId().asString() + '',
+                    'selected': 'false'
+                });
+            }
+
+            $.inidb.set('discordPermsObj', 'obj', JSON.stringify(perms));
+
+            callHook('discordReady', event, false);
         });
 
         /*
@@ -828,20 +878,6 @@
             callHook('yTPlayerRequestCurrentSong', event, false);
         });
 
-//        /*
-//         * @event yTPlayerRequestQueueStatusEvent
-//         */
-//        $api.on($script, 'yTPlayerRequestQueueStatus', function (event) {
-//            callHook('yTPlayerRequestQueueStatus', event, false);
-//        });
-
-        /*
-         * @event yTPlayerRequestSongHistoryEvent
-         */
-        $api.on($script, 'yTPlayerRequestSongHistory', function (event) {
-            callHook('yTPlayerRequestSongHistory', event, false);
-        });
-
         /*
          * @event yTPlayerRandomizeEvent
          */
@@ -854,6 +890,13 @@
          */
         $api.on($script, 'yTPlayerDeleteCurrent', function (event) {
             callHook('yTPlayerDeleteCurrent', event, false);
+        });
+
+        /*
+         * @event yTPlayerRequestSongHistoryEvent
+         */
+        $api.on($script, 'yTPlayerRequestSongHistory', function (event) {
+            callHook('yTPlayerRequestSongHistory', event, false);
         });
 
         /*
@@ -983,10 +1026,45 @@
         });
 
         /*
+         * @event discordUserVoiceChannelJoin
+         */
+        $api.on($script, 'discordUserVoiceChannelJoin', function (event) {
+            callHook('discordUserVoiceChannelJoin', event, false);
+        });
+
+        /*
+         * @event discordUserVoiceChannelPart
+         */
+        $api.on($script, 'discordUserVoiceChannelPart', function (event) {
+            callHook('discordUserVoiceChannelPart', event, false);
+        });
+
+        /*
          * @event discordMessageReaction
          */
         $api.on($script, 'discordMessageReaction', function (event) {
             callHook('discordMessageReaction', event, false);
+        });
+
+        /*
+         * @event discordRoleCreated
+         */
+        $api.on($script, 'discordRoleCreated', function (event) {
+            callHook('discordRoleCreated', event, false);
+        });
+
+        /*
+         * @event discordRoleUpdated
+         */
+        $api.on($script, 'discordRoleUpdated', function (event) {
+            callHook('discordRoleUpdated', event, false);
+        });
+
+        /*
+         * @event discordRoleDeleted
+         */
+        $api.on($script, 'discordRoleDeleted', function (event) {
+            callHook('discordRoleDeleted', event, false);
         });
 
         /*
@@ -1029,6 +1107,13 @@
          */
         $api.on($script, 'PubSubModerationUnBan', function (event) {
             callHook('PubSubModerationUnBan', event, false);
+        });
+
+        /*
+         * @event PubSubChannelPoints
+         */
+        $api.on($script, 'PubSubChannelPoints', function (event) {
+            callHook('PubSubChannelPoints', event, false);
         });
     }
 

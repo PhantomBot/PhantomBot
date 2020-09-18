@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@
 	$.bind('twitchClip', function(event) {
         var creator = event.getCreator(),
             url = event.getClipURL(),
+            title = event.getClipTitle(),
+            clipThumbnail = event.getThumbnailObject().getString("medium"),
             s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
@@ -57,6 +59,10 @@
             s = $.replace(s, '(url)', url);
         }
 
+        if (s.match(/\(title\)/g)) {
+            s = $.replace(s, '(title)', title);
+        }
+
         if (s.match(/\(embedurl\)/g)) {
             s = $.replace(s, '(embedurl)', url);
         }
@@ -64,12 +70,13 @@
         if (message.indexOf('(embedurl)') !== -1) {
             $.discord.say(channelName, s);
         } else {
-            $.discordAPI.sendMessageEmbed(channelName, new Packages.sx.blah.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                         .withColor(100, 65, 164)
                         .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/clip-embed-icon.png')
                         .withTitle($.lang.get('discord.cliphandler.clip.embedtitle'))
                         .appendDescription(s)
                         .withUrl(url)
+                        .withImage(clipThumbnail)
                         .withTimestamp(Date.now())
                         .withFooterText('Twitch')
                         .withFooterIcon($.twitchcache.getLogoLink()).build());
@@ -120,9 +127,9 @@
                 return;
             }
 
-            channelName = action.replace('#', '').toLowerCase();
+            channelName = $.discord.sanitizeChannelName(action);
             $.setIniDbString('discordSettings', 'clipsChannel', channelName);
-            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.set', channelName));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.set', action));
         }
 
         /*

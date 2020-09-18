@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,13 @@
      * @return {Boolean}
      */
     function isSpecial(command) {
-        return command == 'bet' || command == 'tickets' || command == 'bid' || command == 'adventure' || command == 'vote' || command == $.raffleCommand;
+        return command == 'bet' ||
+               command == 'tickets' ||
+               command == 'bid' ||
+               command == 'adventure' ||
+               command == 'vote' ||
+               command == 'joinqueue' ||
+               command == $.raffleCommand;
     }
 
     /*
@@ -101,7 +107,7 @@
                 return 0;
             }
         } else {
-            if (cooldown !== undefined) {
+            if (cooldown !== undefined && cooldown.seconds > 0) {
                 if (cooldown.isGlobal) {
                     if (cooldown.time > $.systemTime()) {
                         return (canIgnore(username, isMod) ? 0 : cooldown.time);
@@ -133,24 +139,24 @@
      * @param  {String}  username
      * @return {Number}
      */
-    function getSecs(username, command) {
+    function getSecs(username, command, isMod) {
         var cooldown = cooldowns[command];
 
-        if (cooldown !== undefined) {
+        if (cooldown !== undefined && cooldown.seconds > 0) {
             if (cooldown.isGlobal) {
                 if (cooldown.time > $.systemTime()) {
-                    return (cooldown.time - $.systemTime() > 1000 ? Math.floor(((cooldown.time - $.systemTime()) / 1000)) : 1);
+                    return (cooldown.time - $.systemTime() > 1000 ? Math.ceil(((cooldown.time - $.systemTime()) / 1000)) : 1);
                 } else {
                     return set(command, true, cooldown.seconds, isMod);
                 }
             } else {
                 if (cooldown.cooldowns[username] !== undefined && cooldown.cooldowns[username] > $.systemTime()) {
-                    return (cooldown.cooldowns[username] - $.systemTime() > 1000 ? Math.floor(((cooldown.cooldowns[username] - $.systemTime()) / 1000)) : 1);
+                    return (cooldown.cooldowns[username] - $.systemTime() > 1000 ? Math.ceil(((cooldown.cooldowns[username] - $.systemTime()) / 1000)) : 1);
                 }
             }
         } else {
             if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
-                return (defaultCooldowns[command] - $.systemTime() > 1000 ? Math.floor(((defaultCooldowns[command] - $.systemTime()) / 1000)) : 1);
+                return (defaultCooldowns[command] - $.systemTime() > 1000 ? Math.ceil(((defaultCooldowns[command] - $.systemTime()) / 1000)) : 1);
             } else {
                 return set(command, false, defaultCooldownTime, isMod);
             }
@@ -194,6 +200,11 @@
      * @param {Boolean} isGlobal
      */
     function add(command, seconds, isGlobal) {
+    	// Make sure we have the right type.
+    	if (typeof seconds !== 'number') {
+    		seconds = (parseInt(seconds + ''));
+    	}
+
         if (cooldowns[command] === undefined) {
             cooldowns[command] = new Cooldown(command, seconds, isGlobal);
             $.inidb.set('cooldown', command, JSON.stringify({

@@ -1,0 +1,226 @@
+<!--
+    Copyright (C) 2016-2020 phantom.bot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Dashboard</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fas fa-sm fa-tachometer-alt ion"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Information Boxes Top -->
+        <div class="row">
+            <!-- Uptime Box -->
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-red" id="bg-uptime" data-toggle="tooltip" title="How long the current broadcast has been live for.">
+                    <div class="inner">
+                        <h3 id="dashboard-uptime">Offline</h3>
+                        <p>Uptime</p>
+                    </div>
+                    <div class="icon">
+                        <i class="far fa-sm fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Views Box -->
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-teal" data-toggle="tooltip" title="The number of people who have viewed your channel. Click the number to hide.">
+                    <div class="inner">
+                        <h3 id="dashboard-views" style="cursor: pointer;">0</h3>
+                        <p>Views</p>
+                    </div>
+                    <div class="icon">
+                        <i class="far fa-sm fa-eye"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Followers Box -->
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-purple" data-toggle="tooltip" title="The number of followers the channel currently has. Click the number to hide.">
+                    <div class="inner">
+                        <h3 id="dashboard-followers" style="cursor: pointer;">0</h3>
+                        <p>Followers</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-sm fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viewers Box -->
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-yellow" data-toggle="tooltip" title="The number of people currently watching the broadcast. Click the number to hide.">
+                    <div class="inner">
+                        <h3 id="dashboard-viewers" style="cursor: pointer;">0</h3>
+                        <p>Viewers</p>
+                    </div>
+                    <div class="icon icon-override">
+                        <i class="fas fa-sm fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left section -->
+            <section class="col-lg-7">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Recent Events</h3>
+                    </div>
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <div class="event-log">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Split the section in half. -->
+                <div class="row">
+                    <!-- Left section -->
+                    <div class="col-md-6" id="twitch-chat-box">
+                        <div class="box box-solid">
+                            <div id="twitch-chat-iframe"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right section -->
+                    <div class="col-md-6" id="twitch-player-box">
+                        <div class="box box-solid">
+                            <div id="twitch-player-iframe"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right section -->
+            <section class="col-lg-5">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Stream Information</h3>
+                    </div>
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <!-- Stream Title Input -->
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" class="form-control" id="stream-title" placeholder="Title This Broadcast" data-str="text" data-toggle="tooltip" title="The current stream title">
+                            </div>
+
+                            <!-- Stream Game Input -->
+                            <div class="form-group">
+                                <label>Game</label>
+                                <input type="text" class="form-control" id="stream-game" placeholder="Search for a Game or Category" data-str="text" data-toggle="tooltip" title="The current stream game">
+                            </div>
+                        </div>
+                        <!-- Footer of the box -->
+                        <div class="box-footer">
+                            <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-update" data-candisable="true">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Quick action box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Quick Actions</h3>
+                    </div>
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <!-- Permit user -->
+                            <div class="form-group">
+                                <label>User Action</label>
+                                <div class="input-group input-group-md">
+                                    <input type="text" class="form-control" id="user-action-user" placeholder="Username" data-toggle="tooltip" title="Enter a username.">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Actions
+                                            <span class="fas fa-sm fa-caret-down"></span>
+                                        </button>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li class="user-action"><a href="#">Permit</a></li>
+                                            <li class="user-action"><a href="#">Shoutout</a></li>
+                                            <li class="user-action"><a href="#">Raid</a></li>
+                                            <li class="user-action"><a href="#">Host</a></li>
+                                        </ul>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Run command -->
+                            <div class="form-group">
+                                <label>Run Command</label>
+                                <select class="form-control select2 select2-hidden-accessible" id="custom-command-run" style="width: 100%;" aria-hidden="true">
+                                    <option></option>
+                                </select>
+                            </div>
+                            
+                            <!-- Run commercial -->
+                            <div class="form-group" id="grp-instant-commercial">
+                                <label>Run Commercial</label>
+                                <div class="input-group input-group-md">
+                                    <select class="form-control select2 select2-hidden-accessible" id="instant-commercial-length" data-toggle="tooltip" title="Commercial length, in seconds." aria-hidden="true">
+                                        <option></option>
+                                        <option>30</option>
+                                        <option>60</option>
+                                        <option>90</option>
+                                        <option>120</option>
+                                        <option>150</option>
+                                        <option>180</option>
+                                    </select>
+                                    <span class="input-group-addon" style="border: 0;">
+                                        <div class="pretty p-icon">
+                                            <input id="instant-commercial-silent" type="checkbox" data-toggle="tooltip" title="If checked, the bot won't announce the commercial in chat.">
+                                            <div class="state p-default">
+                                                <i class="icon fas fa-sm fa-check"></i>
+                                                <label>Silent</label>
+                                            </div>
+                                        </div>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-instant-commercial" data-candisable="true">Run</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Send as bot -->
+                            <div class="form-group">
+                                <label>Send Message as Bot</label>
+                                <div class="input-group input-group-md">
+                                    <input type="text" class="form-control" id="msg-bot" placeholder="Message" data-toggle="tooltip" title="Enter a message.">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary pull-right" id="dashboard-btn-msg-bot" data-candisable="true">Send</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- dashboard -->
+    <script src="js/pages/dashboard/dashboard.js"></script>
+</main>

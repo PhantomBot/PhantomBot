@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,12 +293,8 @@
         }
 
         /* Push the panel stats */
-        if ($.bot.isModuleEnabled('./handlers/panelHandler.js')) {
-            $.inidb.setAutoCommit(false);
             $.inidb.set('raffleList', username, true);
             $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
-            $.inidb.setAutoCommit(true);
-        }
     }
 
     /**

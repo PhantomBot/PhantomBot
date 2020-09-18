@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ $.lang.register('adventuresystem.join.needpoints', 'You can not join with $1, yo
 $.lang.register('adventuresystem.join.notpossible', 'You can not join now.');
 $.lang.register('adventuresystem.join.success', 'You have joined the adventure with $1!');
 $.lang.register('adventuresystem.loaded', 'Loaded adventure stories (found $1).');
+$.lang.register('adventuresystem.loaded.prefix', 'Loaded $1 adventure stories from $2.');
 $.lang.register('adventuresystem.payoutwhisper', 'Adventure completed, $1 + $2 has been added to your balance.');
 $.lang.register('adventuresystem.runstory', 'Starting adventure "$1" with $2 player(s).');
 $.lang.register('adventuresystem.set.success', 'Set $1 to $2.');
@@ -36,6 +37,7 @@ $.lang.register('adventuresystem.top5', 'The top 5 adventurers are: $1.');
 $.lang.register('adventuresystem.top5.empty', 'There haven\'t been any adventure winners recorded yet.');
 $.lang.register('adventuresystem.reset', 'The adventure has now cooled off! Use "!adventure [$1]" to start a new adventure!');
 
+$.lang.register('adventuresystem.stories.default', 'true');
 
 $.lang.register('adventuresystem.stories.1.title', 'Time Heist');
 $.lang.register('adventuresystem.stories.1.chapter.1', 'Your memory is vague, on the table a small laptop is playing a video: "My name is The Architect. The bank of Karabraxos is the most secure bank in the universe. You will rob the bank of Karabraxos!"');
@@ -60,10 +62,17 @@ $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors) run away. Le
 
 
 /*
+ * Using the stories that come with PhantomBot:
+ *
+ * - All stories that are bundled with the bot are in the namespace adventuresystem.stories.*
+ * - If you do not want to use these stories, set the following in your custom language file:
+ *     $.lang.register('adventuresystem.stories.default', 'false');
+ *
  * Rules on writing your own adventure story:
  *
- * - Stories are automatically loaded from this file by their sequence number (adventuresystem.stories.[This number]).
- * - Keep the format of your story as shown above.
+ * - Stories are automatically loaded from the language file by their sequence number (adventuresystem.stories.custom.[This number]).
+ * - It is recommended to use a custom language file for your own stories.
+ * - Keep the format of your story as shown above, adding the '.custom' portion of the identifier.
  * - There can be an unlimited number of stories, IF you keep their subsequence numbers 1, 2, 3, 4, 5...
  * - A story must have a title.
  * - A story can have an unlimited number of chapters, IF you keep their subsequence numbers 1, 2, 3, 4, 5...
@@ -74,14 +83,14 @@ $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors) run away. Le
  * - Add $.lang.register('adventuresystem.stories.NUMBER.game', 'GAME NAME IN LOWER CASE'); on top of the story chapter.
 
  * Example >
- * $.lang.register('adventuresystem.stories.5.game', 'programming');
- * $.lang.register('adventuresystem.stories.5.title', 'Talk Shows');
- * $.lang.register('adventuresystem.stories.5.chapter.1', 'random story...');
+ * $.lang.register('adventuresystem.stories.custom.1.game', 'programming');
+ * $.lang.register('adventuresystem.stories.custom.1.title', 'Talk Shows');
+ * $.lang.register('adventuresystem.stories.custom.1.chapter.1', 'random story...');
  *
  * Underneath is a template for your first custom story, just remove the preceding slashes.
  */
 
-//$.lang.register('adventuresystem.stories.5.title', '');
-//$.lang.register('adventuresystem.stories.5.chapter.1', '');
-//$.lang.register('adventuresystem.stories.5.chapter.2', '');
-//$.lang.register('adventuresystem.stories.5.chapter.3', '');
+//$.lang.register('adventuresystem.stories.custom.1.title', '');
+//$.lang.register('adventuresystem.stories.custom.1.chapter.1', '');
+//$.lang.register('adventuresystem.stories.custom.1.chapter.2', '');
+//$.lang.register('adventuresystem.stories.custom.1.chapter.3', '');

@@ -1,0 +1,49 @@
+<!--
+    Copyright (C) 2016-2020 phantom.bot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Poll Data for PhantomBot</title>
+
+    <!-- Load CSS for Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+    <!-- Load our styles -->
+    <link rel="stylesheet" href="css/styles.css"/>
+</head>
+
+<!-- Main body -->
+<body>
+    <div class="container">
+        <canvas class="poll hidden"></canvas>
+    </div>
+
+    <!-- Load jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- Load jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <!-- Load Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <!-- Load chartjs-plugin-datalabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.6.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- Load Reconnecting socket -->
+    <script src="/common/reconnecting-websocket/reconnectingWS.min.js"></script>
+    <!-- Load Bot config file -->
+    <script src="/common/js/wsConfig.js"></script>
+    <!-- Load our script -->
+    <script src="js/index.js"></script>
+</body>
+</html>

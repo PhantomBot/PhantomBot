@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('ranks_module_toggle', 'modules', './systems/ranksSystem.js', function(e) {
         // If the module is off, don't load any data.
-        if (!helpers.getModuleStatus('ranksModule', e.modules)) {
+        if (!helpers.handleModuleLoadUp('ranksModule', e.modules)) {
             return;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,7 +151,8 @@
      */
     function runPointsPayout() {
         var now = $.systemTime(),
-            uUsers = [],
+            normalPayoutUsers = [], // users that get the normal online payout, nothing custom.
+            isOnline = false,
             username,
             amount,
             i;
@@ -160,7 +161,7 @@
             return;
         }
 
-        if ($.isOnline($.channelName)) {
+        if ((isOnline = $.isOnline($.channelName))) {
             if (onlinePayoutInterval > 0 && (lastPayout + (onlinePayoutInterval * 6e4)) <= now) {
                 amount = onlineGain;
             } else {
@@ -174,10 +175,10 @@
             }
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
-            username = $.users[i][0].toLowerCase();
-            if ($.isOnline($.channelName)) {
+            username = $.users[i].toLowerCase();
+            if (isOnline) {
                 if ($.isMod(username) && $.isSub(username) || $.isAdmin(username) && $.isSub(username)) {
                     if (parseInt($.inidb.get('grouppoints', 'Subscriber')) > 0) {
                         amount = parseInt($.inidb.get('grouppoints', 'Subscriber'));
@@ -226,12 +227,18 @@
             }
 
             if (!getUserPenalty(username)) {
-                $.inidb.incr('points', username, amount);
-                uUsers.push(username + '(' + amount + ')');
+                if (amount == onlineGain || amount == offlineGain) {
+                    normalPayoutUsers.push(username);
+                } else {
+                    $.inidb.incr('points', username, amount);
+                }
             }
         }
-        $.inidb.setAutoCommit(true);
-        $.log.file('pointSystem', 'Executed ' + pointNameMultiple + ' payouts. Users: ' + (uUsers.length > 0 ? uUsers.join(', ') : 'none'));
+        
+
+        // Update points for all users with the same amount of online/offline gain.
+        $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
+
         lastPayout = now;
     };
 
@@ -311,11 +318,11 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
-            $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
+            $.inidb.incr('points', $.users[i].toLowerCase(), amount);
         }
-        $.inidb.setAutoCommit(true);
+        
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     };
@@ -330,13 +337,13 @@
             return;
         }
 
-        $.inidb.setAutoCommit(false);
+        
         for (i in $.users) {
-            if (getUserPoints($.users[i][0].toLowerCase()) > amount) {
-                $.inidb.decr('points', $.users[i][0].toLowerCase(), amount);
+            if (getUserPoints($.users[i].toLowerCase()) > amount) {
+                $.inidb.decr('points', $.users[i].toLowerCase(), amount);
             }
         }
-        $.inidb.setAutoCommit(true);
+        
 
         $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
     };
@@ -743,7 +750,7 @@
                     amount = $.randRange(1, action);
                 } while (amount == lastAmount);
                 totalAmount += amount;
-                $.inidb.incr('points', $.users[i][0].toLowerCase(), amount);
+                $.inidb.incr('points', $.users[i].toLowerCase(), amount);
             }
 
             if (totalAmount > 0) {
@@ -843,4 +850,5 @@
     $.getPointsMessage = getPointsMessage;
     $.updateSettings = updateSettings;
     $.setTempBonus = setTempBonus;
+    $.giveAll = giveAll;
 })();

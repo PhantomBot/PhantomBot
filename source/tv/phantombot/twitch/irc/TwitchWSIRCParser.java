@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 phantombot.tv
+ * Copyright (C) 2016-2020 phantom.bot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class TwitchWSIRCParser implements Runnable {
     // The user login sent in the anonymous sub gift event from Twitch.
     // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
     private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
-
+    private static TwitchWSIRCParser instance;
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
     private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
@@ -59,11 +59,21 @@ public class TwitchWSIRCParser implements Runnable {
     private final EventBus eventBus = EventBus.instance();
     private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
     private final BlockingDeque<Map<String, String>> giftedSubscriptionEvents = new LinkedBlockingDeque<>();
-    private final WebSocket webSocket;
+    private WebSocket webSocket;
     private final TwitchSession session;
     private final String channelName;
     private final Thread runThread;
 
+    public static synchronized TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
+        if (instance == null) {
+            instance = new TwitchWSIRCParser(webSocket, channelName, session);
+        } else {
+            instance.setWebSocket(webSocket);
+        }
+        
+        return instance;
+    }
+    
     /**
      * Class constructor.
      *
@@ -71,7 +81,8 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {String}    channelName
      * @param {TwitchSession}   session
      */
-    public TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
         this.webSocket = webSocket;
         this.channelName = channelName;
         this.session = session;
@@ -107,13 +118,17 @@ public class TwitchWSIRCParser implements Runnable {
         this.runThread = new Thread(this);
         this.runThread.start();
     }
+    
+    private void setWebSocket(WebSocket webSocket) {
+        this.webSocket = webSocket;
+    }
 
     /**
      * Method which is on a new thread that keeps track of gifted subscribers.
      */
     @Override
     public void run() {
-        while (true) {
+        while (!PhantomBot.isInExitState()) {
             try {
                 Map<String, String> tags = giftedSubscriptionEvents.take();
 
@@ -142,15 +157,20 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    public void parseData(String rawMessage) {
-        if (rawMessage.contains("\n")) {
-            String[] messageList = rawMessage.split("\n");
+    public void parseData(String rawMessage, TwitchWSIRC client) {
+        try {
+            if (rawMessage.contains("\n")) {
+                String[] messageList = rawMessage.split("\n");
 
-            for (String message : messageList) {
-                parseLine(message);
+                for (String message : messageList) {
+                    parseLine(message, client);
+                }
+            } else {
+                parseLine(rawMessage, client);
             }
-        } else {
-            parseLine(rawMessage);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("Failed to parse Twitch message: [" + ex.getMessage() + "] \n\n {" + rawMessage + "}");
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -160,7 +180,6 @@ public class TwitchWSIRCParser implements Runnable {
      * @param rawBadges
      * @return
      */
-    // "staff/1,moderator/1,turbo/1,bits/1000"
     private Map<String, String> parseBadges(String rawBadges) {
         // A user cannot have more than 4 badges, acording to Twitch.
         Map<String, String> badges = new HashMap<>(4);
@@ -189,6 +208,7 @@ public class TwitchWSIRCParser implements Runnable {
                         badges.put("user-type", badge);
                         break;
                     case "subscriber":
+                    case "founder":
                         badges.put("subscriber", "1");
                         break;
                     case "turbo":
@@ -212,20 +232,29 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} rawMessage
      */
-    private void parseLine(String rawMessage) {
+    private void parseLine(String rawMessage, TwitchWSIRC client) {
         Map<String, String> tags = new HashMap<>();
         String messageParts[] = rawMessage.split(" :", 3);
         String username = "";
         String message = "";
         String event;
 
+        if (rawMessage.startsWith("PONG")) {
+            client.gotPong();
+            return;
+        }
+
+        if (rawMessage.startsWith("PING")) {
+            return;
+        }
+
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {
             String[] tagParts = messageParts[0].substring(1).split(";");
 
             // We want to skip the first element which are badges, since they are parsed already.
-            for (int i = 0; i < tagParts.length; i++) {
-                String[] keyValues = tagParts[i].split("=");
+            for (String tagPart : tagParts) {
+                String[] keyValues = tagPart.split("=");
                 if (keyValues.length > 0) {
                     if (keyValues[0].equals("badges")) {
                         tags.putAll(parseBadges((keyValues.length == 1 ? "" : keyValues[1])));
@@ -259,7 +288,7 @@ public class TwitchWSIRCParser implements Runnable {
         }
 
         // Get username if present.
-        if (messageParts[0].indexOf("!") != -1) {
+        if (messageParts[0].contains("!")) {
             username = messageParts[0].substring(messageParts[0].indexOf("!") + 1, messageParts[0].indexOf("@"));
         }
 
@@ -284,7 +313,7 @@ public class TwitchWSIRCParser implements Runnable {
         String arguments = "";
 
         // Check for arguments.
-        if (command.indexOf(" ") != -1) {
+        if (command.contains(" ")) {
             String commandString = command;
             command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
@@ -461,22 +490,25 @@ public class TwitchWSIRCParser implements Runnable {
      * @param {Map}    tags
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
-        if (message.equals("Login authentication failed")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
-            com.gmt2001.Console.out.println("Please see: https://community.phantombot.tv/t/twitch-indicates-the-oauth-password-is-incorrect");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else if (message.equals("Invalid NICK")) {
-            com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
-            com.gmt2001.Console.out.println("Exiting PhantomBot.");
-            com.gmt2001.Console.out.println();
-            PhantomBot.exitError();
-        } else {
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
-            com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+        switch (message) {
+            case "Login authentication failed":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            case "Invalid NICK":
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
+                com.gmt2001.Console.out.println();
+                PhantomBot.exitError();
+                break;
+            default:
+                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
+                com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
+                break;
         }
     }
 
@@ -490,12 +522,12 @@ public class TwitchWSIRCParser implements Runnable {
     private void onUserNotice(String message, String username, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             if (tags.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan")));
+                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
             } else if (tags.get("msg-id").equalsIgnoreCase("sub")) {
                 if (tags.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login")));
+                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan")));
+                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months"), message));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
                 giftedSubscriptionEvents.add(tags);
@@ -554,23 +586,32 @@ public class TwitchWSIRCParser implements Runnable {
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
                     com.gmt2001.Console.out.println();
                     com.gmt2001.Console.out.println("[ERROR] oAuth token doesn't match the bot's Twitch account name.");
-                    com.gmt2001.Console.out.println("[ERROR] Please go to http://twitchapps.com/tmi and generate a new token.");
+                    com.gmt2001.Console.out.println("[ERROR] Please go to https://phantombot.github.io/PhantomBot/oauth/ and generate a new token.");
                     com.gmt2001.Console.out.println("[ERROR] Be sure to go to twitch.tv and login as the bot before getting the token.");
                     com.gmt2001.Console.out.println("[ERROR] After, open the botlogin.txt file and replace the oauth= value with the token.");
                     com.gmt2001.Console.out.println();
                 } else {
-                    com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
-                    com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
-                    com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
-                    com.gmt2001.Console.out.println();
+                    // Since the "user-type" tag in deprecated and Twitch wants us to reply on badges
+                    // A user can sometimes lose its badge for no reason from one message to another
+                    // So, this could possibly make the bot lose its moderator powers, even though the bot
+                    // is still a mod, so checking the "mod" tag before removing a user's moderator permissions
+                    // is the only way to fix this, an admin or staff member could lose moderation powers from the bot
+                    // for a second if they are not a channel moderator, so the bot would try and time them out if a moderation
+                    // filter is triggered. This fix is only to prevent the bot from losing moderator powers.
+                    if (!tags.containsKey("mod") || !tags.get("mod").equals("1")) {
+                        com.gmt2001.Console.out.println();
+                        com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
+                        com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
+                        com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
+                        com.gmt2001.Console.out.println();
 
-                    // We're not a mod thus we cannot send messages.
-                    session.setAllowSendMessages(false);
-                    // Remove the bot from the moderators list.
-                    if (moderators.contains(username)) {
-                        moderators.remove(username);
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                        // We're not a mod thus we cannot send messages.
+                        session.setAllowSendMessages(false);
+                        // Remove the bot from the moderators list.
+                        if (moderators.contains(username)) {
+                            moderators.remove(username);
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                        }
                     }
                 }
             }
