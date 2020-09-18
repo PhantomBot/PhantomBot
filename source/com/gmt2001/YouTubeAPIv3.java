@@ -206,9 +206,17 @@ public class YouTubeAPIv3 {
 //                }
 //            }
 //        } else {
+
 //            q = q.replaceAll("[^a-zA-Z0-9 ]", "");
 //            q = q.replace(" ", "%20");
 
+            if (q.startsWith("-")) {
+                q = "\\-" + q;
+            }
+            
+            com.gmt2001.Console.debug.println("Query: " + q);
+            com.gmt2001.Console.err.println("Query: " + q);
+            
             JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {
                 updateQuota(100L);

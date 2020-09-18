@@ -83,8 +83,13 @@
                 var bumpObj = JSON.parse($.inidb.get("bumps", bumps[i]));
                 if (bumpObj.hasOwnProperty('fulfilled')) {
                     var bumpFulfilled = bumpObj.fulfilled;
-                    var method = bumpObj.method;
                     var type = bumpObj.type;
+                    
+                    var method = '';
+                    if (bumpObj.hasOwnProperty('method')) {
+                        method = bumpObj.method;
+                    }
+                    
                     if (bumpFulfilled.equalsIgnoreCase("true") || method.equalsIgnoreCase("raid") || type.equalsIgnoreCase("free")) {
                         $.log.file('kentobotSystem', 'Deleting bump data for ' + bumps[i]);
                         $.inidb.del('bumps', bumps[i]);

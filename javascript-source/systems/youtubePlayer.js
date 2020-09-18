@@ -1202,7 +1202,10 @@
             var requestOwner = youtubeVideo.getOwner();
 
             if (lastRequesters != null) {
-                if (lastRequesters.size() > shuffleBuffer) {
+                $.log.file('youtube-player', "Last requests size = " + lastRequesters.size() + " " + "Last requests size = " + shuffleBuffer);
+
+                if (lastRequesters.size() >= shuffleBuffer) {
+                    $.log.file('youtube-player', "Polling the last requester to drop out oldest obj");
                     lastRequesters.poll();
                 }
             }
@@ -1216,9 +1219,8 @@
                 $.setIniDbString('bumps', youtubeVideo.getOwner(), JSON.stringify(bumpObj));
             }
 
-            if (!$.isAdmin(requestOwner)) {
-                currentPlaylist.addRequester(requestOwner);
-            }
+
+            currentPlaylist.addRequester(requestOwner);
 
             $.inidb.incr("songcounts", requestOwner + "-request-counts", 1);
 
@@ -2404,7 +2406,7 @@
             }
 
             $.discord.say(
-                    "#new-music-discovery",
+                    "#music-discovery",
                     $.lang.get(
                             'ytplayer.discord.save',
                             requestToSave.getVideoTitle(),
