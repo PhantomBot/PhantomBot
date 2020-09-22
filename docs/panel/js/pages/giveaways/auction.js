@@ -34,7 +34,7 @@ $(run = function () {
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
-        if (location.protocol.toLowerCase().startsWith('https')) {
+        if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
             // Add Twitch chat.
             $('#twitch-chat-auction').html($('<iframe/>', {
                 'frameborder': '0',
@@ -43,7 +43,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#twitch-chat-auction').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel');
+            $('#twitch-chat-auction').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantom.bot/guides/#guide=content/integrations/twitchembeds">this guide</a>.');
             $('#twitch-chat-auction').addClass('box-body');
         }
 

@@ -17,11 +17,11 @@
 
 // Script that handles all of the global things.
 
-$(function () {
+$(function() {
     // Dark mode toggle.
-    $('#dark-mode-toggle').on('click', function () {
+    $('#dark-mode-toggle').on('click', function() {
         // Update the toggle.
-        socket.updateDBValue('panel_dark_mode_toggle', 'panelData', 'isDark', $(this).is(':checked'), function () {
+        socket.updateDBValue('panel_dark_mode_toggle', 'panelData', 'isDark', $(this).is(':checked'), function() {
             window.location.reload();
         });
     });
@@ -35,12 +35,12 @@ $(function () {
     });
 
     // Load the display name.
-    $(function () {
+    $(function() {
         $('#main-name, #second-name').text(getDisplayName());
     });
 
     // Check if Discord is enabled.
-    socket.getDBValue('get_discord_status_index', 'panelData', 'hasDiscord', function (e) {
+    socket.getDBValue('get_discord_status_index', 'panelData', 'hasDiscord', function(e) {
         // Remove the tab if we are not using Discord.
         if (e.panelData !== 'true') {
             $('#discord_index_tab').remove();
@@ -49,7 +49,7 @@ $(function () {
     });
 
     // Get bot updates.
-    socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function (e) {
+    socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function(e) {
         if (e.settings !== null) {
             e.settings = e.settings.split('|');
 
@@ -61,10 +61,10 @@ $(function () {
             helpers.isDoUpdateLoop = true;
 
             // This timer is global and will never get killed.
-            setInterval(function () {
+            setInterval(function() {
                 helpers.log('Running bot version check.', helpers.LOG_TYPE.INFO);
 
-                socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function (e) {
+                socket.getDBValue('get_bot_updates', 'settings', 'newrelease_info', function(e) {
                     if (e.settings !== null) {
                         e.settings = e.settings.split('|');
 

@@ -104,7 +104,6 @@ $(function() {
                     case helpers.handleInputNumber(joinTime, 30):
                     case helpers.handleInputNumber(cooldownTime, 10):
                     case helpers.handleInputNumber(gainPercent, 1):
-                    case helpers.handleInputNumber(joinTime, 30):
                     case helpers.handleInputNumber(minBet, 1):
                     case helpers.handleInputNumber(maxBet, 1):
                         break;

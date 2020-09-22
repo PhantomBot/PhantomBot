@@ -264,7 +264,7 @@
      * @param {Function} handler
      */
     function addHook(hookName, handler) {
-        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
         if (hookName !== 'initReady' && $api.exists(hookName) == false) {
@@ -285,7 +285,7 @@
      * @param {String} hookName
      */
     function removeHook(hookName) {
-        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
         if (hooks[hookName] !== undefined) {

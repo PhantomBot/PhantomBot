@@ -50,7 +50,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -214,7 +213,7 @@ public final class PhantomBot implements Listener {
     private Boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
-    private Properties pbProperties;
+    private CaselessProperties pbProperties;
     private Boolean legacyServers = false;
     private Boolean backupDBAuto = false;
     private int backupDBHourFrequency = 0;
@@ -347,7 +346,7 @@ public final class PhantomBot implements Listener {
      *
      * @param Properties Properties object which configures the PhantomBot instance.
      */
-    public PhantomBot(Properties pbProperties) {
+    public PhantomBot(CaselessProperties pbProperties) {
 
         /* Set the exeption handler */
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -779,7 +778,7 @@ public final class PhantomBot implements Listener {
      *
      * @return
      */
-    public Properties getProperties() {
+    public CaselessProperties getProperties() {
         return this.pbProperties;
     }
 
@@ -1276,7 +1275,7 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        Properties startProperties = ConfigurationManager.getConfiguration();
+        CaselessProperties startProperties = ConfigurationManager.getConfiguration();
 
         setStaticFields(startProperties);
 
@@ -1284,7 +1283,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.instance = new PhantomBot(startProperties);
     }
 
-    private static void setStaticFields(Properties startProperties) {
+    private static void setStaticFields(CaselessProperties startProperties) {
         /* Check to enable debug mode */
         PhantomBot.setDebugging(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_DEBUGON, false));
         /* Check to enable debug to File */

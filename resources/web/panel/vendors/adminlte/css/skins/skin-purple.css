@@ -134,10 +134,7 @@
 
 .skin-purple .sidebar-form input[type="text"] {
     color: #666;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 2px;
+    border-radius: 2px 0 0 2px;
 }
 
 .skin-purple .sidebar-form input[type="text"]:focus,
@@ -152,21 +149,18 @@
 
 .skin-purple .sidebar-form .btn {
     color: #999;
-    border-top-left-radius: 0;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 0;
+    border-radius: 0 2px 2px 0;
 }
 
 .btn {
-    border-radius: 0px;
+    border-radius: 0;
     cursor: pointer;
 }
 
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus {
-    border-radius: 0px;
+    border-radius: 0;
     outline: none;
     box-shadow: none;
 }
@@ -194,16 +188,16 @@
 }
 
 .form-control {
-    border-radius: 0px;
+    border-radius: 0;
     border: 1px solid rgba(70, 70, 70, 0.15);
 }
 
 .form-control:focus, .form-control:active {
     border-color: #6441a5;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .box {
-    border-radius: 0px;
+    border-radius: 0;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }

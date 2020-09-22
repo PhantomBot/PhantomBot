@@ -61,6 +61,21 @@
             #back2Top:hover {
                 color: #aaa;
             }
+            #copy-box {
+                position: absolute;
+                top: 0px;
+                margin-left: 50px;
+                z-index: 100;
+                width: 420px;
+                border-radius: 3px;
+            }
+            #copy-box-input {
+                width: 400px;
+            }
+            .label-copy {
+                border-radius: 3px;
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -103,6 +118,18 @@
             <!-- Main content -->
             <aside class="content-wrapper">
                 <div id="page-content">
+                    <div id="copy-box" style="display: none;" class="box box-solid box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Jump Link</h3>
+                            <div class="box-tools pull-right">
+                                <span class="label label-primary label-copy" onclick="$('#copy-box-input').focus(); $('#copy-box-input').select(); document.execCommand('copy');">Copy</span>
+                                <span class="label label-danger label-copy" onclick="$('#copy-box').hide();">X</span>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <input type="text" id="copy-box-input" readonly="readonly" value="">
+                        </div>
+                    </div>
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body" id="content-pane">
@@ -133,6 +160,7 @@
             'use strict';
             $(function () {
                 var lastPage = 'null';
+                window.renderdata = '';
                 const { Remarkable, linkify, utils } = window.remarkable;
                 var hashmap = [];
                 var md = new Remarkable('full', {
@@ -172,6 +200,9 @@
                 md.use(function(md) {
                     md.renderer.rules.heading_open = function(tokens, idx) {
                         return '<h' + tokens[idx].hLevel + ' id=' + window.markdownToc.slugify(tokens[idx + 1].content) + '>';
+                    };
+                    md.renderer.rules.heading_close = function(tokens, idx) {
+                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + window.markdownToc.slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
                     };
                 });
                 md.use(function(md) {
@@ -282,9 +313,9 @@
                                         return true;
                                     },
                                     linkify: function(token, anchor, slug, opts) {
-                                        let newhash = '';
+                                        let newhash = 'guide=' + path;
                                         for (let x in hashmap) {
-                                            if (x !== 'jumpto') {
+                                            if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
                                                 if (newhash.length > 0) {
                                                     newhash = newhash + '&';
                                                 }
@@ -299,6 +330,7 @@
                                     }
                                 });
                                 data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
+                                window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
@@ -352,10 +384,14 @@
 
                 function jumpToHeader() {
                     if (hashmap.hasOwnProperty('jumpto')) {
-                        let elm = $('#' + hashmap['jumpto']);
-                        if (elm.length > 0) {
-                            elm[0].scrollIntoView({behavior: 'smooth'});
-                        }
+                        jumpTo(hashmap['jumpto']);
+                    }
+                }
+
+                function jumpTo(slug) {
+                    let elm = $('#' + slug);
+                    if (elm.length > 0) {
+                        elm[0].scrollIntoView({behavior: 'smooth'});
                     }
                 }
 

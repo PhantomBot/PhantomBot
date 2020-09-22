@@ -5,6 +5,7 @@ Due to changes by Twitch, the chat and live feed panel can no longer be displaye
 To make it work:
 - SSL certificate required
 - URL must not contain a port number
+- URL must not be an IP Address
 
 NOTE: If you access your panel at _localhost:25000_, the port number requirement does not apply.
 
@@ -81,11 +82,13 @@ For this method, follow the steps in Method 1 for setting up and trusting the se
 
 After setting up the SSL certificate, change (or add, if this line is missing) the `baseport=` in your _botlogin.txt_ to a value of 443.
 
-Once you restart the bot you can access the panel without using a port number (eg. `https://192.168.0.2`).
+Once you restart the bot you can access the panel without using a port number (eg. `https://bot.my.domain`).
 
 **NOTE:** This method is not compatible with bots running on servers or other devices that already have a webserver running on them with SSL enabled.
 
 **NOTE:** You may have to run the bot as root to enable it to bind to port 443.
+
+**NOTE:** This method does not work when accessing the bot by IP address. A domain, sub-domain, or hostname is required.
 
 &nbsp;
 
@@ -127,3 +130,39 @@ server {
 }
 ```
 Edit the corresponding fields as you needs, `<servername>`, and `<domain>`.
+
+
+#### Apache2.4 Sample Config
+
+**NOTE:** Proxying with Apache requires all of the following Apache modules, otherwise the panel will not work: mod_proxy, mod_proxy_http, mod_proxy_wstunnel
+
+```
+<VirtualHost <servername>:80>
+    ServerName <servername>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    RewriteEngine on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName <servername>
+
+    SSLEngine On
+    SSLCertificateFile    <path>
+    SSLCertificateKeyFile <path>
+    SSLCertificateChainFile <path>
+    
+    ProxyRequests On
+    ProxyPass "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPassReverse "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPass "/" "http://127.0.0.1:25000/"
+    ProxyPassReverse "/" "http://127.0.0.1:25000/"
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Edit the corresponding fields as you needs, `<servername>` and `<path>`.

@@ -216,14 +216,14 @@ $(function () {
             if (fileName.length > 0) {
                 break;
             }
-            if (supportsAudioType(x) !== '') {
+            if (supportsAudioType(extensions[x]) !== '') {
                 found = true;
                 $.ajax({
                     async: false,
                     method: 'HEAD',
-                    url: defaultPath + name + '.' + x,
+                    url: defaultPath + name + '.' + extensions[x],
                     success: function () {
-                        fileName = (defaultPath + name + '.' + x);
+                        fileName = (defaultPath + name + '.' + extensions[x]);
                     }
                 });
             }
@@ -347,7 +347,8 @@ $(function () {
             } else {
                 htmlObj = $('<img/>', {
                     'src': defaultPath + gifFile,
-                    'style': gifCss
+                    'style': gifCss,
+                    'alt': "Video"
                 });
             }
 

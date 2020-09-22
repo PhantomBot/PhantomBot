@@ -91,6 +91,10 @@ public class H2Store extends DataStore {
     private String validateFname(String fName) {
         fName = fName.replaceAll("([^a-zA-Z0-9_])", "_");
 
+        if (fName.matches("^[0-9]+")) {
+            fName = "_" + fName;
+        }
+
         return fName;
     }
 
@@ -819,8 +823,20 @@ public class H2Store extends DataStore {
 
             connection.setAutoCommit(false);
 
-            try (Statement statement = connection.createStatement()) {
-                statement.execute("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + " + value + " WHERE section = '" + section + "' AND variable IN ('" + String.join("', '", keys) + "');");
+            StringBuilder sb = new StringBuilder(keys.length * 2);
+
+            for (String key : keys) {
+                sb.append("?,");
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS INTEGER) + ? WHERE section = ? AND variable IN (" + sb.deleteCharAt(sb.length() - 1).toString() + ");")) {
+                statement.setInt(1, Integer.parseUnsignedInt(value));
+                statement.setString(2, section);
+                int i = 3;
+                for (String k : keys) {
+                    statement.setString(i++, k);
+                }
+                statement.execute();
             }
 
             try (PreparedStatement statement = connection.prepareStatement("MERGE INTO phantombot_" + fName + " USING DUAL ON section=? AND variable=? WHEN NOT MATCHED THEN INSERT VALUES (?, ?, ?);")) {

@@ -201,6 +201,7 @@
 
     /*
      * @event command
+     * @usestransformers global
      */
     $.bind('command', function (event) {
         var sender = event.getSender(),

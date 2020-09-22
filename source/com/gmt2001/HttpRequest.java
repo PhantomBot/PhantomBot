@@ -31,7 +31,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpRequest {
 
-    private static final int timeout = 5 * 1000;
+    private static final int TIMEOUT = 5 * 1000;
 
     public static enum RequestType {
 
@@ -69,15 +69,16 @@ public class HttpRequest {
             h.setRequestMethod(type.name());
             h.setUseCaches(false);
             h.setDefaultUseCaches(false);
-            h.setConnectTimeout(timeout);
-            h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            if (!post.isEmpty()) {
+            h.setConnectTimeout(TIMEOUT);
+            h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2020");
+            if (type == RequestType.POST || type == RequestType.PUT) {
                 h.setDoOutput(true);
+                h.setRequestProperty("Content-Length", "" + post.getBytes().length);
             }
 
             h.connect();
 
-            if (!post.isEmpty()) {
+            if (type == RequestType.POST || type == RequestType.PUT) {
                 try (BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream())) {
                     stream.write(post.getBytes());
                     stream.flush();

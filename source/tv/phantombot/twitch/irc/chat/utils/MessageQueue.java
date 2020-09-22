@@ -95,7 +95,11 @@ public class MessageQueue implements Runnable {
      * @param {String} message
      */
     public void say(String message) {
-        queue.add(new Message(message));
+        message = message.replace('\r', ' ');
+        String[] spl = message.split("\n");
+        for (String str : spl) {
+            queue.add(new Message(str));
+        }
     }
 
     /**
@@ -104,7 +108,11 @@ public class MessageQueue implements Runnable {
      * @param {String} message
      */
     public void sayNow(String message) {
-        queue.addFirst(new Message(message, message.startsWith(".")));
+        message = message.replace('\r', ' ');
+        String[] spl = message.split("\n");
+        for (int i = spl.length; i > 0; i--) {
+            queue.addFirst(new Message(spl[i - 1], spl[i - 1].startsWith(".")));
+        }
     }
 
     /**

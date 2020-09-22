@@ -38,9 +38,9 @@
     margin-bottom: 10px;
     max-width: 100%;
     height: 85px;
-    -webkit-box-shadow: 0px 3px 5px #000;
-    -moz-box-shadow:    0px 3px 5px #000;
-    box-shadow:         0px 3px 5px #000;
+    -webkit-box-shadow: 0 3px 5px #000;
+    -moz-box-shadow:    0 3px 5px #000;
+    box-shadow:         0 3px 5px #000;
     overflow: hidden;
 }
 
@@ -60,14 +60,14 @@ h1 {
     padding-top: 20px;
     margin-left: 15px;
     font-size: 26px;
-    font-family: "Roboto", arial;
+    font-family: "Roboto", arial, sans-serif;
     display: inline-block;
 }
 
 .chat {
     width: 300px;
     height: 600px;
-    padding-top: 0px;
+    padding-top: 0;
     vertical-align: top;
 }
 
@@ -76,8 +76,7 @@ h1 {
     border-color: #6441a5;
     height: 600px;
     width: 300px;
-    scrolling: no;
-    order: 1px;
+    order: 1;
 }
 
 #main {
@@ -133,7 +132,7 @@ option:hover {
 }
 
 #copyright {
-    font-family: "Roboto", arial;
+    font-family: "Roboto", arial, sans-serif;
     display: inline;
     float: left;
     width: 100%;
@@ -153,44 +152,44 @@ option:hover {
 #currentSong {
     background-color: #444444;
     color: #ffffff;
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 18px;
 }
 
 .currentSong-small {
     color: #ffffff;
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 16px;
 }
 
 table {
-    border: 0px;
+    border: 0;
     width: 100%;
 }
 
 #currentSongTable tr:nth-child(even) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #CCC;
     color: black;
     font-size: 14px;
 }
 
 #currentSongTable tr:nth-child(odd) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #FFF;
     color: black;
     font-size: 14px;
 }
 
 #currentSongTable td {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #currentSongTable th {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
@@ -198,35 +197,35 @@ table {
 
 
 #songTable tr:nth-child(even) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #CCC;
     color: black;
     font-size: 14px;
 }
 
 #songTable tr:nth-child(odd) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #FFF;
     color: black;
     font-size: 14px;
 }
 
 #songTable td {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #songTable th {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #playerTable tr {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #444444;
     color: white;
     font-size: 18px;
@@ -234,14 +233,14 @@ table {
 }
 
 #playerTable td {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
-#songTableTitle {
-    font-family: "Roboto", Sans-serif;
+.songTableTitle {
+    font-family: "Roboto", sans-serif;
     background: #7451b5;
     color: white;
     font-size:14px;
@@ -250,7 +249,7 @@ table {
 }
 
 #playlistTableTitle {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #7451b5;
     color: white;
     font-size:14px;
@@ -259,28 +258,28 @@ table {
 }
 
 #playlistTable tr:nth-child(even) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #CCC;
     color: black;
     font-size: 14px;
 }
 
 #playlistTable tr:nth-child(odd) {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     background: #FFF;
     color: black;
     font-size: 14px;
 }
 
 #playlistTable td {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;
 }
 
 #playlistTable th {
-    font-family: "Roboto", Sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 5px;
     text-align: left;
     vertical-align: middle;

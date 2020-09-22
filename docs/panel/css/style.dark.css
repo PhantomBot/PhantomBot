@@ -10,7 +10,7 @@ a:focus {
     color: #734eb9;
 }
 
-lable {
+label {
     font-weight: bold;
 }
 
@@ -121,7 +121,7 @@ ul.recent-events li {
 
 ul.recent-events li p {
     font-size: 14px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 ul.recent-events li p span {
@@ -200,7 +200,7 @@ a.disabled {
 .panel,
 .panel-default,
 .panel-group {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     background-color: #1b1b1b;
     border-color: #424242;
 }
@@ -253,7 +253,7 @@ a.disabled {
 
 /* Sweetalert */
 .swal-modal {
-    border-radius: 0px;
+    border-radius: 0;
     background-color: #1a1a1a;
 }
 
@@ -281,14 +281,14 @@ a.disabled {
     background-color: #313131;
     color: #fff;
     border: 1px solid #272727;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--cancel:hover {
     background-color: #272727;
     color: #fff;
     border: 1px solid #1f1f1f;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--danger,
@@ -296,13 +296,13 @@ a.disabled {
 .swal-button--danger:active  {
     background-color: #dd4b39 !important;
     border: 1px solid #d73925 !important;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--danger:hover {
     background-color: #d73925 !important;
     border: 1px solid #d73925 !important;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--confirm,
@@ -311,14 +311,14 @@ a.disabled {
     background-color: #6441a5;
     text-decoration: none;
     border: 1px solid #2f098c;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--confirm:hover {
     background-color: #6b49ab;
     text-decoration: none;
     border: 1px solid #2f098c;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button {
