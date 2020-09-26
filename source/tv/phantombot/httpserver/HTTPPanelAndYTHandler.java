@@ -50,6 +50,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/panel", this);
         HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
+        HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
     }
 
