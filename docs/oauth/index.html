@@ -254,12 +254,12 @@
                 if (queryMap.size > 0) {
                     if (queryMap.has('access_token') && queryMap.has('state')) {
                         // Get the state.
-                        state = window.localStorage.getItem('state');
+                        state = window.sessionStorage.getItem('state');
 
                         if (queryMap.get('state') === state) {
                             $('#success-box').removeClass('hide');
                             $('#success-br').removeClass('hide');
-                            $('#success-box').html('Your ' + window.localStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
+                            $('#success-box').html('Your ' + window.sessionStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
                                 'class': 'form-control',
                                 'type': 'text',
                                 'readonly': true,
@@ -268,8 +268,8 @@
                             }));
 
                             // Remove the state.
-                            window.localStorage.removeItem('state');
-                            window.localStorage.removeItem('state-type');
+                            window.sessionStorage.removeItem('state');
+                            window.sessionStorage.removeItem('state-type');
                         }
                     }
                 } else {
@@ -283,8 +283,8 @@
                         }
 
                         // Save the state.
-                        window.localStorage.setItem('state', state);
-                        window.localStorage.setItem('state-type', type);
+                        window.sessionStorage.setItem('state', state);
+                        window.sessionStorage.setItem('state-type', type);
 
                         return state;
                     }
