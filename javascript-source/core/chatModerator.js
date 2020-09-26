@@ -327,11 +327,11 @@
     }
 
     /**
-     * @function addToWhitelist
+     * @function addToWhiteList
      *
      * @param {string} url
      */
-    function addToWhitelist(url) {
+    function addToWhiteList(url) {
         whiteList.push(new RegExp(url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'));
     }
 
@@ -343,7 +343,7 @@
         whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            addToWhitelist(keys[i] + '');
+            addToWhiteList(keys[i] + '');
         }
     }
 
@@ -1034,7 +1034,7 @@
                 }
                 var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
-                addToWhitelist(link);
+                addToWhiteList(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
                 $.log.event('"' + link + '" was added the the whitelist by ' + sender);
             }
