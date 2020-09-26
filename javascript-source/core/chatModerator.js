@@ -460,7 +460,7 @@
     function checkBlackList(sender, event, message, tags) {
         for (i in blackList) {
             if (blackList[i].isRegex) {
-                if (blackList[i].phrase.test(message)) {
+                if ($.test(message, blackList[i].phrase)) {
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
@@ -505,7 +505,7 @@
      */
     function checkWhiteList(message) {
         function checkLink(link, whiteListItem) {
-            var baseLink = link.match(/[^.]*[^/]*/)[0];
+            var baseLink = $.match(link, /[^.]*[^/]*/)[0];
             var matches = $.matchAll(link, whiteListItem);
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
@@ -537,7 +537,7 @@
      * @param {string} message
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && youtubeLinks.test(message)) {
+        if ($.youtubePlayerConnected && $.test(message, youtubeLinks)) {
             return true;
         }
         return false;
