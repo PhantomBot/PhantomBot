@@ -287,7 +287,7 @@
                     addScopeItem('broadcaster', x, scopesBroadcaster[x]);
                 }
 
-                var queryString = window.location.hash, // Query string that starts with ?
+                var queryString = window.location.search, // Query string that starts with ?
                         queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
                         queryMap = new Map(), // Create a new map for save our keys and values.
                         baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
