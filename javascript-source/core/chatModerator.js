@@ -327,7 +327,7 @@
     }
 
     /**
-     * @function loadWhiteList
+     * @function addToWhitelist
      *
      * @param {string} url
      */
