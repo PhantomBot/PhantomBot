@@ -17,36 +17,14 @@
 
 version: '3'
 services:
-
-  caddy:
-    container_name: caddy
-    image: caddy:latest
-    ports:
-      - 443:443
-    restart: always
-    depends_on:
-      - phantombot
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
-    command: [
-      "caddy",
-      "reverse-proxy",
-      "--from",
-      "${DOMAIN:-localhost}",
-      "--to",
-      "phantombot-nightly:25000"
-    ]
-
   phantombot:
     # build: 
     #   context: .
     #   dockerfile: Dockerfile
-    #   args:
-    #     PROJECT_VERSION: $PROJECT_VERSION
-    #     TARGETPLATFORM: ${TARGETPLATFORM:-linux/amd64}
     container_name: phantombot-nightly
     image: gmt2001/phantombot-nightly:latest
+    ports:
+      - "25000:25000"
     restart: always
     volumes:
       - PhantomBot_data:/opt/PhantomBot_data
@@ -61,11 +39,9 @@ services:
       # Twitch caster channel (Required)
       PHANTOMBOT_CHANNEL:
       # Webinterface username
-      PHANTOMBOT_PANELUSER:
+      #- PHANTOMBOT_PANELUSER=
       # Webinterface password
       PHANTOMBOT_PANELPASSWORD:
 
 volumes:
-  caddy_data:
-  caddy_config:
   PhantomBot_data:
