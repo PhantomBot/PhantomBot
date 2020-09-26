@@ -18,9 +18,6 @@
 version: '3'
 services:
   phantombot:
-    # build: 
-    #   context: .
-    #   dockerfile: Dockerfile
     container_name: phantombot-nightly
     image: gmt2001/phantombot-nightly:latest
     ports:
@@ -31,17 +28,19 @@ services:
     environment:
       # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # Twitch bot user (Required)
-      PHANTOMBOT_USER:
+      PHANTOMBOT_USER: ""
       # Twitch bot user OAuth token (https://twitchapps.com/tmi/) (Required)
-      PHANTOMBOT_OAUTH:
+      PHANTOMBOT_OAUTH: ""
       # Twitch caster channel OAuth token (https://phantom.bot/oauth/)
-      PHANTOMBOT_APIOAUTH:
+      PHANTOMBOT_APIOAUTH: ""
       # Twitch caster channel (Required)
-      PHANTOMBOT_CHANNEL:
+      PHANTOMBOT_CHANNEL: ""
       # Webinterface username
-      #- PHANTOMBOT_PANELUSER=
+      PHANTOMBOT_PANELUSER: ""
       # Webinterface password
-      PHANTOMBOT_PANELPASSWORD:
+      PHANTOMBOT_PANELPASSWORD: ""
+      # Webinterface use https?
+      PHANTOMBOT_USEHTTPS: "true"
 
 volumes:
   PhantomBot_data:
