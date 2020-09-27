@@ -900,6 +900,13 @@
         });
 
         /*
+         * @event yTPlayerRequestQueueInfoEvent
+         */
+        $api.on($script, 'yTPlayerRequestQueueInfo', function (event) {
+            callHook('yTPlayerRequestQueueInfo', event, false);
+        });
+
+        /*
          * @event twitterEvent
          */
         $api.on($script, 'twitter', function (event) {

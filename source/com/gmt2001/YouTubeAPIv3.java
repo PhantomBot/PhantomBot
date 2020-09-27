@@ -210,14 +210,17 @@ public class YouTubeAPIv3 {
 //            q = q.replaceAll("[^a-zA-Z0-9 ]", "");
 //            q = q.replace(" ", "%20");
 
+            String escapedQuery;
             if (q.startsWith("-")) {
-                q = "\\-" + q;
+                escapedQuery = "\\-" + q;
+            } else {
+                escapedQuery = q;
             }
             
             com.gmt2001.Console.debug.println("Query: " + q);
             com.gmt2001.Console.err.println("Query: " + q);
             
-            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
+            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + escapedQuery + "&key=" + apikey + "&type=video&part=snippet&maxResults=10");
             if (j2.getBoolean("_success")) {
                 updateQuota(100L);
                 if (j2.getInt("_http") == 200) {
@@ -232,20 +235,26 @@ public class YouTubeAPIv3 {
 //                    com.gmt2001.Console.err.println("JSON: " + j2.toString(2));
                     
                     JSONArray a = j2.getJSONArray("items");
-                    if (a.length() > 0) {
-                        JSONObject it = a.getJSONObject(0);
+                    
+                    for (int i = 0; i < a.length(); i++) {
+                        JSONObject result = a.getJSONObject(i);
+                        JSONObject idJson = result.getJSONObject("id");
+                        String videoId = idJson.getString("videoId");
+                        
+                        com.gmt2001.Console.err.println("Checking " + q + " against " + videoId);
+                        
+                        if (q.equalsIgnoreCase(videoId)) {
+                            JSONObject id = result.getJSONObject("id");
+                            JSONObject sn = result.getJSONObject("snippet");
 
-                        JSONObject id = it.getJSONObject("id");
-                        JSONObject sn = it.getJSONObject("snippet");
+                            com.gmt2001.Console.debug.println("Search API Success");
 
-                        com.gmt2001.Console.debug.println("Search API Success");
-
-                        return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle"), j2.getString("regionCode") };
-                    } else {
-                        com.gmt2001.Console.debug.println("Search API Fail: Length == 0");
-
-                        return new String[] { "", "", "", "" };
+                            return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle"), j2.getString("regionCode") };
+                        }
                     }
+                    
+                    com.gmt2001.Console.debug.println("Search API Fail: Couldn't find request");
+                    return new String[] { "", "", "", "" };
                 } else {
                     com.gmt2001.Console.debug.println("Search API Fail: HTTP Code " + j2.getInt("_http"));
 

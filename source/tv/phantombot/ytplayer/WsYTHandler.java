@@ -51,6 +51,7 @@ import tv.phantombot.event.ytplayer.YTPlayerLoadPlaylistEvent;
 import tv.phantombot.event.ytplayer.YTPlayerRandomizeEvent;
 import tv.phantombot.event.ytplayer.YTPlayerRequestCurrentSongEvent;
 import tv.phantombot.event.ytplayer.YTPlayerRequestPlaylistEvent;
+import tv.phantombot.event.ytplayer.YTPlayerRequestQueueInfoEvent;
 import tv.phantombot.event.ytplayer.YTPlayerRequestSongHistoryEvent;
 import tv.phantombot.event.ytplayer.YTPlayerRequestSonglistEvent;
 import tv.phantombot.event.ytplayer.YTPlayerSkipSongEvent;
@@ -295,6 +296,9 @@ public class WsYTHandler implements WsFrameHandler {
                         break;
                     case "songrequesthistory":
                         EventBus.instance().postAsync(new YTPlayerRequestSongHistoryEvent());
+                        break;
+                    case "songqueueinfo":
+                        EventBus.instance().postAsync(new YTPlayerRequestQueueInfoEvent());
                         break;
                     default:
                         break;

@@ -1,0 +1,419 @@
+/*
+DARK BLUE - #0E1336;
+LIGHT BLUE - #4376BB;
+PURPLE - #523877;
+ORANGE - #F57E20;
+GREEN - #5C9240;
+*/
+
+html,
+body
+{
+	width: 100%;
+	min-height: 100vh;
+	margin: 0px;
+	padding: 0px;
+	background-color: #CCCCCC;
+	text-align: center;
+	font: 13px Helvetica, Arial;
+}
+
+html{overflow-y: scroll;}
+
+@media (min-width: 1200px) {
+	body {
+        background-image: url("../images/pattern-l.png"), url("../images/pattern-r.png");
+		background-position: left top, right top;
+		background-repeat: repeat-y, repeat-y;
+    }
+}
+
+@font-face {
+	font-family: "MavenPro";
+	src: url("../fonts/MavenPro-Regular.ttf");
+}
+
+*{
+	font-family: "MavenPro", Helvetica, Arial;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/*-------------------------------------*/
+
+#container{
+	width: 1000px;
+	display: inline-block;
+	text-align: center;
+}
+
+.innerContainer{
+	display: inline-block;
+	text-align: center;
+	margin: 0px;
+	padding: 0px;
+}
+
+#loading{
+	color: #555555;
+	font-family: Helvetica, Arial;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 50px;
+}
+
+#menuTop{padding-top: 20px;}
+
+.button {
+	cursor: pointer;
+	-webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+}
+
+.buttonMenu{
+	font-size: 18px;
+	font-weight: bold;
+	color: #0E1336;
+	letter-spacing: 1px;
+	text-align: center;
+	box-sizing: border-box;
+	border: 2px solid #0E1336;
+	display: inline-block;
+	padding: 0px;
+	width: 245px;
+	height: 32px;
+	line-height: 28px;
+	float: left;
+}
+
+.buttonMenu:hover{
+	color: #F57E20;
+	border: 2px solid #F57E20;
+}
+
+.buttonSeason{
+	font-size: 18px;
+	font-weight: bold;
+	color: #0E1336;
+	letter-spacing: 1px;
+	text-align: center;
+	box-sizing: border-box;
+	border: 2px solid #0E1336;
+	display: inline-block;
+	padding: 0px;
+	width: 50px;
+	height: 32px;
+	line-height: 28px;
+	float: left;
+}
+
+.buttonSeason:hover{
+	color: #F57E20;
+	border: 2px solid #F57E20;
+}
+
+.leftButtonA{
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+}
+
+.rightButtonA{
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border-left: 0px;
+	margin-left: -2px;
+}
+
+.leftButtonB{
+	border-bottom-left-radius: 8px;
+}
+
+.rightButtonB{
+	border-bottom-right-radius: 8px;
+	border-left: 0px;
+	margin-left: -2px;
+}
+
+.midButton{
+	border-left: 0px;
+	margin-left: -2px;
+}
+
+.selected{
+	background-color: #0E1336;
+	color: #FFFFFF;
+}
+
+/*-------------------------------------*/
+
+.title{
+	font-size: 15px;
+	font-weight: bold;
+	color: #FFFFFF;
+	letter-spacing: 1px;
+	text-align: center;
+	box-sizing: border-box;
+	border: 2px solid #0E1336;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 32px;
+	line-height: 28px;
+	float:left;
+	margin-top: 20px;
+}
+
+.roundTL{border-top-left-radius: 8px;}
+.roundTR{border-top-right-radius: 8px;}
+.roundBL{border-bottom-left-radius: 8px;}
+.roundBR{border-bottom-right-radius: 8px;}
+
+#titleSeason{
+	width: 100%;
+	border-bottom: 0px;
+}
+
+#titleSongTitle{width: 400px; border-right: 0px; text-align: left;}
+#titleArtist{width: 400px; border-right: 0px; text-align: left;}
+#titleYear{width: 70px; border-right: 0px;}
+#titleStreamDate{width: 130px;}
+
+.userHeader{
+	width: 100%;
+	background-color: #0E1336;
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	text-align: left;
+	box-sizing: border-box;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 24px;
+	line-height: 22px;
+	margin-top: 8px;
+	margin-bottom: -4px;
+	width: 1000px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.headertrim{
+	position: relative;
+	top: -2px;
+}
+.headerTrim{
+	position: relative;
+	top: -2px;
+}
+
+.userClickable{cursor: pointer;}
+.userClickable:hover{color: #5C9240;}
+
+.data{
+	font-size: 13px;
+	font-weight: bold;
+	color: #0E1336;
+	letter-spacing: 1px;
+	text-align: left;
+	box-sizing: border-box;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 28px;
+	line-height: 26px;
+	float: left;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.dataDouble{
+	height: 46px;
+	line-height: 18px;
+	padding-top: 4px;
+}
+
+.dataSongTitle{width: 400px; border-right: 0px;}
+.dataArtist{width: 400px; border-right: 0px;}
+.dataYear{width: 70px; border-right: 0px; text-align:center;}
+.dataStreamDate{width: 130px;}
+
+.dataRow{height: 28px; clear: left; border-top: 1px solid #0E1336;}
+.dataRow:hover{background-color: #AAAAAA;}
+.mostRecent{background-color: #4376BB;}
+
+.dataRowDouble{height: 46px; clear: left;}
+.dataRowDouble:hover{background-color: #AAAAAA;}
+
+.sotsHighlight{
+	font-weight: bold; 
+	font-size: 12px;
+	letter-spacing: 1px;
+	color: #F57E20;
+	text-shadow: 1px 1px #222222;
+}
+
+/*-------------------------------------*/
+
+#dataContainerUserStats{padding-bottom:40px;}
+#dataContainerUserSummary{padding-bottom:40px;}
+#dataContainerSongStats{padding-bottom:40px;}
+
+#titleGapBuffer{width: 520px; border: 0px;}
+#titleGapTypeDay{width: 240px; border-right: 0px; border-bottom:0px}
+#titleGapTypeStr{width: 240px; border-bottom: 0px;}
+
+#titleUser{width: 360px; border-right: 0px; clear: left; margin-top:0px}
+#titleUWins{width: 80px; border-right: 0px; margin-top:0px}
+#titleUStreak{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapDayL{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapDayS{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapDayC{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapStrL{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapStrS{width: 80px; border-right: 0px; margin-top:0px}
+#titleUGapStrC{width: 80px; margin-top:0px}
+
+.dataUser{width: 360px; border-right: 0px;}
+.dataUWins{width: 80px; border-right: 0px; text-align:center;}
+.dataUStreak{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapDayL{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapDayS{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapDayC{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapStrL{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapStrS{width: 80px; border-right: 0px; text-align:center;}
+.dataUGapStrC{width: 80px; text-align:center;}
+
+/*-------------------------------------*/
+
+#buttonBackToUsers{
+	color: #523877;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: left;
+	margin-top: 30px;
+}
+#buttonBackToUsers:hover{
+	color: #F57E20;
+	cursor: pointer;
+}
+
+#headingUsername{
+	color: #0E1336;
+	font-size: 40px;
+	text-align: left;
+	width: 1000px;
+	margin-bottom:-20px;
+}
+
+.dataStatName{width: 400px; background-color: #523877; color: #FFFFFF;}
+.dataStatValue{width: 240px; background-color: #AAAAAA;}
+
+/*-------------------------------------*/
+
+.statSubheading{
+	color: #0E1336;
+	font-size: 24px;
+	margin-top:40px;
+	text-align: left;
+	border-top: 3px solid #0E1336;
+	padding-top: 10px;
+}
+
+.statSubheadingSmall{
+	color: #0E1336;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 30px;
+	margin-bottom: -10px;
+	text-align: left;
+}
+
+.titleSeason{width: 175px; border-right: 0px; text-align: right;}
+.titleYr{width: 75px; border-right: 0px;}
+.titleTot{width: 75px;}
+
+.dataSeason{width: 175px; border-right: 0px;  text-align: right;}
+.dataYr{width: 75px; border-right: 0px;  text-align:center;}
+.dataTot{width: 75px;  text-align:center;}
+
+/*-------------------------------------*/
+
+.bgPurple{background-color: #523877;}
+.bgOrange{background-color: #F57E20;}
+.bgGreen{background-color: #5C9240;}
+.bgDarkGray{background-color: #999999;}
+
+/*-------------------------------------*/
+/*FOR PLAYLIST PAGE*/
+
+#dataContainerPlaylist{padding-bottom: 40px;}
+
+.titleSummary{
+	width: 200px;
+	font-size: 15px;
+	font-weight: bold;
+	color: #FFFFFF;
+	letter-spacing: 1px;
+	text-align: center;
+	box-sizing: border-box;
+	border: 2px solid #0E1336;
+	border-right: 0px;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 32px;
+	line-height: 28px;
+	float:left;
+	margin-top: 20px;
+}
+
+.dataSummary{
+	width: 200px;
+	font-size: 15px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #888888;
+	letter-spacing: 1px;
+	text-align: center;
+	box-sizing: border-box;
+	border: 2px solid #0E1336;
+	border-right: 0px;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-top:0px;
+	height: 32px;
+	line-height: 28px;
+	float:left;
+}
+
+.endCell{
+	border-right:2px solid #0E1336;
+}
+
+#titleQueueTitle{width: 750px; border-right: 0px; text-align: left;}
+#titleQueueArtist{width: 170px; border-right: 0px; text-align: left;}
+#titleQueueLength{width: 80px;}
+
+.dataQueuePosition{width: 50px; border-right: 0px; text-align: left;}
+.dataQueueTitle{width: 750px; border-right: 0px; text-align: left;}
+.dataQueueTitleShortened{width: 700px; border-right: 0px; text-align: left;}
+.dataQueueArtist{width: 170px; border-right: 0px; text-align: left;}
+.dataQueueLength{width: 80px; text-align: right;}

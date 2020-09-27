@@ -1191,6 +1191,62 @@
             }
         }
 
+        this.pushQueueInformation = function () {
+            var jsonStatus = {};
+            if (currentPlaylist) {
+                var requestStatus = "Closed",
+                        statusMode = "Sequential + Bumps",
+                        playCount = "",
+                        runtime = "";
+
+                if (songRequestsEnabled) {
+                    requestStatus = "Open";
+                }
+
+                if (shuffleQueue) {
+                    statusMode = "Shuffle + Bumps";
+                }
+
+
+                if (currentPlaylist.getSongRequestHistory() != null) {
+                    playCount = playCount += currentPlaylist.getSongRequestHistory().length;
+                }
+
+                runtime = $.secondsToTimestamp(getQueueRuntime());
+
+                jsonStatus['queueStatus'] = {
+                    "status": requestStatus,
+                    "mode": statusMode,
+                    "totalSongs": currentPlaylist.getRequestsCount(),
+                    "playedSongs": playCount,
+                    "totalTime": runtime
+                };
+            } else {
+                jsonStatus['queueStatus'] = {
+                    "status": "Closed",
+                    "mode": "Off",
+                    "totalSongs": "",
+                    "playedSongs": "",
+                    "totalTime": ""
+                };
+            }
+
+            var jsonString = JSON.stringify(jsonStatus);
+            $.log.file('youtube-player', 'Queue status JSON - ' + jsonString);
+
+            client.sendJSONToAll(jsonString);
+
+            // TODO Push queue information
+            /*
+             *
+             * open/close
+             * shuffle
+             * total songs
+             * played songs
+             * total queue time
+             */
+        }
+
         // PLAY SONG HERE //
 
         /**
@@ -1419,6 +1475,13 @@
      */
     $.bind('yTPlayerRequestSongHistory', function (event) {
         connectedPlayerClient.pushSongRequestHistoryList();
+    });
+
+    /**
+     * @event YTPlayerRequestQueueInfoEvent
+     */
+    $.bind('yTPlayerRequestQueueInfo', function (event) {
+        connectedPlayerClient.pushQueueInformation();
     });
 
     /**
@@ -2479,6 +2542,17 @@
         $.log.file('queue-management', 'No request found for [' + user + ']');
 
         return null;
+    }
+
+    function getQueueRuntime() {
+        var timeToPlayInSeconds = 0;
+        var requests = currentPlaylist.getRequestList();
+        for (i = 0; i < requests.length; i++) {
+            request = requests[i];
+            timeToPlayInSeconds = timeToPlayInSeconds + parseInt(request.getVideoLength(), 10);
+        }
+
+        return timeToPlayInSeconds;
     }
 
     /**

@@ -32,7 +32,9 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript" src="/playlist/js/playerConfig.js"></script>
         <script type="text/javascript" src="/playlist/js/ytPlaylist.js"></script>
-        <link rel="stylesheet" type="text/css" href="http://kentobot.chat/sotn/css/style.css?v=1.03">
+        <!-- <link rel="stylesheet" type="text/css" href="http://kentobot.chat/sotn/css/style.css?v=1.03"> -->
+
+        <link rel="stylesheet" type="text/css" href="/playlist/css/kentobotStyle.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
         <script src="/common/js/jquery-ui/external/jquery/jquery.min.js"></script>
         <script src="/common/js/jquery-ui/jquery-ui.min.js"></script>
@@ -40,7 +42,20 @@ and open the template in the editor.
     </head>
     <body>
         <div id="container">
+            <div id="dataContainerSummary">
+                <div class="innerContainer">
+                    <div id="titleSummaryStatus" class="titleSummary bgPurple roundTL"> Queue Status </div>
+                    <div id="titleSummaryOrder" class="titleSummary bgPurple"> Song Selection </div>
+                    <div id="titleSummaryNoPlayed" class="titleSummary bgPurple"> Songs Played </div>
+                    <div id="titleSummaryNoQueued" class="titleSummary bgPurple"> Songs In Queue </div>
+                    <div id="titleSummaryLength" class="titleSummary bgPurple endcell roundTR"> Queue Length </div>
+
+                    <div id="queueInformationHtml"></div>
+                </div>
+            </div>
+
             <div id="dataContainerPlaylist" style>
+
                 <div class="innerContainer">
                     <div id="titleQueueTitle" class="title bgGreen roundTL"> Song Title </div>
                     <div id="titleQueueArtist" class="title bgGreen"> Requester </div>

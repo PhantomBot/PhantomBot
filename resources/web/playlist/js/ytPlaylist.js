@@ -20,7 +20,7 @@
  * -------------
  * Produces a GUI for the playlists in YouTube Player
  */
-var DEBUG_MODE = false;
+var DEBUG_MODE = true;
 var connectedToWS = false;
 
 var url = window.location.host.split(":");
@@ -107,6 +107,11 @@ connection.onmessage = function (e) {
 
     if (messageObject['requestHistory'] !== undefined) {
         handleSongHistoryList(messageObject);
+        return;
+    }
+
+    if (messageObject['queueStatus'] !== undefined) {
+        handleQueueInfo(messageObject);
         return;
     }
 }
@@ -224,6 +229,19 @@ function handleSongHistoryList(d) {
     $('#requestHistoryHtml').html(tableData);
 }
 
+function handleQueueInfo(d) {
+    debugMsg('handleQueueInfo(' + d + ')');
+    var html = '';
+
+    html += '<div id="dataSummaryStatus" class="dataSummary roundBL"> ' + d['queueStatus']['status'] + ' </div>';
+    html += '<div id="dataSummaryOrder" class="dataSummary"> ' + d['queueStatus']['mode'] + ' </div>';
+    html += '<div id="dataSummaryNoPlayed" class="dataSummary"> ' + d['queueStatus']['playedSongs'] + ' </div>';
+    html += '<div id="dataSummaryNoQueued" class="dataSummary"> ' + d['queueStatus']['totalSongs'] + ' </div>';
+    html += '<div id="dataSummaryLength" class="dataSummary endCell roundBR"> ' + d['queueStatus']['totalTime'] + ' </div>';
+
+    $('#queueInformationHtml').html(html);
+}
+
 // Type is: success (green), info (blue), warning (yellow), danger (red)
 function newAlert(message, title, type, timeout) {
     debugMsg('newAlert(' + message + ', ' + title + ', ' + type + ', ' + timeout + ')');
@@ -251,6 +269,10 @@ function refreshData() {
     connection.send(JSON.stringify(jsonObject));
     jsonObject['query'] = 'songrequesthistory';
     connection.send(JSON.stringify(jsonObject));
+    jsonObject['query'] = 'songqueueinfo';
+    connection.send(JSON.stringify(jsonObject));
+
 }
 setInterval(refreshData, 20000);
+
 

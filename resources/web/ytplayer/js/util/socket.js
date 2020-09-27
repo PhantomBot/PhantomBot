@@ -17,12 +17,12 @@
  * @author ScaniaTV
  */
 
-$(function() {
+$(function () {
     var socket = new WebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer'),
-        listeners = [],
-        player = {},
-        hasAPIKey = true,
-        secondConnection = false;
+            listeners = [],
+            player = {},
+            hasAPIKey = true,
+            secondConnection = false;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -77,6 +77,12 @@ $(function() {
         // Request the data.
         sendToSocket({
             query: 'songlist'
+        });
+    };
+
+    player.requestQueueStatus = (callback_id) => {
+        sendToSocket({
+            query: 'songqueueinfo'
         });
     };
 
@@ -352,7 +358,7 @@ $(function() {
                 if (message.secondconnection === true) {
                     secondConnection = true;
                     toastr.error('PhantomBot rejected the connection due to a player window already being open.', '',
-                                 {timeOut: 0, extendedTimeOut: 0});
+                            {timeOut: 0, extendedTimeOut: 0});
                     console.error('Only one instance allowed.');
                 }
                 return;
@@ -372,9 +378,9 @@ $(function() {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
                     toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
-                                 '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/youtubesetup">here' +
-                                 '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
-                                 {timeOut: 0, extendedTimeOut: 0});
+                            '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/youtubesetup">here' +
+                            '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
+                            {timeOut: 0, extendedTimeOut: 0});
                 }
                 return;
             }
