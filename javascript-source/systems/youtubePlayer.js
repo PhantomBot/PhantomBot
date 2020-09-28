@@ -1371,6 +1371,7 @@
         var request = currentPlaylist.requestSong(event.getSearch(), $.ownerName);
         if (request != null) {
             connectedPlayerClient.pushSongList();
+            connectedPlayerClient.pushQueueInformation();
         }
     });
 
@@ -1424,6 +1425,7 @@
     $.bind('yTPlayerDeleteCurrent', function (event) {
         currentPlaylist.deleteCurrentVideo();
         connectedPlayerClient.pushSongList();
+        connectedPlayerClient.pushQueueInformation();
     });
 
     /**
@@ -1432,6 +1434,7 @@
     $.bind('yTPlayerSkipSong', function (event) {
         currentPlaylist.nextVideo();
         connectedPlayerClient.pushSongList();
+        connectedPlayerClient.pushQueueInformation();
     });
 
     /**
@@ -1440,6 +1443,7 @@
     $.bind('yTPlayerDeleteSR', function (event) {
         currentPlaylist.removeSong(event.getId());
         connectedPlayerClient.pushSongList();
+        connectedPlayerClient.pushQueueInformation();
     });
 
     /**
@@ -1454,6 +1458,7 @@
      */
     $.bind('yTPlayerRequestSonglist', function (event) {
         connectedPlayerClient.pushSongList();
+        connectedPlayerClient.pushQueueInformation();
     });
 
     /**
@@ -1670,6 +1675,7 @@
                     if (removedSongTitle) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.delrequest.success', actionArgs[0], removedSongTitle));
                         connectedPlayerClient.pushSongList();
+                        connectedPlayerClient.pushQueueInformation();
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.delrequest.404', actionArgs[0]));
                     }
@@ -2134,6 +2140,7 @@
                     lastSkipTime = $.systemTime + 10000; // Make sure that no one can skip while we wait to reset the value.
                     currentPlaylist.nextVideo();
                     connectedPlayerClient.pushSongList();
+                    connectedPlayerClient.pushQueueInformation();
                     lastSkipTime = $.systemTime();
                     return;
                 } else {
@@ -2161,6 +2168,7 @@
                         $.say($.lang.get('ytplayer.command.skip.skipping'));
                         currentPlaylist.nextVideo();
                         connectedPlayerClient.pushSongList();
+                        connectedPlayerClient.pushQueueInformation();
                         return;
                     }
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.success', voteCount - skipCount));
@@ -2258,6 +2266,7 @@
                     }
                 }
                 connectedPlayerClient.pushSongList();
+                connectedPlayerClient.pushQueueInformation();
             }
         }
 
@@ -2271,6 +2280,7 @@
                 if (songTitle) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.success', songTitle));
                     connectedPlayerClient.pushSongList();
+                    connectedPlayerClient.pushQueueInformation();
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.404'));
                 }
@@ -2281,6 +2291,7 @@
                         if (songTitle) {
                             $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.user.success', args[1], songTitle));
                             connectedPlayerClient.pushSongList();
+                            connectedPlayerClient.pushQueueInformation();
                         } else {
                             $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.404'));
                         }
@@ -2450,6 +2461,7 @@
                 currentPlaylist.removeUserSong(user);
                 currentPlaylist.addToQueue(newRequest, existingRequest[1]);
                 connectedPlayerClient.pushSongList();
+                connectedPlayerClient.pushQueueInformation();
                 $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.edit.success', newRequest.getVideoTitle()));
             }
         }
