@@ -51,8 +51,8 @@ public class TwitchAuthorizationCodeFlow {
     private static final String USER_AGENT = "PhantomBot/2020";
     private Timer t = null;
 
-    public TwitchAuthorizationCodeFlow() {
-        startup();
+    public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
+        startup(clientid, clientsecret);
     }
 
     private void refreshTokens() {
@@ -106,12 +106,11 @@ public class TwitchAuthorizationCodeFlow {
         }
     }
 
-    private void startup() {
+    private void startup(String clientid, String clientsecret) {
         if (t != null) {
             return;
         }
-        if (PhantomBot.instance().getProperties().getProperty("clientid") != null && !PhantomBot.instance().getProperties().getProperty("clientid").isBlank()
-                && PhantomBot.instance().getProperties().getProperty("clientsecret") != null && !PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank()) {
+        if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -154,6 +153,7 @@ public class TwitchAuthorizationCodeFlow {
 
                     data = qsd.parameters().get("clientid").get(0).getBytes();
                     PhantomBot.instance().reloadProperties();
+                    PhantomBot.instance().getAuthFlow().startup(PhantomBot.instance().getProperties().getProperty("clientid"), PhantomBot.instance().getProperties().getProperty("clientsecret"));
                 } catch (IOException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                     data = "true".getBytes();

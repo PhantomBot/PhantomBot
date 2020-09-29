@@ -380,7 +380,7 @@ public final class PhantomBot implements Listener {
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
 
-        authflow = new TwitchAuthorizationCodeFlow();
+        authflow = new TwitchAuthorizationCodeFlow(this.pbProperties.getProperty("clientid"), this.pbProperties.getProperty("clientsecret"));
 
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
