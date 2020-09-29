@@ -51,7 +51,7 @@ public class TwitchWSHostIRC {
     private static final Map<String, TwitchWSHostIRC> instances = new ConcurrentHashMap<>();
     private final String twitchIRCWSS = "wss://irc-ws.chat.twitch.tv";
     private final String channelName;
-    private final String oAuth;
+    private String oAuth;
     private final EventBus eventBus;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
     private final ReentrantLock lock = new ReentrantLock();
@@ -105,6 +105,10 @@ public class TwitchWSHostIRC {
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
             PhantomBot.exitError();
         }
+    }
+
+    public void setOAuth(String oAuth) {
+        this.oAuth = oAuth;
     }
 
     /**

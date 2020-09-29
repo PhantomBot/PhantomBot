@@ -16,6 +16,7 @@
  */
 package tv.phantombot.httpserver;
 
+import com.gmt2001.TwitchAuthorizationCodeFlow;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -50,6 +51,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/panel", this);
         HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
+        HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
     }
 
@@ -60,7 +62,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-        if (!req.method().equals(HttpMethod.GET)) {
+        if (!req.method().equals(HttpMethod.GET) && !req.uri().startsWith("/oauth")) {
             com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return;
@@ -98,7 +100,11 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
                 com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                         + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, Files.readAllBytes(p), p.getFileName().toString()));
+                byte[] data = Files.readAllBytes(p);
+                if (qsd.path().startsWith("/oauth")) {
+                    data = TwitchAuthorizationCodeFlow.handleRequest(req, data);
+                }
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500");

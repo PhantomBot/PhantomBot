@@ -36,7 +36,7 @@ public class TwitchWSIRC extends WebSocketClient {
     private final TwitchSession session;
     private final String botName;
     private final String channelName;
-    private final String oAuth;
+    private String oAuth;
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
@@ -87,6 +87,10 @@ public class TwitchWSIRC extends WebSocketClient {
                 this.close();
             }
         }, 10, 30, TimeUnit.SECONDS);
+    }
+
+    public void setOAuth(String oAuth) {
+        this.oAuth = oAuth;
     }
 
     /**

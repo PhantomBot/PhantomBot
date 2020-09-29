@@ -109,6 +109,10 @@ public class TwitchPubSub {
         }
     }
 
+    public void setOAuth(String oAuth) {
+        this.twitchPubSubWS.setOAuth(oAuth);
+    }
+
     /**
      * @event IrcChannelMessageEvent
      */
@@ -176,7 +180,7 @@ public class TwitchPubSub {
         private final TwitchPubSub twitchPubSub;
         private final Timer timer = new Timer("tv.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
-        private final String oAuth;
+        private String oAuth;
         private final int botId;
         private boolean hasModerator = false;
         private boolean hasRedemptions = false;
@@ -207,6 +211,10 @@ public class TwitchPubSub {
             } catch (KeyManagementException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
             }
+        }
+
+        public void setOAuth(String oAuth) {
+            this.oAuth = oAuth;
         }
 
         /**

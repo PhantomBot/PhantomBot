@@ -18,6 +18,7 @@ package tv.phantombot;
 
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.TwitchAuthorizationCodeFlow;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
@@ -107,6 +108,7 @@ public final class PhantomBot implements Listener {
     private String clientId;
     private static Double messageLimit;
     private static Double whisperLimit;
+    private TwitchAuthorizationCodeFlow authflow;
 
     /* Web Information */
     private String panelUsername;
@@ -378,6 +380,8 @@ public final class PhantomBot implements Listener {
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
 
+        authflow = new TwitchAuthorizationCodeFlow();
+
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
@@ -618,6 +622,22 @@ public final class PhantomBot implements Listener {
      */
     public Boolean isPrerelease() {
         return RepoVersion.getPrereleaseBuild();
+    }
+
+    public TwitchAuthorizationCodeFlow getAuthFlow() {
+        return this.authflow;
+    }
+
+    public void reloadProperties() {
+        this.pbProperties = ConfigurationManager.getConfiguration();
+        this.clientId = this.pbProperties.getProperty("clientid", "");
+        this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
+        this.oauth = this.pbProperties.getProperty("oauth");
+        TwitchAPIv5.instance().SetClientID(this.clientId);
+        TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+        this.session.setOAuth(this.oauth);
+        this.wsHostIRC.setOAuth(this.apiOAuth);
+        this.pubSubEdge.setOAuth(this.apiOAuth);
     }
 
     public static String GetExecutionPath() {
