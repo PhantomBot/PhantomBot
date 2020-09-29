@@ -97,6 +97,7 @@
                             <!-- /.box-tools -->
                           </div>
                         <div class="box-body" id="content-pane">
+                            <div class="alert-info text-center page-header hide" id="info-box"></div>
                             <div class="alert-success text-center page-header hide" id="success-box"></div>
                             <div class="alert-error text-center page-header hide" id="error-box"></div>
                                             <br id="success-error-br" class="hide" />
@@ -314,17 +315,27 @@
                         cache: false,
                         dataType: 'text',
                         url: '/oauth/saveidsecret',
-                        method: 'POST',
+                        method: 'PUT',
                         data: {
                             clientid: $('#clientid').val(),
                             clientsecret: $('#clientsecret').val()
                         },
                         success: function(data) {
-                            clientID = data;
-                            $('#success-box').removeClass('hide');
-                            $('#success-error-br').removeClass('hide');
-                            $('#success-box').html('Saved the Client ID and Client Secret');
-                            $('#connect').removeClass('hide');
+                            if (data === 'false') {
+                                $('#error-box').removeClass('hide');
+                                $('#success-error-br').removeClass('hide');
+                                $('#error-box').html('Failed to save Client ID and Client Secret: invalid input');
+                            } else if (data === 'true') {
+                                $('#error-box').removeClass('hide');
+                                $('#success-error-br').removeClass('hide');
+                                $('#error-box').html('Failed to save Client ID and Client Secret: writing botlogin.txt failed');
+                            } else {
+                                clientID = data;
+                                $('#success-box').removeClass('hide');
+                                $('#success-error-br').removeClass('hide');
+                                $('#success-box').html('Saved the Client ID and Client Secret');
+                                $('#connect').removeClass('hide');
+                            }
                         },
                         error: function(err) {
                             $('#error-box').removeClass('hide');
@@ -341,6 +352,9 @@
                         state = window.sessionStorage.getItem('state');
 
                         if (queryMap.get('state') === state) {
+                            $('#info-box').removeClass('hide');
+                            $('#success-error-br').removeClass('hide');
+                            $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
                             $.ajax({
                                 cache: false,
                                 dataType: 'text',
@@ -352,12 +366,24 @@
                                     redirect_uri: redirectURI
                                 },
                                 success: function(data) {
-                                    clientID = data;
-                                    $('#success-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('state-type') + ' token');
+                                    $('#info-box').addClass('hide');
+                                    if (data.startsWith('false')) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#success-error-br').removeClass('hide');
+                                        $('#error-box').html('Failed to authorize and save the ' + window.sessionStorage.getItem('state-type') + ' token: ' + data.substring(6));
+                                    } else if (data === 'true') {
+                                        $('#error-box').removeClass('hide');
+                                        $('#success-error-br').removeClass('hide');
+                                        $('#error-box').html('Failed to save the ' + window.sessionStorage.getItem('state-type') + ' token: writing botlogin.txt failed');
+                                    } else {
+                                        clientID = data;
+                                        $('#success-box').removeClass('hide');
+                                        $('#success-error-br').removeClass('hide');
+                                        $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('state-type') + ' token');
+                                    }
                                 },
                                 error: function(err) {
+                                    $('#info-box').addClass('hide');
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
                                     $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('state-type') + ': ' + err.statusText + ' ' + err.responseText);
