@@ -27,10 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeSet;
@@ -202,52 +200,28 @@ public class TwitchAuthorizationCodeFlow {
     }
 
     private static JSONObject tryAuthorize(String code, String redirect_uri) {
-        try {
-            QueryStringEncoder qse = new QueryStringEncoder("/token");
-            qse.addParam("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
-            qse.addParam("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
-            qse.addParam("code", code);
-            qse.addParam("grant_type", "authorization_code");
-            qse.addParam("redirect_uri", redirect_uri);
+        QueryStringEncoder qse = new QueryStringEncoder("/token");
+        qse.addParam("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
+        qse.addParam("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
+        qse.addParam("code", code);
+        qse.addParam("grant_type", "authorization_code");
+        qse.addParam("redirect_uri", redirect_uri);
 
-            URL url = new URL(BASE_URL + qse.toString());
-
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(5000);
-
-            connection.connect();
-
-            try (BufferedOutputStream stream = new BufferedOutputStream(connection.getOutputStream())) {
-                stream.write("".getBytes());
-                stream.flush();
-            }
-
-            if (connection.getResponseCode() == 200) {
-                try (InputStream inStream = connection.getInputStream()) {
-                    return new JSONObject(new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n")));
-                }
-            } else {
-                try (InputStream inStream = connection.getErrorStream()) {
-                    return new JSONObject(new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n")));
-                }
-            }
-        } catch (IOException | NullPointerException | JSONException ex) {
-            return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
-        }
+        return doRequest(qse);
     }
 
     private static JSONObject tryRefresh(String refresh_token) {
-        try {
-            QueryStringEncoder qse = new QueryStringEncoder("/token");
-            qse.addParam("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
-            qse.addParam("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
-            qse.addParam("refresh_token", refresh_token);
-            qse.addParam("grant_type", "refresh_token");
+        QueryStringEncoder qse = new QueryStringEncoder("/token");
+        qse.addParam("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
+        qse.addParam("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
+        qse.addParam("refresh_token", refresh_token);
+        qse.addParam("grant_type", "refresh_token");
 
+        return doRequest(qse);
+    }
+
+    private static JSONObject doRequest(QueryStringEncoder qse) {
+        try {
             URL url = new URL(BASE_URL + qse.toString());
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
