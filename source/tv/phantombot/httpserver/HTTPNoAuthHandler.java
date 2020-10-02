@@ -97,12 +97,14 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             boolean validCredentials = true;
             String user = "";
             String pass = "";
+            String kickback = "";
 
             if (req.method().equals(HttpMethod.POST)) {
                 Map<String, String> post = HttpServerPageHandler.parsePost(req);
 
                 user = post.getOrDefault("user", "");
                 pass = post.getOrDefault("pass", "");
+                kickback = post.getOrDefault("kickback", "");
 
                 validCredentials = user.equals(PhantomBot.instance().getProperties().getProperty("paneluser", "panel")) && pass.equals(PhantomBot.instance().getProperties().getProperty("panelpassword", "panel"));
             }
@@ -131,11 +133,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 host = "http://" + host;
             }
 
-            String kickback;
-
-            if (req.uri().contains("kickback=")) {
-                kickback = req.uri().substring(req.uri().indexOf("kickback=") + 9);
-            } else {
+            if (kickback.isBlank()) {
                 kickback = "/panel";
             }
 
@@ -175,12 +173,12 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             }
 
             if ((!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
-                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
-                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))
                     || (p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel"))
-                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/vendors"))
-                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/css"))
-                        && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/login")))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/vendors"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/css"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/login")))
                     || p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/ytplayer"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));

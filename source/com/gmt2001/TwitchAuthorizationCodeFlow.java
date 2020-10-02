@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Timer;
@@ -55,7 +56,8 @@ public class TwitchAuthorizationCodeFlow {
 
     private void refreshTokens() {
         boolean changed = false;
-        if (PhantomBot.instance().getProperties().getProperty("refresh") != null && !PhantomBot.instance().getProperties().getProperty("refresh").isBlank()) {
+        if (PhantomBot.instance().getProperties() != null && PhantomBot.instance().getProperties().getProperty("refresh") != null
+                && !PhantomBot.instance().getProperties().getProperty("refresh").isBlank()) {
             JSONObject result = tryRefresh(PhantomBot.instance().getProperties().getProperty("refresh"));
 
             if (result.has("error")) {
@@ -69,7 +71,8 @@ public class TwitchAuthorizationCodeFlow {
             }
         }
 
-        if (PhantomBot.instance().getProperties().getProperty("apirefresh") != null && !PhantomBot.instance().getProperties().getProperty("apirefresh").isBlank()) {
+        if (PhantomBot.instance().getProperties() != null && PhantomBot.instance().getProperties().getProperty("apirefresh") != null
+                && !PhantomBot.instance().getProperties().getProperty("apirefresh").isBlank()) {
             JSONObject result = tryRefresh(PhantomBot.instance().getProperties().getProperty("apirefresh"));
 
             if (result.has("error")) {
@@ -97,6 +100,7 @@ public class TwitchAuthorizationCodeFlow {
                     outputProperties.store(outputStream, "PhantomBot Configuration File");
                 }
 
+                com.gmt2001.Console.debug.println("reloading properties");
                 PhantomBot.instance().reloadProperties();
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -109,13 +113,14 @@ public class TwitchAuthorizationCodeFlow {
             return;
         }
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
+            com.gmt2001.Console.debug.println("starting timer");
             t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     refreshTokens();
                 }
-            }, 0, 900);
+            }, 30000, 900000);
         }
     }
 
@@ -125,12 +130,19 @@ public class TwitchAuthorizationCodeFlow {
                     && PhantomBot.instance().getProperties().getProperty("clientsecret") != null && !PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank()) {
                 data = PhantomBot.instance().getProperties().getProperty("clientid").getBytes();
             } else {
+                com.gmt2001.Console.debug.println("missing id or secret");
                 data = "false".getBytes();
             }
         } else if (req.uri().startsWith("/oauth/saveidsecret") && req.method() == HttpMethod.PUT) {
-            QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(), false);
+            QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("clientid") || !qsd.parameters().containsKey("clientsecret") || qsd.parameters().get("clientid").get(0).isBlank()
                     || qsd.parameters().get("clientsecret").get(0).isBlank()) {
+                com.gmt2001.Console.debug.println("missing parameter");
+                com.gmt2001.Console.debug.println(!qsd.parameters().containsKey("clientid") + " " + !qsd.parameters().containsKey("clientsecret"));
+                try {
+                    com.gmt2001.Console.debug.println(qsd.parameters().get("clientid").get(0).isBlank() + " " + qsd.parameters().get("clientsecret").get(0).isBlank());
+                } catch (NullPointerException ex) {
+                }
                 data = "false".getBytes();
             } else {
                 PhantomBot.instance().getProperties().setProperty("clientid", qsd.parameters().get("clientid").get(0));
@@ -150,6 +162,7 @@ public class TwitchAuthorizationCodeFlow {
                     }
 
                     data = qsd.parameters().get("clientid").get(0).getBytes();
+                    com.gmt2001.Console.debug.println("reloading properties");
                     PhantomBot.instance().reloadProperties();
                     PhantomBot.instance().getAuthFlow().startup(PhantomBot.instance().getProperties().getProperty("clientid"), PhantomBot.instance().getProperties().getProperty("clientsecret"));
                 } catch (IOException ex) {
@@ -158,12 +171,22 @@ public class TwitchAuthorizationCodeFlow {
                 }
             }
         } else if (req.uri().startsWith("/oauth/authorize") && req.method() == HttpMethod.POST) {
-            QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(), false);
+            QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("code") || !qsd.parameters().containsKey("type") || !qsd.parameters().containsKey("redirect_uri")
                     || qsd.parameters().get("code").get(0).isBlank() || qsd.parameters().get("redirect_uri").get(0).isBlank()
                     || (!qsd.parameters().get("type").get(0).equals("bot") && !qsd.parameters().get("type").get(0).equals("broadcaster"))
                     || PhantomBot.instance().getProperties().getProperty("clientid") == null || PhantomBot.instance().getProperties().getProperty("clientid").isBlank()
                     || PhantomBot.instance().getProperties().getProperty("clientsecret") == null || PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank()) {
+                com.gmt2001.Console.debug.println("invalid parameter");
+                com.gmt2001.Console.debug.println(!qsd.parameters().containsKey("code") + " " + !qsd.parameters().containsKey("type") + " " + !qsd.parameters().containsKey("redirect_uri")
+                        + " " + (PhantomBot.instance().getProperties().getProperty("clientsecret") == null) + " " + (PhantomBot.instance().getProperties().getProperty("clientid") == null));
+                try {
+                    com.gmt2001.Console.debug.println(qsd.parameters().get("code").get(0).isBlank() + " " + qsd.parameters().get("type").get(0).isBlank() + " " + qsd.parameters().get("redirect_uri").get(0).isBlank()
+                            + " " + (!qsd.parameters().get("type").get(0).equals("bot") && !qsd.parameters().get("type").get(0).equals("broadcaster"))
+                            + " " + PhantomBot.instance().getProperties().getProperty("clientid").isBlank()
+                            + " " + PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank());
+                } catch (NullPointerException ex) {
+                }
                 data = "false|invalid input".getBytes();
             } else {
                 JSONObject result = tryAuthorize(qsd.parameters().get("code").get(0), qsd.parameters().get("redirect_uri").get(0));
@@ -188,6 +211,7 @@ public class TwitchAuthorizationCodeFlow {
                         }
 
                         data = "success".getBytes();
+                        com.gmt2001.Console.debug.println("reloading properties");
                         PhantomBot.instance().reloadProperties();
                     } catch (IOException ex) {
                         com.gmt2001.Console.err.printStackTrace(ex);
@@ -196,6 +220,9 @@ public class TwitchAuthorizationCodeFlow {
                 }
             }
         }
+
+        com.gmt2001.Console.debug.println(new String(data));
+
         return data;
     }
 
@@ -222,7 +249,9 @@ public class TwitchAuthorizationCodeFlow {
 
     private static JSONObject doRequest(QueryStringEncoder qse) {
         try {
+            com.gmt2001.Console.debug.println(qse.toString());
             URL url = new URL(BASE_URL + qse.toString());
+            com.gmt2001.Console.debug.println(url.toString());
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
@@ -230,6 +259,7 @@ public class TwitchAuthorizationCodeFlow {
             connection.addRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(5000);
+            connection.setDoOutput(true);
 
             connection.connect();
 
@@ -237,6 +267,8 @@ public class TwitchAuthorizationCodeFlow {
                 stream.write("".getBytes());
                 stream.flush();
             }
+
+            com.gmt2001.Console.debug.println(connection.getResponseCode());
 
             if (connection.getResponseCode() == 200) {
                 try (InputStream inStream = connection.getInputStream()) {
@@ -248,6 +280,7 @@ public class TwitchAuthorizationCodeFlow {
                 }
             }
         } catch (IOException | NullPointerException | JSONException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
             return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
         }
     }

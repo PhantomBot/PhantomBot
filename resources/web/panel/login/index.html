@@ -57,6 +57,7 @@
 
                     <div class="row">
                         <div class="col-xs-4 pull-right">
+                            <input type="hidden" id="kickback" name="kickback" value="">
                             <button type="submit" id="login-button" class="btn btn-primary btn-block btn-flat">Login</button>
                         </div>
                     </div>
@@ -70,5 +71,23 @@
         <script src="/panel/vendors/jquery/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="/panel/vendors/bootstrap/js/bootstrap.min.js"></script>
+
+        <script>
+            $(function () {
+                var search = window.location.search.substr(1);
+                var kvs = search.split('&');
+                var searchmap = [];
+                var spl;
+
+                for (var i = 0; i < kvs.length; i++) {
+                    spl = kvs[i].split('=', 2);
+                    searchmap[spl[0]] = spl[1];
+                }
+
+                if (searchmap['kickback']) {
+                    $('#kickback').val(searchmap['kickback']);
+                }
+            });
+        </script>
     </body>
 </html>

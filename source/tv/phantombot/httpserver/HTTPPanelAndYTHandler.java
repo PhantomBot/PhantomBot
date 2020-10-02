@@ -84,6 +84,10 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         try {
             String path = qsd.path();
 
+            if (path.startsWith("/oauth")) {
+                path = "/oauth";
+            }
+
             Path p = Paths.get("./web/", path);
 
             if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
