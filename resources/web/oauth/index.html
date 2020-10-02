@@ -21,14 +21,14 @@
         <!-- Favicon -->
         <link rel="icon" href="../favicon.ico" type="image/x-icon">
         <!-- Bootstrap 3.3.7 css -->
-        <link rel="stylesheet" href="/panel/vendors/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/common/css/bootstrap.min.css" />
         <!-- Google font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <!-- Fontawesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
-        <link rel="stylesheet" href="/panel/vendors/adminlte/css/AdminLTE.dark.min.css" />
-        <link rel="stylesheet" href="/panel/vendors/adminlte/css/skins/skin-purple.dark.min.css" />
-        <link rel="stylesheet" href="/panel/vendors/PACE/pace.min.css" />
+        <link rel="stylesheet" href="/common/css/AdminLTE.dark.min.css" />
+        <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
+        <link rel="stylesheet" href="/common/css/pace.min.css" />
         <style>
             .twitchbtn {
                 display:inline-block;
@@ -64,14 +64,11 @@
         <div class="wrapper">
             <!-- Header -->
             <header class="main-header">
-                <div class="logo">
-                        <a href=".."><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
-                        <button type="button" class="btn btn-primary" data-toggle="push-menu">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
                 <nav class="navbar navbar-static-top">
                     <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a href=".."><img class="navbar-brand" alt="PhantomBot" src="common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                        </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
                         <div class="collapse navbar-collapse" id="navbar-collapse">
@@ -95,102 +92,105 @@
                             <i class="fas fa-key"></i>
                             <h3 class="box-title">PhantomBot OAuth Setup</h3>
                             <!-- /.box-tools -->
-                          </div>
+                        </div>
                         <div class="box-body" id="content-pane">
                             <div class="alert-info text-center page-header hide" id="info-box"></div>
                             <div class="alert-success text-center page-header hide" id="success-box"></div>
                             <div class="alert-error text-center page-header hide" id="error-box"></div>
-                                            <br id="success-error-br" class="hide" />
-                                            
-                                            <div>
-                                                This page will setup the bot to automatically refresh the Bot's OAuth tokens. Please follow all instructions below to set this up properly.
-                                            </div>
-                                            <div>
-                                                <ol>
-                                                    <li>Create a new Twitch Application, if not already created<br />
-                                                        <ol>
-                                                            <li>Go to <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
-                                                            <li>Click <i>Your Console</i> in the top-right corner</li>
-                                                            <li>Click the <i>Applications</i> tab</li>
-                                                            <li>Click <i>Register Your Application</i></li>
-                                                            <li>In the <i>Name</i> box, put the name of your bot, or another name that will be recognized</li>
-                                                            <li>In the <i>OAuth Redirect URLs</i> box, put <i id="self-url"></i></li>
-                                                            <li>In the <i>Category</i> drop-down, select <i>Chat Bot</i></li>
-                                                            <li>Click <i>Create</i></li>
-                                                        </ol>
-                                                    </li>
-                                                    <li>Open the <i>Manage</i> page for your new Twitch Application, if not already open<br />
-                                                        <ol>
-                                                            <li>Go to <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
-                                                            <li>Click <i>Your Console</i> in the top-right corner</li>
-                                                            <li>Click the <i>Applications</i> tab</li>
-                                                            <li>Click <i>Manage</i> next to the appropriate application</li>
-                                                        </ol>
-                                                    </li>
-                                                    <li>
-                                                        Enter the Client ID here: <input type="text" id="clientid" />
-                                                    </li>
-                                                    <li>
-                                                        <ol>
-                                                            <li>Click <i>New Secret</i></li>
-                                                            <li>Click <i>OK</i> when prompted to generate a new secret</li>
-                                                            <li>Enter the Client Secret here: <input type="text" id="clientsecret" /></li>
-                                                            <li id="secretmsg" class="hide"><em>NOTE:</em> <i>You already have a secret saved, it is hidden for security reasons. If you do not need to update the secret, skip ahead to the authorize buttons</i></li>
-                                                        </ol>
-                                                    </li>
-                                                    <li>
-                                                        Click here to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
-                                                    </li>
-                                                    <li>
-                                                        Re-authorize the bot and broadcaster using the buttons below
-                                                    </li>
-                                                    <li>
-                                                        Once both OAuths have been successfully re-authorized, restart the bot
-                                                    </li>
-                                                </ol>
-                                            </div>
+                            <br id="success-error-br" class="hide" />
 
-                                    <div id="connect" class="hide">
-                                            <div>
-                                                Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
-                                                <br />
-                                                <div style="padding-left: 25px;">
-                                                    <ul>
-                                                    <li><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
-                                                    <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <br />
-                                            <br />
-                                            <div>
-                                                The following permissions are requested for the <div class="text-bold" style="display: inline;">bot's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
-                                                <br />
-                                                <div style="padding-left: 25px;">
-                                                    <ul id="scopes-bot">
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <br />
-                                            <br />
-                                            <div>
-                                                The following permissions are requested for the <div class="text-bold" style="display: inline;">broadcaster's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
-                                                <br />
-                                                <div style="padding-left: 25px;">
-                                                    <ul id="scopes-broadcaster">
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <br />
-                                            <br />
-                                            <a id="connect-bot" class="btn btn-primary twitchbtn">
-                                                <i class="fab fa-twitch"></i>
-                                                Connect with Twitch Bot
-                                            </a>&nbsp;<a id="connect-caster" class="btn btn-primary twitchbtn">
-                                                <i class="fab fa-twitch"></i>
-                                                Connect with Twitch Broadcaster
-                                            </a>
+                            <div>
+                                This page will setup the bot to automatically refresh the Bot's OAuth tokens. Please follow all instructions below to set this up properly.
+                            </div>
+                            <div>
+                                <ol>
+                                    <li>Create a new Twitch Application, if not already created<br />
+                                        <ol>
+                                            <li>Go to <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
+                                            <li>Click <i>Your Console</i> in the top-right corner</li>
+                                            <li>Click the <i>Applications</i> tab</li>
+                                            <li>Click <i>Register Your Application</i></li>
+                                            <li>In the <i>Name</i> box, put the name of your bot, or another name that will be recognized</li>
+                                            <li>In the <i>OAuth Redirect URLs</i> box, put <i id="self-url"></i></li>
+                                            <li>In the <i>Category</i> drop-down, select <i>Chat Bot</i></li>
+                                            <li>Click <i>Create</i></li>
+                                        </ol>
+                                    </li>
+                                    <li>Open the <i>Manage</i> page for your new Twitch Application, if not already open<br />
+                                        <ol>
+                                            <li>Go to <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
+                                            <li>Click <i>Your Console</i> in the top-right corner</li>
+                                            <li>Click the <i>Applications</i> tab</li>
+                                            <li>Click <i>Manage</i> next to the appropriate application</li>
+                                        </ol>
+                                    </li>
+                                    <li>
+                                        Enter the Client ID here: <input type="text" id="clientid" class="form-control" placeholder="Client ID">
+                                    </li>
+                                    <li>
+                                        Get the Client Secret
+                                        <ol>
+                                            <li>Click <i>New Secret</i></li>
+                                            <li>Click <i>OK</i> when prompted to generate a new secret</li>
+                                            <li>Enter the Client Secret here: <input type="text" id="clientsecret" class="form-control" placeholder="Client Secret"></li>
+                                            <li id="secretmsg" class="hide"><em>NOTE:</em> <i>You already have a secret saved, it is hidden for security reasons. If you do not need to update the secret, skip ahead to the authorize buttons</i></li>
+                                        </ol>
+                                    </li>
+                                    <li>
+                                        Click here to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
+                                    </li>
+                                    <li>
+                                        Re-authorize the bot and broadcaster using the buttons below
+                                    </li>
+                                    <li>
+                                        Once both OAuths have been successfully re-authorized, restart the bot
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div id="connect" class="hide">
+                                <br />
+                                <br />
+                                <div>
+                                    Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
+                                    <br />
+                                    <div style="padding-left: 25px;">
+                                        <ul>
+                                            <li><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                            <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                        </ul>
                                     </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div>
+                                    The following permissions are requested for the <div class="text-bold" style="display: inline;">bot's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                                    <br />
+                                    <div style="padding-left: 25px;">
+                                        <ul id="scopes-bot">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div>
+                                    The following permissions are requested for the <div class="text-bold" style="display: inline;">broadcaster's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
+                                    <br />
+                                    <div style="padding-left: 25px;">
+                                        <ul id="scopes-broadcaster">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <a id="connect-bot" class="btn btn-primary twitchbtn">
+                                    <i class="fab fa-twitch"></i>
+                                    Connect with Twitch Bot
+                                </a>&nbsp;<a id="connect-caster" class="btn btn-primary twitchbtn">
+                                    <i class="fab fa-twitch"></i>
+                                    Connect with Twitch Broadcaster
+                                </a>
+                            </div>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -209,254 +209,255 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
         <script>
-            'use strict';
-            $(function () {
-                var scopesBot = {
-                    "chat:read": {
-                        "desc": "[Helix] View live Stream Chat and Rooms messages",
-                        "tooltip": "Used to login to chat and read messages"
-                    },
-                    "chat:edit": {
-                        "desc": "[Helix] Send live Stream Chat and Rooms messages",
-                        "tooltip": "Used to send responses in chat"
-                    },
-                    "channel:moderate": {
-                        "desc": "[Helix] Perform moderation actions in a channel",
-                        "tooltip": "Used to perform moderation actions (purge, timeout, ban)"
-                    },
-                    "whispers:read": {
-                        "desc": "[Helix] View your whisper messages",
-                        "tooltip": "Used to receive whispers to the bot"
-                    },
-                    "whispers:edit": {
-                        "desc": "[Helix] Send whisper messages",
-                        "tooltip": "Used to send whispers from the bot"
-                    }
-                };
-
-                var scopesBroadcaster = {
-                    "channel_editor": {
-                        "desc": "[v5] Write access to channel metadata (game, status, etc)",
-                        "tooltip": "Used to change the title/game"
-                    },
-                    "channel_commercial": {
-                        "desc": "[v5] Access to trigger commercials on channel",
-                        "tooltip": "Used to trigger commercials on partnered streams"
-                    },
-                    "channel_subscriptions": {
-                        "desc": "[v5] Read access to all subscribers to your channel",
-                        "tooltip": "Used to get the current subscriber count. Can also be used by custom scripts to query Twitch for a list of subscribers"
-                    },
-                    "chat:read": {
-                        "desc": "[Helix] View live Stream Chat and Rooms messages",
-                        "tooltip": "Used by the second chat connection to watch for host notifications"
-                    },
-                    "channel:moderate": {
-                        "desc": "[Helix] Perform moderation actions in a channel",
-                        "tooltip": "Used to watch for moderation actions in PubSub"
-                    },
-                    "channel:read:redemptions": {
-                        "desc": "[Helix] View your channel points custom reward redemptions",
-                        "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub"
-                    }
-                };
-
-                function addScopeItem(type, scope, description) {
-                    $('#scopes-' + type).append(
-                            $('<li/>', {
-                                'html': $('<div/>', {
-                                    'class': 'text-bold',
-                                    'style': 'display: inline;',
-                                    'text': scope
-                                })
-                            }).append(' - ' + description.desc + ' ')
-                                    .append($('<i/>', {
-                                    'class': 'fas fa-question-circle',
-                                    'aria-hidden': 'true',
-                                    'data-toggle': 'tooltip',
-                                    'title': description.tooltip
-                                }))
-                            );
-                }
-
-                var x;
-                for (x in scopesBot) {
-                    addScopeItem('bot', x, scopesBot[x]);
-                }
-
-                for (x in scopesBroadcaster) {
-                    addScopeItem('broadcaster', x, scopesBroadcaster[x]);
-                }
-
-                var queryString = window.location.search, // Query string that starts with ?
-                        queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
-                        queryMap = new Map(), // Create a new map for save our keys and values.
-                        baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
-                        redirectURI = window.location.origin + window.location.pathname,
-                        clientID,
-                        state;
-
-                for (var i = 0; i < queryParts.length; i++) {
-                    var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
-                            value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
-
-                    if (key.length > 0 && value.length > 0) {
-                        queryMap.set(key.toLowerCase(), value);
-                    }
-                }
-                
-                $('#self-url').html(redirectURI);
-                
-                $('#saveclient').click(function() {
-                    $('#success-box').addClass('hide');
-                    $('#error-box').addClass('hide');
-                    $('#success-error-br').addClass('hide');
-                    $.ajax({
-                        cache: false,
-                        dataType: 'text',
-                        url: '/oauth/saveidsecret',
-                        method: 'PUT',
-                        data: {
-                            clientid: $('#clientid').val(),
-                            clientsecret: $('#clientsecret').val()
-                        },
-                        success: function(data) {
-                            if (data === 'false') {
-                                $('#error-box').removeClass('hide');
-                                $('#success-error-br').removeClass('hide');
-                                $('#error-box').html('Failed to save Client ID and Client Secret: invalid input');
-                            } else if (data === 'true') {
-                                $('#error-box').removeClass('hide');
-                                $('#success-error-br').removeClass('hide');
-                                $('#error-box').html('Failed to save Client ID and Client Secret: writing botlogin.txt failed');
-                            } else {
-                                clientID = data;
-                                $('#success-box').removeClass('hide');
-                                $('#success-error-br').removeClass('hide');
-                                $('#success-box').html('Saved the Client ID and Client Secret');
-                                $('#connect').removeClass('hide');
+                    'use strict';
+                    $(function () {
+                        var scopesBot = {
+                            "chat:read": {
+                                "desc": "[Helix] View live Stream Chat and Rooms messages",
+                                "tooltip": "Used to login to chat and read messages"
+                            },
+                            "chat:edit": {
+                                "desc": "[Helix] Send live Stream Chat and Rooms messages",
+                                "tooltip": "Used to send responses in chat"
+                            },
+                            "channel:moderate": {
+                                "desc": "[Helix] Perform moderation actions in a channel",
+                                "tooltip": "Used to perform moderation actions (purge, timeout, ban)"
+                            },
+                            "whispers:read": {
+                                "desc": "[Helix] View your whisper messages",
+                                "tooltip": "Used to receive whispers to the bot"
+                            },
+                            "whispers:edit": {
+                                "desc": "[Helix] Send whisper messages",
+                                "tooltip": "Used to send whispers from the bot"
                             }
-                        },
-                        error: function(err) {
-                            $('#error-box').removeClass('hide');
-                            $('#success-error-br').removeClass('hide');
-                            $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText);
+                        };
+
+                        var scopesBroadcaster = {
+                            "channel_editor": {
+                                "desc": "[v5] Write access to channel metadata (game, status, etc)",
+                                "tooltip": "Used to change the title/game"
+                            },
+                            "channel_commercial": {
+                                "desc": "[v5] Access to trigger commercials on channel",
+                                "tooltip": "Used to trigger commercials on partnered streams"
+                            },
+                            "channel_subscriptions": {
+                                "desc": "[v5] Read access to all subscribers to your channel",
+                                "tooltip": "Used to get the current subscriber count. Can also be used by custom scripts to query Twitch for a list of subscribers"
+                            },
+                            "chat:read": {
+                                "desc": "[Helix] View live Stream Chat and Rooms messages",
+                                "tooltip": "Used by the second chat connection to watch for host notifications"
+                            },
+                            "channel:moderate": {
+                                "desc": "[Helix] Perform moderation actions in a channel",
+                                "tooltip": "Used to watch for moderation actions in PubSub"
+                            },
+                            "channel:read:redemptions": {
+                                "desc": "[Helix] View your channel points custom reward redemptions",
+                                "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub"
+                            }
+                        };
+
+                        function addScopeItem(type, scope, description) {
+                            $('#scopes-' + type).append(
+                                    $('<li/>', {
+                                        'html': $('<div/>', {
+                                            'class': 'text-bold',
+                                            'style': 'display: inline;',
+                                            'text': scope
+                                        })
+                                    }).append(' - ' + description.desc + ' ')
+                                    .append($('<i/>', {
+                                        'class': 'fas fa-question-circle',
+                                        'aria-hidden': 'true',
+                                        'data-toggle': 'tooltip',
+                                        'title': description.tooltip
+                                    }))
+                                    );
                         }
-                    });
-                });
-                $('#saveclient').css('cursor', 'pointer');
 
-                if (queryMap.size > 0) {
-                    if (queryMap.has('code') && queryMap.has('state')) {
-                        // Get the state.
-                        state = window.sessionStorage.getItem('state');
+                        var x;
+                        for (x in scopesBot) {
+                            addScopeItem('bot', x, scopesBot[x]);
+                        }
 
-                        if (queryMap.get('state') === state) {
-                            $('#info-box').removeClass('hide');
-                            $('#success-error-br').removeClass('hide');
-                            $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
+                        for (x in scopesBroadcaster) {
+                            addScopeItem('broadcaster', x, scopesBroadcaster[x]);
+                        }
+
+                        var queryString = window.location.search, // Query string that starts with ?
+                                queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
+                                queryMap = new Map(), // Create a new map for save our keys and values.
+                                baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
+                                redirectURI = window.location.origin + window.location.pathname,
+                                clientID,
+                                state;
+
+                        for (var i = 0; i < queryParts.length; i++) {
+                            var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
+                                    value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
+
+                            if (key.length > 0 && value.length > 0) {
+                                queryMap.set(key.toLowerCase(), value);
+                            }
+                        }
+
+                        $('#self-url').html(redirectURI);
+
+                        $('#saveclient').click(function () {
+                            $('#success-box').addClass('hide');
+                            $('#error-box').addClass('hide');
+                            $('#success-error-br').addClass('hide');
                             $.ajax({
                                 cache: false,
                                 dataType: 'text',
-                                url: '/oauth/authorize',
-                                method: 'POST',
+                                url: '/oauth/saveidsecret',
+                                method: 'PUT',
                                 data: {
-                                    code: queryMap.get('code'),
-                                    type: window.sessionStorage.getItem('state-type'),
-                                    redirect_uri: redirectURI
+                                    clientid: $('#clientid').val(),
+                                    clientsecret: $('#clientsecret').val()
                                 },
-                                success: function(data) {
-                                    $('#info-box').addClass('hide');
-                                    if (data.startsWith('false')) {
+                                success: function (data) {
+                                    if (data === 'false') {
                                         $('#error-box').removeClass('hide');
                                         $('#success-error-br').removeClass('hide');
-                                        $('#error-box').html('Failed to authorize and save the ' + window.sessionStorage.getItem('state-type') + ' token: ' + data.substring(6));
+                                        $('#error-box').html('Failed to save Client ID and Client Secret: invalid input');
                                     } else if (data === 'true') {
                                         $('#error-box').removeClass('hide');
                                         $('#success-error-br').removeClass('hide');
-                                        $('#error-box').html('Failed to save the ' + window.sessionStorage.getItem('state-type') + ' token: writing botlogin.txt failed');
+                                        $('#error-box').html('Failed to save Client ID and Client Secret: writing botlogin.txt failed');
                                     } else {
                                         clientID = data;
                                         $('#success-box').removeClass('hide');
                                         $('#success-error-br').removeClass('hide');
-                                        $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('state-type') + ' token');
+                                        $('#success-box').html('Saved the Client ID and Client Secret');
+                                        $('#connect').removeClass('hide');
                                     }
                                 },
-                                error: function(err) {
-                                    $('#info-box').addClass('hide');
+                                error: function (err) {
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('state-type') + ': ' + err.statusText + ' ' + err.responseText);
+                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText);
                                 }
                             });
+                        });
+                        $('#saveclient').css('cursor', 'pointer');
 
-                            // Remove the state.
-                            window.sessionStorage.removeItem('state');
-                            window.sessionStorage.removeItem('state-type');
+                        if (queryMap.size > 0) {
+                            if (queryMap.has('code') && queryMap.has('state')) {
+                                // Get the state.
+                                state = window.sessionStorage.getItem('state');
+
+                                if (queryMap.get('state') === state) {
+                                    $('#info-box').removeClass('hide');
+                                    $('#success-error-br').removeClass('hide');
+                                    $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
+                                    $.ajax({
+                                        cache: false,
+                                        dataType: 'text',
+                                        url: '/oauth/authorize',
+                                        method: 'POST',
+                                        data: {
+                                            code: queryMap.get('code'),
+                                            type: window.sessionStorage.getItem('statetype'),
+                                            redirect_uri: redirectURI
+                                        },
+                                        success: function (data) {
+                                            $('#info-box').addClass('hide');
+                                            if (data.startsWith('false')) {
+                                                $('#error-box').removeClass('hide');
+                                                $('#success-error-br').removeClass('hide');
+                                                $('#error-box').html('Failed to authorize and save the ' + window.sessionStorage.getItem('statetype') + ' token: ' + data.substring(6));
+                                            } else if (data === 'true') {
+                                                $('#error-box').removeClass('hide');
+                                                $('#success-error-br').removeClass('hide');
+                                                $('#error-box').html('Failed to save the ' + window.sessionStorage.getItem('statetype') + ' token: writing botlogin.txt failed');
+                                            } else {
+                                                clientID = data;
+                                                $('#success-box').removeClass('hide');
+                                                $('#success-error-br').removeClass('hide');
+                                                $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('statetype') + ' token');
+                                            }
+                                            window.sessionStorage.removeItem('statetype');
+                                        },
+                                        error: function (err) {
+                                            $('#info-box').addClass('hide');
+                                            $('#error-box').removeClass('hide');
+                                            $('#success-error-br').removeClass('hide');
+                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText);
+                                            window.sessionStorage.removeItem('statetype');
+                                        }
+                                    });
+
+                                    // Remove the state.
+                                    window.sessionStorage.removeItem('state');
+                                }
+                            }
                         }
-                    }
-                } else {
-                    // Generates the state.
-                    function generateState(type) {
-                        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                                state = '';
+                        // Generates the state.
+                        function generateState(type) {
+                            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                                    state = '';
 
-                        for (var i = 0; i < 40; i++) {
-                            state += possible.charAt(Math.floor(Math.random() * possible.length));
-                        }
-
-                        // Save the state.
-                        window.sessionStorage.setItem('state', state);
-                        window.sessionStorage.setItem('state-type', type);
-
-                        return state;
-                    }
-
-                    // Connect with Twitch button bot.
-                    $('#connect-bot').on('click', function () {
-                        var scopes = '';
-                        for (var x in scopesBot) {
-                            if (scopes.length > 0) {
-                                scopes = scopes + '+';
+                            for (var i = 0; i < 40; i++) {
+                                state += possible.charAt(Math.floor(Math.random() * possible.length));
                             }
 
-                            scopes = scopes + x;
+                            // Save the state.
+                            window.sessionStorage.setItem('state', state);
+                            window.sessionStorage.setItem('statetype', type);
+
+                            return state;
                         }
 
-                        window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
-                    });
+                        // Connect with Twitch button bot.
+                        $('#connect-bot').on('click', function () {
+                            var scopes = '';
+                            for (var x in scopesBot) {
+                                if (scopes.length > 0) {
+                                    scopes = scopes + '+';
+                                }
 
-                    // Connect with Twitch button caster.
-                    $('#connect-caster').on('click', function () {
-                        var scopes = '';
-                        for (var x in scopesBroadcaster) {
-                            if (scopes.length > 0) {
-                                scopes = scopes + '+';
+                                scopes = scopes + x;
                             }
 
-                            scopes = scopes + x;
-                        }
+                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
+                        });
 
-                        window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+                        // Connect with Twitch button caster.
+                        $('#connect-caster').on('click', function () {
+                            var scopes = '';
+                            for (var x in scopesBroadcaster) {
+                                if (scopes.length > 0) {
+                                    scopes = scopes + '+';
+                                }
+
+                                scopes = scopes + x;
+                            }
+
+                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+                        });
+
+                        $.ajax({
+                            cache: false,
+                            dataType: 'text',
+                            url: '/oauth/checkidsecret',
+                            success: function (data) {
+                                if (data !== 'false') {
+                                    $('#clientid').val(data);
+                                    clientID = data;
+                                    $("#clientsecret")[0].placeholder = " -- Hidden -- ";
+                                    $('#secretmsg').removeClass('hide');
+                                    $('#connect').removeClass('hide');
+                                }
+                            }
+                        });
+
+                        $('[data-toggle="tooltip"]').tooltip();
                     });
-                }
-                
-                $.ajax({
-                    cache: false,
-                    dataType: 'text',
-                    url: '/oauth/checkidsecret',
-                    success: function(data) {
-                        if (data !== 'false') {
-                            $('#clientid').val(data);
-                            clientID = data;
-                            $('#secretmsg').removeClass('hide');
-                            $('#connect').removeClass('hide');
-                        }
-                    }
-                });
-
-                $('[data-toggle="tooltip"]').tooltip();
-            });
         </script>
     </body>
 </html>
