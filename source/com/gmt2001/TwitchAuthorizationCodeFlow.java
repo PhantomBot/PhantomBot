@@ -133,6 +133,8 @@ public class TwitchAuthorizationCodeFlow {
                 com.gmt2001.Console.debug.println("missing id or secret");
                 data = "false".getBytes();
             }
+
+            com.gmt2001.Console.debug.println(new String(data));
         } else if (req.uri().startsWith("/oauth/saveidsecret") && req.method() == HttpMethod.PUT) {
             QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("clientid") || !qsd.parameters().containsKey("clientsecret") || qsd.parameters().get("clientid").get(0).isBlank()
@@ -170,6 +172,8 @@ public class TwitchAuthorizationCodeFlow {
                     data = "true".getBytes();
                 }
             }
+
+            com.gmt2001.Console.debug.println(new String(data));
         } else if (req.uri().startsWith("/oauth/authorize") && req.method() == HttpMethod.POST) {
             QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("code") || !qsd.parameters().containsKey("type") || !qsd.parameters().containsKey("redirect_uri")
@@ -219,10 +223,9 @@ public class TwitchAuthorizationCodeFlow {
                     }
                 }
             }
+
+            com.gmt2001.Console.debug.println(new String(data));
         }
-
-        com.gmt2001.Console.debug.println(new String(data));
-
         return data;
     }
 
@@ -249,9 +252,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private static JSONObject doRequest(QueryStringEncoder qse) {
         try {
-            com.gmt2001.Console.debug.println(qse.toString());
             URL url = new URL(BASE_URL + qse.toString());
-            com.gmt2001.Console.debug.println(url.toString());
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
@@ -272,11 +273,21 @@ public class TwitchAuthorizationCodeFlow {
 
             if (connection.getResponseCode() == 200) {
                 try (InputStream inStream = connection.getInputStream()) {
-                    return new JSONObject(new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n")));
+                    String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
+                    if (!r.startsWith("{")) {
+                        r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
+                        com.gmt2001.Console.debug.println(r);
+                    }
+                    return new JSONObject(r);
                 }
             } else {
                 try (InputStream inStream = connection.getErrorStream()) {
-                    return new JSONObject(new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n")));
+                    String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
+                    if (!r.startsWith("{")) {
+                        r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
+                        com.gmt2001.Console.debug.println(r);
+                    }
+                    return new JSONObject(r);
                 }
             }
         } catch (IOException | NullPointerException | JSONException ex) {
