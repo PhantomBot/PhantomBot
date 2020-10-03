@@ -249,9 +249,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private static JSONObject doRequest(QueryStringEncoder qse) {
         try {
-            com.gmt2001.Console.debug.println(qse.toString());
             URL url = new URL(BASE_URL + qse.toString());
-            com.gmt2001.Console.debug.println(url.toString());
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
