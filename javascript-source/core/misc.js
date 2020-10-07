@@ -386,7 +386,7 @@
      * @returns {boolean}
      */
     function outOfRange(number, min, max) {
-        return (number < min && number > max);
+        return (number < min || number > max);
     }
 
     /**
