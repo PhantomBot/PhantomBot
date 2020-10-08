@@ -185,15 +185,6 @@
         }
     }
 
-    /*
-     * @function getModuleIndex
-     *
-     * @param  {String} scriptName
-     * @return {Number}
-     */
-    function getModuleIndex(scriptName) {
-        return modules.indexOf(scriptName);
-    }
 
     /*
      * @function isModuleEnabled
