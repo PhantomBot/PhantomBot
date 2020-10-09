@@ -1111,7 +1111,6 @@
         loadScriptRecursive: loadScriptRecursive,
         isModuleEnabled: isModuleEnabled,
         isModuleLoaded: isModuleLoaded,
-        getModuleIndex: getModuleIndex,
         getHookIndex: getHookIndex,
         loadScript: loadScript,
         getModule: getModule,
