@@ -44,7 +44,12 @@
     function readFile(path) {
         var lines = [];
 
-        if (!fileExists(path) || invalidLocation(path)) {
+        if (!fileExists(path)) {
+            return lines;
+        }
+
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked readFile() target outside of validPaths:' + path);
             return lines;
         }
 
@@ -69,6 +74,7 @@
      */
     function mkDir(path) {
         if (invalidLocation(path)){
+            $.consoleLn('Blocked mkDir() target outside of validPaths:' + path);
             return false;
         }
 
@@ -87,6 +93,7 @@
             pathO = new JFile(path);
 
         if (invalidLocation(file) || invalidLocation(path)) {
+            $.consoleLn('Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
             return;
         }
 
@@ -108,6 +115,7 @@
      */
     function saveArray(array, path, append) {
         if (invalidLocation(path)) {
+            $.consoleLn('Blocked saveArray() target outside of validPaths:' + path);
             return;
         }
 
@@ -153,6 +161,7 @@
             ps;
 
         if (invalidLocation(path)){
+            $.consoleLn('Blocked writeToFile() target outside of validPaths:' + path);
             return;
         }
 
@@ -186,6 +195,7 @@
      */
     function touchFile(path) {
         if (invalidLocation(path)) {
+            $.consoleLn('Blocked touchFile() target outside of validPaths:' + path);
             return;
         }
 
@@ -205,6 +215,7 @@
      */
     function deleteFile(path, now) {
         if (invalidLocation(path)) {
+            $.consoleLn('Blocked deleteFile() target outside of validPaths:' + path);
             return;
         }
 
@@ -228,6 +239,7 @@
      */
     function fileExists(path) {
         if (invalidLocation(path)) {
+            $.consoleLn('Blocked fileExists() target outside of validPaths:' + path);
             return false;
         }
 
@@ -248,6 +260,7 @@
      */
     function findFiles(directory, pattern) {
         if (invalidLocation(directory)) {
+            $.consoleLn('Blocked findFiles() target outside of validPaths:' + directory);
             return [];
         }
 
@@ -277,6 +290,7 @@
      */
     function isDirectory(path) {
         if (invalidLocation(path)) {
+            $.consoleLn('Blocked isDirectory() target outside of validPaths:' + path);
             return false;
         }
 
@@ -296,6 +310,7 @@
      */
     function findSize(file) {
         if (invalidLocation(file)) {
+            $.consoleLn('Blocked findSize() target outside of validPaths:' + file);
             return 0;
         }
 
