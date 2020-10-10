@@ -185,15 +185,6 @@
         }
     }
 
-    /*
-     * @function getModuleIndex
-     *
-     * @param  {String} scriptName
-     * @return {Number}
-     */
-    function getModuleIndex(scriptName) {
-        return modules.indexOf(scriptName);
-    }
 
     /*
      * @function isModuleEnabled
@@ -1120,7 +1111,6 @@
         loadScriptRecursive: loadScriptRecursive,
         isModuleEnabled: isModuleEnabled,
         isModuleLoaded: isModuleLoaded,
-        getModuleIndex: getModuleIndex,
         getHookIndex: getHookIndex,
         loadScript: loadScript,
         getModule: getModule,
