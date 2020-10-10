@@ -68,7 +68,7 @@
                     result: String($.randRange(1, 100)),
                     cache: false
                 };
-            } else if ((match = args.match(/^\s(\d+),\s?(\d+)$/))) {
+            } else if ((match = args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
                 return {
                     result: String($.randRange(parseInt(match[1]), parseInt(match[2]))),
                     cache: false
