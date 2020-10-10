@@ -689,7 +689,7 @@
 
             action = action.replace('!', '').toLowerCase();
 
-            if (!$.commandExists(action)) {
+            if (!$.commandExists(action) || $.jsString(action) === 'disablecom' || $.jsString(action) === 'enablecom') {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.404'));
                 return;
             } else if ($.inidb.exists('disabledCommands', action)) {
