@@ -303,7 +303,7 @@
      */
     function loadBlackList() {
         var keys = $.inidb.GetKeyList('blackList', '');
-            blackList = [];
+        blackList = [];
 
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
@@ -327,14 +327,23 @@
     }
 
     /**
+     * @function addToWhiteList
+     *
+     * @param {string} url
+     */
+    function addToWhiteList(url) {
+        whiteList.push(new RegExp(url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'));
+    }
+
+    /**
      * @function loadWhiteList
      */
     function loadWhiteList() {
         var keys = $.inidb.GetKeyList('whiteList', '');
-            whiteList = [];
+        whiteList = [];
 
         for (i = 0; i < keys.length; i++) {
-            whiteList.push(keys[i] + '');
+            addToWhiteList(keys[i] + '');
         }
     }
 
@@ -451,7 +460,7 @@
     function checkBlackList(sender, event, message, tags) {
         for (i in blackList) {
             if (blackList[i].isRegex) {
-                if (blackList[i].phrase.test(message)) {
+                if ($.test(message, blackList[i].phrase)) {
                     if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
                         return false;
                     }
@@ -496,9 +505,8 @@
      */
     function checkWhiteList(message) {
         function checkLink(link, whiteListItem) {
-            var baseLink = link.match(/[^.]*[^/]*/)[0];
-            var itemRe = new RegExp(whiteListItem.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
-            var matches = $.matchAll(link, itemRe);
+            var baseLink = $.match(link, /[^.]*[^/]*/)[0];
+            var matches = $.matchAll(link, whiteListItem);
             for (k = 0; k < matches.length; k++) {
                 var matchStart = matches[k].index;
                 var matchEnd = matches[k].index + matches[k][0].length;
@@ -529,7 +537,7 @@
      * @param {string} message
      */
     function checkYoutubePlayer(message) {
-        if ($.youtubePlayerConnected && youtubeLinks.test(message)) {
+        if ($.youtubePlayerConnected && $.test(message, youtubeLinks)) {
             return true;
         }
         return false;
@@ -1026,7 +1034,7 @@
                 }
                 var link = argString.split(' ').slice(1).join(' ').toLowerCase() + '';
                 $.inidb.set('whiteList', link, 'true');
-                whiteList.push(link);
+                addToWhiteList(link);
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.whitelist.link.added'));
                 $.log.event('"' + link + '" was added the the whitelist by ' + sender);
             }

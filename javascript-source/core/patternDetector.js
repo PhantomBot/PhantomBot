@@ -40,7 +40,7 @@
      * @returns {boolean}
      */
     function hasLinks(event) {
-        return patterns.link.test(event.getMessage());
+        return $.test(event.getMessage(), patterns.link);
     }
 
     /**
@@ -53,7 +53,7 @@
         // turn Java String into JavaScript string
         // https://github.com/mozilla/rhino/issues/638
         message = message + '';
-        return message.match(patterns.link);
+        return $.match(message, patterns.link);
     }
 
     /**
@@ -61,7 +61,7 @@
      * @export $.patternDetector
      */
     function logLastLink(event) {
-        $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + patterns.link.exec(event.getMessage())[0]);
+        $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + $.regexExec(event.getMessage(), patterns.link)[0]);
     }
 
     /**
@@ -71,7 +71,7 @@
      * @returns {number}
      */
     function getLongestRepeatedSequence(event) {
-        var sequences = event.getMessage().match(patterns.repeatedSeq);
+        var sequences = $.match(event.getMessage(), patterns.repeatedSeq);
 
         return (sequences === null ? 0 : sequences.sort(function(a, b) {
             return b.length - a.length;
@@ -86,7 +86,7 @@
      */
     function getLongestNonLetterSequence(event) {
         var message = (event.getMessage() + ''),
-            sequences = message.match(patterns.nonAlphaSeq);
+            sequences = $.match(message, patterns.nonAlphaSeq);
 
         return (sequences === null ? 0 : sequences.sort(function(a, b) {
             return b.length - a.length;
@@ -100,7 +100,7 @@
      * @returns {number}
      */
     function getNumberOfNonLetters(event) {
-        var sequences = event.getMessage().match(patterns.nonAlphaCount);
+        var sequences = $.match(event.getMessage(), patterns.nonAlphaCount);
 
         return (sequences === null ? 0 : sequences.length);
     }
@@ -114,7 +114,7 @@
      */
     function getEmotesCount(event) {
         var emotes = event.getTags().get('emotes'),
-            matched = emotes.match(patterns.emotes),
+            matched = $.match(emotes, patterns.emotes),
             extraEmotes = $.emotesHandler.getEmotesMatchCount(event.getMessage());
 
         return (matched === null ? extraEmotes : (matched.length + extraEmotes));
@@ -168,7 +168,7 @@
      * @returns {number}
      */
     function getNumberOfCaps(event) {
-        var sequences = getMessageWithoutEmotes(event, event.getMessage()).match(patterns.capsCount);
+        var sequences = $.match(getMessageWithoutEmotes(event, event.getMessage()), patterns.capsCount);
 
         return (sequences === null ? 0 : sequences.length);
     }
@@ -190,7 +190,7 @@
      * @returns {boolean}
      */
     function getFakePurge(event) {
-        return patterns.fakePurge.test(String(event.getMessage()).replace(patterns.meCheck, ''));
+        return $.test(String(event.getMessage()).replace(patterns.meCheck, ''), patterns.fakePurge);
     }
 
     /** Export functions to API */

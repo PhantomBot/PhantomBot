@@ -721,6 +721,7 @@
      * @returns {Array}
      */
     function matchAll(str, regex) {
+        regex.lastIndex = 0;
         var matches = [];
         str.replace(regex, function () {
             var match = Array.prototype.slice.call(arguments, 0, -2);
@@ -730,6 +731,21 @@
         });
 
         return matches;
+    }
+
+    function match(str, regex) {
+        regex.lastIndex = 0;
+        return str.match(regex);
+    }
+
+    function test(str, regex) {
+        regex.lastIndex = 0;
+        return regex.test(str);
+    }
+
+    function regexExec(str, regex) {
+        regex.lastIndex = 0;
+        return regex.exec(str);
     }
 
     /**
@@ -789,6 +805,9 @@
     $.paginateArray = paginateArray;
     $.replace = replace;
     $.matchAll = matchAll;
+    $.match = match;
+    $.test = test;
+    $.regexExec = regexExec;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;
