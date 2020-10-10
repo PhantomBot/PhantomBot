@@ -197,6 +197,9 @@ public class TwitchAuthorizationCodeFlow {
                 if (result.has("error")) {
                     data = ("false|" + result.getString("message")).getBytes();
                     com.gmt2001.Console.err.println(result.toString());
+                } else if (!result.has("access_token") || !result.has("refresh_token")) {
+                    data = ("false|invalidJSONResponse" + result.toString()).getBytes();
+                    com.gmt2001.Console.err.println(result.toString());
                 } else {
                     PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", result.getString("access_token"));
                     PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
@@ -256,7 +259,8 @@ public class TwitchAuthorizationCodeFlow {
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
-            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("Accept", "application/json");
+            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.addRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(5000);
