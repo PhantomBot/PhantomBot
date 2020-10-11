@@ -340,7 +340,7 @@
                                 error: function (err) {
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText);
+                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText + '!!');
                                 }
                             });
                         });
@@ -387,7 +387,7 @@
                                             $('#info-box').addClass('hide');
                                             $('#error-box').removeClass('hide');
                                             $('#success-error-br').removeClass('hide');
-                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText);
+                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText + '!!');
                                             window.sessionStorage.removeItem('statetype');
                                         }
                                     });
