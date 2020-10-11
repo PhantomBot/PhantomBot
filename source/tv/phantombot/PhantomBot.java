@@ -635,9 +635,15 @@ public final class PhantomBot implements Listener {
         this.oauth = this.pbProperties.getProperty("oauth");
         TwitchAPIv5.instance().SetClientID(this.clientId);
         TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
-        this.session.setOAuth(this.oauth);
-        this.wsHostIRC.setOAuth(this.apiOAuth);
-        this.pubSubEdge.setOAuth(this.apiOAuth);
+        if (this.session != null) {
+            this.session.setOAuth(this.oauth);
+        }
+        if (this.wsHostIRC != null) {
+            this.wsHostIRC.setOAuth(this.apiOAuth);
+        }
+        if (this.pubSubEdge != null) {
+            this.pubSubEdge.setOAuth(this.apiOAuth);
+        }
     }
 
     public static String GetExecutionPath() {
