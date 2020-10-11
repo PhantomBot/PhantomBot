@@ -28,7 +28,6 @@ import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.illusionaryone.GitHubAPIv3;
-import com.illusionaryone.NoticeTimer;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
 import com.scaniatv.CustomAPI;
@@ -68,7 +67,6 @@ import tv.phantombot.cache.StreamElementsCache;
 import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.cache.TwitchTeamsCache;
-import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleEventHandler;
@@ -123,8 +121,6 @@ public final class PhantomBot implements Listener {
     private Boolean useHttps;
     private int basePort;
     private String bindIP;
-    private int ytSocketPort;
-    private int panelSocketPort;
 
     /* SSL information */
     private String httpsPassword = "";
@@ -149,11 +145,6 @@ public final class PhantomBot implements Listener {
     private String twitterSecretToken;
     private String twitterConsumerSecret;
     private String twitterConsumerToken;
-    private Boolean twitterAuthenticated;
-
-    /* Bitly Information */
-    private String BitlyAPIKey = "";
-    private String BitlyGUID = "";
 
     /* TwitchAlerts Information */
     private String twitchAlertsKey = "";
@@ -168,9 +159,6 @@ public final class PhantomBot implements Listener {
     private String streamElementsID = "";
     private int streamElementsLimit = 5;
 
-    /* Notice Timer and Handling */
-    private NoticeTimer noticeTimer;
-
     /* Discord Configuration */
     private String discordToken = "";
 
@@ -178,10 +166,8 @@ public final class PhantomBot implements Listener {
     private FollowersCache followersCache;
     private DonationsCache twitchAlertsCache;
     private EmotesCache emotesCache;
-    private TwitterCache twitterCache;
     private TwitchCache twitchCache;
     private TwitchTeamsCache twitchTeamCache;
-    private UsernameCache usernameCache;
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
     private StreamElementsCache streamElementCache;
@@ -204,19 +190,15 @@ public final class PhantomBot implements Listener {
     private static Boolean isInExitState = false;
     private Boolean isExiting = false;
     private Boolean interactive;
-    private Boolean resetLogin = false;
 
     /* Other Information */
     private Boolean newSetup = false;
     private TwitchSession session;
-    private String chanName;
-    private Boolean timer = false;
     private SecureRandom random;
     private Boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
     private CaselessProperties pbProperties;
-    private Boolean legacyServers = false;
     private Boolean backupDBAuto = false;
     private int backupDBHourFrequency = 0;
     private int backupDBKeepDays = 0;
@@ -365,6 +347,11 @@ public final class PhantomBot implements Listener {
         /* System interactive */
         interactive = (System.getProperty("interactive") != null);
 
+        this.authflow = new TwitchAuthorizationCodeFlow(pbProperties.getProperty("clientid"), pbProperties.getProperty("clientsecret"));
+        if (this.authflow.refresh(pbProperties)) {
+            pbProperties = ConfigurationManager.getConfiguration();
+        }
+
         /* Assign properties passed in to local instance. */
         this.pbProperties = pbProperties;
 
@@ -380,16 +367,12 @@ public final class PhantomBot implements Listener {
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
 
-        authflow = new TwitchAuthorizationCodeFlow(this.pbProperties.getProperty("clientid"), this.pbProperties.getProperty("clientsecret"));
-
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
         this.youtubeKey = this.pbProperties.getProperty("youtubekey", "");
         this.basePort = Integer.parseInt(this.pbProperties.getProperty("baseport", "25000"));
         this.bindIP = this.pbProperties.getProperty("bindIP", "");
-        this.ytSocketPort = Integer.parseInt(this.pbProperties.getProperty("ytsocketport", String.valueOf((this.basePort + 3))));
-        this.panelSocketPort = Integer.parseInt(this.pbProperties.getProperty("panelsocketport", String.valueOf((this.basePort + 4))));
         this.webOAuth = this.pbProperties.getProperty("webauth");
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
         this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
@@ -406,7 +389,6 @@ public final class PhantomBot implements Listener {
         this.twitterConsumerSecret = this.pbProperties.getProperty("twitter_consumer_secret", "");
         this.twitterAccessToken = this.pbProperties.getProperty("twitter_access_token", "");
         this.twitterSecretToken = this.pbProperties.getProperty("twitter_secret_token", "");
-        this.twitterAuthenticated = false;
 
         /* Set the Discord variables */
         this.discordToken = this.pbProperties.getProperty("discord_token", "");
@@ -423,10 +405,6 @@ public final class PhantomBot implements Listener {
         this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
         this.streamElementsID = this.pbProperties.getProperty("streamelementsid", "");
         this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
-
-        /* Set the Bitly variables */
-        this.BitlyAPIKey = this.pbProperties.getProperty("bitlyapikey", "");
-        this.BitlyGUID = this.pbProperties.getProperty("bitlyguid", "");
 
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
@@ -450,9 +428,6 @@ public final class PhantomBot implements Listener {
 
         /* Set the panel password login for the panel to use */
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
-
-        /* Toggle for the old servers. */
-        this.legacyServers = this.pbProperties.getProperty("legacyservers", "false").equalsIgnoreCase("true");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
         PhantomBot.twitchTcpNodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
@@ -635,9 +610,15 @@ public final class PhantomBot implements Listener {
         this.oauth = this.pbProperties.getProperty("oauth");
         TwitchAPIv5.instance().SetClientID(this.clientId);
         TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
-        this.session.setOAuth(this.oauth);
-        this.wsHostIRC.setOAuth(this.apiOAuth);
-        this.pubSubEdge.setOAuth(this.apiOAuth);
+        if (this.session != null) {
+            this.session.setOAuth(this.oauth);
+        }
+        if (this.wsHostIRC != null) {
+            this.wsHostIRC.setOAuth(this.apiOAuth);
+        }
+        if (this.pubSubEdge != null) {
+            this.pubSubEdge.setOAuth(this.apiOAuth);
+        }
     }
 
     public static String GetExecutionPath() {
@@ -841,7 +822,7 @@ public final class PhantomBot implements Listener {
             TwitterAPI.instance().setConsumerKey(twitterConsumerToken);
             TwitterAPI.instance().setConsumerSecret(twitterConsumerSecret);
             /* Check to see if the tokens worked */
-            this.twitterAuthenticated = TwitterAPI.instance().authenticate();
+            TwitterAPI.instance().authenticate();
         }
 
         /* print a extra line in the console. */
@@ -855,7 +836,7 @@ public final class PhantomBot implements Listener {
             data += "// Configuration for YTPlayer\r\n";
             data += "// Automatically Generated by PhantomBot at Startup\r\n";
             data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
-            data += "var playerPort = " + ytSocketPort + ";\r\n";
+            data += "var playerPort = " + basePort + ";\r\n";
             data += "var channelName = \"" + channelName + "\";\r\n";
             data += "var auth=\"" + youtubeOAuth + "\";\r\n";
             data += "var http=\"" + http + "\";\r\n";
@@ -884,7 +865,7 @@ public final class PhantomBot implements Listener {
             data += "//Configuration for YTPlayer\r\n";
             data += "//Automatically Generated by PhantomBot at Startup\r\n";
             data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
-            data += "var playerPort = " + ytSocketPort + ";\r\n";
+            data += "var playerPort = " + basePort + ";\r\n";
             data += "var channelName = \"" + channelName + "\";\r\n";
             data += "var auth=\"" + youtubeOAuthThro + "\";\r\n";
             data += "var http=\"" + http + "\";\r\n";
@@ -914,7 +895,7 @@ public final class PhantomBot implements Listener {
             data += "// Automatically Generated by PhantomBot at Startup\r\n";
             data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var panelSettings = {\r\n";
-            data += "    panelPort   : " + panelSocketPort + ",\r\n";
+            data += "    panelPort   : " + basePort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuth + "\",\r\n";
             data += "    http        : \"" + http + "\"\r\n, ";
@@ -949,7 +930,7 @@ public final class PhantomBot implements Listener {
             data += "// Automatically Generated by PhantomBot at Startup\r\n";
             data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var panelSettings = {\r\n";
-            data += "    panelPort   : " + panelSocketPort + ",\r\n";
+            data += "    panelPort   : " + basePort + ",\r\n";
             data += "    channelName : \"" + channelName + "\",\r\n";
             data += "    auth        : \"" + webOAuthThro + "\",\r\n";
             data += "    http        : \"" + http + "\"\r\n";
@@ -1160,16 +1141,6 @@ public final class PhantomBot implements Listener {
         /* Start the StreamElements cache if the keys are not null and the module is enabled. */
         if (this.streamElementsJWT != null && !this.streamElementsJWT.isEmpty() && checkModuleEnabled("./handlers/streamElementsHandler.js")) {
             this.streamElementCache = StreamElementsCache.instance(this.channelName);
-        }
-
-        /* Start the twitter cache if the keys are not null and the module is enabled */
-        if (this.twitterAuthenticated && checkModuleEnabled("./handlers/twitterHandler.js")) {
-            this.twitterCache = TwitterCache.instance(this.channelName);
-        }
-
-        /* Start the notice timer and notice handler. */
-        if (pbProperties.getProperty("testnotices", "false").equals("true")) {
-            this.noticeTimer = NoticeTimer.instance(this.channelName, this.session);
         }
 
         /* Export these to the $. api for the sripts to use */

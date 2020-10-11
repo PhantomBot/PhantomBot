@@ -111,7 +111,7 @@
                                             <li>Click the <i>Applications</i> tab</li>
                                             <li>Click <i>Register Your Application</i></li>
                                             <li>In the <i>Name</i> box, put the name of your bot, or another name that will be recognized</li>
-                                            <li>In the <i>OAuth Redirect URLs</i> box, put <i id="self-url"></i></li>
+                                            <li>In the <i>OAuth Redirect URLs</i> box, put <input type="text" id="selfurl" class="form-control" readonly="readonly"></li>
                                             <li>In the <i>Category</i> drop-down, select <i>Chat Bot</i></li>
                                             <li>Click <i>Create</i></li>
                                         </ol>
@@ -305,7 +305,7 @@
                             }
                         }
 
-                        $('#self-url').html(redirectURI);
+                        $('#selfurl').val(redirectURI);
 
                         $('#saveclient').click(function () {
                             $('#success-box').addClass('hide');
@@ -340,7 +340,7 @@
                                 error: function (err) {
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText);
+                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText + '!!');
                                 }
                             });
                         });
@@ -387,7 +387,7 @@
                                             $('#info-box').addClass('hide');
                                             $('#error-box').removeClass('hide');
                                             $('#success-error-br').removeClass('hide');
-                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText);
+                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText + '!!');
                                             window.sessionStorage.removeItem('statetype');
                                         }
                                     });
