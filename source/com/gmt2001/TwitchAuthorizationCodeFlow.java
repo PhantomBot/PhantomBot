@@ -291,7 +291,15 @@ public class TwitchAuthorizationCodeFlow {
                         r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
                         com.gmt2001.Console.debug.println(r);
                     }
-                    return new JSONObject(r);
+                    JSONObject j = new JSONObject(r);
+                    if (!j.has("error")) {
+                        if (j.has("status")) {
+                            j.put("error", j.getInt("status"));
+                        } else {
+                            j.put("error", j.getInt("E_UNKWN"));
+                        }
+                    }
+                    return j;
                 }
             }
         } catch (IOException | NullPointerException | JSONException ex) {
