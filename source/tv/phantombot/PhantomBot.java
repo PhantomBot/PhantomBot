@@ -347,6 +347,11 @@ public final class PhantomBot implements Listener {
         /* System interactive */
         interactive = (System.getProperty("interactive") != null);
 
+        this.authflow = new TwitchAuthorizationCodeFlow(pbProperties.getProperty("clientid"), pbProperties.getProperty("clientsecret"));
+        if (this.authflow.refresh(pbProperties)) {
+            pbProperties = ConfigurationManager.getConfiguration();
+        }
+
         /* Assign properties passed in to local instance. */
         this.pbProperties = pbProperties;
 
@@ -361,8 +366,6 @@ public final class PhantomBot implements Listener {
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
-
-        authflow = new TwitchAuthorizationCodeFlow(this.pbProperties.getProperty("clientid"), this.pbProperties.getProperty("clientsecret"));
 
         /* Set the web variables */
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
