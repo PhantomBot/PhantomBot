@@ -48,6 +48,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final String USER_AGENT = "PhantomBot/2020";
+    private static final long REFRESH_INTERVAL = 900000L;
     private Timer t = null;
 
     public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
@@ -130,7 +131,7 @@ public class TwitchAuthorizationCodeFlow {
                         refreshTokens(PhantomBot.instance().getProperties());
                     }
                 }
-            }, 30000, 900000);
+            }, REFRESH_INTERVAL, REFRESH_INTERVAL);
         }
     }
 
