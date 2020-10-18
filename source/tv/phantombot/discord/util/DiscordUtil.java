@@ -21,10 +21,7 @@ import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.channel.Channel;
-import discord4j.core.object.entity.channel.GuildMessageChannel;
-import discord4j.core.object.entity.channel.MessageChannel;
-import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.core.object.entity.channel.*;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -39,12 +36,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
@@ -190,7 +189,7 @@ public class DiscordUtil {
     /**
      * Method to send private messages to a user.
      *
-     * @param userName
+     * @param channel
      * @param message
      */
     public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
@@ -1064,4 +1063,41 @@ public class DiscordUtil {
             }
         }
     }
+
+    /**
+     * Method to get a message by its id.
+     *
+     * @param channelName
+     * @param messageId
+     * @return {Message}
+     */
+    public Message getMessageById(String channelName, String messageId) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        return channel.getMessageById(Snowflake.of(messageId)).block();
+    }
+
+    /**
+     * Method to edit a message.
+     *
+     * @param message
+     * @param newMessage
+     */
+    public void editMessage(Message message, String newMessage) {
+        message.edit(spec -> spec.setContent(newMessage)).subscribe();
+    }
+
+    /**
+     * Method to get a list of all messages before the given message.
+     *
+     * @param channelName
+     * @param messageId
+     * @return {List<Message>}
+     */
+    public List<Message> getMessagesBefore(String channelName, String messageId) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        List<Message> messageList = new ArrayList<Message>();
+        channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        return messageList;
+    }
+
 }
