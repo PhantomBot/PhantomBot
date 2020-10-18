@@ -16,11 +16,7 @@
  */
 package tv.phantombot.discord.util;
 
-import discord4j.core.object.entity.GuildEmoji;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.*;
 import discord4j.core.object.entity.channel.*;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
@@ -46,6 +42,7 @@ import java.util.regex.Pattern;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.DiscordAPI;
 
@@ -1065,7 +1062,7 @@ public class DiscordUtil {
     }
 
     /**
-     * Method to get a message by its id.
+     * Method to return a message by its id.
      *
      * @param channelName
      * @param messageId
@@ -1077,17 +1074,27 @@ public class DiscordUtil {
     }
 
     /**
-     * Method to edit a message.
+     * Method to edit message content.
      *
      * @param message
      * @param newMessage
      */
-    public void editMessage(Message message, String newMessage) {
+    public void editMessageContent(Message message, String newMessage) {
         message.edit(spec -> spec.setContent(newMessage)).subscribe();
     }
 
     /**
-     * Method to get a list of all messages before the given message.
+     * Method to edit message embeds.
+     *
+     * @param message
+     * @param newEmbed
+     */
+    public void editMessageEmbed(Message message, Consumer<? super EmbedCreateSpec> newEmbed) {
+        message.edit(spec -> spec.setEmbed(newEmbed)).subscribe();
+    }
+
+    /**
+     * Method to return a list of all messages before the given message.
      *
      * @param channelName
      * @param messageId
@@ -1098,6 +1105,17 @@ public class DiscordUtil {
         List<Message> messageList = new ArrayList<Message>();
         channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
         return messageList;
+    }
+
+    /**
+     * Method to return a the last message of a given channel.
+     *
+     * @param channelName
+     * @return {Message}
+     */
+    public Message getLastMessage(String channelName) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        return channel.getLastMessage().block();
     }
 
 }
