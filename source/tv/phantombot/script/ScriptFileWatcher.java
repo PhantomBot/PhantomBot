@@ -47,7 +47,7 @@ public class ScriptFileWatcher implements Runnable {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         this.thread = new Thread(this, "tv.phantombot.script.ScriptFileWatcher::run");
-        this.thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.thread.start();
     }
 
