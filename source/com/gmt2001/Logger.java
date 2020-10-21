@@ -50,23 +50,23 @@ public class Logger implements Runnable {
     public void run() {
         this.isRunning = true;
 
-        if (!new File ("./logs/").exists()) {
-            new File ("./logs/").mkdirs();
+        if (!new File("./logs/").exists()) {
+            new File("./logs/").mkdirs();
         }
-        if (!new File ("./logs/core").exists()) {
-            new File ("./logs/core/").mkdirs();
+        if (!new File("./logs/core").exists()) {
+            new File("./logs/core/").mkdirs();
         }
-        if (!new File ("./logs/core-error").exists()) {
-            new File ("./logs/core-error/").mkdirs();
+        if (!new File("./logs/core-error").exists()) {
+            new File("./logs/core-error/").mkdirs();
         }
-        if (!new File ("./logs/core-warnings").exists()) {
-            new File ("./logs/core-warnings/").mkdirs();
+        if (!new File("./logs/core-warnings").exists()) {
+            new File("./logs/core-warnings/").mkdirs();
         }
-        if (!new File ("./logs/core-debug").exists()) {
-            new File ("./logs/core-debug/").mkdirs();
+        if (!new File("./logs/core-debug").exists()) {
+            new File("./logs/core-debug/").mkdirs();
         }
-        if (!new File ("./logs/moderation").exists()) {
-            new File ("./logs/moderation/").mkdirs();
+        if (!new File("./logs/moderation").exists()) {
+            new File("./logs/moderation/").mkdirs();
         }
 
         while (!disposed) {
@@ -111,62 +111,62 @@ public class Logger implements Runnable {
                         }
 
                         switch (i.t) {
-                        case Output:
-                            if (this.psCore == null) {
-                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                this.psCore = new PrintStream(this.fosCore);
-                            }
-                            this.psCore.println(i.s);
-                            this.psCore.flush();
-                            break;
-                        case Input:
-                            if (this.psCore == null) {
-                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                this.psCore = new PrintStream(this.fosCore);
-                            }
-                            this.psCore.println(i.s);
-                            this.psCore.flush();
-                            break;
-                        case Error:
-                            if (this.psError == null) {
-                                this.fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt", true);
-                                this.psError = new PrintStream(this.fosError);
-                            }
-                            this.psError.println(i.s);
-                            this.psError.flush();
-                            break;
-                        case Debug:
-                            if (this.psDebug == null) {
-                                this.fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt", true);
-                                this.psDebug = new PrintStream(this.fosDebug);
-                            }
-                            this.psDebug.println(i.s);
-                            this.psDebug.flush();
-                            break;
-                        case Warning:
-                            if (this.psWarning == null) {
-                                this.fosWarning = new FileOutputStream("./logs/core-warnings/" + timestamp + ".txt", true);
-                                this.psWarning = new PrintStream(this.fosWarning);
-                            }
-                            this.psWarning.println(i.s);
-                            this.psWarning.flush();
-                            break;
-                        case Moderation:
-                            if (this.psModeration == null) {
-                                this.fosModeration = new FileOutputStream("./logs/moderation/" + timestamp + ".txt", true);
-                                this.psModeration = new PrintStream(this.fosModeration);
-                            }
-                            this.psModeration.println(i.s);
-                            this.psModeration.flush();
-                            break;
-                        default:
-                            if (this.psCore == null) {
-                                this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                this.psCore = new PrintStream(this.fosCore);
-                            }
-                            this.psCore.println(i.s);
-                            this.psCore.flush();
-                            break;
+                            case Output:
+                                if (this.psCore == null) {
+                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                    this.psCore = new PrintStream(this.fosCore);
+                                }
+                                this.psCore.println(i.s);
+                                this.psCore.flush();
+                                break;
+                            case Input:
+                                if (this.psCore == null) {
+                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                    this.psCore = new PrintStream(this.fosCore);
+                                }
+                                this.psCore.println(i.s);
+                                this.psCore.flush();
+                                break;
+                            case Error:
+                                if (this.psError == null) {
+                                    this.fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt", true);
+                                    this.psError = new PrintStream(this.fosError);
+                                }
+                                this.psError.println(i.s);
+                                this.psError.flush();
+                                break;
+                            case Debug:
+                                if (this.psDebug == null) {
+                                    this.fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt", true);
+                                    this.psDebug = new PrintStream(this.fosDebug);
+                                }
+                                this.psDebug.println(i.s);
+                                this.psDebug.flush();
+                                break;
+                            case Warning:
+                                if (this.psWarning == null) {
+                                    this.fosWarning = new FileOutputStream("./logs/core-warnings/" + timestamp + ".txt", true);
+                                    this.psWarning = new PrintStream(this.fosWarning);
+                                }
+                                this.psWarning.println(i.s);
+                                this.psWarning.flush();
+                                break;
+                            case Moderation:
+                                if (this.psModeration == null) {
+                                    this.fosModeration = new FileOutputStream("./logs/moderation/" + timestamp + ".txt", true);
+                                    this.psModeration = new PrintStream(this.fosModeration);
+                                }
+                                this.psModeration.println(i.s);
+                                this.psModeration.flush();
+                                break;
+                            default:
+                                if (this.psCore == null) {
+                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
+                                    this.psCore = new PrintStream(this.fosCore);
+                                }
+                                this.psCore.println(i.s);
+                                this.psCore.flush();
+                                break;
                         }
                     }
                 } catch (FileNotFoundException | SecurityException ex) {
@@ -184,10 +184,7 @@ public class Logger implements Runnable {
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-
+    public void close() {
         this.disposed = true;
     }
 

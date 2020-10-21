@@ -1085,6 +1085,9 @@ public final class PhantomBot implements Listener {
             HTTPWSServer.instance().close();
         }
 
+        print("Closing the logs...");
+        com.gmt2001.Logger.instance().close();
+
         try {
             for (int i = 5; i > 0; i--) {
                 com.gmt2001.Console.out.print("\rWaiting for everything else to shutdown... " + i + " ");
