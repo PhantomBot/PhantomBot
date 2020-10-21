@@ -147,6 +147,13 @@
             return;
         }
 
+        var otimes = times;
+        if (tags.getTags().containsKey('subscriber') && tags.getTags().get('subscriber').equals('1')) {
+            times *= subTMulti;
+        } else if ($.isReg(user)) {
+            times *= regTMulti;
+        }
+
         if (times > maxEntries || times == 0 || times < 0) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount', maxEntries));
@@ -167,7 +174,7 @@
         }
 
         if (cost > 0) {
-            if ((times * cost) > $.getUserPoints(user)) {
+            if ((otimes * cost) > $.getUserPoints(user)) {
                 if (msgToggle) {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
                 }
@@ -178,15 +185,9 @@
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             totalEntries++;
         }
-	price = times;
-        if (tags.getTags().containsKey('subscriber') && tags.getTags().get('subscriber').equals('1')) {
-            times *= subTMulti;
-        } else if ($.isReg(user)) {
-            times *= regTMulti;
-        }
 
         totalTickets += times;
-        $.inidb.decr('points', user, (price * cost));
+        $.inidb.decr('points', user, (otimes * cost));
         incr(user.toLowerCase(), times);
 
         for (var i = 0; i < times; i++) {
