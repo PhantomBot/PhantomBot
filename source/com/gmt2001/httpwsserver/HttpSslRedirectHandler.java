@@ -22,6 +22,9 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.ReferenceCountUtil;
+import java.util.List;
 
 /**
  * Redirects HTTP requests to HTTPS, when SSL is enabled
@@ -29,6 +32,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  * @author gmt2001
  */
 public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    private static final List<String> ALLOWNONSSLPATHS = List.of("/addons", "/alerts", "/obs/poll-chart");
 
     /**
      * Default Constructor
@@ -51,6 +56,15 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
             return;
         }
         
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+        for (String u : ALLOWNONSSLPATHS) {
+            if (qsd.path().startsWith(u)) {
+                ReferenceCountUtil.retain(req);
+                ctx.fireChannelRead(req);
+                return;
+            }
+        }
+
         String host = req.headers().get(HttpHeaderNames.HOST);
         
         if (host != null && !host.isBlank()) {
