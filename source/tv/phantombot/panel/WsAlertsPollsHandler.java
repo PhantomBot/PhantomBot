@@ -62,6 +62,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
 
     public void triggerAudioPanel(String audioHook) {
         try {
+            com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
             sendJSONToAll(jsonObject.toString());
@@ -72,6 +73,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
 
     public void alertImage(String imageInfo) {
         try {
+            com.gmt2001.Console.debug.println("alertImage: " + imageInfo);
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("alert_image").value(imageInfo).endObject();
             sendJSONToAll(jsonObject.toString());

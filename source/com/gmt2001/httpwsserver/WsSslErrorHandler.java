@@ -16,12 +16,14 @@
  */
 package com.gmt2001.httpwsserver;
 
+import static com.gmt2001.httpwsserver.WebSocketFrameHandler.ATTR_URI;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
+import io.netty.util.ReferenceCountUtil;
 import java.util.List;
 import org.json.JSONStringer;
 
@@ -47,7 +49,14 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-
+        QueryStringDecoder qsd = new QueryStringDecoder(ctx.channel().attr(ATTR_URI).get());
+            for (String u : ALLOWNONSSLPATHS) {
+                if (qsd.path().startsWith(u)) {
+                    ReferenceCountUtil.retain(frame);
+                    ctx.fireChannelRead(frame);
+                    return;
+                }
+            }
     }
 
     /**

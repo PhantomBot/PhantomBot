@@ -127,15 +127,18 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         String authType = ctx.channel().attr(ATTR_AUTHENTICATED).get() ? (ctx.channel().attr(ATTR_IS_READ_ONLY).get() ? "read" : "read/write") : "none";
         jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(authType).endObject();
 
+        com.gmt2001.Console.debug.println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
         ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
 
-        if (!ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
+        if (!ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             com.gmt2001.Console.debug.println("wsauthfail");
             com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
             com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
             com.gmt2001.Console.debug.println("Got: >" + astr + "<");
-            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
-            ctx.close();
+            if (ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
+                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+                ctx.close();
+            }
         }
 
         return ctx.channel().attr(ATTR_AUTHENTICATED).get();
