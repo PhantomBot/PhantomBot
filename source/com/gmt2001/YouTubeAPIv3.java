@@ -25,6 +25,7 @@ import java.nio.charset.Charset;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -165,6 +166,7 @@ public class YouTubeAPIv3 {
                     com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
                 }
         }
+        com.gmt2001.Console.debug.logln(jsonResult.toString());
         return(jsonResult);
     }
 
@@ -206,8 +208,7 @@ public class YouTubeAPIv3 {
                 }
             }
         } else {
-            q = q.replaceAll("[^a-zA-Z0-9 ]", "");
-            q = q.replace(" ", "%20");
+            q = URLEncoder.encode(q, Charset.forName("UTF-8"));
 
             JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {
