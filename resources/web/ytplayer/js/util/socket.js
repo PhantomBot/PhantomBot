@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -372,7 +372,7 @@ $(function() {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
                     toastr.error('A YouTube API key has not been configured. Please review the instructions ' +
-                                 '<a href="https://phantom.bot/guides/#guide=content/integrations/youtubesetup">here' +
+                                 '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/youtubesetup">here' +
                                  '</a> on the PhantomBot Community Forum.', 'Missing YouTube API Key',
                                  {timeOut: 0, extendedTimeOut: 0});
                 }
