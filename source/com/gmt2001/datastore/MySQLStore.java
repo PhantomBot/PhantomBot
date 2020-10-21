@@ -89,6 +89,7 @@ public class MySQLStore extends DataStore {
     }
 
     @Override
+    @SuppressWarnings("try")
     public boolean CanConnect(String db, String user, String pass) {
         try (Connection connection = DriverManager.getConnection(db, user, pass)) {
             return true;
