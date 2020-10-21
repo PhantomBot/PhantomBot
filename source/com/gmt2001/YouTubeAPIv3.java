@@ -166,7 +166,7 @@ public class YouTubeAPIv3 {
                     com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
                 }
         }
-        com.gmt2001.Console.debug.logln(jsonResult.toString());
+        com.gmt2001.Console.debug.logln(jsonResult.toString().replaceAll(apikey, "xxx"));
         return(jsonResult);
     }
 
