@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 import tv.phantombot.event.EventBus;
@@ -32,7 +33,7 @@ public class ViewerListCache implements Runnable {
     private static ViewerListCache instance = null;
     private final String channelName;
     private final Thread thread;
-    private List<String> cache = new ArrayList<String>();
+    private List<String> cache = new ArrayList<>();
     private boolean isKilled = false;
 
     /**
@@ -60,7 +61,7 @@ public class ViewerListCache implements Runnable {
         this.channelName = channelName;
 
         this.thread = new Thread(this, "tv.phantombot.cache.ViewerListCache");
-        this.thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.thread.start();
     }
 
@@ -144,7 +145,7 @@ public class ViewerListCache implements Runnable {
             } else {
                 com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
             }
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Failed to update: " + ex.getMessage());
         }
     }
