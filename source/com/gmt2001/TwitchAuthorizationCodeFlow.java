@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.httpserver.HTTPOAuthHandler;
 
 /**
  *
@@ -117,7 +118,7 @@ public class TwitchAuthorizationCodeFlow {
         return changed;
     }
 
-    private void startup(String clientid, String clientsecret) {
+    private synchronized void startup(String clientid, String clientsecret) {
         if (t != null) {
             return;
         }
@@ -135,8 +136,8 @@ public class TwitchAuthorizationCodeFlow {
         }
     }
 
-    public static byte[] handleRequest(FullHttpRequest req, byte[] data) {
-        if (req.uri().startsWith("/oauth/checkidsecret") && req.method() == HttpMethod.GET) {
+    public static byte[] handleRequest(FullHttpRequest req, byte[] data, HTTPOAuthHandler handler) {
+        if ((req.uri().startsWith("/oauth/checkidsecret") || req.uri().startsWith("/oauth/broadcaster/checkidsecret")) && req.method() == HttpMethod.GET) {
             if (PhantomBot.instance().getProperties().getProperty("clientid") != null && !PhantomBot.instance().getProperties().getProperty("clientid").isBlank()
                     && PhantomBot.instance().getProperties().getProperty("clientsecret") != null && !PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank()) {
                 data = PhantomBot.instance().getProperties().getProperty("clientid").getBytes();
@@ -146,6 +147,8 @@ public class TwitchAuthorizationCodeFlow {
             }
 
             com.gmt2001.Console.debug.println(new String(data));
+        } else if (req.uri().startsWith("/oauth/resetbroadcastertoken") && req.method() == HttpMethod.GET) {
+            data = handler.changeBroadcasterToken().getBytes();
         } else if (req.uri().startsWith("/oauth/saveidsecret") && req.method() == HttpMethod.PUT) {
             QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("clientid") || !qsd.parameters().containsKey("clientsecret") || qsd.parameters().get("clientid").get(0).isBlank()
@@ -185,7 +188,7 @@ public class TwitchAuthorizationCodeFlow {
             }
 
             com.gmt2001.Console.debug.println(new String(data));
-        } else if (req.uri().startsWith("/oauth/authorize") && req.method() == HttpMethod.POST) {
+        } else if ((req.uri().startsWith("/oauth/authorize") || req.uri().startsWith("/oauth/broadcaster/authorize")) && req.method() == HttpMethod.POST) {
             QueryStringDecoder qsd = new QueryStringDecoder(req.content().toString(Charset.defaultCharset()), false);
             if (!qsd.parameters().containsKey("code") || !qsd.parameters().containsKey("type") || !qsd.parameters().containsKey("redirect_uri")
                     || qsd.parameters().get("code").get(0).isBlank() || qsd.parameters().get("redirect_uri").get(0).isBlank()
@@ -214,6 +217,10 @@ public class TwitchAuthorizationCodeFlow {
                 } else {
                     PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", result.getString("access_token"));
                     PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
+
+                    if (!qsd.parameters().get("type").get(0).equals("bot")) {
+                        handler.changeBroadcasterToken();
+                    }
 
                     CaselessProperties outputProperties = new CaselessProperties() {
                         @Override

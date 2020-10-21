@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,6 +108,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();
             } else {
+                com.gmt2001.Console.debug.println("200 WS: " + hc.requestUri() + "   Remote: [" + ctx.channel().remoteAddress().toString() + "]");
                 ctx.channel().attr(ATTR_URI).set(ruri);
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
@@ -235,9 +236,13 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     public static void broadcastWsFrame(String uri, WebSocketFrame resframe) {
+        com.gmt2001.Console.debug.println("Broadcasting frame to Uri [" + uri + "]");
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
+                com.gmt2001.Console.debug.println("Broadcast to client [" + c.remoteAddress().toString() + "]");
                 c.writeAndFlush(resframe.copy());
+            } else {
+                com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f"));
             }
         });
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/panel", this);
         HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
-        HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
     }
 
@@ -84,10 +83,6 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         try {
             String path = qsd.path();
 
-            if (path.startsWith("/oauth")) {
-                path = "/oauth";
-            }
-
             Path p = Paths.get("./web/", path);
 
             if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
@@ -105,9 +100,6 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
                 com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                         + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
                 byte[] data = Files.readAllBytes(p);
-                if (qsd.path().startsWith("/oauth")) {
-                    data = TwitchAuthorizationCodeFlow.handleRequest(req, data);
-                }
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {

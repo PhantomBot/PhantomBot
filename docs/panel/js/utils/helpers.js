@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ $(function() {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "1.2.0-remote";
+    helpers.PANEL_VERSION = "1.3.0-remote";
 
     helpers.hashmap = [];
 

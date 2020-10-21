@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,8 +133,8 @@ public class WsYTHandler implements WsFrameHandler {
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("ytkeycheck").value(hasYTKey).endObject().toString()));
 
                 if (!hasYTKey) {
-                    com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions on the "
-                            + "PhantomBot Community Forum at: https://community.phantom.bot/t/acquire-youtube-api-key/222");
+                    com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions in the guides at "
+                            + "https://phantombot.github.io/PhantomBot/");
                     return;
                 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,10 @@
 package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
-
+import java.io.BufferedOutputStream;
 import tv.phantombot.cache.UsernameCache;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -121,8 +119,9 @@ public class TwitchAPIv5 {
             c.connect();
 
             if (!post.isEmpty()) {
-                try (OutputStream o = c.getOutputStream()) {
-                    IOUtils.write(post, o);
+                try (BufferedOutputStream stream = new BufferedOutputStream(c.getOutputStream())) {
+                    stream.write(post.getBytes());
+                    stream.flush();
                 }
             }
 

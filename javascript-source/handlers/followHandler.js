@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@
             var s = followQueue.poll();
             if (s.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -63,7 +63,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 s = $.replace(s, s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 

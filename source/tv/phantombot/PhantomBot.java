@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,9 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
+import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
+import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.WsPanelRemoteLoginHandler;
 import tv.phantombot.script.Script;
@@ -174,6 +176,7 @@ public final class PhantomBot implements Listener {
     public static String twitchCacheReady = "false";
 
     /* Sockets */
+    private WsAlertsPollsHandler alertsPollsHandler;
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
 
@@ -268,7 +271,7 @@ public final class PhantomBot implements Listener {
      * @return {string} bot developers
      */
     public String botDevelopers() {
-        return "Developers: PhantomIndex, Kojitsari, ScaniaTV, Zackery (Zelakto) & IllusionaryOne";
+        return "Developers: gmt2001, Kojitsari, ScaniaTV, & IllusionaryOne";
     }
 
     /**
@@ -794,7 +797,9 @@ public final class PhantomBot implements Listener {
             new HTTPNoAuthHandler().register();
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
+            new HTTPOAuthHandler(panelUsername, panelPassword).register();
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
+            alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(webOAuthThro, webOAuth).register();
             new WsPanelRemoteLoginHandler(panelUsername, panelPassword, webOAuthThro, webOAuth).register();
 
             /* Is the music toggled on? */
@@ -978,6 +983,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
         Script.global.defineProperty("ytplayer", ytHandler, 0);
         Script.global.defineProperty("panelsocketserver", panelHandler, 0);
+        Script.global.defineProperty("alertspollssocket", alertsPollsHandler, 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
@@ -1080,6 +1086,9 @@ public final class PhantomBot implements Listener {
             print("Shutting down all web socket/http servers...");
             HTTPWSServer.instance().close();
         }
+
+        print("Closing the logs...");
+        com.gmt2001.Logger.instance().close();
 
         try {
             for (int i = 5; i > 0; i--) {

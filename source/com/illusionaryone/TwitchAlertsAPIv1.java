@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
  */
 package com.illusionaryone;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -29,9 +29,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
-
-import org.apache.commons.io.IOUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -119,8 +116,9 @@ public class TwitchAlertsAPIv1 {
             urlConn.connect();
 
             if (doPost) {
-                try (OutputStream outputStream = urlConn.getOutputStream()) {
-                    IOUtils.write(postString, outputStream);
+                try (BufferedOutputStream stream = new BufferedOutputStream(urlConn.getOutputStream())) {
+                    stream.write(postString.getBytes());
+                    stream.flush();
                 }
             }
 

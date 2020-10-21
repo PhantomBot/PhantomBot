@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,7 +196,6 @@ public final class LangFileUpdater {
                     while ((c = br.read()) != -1) {
                         sb.append((char)c);
                     }
-                    br.close();     
                 }
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

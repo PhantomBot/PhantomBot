@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
 
@@ -51,7 +49,6 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
     @Override
     public HttpRequestHandler register() {
-        HttpServerPageHandler.registerHttpHandler("/addons", this);
         HttpServerPageHandler.registerHttpHandler("/dbquery", this);
         HttpServerPageHandler.registerHttpHandler("/games", this);
         HttpServerPageHandler.registerHttpHandler("/get-lang", this);
@@ -101,8 +98,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         try {
             Path p = Paths.get(".", path);
 
-            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./addons"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
+            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;
@@ -111,8 +107,6 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, true)) {
                 if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
                     HttpServerPageHandler.listDirectory(ctx, req, p);
-                } else if (path.startsWith("/addons") && (qsd.parameters().containsKey("marquee") || qsd.parameters().containsKey("refresh"))) {
-                    handleAddons(ctx, req, p, qsd);
                 } else {
                     com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                             + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
@@ -121,61 +115,6 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 }
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500");
-            com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
-        }
-    }
-
-    private void handleAddons(ChannelHandlerContext ctx, FullHttpRequest req, Path p, QueryStringDecoder qsd) {
-        try {
-            String ret;
-
-            if (qsd.parameters().containsKey("marquee")) {
-                List<String> defWidth = new ArrayList<>();
-                defWidth.add("420");
-                List<String> defLen = new ArrayList<>();
-                defLen.add("40");
-                int width = Integer.parseInt(qsd.parameters().getOrDefault("width", defWidth).get(0));
-                int len = Integer.parseInt(qsd.parameters().getOrDefault("cutoff", defLen).get(0));
-                String data = Files.readString(p);
-
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>"
-                        + "body { margin: 5px; }"
-                        + ".marquee { "
-                        + "    height: 25px;"
-                        + "    width: " + width + "px;"
-                        + "    overflow: hidden;"
-                        + "    position: relative;"
-                        + "}"
-                        + ".marquee div {"
-                        + "    display: block;"
-                        + "    width: 200%;"
-                        + "    height: 25px;"
-                        + "    position: absolute;"
-                        + "    overflow: hidden;"
-                        + "    animation: marquee 5s linear infinite;"
-                        + "}"
-                        + ".marquee span {"
-                        + "    float: left;"
-                        + "    width: 50%;"
-                        + "}"
-                        + "@keyframes marquee {"
-                        + "    0% { left: 0; }"
-                        + "    100% { left: -100%; }"
-                        + "}"
-                        + "</style></head><body><div class=\"marquee\"><div>"
-                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
-                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
-                        + "</div></div></body></html>";
-            } else {
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + Files.readString(p) + "</body></html>";
-            }
-
-            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
-                    + HttpServerPageHandler.detectContentType("html") + ")");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html"));
-        } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
