@@ -117,7 +117,7 @@ public class TwitchAuthorizationCodeFlow {
         return changed;
     }
 
-    private void startup(String clientid, String clientsecret) {
+    private synchronized void startup(String clientid, String clientsecret) {
         if (t != null) {
             return;
         }
