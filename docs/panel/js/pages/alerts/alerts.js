@@ -602,7 +602,7 @@ $(function() {
                 'If StreamLabs tips should be posted in the chat.'))
             // Add the the text area for the tip message.
             .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.message,
-                'Message posted in the channel when someone tips with StreamLabs. Tags: (name), (amount), (points), (reward), (pointname), (currency), and (message)'))
+                'Message posted in the channel when someone tips with StreamLabs. Tags: (name), (amount), (amount.toFixed(0)), (points), (pointname), (currency), and (message)'))
             // Add the the box for the tip reward
             .append(helpers.getInputGroup('streamlabs-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.')),
             function() { // Callback once the user clicks save.
