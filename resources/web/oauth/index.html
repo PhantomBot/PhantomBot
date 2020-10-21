@@ -67,7 +67,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container-fluid">
                         <div class="navbar-header">
-                            <a href=".."><img class="navbar-brand" alt="PhantomBot" src="common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                            <a href=".."><img class="navbar-brand" alt="PhantomBot" src="/common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -102,7 +102,7 @@
                             <div>
                                 This page will setup the bot to automatically refresh the Bot's OAuth tokens. Please follow all instructions below to set this up properly.
                             </div>
-                            <div>
+                            <div id="instructions">
                                 <ol>
                                     <li>Create a new Twitch Application, if not already created<br />
                                         <ol>
@@ -143,6 +143,22 @@
                                         Re-authorize the bot and broadcaster using the buttons below
                                     </li>
                                     <li>
+                                        (Optional) If the broadcaster is a different person and prefers to do the broadcaster authorization themselves
+                                        <ol>
+                                            <li>Go back to the <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
+                                            <li>Click <i>Your Console</i> in the top-right corner</li>
+                                            <li>Click the <i>Applications</i> tab</li>
+                                            <li>Click <i>Manage</i> next to the appropriate application</li>
+                                            <li>Next to the existing <i>OAuth Redirect URLs</i> box, click the <i>Add</i> button</li>
+                                            <li>Put this URL into the new blank box that appeared <input type="text" id="selfurlbroadcaster" class="form-control" readonly="readonly"></li>
+                                            <li>Click <i>Save</i></li>
+                                            <li>Click here to generate a broadcaster password for this page: <i id="resetbroadcastertoken" class="fas fa-sync"></i></li>
+                                            <li>Have the broadcaster visit this link <input type="text" id="selfurlbroadcastervisit" class="form-control" readonly="readonly"></li>
+                                            <li>Give the broadcaster this username <input type="text" value="broadcaster" class="form-control" readonly="readonly"> and this password <input type="text" id="broadcastertoken" class="form-control" readonly="readonly"></li>
+                                            <li>After the broadcaster logs in, they just have to click the <i>Connect With Twitch Broadcaster</i> button and authorize it</li>
+                                        </ol>
+                                    </li>
+                                    <li>
                                         Once both OAuths have been successfully re-authorized, restart the bot
                                     </li>
                                 </ol>
@@ -156,14 +172,14 @@
                                     <br />
                                     <div style="padding-left: 25px;">
                                         <ul>
-                                            <li><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                            <li><div id="connectbotinstruction" class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
                                             <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <br />
                                 <br />
-                                <div>
+                                <div id="connectbotscope">
                                     The following permissions are requested for the <div class="text-bold" style="display: inline;">bot's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
                                     <br />
                                     <div style="padding-left: 25px;">
@@ -293,8 +309,14 @@
                                 queryMap = new Map(), // Create a new map for save our keys and values.
                                 baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
                                 redirectURI = window.location.origin + window.location.pathname,
+                                redirectURIBroadcaster = redirectURI + "/broadcaster",
+                                broadcaster = "",
                                 clientID,
                                 state;
+
+                        if (redirectURI.includes("/broadcaster")) {
+                            broadcaster = "/broadcaster";
+                        }
 
                         for (var i = 0; i < queryParts.length; i++) {
                             var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
@@ -306,6 +328,8 @@
                         }
 
                         $('#selfurl').val(redirectURI);
+                        $('#selfurlbroadcaster').val(redirectURIBroadcaster);
+                        $('#selfurlbroadcastervisit').val(redirectURIBroadcaster);
 
                         $('#saveclient').click(function () {
                             $('#success-box').addClass('hide');
@@ -346,6 +370,30 @@
                         });
                         $('#saveclient').css('cursor', 'pointer');
 
+                        $('#resetbroadcastertoken').click(function () {
+                            $('#success-box').addClass('hide');
+                            $('#error-box').addClass('hide');
+                            $('#success-error-br').addClass('hide');
+                            $.ajax({
+                                cache: false,
+                                dataType: 'text',
+                                url: '/oauth/resetbroadcastertoken',
+                                method: 'GET',
+                                success: function (data) {
+                                    $('#success-box').removeClass('hide');
+                                    $('#success-error-br').removeClass('hide');
+                                    $('#success-box').html('Generated a new broadcaster token');
+                                    $('#broadcastertoken').val(data);
+                                },
+                                error: function (err) {
+                                    $('#error-box').removeClass('hide');
+                                    $('#success-error-br').removeClass('hide');
+                                    $('#error-box').html('Failed to generate a broadcaster password: ' + err.statusText + ' ' + err.responseText + '!!');
+                                }
+                            });
+                        });
+                        $('#resetbroadcastertoken').css('cursor', 'pointer');
+
                         if (queryMap.size > 0) {
                             if (queryMap.has('code') && queryMap.has('state')) {
                                 // Get the state.
@@ -358,7 +406,7 @@
                                     $.ajax({
                                         cache: false,
                                         dataType: 'text',
-                                        url: '/oauth/authorize',
+                                        url: '/oauth' + broadcaster + '/authorize',
                                         method: 'POST',
                                         data: {
                                             code: queryMap.get('code'),
@@ -444,7 +492,7 @@
                         $.ajax({
                             cache: false,
                             dataType: 'text',
-                            url: '/oauth/checkidsecret',
+                            url: '/oauth' + broadcaster + '/checkidsecret',
                             success: function (data) {
                                 if (data !== 'false') {
                                     $('#clientid').val(data);
@@ -452,9 +500,21 @@
                                     $("#clientsecret")[0].placeholder = " -- Hidden -- ";
                                     $('#secretmsg').removeClass('hide');
                                     $('#connect').removeClass('hide');
+                                } else if (redirectURI.includes("/broadcaster")) {
+                                    $('#info-box').addClass('hide');
+                                    $('#error-box').removeClass('hide');
+                                    $('#success-error-br').removeClass('hide');
+                                    $('#error-box').html('Client ID and Secret are not setup. Please ask the bot owner to set this up.');
                                 }
                             }
                         });
+
+                        if (redirectURI.includes("/broadcaster")) {
+                            $('#instructions').addClass('hide');
+                            $('#connectbotinstruction').addClass('hide');
+                            $('#connectbotscope').addClass('hide');
+                            $('#connect-bot').addClass('hide');
+                        }
 
                         $('[data-toggle="tooltip"]').tooltip();
                     });

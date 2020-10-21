@@ -81,6 +81,7 @@ import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
+import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
 import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
@@ -796,6 +797,7 @@ public final class PhantomBot implements Listener {
             new HTTPNoAuthHandler().register();
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
+            new HTTPOAuthHandler(panelUsername, panelPassword).register();
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
             alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(webOAuthThro, webOAuth).register();
             new WsPanelRemoteLoginHandler(panelUsername, panelPassword, webOAuthThro, webOAuth).register();

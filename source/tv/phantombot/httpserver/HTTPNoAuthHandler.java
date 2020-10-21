@@ -95,9 +95,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            HttpResponseStatus status;
             String sameSite = "";
-            boolean validCredentials = true;
             String user = "";
             String pass = "";
             String kickback = "";
@@ -108,21 +106,13 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 user = post.getOrDefault("user", "");
                 pass = post.getOrDefault("pass", "");
                 kickback = post.getOrDefault("kickback", "");
-
-                validCredentials = user.equals(PhantomBot.instance().getProperties().getProperty("paneluser", "panel")) && pass.equals(PhantomBot.instance().getProperties().getProperty("panelpassword", "panel"));
             }
 
-            if (!validCredentials) {
-                status = HttpResponseStatus.UNAUTHORIZED;
-            } else {
-                status = HttpResponseStatus.SEE_OTHER;
-            }
-
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, null, null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
 
             if (req.uri().contains("logout=true")) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
-            } else if (req.method().equals(HttpMethod.POST) && validCredentials) {
+            } else if (req.method().equals(HttpMethod.POST)) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
@@ -140,13 +130,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 kickback = "/panel";
             }
 
-            if (validCredentials) {
-                res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
-
-                com.gmt2001.Console.debug.println("303");
-            } else {
-                com.gmt2001.Console.debug.println("401");
-            }
+            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
+            com.gmt2001.Console.debug.println("303");
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;

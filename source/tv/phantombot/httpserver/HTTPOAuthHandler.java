@@ -21,11 +21,10 @@ import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
+import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
+import com.gmt2001.httpwsserver.auth.HttpSharedTokenOrPasswordAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
@@ -33,55 +32,58 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import tv.phantombot.PhantomBot;
 
 /**
  *
  * @author gmt2001
  */
-public class HTTPPanelAndYTHandler implements HttpRequestHandler {
+public class HTTPOAuthHandler implements HttpRequestHandler {
 
     private final HttpAuthenticationHandler authHandler;
+    private static final String TOKENCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    private static final int TOKENLEN = 40;
+    private HttpAuthenticationHandler authHandlerBroadcaster;
+    private String token;
 
-    public HTTPPanelAndYTHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass, "/panel/login");
+    public HTTPOAuthHandler(String panelUser, String panelPass) {
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login");
+        token = generateToken();
+        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
     }
 
     @Override
     public HttpRequestHandler register() {
-        HttpServerPageHandler.registerHttpHandler("/panel", this);
-        HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
+        HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
     }
 
     @Override
     public HttpAuthenticationHandler getAuthHandler() {
-        return authHandler;
+        return HttpNoAuthenticationHandler.instance();
     }
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-        if (!req.method().equals(HttpMethod.GET) && !req.uri().startsWith("/oauth")) {
-            com.gmt2001.Console.debug.println("403");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
-            return;
-        }
-
-        if (req.uri().startsWith("/panel/checklogin")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null);
-            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-
-            com.gmt2001.Console.debug.println("204");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
-            return;
+        if (req.uri().startsWith("/oauth/broadcaster")) {
+            if (!authHandlerBroadcaster.checkAuthorization(ctx, req)) {
+                return;
+            }
+        } else {
+            if (!authHandler.checkAuthorization(ctx, req)) {
+                return;
+            }
         }
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
             String path = qsd.path();
+
+            if (path.startsWith("/oauth")) {
+                path = "/oauth";
+            }
 
             Path p = Paths.get("./web/", path);
 
@@ -100,6 +102,9 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
                 com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                         + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
                 byte[] data = Files.readAllBytes(p);
+                if (qsd.path().startsWith("/oauth")) {
+                    data = TwitchAuthorizationCodeFlow.handleRequest(req, data, this);
+                }
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {
@@ -107,6 +112,25 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
         }
+    }
+
+    public String changeBroadcasterToken() {
+        token = generateToken();
+        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
+        return token;
+    }
+
+    private String generateToken() {
+        String ret = "";
+
+        SecureRandom r = new SecureRandom();
+
+        while (ret.length() < TOKENLEN) {
+            int val = r.nextInt(TOKENCHARS.length());
+            ret += TOKENCHARS.charAt(val);
+        }
+
+        return ret;
     }
 
 }
