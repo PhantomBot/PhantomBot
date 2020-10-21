@@ -167,7 +167,7 @@
          */
         function alert(args) {
             if ((match = args.match(/^ ([,.\w\W]+)$/))) {
-                $.panelsocketserver.alertImage(match[1]);
+                $.alertspollssocket.alertImage(match[1]);
                 return {result: '', cache: false};
             }
         }
@@ -856,7 +856,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return {result: $.lang.get('customcommands.playsound.404', match[1])};
                 }
-                $.panelsocketserver.triggerAudioPanel(match[1]);
+                $.alertspollssocket.triggerAudioPanel(match[1]);
                 return {result: '', cache: false};
             }
         }

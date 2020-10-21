@@ -105,7 +105,7 @@
 
             if (donationSay.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = donationSay.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 donationSay = (donationSay + '').replace(/\(alert [,.\w\W]+\)/, '');
                 if (donationSay == '') {
                     return null;
@@ -117,7 +117,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 donationSay = $.replace(donationSay, donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
                 if (donationSay == '') {
                     return null;

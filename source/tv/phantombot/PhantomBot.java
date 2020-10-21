@@ -82,6 +82,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
+import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.WsPanelRemoteLoginHandler;
 import tv.phantombot.script.Script;
@@ -174,6 +175,7 @@ public final class PhantomBot implements Listener {
     public static String twitchCacheReady = "false";
 
     /* Sockets */
+    private WsAlertsPollsHandler alertsPollsHandler;
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
 
@@ -795,6 +797,7 @@ public final class PhantomBot implements Listener {
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
+            alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(webOAuthThro, webOAuth).register();
             new WsPanelRemoteLoginHandler(panelUsername, panelPassword, webOAuthThro, webOAuth).register();
 
             /* Is the music toggled on? */
@@ -978,6 +981,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("ownerName", ownerName.toLowerCase(), 0);
         Script.global.defineProperty("ytplayer", ytHandler, 0);
         Script.global.defineProperty("panelsocketserver", panelHandler, 0);
+        Script.global.defineProperty("alertspollssocket", alertsPollsHandler, 0);
         Script.global.defineProperty("random", random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);

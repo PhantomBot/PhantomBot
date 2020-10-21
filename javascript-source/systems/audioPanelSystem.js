@@ -189,7 +189,7 @@
             if (messageToggle) {
                 $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.success', $.inidb.get('audioCommands', command)));
             }
-            $.panelsocketserver.triggerAudioPanel($.inidb.get('audioCommands', command));
+            $.alertspollssocket.triggerAudioPanel($.inidb.get('audioCommands', command));
             return;
         }
 
@@ -242,7 +242,7 @@
                 if (messageToggle) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.success', audioHook));
                 }
-                $.panelsocketserver.triggerAudioPanel(audioHook);
+                $.alertspollssocket.triggerAudioPanel(audioHook);
             }
 
             if (subCommand.equalsIgnoreCase('togglemessages')) {

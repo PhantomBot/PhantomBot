@@ -38,7 +38,7 @@ public class HttpOptionalSslHandler extends OptionalSslHandler {
     @Override
     protected ChannelHandler newNonSslHandler(ChannelHandlerContext context) {
         context.pipeline().addBefore("pagehandler", "httpsslredirect", new HttpSslRedirectHandler());
-        context.pipeline().replace("wshandler", "wssslerror", new WsSslErrorHandler());
+        context.pipeline().addBefore("wshandler", "wssslerror", new WsSslErrorHandler());
         return null;
     }
 }

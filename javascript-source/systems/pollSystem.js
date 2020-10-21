@@ -129,10 +129,12 @@
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        var msg = JSON.stringify({
             'start_poll': 'true',
             'data': JSON.stringify(objOBS)
-        }));
+        });
+        $.panelsocketserver.sendJSONToAll(msg);
+        $.alertspollssocket.sendJSONToAll(msg);
 
         $.inidb.set('pollPanel', 'title', question);
         $.inidb.set('pollPanel', 'options', options.join(','));
@@ -170,10 +172,12 @@
             if (objOBS[i].label == poll.options[optionIndex])
                 objOBS[i].votes++;
         }
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        var msg = JSON.stringify({
             'new_vote': 'true',
             'data': JSON.stringify(objOBS)
-        }));
+        });
+        $.panelsocketserver.sendJSONToAll(msg);
+        $.alertspollssocket.sendJSONToAll(msg);
         $.inidb.incr('pollVotes', poll.options[optionIndex], 1);
     };
 
@@ -192,9 +196,11 @@
         clearTimeout(timeout);
 
         $.inidb.set('pollPanel', 'isActive', 'false');
-        $.panelsocketserver.sendJSONToAll(JSON.stringify({
+        var msg = JSON.stringify({
             'end_poll': 'true'
-        }));
+        });
+        $.panelsocketserver.sendJSONToAll(msg);
+        $.alertspollssocket.sendJSONToAll(msg);
         if (poll.minVotes > 0 && poll.votes.length < poll.minVotes) {
             poll.result = '';
             poll.pollMaster = '';
