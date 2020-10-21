@@ -196,7 +196,6 @@ public final class LangFileUpdater {
                     while ((c = br.read()) != -1) {
                         sb.append((char)c);
                     }
-                    br.close();     
                 }
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
