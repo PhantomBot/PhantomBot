@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -525,8 +526,13 @@ public class DiscordUtil {
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
         String schannelName = sanitizeChannelName(channelName);
-        return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getName().equalsIgnoreCase(schannelName)
-                || channel.getId().asString().equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
+        try {
+            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getName().equalsIgnoreCase(schannelName)
+                    || channel.getId().asString().equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find channelName [" + channelName + "]");
+            throw ex;
+        }
     }
 
     /**
@@ -541,7 +547,12 @@ public class DiscordUtil {
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
-        return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getId().asString().equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
+        try {
+            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getId().asString().equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find channelId [" + channelId + "]");
+            throw ex;
+        }
     }
 
     @Deprecated
@@ -568,8 +579,12 @@ public class DiscordUtil {
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(filteredMembers.count().block());
         }
-
-        return filteredMembers.take(1).single().map(m -> (User) m);
+        try {
+            return filteredMembers.take(1).single().map(m -> (User) m);
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find userName [" + userName + "]");
+            throw ex;
+        }
     }
 
     @Deprecated
@@ -584,7 +599,12 @@ public class DiscordUtil {
      * @return {User}
      */
     public Mono<User> getUserByIdAsync(long userId) {
-        return DiscordAPI.getGuild().getMembers().filter(user -> user.getId().asLong() == userId).take(1).single().map(m -> (User) m);
+        try {
+            return DiscordAPI.getGuild().getMembers().filter(user -> user.getId().asLong() == userId).take(1).single().map(m -> (User) m);
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find userId [" + userId + "]");
+            throw ex;
+        }
     }
 
     @Deprecated
@@ -600,8 +620,13 @@ public class DiscordUtil {
      * @return {User}
      */
     public Mono<User> getUserWithDiscriminatorAsync(String userName, String discriminator) {
-        return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName)
-                && user.getDiscriminator().equalsIgnoreCase(discriminator)).take(1).single().map(m -> (User) m);
+        try {
+            return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName)
+                    && user.getDiscriminator().equalsIgnoreCase(discriminator)).take(1).single().map(m -> (User) m);
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find userNameDiscriminator [" + userName + "#" + discriminator + "]");
+            throw ex;
+        }
     }
 
     @Deprecated
@@ -629,7 +654,12 @@ public class DiscordUtil {
             com.gmt2001.Console.debug.println(filteredRoles.count().block());
         }
 
-        return filteredRoles.take(1).single();
+        try {
+            return filteredRoles.take(1).single();
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find roleName [" + roleName + "]");
+            throw ex;
+        }
     }
 
     @Deprecated
@@ -644,7 +674,12 @@ public class DiscordUtil {
      * @return {Role}
      */
     public Mono<Role> getRoleByIDAsync(String id) {
-        return DiscordAPI.getGuild().getRoles().filter(role -> role.getId().asString().equalsIgnoreCase(id)).take(1).single();
+        try {
+            return DiscordAPI.getGuild().getRoles().filter(role -> role.getId().asString().equalsIgnoreCase(id)).take(1).single();
+        } catch (NoSuchElementException ex) {
+            com.gmt2001.Console.err.println("Unable to find roleId [" + id + "]");
+            throw ex;
+        }
     }
 
     /**
