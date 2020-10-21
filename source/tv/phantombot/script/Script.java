@@ -19,6 +19,7 @@ package tv.phantombot.script;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -185,7 +186,7 @@ public class Script {
         }
 
         try {
-            context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
+            context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (FileNotFoundException ex) {
             throw new IOException("File not found. This could be a caching issue, will retry.");
         } catch (EvaluatorException ex) {
