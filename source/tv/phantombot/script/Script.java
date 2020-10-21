@@ -52,7 +52,7 @@ public class Script {
     public static String callMethod(String method, String arg) {
         Object[] obj = new Object[] {arg};
 
-        return scope.callMethod(global, method, obj).toString();
+        return ScriptableObject.callMethod(global, method, obj).toString();
     }
 
     @SuppressWarnings("rawtypes")
@@ -71,8 +71,8 @@ public class Script {
                 com.gmt2001.Console.out.println("Reloaded module: " + path);
             }
             fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+        } catch (IOException ex) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -108,8 +108,8 @@ public class Script {
                 }
             }
             fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+        } catch (IOException ex) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -190,7 +190,7 @@ public class Script {
             throw new IOException("File not found. This could be a caching issue, will retry.");
         } catch (EvaluatorException ex) {
             throw new IOException("JavaScript Error: " + ex.getMessage());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw new IOException(ex.getMessage());
         }
     }
@@ -202,9 +202,9 @@ public class Script {
 
     @SuppressWarnings("rawtypes")
     public void doDestroyables() {
-        for (ScriptDestroyable destroyable : destroyables) {
+        destroyables.forEach((destroyable) -> {
             destroyable.destroy();
-        }
+        });
 
         destroyables.clear();
     }
