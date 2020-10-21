@@ -29,11 +29,14 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import tv.phantombot.PhantomBot;
 
@@ -161,7 +164,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             String start = "./web/";
             String path = qsd.path();
 
-            if (path.startsWith("/config/audio-hooks") || path.startsWith("/config/gif-alerts")) {
+            if (path.startsWith("/config/audio-hooks") || path.startsWith("/config/gif-alerts") || path.startsWith("/addons")) {
                 start = ".";
             }
 
@@ -173,6 +176,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             }
 
             if ((!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./addons"))
                     && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
                     && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))
                     || (p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel"))
@@ -186,12 +190,71 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
+                if (path.startsWith("/addons") && (qsd.parameters().containsKey("marquee") || qsd.parameters().containsKey("refresh"))) {
+                    handleAddons(ctx, req, p, qsd);
+                } else {
                 com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                         + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
                         req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
+                }
             }
         } catch (IOException ex) {
+            com.gmt2001.Console.debug.println("500");
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+        }
+    }
+
+    private void handleAddons(ChannelHandlerContext ctx, FullHttpRequest req, Path p, QueryStringDecoder qsd) {
+        try {
+            String ret;
+
+            if (qsd.parameters().containsKey("marquee")) {
+                List<String> defWidth = new ArrayList<>();
+                defWidth.add("420");
+                List<String> defLen = new ArrayList<>();
+                defLen.add("40");
+                int width = Integer.parseInt(qsd.parameters().getOrDefault("width", defWidth).get(0));
+                int len = Integer.parseInt(qsd.parameters().getOrDefault("cutoff", defLen).get(0));
+                String data = Files.readString(p);
+
+                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>"
+                        + "body { margin: 5px; }"
+                        + ".marquee { "
+                        + "    height: 25px;"
+                        + "    width: " + width + "px;"
+                        + "    overflow: hidden;"
+                        + "    position: relative;"
+                        + "}"
+                        + ".marquee div {"
+                        + "    display: block;"
+                        + "    width: 200%;"
+                        + "    height: 25px;"
+                        + "    position: absolute;"
+                        + "    overflow: hidden;"
+                        + "    animation: marquee 5s linear infinite;"
+                        + "}"
+                        + ".marquee span {"
+                        + "    float: left;"
+                        + "    width: 50%;"
+                        + "}"
+                        + "@keyframes marquee {"
+                        + "    0% { left: 0; }"
+                        + "    100% { left: -100%; }"
+                        + "}"
+                        + "</style></head><body><div class=\"marquee\"><div>"
+                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
+                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
+                        + "</div></div></body></html>";
+            } else {
+                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + Files.readString(p) + "</body></html>";
+            }
+
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                    + HttpServerPageHandler.detectContentType("html") + ")");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html"));
+        } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
