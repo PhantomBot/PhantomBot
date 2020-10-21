@@ -16,15 +16,8 @@
  */
 package tv.phantombot.discord.util;
 
-import discord4j.core.object.entity.GuildEmoji;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.channel.Channel;
-import discord4j.core.object.entity.channel.GuildMessageChannel;
-import discord4j.core.object.entity.channel.MessageChannel;
-import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.core.object.entity.*;
+import discord4j.core.object.entity.channel.*;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -39,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -190,7 +184,7 @@ public class DiscordUtil {
     /**
      * Method to send private messages to a user.
      *
-     * @param userName
+     * @param channel
      * @param message
      */
     public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
@@ -1064,4 +1058,62 @@ public class DiscordUtil {
             }
         }
     }
+
+    /**
+     * Method to return a message by its id.
+     *
+     * @param channelName
+     * @param messageId
+     * @return {Message}
+     */
+    public Message getMessageById(String channelName, String messageId) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        return channel.getMessageById(Snowflake.of(messageId)).block();
+    }
+
+    /**
+     * Method to edit message content.
+     *
+     * @param message
+     * @param newMessage
+     */
+    public void editMessageContent(Message message, String newMessage) {
+        message.edit(spec -> spec.setContent(newMessage)).subscribe();
+    }
+
+    /**
+     * Method to edit message embeds.
+     *
+     * @param message
+     * @param newEmbed
+     */
+    public void editMessageEmbed(Message message, Consumer<? super EmbedCreateSpec> newEmbed) {
+        message.edit(spec -> spec.setEmbed(newEmbed)).subscribe();
+    }
+
+    /**
+     * Method to return a list of all messages before the given message.
+     *
+     * @param channelName
+     * @param messageId
+     * @return {List<Message>}
+     */
+    public List<Message> getMessagesBefore(String channelName, String messageId) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        List<Message> messageList = new ArrayList<Message>();
+        channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        return messageList;
+    }
+
+    /**
+     * Method to return a the last message of a given channel.
+     *
+     * @param channelName
+     * @return {Message}
+     */
+    public Message getLastMessage(String channelName) {
+        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        return channel.getLastMessage().block();
+    }
+
 }
