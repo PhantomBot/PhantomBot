@@ -1698,5 +1698,6 @@
     }
     
     $.tags = tags;
+    $.escapeTags = escapeTags;
     $.addTagTransformer = addTagTransformer;
 })();
