@@ -28,8 +28,9 @@
 
     /*
      * @function unescapeTags
-     *
+     * @export $
      * @param {string} args
+     * @returns {string}
      */
     function escapeTags(args) {
         return args.replace(/([\\()])/g, '\\$1');
@@ -1605,9 +1606,12 @@
 
     /*
      * @function tags
-     *
+     * @export $
      * @param {string} event
      * @param {string} message
+     * @param {bool} atEnabled
+     * @param {object} localTransformers
+     * @param {bool} disableGlobalTransformers
      * @return {string}
      */
     function tags(event, message, atEnabled, localTransformers, disableGlobalTransformers) {
@@ -1693,6 +1697,12 @@
         return message;
     }
 
+    /*
+     * @function addTagTransformer
+     * @export $
+     * @param {string} tag
+     * @param {function} transformer
+     */
     function addTagTransformer(tag, transformer) {
         transformers[tag.toLowerCase()] = transformer;
     }
