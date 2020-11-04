@@ -628,21 +628,19 @@
 
             for (idx in cmds) {
                 if (!$.inidb.exists('disabledCommands', cmds[idx])
-                        && !$.inidb.exists('hiddenCommands', cmds[idx])) {
-                    if (permCom(sender, cmds[idx], '') === 0) {
-                        cmdList.push('!' + cmds[idx]);
-                    }
+                        && !$.inidb.exists('hiddenCommands', cmds[idx])
+                        && permCom(sender, cmds[idx], '') === 0) {
+                    cmdList.push('!' + cmds[idx]);
                 }
             }
 
             for (idx in aliases) {
                 var aliasCmd = $.inidb.get('aliases', aliases[idx]);
 
-                if (!$.inidb.exists('disabledCommands', aliasCmd)
-                        && !$.inidb.exists('hiddenCommands', aliasCmd)) {
-                    if (permCom(sender, aliasCmd, '') === 0) {
-                        cmdList.push('!' + aliases[idx]);
-                    }
+                if (!$.inidb.exists('disabledCommands', aliases[idx])
+                        && !$.inidb.exists('hiddenCommands', aliases[idx])
+                        && permCom(sender, aliasCmd, '') === 0) {
+                    cmdList.push('!' + aliases[idx]);
                 }
             }
 
@@ -943,6 +941,18 @@
                 handleExtraCooldown(commandLower, extra);
             } else if (eventName === 'edit') {
                 customCommands[commandLower] = args[2];
+                handleExtraCooldown(commandLower, extra);
+                handleExtraDisabled(commandLower, extra);
+            } else if (eventName === 'removeAlias') {
+                $.unregisterChatCommand(commandLower);
+                $.coolDown.remove(commandLower);
+            } else if (eventName === 'addAlias') {
+                $.registerChatCommand('./commands/customCommands.js', commandLower);
+                $.registerChatAlias(commandLower);
+                handleExtraCooldown(commandLower, extra);
+            } else if (eventName === 'editAlias') {
+                $.registerChatCommand('./commands/customCommands.js', commandLower);
+                $.registerChatAlias(commandLower);
                 handleExtraCooldown(commandLower, extra);
                 handleExtraDisabled(commandLower, extra);
             }

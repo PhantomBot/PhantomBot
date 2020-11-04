@@ -134,6 +134,7 @@
         $.inidb.set('tempDisabledCommandScript', command, commands[command].script);
         if (commandExists(command)) {
             delete commands[command];
+        } else if (aliasExists(command)) {
             delete aliases[command];
         }
     }
