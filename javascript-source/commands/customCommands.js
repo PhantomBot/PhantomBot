@@ -742,7 +742,7 @@
         }
 
         /*
-         * @commandpath hide [command] - Hide a command in the !commands list
+         * @commandpath hidecom [command] - Hide a command in the !commands list
          */
         if (command.equalsIgnoreCase('hidecom')) {
             if (action === undefined) {
