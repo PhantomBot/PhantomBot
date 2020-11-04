@@ -371,6 +371,8 @@
             $.inidb.del('permcom', action);
             $.inidb.del('pricecom', action);
             $.inidb.del('aliases', action);
+            $.inidb.del('disabledCommands', action);
+            $.inidb.del('hiddenCommands', action);
             $.inidb.del('commandtoken', action);
             $.unregisterChatCommand(action);
             delete customCommands[action];
@@ -908,12 +910,27 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
+        var handleExtraCooldown = function(commandLower, extra) {
+            if (extra.cooldown != null) {
+                $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
+            }
+        };
+        var handleExtraDisabled = function(commandLower, extra) {
+            if (extra.disabled != null) {
+                if (extra.disabled) {
+                    $.tempUnRegisterChatCommand(commandLower);
+                } else {
+                    $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', commandLower) ? $.inidb.get('tempDisabledCommandScript', commandLower) : './commands/customCommands.js'), commandLower);
+                }
+            }
+        };
+
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             var args = event.getArgs(),
                 eventName = args[0] + '',
                 command = args[1] + '',
                 commandLower = command.toLowerCase() + '',
-                extra;
+                extra = args[3] == null ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 if (customCommands[commandLower] !== undefined) {
                     delete customCommands[commandLower];
@@ -921,26 +938,13 @@
                     $.coolDown.remove(commandLower);
                 }
             } else if (eventName === 'add') {
-                extra = args[3] == null ? {} : JSON.parse(args[3]);
                 customCommands[commandLower] = args[2];
                 $.registerChatCommand('./commands/customCommands.js', commandLower);
-                if (extra.cooldown != null) {
-                    $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
-                }
+                handleExtraCooldown(commandLower, extra);
             } else if (eventName === 'edit') {
-                extra = args[3] == null ? {} : JSON.parse(args[3]);
                 customCommands[commandLower] = args[2];
-                if (extra.cooldown != null) {
-                    $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
-                }
-                if (extra.disabled != null) {
-                    if (extra.disabled) {
-                        $.tempUnRegisterChatCommand(commandLower);
-                    } else {
-                        $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', commandLower) ? $.inidb.get('tempDisabledCommandScript', commandLower) : './commands/customCommands.js'), commandLower);
-                    }
-                } else {
-                }
+                handleExtraCooldown(commandLower, extra);
+                handleExtraDisabled(commandLower, extra);
             }
         }
     });

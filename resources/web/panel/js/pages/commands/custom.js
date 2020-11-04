@@ -16,19 +16,19 @@
  */
 
 $(function() {
-    function getDisabledIconAttr(disabled) {
+    const getDisabledIconAttr = function(disabled) {
         return {
             class: 'fa disabled-status-icon ' + (disabled ? 'fa-ban text-muted' : 'fa-check'),
             title: disabled ? 'disabled' : 'enabled'
         };
-    }
-    function getHiddenIconAttr(hidden) {
+    };
+    const getHiddenIconAttr = function(hidden) {
         return {
             class: 'fa hidden-status-icon ' + (hidden ? 'fa-eye-slash text-muted' : 'fa-eye'),
             title: hidden ? 'hidden' : 'visible'
         };
-    }
-    function updateCommandVisibility(name, disabled, hidden, callback) {
+    };
+    const updateCommandVisibility = function(name, disabled, hidden, callback) {
         let addTables = [],
             addKeys = [],
             addValues = [],
@@ -64,10 +64,10 @@ $(function() {
                 callback();
             }
         };
-        remove(function () { add(callback); });
-    }
+        remove(function() { add(callback); });
+    };
 
-    function loadCustomCommands() {
+    const loadCustomCommands = function() {
         // Query custom commands.
         socket.getDBTablesValues('commands_get_custom', [{table: 'command'}, {table: 'disabledCommands'}, {table: 'hiddenCommands'}], function(results) {
             let tableData = [];
@@ -259,19 +259,19 @@ $(function() {
                                     keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
                                     values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true),
                                             commandReward.val(), commandResponse.val()]
-                                }, function () {
-                                    updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function () {
+                                }, function() {
+                                    updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function() {
                                         // Register the custom command with the cache.
                                         socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(commandName.val()),
-                                            commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
+                                            commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function() {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function () {
+                                                ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
                                                 // Update command permission.
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
-                                                    helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
-                                                        // Update the command response
+                                                    helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
                                                         const $tr = t.parents('tr');
+                                                        // Update the command response
                                                         $tr.find('td:eq(1)').text(commandResponse.val());
                                                         // Update status icons
                                                         $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
@@ -290,95 +290,17 @@ $(function() {
                 });
             });
         });
-    }
+    };
 
-    function loadExternalCommands() {
-        // query external commands
-        socket.getDBTableValues('commands_get_external', 'externalCommands', function(results) {
-            let tableData = [];
-
-            for (let i = 0; i < results.length; i++) {
-                tableData.push([
-                    '!' + results[i].key,
-                    $('<div/>', {
-                        'class': 'btn-group'
-                    }).append($('<button/>', {
-                        'type': 'button',
-                        'class': 'btn btn-xs btn-danger',
-                        'style': 'float: right',
-                        'data-command': results[i].key,
-                        'html': $('<i/>', {
-                            'class': 'fa fa-trash'
-                        })
-                    })).html()
-                ]);
-            }
-
-            const $externalCommandsTable = $('#externalCommandsTable');
-
-            // if the table exists, destroy it.
-            if ($.fn.DataTable.isDataTable('#externalCommandsTable')) {
-                $externalCommandsTable.DataTable().destroy();
-                // Remove all of the old events.
-                $externalCommandsTable.off();
-            }
-
-            // Create table.
-            let table = $externalCommandsTable.DataTable({
-                'searching': true,
-                'autoWidth': false,
-                'lengthChange': false,
-                'data': tableData,
-                'columnDefs': [
-                    {
-                        'className': 'default-table',
-                        'orderable': false,
-                        'width': '15%',
-                        'targets': 1
-                    },
-                ],
-                'columns': [
-                    {'title': 'External Command'},
-                    {'title': 'Actions'}
-                ]
-            });
-
-            // On delete button.
-            table.on('click', '.btn-danger', function () {
-                let command = $(this).data('command'),
-                    row = $(this).parents('tr');
-
-                // Ask the user if he want to remove the command.
-                helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Are you sure you want to remove the external command !' + command + '?', true,
-                    'The external command !' + command + ' has been successfully removed!', function () {
-                        // Delete all information about the command.
-                        socket.removeDBValues('external_command_remove', {
-                            tables: ['externalCommands'],
-                            keys: [command]
-                        }, function () {
-                            socket.wsEvent('external_command_remove_ws', './commands/customCommands.js', null, ['remove', String(command)], function () {
-                                // Remove the table row.
-                                table.row(row).remove().draw(false);
-                            });
-                        });
-                    });
-            });
-        });
-    }
-
-    function init() {
+    const init = function() {
         // Check if the module is enabled.
         socket.getDBValue('custom_command_module', 'modules', './commands/customCommands.js', function(e) {
             // If the module is off, don't load any data.
             if (helpers.handleModuleLoadUp('customCommandsModule', e.modules)) {
                 loadCustomCommands();
-                loadExternalCommands();
-                $('#externalCommandsModule *').prop('disabled', false);
-            } else {
-                $('#externalCommandsModule *').prop('disabled', true);
             }
         });
-    }
+    };
     init();
 
 
@@ -462,7 +384,7 @@ $(function() {
                             keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
                             values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), commandReward.val(), commandResponse.val()]
                         }, function() {
-                            updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function () {
+                            updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function() {
                                 // Register the custom command with the cache.
                                 socket.wsEvent('custom_command_add_ws', './commands/customCommands.js', null,
                                     ['add', commandName.val(), commandResponse.val()], function() {
@@ -481,49 +403,6 @@ $(function() {
                         });
                     });
             }
-        }).modal('toggle');
-    });
-
-    // Add external command button.
-    $('#addextcom-button').on('click', function() {
-        // Get advance modal from our util functions in /utils/helpers.js
-        helpers.getModal('add-ext-command', 'Add External Command', 'Save', $('<form/>', {
-            'role': 'form'
-        })
-        // Append input box for the command name.
-        .append(helpers.getInputGroup('command-name', 'text', 'Command', '!example')),
-        // Append a text box for the command response.
-        function() {
-            let commandName = $('#command-name');
-            // Remove the ! and spaces.
-            commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
-
-            // Handle each input to make sure they have a value.
-            if (!helpers.handleInputString(commandName)) {
-                return;
-            }
-            // Make sure the command doesn't exist already.
-            socket.getDBValue('external_command_exists', 'externalCommands', commandName.val(), function(e) {
-                // If the command exists we stop here.
-                if (e.externalCommands !== null) {
-                    toastr.error('Failed to add external command as it already exists.');
-                    return;
-                }
-
-                // Save command information here and close the modal.
-                socket.updateDBValues('external_command_add', {
-                    tables: ['externalCommands'],
-                    keys: [commandName.val()],
-                    values: [true]
-                }, function() {
-                    // Reload the table.
-                    loadExternalCommands();
-                    // Close the modal.
-                    $('#add-ext-command').modal('hide');
-                    // Tell the user the command was added.
-                    toastr.success('Successfully added external command !' + commandName.val());
-                });
-            });
         }).modal('toggle');
     });
 
