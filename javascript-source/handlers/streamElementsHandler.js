@@ -66,7 +66,7 @@
             donationUsername = paramObj.getJSONObject('user').getString('username'),
             donationCurrency = paramObj.getString('currency'),
             donationMessage = (paramObj.has('message') ? paramObj.getString('message') : ''),
-            donationAmount = paramObj.getInt('amount'),
+            donationAmount = paramObj.getFloat('amount'),
             s = message;
 
         if ($.inidb.exists('donations', donationID)) {
@@ -93,11 +93,11 @@
             }
 
             if (s.match(/\(amount\)/)) {
-                s = $.replace(s, '(amount)', String(parseInt(donationAmount.toFixed(2))));
+                s = $.replace(s, '(amount)', String(donationAmount.toFixed(2)));
             }
 
             if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-                s = $.replace(s, '(amount.toFixed(0))', String(parseInt(donationAmount.toFixed(0))));
+                s = $.replace(s, '(amount.toFixed(0))', String(donationAmount.toFixed(0)));
             }
 
             if (s.match(/\(message\)/)) {
