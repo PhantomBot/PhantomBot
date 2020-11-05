@@ -20,7 +20,7 @@
         <ol class="breadcrumb">
             <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
             <li>Commands</li>
-            <li class="active">Custom</li>
+            <li class="active">External</li>
         </ol>
     </section>
 
@@ -29,33 +29,31 @@
         <div class="box box-solid">
             <div class="box-header with-border">
                 <label class="switch" data-toggle="tooltip" title="Module toggle">
-                    <input type="checkbox" id="customCommandsModuleToggle" checked>
+                    <input type="checkbox" id="externalCommandsModuleToggle" checked>
                     <span class="slider round"></span>
                 </label>
 
-                <h3 class="box-title">Custom Commands</h3>
+                <h3 class="box-title">External Commands</h3>
             </div>
-            <form role="form" id="customCommandsModule">
+            <form role="form" id="externalCommandsModule">
                 <!-- Box content -->
                 <div class="box-body">
+                    <p>Additional commands to list under !commands, e.g., commands of other bots in the channel.</p>
                     <div class="btn-toolbar pull-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="addcom-button"><i class="fa fa-plus"></i>&nbsp; Add Command</button>
-                        <button class="btn btn-default btn-sm" type="button" onclick="window.open('https://phantombot.github.io/PhantomBot/guides/#guide=content/commands/command-variables');">
-                            <i class="fa fa-info"></i>&nbsp; Variables
-                        </button>
+                        <button class="btn btn-primary btn-sm" type="button" id="addextcom-button"><i class="fa fa-plus"></i>&nbsp; Add External Command</button>
                     </div>
 
                     <div class="load-ajax">
                         <div class="spinner"></div>
                         <p class="load-ajax-text">Loading...</p>
                     </div>
-                    
-                    <table id="customCommandsTable" class="table table-bordered table-hover"></table>
+
+                    <table id="externalCommandsTable" class="table table-bordered table-hover"></table>
                 </div>
             </form>
         </div>
     </section>
 
-    <!-- custom commands -->
-    <script src="/panel/js/pages/commands/custom.js"></script>
+    <!-- external commands -->
+    <script src="/panel/js/pages/commands/external.js"></script>
 </main>

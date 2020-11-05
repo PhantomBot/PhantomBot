@@ -59,6 +59,8 @@
         if ($.inidb.exists('disabledCommands', command)) {
             $.inidb.set('tempDisabledCommandScript', command, script);
             return;
+        } else {
+            $.inidb.del('tempDisabledCommandScript', command);
         }
 
         // Get and set the command permission.
@@ -132,6 +134,7 @@
         $.inidb.set('tempDisabledCommandScript', command, commands[command].script);
         if (commandExists(command)) {
             delete commands[command];
+        } else if (aliasExists(command)) {
             delete aliases[command];
         }
     }
