@@ -358,4 +358,22 @@
     $.registerChatAlias = registerChatAlias;
     $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
     $.getSubCommandFromArguments = getSubCommandFromArguments;
+
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./core/commandRegister.js')) {
+            var args = event.getArgs(),
+                eventName = args[0] + '',
+                command = args[1] + '',
+                commandLower = command.toLowerCase() + '';
+            if (eventName === 'enable') {
+                if ($.inidb.exists('tempDisabledCommandScript', commandLower)) {
+                    $.registerChatCommand($.inidb.get('tempDisabledCommandScript', commandLower), commandLower);
+                }
+            } else if (eventName === 'disable') {
+                if (commandExists(commandLower)) {
+                    tempUnRegisterChatCommand(commandLower);
+                }
+            }
+        }
+    });
 })();
