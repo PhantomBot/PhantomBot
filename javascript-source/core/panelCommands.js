@@ -375,6 +375,17 @@
         }
 
         /*
+         * Reloads the welcome variables.
+         */
+        if (command.equalsIgnoreCase('welcomepanelupdate')) {
+            if (!$.isBot(sender)) {
+                return;
+            }
+            $.welcomepanelupdate();
+            return;
+        }
+
+        /*
          * Reloads the notice variables.
          */
         if (command.equalsIgnoreCase('reloadnotice')) {

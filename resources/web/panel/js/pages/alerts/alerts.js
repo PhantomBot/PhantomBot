@@ -19,10 +19,10 @@
 $(function() {
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/hostHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
-                './systems/greetingSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
-                './handlers/streamElementsHandler.js', './handlers/twitterHandler.js']
+               './systems/greetingSystem.js', './systems/welcomeSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
+               './handlers/streamElementsHandler.js', './handlers/twitterHandler.js']
     }, true, function(e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -581,6 +581,53 @@ $(function() {
                                 $('#greeting-alert').modal('toggle');
                                 // Alert the user.
                                 toastr.success('Successfully updated greeting alert settings!');
+                            });
+                        });
+                }
+            }).modal('toggle');
+        });
+    });
+
+    // Welcome esettings.
+    $('#welcomeSystemSettings').on('click', function() {
+        socket.getDBValues('alerts_get_welcome_settings', {
+            tables: ['welcome', 'welcome', 'welcome', 'welcome'],
+            keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown']
+        }, true, function(e) {
+            helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
+                'role': 'form'
+            })
+            // Add the toggle for welcome alerts.
+            .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If users should be welcomed by the bot when the start chatting.'))
+            // Add the input for welcome message.
+            .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (name)'))
+            // Add the input for first time welcome message.
+            .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (name)'))
+            // Add the input for the welcome reward.
+            .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
+                'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.')),
+            function() { // Callback once the user clicks save.
+                let welcomeToggle = $('#welcome-toggle').find(':selected').text() === 'Yes',
+                    welcomeMessage = $('#welcome-message').val(),
+                    welcomeMessageFirst = $('#welcome-message-first').val(),
+                    welcomeCooldown = $('#welcome-cooldown');
+
+                // Make sure the user has someone in each box.
+                switch (false) {
+                    case helpers.handleInputNumber(welcomeCooldown, 1):
+                        break;
+                    default:
+                        socket.updateDBValues('alerts_update_welcome_settings', {
+                            tables: ['welcome', 'welcome', 'welcome', 'welcome'],
+                            keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown'],
+                            values: [welcomeToggle, welcomeMessage, welcomeMessageFirst, (parseInt(welcomeCooldown.val()) * 36e5)]
+                        }, function() {
+                            socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomespanelupdate', function() {
+                                // Close the modal.
+                                $('#welcome-alert').modal('toggle');
+                                // Alert the user.
+                                toastr.success('Successfully updated welcome alert settings!');
                             });
                         });
                 }
