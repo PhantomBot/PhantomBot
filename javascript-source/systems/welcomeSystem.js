@@ -134,14 +134,15 @@
             if (action.equalsIgnoreCase('setmessage')) {
                 message = args.splice(1, args.length - 1).join(' ');
 
-                if (!message) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.usage'));
-                    return;
-                }
-
                 $.inidb.set('welcome', 'welcomeMessage', message);
                 welcomeMessageFirst = message;
-                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.default.success', $.username.resolve($.botName), message));
+                if (!message) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.empty', $.username.resolve($.botName)));
+
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.success', $.username.resolve($.botName), message));
+                }
+                return;
             }
 
             /**
@@ -150,12 +151,12 @@
             if (action.equalsIgnoreCase('setfirstmessage')) {
                 message = args.splice(1, args.length - 1).join(' ');
 
-                $.inidb.set('welcome', 'welcomeMessage', message);
+                $.inidb.set('welcome', 'welcomeMessageFirst', message);
                 welcomeMessage = message;
                 if (!message) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.empty', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.empty', $.username.resolve($.botName)));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.default.success', $.username.resolve($.botName), message));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.success', $.username.resolve($.botName), message));
                 }
                 return;
             }
@@ -165,35 +166,56 @@
              */
             if (action.equalsIgnoreCase('cooldown')) {
                 if (!args[1]) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.cooldown.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.cooldown.show', $.getIniDbNumber('welcome', 'cooldown')));
                     return;
                 }
                 cooldown = parseInt(args[1]);
                 if (isNaN(cooldown)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.cooldown.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.cooldown.usage'));
                     return;
                 }
 
                 welcomeCooldown = cooldown * 36e5; // Convert hours to ms
                 $.inidb.set('welcome', 'cooldown', welcomeCooldown);
-                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.cooldown.success', cooldown));
+                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.cooldown.success', cooldown));
                 return;
             }
 
             /**
              * @commandpath welcome disable [user] - Disable welcoming of the given user.
              */
-            if (action.equalsIgnoreCase('welcome')) {
-                if (!args[1]) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.disableuser.usage'));
+            if (action.equalsIgnoreCase('disable')) {
+                username = !args[1] ? args[1] : $.jsString(args[1]).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+                if (!username) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.disableuser.usage'));
                     return;
                 }
-                username = $.jsString(args[1]).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
-                $.inidb.set('welcome_disabled_users', username, true);
+                if ($.inidb.exists('welcome_disabled_users', username)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.disableuser.fail', username));
+                    return;
+                }
 
-                welcomeCooldown = cooldown * 36e5; // Convert hours to ms
-                $.inidb.set('welcome', 'cooldown', welcomeCooldown);
-                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.disableuser.success', cooldown));
+                $.inidb.set('welcome_disabled_users', username, true);
+                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.disableuser.success', $.botName, username));
+                return;
+            }
+
+            /**
+             * @commandpath welcome enable [user] - Disable welcoming of the given user.
+             */
+            if (action.equalsIgnoreCase('enable')) {
+                username = !args[1] ? args[1] : $.jsString(args[1]).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+                if (!username) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.enableuser.usage'));
+                    return;
+                }
+                if (!$.inidb.exists('', username)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.enableuser.fail', username));
+                    return;
+                }
+
+                $.inidb.del('welcome_disabled_users', username);
+                $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.enableuser.success', $.botName, username));
                 return;
             }
         }
@@ -208,8 +230,8 @@
         $.registerChatSubcommand('welcome', 'toggle', 1);
         $.registerChatSubcommand('welcome', 'setmessage', 2);
         $.registerChatSubcommand('welcome', 'setfirstmessage', 2);
-        $.registerChatSubcommand('welcome', 'enable', 2);
         $.registerChatSubcommand('welcome', 'disable', 2);
+        $.registerChatSubcommand('welcome', 'enable', 2);
 
         sendUserWelcomes();
     });

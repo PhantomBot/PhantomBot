@@ -17,14 +17,17 @@
 
 $.lang.register('welcomesystem.set.autowelcome.enabled', 'Auto welcoming enabled. $1 will now welcome new chatters.');
 $.lang.register('welcomesystem.set.autowelcome.disabled', 'Auto welcoming disabled.');
-$.lang.register('welcomesystem.set.message.usage', 'Usage: !welcome message text. Tags for message text: (name)');
+$.lang.register('welcomesystem.set.message.empty', '$1 will only welcome first time chatters.');
 $.lang.register('welcomesystem.set.message.success', '$1 will welcome new chatters with "$2".');
 $.lang.register('welcomesystem.set.firstmessage.empty', '$1 will welcome first time chatters with the default message.');
 $.lang.register('welcomesystem.set.firstmessage.success', '$1 will welcome first time chatters with "$2".');
+$.lang.register('welcomesystem.set.cooldown.show', 'Current cooldown: $1 hours. Use: !welcome cooldown hours to change it.');
+$.lang.register('welcomesystem.set.cooldown.usage', 'Usege: !welcome cooldown [hours]. E.g. !welcome cooldown 6');
+$.lang.register('welcomesystem.set.cooldown.success', 'Welcome cooldown set to $1 hours.');
 $.lang.register('welcomesystem.set.disableuser.usage', 'Usage: !welcome disable user.');
+$.lang.register('welcomesystem.set.disableuser.fail', 'Welcoming $1 is already disabled.');
 $.lang.register('welcomesystem.set.disableuser.success', '$1 will not welcome $2.');
 $.lang.register('welcomesystem.set.enableuser.usage', 'Usage: !welcome enable user.');
+$.lang.register('welcomesystem.set.enableuser.fail', 'Welcoming  is already enabled.');
 $.lang.register('welcomesystem.set.enableuser.success', '$1 will welcome $2.');
 $.lang.register('welcomesystem.generalusage', 'Usage: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags for message text: (name)');
-$.lang.register('welcomesystem.cooldown.usage', 'Usage: !welcome cooldown [hours]');
-$.lang.register('welcomesystem.cooldown.success', 'Welcome cooldown set to $1 hours.');

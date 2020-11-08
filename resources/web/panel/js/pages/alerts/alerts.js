@@ -590,48 +590,118 @@ $(function() {
 
     // Welcome esettings.
     $('#welcomeSystemSettings').on('click', function() {
+        const updateDisabled = function(disabledUsers, welcomeDisabled, callback) {
+            let addTables = [],
+                addKeys = [],
+                addVals = [],
+                delTables = [],
+                delKeys = [];
+
+            let previouslyDisabled = {};
+            for (let row of disabledUsers) {
+                previouslyDisabled[row.key] = true;
+            }
+            let newDisabledUsers = welcomeDisabled.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase().split('\n');
+            for (let newDisabledUser of newDisabledUsers) {
+                if (!newDisabledUser) {
+                    continue;
+                }
+                if (previouslyDisabled.hasOwnProperty(newDisabledUser)) {
+                    delete previouslyDisabled[newDisabledUser];
+                } else {
+                    addTables.push('welcome_disabled_users');
+                    addKeys.push(newDisabledUser);
+                    addVals.push('true');
+                }
+            }
+            for (let disabledUser in previouslyDisabled) {
+                if (previouslyDisabled.hasOwnProperty(disabledUser)) {
+                    delTables.push('welcome_disabled_users');
+                    delKeys.push(disabledUser)
+                }
+            }
+
+            const add = function (cb) {
+                if (addKeys.length) {
+                    socket.updateDBValues('alerts_add_welcome_disabled', {
+                        tables: addTables,
+                        keys: addKeys,
+                        values: addVals
+                    }, cb);
+                } else {
+                    cb();
+                }
+            };
+
+            const remove = function (cb) {
+                if (delKeys.length) {
+                    socket.removeDBValues('alerts_del_welcome_disabled', {
+                        tables: delTables,
+                        keys: delKeys,
+                    }, cb);
+                } else {
+                    cb();
+                }
+            };
+
+            add(function () { remove(callback) });
+        };
+
         socket.getDBValues('alerts_get_welcome_settings', {
             tables: ['welcome', 'welcome', 'welcome', 'welcome'],
             keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown']
         }, true, function(e) {
-            helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
-                'role': 'form'
-            })
-            // Add the toggle for welcome alerts.
-            .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If users should be welcomed by the bot when the start chatting.'))
-            // Add the input for welcome message.
-            .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (name)'))
-            // Add the input for first time welcome message.
-            .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (name)'))
-            // Add the input for the welcome reward.
-            .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
-                'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.')),
-            function() { // Callback once the user clicks save.
-                let welcomeToggle = $('#welcome-toggle').find(':selected').text() === 'Yes',
-                    welcomeMessage = $('#welcome-message').val(),
-                    welcomeMessageFirst = $('#welcome-message-first').val(),
-                    welcomeCooldown = $('#welcome-cooldown');
-
-                // Make sure the user has someone in each box.
-                switch (false) {
-                    case helpers.handleInputNumber(welcomeCooldown, 1):
-                        break;
-                    default:
-                        socket.updateDBValues('alerts_update_welcome_settings', {
-                            tables: ['welcome', 'welcome', 'welcome', 'welcome'],
-                            keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown'],
-                            values: [welcomeToggle, welcomeMessage, welcomeMessageFirst, (parseInt(welcomeCooldown.val()) * 36e5)]
-                        }, function() {
-                            socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomespanelupdate', function() {
-                                // Close the modal.
-                                $('#welcome-alert').modal('toggle');
-                                // Alert the user.
-                                toastr.success('Successfully updated welcome alert settings!');
-                            });
-                        });
+            socket.getDBTableValues('alerts_get_welcome_disabled_users', 'welcome_disabled_users', function (disabledUsers) {
+                let disabledUsersStr = [];
+                for (let row of disabledUsers) {
+                    disabledUsersStr.push(row.key);
                 }
-            }).modal('toggle');
+                disabledUsersStr = disabledUsersStr.join('\n');
+                helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
+                    'role': 'form'
+                })
+                // Add the toggle for welcome alerts.
+                .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If users should be welcomed by the bot when the start chatting.'))
+                // Add the input for welcome message.
+                .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (name)'))
+                // Add the input for first time welcome message.
+                .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (name)'))
+                // Add the input for the welcome cooldown.
+                .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
+                    'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))
+                // Add the input for excluded users.
+                .append(helpers.getTextAreaGroup('welcome-disabled', 'text', 'Excluded Users (One Per Line)', '', disabledUsersStr,
+                    'Users that the bot will not welcome. One per line. Channel owner a this bot are always excluded.')),
+                function() { // Callback once the user clicks save.
+                    let welcomeToggle = $('#welcome-toggle').find(':selected').text() === 'Yes',
+                        welcomeMessage = $('#welcome-message').val(),
+                        welcomeMessageFirst = $('#welcome-message-first').val(),
+                        $welcomeCooldown = $('#welcome-cooldown'),
+                        welcomeDisabled = $('#welcome-disabled').val();
+
+                    // Make sure the user has someone in each box.
+                    switch (false) {
+                        case helpers.handleInputNumber($welcomeCooldown, 1):
+                            break;
+                        default:
+                            socket.updateDBValues('alerts_update_welcome_settings', {
+                                tables: ['welcome', 'welcome', 'welcome', 'welcome'],
+                                keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown'],
+                                values: [welcomeToggle, welcomeMessage, welcomeMessageFirst, (parseInt($welcomeCooldown.val()) * 36e5)]
+                            }, function() {
+                                updateDisabled(disabledUsers, welcomeDisabled, function () {
+                                    socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomespanelupdate', function() {
+                                        // Close the modal.
+                                        $('#welcome-alert').modal('toggle');
+                                        // Alert the user.
+                                        toastr.success('Successfully updated welcome alert settings!');
+                                    });
+                                });
+                            });
+                    }
+                }).modal('toggle');
+            });
         });
     });
 
