@@ -33,21 +33,21 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        var sender = event.getSender();
+        var sender = event.getSender(),
+            now = $.systemTime();
         if ($.equalsIgnoreCase(sender, $.channelName)) {
             return;
         }
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
-            var lastUserGreeting = $.getIniDbNumber('welcomeCoolDown', sender),
-                firstTimeChatter = lastUserGreeting === undefined,
-                message = (firstTimeChatter && welcomeMessageFirst) ? welcomeMessageFirst : welcomeMessage,
-                now = $.systemTime();
-            lastUserGreeting = firstTimeChatter ? 0 : lastUserGreeting;
+            var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
+                firstTimeChatter = lastUserMessage === undefined,
+                message = (firstTimeChatter && welcomeMessageFirst) ? welcomeMessageFirst : welcomeMessage;
+            lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
 
-            if (message && !$.inidb.exists('welcome_disabled_users', username)  && lastUserGreeting + welcomeCooldown < now) {
+            if (message && !$.inidb.exists('welcome_disabled_users', sender.toLowerCase())  && lastUserMessage + welcomeCooldown < now) {
                 welcomeQueue.add(
                     $.tags(event, message, false, {
-                        'user': function command(args, event) {
+                        'name': function command(args, event) {
                             if (!args) {
                                 return {
                                     result: String($.username.resolve(sender)),
@@ -58,8 +58,8 @@
                     }, false)
                 );
             }
-            $.inidb.set('welcomeCoolDown', sender, now);
         }
+        $.inidb.set('welcomeLastUserMessage', sender.toLowerCase(), now);
     });
 
     /**
@@ -81,7 +81,7 @@
                 welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue;
             }
 
-        }, 15000, 'scripts::systems::welcomeSystem.js');
+        }, 1000, 'scripts::systems::welcomeSystem.js');
     }
 
     /**
