@@ -691,7 +691,7 @@ $(function() {
                                 values: [welcomeToggle, welcomeMessage, welcomeMessageFirst, (parseInt($welcomeCooldown.val()) * 36e5)]
                             }, function() {
                                 updateDisabled(disabledUsers, welcomeDisabled, function () {
-                                    socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomespanelupdate', function() {
+                                    socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomepanelupdate', function() {
                                         // Close the modal.
                                         $('#welcome-alert').modal('toggle');
                                         // Alert the user.
