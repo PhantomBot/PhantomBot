@@ -30,4 +30,6 @@ $.lang.register('welcomesystem.set.disableuser.success', '$1 will not welcome $2
 $.lang.register('welcomesystem.set.enableuser.usage', 'Usage: !welcome enable user.');
 $.lang.register('welcomesystem.set.enableuser.fail', 'Welcoming  is already enabled.');
 $.lang.register('welcomesystem.set.enableuser.success', '$1 will welcome $2.');
-$.lang.register('welcomesystem.generalusage', 'Usage: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags for message text: (name)');
+$.lang.register('welcomesystem.generalusage', 'Usage: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags for message text: (names), (1 text for one name), (2 for two), (3 for three or more names)');
+$.lang.register('welcomesystem.names.join1', ', ');
+$.lang.register('welcomesystem.names.join2', ', and ');

@@ -664,9 +664,9 @@ $(function() {
                 .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                     'If users should be welcomed by the bot when the start chatting.'))
                 // Add the input for welcome message.
-                .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (name)'))
+                .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
                 // Add the input for first time welcome message.
-                .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (name)'))
+                .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
                 // Add the input for the welcome cooldown.
                 .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
                     'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))

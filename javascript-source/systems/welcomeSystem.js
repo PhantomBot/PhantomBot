@@ -23,11 +23,14 @@
  */
 (function() {
     var welcomeEnabled = $.getSetIniDbBoolean('welcome', 'welcomeEnabled', false),
-        welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (name)!'),
-        welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(name) is new here. Give them a warm welcome!'),
-        welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)),
-        /* 6 Hours */
-        welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue;
+        welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
+        welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
+        welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
+        welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeTimer = null,
+        // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
+        welcomeLock = new java.util.concurrent.locks.ReentrantLock;
 
     /**
      * @event ircChannelMessage
@@ -41,47 +44,149 @@
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
             var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
                 firstTimeChatter = lastUserMessage === undefined,
-                message = (firstTimeChatter && welcomeMessageFirst) ? welcomeMessageFirst : welcomeMessage;
+                queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
             lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
 
-            if (message && !$.inidb.exists('welcome_disabled_users', sender.toLowerCase())  && lastUserMessage + welcomeCooldown < now) {
-                welcomeQueue.add(
-                    $.tags(event, message, false, {
-                        'name': function command(args, event) {
-                            if (!args) {
-                                return {
-                                    result: String($.username.resolve(sender)),
-                                    cache: true
-                                };
-                            }
-                        }
-                    }, false)
-                );
+            if (!$.inidb.exists('welcome_disabled_users', sender.toLowerCase())  && lastUserMessage + welcomeCooldown < now) {
+                welcomeLock.lock();
+                try {
+                    queue.add($.username.resolve(sender));
+                } finally {
+                    welcomeLock.unlock();
+                }
+                sendUserWelcomes();
             }
         }
         $.inidb.set('welcomeLastUserMessage', sender.toLowerCase(), now);
     });
 
     /**
+     * @function buildMessage
+     * build a welcome message from `message` (potentially containing tags).
+     * Supported tags:
+     *   * (names) - replaced with the name(s) in `names`
+     *   * (1 some text) - show 'some text' if and only if names has 1 entry
+     *   * (2 some text) - show 'some text' if and only if names has 2 entries
+     *   * (3 some text) - show 'some text' if and only if names has 3 or more entry
+     *
+     * @param {string} message: raw message with tags to replace message
+     * @param {array} names: array of user names to be welcomed
+     * @returns {string}: `message` with replaced tags or null if `message` or `names` is empty.
+     */
+    function buildMessage(message, names) {
+        var match,
+          namesString;
+        if (!names.length || !message) {
+            return null;
+        }
+        return $.tags(null, message, false, {
+            'names': function command(args, event) {
+                if (!args) {
+                    switch (names.length) {
+                        case 1:
+                            namesString = names[0];
+                            break;
+                        case 2:
+                            namesString = names.join($.lang.get('welcomesystem.names.join1'));
+                            break;
+                        default:
+                            namesString = names.slice(0, -1).join($.lang.get('welcomesystem.names.join1')) +
+                              $.lang.get('welcomesystem.names.join2') + names[names.length - 1];
+
+                    }
+                    return {
+                        result: String(namesString),
+                        cache: true
+                    };
+                }
+            },
+            '1': function (args, event) {
+                if (names.length !== 1) {
+                    return {result: '', cache: true};
+                }
+                if ((match = args.match(/^\s?(.*)$/))) {
+                    return {result: String(match[1]), cache: true};
+                }
+            },
+            '2': function (args, event) {
+                if (names.length !== 2) {
+                    return {result: '', cache: true};
+                }
+                if ((match = args.match(/^\s?(.*)$/))) {
+                    return {result: String(match[1]), cache: true};
+                }
+            },
+            '3': function (args, event) {
+                if (names.length < 3) {
+                    return {result: '', cache: true};
+                }
+                if ((match = args.match(/^\s?(.*)$/))) {
+                    return {result: String(match[1]), cache: true};
+                }
+            }
+        }, true)
+    }
+
+    /**
+     * @function processQueue
+     * Function to send welcome messages to the users in the queues.
+     * The function will start a timer to be called again if there are too many
+     * users in the queue to all be greeted at the same time.
+     */
+    function processQueue() {
+        welcomeLock.lock();
+        try {
+            if (welcomeQueue.isEmpty() && welcomeQueueFirst.isEmpty()) {
+                // No welcomes within the last 15 seconds and none are waiting.
+                welcomeTimer = null;
+            }
+            else {
+                if (welcomeEnabled) {
+                    var names = [],
+                      message = welcomeMessageFirst ? welcomeMessageFirst : welcomeMessage;
+                    while (names.length < 15 && !welcomeQueueFirst.isEmpty()) {
+                        names.push(welcomeQueueFirst.poll());
+                    }
+                    if (!names.length) {
+                        message = welcomeMessage;
+                        while (names.length < 15 && !welcomeQueue.isEmpty()) {
+                            names.push(welcomeQueue.poll());
+                        }
+                    }
+                    message = buildMessage(message, names);
+                    if (message) {
+                        $.say(message);
+                    }
+                    // Check back later to see if more people are waiting to be welcomed.
+                    welcomeTimer = setTimeout(processQueue, 15000, 'scripts::systems::welcomeSystem.js');
+                } else {
+                    // There are welcomes, however, welcome has been disabled, so destroy the queues.
+                    welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue;
+                    welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue;
+                    welcomeTimer = null;
+                }
+            }
+        } finally {
+            welcomeLock.unlock();
+        }
+    }
+
+    /**
      * @function sendUserWelcomes
-     * Provides timer function for sending welcomes into chat. Will delete messages if the
-     * host disables welcomes in the middle of a loop. The reason for a delay is to
-     * ensure that the output queue does not become overwhelmed.
+     * Function to handle sending welcome message. Call this function anytime
+     * a new user got placed in `welcomeQueue` or `welcomeQueueFirst`.
      */
     function sendUserWelcomes() {
-        setInterval(function() {
-
-            /* Send a welcome out into chat. */
-            if (!welcomeQueue.isEmpty() && welcomeEnabled) {
-                $.say(welcomeQueue.poll());
+        welcomeLock.lock();
+        try {
+            if (welcomeTimer == null) {
+                // no timer is running (implying that no welcome message was sent within
+                // the last 15 seconds. => send the message right away
+                processQueue();
             }
-
-            /* There are welcomes, however, welcome has been disabled, so destroy the queue. */
-            if (!welcomeQueue.isEmpty() && !welcomeEnabled) {
-                welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue;
-            }
-
-        }, 1000, 'scripts::systems::welcomeSystem.js');
+        } finally {
+            welcomeLock.unlock();
+        }
     }
 
     /**
