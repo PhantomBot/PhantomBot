@@ -601,7 +601,9 @@ $(function() {
             for (let row of disabledUsers) {
                 previouslyDisabled[row.key] = true;
             }
-            let newDisabledUsers = welcomeDisabled.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase().split('\n');
+            let newDisabledUsers = welcomeDisabled.map(function (name) {
+                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase()
+            });
             for (let newDisabledUser of newDisabledUsers) {
                 if (!newDisabledUser) {
                     continue;
@@ -652,12 +654,14 @@ $(function() {
             keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown']
         }, true, function(e) {
             socket.getDBTableValues('alerts_get_welcome_disabled_users', 'welcome_disabled_users', function (disabledUsers) {
-                let disabledUsersStr = [];
+                let disabledUserOptions = [];
                 for (let row of disabledUsers) {
-                    disabledUsersStr.push(row.key);
+                    disabledUserOptions.push({
+                        'name': row.key,
+                        'selected': 'true'
+                    })
                 }
-                disabledUsersStr = disabledUsersStr.join('\n');
-                helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
+                const modal = helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
                     'role': 'form'
                 })
                 // Add the toggle for welcome alerts.
@@ -671,8 +675,8 @@ $(function() {
                 .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
                     'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))
                 // Add the input for excluded users.
-                .append(helpers.getTextAreaGroup('welcome-disabled', 'text', 'Excluded Users (One Per Line)', '', disabledUsersStr,
-                    'Users that the bot will not welcome. One per line. Channel owner a this bot are always excluded.')),
+                .append(helpers.getFlatMultiDropdownGroup('welcome-disabled', 'Excluded Users', disabledUserOptions,
+                    'Users that the bot will not welcome. Channel owner and this bot are always excluded.')),
                 function() { // Callback once the user clicks save.
                     let welcomeToggle = $('#welcome-toggle').find(':selected').text() === 'Yes',
                         welcomeMessage = $('#welcome-message').val(),
@@ -701,6 +705,24 @@ $(function() {
                             });
                     }
                 }).modal('toggle');
+                modal.find('#welcome-disabled').select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    selectOnClose: true,
+                    createTag: function (params) {
+                        const term = params.term.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase();
+                        // Don't offset to create a tag if there is no @ symbol
+                        if (!term) {
+                            // Return null to disable tag creation
+                            return null;
+                        }
+
+                        return {
+                            id: term,
+                            text: term
+                        }
+                    }
+                });
             });
         });
     });
