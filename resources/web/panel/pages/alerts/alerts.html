@@ -213,6 +213,32 @@
                 </div>
             </div>
 
+            <!-- Welcom Alerts -->
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <div class="box-tools pull-right">
+                            <label class="switch" data-toggle="tooltip" title="Module toggle.">
+                                <input type="checkbox" id="welcomeSystemToggle" data-alert-toggle="./systems/welcomeSystem.js" checked>
+                                <span class="slider round"></span>
+                            </label>
+
+                            <button type="button" id="welcomeSystemSettings" class="btn btn-md btn-box-tool" style="margin-bottom: 7px;">
+                                <i class="fa fa-cog fa-lg"></i>
+                            </button>
+                        </div>
+                        <h3 class="box-title">Welcome Alerts</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <p class="auto-cut">Let the bot welcome new chatters.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- StreamLabs Alerts -->
             <div class="col-md-4">
                 <div class="box box-solid">
@@ -238,15 +264,17 @@
                     </form>
                 </div>
             </div>
+        </div>
 
+        <div class="row">
             <!-- TipeeeStream Alerts -->
             <div class="col-md-4">
                 <div class="box box-solid">
                     <div class="box-header with-border">
                         <div class="box-tools pull-right">
-                           <label class="switch" data-toggle="tooltip" title="Module toggle.">
-                               <input type="checkbox" id="tipeeeStreamHandlerToggle" data-alert-toggle="./handlers/tipeeeStreamHandler.js" checked>
-                               <span class="slider round"></span>
+                            <label class="switch" data-toggle="tooltip" title="Module toggle.">
+                                <input type="checkbox" id="tipeeeStreamHandlerToggle" data-alert-toggle="./handlers/tipeeeStreamHandler.js" checked>
+                                <span class="slider round"></span>
                             </label>
 
                             <button type="button" id="tipeeeStreamHandlerSettings" class="btn btn-md btn-box-tool" style="margin-bottom: 7px;">
@@ -264,9 +292,7 @@
                     </form>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
             <!-- StreamElements Alerts -->
             <div class="col-md-4">
                 <div class="box box-solid">

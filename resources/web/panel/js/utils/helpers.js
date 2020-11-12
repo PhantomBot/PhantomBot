@@ -602,7 +602,6 @@ $(function() {
      *
      * @param  {String} id
      * @param  {String} title
-     * @param  {String} def
      * @param  {Array}  options [
         {
             'title': 'Some title',
@@ -648,7 +647,7 @@ $(function() {
                     'id': roles[i]._id
                 });
 
-                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
+                if (roles[i].selected === 'true') {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
@@ -658,6 +657,49 @@ $(function() {
             }
 
             return group;
+        }))));
+    };
+
+    /*
+     * @function Generates a multi-select dropdown.
+     *
+     * @param  {String} id
+     * @param  {String} title
+     * @param  {Array}  options [
+           {
+               'name': 'option name',
+               'selected': 'true'
+           },
+           ...
+     * ]
+     * @param  {String} toolTip
+     * @return {Object}
+     */
+    helpers.getFlatMultiDropdownGroup = function(id, title, options, toolTip) {
+        return  $('<div/>', {
+            'class': 'form-group'
+        }).append($('<lable/>', {
+            'html': $('<b/>', {
+                'text': title
+            })
+        })).append($('<div/>', {
+            'class': 'dropdown',
+            'data-toggle': 'tooltip',
+            'title': toolTip
+        }).append($('<select/>', {
+            'class': 'form-control select2 select2-hidden-accessible',
+            'multiple': 'multiple',
+            'id': id,
+            'style': 'width: 100%; cursor: pointer;'
+        }).append(options.map(function(option) {
+            let o = $('<option/>', {
+                'html': option.name,
+                'id': option._id
+            });
+            if (option.selected === 'true') {
+                o.attr('selected', 'selected');
+            }
+            return o;
         }))));
     };
 

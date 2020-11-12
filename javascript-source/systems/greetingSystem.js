@@ -135,6 +135,7 @@
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.disabled', $.username.resolve($.botName)));
                 }
+                return;
             }
 
             /**
@@ -151,6 +152,7 @@
                 $.inidb.set('greeting', 'defaultJoin', message);
                 defaultJoinMessage = message;
                 $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.default.success', defaultJoinMessage));
+                return;
             }
 
             /**
@@ -170,6 +172,7 @@
                     $.inidb.set('greeting', sender, message);
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', $.inidb.get('greeting', sender)));
+                return;
             }
 
             /**
@@ -180,6 +183,7 @@
                     $.inidb.del('greeting', sender);
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.remove.personal.success'));
                 }
+                return;
             }
         }
     });
