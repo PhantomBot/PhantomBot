@@ -538,7 +538,7 @@ $(function() {
 
                         if (message.query_id.indexOf('module_toggle') !== -1 || message.query_id.indexOf('module_status') !== -1
                             || message.query_id.endsWith('module')) {
-                            if (message.results.value == 'false') {
+                            if (message.results !== undefined && message.results.value == 'false') {
                                 $('.load-ajax').remove();
                             }
                         }
