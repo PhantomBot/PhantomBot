@@ -29,31 +29,31 @@
 
                 action = args[0];
 
-        if (command.equalsIgnoreCase('sotnwinner')) {
-            if (action == null) {
-                $.say($.lang.get('sotn.store.winner.usage'));
-            }
-
-            var user = action;
-
-            var bumpObj = JSON.parse($.getIniDbString('bumps', user, '{}'));
-            if (bumpObj.hasOwnProperty('fulfilled')) {
-                bumpFulfilled = (bumpObj.fulfilled == 'true');
-            } else {
-                bumpObj.bits = '0';
-                bumpObj.donation = '0';
-                bumpObj.fulfilled = 'false';
-
-            }
-
-            bumpObj.method = 'sotn';
-
-            $.setIniDbString('bumps', user, JSON.stringify(bumpObj));
-            $.say($.lang.get("sotn.store.winner", user));
-            $.say("/emoteonly ");
-
-            return;
-        }
+//        if (command.equalsIgnoreCase('sotnwinner')) {
+//            if (action == null) {
+//                $.say($.lang.get('sotn.store.winner.usage'));
+//            }
+//
+//            var user = action;
+//
+//            var bumpObj = JSON.parse($.getIniDbString('bumps', user, '{}'));
+//            if (bumpObj.hasOwnProperty('fulfilled')) {
+//                bumpFulfilled = (bumpObj.fulfilled == 'true');
+//            } else {
+//                bumpObj.bits = '0';
+//                bumpObj.donation = '0';
+//                bumpObj.fulfilled = 'false';
+//
+//            }
+//
+//            bumpObj.method = 'sotn';
+//
+//            $.setIniDbString('bumps', user, JSON.stringify(bumpObj));
+//            $.say($.lang.get("sotn.store.winner", user));
+//            $.say("/emoteonly ");
+//
+//            return;
+//        }
     });
 
     /**
@@ -66,6 +66,6 @@
         // These are also used for the permcom command.
         // $.registerChatCommand('script', 'command', 'permission');
 
-        $.registerChatCommand('./custom/sotn-system.js', 'sotnwinner', 2);
+//        $.registerChatCommand('./custom/sotn-system.js', 'sotnwinner', 2);
     });
 })();

@@ -479,24 +479,11 @@
         $.log.file('channel-points', "Channel point event " + rewardTitle + " parsed to javascript." + " ID is: " + rewardID);
 
         if (rewardID.equalsIgnoreCase(songBumpId)) {
-            $.log.file('queue-management', 'Checking database for existing bump data');
-            var bumpObj = JSON.parse($.getIniDbString('bumps', username, '{}'));
-
-            if (bumpObj.hasOwnProperty('fulfilled')) {
-                bumpFulfilled = (bumpObj.fulfilled == 'true');
+            var request = $.getUserRequest(username);
+            if (request != null) {
+                $.autoBump(username, 'free', 'points');
             } else {
-                bumpFulfilled = false;
-            }
-
-            if (bumpFulfilled) {
-                $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.free.used'));
-            } else {
-                var request = $.getUserRequest(username);
-                if (request != null) {
-                    $.autoBump(username, 'free', 'points');
-                } else {
-                    $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.channelpoints.404'));
-                }
+                $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.channelpoints.404'));
             }
         }
 

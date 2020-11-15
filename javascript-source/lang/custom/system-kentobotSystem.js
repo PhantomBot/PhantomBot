@@ -23,3 +23,12 @@ $.lang.register('kentobot.startstream.shuffle.on', 'Setting the play mode to shu
 $.lang.register('kentobot.startstream.resetbumps', 'Resetting bumps');
 $.lang.register('kentobot.startstream.sotn.playlist', 'Loading new Song of the Night contenders playlist');
 $.lang.register('kentobot.startstream.shuffle.ready', 'Stream ready');
+
+$.lang.register('kentobot.mode.usage', 'Usage: !mode [music|game]');
+$.lang.register('kentobot.mode.music', 'Stream mode set to music');
+$.lang.register('kentobot.mode.game', 'Stream mode set to gaming');
+$.lang.register('kentobot.mode.invalid', 'Invalid mode [$1].  Valid modes: [music, game]');
+$.lang.register('kentobot.mode.selection', 'Running in $1 mode');
+
+$.lang.register('kentobot.lurk.music', 'Sit back and enjoy the drumming! kentobDRUM kentobDRUM kentobDRUM');
+$.lang.register('kentobot.lurk.game', 'Grab a drink a enjoy the lurk kentobCHEERS');

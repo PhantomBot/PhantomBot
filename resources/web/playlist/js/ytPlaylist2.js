@@ -161,13 +161,18 @@ function handleSongList(d) {
         tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
 
         tableData += '<div class="dataRow">';
+
         // Position Column
         tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
 
         if (bumped == "true") {
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
             tableData += ' <i class="fas fa-star"></i>';
         } else if (shuffle == "true") {
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex
             tableData += ' <i class="fas fa-dice"></i>';
+        } else {
+            tableData += '<div class="data dataQueuePosition">';
         }
         tableData += '</div>';
 

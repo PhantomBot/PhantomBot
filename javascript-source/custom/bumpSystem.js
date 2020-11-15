@@ -30,57 +30,6 @@
                 action = args[0];
 
 
-        // Put in Kentobot System file
-        if (command.equalsIgnoreCase("startstream")) {
-
-            // Clear Song History
-            currentPlaylist.clearSongHistory();
-            $.say($.lang.get('kentobot.startstream.clearhistory'));
-
-            // Reset bump counts
-            // TODO Needs hook to queueManagement/bump system where bumps will be managed
-            bumpedUsers = [];
-            $.clearBumpedUsers();
-
-            // Open the queue - may need hook back to YouTube Player
-            songRequestsEnabled = true;
-            $.setIniDbBoolean('ytSettings', 'songRequestsEnabled', songRequestsEnabled);
-            $.say($.lang.get('kentobot.startstream.requests.open'));
-
-            // Set play mode to sequential
-            shuffleQueue = true;
-            $.setIniDbBoolean('ytSettings', 'shuffleQueue', shuffleQueue);
-            $.say($.lang.get('kentobot.startstream.shuffle.on'));
-
-            // Create and load new SOTN Contenders Playlist
-            // TODO Needs a hook back to the YouTube player
-            var currentDate = $.getCurLocalTimeString('yyyy.MM.dd');
-            var playlistName = "Song of the Night Contenders " + currentDate;
-            var requestedPlaylist = new BotPlayList(playlistName, true);
-            currentPlaylist.loadNewPlaylist(playlistName);
-            loadPanelPlaylist();
-
-            $.say("Loading new Song of the Night contenders playlist");
-
-            // Load Saved Bumps
-            // TODO Remove because this should be obsolete once bumps are saved to the DB and checked when the sr is made
-            var user = $.inidb.get("sotn", "winner");
-            var streamsSinceSOTNRedeem = $.inidb.get("sotn", "streams-since-redeem");
-
-            if (user != null && streamsSinceSOTNRedeem < 1) {
-                currentPlaylist.setSOTNWinner(user);
-                currentPlaylist.setSOTNBump(true);
-
-                // Take this part out before release
-                $.say("Loading Previous Song of the Night Winner (" + user + ")");
-            }
-
-            if (connectedPlayerClient) {
-                connectedPlayerClient.pushPlayList();
-            }
-        }
-        ;
-
         // TODO Add command or functionality to reset bump reward
 
         // TODO Add command to set reward levels for DB
@@ -96,7 +45,7 @@
         // These are also used for the permcom command.
         // $.registerChatCommand('script', 'command', 'permission');
 
-        $.registerChatCommand('./custom/kentobotSystem.js', 'startstream', 0);
+//        $.registerChatCommand('./custom/kentobotSystem.js', 'startstream', 0);
     });
 })();
 

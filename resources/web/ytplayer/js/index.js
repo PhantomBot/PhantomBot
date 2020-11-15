@@ -30,6 +30,8 @@ $(function () {
     var cluster = null,
             timer = null;
 
+    var DEBUG_MODE = true;
+    var queueMode = '';
     /*
      * @function Loads the player page.
      *
@@ -115,6 +117,8 @@ $(function () {
 
         // Add a listener to load the main playlist.
         player.addListener('playlist', (e) => {
+//            debugMsg('handlePlaylist(' + e.playlist + ')');
+
             let table = [],
                     playlist = e.playlist;
 
@@ -222,8 +226,29 @@ $(function () {
             }
         });
 
+        // Add a listener for the queue information
+        player.addListener('queueStatus', (e) => {
+//            debugMsg('handleQueueInfo(' + e.queueStatus + ')');
+
+            var mode = e.queueStatus.status;
+            if (mode == 'Open') {
+                queueMode = '[o]';
+            } else {
+                queueMode = '[x]';
+            }
+
+            var title = document.title;
+            if (title.endsWith("[x]") || title.endsWith("[o]")) {
+                title = title.substring(0, title.length - 3);
+            }
+
+            document.title = title.trim() + ' ' + queueMode;
+        });
+
         // Add a listener for the songrequest queue.
         player.addListener('songlist', (e) => {
+//            debugMsg('handleSongList(' + e.songlist + ')');
+
             let table = $('#queue-table-content'),
                     songlist = e.songlist;
 
@@ -288,7 +313,7 @@ $(function () {
                             player.removeSongFromRequest($(e.currentTarget).data('song'));
                             // Hide the tooltip, or could stay opened.
                             $(e.currentTarget).tooltip('hide');
-                            document.title = 'Kentobot Player - ' + songlist[i].title + ' - ' + songlist[i].requester;
+//                            document.title = 'Kentobot Player - ' + songlist[i].title + ' - ' + songlist[i].requester + ;
                         }
                     })).append($('<button/>', {
                         'type': 'button',
@@ -377,8 +402,11 @@ $(function () {
                 toastr.success('Now playing: ' + (e.title.length > 30 ? e.title.substring(0, 30) + '...' : e.title));
             }
 
-            document.title = 'Kentobot Player - ' + e.title + ' - ' + e.requester;
-
+            if (e == null || e == undefined) {
+                document.title = 'Kentobot Player - ' + queueMode;
+            } else {
+                document.title = 'Kentobot Player - ' + e.title + ' - ' + e.requester + ' ' + queueMode;
+            }
 
             // Update the value under the slider.
             $('#progress-slider-value').html(e.duration);
@@ -437,6 +465,9 @@ $(function () {
 
                     // Request the songlist.
                     player.requestRequestList('songlist');
+
+                    // Request the queue status
+                    player.requestQueueStatus('songqueueinfo');
 
                     // Send the ready event.
                     player.ready();
@@ -639,3 +670,10 @@ $(function () {
                 });
     }
 });
+
+function debugMsg(message) {
+    console.log("ytPlayer::DEBUG::" + message);
+}
+function logMsg(message) {
+    console.log('ytPlayer::' + message);
+}

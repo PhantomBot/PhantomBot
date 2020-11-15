@@ -1266,16 +1266,6 @@
                 }
             }
 
-            // If song is a bump, marked as fulfilled
-            if (youtubeVideo.isBump()) {
-                var bumpObj = JSON.parse($.getIniDbString('bumps', youtubeVideo.getOwner(), '{}'));
-                bumpObj.fulfilled = 'true';
-
-                $.log.file('queue-management', 'Marking bump for ' + youtubeVideo.getOwner() + ' as fulfilled');
-                $.setIniDbString('bumps', youtubeVideo.getOwner(), JSON.stringify(bumpObj));
-            }
-
-
             currentPlaylist.addRequester(requestOwner);
 
             $.inidb.incr("songcounts", requestOwner + "-request-counts", 1);
@@ -1796,6 +1786,8 @@
                 } else {
                     $.say($.lang.get('ytplayer.songrequests.disabled'));
                 }
+
+                connectedPlayerClient.pushQueueInformation();
                 return;
             }
 
@@ -2214,27 +2206,14 @@
             var request = currentPlaylist.requestSong(event.getArguments(), user);
             var queueLengthInSeconds = 0;
             if (request != null) {
-                //
-                /*
-                 * TODO Check the database to see if the user is owed a bump
-                 * If yes, add the new request at the bottom of the existing bumps
-                 *      Remove saved bump
-                 *      Mark bump used if owed from a current stream autobump (sub, dono, bits gift sub)
-                 */
-
                 $.log.file('queue-management', 'Checking database for bump data on request');
-                var bumpObj = JSON.parse($.getIniDbString('bumps', user, '{}'));
+                var pendingBump = $.getPendingBump(user);
 
-                var userOwedBump = false;
-                if (bumpObj.hasOwnProperty('fulfilled')) {
-                    userOwedBump = (bumpObj.fulfilled == 'false');
-                }
-
-                if (userOwedBump) {
+                if (pendingBump != null) {
                     $.log.file('queue-management', user + ' has bump to redeem');
 
                     var bumpPosition;
-                    if (bumpObj.method == 'raid') {
+                    if (pendingBump.equalsIgnoreCase('raid')) {
                         bumpPosition = 0;
                     } else {
                         bumpPosition = getBumpPosition();
@@ -2244,11 +2223,10 @@
                     $.currentPlaylist().addToQueue(request, bumpPosition);
 
                     $.say($.whisperPrefix(user) + $.lang.get('ytplayer.command.songrequest.success.shuffle', request.getVideoTitle()));
-                    $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.autobump.' + bumpObj.method));
+                    $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.autobump.' + pendingBump));
 
-                    if (bumpObj.type == 'sotn') {
-                        $.inidb.del('bumps', user);
-                    }
+                    $.removePendingBump(user);
+                    $.incrementBumpCount(user);
                 } else {
                     if (!shuffleQueue) {
                         for (i = 0; i < currentPlaylist.getRequestsCount() - 1; i++) {
@@ -2501,6 +2479,12 @@
             // TODO Add argument to remove a specific song - Remove from local copy on page and remove from DB
             currentPlaylist.clearSongHistory();
         }
+
+        if (command.equalsIgnoreCase('playnext')) {
+            currentPlaylist.nextVideo();
+            connectedPlayerClient.pushSongList();
+            connectedPlayerClient.pushQueueInformation();
+        }
     });
 
     function isRequestAllowed(user, request) {
@@ -2654,6 +2638,8 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+
+        $.registerChatCommand('./systems/youtubePlayer.js', 'playnext', 2);
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);

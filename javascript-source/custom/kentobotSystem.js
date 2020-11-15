@@ -22,6 +22,8 @@
  */
 (function () {
 
+    var mode = "";
+
     function secondsToTimestamp(timeInSeconds) {
         // multiply by 1000 because Date() requires miliseconds
         var date = new Date(timeInSeconds * 1000);
@@ -57,6 +59,10 @@
         return time;
     }
 
+    function botMode() {
+        return mode;
+    }
+
     $.bind('command', function (event) {
         var sender = event.getSender(), // Gets the person who used the command
                 command = event.getCommand(), // Gets the command being used
@@ -64,73 +70,76 @@
 
                 action = args[0];
 
+        if (command.equalsIgnoreCase("mode")) {
+            if (action == null) {
+                $.say($.lang.get('kentobot.mode.usage'));
+            }
 
-        // Put in Kentobot System file
+            setMode(action);
+        }
+
+        if (command.equalsIgnoreCase("mode?")) {
+            $.say($.lang.get('kentobot.mode.selection', mode));
+        }
+
+        if (command.equalsIgnoreCase("lurk")) {
+            $.say($.whisperPrefix(sender) + $.lang.get('kentobot.lurk.' + mode));
+        }
+
         if (command.equalsIgnoreCase("startstream")) {
-
-            // Clear Song History
-            $.clearSongHistory();
-            $.say($.lang.get('kentobot.startstream.clearhistory'));
-
-            // Reset bump counts
-            // Remove fulfilled free bumps
-            var bumps = $.inidb.GetKeyList('bumps', '');
-            $.log.file('kentobotSystem', 'Saved bumps - ' + bumps);
-
-            for (var i = 0; i < bumps.length; i++) {
-                $.log.file('kentobotSystem', 'Bump found for ' + bumps[i]);
-
-                var bumpObj = JSON.parse($.inidb.get("bumps", bumps[i]));
-                if (bumpObj.hasOwnProperty('fulfilled')) {
-                    var bumpFulfilled = bumpObj.fulfilled;
-                    var type = bumpObj.type;
-                    
-                    var method = '';
-                    if (bumpObj.hasOwnProperty('method')) {
-                        method = bumpObj.method;
-                    }
-                    
-                    if (bumpFulfilled.equalsIgnoreCase("true") || method.equalsIgnoreCase("raid") || type.equalsIgnoreCase("free")) {
-                        $.log.file('kentobotSystem', 'Deleting bump data for ' + bumps[i]);
-                        $.inidb.del('bumps', bumps[i]);
-                    }
-                }
-
-                if (bumpObj.hasOwnProperty("method") && "sotn".equalsIgnoreCase(bumpObj.method)) {
-                    if (!bumpObj.hasOwnProperty("clearOnNext")) {
-                        bumpObj.clearOnNext = 'true';
-                        $.setIniDbString('bumps', bumps[i], JSON.stringify(bumpObj));
-                    } else {
-                        $.inidb.del('bumps', bumps[i]);
-                    }
-                }
-            }
-            $.say($.lang.get('kentobot.startstream.resetbumps'));
-
-            // Open the queue - may need hook back to YouTube Player
-            $.enableSongRequests();
-            $.say($.lang.get('kentobot.startstream.requests.open'));
-
-            // Set play mode to shuffle
-            $.toggleQueueShuffle();
-            $.say($.lang.get('kentobot.startstream.shuffle.on'));
-
-            // Create and load new SOTN Contenders Playlist
-            $.createNewSOTNPlaylist();
-            $.say($.lang.get('kentobot.startstream.sotn.playlist'));
-
-            var connectedPlayerClient = $.getConnectedPlayerClient();
-            if (connectedPlayerClient) {
-                connectedPlayerClient.pushPlayList();
+            // Set stream mode
+            if (action == null) {
+                $.say($.lang.get('kentobot.mode.music'));
+                mode = "music";
+            } else {
+                setMode(action);
             }
 
+            if ("music".equalsIgnoreCase(mode)) {
+                // Clear Song History
+                $.clearSongHistory();
+                $.say($.lang.get('kentobot.startstream.clearhistory'));
+
+                $.resetBumps();
+                $.say($.lang.get('kentobot.startstream.resetbumps'));
+
+                // Open the queue - may need hook back to YouTube Player
+                $.enableSongRequests();
+                $.say($.lang.get('kentobot.startstream.requests.open'));
+
+                // Set play mode to shuffle
+                $.toggleQueueShuffle();
+                $.say($.lang.get('kentobot.startstream.shuffle.on'));
+
+                // Create and load new SOTN Contenders Playlist
+                $.createNewSOTNPlaylist();
+                $.say($.lang.get('kentobot.startstream.sotn.playlist'));
+
+                var connectedPlayerClient = $.getConnectedPlayerClient();
+                if (connectedPlayerClient) {
+                    connectedPlayerClient.pushPlayList();
+                }
+            }
             $.say($.lang.get('kentobot.startstream.shuffle.ready'));
 
         }
     });
 
+    function setMode(modeSelection) {
+        if (modeSelection.equalsIgnoreCase("music")) {
+            mode = "music";
+            $.say($.lang.get('kentobot.mode.music'));
+        } else if (modeSelection.equalsIgnoreCase("game")) {
+            mode = "game";
+            $.say($.lang.get('kentobot.mode.game'));
+        } else {
+            $.say($.lang.get('kentobot.mode.invalid', modeSelection));
+        }
+    }
+
     $.secondsToTimestamp = secondsToTimestamp;
     $.trimZerosFromTime = trimZerosFromTime;
+    $.botMode = botMode;
 
     /**
      * @event initReady
@@ -143,6 +152,10 @@
         // $.registerChatCommand('script', 'command', 'permission');
 
         $.registerChatCommand('./custom/kentobotSystem.js', 'startstream', 0);
+        $.registerChatCommand('./custom/kentobotSystem.js', 'mode', 2);
+        $.registerChatCommand('./custom/kentobotSystem.js', 'mode?', 2);
+
+        $.registerChatCommand('./custom/kentobotSystem.js', 'lurk');
     });
 })();
 

@@ -264,7 +264,6 @@ $(function () {
      */
     player.dbQuery = (callback_id, table, callback) => {
         listeners[callback_id] = callback;
-
         sendToSocket({
             dbquery: true,
             query_id: callback_id,

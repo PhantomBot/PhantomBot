@@ -30,6 +30,8 @@ $.lang.register('songqueuemgmt.autobump.channelpoints.404', 'You do not have a s
 
 $.lang.register('songqueuemgmt.autobump.free.used', 'You have already redeemed a free bump this stream');
 
+$.lang.register('songqueuemgmt.command.bump.pending', 'Your song is already bumped');
+
 $.lang.register('songqueuemgmt.autobump.sub', 'Your song will be bumped for your sub!');
 $.lang.register('songqueuemgmt.autobump.giftsub', 'Your song will be bumped for your gifted sub!');
 $.lang.register('songqueuemgmt.autobump.raid', 'Your song will be bumped to the top of the queue for your raid!');
@@ -47,3 +49,5 @@ $.lang.register('songqueuemgmt.autobump.xfer.usage', 'Usage: !bumpxfer <gifter> 
 $.lang.register('songqueuemgmt.autobump.xfer.success', '$1\'s bump has been gifted to $2');
 $.lang.register('songqueuemgmt.autobump.xfer.404', '$1 does not have a pending bump');
 $.lang.register('songqueuemgmt.autobump.xfer.used', '$1 has already used their bump');
+
+$.lang.register('songqueuemgmt.bump.disabled', 'The bump system is disabled');

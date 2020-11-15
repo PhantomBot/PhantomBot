@@ -20,13 +20,14 @@
  * -------------
  * Produces a GUI for the playlists in YouTube Player
  */
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 var connectedToWS = false;
 
 var url = window.location.host.split(":");
 var addr = (getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer';
 var connection = new WebSocket(addr, []);
 var currentVolume = 0;
+var shuffleEnabled = false;
 
 function debugMsg(message) {
     if (DEBUG_MODE)
@@ -173,13 +174,21 @@ function handleSongList(d) {
         tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
 
         tableData += '<div class="dataRow">';
-        // Position Column
-        tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
 
+        debugMsg('ShuffleEnabled: ' + shuffleEnabled);
+
+
+        // Position Column
         if (bumped == "true") {
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
             tableData += ' <i class="fas fa-star"></i>';
         } else if (shuffle == "true") {
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex
             tableData += ' <i class="fas fa-dice"></i>';
+        } else if (shuffleEnabled) {
+            tableData += '<div class="data dataQueuePosition">';
+        } else {
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
         }
         tableData += '</div>';
 
@@ -231,6 +240,12 @@ function handleSongHistoryList(d) {
 
 function handleQueueInfo(d) {
     debugMsg('handleQueueInfo(' + d + ')');
+    //Shuffle + Bumps
+    var mode = d['queueStatus']['mode'];
+    shuffleEnabled = mode.startsWith("Shuffle");
+
+    debugMsg('Mode: ' + mode + ', shuffleEnabled: ' + shuffleEnabled);
+
     var html = '';
 
     html += '<div id="dataSummaryStatus" class="dataSummary roundBL"> ' + d['queueStatus']['status'] + ' </div>';
@@ -261,6 +276,11 @@ function refreshData() {
     if (!connectedToWS) {
         return;
     }
+
+    // Get the queue info first so the queue mode can be saved
+    jsonObject['query'] = 'songqueueinfo';
+    connection.send(JSON.stringify(jsonObject));
+
     jsonObject['query'] = 'currentsong';
     connection.send(JSON.stringify(jsonObject));
     jsonObject['query'] = 'songlist';
@@ -269,8 +289,7 @@ function refreshData() {
     connection.send(JSON.stringify(jsonObject));
     jsonObject['query'] = 'songrequesthistory';
     connection.send(JSON.stringify(jsonObject));
-    jsonObject['query'] = 'songqueueinfo';
-    connection.send(JSON.stringify(jsonObject));
+
 
 }
 setInterval(refreshData, 20000);

@@ -156,26 +156,24 @@
     });
 
     function checkForAutobump(username, bits) {
-        $.log.file('bitsHandler', 'Checking database for existing bump data');
-        var bumpObj = JSON.parse($.getIniDbString('bumps', username, '{}'));
+        $.log.file('bitsHandler', 'Checking database for bits count for user [' + username + ']');
+        var bitsCount = $.getSetIniDbNumber('bumpSystem_bitsCounts', username.toLowerCase(), 0);
 
-        var bitsCount = 0;
-        if (bumpObj.hasOwnProperty('bits')) {
-            bitsCount = parseInt(bumpObj.bits) + bits;
+        $.log.file('bitsHandler', 'Bits count for user [' + username + ']: ' + bitsCount);
+
+        var currentBits = parseInt(bitsCount);
+        var cheeredBits = parseInt(bits);
+
+        var totalBits = currentBits + cheeredBits;
+        if (totalBits >= 300) {
+            $.autoBump(username, "bits");
+            $.log.file('bitsHandler', 'Bits count for user [' + username + '] is 300 or more (' + totalBits + '), triggering autobump');
+
+            // Remove 300 from the user's count to start tracking again for the next possible bit bump
+            $.setIniDbNumber('bumpSystem_bitsCounts', username.toLowerCase(), totalBits - 300);
         } else {
-            bitsCount = bits;
-            bumpFulfilled = false;
-
-            bumpObj.bits = bits + '';
-            bumpObj.donation = '0';
-            bumpObj.fulfilled = 'false';
-            bumpObj.type = 'paid';
-        }
-
-        $.setIniDbString('bumps', username, JSON.stringify(bumpObj));
-
-        if (bitsCount >= 300) {
-            $.autoBump(username, "paid", "bits");
+            $.log.file('bitsHandler', 'Adding ' + bits + ' to count for [' + username + ']');
+            $.inidb.incr('bumpSystem_bitsCounts', username.toLowerCase(), bits);
         }
     }
 
