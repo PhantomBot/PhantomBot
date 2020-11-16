@@ -57,7 +57,6 @@ $(function() {
                     {
                         'className': 'default-table',
                         'orderable': false,
-                        'width': '15%',
                         'targets': 1
                     },
                 ],
