@@ -51,3 +51,6 @@ $.lang.register('songqueuemgmt.autobump.xfer.404', '$1 does not have a pending b
 $.lang.register('songqueuemgmt.autobump.xfer.used', '$1 has already used their bump');
 
 $.lang.register('songqueuemgmt.bump.disabled', 'The bump system is disabled');
+$.lang.register('songqueuemgmt.autobump.control.usage', 'Usage !autobump [enable|disable]');
+$.lang.register('songqueuemgmt.autobump.enabled', 'Autobumping has been enabled');
+$.lang.register('songqueuemgmt.autobump.disabled', 'Autobumping has been disabled');

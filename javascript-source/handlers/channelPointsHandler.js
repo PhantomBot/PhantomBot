@@ -481,7 +481,7 @@
         if (rewardID.equalsIgnoreCase(songBumpId)) {
             var request = $.getUserRequest(username);
             if (request != null) {
-                $.autoBump(username, 'free', 'points');
+                $.autoBump(username, "points");
             } else {
                 $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.channelpoints.404'));
             }

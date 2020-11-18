@@ -29,7 +29,7 @@
                 ;
 
 
-        if (command.equalsIgnoreCase('autobump')) {
+        if (command.equalsIgnoreCase('autobumptest')) {
             $.autoBump(args[0], args[1], args[2]);
             return;
         }
@@ -51,7 +51,7 @@
         // $.registerChatCommand('script', 'command', 'permission');
 
 
-        $.registerChatCommand('./custom/testingSystem.js', 'autobump', 2);
+        $.registerChatCommand('./custom/testingSystem.js', 'autobumptest', 2);
         $.registerChatCommand('./custom/testingSystem.js', 'cheer', 2);
 
     });

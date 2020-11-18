@@ -31,7 +31,8 @@
                 SUB: 3,
                 GIFTSUB: 4,
                 RAID: 5
-            };
+            },
+            autoBumpEnabled = true;
 
     $.bind('ircChannelMessage', function (event) {
         if ($.isModv3(event.getSender()) && requireOverride === true && event.getMessage().equalsIgnoreCase("allow")) {
@@ -358,12 +359,29 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.command.move.404', args[0]));
             }
         }
+
+        if (command.equalsIgnoreCase('autobump')) {
+            if (!(args[0])) {
+                $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.autobump.control.usage'));
+                return;
+            }
+
+            if ("enable".equalsIgnoreCase(args[0])) {
+                autoBumpEnabled = true;
+                $.say($.lang.get('songqueuemgmt.autobump.enabled'));
+            }
+
+            if ("disable".equalsIgnoreCase(args[0])) {
+                autoBumpEnabled = false;
+                $.say($.lang.get('songqueuemgmt.autobump.disabled'));
+            }
+        }
     });
 
     function autoBump(user, method) {
         $.log.file('queue-management', '[autoBump] - Bot mode: ' + $.botMode());
 
-        if (!($.botMode().equalsIgnoreCase("music"))) {
+        if (!($.botMode().equalsIgnoreCase("music")) || !autoBumpEnabled) {
             // Not in music mode, exiting
             return;
         }
@@ -445,5 +463,8 @@
         $.registerChatCommand('./custom/queueManagementSystem.js', "readd", 2);
 
         $.registerChatCommand('./custom/queueManagementSystem.js', "raidtest");
+
+        $.registerChatCommand('./custom/queueManagementSystem.js', 'autobump', 2);
+
     });
 })();
