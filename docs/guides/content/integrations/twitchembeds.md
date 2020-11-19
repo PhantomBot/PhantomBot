@@ -38,7 +38,7 @@ Since the SSL certificate is self-signed, your browser/OS will not trust it by d
 1. Open a File Explorer window and navigate to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\OBS Studio (Or whichever shortcut you use to launch OBS Studio)
 2. Right-click the shortcut and hit Properties
 3. In the Target box, add  --ignore-certificate-errors to the end
-So it should look similar to "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors (NOTE: The positioning of the quotes " is very important)
+So it should look similar to `"C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors` (NOTE: The positioning of the quotes " is very important)
 
 **NOTE:** If you then use that shortcut to launch OBS Studio, it should disable validity checking of SSL Certificates, with the obvious downside that it won't protect you from other websites having bad or malicious SSL certificates either.
 
