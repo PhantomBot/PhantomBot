@@ -389,7 +389,7 @@
         $.log.file('queue-management', '[autoBump] - Running auto-bump for user [' + user + '], method [' + method + ']');
 
         var userBumpCount = getBumpCount(user);
-        $.log.file('queue-management', '[autoBump] - Auto bump triggered for user  [' + userToBump + '] for ' + method);
+        $.log.file('queue-management', '[autoBump] - Auto bump triggered for user  [' + user + '] for ' + method);
 
         // TODO Needs an addition check to see if user already has a pending bump.  If yes, save as a new pending bump (if they still have one left)
         if (userBumpCount < 2) {

@@ -139,7 +139,7 @@
                 $.inidb.incr('points', subscriber, subReward);
             }
 
-            $.autoBump(subscriber, "paid", "sub");
+            $.autoBump(subscriber, "sub");
         }
     });
 
@@ -185,7 +185,7 @@
                 $.inidb.incr('points', subscriber, subReward);
             }
 
-            $.autoBump(subscriber, "paid", "sub");
+            $.autoBump(subscriber, "sub");
 
         }
     });
@@ -250,7 +250,7 @@
                 $.inidb.incr('points', resubscriber, reSubReward);
             }
 
-            $.autoBump(resubscriber, "paid", "sub");
+            $.autoBump(resubscriber, "sub");
         }
     });
 
@@ -323,7 +323,7 @@
                 $.inidb.incr('points', gifter, giftSubReward);
             }
 
-            $.autoBump(gifter, "paid", "giftsub");
+            $.autoBump(gifter, "giftsub");
 
         }
     });
@@ -377,7 +377,7 @@
                 $.inidb.incr('points', gifter, massGiftSubReward * parseInt(amount));
             }
 
-            $.autoBump(gifter, "paid", "giftsub");
+            $.autoBump(gifter, "giftsub");
         }
     });
 
