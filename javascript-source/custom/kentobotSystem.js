@@ -111,6 +111,10 @@
                 $.toggleQueueShuffle();
                 $.say($.lang.get('kentobot.startstream.shuffle.on'));
 
+                // Enable auto-bumps
+                $.enableAutobumps();
+                $.say($.lang.get('kentobot.startstream.autobumps.on'));
+
                 // Create and load new SOTN Contenders Playlist
                 $.createNewSOTNPlaylist();
                 $.say($.lang.get('kentobot.startstream.sotn.playlist'));

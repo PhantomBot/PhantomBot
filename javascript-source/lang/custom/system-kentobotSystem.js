@@ -23,6 +23,7 @@ $.lang.register('kentobot.startstream.shuffle.on', 'Setting the play mode to shu
 $.lang.register('kentobot.startstream.resetbumps', 'Resetting bumps');
 $.lang.register('kentobot.startstream.sotn.playlist', 'Loading new Song of the Night contenders playlist');
 $.lang.register('kentobot.startstream.shuffle.ready', 'Stream ready');
+$.lang.register('kentobot.startstream.autobumps.on', 'Enabling auto-bump system');
 
 $.lang.register('kentobot.mode.usage', 'Usage: !mode [music|game]');
 $.lang.register('kentobot.mode.music', 'Stream mode set to music');

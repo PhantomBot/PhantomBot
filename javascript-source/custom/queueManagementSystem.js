@@ -128,9 +128,17 @@
 
     function resetBumps() {
         $.log.file('queue-management', 'Resetting bump data');
+
+        $.log.file('queue-management', 'Clearing bump counts');
         $.inidb.RemoveFile('bumpSystem_bumpCounts');
+
+        $.log.file('queue-management', 'Clearing used free bumps');
         $.inidb.RemoveFile('bumpSystem_freeBumps');
+
+        $.log.file('queue-management', 'Clearing pending bumps');
         $.inidb.RemoveFile('bumpSystem_pendingBumps');
+
+        $.log.file('queue-management', 'Clearing bits counts');
         $.inidb.RemoveFile('bumpSystem_bitsCounts');
     }
 
@@ -289,7 +297,6 @@
             return;
         }
 
-        // TODO Swap out with new bump objects
         if (command.equalsIgnoreCase('bumpxfer')) {
             if (!(args[0] && args[1])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.autobump.xfer.usage'));
@@ -318,7 +325,7 @@
 
                 $.getConnectedPlayerClient().pushSongList();
 
-                autoBump(args[1], 'free', 'gift');
+                autoBump(args[1], 'gift');
             } else {
                 var pendingBump = getPendingBump(args[0]);
                 if (pendingBump != null) {
@@ -376,6 +383,10 @@
                 $.say($.lang.get('songqueuemgmt.autobump.disabled'));
             }
         }
+
+        if (command.equalsIgnoreCase('resetbumps')) {
+
+        }
     });
 
     function autoBump(user, method) {
@@ -417,7 +428,7 @@
                 $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.autobump.nextsong'));
             }
 
-            incrementBumpCount(userToBump);
+            incrementBumpCount(user);
         } else {
             $.log.file('queue-management', '[autoBump] - User has already fulfilled all their allowed bumps');
         }
@@ -431,6 +442,10 @@
         return bumpStatusEnum;
     }
 
+    function enableAutobumps() {
+        autoBumpEnabled = true;
+    }
+
     $.autoBump = autoBump;
     $.getBumpData = getBumpData;
     $.bumpMethod = bumpMethod;
@@ -439,6 +454,7 @@
     $.removePendingBump = removePendingBump;
     $.getPendingBump = getPendingBump;
     $.resetBumps = resetBumps;
+    $.enableAutobumps = enableAutobumps;
 
 
     /**
@@ -465,6 +481,9 @@
         $.registerChatCommand('./custom/queueManagementSystem.js', "raidtest");
 
         $.registerChatCommand('./custom/queueManagementSystem.js', 'autobump', 2);
+
+        $.registerChatCommand('./custom/queueManagementSystem.js', 'resetbumps', 2);
+
 
     });
 })();
