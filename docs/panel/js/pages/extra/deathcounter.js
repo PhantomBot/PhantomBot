@@ -129,7 +129,7 @@ $(function() {
             'class': 'form-control',
             'id': 'death-url',
             'readonly': 'readonly',
-            'value': 'http://' + helpers.getBotHost() + '/addons/deathctr/deathctr.txt?refresh=true&webauth=' + getAuth(),
+            'value': 'http://' + helpers.getBotHost() + '/addons/deathctr/deathctr.txt?refresh=true',
             'style': 'color: transparent !important; text-shadow: 0 0 5px hsla(0, 0%, 100%, .5);',
             'data-toggle': 'tooltip',
             'title': 'Clicking this box will show the link. DO NOT share this link with anyone as it has sensitive information.',
