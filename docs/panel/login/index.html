@@ -205,13 +205,13 @@
                                                     } else {
                                                         $('#error-box').removeClass('hide');
                                                         $('#alert-br').removeClass('hide');
-                                                        $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantom.bot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                                        $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
                                                     }
                                                 },
                                                 error: function () {
                                                     $('#error-box').removeClass('hide');
                                                     $('#alert-br').removeClass('hide');
-                                                    $('#error-box').html('Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantom.bot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                                    $('#error-box').html('Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
                                                 }
                                             }
                                         );
@@ -249,7 +249,7 @@
                                     if (hashmap['sslFail'] !== undefined && hashmap['sslFail'] === 'true') {
                                         $('#error-box').removeClass('hide');
                                         $('#alert-br').removeClass('hide');
-                                        $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantom.bot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                        $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
                                         window.localStorage.removeItem('webauth');
                                         window.localStorage.removeItem('remember');
                                         window.localStorage.removeItem('expires');

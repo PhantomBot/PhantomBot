@@ -31,16 +31,11 @@ The bot will automatically generate and renew this certificate for you as long a
 
 Since the SSL certificate is self-signed, your browser/OS will not trust it by default.
 
-##### OBS
+##### OBS/XSplit
 
-**NOTE:** These instructions are written for Windows, but the idea of adding the extra launch parameter remains the same for other OSes.
+As of PhantomBot v3.3.5, all browser-source endpoints, such as the death counter and alerts, now support being accessed without SSL, to bypass self-signed SSL certificate issues with OBS and XSplit.
 
-1. Open a File Explorer window and navigate to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\OBS Studio (Or whichever shortcut you use to launch OBS Studio)
-2. Right-click the shortcut and hit Properties
-3. In the Target box, add  --ignore-certificate-errors to the end
-So it should look similar to `"C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors` (NOTE: The positioning of the quotes " is very important)
-
-**NOTE:** If you then use that shortcut to launch OBS Studio, it should disable validity checking of SSL Certificates, with the obvious downside that it won't protect you from other websites having bad or malicious SSL certificates either.
+Simply change the `https://` part at the beginning of the browser source URL to `http://`
 
 ##### Windows and Linux
 

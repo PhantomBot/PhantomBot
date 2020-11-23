@@ -37,7 +37,7 @@
 8. Follow the steps on screen. It will ask you for the bot username, use the username you created earlier.
 After that it will ask you for a oauth token, paste the one you got from Twitch Apps.
 After that enter the channel you wish the bot to join. (Your channel)
-And now your bot should be connected to your channel! You can find a list of commands for the bot [here](https://phantom.bot/commands/).
+And now your bot should be connected to your channel! You can find a list of commands for the bot [here](https://phantombot.github.io/PhantomBot/commands/).
 
 9. Type `exit` and hit Enter in the bot console to shut it down gracefully.
 
