@@ -41,6 +41,9 @@
         if ($.equalsIgnoreCase(sender, $.channelName)) {
             return;
         }
+        if ($.equalsIgnoreCase(sender, $.botName)) {
+            return;
+        }
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
             var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
                 firstTimeChatter = lastUserMessage === undefined,
