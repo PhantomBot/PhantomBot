@@ -27,6 +27,32 @@
  * anymore to reduce spam. Unless the 5 minutes have past, then it will start over.
  *
  */
+
+function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
+    if (announceFollows === true && followToggle === true) {
+        if (s.match(/\(name\)/)) {
+            s = $.replace(s, '(name)', $.username.resolve(follower));
+        }
+
+        if (s.match(/\(reward\)/)) {
+            s = $.replace(s, '(reward)', $.getPointsString(followReward));
+        }
+
+        if (s.match(/^\/w/)) {
+            s = s.replace('/w', ' /w');
+        }
+
+        followQueue.add(s);
+
+        if (followReward > 0) {
+            $.inidb.incr('points', follower, followReward);
+        }
+
+        $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
+        $.inidb.set('streamInfo', 'lastFollow', follower);
+    }
+}
+
 (function () {
     var followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
             followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
@@ -87,31 +113,8 @@
      * @event twitchFollow
      */
     $.bind('twitchFollow', function (event) {
-        var follower = event.getFollower(),
-                s = followMessage;
-
-        if (announceFollows === true && followToggle === true) {
-            if (s.match(/\(name\)/)) {
-                s = $.replace(s, '(name)', $.username.resolve(follower));
-            }
-
-            if (s.match(/\(reward\)/)) {
-                s = $.replace(s, '(reward)', $.getPointsString(followReward));
-            }
-
-            if (s.match(/^\/w/)) {
-                s = s.replace('/w', ' /w');
-            }
-
-            followQueue.add(s);
-
-            if (followReward > 0) {
-                $.inidb.incr('points', follower, followReward);
-            }
-
-            $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
-            $.inidb.set('streamInfo', 'lastFollow', follower);
-        }
+        var follower = event.getFollower();
+        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue);
     });
 
     /*
@@ -217,6 +220,16 @@
                 $.say($.lang.get('followhandler.shoutout.online', streamerDisplay, streamerURL, streamerGame));
             }
         }
+
+        /*
+         * @commandpath replayfollow [username] - Replays the follow message for username
+         */
+        if (command.equalsIgnoreCase('replayfollow')) {
+            if (action === undefined) {
+                return;
+            }
+            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue);
+        }
     });
 
     /*
@@ -228,6 +241,7 @@
         $.registerChatCommand('./handlers/followHandler.js', 'followdelay', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
+        $.registerChatCommand('./handlers/followHandler.js', 'replayfollow', 1);
         $.registerChatCommand('./handlers/followHandler.js', 'shoutout', 2);
 
         setInterval(runFollows, 2e3, 'scripts::handlers::followHandler.js');

@@ -40,7 +40,9 @@
 		if (array.length > 50) {
 			// Sort for newer events
 			array.sort(function(a, b) {
-				return b.date - a.date;
+				var d1 = new Date(a.date);
+				var d2 = new Date(b.date);
+				return d1 - d2;
 			});
 
 			// Remove old events.
@@ -127,7 +129,7 @@
 	$.bind('twitchFollow', function(event) {
 		addObjectToArray('panelData', 'data', 'Follower', {
 			'username': event.getFollower(),
-			'date'    : $.systemTime()
+			'date'    : event.getFollowDate()
 		});
 	});
 

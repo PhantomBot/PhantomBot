@@ -309,7 +309,7 @@ public class ConsoleEventHandler implements Listener {
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followertest (User: " + user + ")");
 
-            EventBus.instance().postAsync(new TwitchFollowEvent(user));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user, (new Date()).toString()));
             return;
         }
 
@@ -323,7 +323,7 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
 
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, (new Date()).toString()));
             }
             return;
         }

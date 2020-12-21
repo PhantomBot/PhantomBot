@@ -119,10 +119,16 @@ public class FollowersCache implements Runnable {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String follower = jsonArray.getJSONObject(i).getJSONObject("user").getString("name").toLowerCase();
+                    String followDate = jsonArray.getJSONObject(i).getString("created_at");
 
                     if (!datastore.exists("followed", follower)) {
-                        EventBus.instance().post(new TwitchFollowEvent(follower));
+                        com.gmt2001.Console.out.println("New follower: "+follower);
+                        EventBus.instance().post(new TwitchFollowEvent(follower, followDate));
                         datastore.set("followed", follower, "true");
+                    }
+
+                    if (!datastore.exists("followed_date", follower)) {
+                        datastore.set("followedDate", follower, followDate);
                     }
                 }
             } else {
