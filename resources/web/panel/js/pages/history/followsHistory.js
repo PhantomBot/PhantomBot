@@ -17,6 +17,25 @@
 
 // Function that querys all of the data we need.
 $(function() {
+
+	/**
+	 *
+	 * @param results
+	 */
+	function createClickButtonEvents(results) {
+		for (let i = 0; i < results.length; i++) {
+			let follow = results[i];
+			let name = follow.key;
+			if ($('#follows-btn-replay-' + name).length) {
+				$('#follows-btn-replay-' + name).on('click', function () {
+					socket.sendCommand('replay_follow', 'replayfollow ' + name, function () {
+						toastr.success('Successfully replayed');
+					});
+				});
+			}
+		}
+	}
+
 	socket.getDBTableValues('get_all_follows_by_date', 'followedDate', function(results) {
 
 		socket.wsEvent()
@@ -24,9 +43,6 @@ $(function() {
 
 		for (let i = 0; i < results.length; i++) {
 			let follow = results[i];
-
-			console.log(follow.key)
-
 			let name = follow.key;
 			let date = new Date(follow.value);
 			let month = ((date.getMonth() + 1)<10? '0'+ (date.getMonth() + 1):''+(date.getMonth() + 1));
@@ -40,8 +56,6 @@ $(function() {
 
 		}
 
-
-
 		// Create table.
 		$('#followsHistoryTable').DataTable({
 			'searching': true,
@@ -54,25 +68,16 @@ $(function() {
 				{ 'title': 'Username', 'orderData' : [1], 'order' : [0, 'desc'] },
 				{ 'title': 'Date' },
 				{ 'title': 'Replay' },
-				// { 'title': 'Tipping Service' },
-				// { 'visible': false }
 			]
 		});
 
-		for (let i = 0; i < results.length; i++) {
-			let follow = results[i];
-			let name = follow.key;
-			console.log(name);
-			console.log($('#follows-btn-replay-'+name));
-			$('#follows-btn-replay-'+name).on('click', function() {
-				// Update title.
-				console.log($('#follows-btn-replay-'+name))
-				socket.sendCommand('replay_follow', 'replayfollow '+name, function() {
-					toastr.success('Successfully replayed');
-				});
-			});
+		// First time table created
+		createClickButtonEvents(results);
 
-		}
+		// each time the table is drawn after page change
+		$('#followsHistoryTable').on( 'draw.dt', function () {
+			createClickButtonEvents(results);
+		} );
 
 	});
 });
