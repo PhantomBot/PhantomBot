@@ -16,6 +16,8 @@
  */
 package tv.phantombot.event.twitch.follower;
 
+import java.util.Date;
+
 public class TwitchUnfollowEvent extends TwitchFollowerEvent {
 
     /**
@@ -24,6 +26,6 @@ public class TwitchUnfollowEvent extends TwitchFollowerEvent {
      * @param {String} follower
      */
     public TwitchUnfollowEvent(String follower) {
-        super(follower);
+        super(follower, (new Date()).toString());
     }
 }
