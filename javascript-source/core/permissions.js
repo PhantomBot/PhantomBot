@@ -238,7 +238,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return subUsers.contains(username.toLowerCase());
+        return subUsers.contains(java.util.Objects.toString(username.toLowerCase()));
     }
 
     /**
@@ -249,7 +249,20 @@
      * @returns {boolean}
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
+        if (tags != null && tags != '{}') {
+            if (tags.containsKey('subscriber')) {
+                return tags.get('subscriber').equals('1');
+            } else {
+                $.consoleDebug('Used isSub without tags::' + tags);
+                return isSub(username);
+            }
+        } else {
+            $.consoleDebug('Used isSub without tags::' + tags);
+            return isSub(username);
+        }
+        
+        // Only use isSub is we don't have tags, using that method is our last resource.
+        // return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
 
     /**
