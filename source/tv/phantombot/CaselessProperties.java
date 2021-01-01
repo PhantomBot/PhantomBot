@@ -19,6 +19,8 @@ package tv.phantombot;
 import java.util.Properties;
 
 public class CaselessProperties extends Properties {
+    public static final long serialVersionUID = 1L;
+
     @Override
     public Object put(Object key, Object value) {
         return super.put(((String)key).toLowerCase(), value);
