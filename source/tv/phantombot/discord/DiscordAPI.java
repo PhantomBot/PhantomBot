@@ -125,7 +125,7 @@ public class DiscordAPI extends DiscordUtil {
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
             DiscordAPI.builder = DiscordClientBuilder.create(token);
-            DiscordAPI.client = (DiscordClient) DiscordAPI.builder.build();
+            DiscordAPI.client = DiscordAPI.builder.build();
         }
 
         this.connect();
