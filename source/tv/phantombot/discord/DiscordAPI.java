@@ -41,6 +41,7 @@ import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
+import discord4j.rest.request.RouterOptions;
 import discord4j.rest.util.Snowflake;
 import java.time.Duration;
 import java.util.List;
@@ -80,7 +81,7 @@ public class DiscordAPI extends DiscordUtil {
     private static GatewayDiscordClient gateway;
     private static Guild guild;
     private static ConnectionState reconnectState = ConnectionState.DISCONNECTED;
-    private static DiscordClientBuilder builder;
+    private static DiscordClientBuilder<DiscordClient, RouterOptions> builder;
     private boolean ready;
     private static Optional<Snowflake> selfId = Optional.empty();
     private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.GUILD_PRESENCES, Intent.DIRECT_MESSAGES);
