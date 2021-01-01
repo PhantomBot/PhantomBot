@@ -24,19 +24,16 @@
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitterAPI;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-
-import twitter4j.Status;
-
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitter.TwitterEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
+import twitter4j.Status;
 
 /**
  * TwitterCache Class

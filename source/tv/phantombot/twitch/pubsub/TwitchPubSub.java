@@ -44,7 +44,11 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
-import tv.phantombot.event.pubsub.moderation.*;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationDeleteEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationTimeoutEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnTimeoutEvent;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {

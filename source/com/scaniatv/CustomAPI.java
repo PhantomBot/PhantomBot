@@ -20,11 +20,9 @@ package com.scaniatv;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
-
 import java.util.HashMap;
-
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CustomAPI {
     private static CustomAPI instance;

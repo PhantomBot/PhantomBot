@@ -17,8 +17,6 @@
 
 package com.gmt2001.datastore;
 
-import com.gmt2001.datastore.DataStore;
-
 /*
  * Final class that is used to convert datastores.
  *

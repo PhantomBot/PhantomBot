@@ -20,7 +20,6 @@ package com.illusionaryone;
 
 import java.io.File;
 import java.util.List;
-
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;

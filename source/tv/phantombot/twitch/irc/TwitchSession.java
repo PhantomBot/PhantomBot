@@ -18,10 +18,9 @@ package tv.phantombot.twitch.irc;
 
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import tv.phantombot.PhantomBot;
-
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
 public class TwitchSession extends MessageQueue {

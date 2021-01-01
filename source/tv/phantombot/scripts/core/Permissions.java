@@ -17,12 +17,9 @@
 
 package tv.phantombot.scripts.core;
 
-import net.engio.mbassy.listener.Handler;
-
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;

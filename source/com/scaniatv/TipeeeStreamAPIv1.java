@@ -31,7 +31,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.net.ssl.HttpsURLConnection;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

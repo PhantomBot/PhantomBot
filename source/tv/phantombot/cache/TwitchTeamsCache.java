@@ -17,13 +17,12 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
-
-import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *

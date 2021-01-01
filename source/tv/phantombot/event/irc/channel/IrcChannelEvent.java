@@ -17,7 +17,6 @@
 package tv.phantombot.event.irc.channel;
 
 import tv.phantombot.event.irc.IrcEvent;
-
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public abstract class IrcChannelEvent extends IrcEvent {

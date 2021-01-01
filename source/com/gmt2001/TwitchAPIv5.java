@@ -18,21 +18,21 @@ package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
 import java.io.BufferedOutputStream;
-import tv.phantombot.cache.UsernameCache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
-import org.json.JSONException;
+import tv.phantombot.cache.UsernameCache;
 
 /**
  * Communicates with Twitch Kraken server using the version 5 API

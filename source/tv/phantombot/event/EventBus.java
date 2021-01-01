@@ -16,12 +16,9 @@
  */
 package tv.phantombot.event;
 
+import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.SyncMessageBus;
-
-import net.engio.mbassy.bus.MBassador;
-
 import tv.phantombot.PhantomBot;
 
 public class EventBus {

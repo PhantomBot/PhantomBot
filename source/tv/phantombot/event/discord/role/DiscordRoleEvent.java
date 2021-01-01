@@ -18,7 +18,6 @@
 package tv.phantombot.event.discord.role;
 
 import discord4j.core.object.entity.Role;
-
 import tv.phantombot.event.discord.DiscordEvent;
 
 

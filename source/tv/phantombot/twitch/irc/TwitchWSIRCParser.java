@@ -24,22 +24,29 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
-
 import org.java_websocket.WebSocket;
-
-import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
-
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
-import tv.phantombot.event.irc.channel.*;
+import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;
+import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
-import tv.phantombot.event.irc.message.*;
+import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
+import tv.phantombot.event.irc.message.IrcModerationEvent;
+import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
-import tv.phantombot.event.twitch.subscriber.*;
+import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassSubscriptionGiftedEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
+import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.chat.utils.SubscriberBulkGifter;
 
 // Create an interface that is used to create event handling methods.

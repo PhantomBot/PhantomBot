@@ -16,11 +16,10 @@
  */
 package tv.phantombot.event.command;
 
-import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import tv.phantombot.event.Event;
 
 public class CommandEvent extends Event {

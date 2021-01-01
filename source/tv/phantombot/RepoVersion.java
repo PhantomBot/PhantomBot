@@ -16,12 +16,6 @@
  */
 package tv.phantombot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 public class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";

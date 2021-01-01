@@ -19,9 +19,8 @@ package tv.phantombot.twitch.irc.chat.utils;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
-
-import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 public class MessageQueue implements Runnable {
     private final BlockingDeque<Message> queue = new LinkedBlockingDeque<>();

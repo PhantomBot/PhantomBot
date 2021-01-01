@@ -17,13 +17,11 @@
 
 package tv.phantombot.scripts.core;
 
-import net.engio.mbassy.listener.Handler;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService; 
-
+import java.util.concurrent.ScheduledExecutorService;
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.irc.message.IrcModerationEvent;

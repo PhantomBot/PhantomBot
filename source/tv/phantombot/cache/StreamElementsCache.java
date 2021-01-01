@@ -17,19 +17,15 @@
 package tv.phantombot.cache;
 
 import com.scaniatv.StreamElementsAPIv2;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
-
 import tv.phantombot.event.streamelements.donate.StreamElementsDonationEvent;
 import tv.phantombot.event.streamelements.donate.StreamElementsDonationInitializedEvent;
 

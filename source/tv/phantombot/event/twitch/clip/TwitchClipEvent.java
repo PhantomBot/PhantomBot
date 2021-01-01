@@ -16,9 +16,8 @@
  */
 package tv.phantombot.event.twitch.clip;
 
-import tv.phantombot.event.twitch.TwitchEvent;
-
 import org.json.JSONObject;
+import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchClipEvent extends TwitchEvent {
     private final String clipURL;

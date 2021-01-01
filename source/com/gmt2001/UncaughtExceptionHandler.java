@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
 import tv.phantombot.PhantomBot;
 
 /**

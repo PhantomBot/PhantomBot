@@ -18,16 +18,13 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
+import org.json.JSONObject;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 
 public class ViewerListCache implements Runnable {
     private static ViewerListCache instance = null;

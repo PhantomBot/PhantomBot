@@ -17,7 +17,6 @@
 package tv.phantombot.discord;
 
 import discord4j.common.close.CloseStatus;
-import discord4j.common.retry.ReconnectOptions;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;

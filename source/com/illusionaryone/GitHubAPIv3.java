@@ -28,12 +28,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
-
-import tv.phantombot.RepoVersion;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.RepoVersion;
 
 /*
  * Communicates with GitHub API v3

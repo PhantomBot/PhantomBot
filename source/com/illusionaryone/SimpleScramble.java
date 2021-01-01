@@ -23,9 +23,8 @@
 
 package com.illusionaryone;
 
-import java.util.Base64;
 import java.io.UnsupportedEncodingException;
-import java.lang.IllegalArgumentException;
+import java.util.Base64;
 
 public class SimpleScramble {
     private String simpleSalt = "%M+JPH~b#q9$yV+'atwq'|2s*A6?=h";

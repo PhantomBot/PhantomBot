@@ -16,10 +16,10 @@
  */
 package tv.phantombot.script;
 
-import tv.phantombot.PhantomBot;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import tv.phantombot.PhantomBot;
 
 public class ScriptManager {
     private static final HashMap<String, Script> scripts = new HashMap<String, Script>();

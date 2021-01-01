@@ -21,31 +21,28 @@
  */
 package tv.phantombot.twitch.irc.host;
 
-import tv.phantombot.event.EventBus;
-import tv.phantombot.event.twitch.host.TwitchHostedEvent;
-import tv.phantombot.event.twitch.host.TwitchAutoHostedEvent;
-import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
-
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.twitch.host.TwitchAutoHostedEvent;
+import tv.phantombot.event.twitch.host.TwitchHostedEvent;
+import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 
 public class TwitchWSHostIRC {
     private static final Map<String, TwitchWSHostIRC> instances = new ConcurrentHashMap<>();

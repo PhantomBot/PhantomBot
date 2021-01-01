@@ -16,11 +16,10 @@
  */
 package tv.phantombot.script;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.List;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ScriptFileWatcher implements Runnable {
     private static ScriptFileWatcher instance;

@@ -22,12 +22,12 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationEvent;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationInitializedEvent;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class TipeeeStreamCache implements Runnable {
 

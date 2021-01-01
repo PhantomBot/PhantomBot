@@ -22,14 +22,11 @@
 package com.scaniatv;
 
 import com.gmt2001.datastore.DataStore;
-
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.BufferedReader;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import tv.phantombot.PhantomBot;
 
 public class BotImporter {
