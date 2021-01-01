@@ -177,6 +177,7 @@
         <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
+            <compilerarg value="-XDenableSunApiLintControl" />
             <compilerarg line="--add-exports java.base/sun.security.x509=ALL-UNNAMED" />
             <classpath refid="reference.class.path" />
         </javac>
@@ -192,6 +193,7 @@
         <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
+            <compilerarg value="-XDenableSunApiLintControl" />
             <compilerarg line="--add-exports java.base/sun.security.x509=ALL-UNNAMED" />
             <classpath refid="reference.class.path" />
         </javac>
