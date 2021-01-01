@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
  */
 package tv.phantombot.script;
 
-import tv.phantombot.PhantomBot;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import tv.phantombot.PhantomBot;
 
 public class ScriptManager {
     private static final HashMap<String, Script> scripts = new HashMap<String, Script>();

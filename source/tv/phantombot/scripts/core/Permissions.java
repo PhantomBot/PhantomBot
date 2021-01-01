@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,9 @@
 
 package tv.phantombot.scripts.core;
 
-import net.engio.mbassy.listener.Handler;
-
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
 import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;

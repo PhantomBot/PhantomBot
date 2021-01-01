@@ -1,7 +1,7 @@
 @echo off
 
 REM  
-REM Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+REM Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
 REM  
 REM This program is free software: you can redistribute it and/or modify
 REM it under the terms of the GNU General Public License as published by

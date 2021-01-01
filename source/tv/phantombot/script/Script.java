@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,18 @@
 package tv.phantombot.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.StackStyle;
 import org.mozilla.javascript.tools.debugger.Main;
 import tv.phantombot.PhantomBot;
 

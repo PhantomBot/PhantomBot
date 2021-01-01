@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import tv.phantombot.event.EventBus;
-import tv.phantombot.PhantomBot;
-import tv.phantombot.event.streamlabs.donate.StreamLabsDonationEvent;
-import tv.phantombot.event.streamlabs.donate.StreamLabsDonationInitializedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.streamlabs.donate.StreamLabsDonationEvent;
+import tv.phantombot.event.streamlabs.donate.StreamLabsDonationInitializedEvent;
 
 public class DonationsCache implements Runnable {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +29,6 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import sun.security.x509.AlgorithmId;
-import sun.security.x509.CertificateAlgorithmId;
-import sun.security.x509.CertificateSerialNumber;
-import sun.security.x509.CertificateValidity;
-import sun.security.x509.CertificateVersion;
-import sun.security.x509.CertificateX509Key;
-import sun.security.x509.X500Name;
-import sun.security.x509.X509CertImpl;
-import sun.security.x509.X509CertInfo;
 
 /**
  * Generates a SelfSigned X.509 Certificate
@@ -47,6 +38,7 @@ import sun.security.x509.X509CertInfo;
  *
  * @author gmt2001
  */
+ @SuppressWarnings("sunapi")
 final class SelfSignedX509CertificateGenerator {
     
     static final int RECOMMENDED_KEY_SIZE = 2048;
@@ -72,28 +64,28 @@ final class SelfSignedX509CertificateGenerator {
     static X509Certificate generateCertificate(String dn, KeyPair pair, int days, String algorithm)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
         PrivateKey privkey = pair.getPrivate();
-        X509CertInfo info = new X509CertInfo();
+        sun.security.x509.X509CertInfo info = new sun.security.x509.X509CertInfo();
         Date from = new Date();
         Date to = new Date(from.getTime() + days * 86400000l);
-        CertificateValidity interval = new CertificateValidity(from, to);
+        sun.security.x509.CertificateValidity interval = new sun.security.x509.CertificateValidity(from, to);
         BigInteger sn = new BigInteger(64, new SecureRandom());
-        X500Name owner = new X500Name(dn);
+        sun.security.x509.X500Name owner = new sun.security.x509.X500Name(dn);
 
-        info.set(X509CertInfo.VALIDITY, interval);
-        info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
-        info.set(X509CertInfo.SUBJECT, owner);
-        info.set(X509CertInfo.ISSUER, owner);
-        info.set(X509CertInfo.KEY, new CertificateX509Key(pair.getPublic()));
-        info.set(X509CertInfo.VERSION, new CertificateVersion(CertificateVersion.V3));
-        info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(AlgorithmId.get(algorithm)));
+        info.set(sun.security.x509.X509CertInfo.VALIDITY, interval);
+        info.set(sun.security.x509.X509CertInfo.SERIAL_NUMBER, new sun.security.x509.CertificateSerialNumber(sn));
+        info.set(sun.security.x509.X509CertInfo.SUBJECT, owner);
+        info.set(sun.security.x509.X509CertInfo.ISSUER, owner);
+        info.set(sun.security.x509.X509CertInfo.KEY, new sun.security.x509.CertificateX509Key(pair.getPublic()));
+        info.set(sun.security.x509.X509CertInfo.VERSION, new sun.security.x509.CertificateVersion(sun.security.x509.CertificateVersion.V3));
+        info.set(sun.security.x509.X509CertInfo.ALGORITHM_ID, new sun.security.x509.CertificateAlgorithmId(sun.security.x509.AlgorithmId.get(algorithm)));
 
         // Sign the cert to identify the algorithm that's used.
-        X509CertImpl cert = new X509CertImpl(info);
+        sun.security.x509.X509CertImpl cert = new sun.security.x509.X509CertImpl(info);
         cert.sign(privkey, algorithm);
 
         // Update the algorith, and resign.
-        info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, (AlgorithmId) cert.get(X509CertImpl.SIG_ALG));
-        cert = new X509CertImpl(info);
+        info.set(sun.security.x509.CertificateAlgorithmId.NAME + "." + sun.security.x509.CertificateAlgorithmId.ALGORITHM, (sun.security.x509.AlgorithmId) cert.get(sun.security.x509.X509CertImpl.SIG_ALG));
+        cert = new sun.security.x509.X509CertImpl(info);
         cert.sign(privkey, algorithm);
         return cert;
     }

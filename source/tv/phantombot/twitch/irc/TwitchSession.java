@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,9 @@ package tv.phantombot.twitch.irc;
 
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import tv.phantombot.PhantomBot;
-
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
 public class TwitchSession extends MessageQueue {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,12 @@
 
 package tv.phantombot.cache;
 
-import tv.phantombot.PhantomBot;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
-
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 import org.json.JSONArray;
+import org.json.JSONObject;
+import tv.phantombot.PhantomBot;
 
 public class SteamCache implements Runnable {
 	private static final Map<String, SteamCache> instances = new HashMap<>();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,9 +258,9 @@ $.lang.register('common.disabled', 'disabled');
 $.lang.register('common.enabled', 'enabled');
 $.lang.register('common.user-error', 'You must specify a user to target with this command');
 $.lang.register('common.user.404', 'The user "$1" has not visited this channel yet.');
-$.lang.register('common.game.change', 'Changed the current game to: $1!');
+$.lang.register('common.game.change', 'Changed the current game to: $1');
 $.lang.register('common.communities.change', 'Communities have been updated!');
-$.lang.register('common.title.change', 'Changed the current title to: $1!');
+$.lang.register('common.title.change', 'Changed the current title to: $1');
 $.lang.register('common.twitch.no.status', 'not sure, neither is Twitch');
 $.lang.register('common.twitch.no.game', 'not sure, neither is Twitch');
 $.lang.register('console.channel.ishosting', '$1 is currently hosting $2.');

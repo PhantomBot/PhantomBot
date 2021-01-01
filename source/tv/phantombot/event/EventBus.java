@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,9 @@
  */
 package tv.phantombot.event;
 
+import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.SyncMessageBus;
-
-import net.engio.mbassy.bus.MBassador;
-
 import tv.phantombot.PhantomBot;
 
 public class EventBus {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,8 +209,8 @@ $(function() {
     // Host settings button.
     $('#discordHostHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_host_settings', {
-            tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-            keys: ['hostToggle', 'hostMessage', 'autohostMessage', 'hostChannel']
+            tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+            keys: ['hostToggle', 'hostMessage', 'hostChannel']
         }, true, function(e) {
             helpers.getModal('host-alert', 'Host Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -226,28 +226,23 @@ $(function() {
             // Add the the text area for the host message.
             .append(helpers.getTextAreaGroup('host-message', 'text', 'Host Message', '', e.hostMessage,
                 'Message said when someone hosts the channel. Tag: (name) and (viewers)', false))
-            // Add the the text area for the auto host message.
-            .append(helpers.getTextAreaGroup('auto-host-message', 'text', 'Auto host Message', '', e.autohostMessage,
-                'Message said when someone auto-hosts the channel. Tag: (name) and (viewers)', false))
             // Add the the box for the reward.
             .append(helpers.getInputGroup('host-channel', 'text', 'Alert Channel', '#alerts', e.hostChannel,
                 'Channel where all alerts should go too.'))),
             function() { // Callback once the user clicks save.
                 let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
                     hostMsg = $('#host-message'),
-                    autoHostMsg = $('#auto-host-message'),
                     hostChannel = $('#host-channel');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
                     case helpers.handleInputString(hostMsg):
-                    case helpers.handleInputString(autoHostMsg):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_host_settings', {
-                            tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
-                            keys: ['hostToggle', 'hostMessage', 'autohostMessage', 'hostChannel'],
-                            values: [hostToggle, hostMsg.val(), autoHostMsg.val(), hostChannel.val()]
+                            tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+                            keys: ['hostToggle', 'hostMessage', 'hostChannel'],
+                            values: [hostToggle, hostMsg.val(), hostChannel.val()]
                         }, function() {
                             socket.wsEvent('discord', './discord/handlers/hostHandler.js', '', [], function() {
                                 // Close the modal.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,13 @@ package tv.phantombot.console;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
-import net.engio.mbassy.listener.Handler;
-
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,14 +33,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
-
 import tv.phantombot.PhantomBot;
-
 import tv.phantombot.discord.DiscordAPI;
-
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
@@ -59,15 +51,13 @@ import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
-import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
-import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
-
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
-
 import tv.phantombot.script.Script;
 
 public class ConsoleEventHandler implements Listener {

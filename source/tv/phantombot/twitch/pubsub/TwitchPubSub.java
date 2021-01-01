@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,11 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
-import tv.phantombot.event.pubsub.moderation.*;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationDeleteEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationTimeoutEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnTimeoutEvent;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {

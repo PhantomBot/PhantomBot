@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@ package tv.phantombot;
 import java.util.Properties;
 
 public class CaselessProperties extends Properties {
+    public static final long serialVersionUID = 1L;
+
     @Override
     public Object put(Object key, Object value) {
         return super.put(((String)key).toLowerCase(), value);
