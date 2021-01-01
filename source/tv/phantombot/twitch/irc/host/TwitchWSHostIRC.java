@@ -40,7 +40,6 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.twitch.host.TwitchAutoHostedEvent;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 
@@ -197,9 +196,7 @@ public class TwitchWSHostIRC {
         private final String oAuth;
         private final EventBus eventBus;
         private Pattern hostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you for up to (\\d+) viewers");
-        private Pattern autoHostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you for up to (\\d+) viewers");
         private Pattern hostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you.");
-        private Pattern autoHostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now auto hosting you.");
         private long lastPing = 0L;
         private boolean sentPing = false;
 
@@ -396,18 +393,6 @@ public class TwitchWSHostIRC {
                 matcher = hostPatternNoViewers.matcher(message);
                 if (matcher.find()) {
                     eventBus.postAsync(new TwitchHostedEvent(matcher.group(1)));
-                    return;
-                }
-
-                matcher = autoHostPattern.matcher(message);
-                if (matcher.find()) {
-                    eventBus.postAsync(new TwitchAutoHostedEvent(matcher.group(1), Integer.parseInt(matcher.group(2))));
-                    return;
-                }
-
-                matcher = autoHostPatternNoViewers.matcher(message);
-                if (matcher.find()) {
-                    eventBus.postAsync(new TwitchAutoHostedEvent(matcher.group(1)));
                 }
             }
         }

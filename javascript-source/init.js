@@ -654,13 +654,6 @@
         });
 
         /*
-         * @event twitchAutoHosted
-         */
-        $api.on($script, 'twitchAutoHosted', function (event) {
-            callHook('twitchAutoHosted', event, false);
-        });
-
-        /*
          * @event twitchHostsInitialized
          */
         $api.on($script, 'twitchHostsInitialized', function (event) {

@@ -125,8 +125,6 @@ $(function() {
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
-            case 'auto-host':
-                return (event.username + ' just auto-hosted with ' + event.viewers + ' viewers!');
             case 'tip': // To be added soon.
                 break;
             case 'raid':
@@ -157,8 +155,6 @@ $(function() {
                 return 'background-color: #6441a5;';
             case 'host':
                 return 'background-color: #ed4c1c;';
-            case 'auto-host':
-                return 'background-color: #ffff00; color: #000000;';
             case 'tip': // To be added soon.
                 return 'background-color: #6441a5;';
             case 'raid':

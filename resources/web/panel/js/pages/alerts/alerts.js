@@ -295,8 +295,8 @@ $(function() {
     // Host settings button.
     $('#hostHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_host_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
-            keys: ['hostReward', 'autoHostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage', 'autoHostMessage', 'hostHistory', 'hostToggle', 'autoHostToggle']
+            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
+            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage', 'hostHistory', 'hostToggle']
         }, true, function(e) {
             helpers.getModal('host-alert', 'Host Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -319,19 +319,6 @@ $(function() {
                 // Appen the reward box
                 .append(helpers.getInputGroup('host-reward', 'number', 'Host Reward', '', e.hostReward,
                     'Reward given to the user when they hosts to the channel.'))))
-            // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Auto-Host Settings', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for normal hosts
-                .append(helpers.getDropdownGroup('autohost-toggle', 'Enable Auto-Host Alerts', (e.autoHostToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone auto-hosts the channel.'))
-                // Append message box for the message
-                .append(helpers.getTextAreaGroup('autohost-msg', 'text', 'Auto-Host Message', '', e.autoHostMessage,
-                    'Message said when someone auto-hosts the channel. Tags: (name), (alert), (playsound), (reward), and (viewers)', false))
-                // Appen the reward box
-                .append(helpers.getInputGroup('autohost-reward', 'number', 'Auto-Host Reward', '', e.autoHostReward,
-                    'Reward given to the user when they auto-hosts the channel.'))))
             // Append third collapsible accordion.
             .append(helpers.getCollapsibleAccordion('main-3', 'Extra Settings', $('<form/>', {
                     'role': 'form'
@@ -349,9 +336,6 @@ $(function() {
                 let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
                     hostMsg = $('#host-msg'),
                     hostReward = $('#host-reward'),
-                    autoHostToggle = $('#autohost-toggle').find(':selected').text() === 'Yes',
-                    autoHostMsg = $('#autohost-msg'),
-                    autoHostReward = $('#autohost-reward'),
                     hostHistory = $('#host-history').find(':selected').text() === 'Yes',
                     hostMinPoints = $('#host-minpoint'),
                     hostMinAlert = $('#host-minalert');
@@ -360,19 +344,16 @@ $(function() {
                 switch (false) {
                     case helpers.handleInputString(hostMsg):
                     case helpers.handleInputNumber(hostReward, 0):
-                    case helpers.handleInputString(autoHostMsg):
-                    case helpers.handleInputNumber(autoHostReward, 0):
                     case helpers.handleInputNumber(hostMinPoints, 0):
                     case helpers.handleInputNumber(hostMinAlert, 0):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_host_settings', {
-                            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings',
-                                'settings', 'settings'],
-                            keys: ['hostReward', 'autoHostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage',
-                                'autoHostMessage', 'hostHistory', 'hostToggle', 'autoHostToggle'],
-                            values: [hostReward.val(), autoHostReward.val(), hostMinPoints.val(), hostMinAlert.val(),
-                                hostMsg.val(), autoHostMsg.val(), hostHistory, hostToggle, autoHostToggle]
+                            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
+                            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage',
+                                'hostHistory', 'hostToggle'],
+                            values: [hostReward.val(), hostMinPoints.val(), hostMinAlert.val(),
+                                hostMsg.val(), hostHistory, hostToggle]
                         }, function() {
                             socket.sendCommand('alerts_update_host_settings_cmd', 'reloadhost', function() {
                                 // Close the modal.

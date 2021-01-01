@@ -142,18 +142,6 @@
 		});
 	});
 
-	/*
-     * @event twitchAutoHosted
-     */
-    $.bind('twitchAutoHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Auto-Host', {
-			'username': event.getHoster(),
-			'viewers' : event.getUsers(),
-			'date'    : $.systemTime(),
-			'isAuto'  : true
-		});
-    });
-
     /*
      * @event twitchHosted
      */
