@@ -23,7 +23,6 @@ import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
-import com.gmt2001.datastore.IniStore;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.httpwsserver.HTTPWSServer;
@@ -471,9 +470,7 @@ public final class PhantomBot implements Listener {
         random = new SecureRandom();
 
         /* Load the datastore */
-        if (dataStoreType.equalsIgnoreCase("inistore")) {
-            dataStore = IniStore.instance(dataStoreConfig);
-        } else if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
+        if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
             if (this.mySqlPort.isEmpty()) {
                 this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false&user=" + this.mySqlUser + "&password=" + this.mySqlPass;
             } else {
@@ -488,9 +485,7 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitError();
             }
             /* Convert to MySql */
-            if (IniStore.hasDatabase(dataStoreConfig) && IniStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
-                DataStoreConverter.convertDataStore(MySQLStore.instance(), IniStore.instance());
-            } else if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
+            if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
         } else if (dataStoreType.equalsIgnoreCase("h2store")) {
@@ -507,11 +502,6 @@ public final class PhantomBot implements Listener {
         } else {
             dataStoreType = "sqlite3store";
             dataStore = SqliteStore.instance(dataStoreConfig);
-
-            /* Convert the inistore to sqlite if the inistore exists and the db is empty */
-            if (IniStore.hasDatabase(dataStoreConfig) && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0) {
-                DataStoreConverter.convertDataStore(SqliteStore.instance(), IniStore.instance());
-            }
 
             /* Handle index operations. */
             com.gmt2001.Console.debug.println("Checking database indexes, please wait...");
