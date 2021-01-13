@@ -520,6 +520,8 @@ public final class PhantomBot implements Listener {
         /* Validate the chat OAUTH token. */
         TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
 
+        TwitchValidate.instance().checkOAuthInconsistencies(this.botName);
+
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);

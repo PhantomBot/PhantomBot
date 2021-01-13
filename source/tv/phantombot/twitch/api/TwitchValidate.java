@@ -275,6 +275,22 @@ public class TwitchValidate {
         return this.useridT;
     }
 
+    public void checkOAuthInconsistencies(String botName) {
+        if (this.hasAPIScope("chat:edit") && !this.hasChatScope("chat:edit")) {
+            com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit but API (apioauth) does. OAuth tokens may be reversed");
+        } else if (!this.hasChatScope("chat:edit")) {
+            com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit. Bot may be unable to respond");
+        } else if (!this.hasChatScope("channel:moderate")) {
+            com.gmt2001.Console.warn.println("CHAT (oauth) does not have channel:moderate. Bot may be unable to purge/timeout/ban");
+        }
+
+        if (this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName)){
+            com.gmt2001.Console.warn.print("CHAT (oauth) is not logged in as " + botName + " but API (apioauth) is. OAuth tokens may be reversed");
+        } else if (!this.getChatLogin().equalsIgnoreCase(botName)){
+            com.gmt2001.Console.warn.print("CHAT (oauth) is not logged in as " + botName + ". OAuth token may be under the wrong login");
+        }
+    }
+
     /**
      * Runnable to push the validation checks to the background so as not to block the operation of the bot at start up.
      */
