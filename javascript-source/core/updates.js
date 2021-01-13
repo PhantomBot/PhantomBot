@@ -555,11 +555,11 @@
 
         $.inidb.RemoveFile('quotes');
 
-        
+
         for (i in temp) {
             $.inidb.set('quotes', i, temp[i]);
         }
-        
+
         $.inidb.SaveAll(true);
 
         $.inidb.del('modules', './handlers/discordHandler.js');
@@ -644,7 +644,7 @@
         var keys = $.inidb.GetKeyList('points', ''),
             i;
 
-        
+
         for (i in keys) {
             if (keys[i].match(/[A-Z]/)) {
                 if ($.inidb.get('points', keys[i]) == null) {
@@ -672,7 +672,7 @@
                 $.consoleLn('[permission] [remove] ' + keys[i]);
             }
         }
-        
+
         $.inidb.SaveAll(true);
 
         $.consoleLn('PhantomBot update 2.3.6b completed!');
@@ -932,6 +932,33 @@
         $.inidb.set('updates', 'installedv3.3.6', 'true');
     }
 
+    /* version 3.4.1 updates */
+    if (!$.inidb.exists('updates', 'installedv3.4.1') || $.inidb.get('updates', 'installedv3.4.1') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.4.1 updates...');
+
+        var keys = $.inidb.GetKeyList('keywords', ''),
+        i,
+        coolkey,
+        json;
+
+        for (i = 0; i < keys.length; i++) {
+            json = JSON.parse($.inidb.get('keywords', keys[i]));
+
+            if (json.isCaseSensitive) {
+                coolkey = $.inidb.get('coolkey', $.jsString(json.keyword).toLowerCase());
+                $.inidb.del('coolkey', $.jsString(json.keyword).toLowerCase());
+                $.inidb.set('coolkey', json.keyword, coolkey);
+            } else {
+                json.keyword = $.jsString(json.keyword).toLowerCase();
+                $.inidb.del('keywords', keys[i]);
+                $.inidb.set('keywords', json.keyword, JSON.stringify(json));
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.4.1 completed!');
+        $.inidb.set('updates', 'installedv3.4.1', 'true');
+    }
+
     /**
      * @function getTableContents
      * @param {string} tableName
@@ -981,11 +1008,11 @@
     function restoreTableContents(tableName, contents) {
         var i;
 
-        
+
         for (i in contents) {
             $.inidb.set(tableName, i, contents[i]);
         }
-        
+
         $.inidb.SaveAll(true);
     }
 })();
