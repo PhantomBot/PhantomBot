@@ -86,7 +86,6 @@
                 var str = '',
                   caseAdjustedMessageParts = messageParts;
                 if (!json.isCaseSensitive) {
-                    json.keyword = json.keyword.toLowerCase();
                     caseAdjustedMessageParts = messagePartsLower;
                 }
                 for (var idx = 0; idx < caseAdjustedMessageParts.length; idx++) {
@@ -139,10 +138,10 @@
                         } else if (args[i].equalsIgnoreCase('--case-sensitive')) {
                             isCaseSensitive = true;
                         } else {
-                            keyword = args[i] + '';
+                            keyword = $.jsString(args[i]);
                         }
                     } else {
-                        response = args.splice(i).join(' ');
+                        response = $.jsString(args.splice(i).join(' '));
                         break;
                     }
                 }
@@ -150,6 +149,10 @@
                 if (response == null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
                     return;
+                }
+
+                if (!isCaseSensitive) {
+                    keyword = keyword.toLowerCase();
                 }
 
                 var json = JSON.stringify({
@@ -171,12 +174,10 @@
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('keywords', subAction.toLowerCase())) {
+                } else if (!$.inidb.exists('keywords', subAction)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
                     return;
                 }
-
-                subAction = args[1].toLowerCase();
 
                 $.inidb.del('keywords', subAction);
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.removed', subAction));
@@ -190,21 +191,21 @@
                 if (subAction === undefined || isNaN(parseInt(args[2]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.cooldown.usage'));
                     return;
-                } else if (!$.inidb.exists('keywords', subAction.toLowerCase())) {
+                } else if (!$.inidb.exists('keywords', subAction)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.404'));
                     return;
                 }
 
                 if (args[2] === -1) {
-                    $.inidb.del('coolkey', subAction.toLowerCase());
+                    $.inidb.del('coolkey', subAction);
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.cooldown.removed', subAction));
-                    $.coolDownKeywords.clear(subAction.toLowerCase());
+                    $.coolDownKeywords.clear(subAction);
                     return;
                 }
 
-                $.inidb.set('coolkey', subAction.toLowerCase(), parseInt(args[2]));
+                $.inidb.set('coolkey', subAction, parseInt(args[2]));
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.cooldown.set', subAction, args[2]));
-                $.coolDownKeywords.clear(subAction.toLowerCase());
+                $.coolDownKeywords.clear(subAction);
             }
         }
     });

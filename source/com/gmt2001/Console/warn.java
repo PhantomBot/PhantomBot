@@ -35,7 +35,7 @@ public final class warn {
         stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        System.out.print("[" + logTimestamp.log() + "] [INFO] " + o);
+        System.out.print("[" + logTimestamp.log() + "] [WARN] " + o);
     }
 
     public static void println() {
@@ -44,7 +44,7 @@ public final class warn {
 
     public static void printlnRhino(Object o) {
         // Do not write to a log file as the JS Rhino files already do this. //
-        System.out.println("[" + logTimestamp.log() + "] [INFO] " + o);
+        System.out.println("[" + logTimestamp.log() + "] [WARN] " + o);
     }
 
     public static void println(Object o) {
@@ -56,7 +56,7 @@ public final class warn {
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
-        System.out.println("[" + logTimestamp.log() + "] [INFO] " + stackInfo + o.toString());
+        System.out.println("[" + logTimestamp.log() + "] [WARN] " + stackInfo + o.toString());
     }
 
     public static void println(Object o, Boolean logOnly) {
@@ -69,7 +69,7 @@ public final class warn {
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
         if (!logOnly) {
-            System.out.println("[" + logTimestamp.log() + "] [INFO] " + stackInfo + o.toString());
+            System.out.println("[" + logTimestamp.log() + "] [WARN] " + stackInfo + o.toString());
         }
     }
 
