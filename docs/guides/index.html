@@ -199,10 +199,10 @@
                 md.use(window.iframify);
                 md.use(function(md) {
                     md.renderer.rules.heading_open = function(tokens, idx) {
-                        return '<h' + tokens[idx].hLevel + ' id=' + window.markdownToc.slugify(tokens[idx + 1].content) + '>';
+                        return '<h' + tokens[idx].hLevel + ' id=' + slugify(tokens[idx + 1].content) + '>';
                     };
                     md.renderer.rules.heading_close = function(tokens, idx) {
-                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + window.markdownToc.slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
+                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
                     };
                 });
                 md.use(function(md) {
@@ -231,6 +231,13 @@
                         return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
                     };
                 });
+                
+                function slugify(content) {
+                    content = content.replace(/youtube/ig, 'you-tube').replace(/vimeo/ig, 'vim-eo').replace(/vine/ig, 'vi-ne');
+                    content = content.replace(/videopress/ig, 'video-press').replace(/wistia/ig, 'wis-tia');
+                    let slug = window.markdownToc.slugify(content);
+                    return encodeURIComponent(slug);
+                }
 
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
@@ -307,6 +314,9 @@
                         $.ajax(window.location.origin + window.location.pathname + path + '.md', {
                             'dataType': 'text',
                             'success': function (data) {
+                                data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
+                                data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
+                                data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
                                 data = window.markdownToc.insert(data, {
                                     filter: function(str, ele, arr) {
                                         ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
@@ -314,6 +324,7 @@
                                     },
                                     linkify: function(token, anchor, slug, opts) {
                                         let newhash = 'guide=' + path;
+                                        slug = slugify(token.content);
                                         for (let x in hashmap) {
                                             if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
                                                 if (newhash.length > 0) {
@@ -330,6 +341,9 @@
                                     }
                                 });
                                 data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
+                                data = data.replace(/<!-- faketoc -->/ig, '<!-- toc -->').replace(/<!-- faketocstop -->/ig, '<!-- tocstop -->');
+                                data = data.replace(/<!-- notoc # -->/ig, '#').replace(/<!-- notoc ## -->/ig, '##').replace(/<!-- notoc ### -->/ig, '###');
+                                data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
                                 window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');

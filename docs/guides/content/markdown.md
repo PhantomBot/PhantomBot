@@ -6,6 +6,8 @@ The following Markdown is supported for PhantomBot Guides
 
 <!-- toc -->
 
+<!-- tocstop -->
+
 &nbsp;
 
 #### Italic
@@ -317,9 +319,9 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 
 **Output:**
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
+<!-- notoc # --> Heading 1
+<!-- notoc ## --> Heading 2
+<!-- notoc ### --> Heading 3
+<!-- notoc #### --> Heading 4
+<!-- notoc ##### --> Heading 5
+<!-- notoc ###### --> Heading 6
