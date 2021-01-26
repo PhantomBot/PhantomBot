@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@
             currentSet = String(defaultSets.getInt(i));
             jsonArray = ffzEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
             for (j = 0; j < jsonArray.length(); j++) {
-                emote = jsonArray.getJSONObject(j).getString('name').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
+                emote = $.replace($.replace($.replace($.replace($.replace(jsonArray.getJSONObject(j).getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
                 emoteRegExp = '\\b' + emote + '\\b';
@@ -99,7 +99,7 @@
             currentSet = String(ffzLocalEmotes.getJSONObject('room').getInt('set'));
             jsonArray = ffzLocalEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
             for (i = 0; i < jsonArray.length(); i++) {
-                emote = jsonArray.getJSONObject(i).getString('name').replace('(', '\\(').replace(')', '\\)').replace('\'', '\\\'').replace('[', '\\[').replace(']', '\\]');
+                emote = $.replace($.replace($.replace($.replace($.replace(jsonArray.getJSONObject(j).getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
                 emoteRegExp = '\\b' + emote + '\\b';

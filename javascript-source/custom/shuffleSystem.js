@@ -22,7 +22,7 @@
 (function () {
     var entries = [],
             entered = [],
-            keyword = '',
+            keyword = 'join',
             timerTime = 0,
             status = false,
             sendMessages = $.getSetIniDbBoolean('shuffleSettings', 'raffleMSGToggle', false),
@@ -263,9 +263,18 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
-            enter(event.getSender(), event.getTags());
+        if (event.getMessage().equalsIgnoreCase(keyword)) {
+            if (status === true) {
+                enter(event.getSender(), event.getTags());
+            } else {
+                $.say($.whisperPrefix(event.getSender()) + $.lang.get('shufflesystem.no.active.shuffle'));
+
+            }
         }
+//
+//        if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
+//            enter(event.getSender(), event.getTags());
+//        }
     });
 
     /**

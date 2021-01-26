@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ public class HttpOptionalSslHandler extends OptionalSslHandler {
     
     @Override
     protected ChannelHandler newNonSslHandler(ChannelHandlerContext context) {
-        context.pipeline().replace("pagehandler", "httpsslredirect", new HttpSslRedirectHandler());
-        context.pipeline().replace("wshandler", "wssslerror", new WsSslErrorHandler());
+        context.pipeline().addBefore("pagehandler", "httpsslredirect", new HttpSslRedirectHandler());
+        context.pipeline().addBefore("wshandler", "wssslerror", new WsSslErrorHandler());
         return null;
     }
 }

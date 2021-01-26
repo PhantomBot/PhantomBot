@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,9 +55,8 @@
             connectedPlayerClient = null,
             /* @type {BotPlayList} */
             currentPlaylist = null,
-            shuffleBuffer = $.getSetIniDbNumber('shuffleSettings', 'songbuffer', 2);
-
-
+            shuffleBuffer = $.getSetIniDbNumber('shuffleSettings', 'songbuffer', 2),
+            restrictedMode = $.getSetIniDbBoolean('ytSettings', 'restrictedMode', false);
     /**
      * @function reloadyt
      */
@@ -152,8 +151,7 @@
                 license = 0,
                 embeddable = 0,
                 bumped = false,
-                shuffle = false,
-                regionCode = '';
+                shuffle = false;
 
         this.found = false;
 
@@ -338,14 +336,17 @@
 
             videoId = data[0];
             videoTitle = data[1];
-            regionCode = data[3];
+            channelId = data[3];
+
+            var channelAllowed = $.inidb.exists('ytplayer_allowedchannels', channelId);
+            $.log.file('youtube-player', "Restriction mode: " + restrictedMode + ", Allowed Channel: " + channelAllowed);
+
+            if (restrictedMode && !($.inidb.exists('ytplayer_allowedchannels', channelId))) {
+                throw "Song request is not from an allowed channel";
+            }
 
             if (videoTitle.equalsIgnoreCase('video marked private') || videoTitle.equalsIgnoreCase('no search results found')) {
                 throw videoTitle;
-            }
-
-            if (!regionCode.equalsIgnoreCase('US')) {
-                throw 'Video is not available in the US';
             }
 
             this.getVideoLength();
@@ -1195,31 +1196,29 @@
             var jsonStatus = {};
             if (currentPlaylist) {
                 var requestStatus = "Closed",
-                        statusMode = "Sequential + Bumps",
-                        playCount = "",
-                        runtime = "";
+                        statusMode = "Sequential",
+                        playCount = "";
 
                 if (songRequestsEnabled) {
                     requestStatus = "Open";
                 }
 
                 if (shuffleQueue) {
-                    statusMode = "Shuffle + Bumps";
+                    statusMode = "Shuffle";
                 }
-
 
                 if (currentPlaylist.getSongRequestHistory() != null) {
                     playCount = playCount += currentPlaylist.getSongRequestHistory().length;
                 }
-
-                runtime = $.secondsToTimestamp(getQueueRuntime());
 
                 jsonStatus['queueStatus'] = {
                     "status": requestStatus,
                     "mode": statusMode,
                     "totalSongs": currentPlaylist.getRequestsCount(),
                     "playedSongs": playCount,
-                    "totalTime": runtime
+                    "totalTime": $.secondsToTimestamp(getQueueRuntime()),
+                    "channelPointsBumpsLeft": $.getChannelPointsBumpCount(),
+                    "beanBumpsLeft": $.getBeanBumpCount()
                 };
             } else {
                 jsonStatus['queueStatus'] = {
@@ -1227,12 +1226,14 @@
                     "mode": "Off",
                     "totalSongs": "",
                     "playedSongs": "",
-                    "totalTime": ""
+                    "totalTime": "",
+                    "channelPointsBumpsLeft": "",
+                    "beanBumpsLeft": ""
                 };
             }
 
             var jsonString = JSON.stringify(jsonStatus);
-            $.log.file('youtube-player', 'Queue status JSON - ' + jsonString);
+            //  $.log.file('youtube-player', 'Queue status JSON - ' + jsonString);
 
             client.sendJSONToAll(jsonString);
 
@@ -2226,7 +2227,6 @@
                     $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.autobump.' + pendingBump));
 
                     $.removePendingBump(user);
-                    $.incrementBumpCount(user);
                 } else {
                     if (!shuffleQueue) {
                         for (i = 0; i < currentPlaylist.getRequestsCount() - 1; i++) {
@@ -2485,6 +2485,27 @@
             connectedPlayerClient.pushSongList();
             connectedPlayerClient.pushQueueInformation();
         }
+
+        if (command.equalsIgnoreCase('restrictionmode')) {
+            if (args[0] == null) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.restrictedmode.usage'));
+            } else {
+                if (args[0].equalsIgnoreCase("enable")) {
+                    restrictedMode = true;
+                    $.setIniDbBoolean('ytSettings', 'restrictedMode', true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.restrictedmode.status.' + restrictedMode));
+                } else if (args[0].equalsIgnoreCase("disable")) {
+                    restrictedMode = false;
+                    $.setIniDbBoolean('ytSettings', 'restrictedMode', false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.restrictedmode.status.' + restrictedMode));
+                } else if (args[0].equalsIgnoreCase('status')) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.restrictedmode.status.' + restrictedMode));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.restrictedmode.usage'));
+                }
+            }
+
+        }
     });
 
     function isRequestAllowed(user, request) {
@@ -2589,6 +2610,8 @@
             }
         }
 
+        $.log.file('youtube-player', 'Position in the queue to bump to: ' + bumpPosition);
+
         return bumpPosition;
     }
 
@@ -2653,8 +2676,16 @@
         $.registerChatCommand('./systems/youtubePlayer.js', "clearhistory", 2);
         $.registerChatCommand('./systems/youtubePlayer.js', "save", 2);
 
+        $.registerChatCommand('./systems/youtubePlayer.js', 'restrictionmode', 2);
+        $.registerChatSubcommand('restrictionmode', 'status', 2);
+
+
         // Initialize user request played counter
         // TODO Move to startstream, move to a local variable and out of the DB
         $.inidb.RemoveFile("songcounts");
+
+        // Ensure the tables used by the UI pages are available, even if we haven't added data yet
+        $.inidb.AddFile("ytplayer_allowedchannels");
+        $.inidb.AddFile("sotn_winners");
     });
 })();

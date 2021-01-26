@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2020 phantom.bot
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +21,7 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="description" content="PhantomBot is an actively developed open source interactive Twitch bot with a vibrant community that provides entertainment and moderation for your channel, allowing you to focus on what matters the most to you - your game and your viewers.">
         <meta name="keywords" content="PhantomBot, Bot, Twitch, Free, Twitch Chat, Chat Bot, Twitch Chat Bot, Chat, Custom, Java, JavaScript, Windows, Linux, Mac">
-        <meta name="author" content="phantombot, phantom.bot">
+        <meta name="author" content="phantombot, phantombot.github.io/PhantomBot">
         <!-- Favicon -->
         <link rel="icon" href="../favicon.ico" type="image/x-icon">
         <!-- Bootstrap 3.3.7 css -->
@@ -35,6 +35,48 @@
         <link rel="stylesheet" href="../common/css/pace.min.css" />
 		 <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
+        <style>
+            #back2Top {
+                width: 40px;
+                line-height: 40px;
+                overflow: hidden;
+                z-index: 999;
+                display: none;
+                cursor: pointer;
+                -moz-transform: rotate(270deg);
+                -webkit-transform: rotate(270deg);
+                -o-transform: rotate(270deg);
+                -ms-transform: rotate(270deg);
+                transform: rotate(270deg);
+                position: fixed;
+                bottom: 50px;
+                right: 0;
+                background-color: #191919;
+                color: #ccc;
+                text-align: center;
+                font-size: 30px;
+                text-decoration: none;
+                border-radius: 8px 8px 0px 0px;
+            }
+            #back2Top:hover {
+                color: #aaa;
+            }
+            #copy-box {
+                position: absolute;
+                top: 0px;
+                margin-left: 50px;
+                z-index: 100;
+                width: 420px;
+                border-radius: 3px;
+            }
+            #copy-box-input {
+                width: 400px;
+            }
+            .label-copy {
+                border-radius: 3px;
+                cursor: pointer;
+            }
+        </style>
     </head>
 
     <body class="skin-purple">
@@ -76,6 +118,18 @@
             <!-- Main content -->
             <aside class="content-wrapper">
                 <div id="page-content">
+                    <div id="copy-box" style="display: none;" class="box box-solid box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Jump Link</h3>
+                            <div class="box-tools pull-right">
+                                <span class="label label-primary label-copy" onclick="$('#copy-box-input').focus(); $('#copy-box-input').select(); document.execCommand('copy');">Copy</span>
+                                <span class="label label-danger label-copy" onclick="$('#copy-box').hide();">X</span>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <input type="text" id="copy-box-input" readonly="readonly" value="">
+                        </div>
+                    </div>
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body" id="content-pane">
@@ -85,6 +139,7 @@
                     </div>
                     <!-- /.box -->
                 </div>
+                <div id="back2Top" title="Back to top">&#10148;</div>
             </aside>
             <footer class="main-footer">
                 <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
@@ -100,11 +155,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
+        <script src="markdown-toc.js"></script>
         <script>
             'use strict';
             $(function () {
                 var lastPage = 'null';
+                window.renderdata = '';
                 const { Remarkable, linkify, utils } = window.remarkable;
+                var hashmap = [];
                 var md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
                     xhtmlOut: false, // Use '/' to close single tags (<br />)
@@ -139,6 +197,40 @@
                 });
                 md.use(linkify);
                 md.use(window.iframify);
+                md.use(function(md) {
+                    md.renderer.rules.heading_open = function(tokens, idx) {
+                        return '<h' + tokens[idx].hLevel + ' id=' + window.markdownToc.slugify(tokens[idx + 1].content) + '>';
+                    };
+                    md.renderer.rules.heading_close = function(tokens, idx) {
+                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + window.markdownToc.slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
+                    };
+                });
+                md.use(function(md) {
+                    let footnoterefs = {};
+                    md.renderer.rules.footnote_ref = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        if (!footnoterefs.hasOwnProperty(n)) {
+                            footnoterefs[n] = 0;
+                        }
+                        footnoterefs[n]++;
+                        return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+                    };
+                    md.renderer.rules.footnote_anchor = function(tokens, idx) {
+                        var n = Number(tokens[idx].id + 1).toString();
+                        if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
+                            return '';
+                        }
+                        var id = 'fnref' + n;
+                        if (tokens[idx].subId > 0) {
+                            id += ':' + tokens[idx].subId;
+                        }
+                        return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
+                    };
+                });
 
                 function loadMenuRecursive(path, tree) {
                     $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
@@ -215,6 +307,30 @@
                         $.ajax(window.location.origin + window.location.pathname + path + '.md', {
                             'dataType': 'text',
                             'success': function (data) {
+                                data = window.markdownToc.insert(data, {
+                                    filter: function(str, ele, arr) {
+                                        ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
+                                        return true;
+                                    },
+                                    linkify: function(token, anchor, slug, opts) {
+                                        let newhash = 'guide=' + path;
+                                        for (let x in hashmap) {
+                                            if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
+                                                if (newhash.length > 0) {
+                                                    newhash = newhash + '&';
+                                                }
+
+                                                newhash = newhash + x + '=' + hashmap[x];
+                                            }
+                                        }
+
+                                        let href = '#' + newhash + (newhash.length > 0 ? '&' : '') + 'jumpto=' + slug;
+                                        token.content = '[' + anchor + '](' + href + ')';
+                                        return token;
+                                    }
+                                });
+                                data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
+                                window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
@@ -222,22 +338,26 @@
                                 lastPage = path.replace(/\//g, '-');
                                 window.location.hash = 'guide=' + path;
                                 $('#' + lastPage + '-menuitem').addClass('active');
+                                jumpToHeader();
                             }
                         });
                     });
                 }
 
-                function loadURLGuide() {
+                function parseHashMap() {
                     var hash = window.location.hash.substr(1);
                     var kvs = hash.split('&');
-                    var hashmap = [];
                     var spl;
+
+                    hashmap = [];
 
                     for (var i = 0; i < kvs.length; i++) {
                         spl = kvs[i].split('=', 2);
                         hashmap[spl[0]] = spl[1];
                     }
+                }
 
+                function loadURLGuide() {
                     if (hashmap.hasOwnProperty('guide')) {
                         loadGuide(hashmap['guide']);
                         return true;
@@ -246,15 +366,67 @@
                     return false;
                 }
 
+                function jumpToTop() {
+                    let newhash = '';
+                    for (let x in hashmap) {
+                        if (x !== 'jumpto') {
+                            if (newhash.length > 0) {
+                                newhash = newhash + '&';
+                            }
+
+                            newhash = newhash + x + '=' + hashmap[x];
+                        }
+                    }
+
+                    window.location.hash = '#' + (newhash.length > 0 ? '' : 'jumpto=top' + new Date().getTime()) + newhash;
+                    $('header')[0].scrollIntoView({behavior: 'smooth'});
+                }
+
+                function jumpToHeader() {
+                    if (hashmap.hasOwnProperty('jumpto')) {
+                        jumpTo(hashmap['jumpto']);
+                    }
+                }
+
+                function jumpTo(slug) {
+                    let elm = $('#' + slug);
+                    if (elm.length > 0) {
+                        elm[0].scrollIntoView({behavior: 'smooth'});
+                    }
+                }
+
                 $(document).ajaxStart(function() { Pace.restart(); });
 
                 loadMenuRecursive('content/', '');
 
+                parseHashMap();
                 if (!loadURLGuide()) {
                     loadGuide('content/guides');
                 }
 
                 window.loadGuide = loadGuide;
+
+                $(window).bind('hashchange', function() {
+                    parseHashMap();
+                    jumpToHeader();
+                });
+
+                $(window).scroll(function() {
+                    var height = $(window).scrollTop();
+                    if (height > 100) {
+                        $('#back2Top').fadeIn();
+                    } else {
+                        $('#back2Top').fadeOut();
+                    }
+                });
+                $(document).ready(function() {
+                    $("#back2Top").click(function(event) {
+                        event.preventDefault();
+                        jumpToTop();
+                        return false;
+                    });
+
+                });
 
                 $('[data-toggle="tooltip"]').tooltip();
             });

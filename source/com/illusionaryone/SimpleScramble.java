@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,8 @@
 
 package com.illusionaryone;
 
-import java.util.Base64;
 import java.io.UnsupportedEncodingException;
-import java.lang.IllegalArgumentException;
+import java.util.Base64;
 
 public class SimpleScramble {
     private String simpleSalt = "%M+JPH~b#q9$yV+'atwq'|2s*A6?=h";

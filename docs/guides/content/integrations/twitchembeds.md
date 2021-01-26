@@ -5,6 +5,7 @@ Due to changes by Twitch, the chat and live feed panel can no longer be displaye
 To make it work:
 - SSL certificate required
 - URL must not contain a port number
+- URL must not be an IP Address
 
 NOTE: If you access your panel at _localhost:25000_, the port number requirement does not apply.
 
@@ -30,16 +31,11 @@ The bot will automatically generate and renew this certificate for you as long a
 
 Since the SSL certificate is self-signed, your browser/OS will not trust it by default.
 
-##### OBS
+##### OBS/XSplit
 
-**NOTE:** These instructions are written for Windows, but the idea of adding the extra launch parameter remains the same for other OSes.
+As of PhantomBot v3.3.5, all browser-source endpoints, such as the death counter and alerts, now support being accessed without SSL, to bypass self-signed SSL certificate issues with OBS and XSplit.
 
-1. Open a File Explorer window and navigate to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\OBS Studio (Or whichever shortcut you use to launch OBS Studio)
-2. Right-click the shortcut and hit Properties
-3. In the Target box, add  --ignore-certificate-errors to the end
-So it should look similar to "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --ignore-certificate-errors (NOTE: The positioning of the quotes " is very important)
-
-**NOTE:** If you then use that shortcut to launch OBS Studio, it should disable validity checking of SSL Certificates, with the obvious downside that it won't protect you from other websites having bad or malicious SSL certificates either.
+Simply change the `https://` part at the beginning of the browser source URL to `http://`
 
 ##### Windows and Linux
 
@@ -81,11 +77,13 @@ For this method, follow the steps in Method 1 for setting up and trusting the se
 
 After setting up the SSL certificate, change (or add, if this line is missing) the `baseport=` in your _botlogin.txt_ to a value of 443.
 
-Once you restart the bot you can access the panel without using a port number (eg. `https://192.168.0.2`).
+Once you restart the bot you can access the panel without using a port number (eg. `https://bot.my.domain`).
 
 **NOTE:** This method is not compatible with bots running on servers or other devices that already have a webserver running on them with SSL enabled.
 
 **NOTE:** You may have to run the bot as root to enable it to bind to port 443.
+
+**NOTE:** This method does not work when accessing the bot by IP address. A domain, sub-domain, or hostname is required.
 
 &nbsp;
 
@@ -127,3 +125,39 @@ server {
 }
 ```
 Edit the corresponding fields as you needs, `<servername>`, and `<domain>`.
+
+
+#### Apache2.4 Sample Config
+
+**NOTE:** Proxying with Apache requires all of the following Apache modules, otherwise the panel will not work: mod_proxy, mod_proxy_http, mod_proxy_wstunnel
+
+```
+<VirtualHost <servername>:80>
+    ServerName <servername>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    RewriteEngine on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName <servername>
+
+    SSLEngine On
+    SSLCertificateFile    <path>
+    SSLCertificateKeyFile <path>
+    SSLCertificateChainFile <path>
+    
+    ProxyRequests On
+    ProxyPass "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPassReverse "/ws/" "ws://127.0.0.1:25000/ws/"
+    ProxyPass "/" "http://127.0.0.1:25000/"
+    ProxyPassReverse "/" "http://127.0.0.1:25000/"
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Edit the corresponding fields as you needs, `<servername>` and `<path>`.

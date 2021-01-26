@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ public class TwitchValidate {
     }
 
     /**
-     * Method that handles data for Vaidation.
+     * Method that handles data for Validation.
      *
      * @param type
      * @param data
@@ -294,7 +294,7 @@ public class TwitchValidate {
         public void run() {
             try {
                 JSONObject requestObj = handleRequest(oAuthToken);
-                com.gmt2001.Console.debug.println(requestObj.toString());
+                com.gmt2001.Console.debug.println(type + requestObj.toString());
 
                 if (requestObj.has("message") && requestObj.getString("message").equals("invalid access token")) {
                     com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "

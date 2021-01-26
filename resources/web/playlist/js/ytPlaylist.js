@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,7 +252,9 @@ function handleQueueInfo(d) {
     html += '<div id="dataSummaryOrder" class="dataSummary"> ' + d['queueStatus']['mode'] + ' </div>';
     html += '<div id="dataSummaryNoPlayed" class="dataSummary"> ' + d['queueStatus']['playedSongs'] + ' </div>';
     html += '<div id="dataSummaryNoQueued" class="dataSummary"> ' + d['queueStatus']['totalSongs'] + ' </div>';
-    html += '<div id="dataSummaryLength" class="dataSummary endCell roundBR"> ' + d['queueStatus']['totalTime'] + ' </div>';
+    html += '<div id="dataSummaryLength" class="dataSummary"> ' + d['queueStatus']['totalTime'] + ' </div>';
+    html += '<div id="dataSummaryPointsBumps" class="dataSummary"> ' + d['queueStatus']['channelPointsBumpsLeft'] + '</div>';
+    html += '<div id="dataSummaryBeanBumps" class="dataSummary endCell roundBR"> ' + d['queueStatus']['beanBumpsLeft'] + '</div>';
 
     $('#queueInformationHtml').html(html);
 }
@@ -293,5 +295,3 @@ function refreshData() {
 
 }
 setInterval(refreshData, 20000);
-
-

@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import com.illusionaryone.FrankerZAPIv1;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,8 +33,8 @@ import tv.phantombot.event.emotes.EmotesGetEvent;
 
 public class EmotesCache implements Runnable {
 
-    private static final int LOOP_SLEEP_EMOTES_DISABLED = 60;
-    private static final int LOOP_SLEEP_EMOTES_ENABLED = 60 * 60;
+    private static final long LOOP_SLEEP_EMOTES_DISABLED = 60L;
+    private static final long LOOP_SLEEP_EMOTES_ENABLED = 60L * 60L;
     private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
@@ -53,7 +52,7 @@ public class EmotesCache implements Runnable {
     private Date lastFail = new Date();
     private int numfail = 0;
     private boolean killed = false;
-    private int loopSleep = 0;
+    private long loopSleep = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private EmotesCache(String channel) {
@@ -85,7 +84,7 @@ public class EmotesCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
-        loopSleep = 600;
+        loopSleep = 600L;
 
         while (!killed) {
             try {
@@ -102,7 +101,7 @@ public class EmotesCache implements Runnable {
             }
 
             try {
-                Thread.sleep(loopSleep * 1000);
+                Thread.sleep(loopSleep * 1000L);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,16 @@
     var JFile = java.io.File,
         JFileInputStream = java.io.FileInputStream,
         JFileOutputStream = java.io.FileOutputStream,
-        fileHandles = [];
+        Paths = Packages.java.nio.file.Paths,
+        executionPath = Packages.tv.phantombot.PhantomBot.GetExecutionPath(),
+        fileHandles = [],
+        validPaths = [
+            './addons',
+            './config/audio-hooks',
+            './config/gif-alerts',
+            './logs',
+            './scripts'
+        ];
 
     /**
      * @function readFile
@@ -36,6 +45,11 @@
         var lines = [];
 
         if (!fileExists(path)) {
+            return lines;
+        }
+
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked readFile() target outside of validPaths:' + path);
             return lines;
         }
 
@@ -59,6 +73,11 @@
      * @returns {boolean}
      */
     function mkDir(path) {
+        if (invalidLocation(path)){
+            $.consoleLn('Blocked mkDir() target outside of validPaths:' + path);
+            return false;
+        }
+
         var dir = new JFile(path);
         return dir.mkdir();
     }
@@ -72,6 +91,11 @@
     function moveFile(file, path) {
         var fileO = new JFile(file),
             pathO = new JFile(path);
+
+        if (invalidLocation(file) || invalidLocation(path)) {
+            $.consoleLn('Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
+            return;
+        }
 
         if ((fileO != null && pathO != null) || (file != "" && path != "")) {
             try {
@@ -90,6 +114,11 @@
      * @param {boolean} append
      */
     function saveArray(array, path, append) {
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked saveArray() target outside of validPaths:' + path);
+            return;
+        }
+
         try {
             var fos = new JFileOutputStream(path, append),
                 ps = new java.io.PrintStream(fos),
@@ -131,6 +160,11 @@
             fos,
             ps;
 
+        if (invalidLocation(path)){
+            $.consoleLn('Blocked writeToFile() target outside of validPaths:' + path);
+            return;
+        }
+
         closeOpenFiles();
 
         if (fileHandles[path] !== undefined && append) {
@@ -160,6 +194,11 @@
      * @param {string} path
      */
     function touchFile(path) {
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked touchFile() target outside of validPaths:' + path);
+            return;
+        }
+
         try {
             var fos = new JFileOutputStream(path, true);
             fos.close();
@@ -175,6 +214,11 @@
      * @param {boolean} now
      */
     function deleteFile(path, now) {
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked deleteFile() target outside of validPaths:' + path);
+            return;
+        }
+
         try {
             var f = new JFile(path);
             if (now) {
@@ -194,6 +238,11 @@
      * @returns {boolean}
      */
     function fileExists(path) {
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked fileExists() target outside of validPaths:' + path);
+            return false;
+        }
+
         try {
             var f = new JFile(path);
             return f.exists();
@@ -210,6 +259,11 @@
      * @returns {Array}
      */
     function findFiles(directory, pattern) {
+        if (invalidLocation(directory)) {
+            $.consoleLn('Blocked findFiles() target outside of validPaths:' + directory);
+            return [];
+        }
+
         try {
             var f = new JFile(directory),
                 ret = [];
@@ -235,6 +289,11 @@
      * @returns {boolean}
      */
     function isDirectory(path) {
+        if (invalidLocation(path)) {
+            $.consoleLn('Blocked isDirectory() target outside of validPaths:' + path);
+            return false;
+        }
+
         try {
             var f = new JFile(path);
             return f.isDirectory();
@@ -250,8 +309,25 @@
      * @returns {Number}
      */
     function findSize(file) {
+        if (invalidLocation(file)) {
+            $.consoleLn('Blocked findSize() target outside of validPaths:' + file);
+            return 0;
+        }
+
         var fileO = new JFile(file);
         return fileO.length();
+    }
+
+    function invalidLocation(path) {
+        var p = Paths.get(path);
+
+        for (var x in validPaths) {
+            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, validPaths[x]))) {
+                return false;
+            }
+        }
+
+       return true;
     }
 
     /** Export functions to API */

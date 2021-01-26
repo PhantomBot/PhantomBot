@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,37 +17,29 @@
 
 package com.scaniatv;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-
 import java.util.ArrayList;
 import java.util.Collection;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-
-import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.script.Script;
-
 import tv.phantombot.script.ScriptManager;
 
 public final class LangFileUpdater {
@@ -196,7 +188,6 @@ public final class LangFileUpdater {
                     while ((c = br.read()) != -1) {
                         sb.append((char)c);
                     }
-                    br.close();     
                 }
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);

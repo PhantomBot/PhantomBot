@@ -48,3 +48,5 @@ $.lang.register('shufflesystem.player.disabled', 'The music player is disabled')
 
 $.lang.register('shufflesystem.buffer.usage', 'Usage: !shuffle buffer [count]');
 $.lang.register('shufflesystem.buffer.success', 'Shuffle song buffer set to $1 songs');
+
+$.lang.register('shufflesystem.no.active.shuffle', 'There is not an active shuffle open');

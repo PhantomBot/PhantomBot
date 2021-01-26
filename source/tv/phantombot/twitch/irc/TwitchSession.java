@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,16 @@ package tv.phantombot.twitch.irc;
 
 import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import java.util.concurrent.locks.ReentrantLock;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import tv.phantombot.PhantomBot;
-
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
 public class TwitchSession extends MessageQueue {
     private static TwitchSession instance;
     private final String botName;
     private final String channelName;
-    private final String oAuth;
+    private String oAuth;
     private TwitchWSIRC twitchWSIRC;
     private final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock lock2 = new ReentrantLock();
@@ -77,6 +76,11 @@ public class TwitchSession extends MessageQueue {
      */
     public String getChannelName() {
         return this.channelName;
+    }
+
+    public void setOAuth(String oAuth) {
+        this.oAuth = oAuth;
+        twitchWSIRC.setOAuth(oAuth);
     }
 
     /**

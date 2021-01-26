@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2020 phantom.bot
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,7 +42,7 @@
             <div class="login-logo">
                 <img src="/common/images/kentodrum.png"/>
                 <br/>
-                <a href="https://phantombot.github.io/PhantomBot"><b>Kento</b>Bot</a>
+                <b>Kento</b>Bot
             </div>
 
             <div class="login-box-body">
@@ -59,6 +59,7 @@
 
                     <div class="row">
                         <div class="col-xs-4 pull-right">
+                            <input type="hidden" id="kickback" name="kickback" value="">
                             <button type="submit" id="login-button" class="btn btn-primary btn-block btn-flat">Login</button>
                         </div>
                     </div>
@@ -72,5 +73,23 @@
         <script src="/panel/vendors/jquery/jquery.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="/panel/vendors/bootstrap/js/bootstrap.min.js"></script>
+
+        <script>
+            $(function () {
+                var search = window.location.search.substr(1);
+                var kvs = search.split('&');
+                var searchmap = [];
+                var spl;
+
+                for (var i = 0; i < kvs.length; i++) {
+                    spl = kvs[i].split('=', 2);
+                    searchmap[spl[0]] = spl[1];
+                }
+
+                if (searchmap['kickback']) {
+                    $('#kickback').val(searchmap['kickback']);
+                }
+            });
+        </script>
     </body>
 </html>

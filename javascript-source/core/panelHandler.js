@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,18 +141,6 @@
 			'date'    : $.systemTime()
 		});
 	});
-
-	/*
-     * @event twitchAutoHosted
-     */
-    $.bind('twitchAutoHosted', function(event) {
-    	addObjectToArray('panelData', 'data', 'Auto-Host', {
-			'username': event.getHoster(),
-			'viewers' : event.getUsers(),
-			'date'    : $.systemTime(),
-			'isAuto'  : true
-		});
-    });
 
     /*
      * @event twitchHosted

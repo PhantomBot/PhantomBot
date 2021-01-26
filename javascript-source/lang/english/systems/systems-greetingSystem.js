@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('greetingsystem.set.autogreet.enabled', 'Auto Greeting Enabled. $1 will now greet viewers with a greeting configured.');
-$.lang.register('greetingsystem.set.autogreet.disabled', 'Auto Greeting Disabled');
+$.lang.register('greetingsystem.set.autogreet.enabled', 'Auto greeting enabled. $1 will now greet viewers with a greeting configured.');
+$.lang.register('greetingsystem.set.autogreet.disabled', 'Auto greeting disabled.');
 $.lang.register('greetingsystem.set.autogreet.noname', 'Please use the (name) tag in the default greeting.');
 $.lang.register('greetingsystem.set.default.success', 'Changed the default greeting to "$1".');
 $.lang.register('greetingsystem.set.personal.success', 'Changed your personal greeting to "$1".');

@@ -32,7 +32,9 @@
                 GIFTSUB: 4,
                 RAID: 5
             },
-            autoBumpEnabled = true;
+            autoBumpEnabled = true,
+            channelPointsRemaining = 0,
+            beanBumpsRemaining = 0;
 
     $.bind('ircChannelMessage', function (event) {
         if ($.isModv3(event.getSender()) && requireOverride === true && event.getMessage().equalsIgnoreCase("allow")) {
@@ -90,6 +92,46 @@
             return new UserBumpData(user);
         }
     }
+
+    /** Channel Points Bumps **/
+    function getChannelPointsBumpCount() {
+        return channelPointsRemaining;
+    }
+
+    function decrementChannelPointsBump() {
+        if (channelPointsRemaining != 0) {
+            channelPointsRemaining--;
+        }
+    }
+
+    function incrementChannelPointsBump() {
+        channelPointsRemaining++;
+    }
+
+    function resetChannelPointsBumps() {
+        channelPointsRemaining = 3;
+    }
+
+    /** Bean Bumps **/
+    function getBeanBumpCount() {
+        return beanBumpsRemaining;
+    }
+
+    function decrementBeanBump() {
+        if (beanBumpsRemaining != 0) {
+            beanBumpsRemaining--;
+        }
+    }
+
+    function incrementBeanBump() {
+        beanBumpsRemaining++;
+    }
+
+    function resetBeanBumps() {
+        beanBumpsRemaining = 3;
+    }
+
+    /**/
 
     function getBumpCount(user) {
         $.log.file('queue-management', 'Looking up bump count for user [' + user + ']');
@@ -304,6 +346,7 @@
             }
 
             var bumpRecipientRequest = $.getUserRequest(args[1]);
+
             if (bumpRecipientRequest == null) {
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.command.move.none', args[0]));
                 return;
@@ -385,7 +428,12 @@
         }
 
         if (command.equalsIgnoreCase('resetbumps')) {
+            resetBumps();
+        }
 
+        if (command.equalsIgnoreCase('beanbump')) {
+            // TODO Check cooldown?
+            // TODO Call StreamElements with user and redemption ID
         }
     });
 
@@ -446,6 +494,26 @@
         autoBumpEnabled = true;
     }
 
+    function loadSotnWinner() {
+        var winners = $.inidb.GetKeyList('sotn_winners', '');
+        $.log.file('queue-management', '[loadSotnWinner] - Winners: ' + winners.join());
+
+        if (winners == null || winners.length == 0) {
+            $.log.file('queue-management', '[loadSotnWinner] - No winner to load, skipping');
+            return;
+        }
+
+        var winner = $.inidb.GetString('sotn_winners', '', winners[0]);
+        $.log.file('queue-management', '[loadSotnWinner] - Winner: ' + winners[0]);
+
+        var winnerJson = JSON.parse(winner);
+
+        addPendingBump(winnerJson.winner, 'sotn');
+
+        $.log.file('queue-management', '[loadSotnWinner] - Pending bump added, removing from SOTN table');
+        $.inidb.RemoveKey('sotn_winners', '', winners[0]);
+    }
+
     $.autoBump = autoBump;
     $.getBumpData = getBumpData;
     $.bumpMethod = bumpMethod;
@@ -456,6 +524,17 @@
     $.resetBumps = resetBumps;
     $.enableAutobumps = enableAutobumps;
 
+    $.getChannelPointsBumpCount = getChannelPointsBumpCount;
+    $.decrementChannelPointsBump = decrementChannelPointsBump;
+    $.incrementChannelPointsBump = incrementChannelPointsBump;
+    $.resetChannelPointsBumps = resetChannelPointsBumps;
+
+    $.getBeanBumpCount = getBeanBumpCount;
+    $.decrementBeanBump = decrementBeanBump;
+    $.incrementBeanBump = incrementBeanBump;
+    $.resetBeanBumps = resetBeanBumps;
+
+    $.loadSotnWinner = loadSotnWinner;
 
     /**
      * @event initReady
@@ -485,5 +564,6 @@
         $.registerChatCommand('./custom/queueManagementSystem.js', 'resetbumps', 2);
 
 
+        $.registerChatCommand('./custom/queueManagementSystem.js', 'beanbump', 7);
     });
 })();

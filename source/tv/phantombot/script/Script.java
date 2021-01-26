@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,18 @@
 package tv.phantombot.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.StackStyle;
 import org.mozilla.javascript.tools.debugger.Main;
 import tv.phantombot.PhantomBot;
 
@@ -52,7 +58,7 @@ public class Script {
     public static String callMethod(String method, String arg) {
         Object[] obj = new Object[] {arg};
 
-        return scope.callMethod(global, method, obj).toString();
+        return ScriptableObject.callMethod(global, method, obj).toString();
     }
 
     @SuppressWarnings("rawtypes")
@@ -71,8 +77,8 @@ public class Script {
                 com.gmt2001.Console.out.println("Reloaded module: " + path);
             }
             fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+        } catch (IOException ex) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -108,8 +114,8 @@ public class Script {
                 }
             }
             fileNotFoundCount = 0;
-        } catch (Exception ex) {
-            if (ex.getMessage().indexOf("This could be a caching issue") != -1) {
+        } catch (IOException ex) {
+            if (ex.getMessage().contains("This could be a caching issue")) {
                 fileNotFoundCount++;
                 if (fileNotFoundCount == 1) {
                     return;
@@ -185,12 +191,12 @@ public class Script {
         }
 
         try {
-            context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
+            context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (FileNotFoundException ex) {
             throw new IOException("File not found. This could be a caching issue, will retry.");
         } catch (EvaluatorException ex) {
             throw new IOException("JavaScript Error: " + ex.getMessage());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw new IOException(ex.getMessage());
         }
     }
@@ -202,9 +208,9 @@ public class Script {
 
     @SuppressWarnings("rawtypes")
     public void doDestroyables() {
-        for (ScriptDestroyable destroyable : destroyables) {
+        destroyables.forEach((destroyable) -> {
             destroyable.destroy();
-        }
+        });
 
         destroyables.clear();
     }

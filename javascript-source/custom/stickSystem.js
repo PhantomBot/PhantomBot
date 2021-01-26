@@ -92,6 +92,7 @@
         // These are also used for the permcom command.
         // $.registerChatCommand('script', 'command', 'permission');
 
+        // Register for Twitch
         $.registerChatCommand('./custom/stickSystem.js', 'drops');
         $.registerChatCommand('./custom/stickSystem.js', 'breaks', 7);
         $.registerChatCommand('./custom/stickSystem.js', 'setsticks', 2);
@@ -100,5 +101,16 @@
 
         $.registerChatCommand('./custom/stickSystem.js', 'oops', 2);
         $.registerChatCommand('./custom/stickSystem.js', 'rip', 2);
+
+        // Register for Discord
+//        $.registerChatCommand('./custom/stickSystem.js', 'drops');
+//        $.discord.registerChatCommand('./custom/stickSystem.js', 'breaks', 7);
+//        $.discord.registerChatCommand('./custom/stickSystem.js', 'setsticks', 2);
+//        $.discord.registerChatSubcommand('setsticks', 'drops', 2);
+//        $.discord.registerChatSubcommand('setsticks', 'breaks', 2);
+//
+//        $.discord.registerChatCommand('./custom/stickSystem.js', 'oops', 2);
+//        $.discord.registerChatCommand('./custom/stickSystem.js', 'rip', 2);
+
     });
 })();

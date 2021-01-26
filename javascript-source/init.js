@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,15 +185,6 @@
         }
     }
 
-    /*
-     * @function getModuleIndex
-     *
-     * @param  {String} scriptName
-     * @return {Number}
-     */
-    function getModuleIndex(scriptName) {
-        return modules.indexOf(scriptName);
-    }
 
     /*
      * @function isModuleEnabled
@@ -264,7 +255,7 @@
      * @param {Function} handler
      */
     function addHook(hookName, handler) {
-        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
         if (hookName !== 'initReady' && $api.exists(hookName) == false) {
@@ -285,7 +276,7 @@
      * @param {String} hookName
      */
     function removeHook(hookName) {
-        var scriptName = $script.getPath().replace('\\', '/').replace('./scripts/', ''),
+        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
         if (hooks[hookName] !== undefined) {
@@ -357,6 +348,7 @@
         loadScript('./core/misc.js', false, silentScriptsLoad);
         loadScript('./core/jsTimers.js', false, silentScriptsLoad);
         loadScript('./core/updates.js', false, silentScriptsLoad);
+        loadScript('./core/commandTags.js', false, silentScriptsLoad);
         loadScript('./core/chatModerator.js', false, silentScriptsLoad);
         loadScript('./core/fileSystem.js', false, silentScriptsLoad);
         loadScript('./core/lang.js', false, silentScriptsLoad);
@@ -662,13 +654,6 @@
         });
 
         /*
-         * @event twitchAutoHosted
-         */
-        $api.on($script, 'twitchAutoHosted', function (event) {
-            callHook('twitchAutoHosted', event, false);
-        });
-
-        /*
          * @event twitchHostsInitialized
          */
         $api.on($script, 'twitchHostsInitialized', function (event) {
@@ -890,20 +875,6 @@
          */
         $api.on($script, 'yTPlayerDeleteCurrent', function (event) {
             callHook('yTPlayerDeleteCurrent', event, false);
-        });
-
-        /*
-         * @event yTPlayerRequestSongHistoryEvent
-         */
-        $api.on($script, 'yTPlayerRequestSongHistory', function (event) {
-            callHook('yTPlayerRequestSongHistory', event, false);
-        });
-
-        /*
-         * @event yTPlayerRequestQueueInfoEvent
-         */
-        $api.on($script, 'yTPlayerRequestQueueInfo', function (event) {
-            callHook('yTPlayerRequestQueueInfo', event, false);
         });
 
         /*
@@ -1133,7 +1104,6 @@
         loadScriptRecursive: loadScriptRecursive,
         isModuleEnabled: isModuleEnabled,
         isModuleLoaded: isModuleLoaded,
-        getModuleIndex: getModuleIndex,
         getHookIndex: getHookIndex,
         loadScript: loadScript,
         getModule: getModule,

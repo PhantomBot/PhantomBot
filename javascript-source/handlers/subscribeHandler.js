@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -124,7 +124,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -138,9 +138,9 @@
             if (subReward > 0) {
                 $.inidb.incr('points', subscriber, subReward);
             }
-
-            $.autoBump(subscriber, "sub");
         }
+
+        $.autoBump(subscriber, "sub");
     });
 
     /*
@@ -161,7 +161,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -170,7 +170,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -184,10 +184,9 @@
             if (subReward > 0) {
                 $.inidb.incr('points', subscriber, subReward);
             }
-
-            $.autoBump(subscriber, "sub");
-
         }
+
+        $.autoBump(subscriber, "sub");
     });
 
     /*
@@ -225,7 +224,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -234,7 +233,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -249,9 +248,9 @@
             if (reSubReward > 0) {
                 $.inidb.incr('points', resubscriber, reSubReward);
             }
-
-            $.autoBump(resubscriber, "sub");
         }
+
+        $.autoBump(resubscriber, "sub");
     });
 
     /*
@@ -293,7 +292,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -302,7 +301,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -322,10 +321,9 @@
             if (giftSubReward > 0) {
                 $.inidb.incr('points', gifter, giftSubReward);
             }
-
-            $.autoBump(gifter, "giftsub");
-
         }
+
+        $.autoBump(gifter, "sub");
     });
 
     /*
@@ -356,7 +354,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -365,7 +363,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -376,9 +374,9 @@
             if (massGiftSubReward > 0) {
                 $.inidb.incr('points', gifter, massGiftSubReward * parseInt(amount));
             }
-
-            $.autoBump(gifter, "giftsub");
         }
+
+        $.autoBump(gifter, "sub");
     });
 
     /*
@@ -414,7 +412,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -423,7 +421,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
@@ -467,7 +465,7 @@
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.panelsocketserver.alertImage(filename);
+                $.alertspollssocket.alertImage(filename);
                 message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
 
@@ -476,7 +474,7 @@
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return null;
                 }
-                $.panelsocketserver.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 

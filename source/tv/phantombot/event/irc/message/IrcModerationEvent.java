@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 package tv.phantombot.event.irc.message;
 
 import java.util.Map;
-
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcModerationEvent extends IrcMessageEvent {

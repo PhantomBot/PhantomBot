@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package tv.phantombot;
 
 import java.io.File;
@@ -7,8 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
@@ -46,13 +60,13 @@ public class ConfigurationManager {
         // private constructor to prevent users from instantiating a pure static class
     }
 
-    static Properties getConfiguration() {
+    static CaselessProperties getConfiguration() {
         /* List of properties that must exist. */
         String[] requiredProperties = new String[]{PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER};
-        String requiredPropertiesErrorMessage = "";
+        String requiredPropertiesErrorMessage;
 
         /* Properties configuration */
-        Properties startProperties = new Properties();
+        CaselessProperties startProperties = new CaselessProperties();
 
         /* Indicates that the botlogin.txt file should be overwritten/created. */
         Boolean changed = false;
@@ -63,26 +77,26 @@ public class ConfigurationManager {
         /* Load up the bot info from the bot login file */
         try {
             if (new File(BOTLOGIN_TXT_LOCATION).exists()) {
-                FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION);
-                startProperties.load(inputStream);
-                inputStream.close();
+                try (FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
+                    startProperties.load(inputStream);
+                }
             } else {
                 /*
                  * Fill in the Properties object with some default values. Note that some values
                  * are left unset to be caught in the upcoming logic to enforce settings.
                  */
                 startProperties.setProperty(PROP_BASEPORT, "25000");
-                startProperties.setProperty(PROP_USEHTTPS, "false");
+                startProperties.setProperty(PROP_USEHTTPS, "true");
                 startProperties.setProperty(PROP_WEBENABLE, "true");
                 startProperties.setProperty(PROP_MSGLIMIT30, "19.0");
                 startProperties.setProperty(PROP_MUSICENABLE, "true");
                 startProperties.setProperty(PROP_WHISPERLIMIT60, "60.0");
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         /* Load up the bot info from the environment */
-        for (Entry<String, String> v : System.getenv().entrySet()) {
+        System.getenv().entrySet().forEach((v) -> {
             String prefix = "PHANTOMBOT_";
             String key = v.getKey().toUpperCase();
             String value = v.getValue();
@@ -90,7 +104,7 @@ public class ConfigurationManager {
                 key = key.substring(prefix.length()).toLowerCase();
                 startProperties.setProperty(key, value);
             }
-        }
+        });
 
         changed |= generateDefaultValues(startProperties);
 
@@ -107,9 +121,7 @@ public class ConfigurationManager {
          * Iterate the properties and delete entries for anything that does not have a
          * value.
          */
-        for (String propertyKey : startProperties.stringPropertyNames()) {
-            changed |= startProperties.remove(propertyKey, "");
-        }
+        changed = startProperties.stringPropertyNames().stream().map((propertyKey) -> startProperties.remove(propertyKey, "")).reduce(changed, (accumulator, _item) -> accumulator | _item);
 
         /*
          * Check for required settings.
@@ -146,7 +158,7 @@ public class ConfigurationManager {
         return startProperties;
     }
 
-    private static Boolean generateDefaultValues(Properties startProperties) {
+    private static Boolean generateDefaultValues(CaselessProperties startProperties) {
         Boolean changed = false;
 
         /* Check to see if there's a webOauth set */
@@ -166,7 +178,7 @@ public class ConfigurationManager {
         return changed;
     }
 
-    private static Boolean correctCommonErrors(Properties startProperties) {
+    private static Boolean correctCommonErrors(CaselessProperties startProperties) {
         Boolean changed = false;
 
         /* Make sure the oauth has been set correctly */
@@ -198,8 +210,8 @@ public class ConfigurationManager {
         return changed;
     }
 
-    private static void saveChanges(Properties properties, String saveFileDestination) {
-        Properties outputProperties = new Properties() {
+    private static void saveChanges(CaselessProperties properties, String saveFileDestination) {
+        CaselessProperties outputProperties = new CaselessProperties() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -227,7 +239,7 @@ public class ConfigurationManager {
      * @param setMessage the message which will be printed if the value is set to the given default value
      * @return {@code true} if the value has been set to default, {@code false} if the value is already present in the properties object
      */
-    private static Boolean setDefaultIfMissing(Properties properties, String propertyName, String defaultValue, String generatedMessage) {
+    private static Boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, String defaultValue, String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
     }
 
@@ -241,7 +253,7 @@ public class ConfigurationManager {
      * @return {@code true} if the value has been generated, {@code false} if the value is already present in the properties object and does not have
      * to be generated
      */
-    private static Boolean setDefaultIfMissing(Properties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
+    private static Boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
         Boolean changed = false;
         if (properties.getProperty(propertyName) == null) {
             properties.setProperty(propertyName, defaultValueGenerator.get());
@@ -259,7 +271,7 @@ public class ConfigurationManager {
      * @param defaulValue the default value of the property
      * @return the value of the property. If parsing the value to a Boolean fails, the default value is returned.
      */
-    public static Boolean getBoolean(Properties properties, String propertyName, Boolean defaulValue) {
+    public static Boolean getBoolean(CaselessProperties properties, String propertyName, Boolean defaulValue) {
         Boolean result = defaulValue;
         try {
             result = Boolean.parseBoolean(properties.getProperty(propertyName));
@@ -271,7 +283,7 @@ public class ConfigurationManager {
         return result;
     }
 
-    private static void doSetup(Properties startProperties) {
+    private static void doSetup(CaselessProperties startProperties) {
         try {
 
             com.gmt2001.Console.out.print("\r\n");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationEvent;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationInitializedEvent;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class TipeeeStreamCache implements Runnable {
 

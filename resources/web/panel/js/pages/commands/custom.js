@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,29 +15,97 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
-$(run = function() {
-    // Check if the module is enabled.
-    socket.getDBValue('custom_command_module', 'modules', './commands/customCommands.js', function(e) {
-        // If the module is off, don't load any data.
-        if (!helpers.handleModuleLoadUp('customCommandsModule', e.modules)) {
-            return;
+$(function() {
+    const getDisabledIconAttr = function(disabled) {
+        return {
+            class: 'fa disabled-status-icon ' + (disabled ? 'fa-ban text-muted' : 'fa-check'),
+            title: disabled ? 'disabled' : 'enabled'
+        };
+    };
+    const getHiddenIconAttr = function(hidden) {
+        return {
+            class: 'fa hidden-status-icon ' + (hidden ? 'fa-eye-slash text-muted' : 'fa-eye'),
+            title: hidden ? 'hidden' : 'visible'
+        };
+    };
+    const updateCommandVisibility = function(name, disabled, hidden, callback) {
+        let addTables = [],
+            addKeys = [],
+            addValues = [],
+            removeTables = [],
+            removeKeys = [];
+        if (disabled) {
+            addTables.push('disabledCommands');
+            addKeys.push(name);
+            addValues.push(true);
+        } else {
+            removeTables.push('disabledCommands');
+            removeKeys.push(name);
         }
-        // Query custom commands.
-        socket.getDBTableValues('commands_get_custom', 'command', function(results) {
-            let tableData = [];
+        if (hidden) {
+            addTables.push('hiddenCommands');
+            addKeys.push(name);
+            addValues.push(true);
+        } else {
+            removeTables.push('hiddenCommands');
+            removeKeys.push(name);
+        }
+        const remove = function(callback) {
+            if (removeTables.length > 0) {
+                socket.removeDBValues('custom_command_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+            } else {
+                callback();
+            }
+        };
+        const add = function(callback) {
+            if (addTables.length > 0) {
+                socket.updateDBValues('custom_command_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+            } else {
+                callback();
+            }
+        };
+        remove(function() { add(callback); });
+    };
 
-            for (let i = 0; i < results.length; i++) {
+    const loadCustomCommands = function() {
+        // Query custom commands.
+        socket.getDBTablesValues('commands_get_custom', [{table: 'command'}, {table: 'disabledCommands'}, {table: 'hiddenCommands'}], function(results) {
+            let tableData = [];
+            let disabledCommands = {};
+            let hiddenCommands = {};
+            let commands = [];
+            for (let result of results) {
+                switch (result['table']) {
+                    case 'command':
+                        commands.push(result);
+                        break;
+                    case 'disabledCommands':
+                        disabledCommands[result.key] = true;
+                        break;
+                    case 'hiddenCommands':
+                        hiddenCommands[result.key] = true;
+                        break;
+                }
+            }
+
+            for (let command of commands) {
                 tableData.push([
-                    '!' + results[i].key,
-                    results[i].value,
+                    '!' + command.key,
+                    command.value,
+                    $('<div/>')
+                        .append($('<i/>', {
+                            ...getDisabledIconAttr(disabledCommands.hasOwnProperty(command.key)),
+                            'style': "margin-right: 0.5em"
+                        }))
+                        .append($('<i/>', getHiddenIconAttr(hiddenCommands.hasOwnProperty(command.key))))
+                        .html(),
                     $('<div/>', {
                         'class': 'btn-group'
                     }).append($('<button/>', {
                         'type': 'button',
                         'class': 'btn btn-xs btn-danger',
                         'style': 'float: right',
-                        'data-command': results[i].key,
+                        'data-command': command.key,
                         'html': $('<i/>', {
                             'class': 'fa fa-trash'
                         })
@@ -45,7 +113,7 @@ $(run = function() {
                         'type': 'button',
                         'class': 'btn btn-xs btn-warning',
                         'style': 'float: right',
-                        'data-command': results[i].key,
+                        'data-command': command.key,
                         'html': $('<i/>', {
                             'class': 'fa fa-edit'
                         })
@@ -67,12 +135,13 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 2 },
+                    { 'className': 'default-table', 'orderable': false, 'targets': [2, 3] },
                     { 'width': '15%', 'targets': 0 }
                 ],
                 'columns': [
                     { 'title': 'Command' },
                     { 'title': 'Response' },
+                    { 'title': 'Status' },
                     { 'title': 'Actions' }
                 ]
             });
@@ -87,8 +156,8 @@ $(run = function() {
                     'The command !' + command + ' has been successfully removed!', function() {
                     // Delete all information about the command.
                     socket.removeDBValues('custom_command_remove', {
-                        tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom', 'commandtoken'],
-                        keys: [command, command, command, command, command, command, command]
+                        tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom', 'commandtoken', 'disabledCommands', 'hiddenCommands'],
+                        keys: [command, command, command, command, command, command, command, command, command]
                     }, function() {
                         socket.wsEvent('custom_command_remove_ws', './commands/customCommands.js', null, ['remove', String(command)], function() {
                             // Remove the table row.
@@ -105,13 +174,13 @@ $(run = function() {
 
                 // Get all the info about the command.
                 socket.getDBValues('custom_command_edit', {
-                    tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom'],
-                    keys: [command, command, command, command, command]
+                    tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'hiddenCommands'],
+                    keys: [command, command, command, command, command, command, command]
                 }, function(e) {
                     let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
 
                     let tokenButton = '';
-                    
+
                     if (e.command.match(/\(customapi/gi) !== null) {
                         tokenButton = $('<button/>', {
                             'type': 'button',
@@ -156,6 +225,10 @@ $(run = function() {
                                 // Append checkbox for if the cooldown is global or per-user.
                                 .append(helpers.getCheckBox('command-cooldown-global', cooldownJson.isGlobal === 'true', 'Global',
                                     'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                            .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Disabled',
+                                'If checked, the command cannot be used in chat.'))
+                            .append(helpers.getCheckBox('command-hidden', e.hiddenCommands != null, 'Hidden',
+                                'If checked, the command will not be listed when !command is called.'))
                         // Callback function to be called once we hit the save button on the modal.
                     })), function() {
                         let commandName = $('#command-name'),
@@ -164,7 +237,9 @@ $(run = function() {
                             commandCost = $('#command-cost'),
                             commandReward = $('#command-reward'),
                             commandCooldown = $('#command-cooldown'),
-                            commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
+                            commandCooldownGlobal = $('#command-cooldown-global').is(':checked'),
+                            commandDisabled = $('#command-disabled').is(':checked'),
+                            commandHidden = $('#command-hidden').is(':checked');
 
                         // Remove the ! and spaces.
                         commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -178,7 +253,6 @@ $(run = function() {
                             case helpers.handleInputNumber(commandCooldown):
                                 break;
                             default:
-
                                 // Save command information here and close the modal.
                                 socket.updateDBValues('custom_command_edit', {
                                     tables: ['pricecom', 'permcom', 'paycom', 'command'],
@@ -186,21 +260,27 @@ $(run = function() {
                                     values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true),
                                             commandReward.val(), commandResponse.val()]
                                 }, function() {
-                                    // Register the custom command with the cache.
-                                    socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(commandName.val()),
-                                        commandResponse.val()], function() {
-                                        // Add the cooldown to the cache.
-                                        socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                            ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
-                                            // Update command permission.
-                                            socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
-                                                helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
-                                                // Update the command response
-                                                t.parents('tr').find('td:eq(1)').text(commandResponse.val());
-                                                // Close the modal.
-                                                $('#edit-command').modal('hide');
-                                                // Tell the user the command was edited.
-                                                toastr.success('Successfully edited command !' + commandName.val());
+                                    updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function() {
+                                        // Register the custom command with the cache.
+                                        socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(commandName.val()),
+                                            commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function() {
+                                            // Add the cooldown to the cache.
+                                            socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
+                                                ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
+                                                // Update command permission.
+                                                socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
+                                                    helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
+                                                        const $tr = t.parents('tr');
+                                                        // Update the command response
+                                                        $tr.find('td:eq(1)').text(commandResponse.val());
+                                                        // Update status icons
+                                                        $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
+                                                        $tr.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                                                        // Close the modal.
+                                                        $('#edit-command').modal('hide');
+                                                        // Tell the user the command was edited.
+                                                        toastr.success('Successfully edited command !' + commandName.val());
+                                                });
                                             });
                                         });
                                     });
@@ -210,15 +290,24 @@ $(run = function() {
                 });
             });
         });
-    });
-});
+    };
 
-// Function that handlers the loading of events.
-$(function() {
+    const init = function() {
+        // Check if the module is enabled.
+        socket.getDBValue('custom_command_module', 'modules', './commands/customCommands.js', function(e) {
+            // If the module is off, don't load any data.
+            if (helpers.handleModuleLoadUp('customCommandsModule', e.modules)) {
+                loadCustomCommands();
+            }
+        });
+    };
+    init();
+
+
     // Toggle for the module.
     $('#customCommandsModuleToggle').on('change', function() {
         // Enable the module then query the data.
-        socket.sendCommandSync('custom_commands_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./commands/customCommands.js', run);
+        socket.sendCommandSync('custom_commands_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./commands/customCommands.js', init);
     });
 
     // Add command button.
@@ -253,15 +342,21 @@ $(function() {
                     // Append checkbox for if the cooldown is global or per-user.
                     .append(helpers.getCheckBox('command-cooldown-global', true, 'Global',
                         'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
-                // Callback function to be called once we hit the save button on the modal.
+                .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
+                    'If checked, the command cannot be used in chat.'))
+                .append(helpers.getCheckBox('command-hidden', false, 'Hidden',
+                    'If checked, the command will not be listed when !command is called.'))
         })), function() {
+            // Callback function to be called once we hit the save button on the modal.
             let commandName = $('#command-name'),
                 commandResponse = $('#command-response'),
                 commandPermission = $('#command-permission'),
                 commandCost = $('#command-cost'),
                 commandReward = $('#command-reward'),
                 commandCooldown = $('#command-cooldown'),
-                commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
+                commandCooldownGlobal = $('#command-cooldown-global').is(':checked'),
+                commandDisabled = $('#command-disabled').is(':checked'),
+                commandHidden = $('#command-hidden').is(':checked');
 
             // Remove the ! and spaces.
             commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -289,18 +384,20 @@ $(function() {
                             keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
                             values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), commandReward.val(), commandResponse.val()]
                         }, function() {
-                            // Register the custom command with the cache.
-                            socket.wsEvent('custom_command_add_ws', './commands/customCommands.js', null,
-                                ['add', commandName.val(), commandResponse.val()], function() {
-                                // Add the cooldown to the cache.
-                                socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
-                                    ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
-                                    // Reload the table.
-                                    run();
-                                    // Close the modal.
-                                    $('#add-command').modal('hide');
-                                    // Tell the user the command was added.
-                                    toastr.success('Successfully added command !' + commandName.val());
+                            updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function() {
+                                // Register the custom command with the cache.
+                                socket.wsEvent('custom_command_add_ws', './commands/customCommands.js', null,
+                                    ['add', commandName.val(), commandResponse.val()], function() {
+                                    // Add the cooldown to the cache.
+                                    socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
+                                        ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
+                                        // Reload the table.
+                                        loadCustomCommands();
+                                        // Close the modal.
+                                        $('#add-command').modal('hide');
+                                        // Tell the user the command was added.
+                                        toastr.success('Successfully added command!' + commandName.val());
+                                    });
                                 });
                             });
                         });
@@ -308,7 +405,7 @@ $(function() {
             }
         }).modal('toggle');
     });
-    
+
     // On token button.
     tokenEditModal =  function(command) {
         // Get modal from our util functions in /utils/helpers.js

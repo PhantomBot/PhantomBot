@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,10 +55,10 @@
      */
     function register(key, string) {
         if (key && string) {
-            data[key] = string;
+            data[key.toLowerCase()] = string;
         }
         if (key && string.length === 0) {
-            data[key] = '<<EMPTY_PLACEHOLDER>>';
+            data[key.toLowerCase()] = '<<EMPTY_PLACEHOLDER>>';
         }
     }
 
@@ -121,7 +121,7 @@
      * @returns {boolean}
      */
     function exists(key) {
-        return (data[key]);
+        return (data[key.toLowerCase()]);
     }
 
     /**

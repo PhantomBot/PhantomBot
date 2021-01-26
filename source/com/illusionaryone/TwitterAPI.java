@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package com.illusionaryone;
 
 import java.io.File;
 import java.util.List;
-
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;

@@ -101,7 +101,10 @@
                 $.say($.lang.get('kentobot.startstream.clearhistory'));
 
                 $.resetBumps();
+                $.resetChannelPointsBumps();
+                $.resetBeanBumps();
                 $.say($.lang.get('kentobot.startstream.resetbumps'));
+
 
                 // Open the queue - may need hook back to YouTube Player
                 $.enableSongRequests();
@@ -118,6 +121,11 @@
                 // Create and load new SOTN Contenders Playlist
                 $.createNewSOTNPlaylist();
                 $.say($.lang.get('kentobot.startstream.sotn.playlist'));
+
+                // Load SOTN winner into pending bumps
+                // TODO Load SOTN winner into the pending bumps table - do not increment counts
+                $.loadSotnWinner();
+                $.say($.lang.get('kentobot.startstream.sotn.load'));
 
                 var connectedPlayerClient = $.getConnectedPlayerClient();
                 if (connectedPlayerClient) {
@@ -160,7 +168,8 @@
         $.registerChatCommand('./custom/kentobotSystem.js', 'mode?', 2);
 
         $.registerChatCommand('./custom/kentobotSystem.js', 'lurk');
+
+        // Ensure the tables used by the UI pages are available, even if we haven't added data yet
+        $.inidb.AddFile("sotn_winners");
     });
 })();
-
-

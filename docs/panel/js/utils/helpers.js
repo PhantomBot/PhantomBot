@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ $(function() {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
     // Panel version. SEE: https://semver.org/
     // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "1.1.0-remote";
+    helpers.PANEL_VERSION = "1.3.0-remote";
 
     helpers.hashmap = [];
 
@@ -125,8 +125,6 @@ $(function() {
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
-            case 'auto-host':
-                return (event.username + ' just auto-hosted with ' + event.viewers + ' viewers!');
             case 'tip': // To be added soon.
                 break;
             case 'raid':
@@ -157,8 +155,6 @@ $(function() {
                 return 'background-color: #6441a5;';
             case 'host':
                 return 'background-color: #ed4c1c;';
-            case 'auto-host':
-                return 'background-color: #ffff00; color: #000000;';
             case 'tip': // To be added soon.
                 return 'background-color: #6441a5;';
             case 'raid':
@@ -1210,7 +1206,7 @@ $(function() {
     };
     
     helpers.toggleDebug = function() {
-        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') != 1 ? 1 : 0);
+        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') != '1' ? '1' : '0');
         helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
         helpers.log('Debug Output set to ' + helpers.DEBUG_STATE, helpers.LOG_TYPE.FORCE);
     }

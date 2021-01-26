@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,18 @@
 package tv.phantombot.discord;
 
 import static discord4j.common.LogUtil.format;
-import discord4j.discordjson.json.gateway.*;
+import discord4j.discordjson.json.gateway.Dispatch;
+import discord4j.discordjson.json.gateway.Heartbeat;
+import discord4j.discordjson.json.gateway.Hello;
+import discord4j.discordjson.json.gateway.Identify;
+import discord4j.discordjson.json.gateway.IdentifyProperties;
+import discord4j.discordjson.json.gateway.ImmutableHeartbeat;
+import discord4j.discordjson.json.gateway.ImmutableIdentifyProperties;
+import discord4j.discordjson.json.gateway.ImmutableResume;
+import discord4j.discordjson.json.gateway.InvalidSession;
+import discord4j.discordjson.json.gateway.Opcode;
+import discord4j.discordjson.json.gateway.PayloadData;
+import discord4j.discordjson.json.gateway.Ready;
 import discord4j.discordjson.possible.Possible;
 import discord4j.gateway.IdentifyOptions;
 import discord4j.gateway.json.GatewayPayload;

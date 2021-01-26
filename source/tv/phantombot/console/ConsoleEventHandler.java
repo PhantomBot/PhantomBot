@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,29 @@
  */
 package tv.phantombot.console;
 
-import net.engio.mbassy.listener.Handler;
-
+import com.gmt2001.HttpRequest;
+import com.gmt2001.HttpResponse;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
-
+import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
-
 import tv.phantombot.discord.DiscordAPI;
-
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
@@ -55,15 +51,13 @@ import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
+import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
-import tv.phantombot.event.twitch.subscriber.TwitchMassAnonymousSubscriptionGiftedEvent;
-import tv.phantombot.event.twitch.subscriber.TwitchAnonymousSubscriptionGiftEvent;
-
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
-
 import tv.phantombot.script.Script;
 
 public class ConsoleEventHandler implements Listener {
@@ -601,13 +595,64 @@ public class ConsoleEventHandler implements Listener {
                 System.out.println("PhantomBot StreamLabs setup.");
                 System.out.println("");
 
-                System.out.print("Please enter your StreamLabs OAuth key: ");
-                String twitchAlertsKey = System.console().readLine().trim();
-                PhantomBot.instance().getProperties().setProperty("twitchalertskey", twitchAlertsKey);
+                System.out.println("Please register an application with StreamLabs");
+                System.out.println("Instructions are available at https://dev.streamlabs.com/docs/register-your-application");
+                System.out.println("Make sure you whitelist the broadcaster");
+                System.out.println("You should set the Redirect URI to: http://localhost");
 
-                System.out.println("PhantomBot StreamLabs setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
+                System.out.println("");
+                System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Client ID: ");
+                String twitchAlertsClientId = System.console().readLine().trim();
+
+                System.out.println("");
+                System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Client Secret: ");
+                String twitchAlertsClientSecret = System.console().readLine().trim();
+
+                System.out.println("");
+                System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Redirect URI: ");
+                String twitchAlertsRedirectURI = System.console().readLine().trim();
+
+                System.out.println("");
+                System.out.println("Use this link to authorize to the account you want to read donations from");
+                System.out.println("NOTE: It is normal to see either a blank page, or a browser 'Can not connect' page after approving the authorization");
+                System.out.println("");
+                System.out.println("https://www.streamlabs.com/api/v1.0/authorize?client_id=" + twitchAlertsClientId + "&redirect_uri=" + twitchAlertsRedirectURI + "&response_type=code&scope=donations.read");
+                System.out.println("");
+                System.out.println("Please paste or enter the access code from the URL in your browser's address bar. You can also just paste the entire URL: ");
+                String twitchAlertsKickback = System.console().readLine().trim();
+
+                if (twitchAlertsKickback.contains("code=")) {
+                    twitchAlertsKickback = twitchAlertsKickback.substring(twitchAlertsKickback.indexOf("code=") + 5);
+                }
+
+                if (twitchAlertsKickback.contains("&")) {
+                    twitchAlertsKickback = twitchAlertsKickback.substring(0, twitchAlertsKickback.indexOf("&"));
+                }
+
+                HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.POST, "https://streamlabs.com/api/v1.0/token",
+                        "grant_type=authorization_code&client_id=" + twitchAlertsClientId + "&client_secret=" + twitchAlertsClientSecret
+                                + "&redirect_uri=" + twitchAlertsRedirectURI + "&code=" + twitchAlertsKickback,
+                        new HashMap<>());
+                
+                if (res.success) {
+                    JSONObject j = new JSONObject(res.content);
+                    String twitchAlertsKey = j.getString("access_token");
+                    PhantomBot.instance().getProperties().setProperty("twitchalertskey", twitchAlertsKey);
+
+                    System.out.println("PhantomBot StreamLabs setup done, PhantomBot will exit.");
+                    changed = true;
+                } else if (res.httpCode == 400) {
+                    JSONObject e = new JSONObject(res.content);
+                    System.out.println("PhantomBot StreamLabs setup failed");
+                    System.err.println(e.getString("error"));
+                    System.err.println(e.getString("message"));
+                } else {
+                    System.out.println("PhantomBot StreamLabs setup failed");
+                    System.err.println(res.httpCode);
+                    System.err.println(res.content);
+                    System.err.println(res.exception);
+                }
+            } catch (JSONException | NullPointerException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -713,7 +758,7 @@ public class ConsoleEventHandler implements Listener {
 
         // Check to see if any settings have been changed.
         if (changed) {
-            Properties outputProperties = new Properties() {
+            CaselessProperties outputProperties = new CaselessProperties() {
                 @Override
                 public synchronized Enumeration<Object> keys() {
                     return Collections.enumeration(new TreeSet<>(super.keySet()));

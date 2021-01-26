@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,8 @@ package tv.phantombot.twitch.irc.chat.utils;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
-
-import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 public class MessageQueue implements Runnable {
     private final BlockingDeque<Message> queue = new LinkedBlockingDeque<>();
@@ -95,7 +94,11 @@ public class MessageQueue implements Runnable {
      * @param {String} message
      */
     public void say(String message) {
-        queue.add(new Message(message));
+        message = message.replace('\r', ' ');
+        String[] spl = message.split("\n");
+        for (String str : spl) {
+            queue.add(new Message(str));
+        }
     }
 
     /**
@@ -104,7 +107,11 @@ public class MessageQueue implements Runnable {
      * @param {String} message
      */
     public void sayNow(String message) {
-        queue.addFirst(new Message(message, message.startsWith(".")));
+        message = message.replace('\r', ' ');
+        String[] spl = message.split("\n");
+        for (int i = spl.length; i > 0; i--) {
+            queue.addFirst(new Message(spl[i - 1], spl[i - 1].startsWith(".")));
+        }
     }
 
     /**

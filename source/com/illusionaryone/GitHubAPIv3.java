@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
-
-import tv.phantombot.RepoVersion;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.RepoVersion;
 
 /*
  * Communicates with GitHub API v3

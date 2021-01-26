@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2020 phantom.bot
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -95,6 +95,11 @@
                             <!-- /.box-tools -->
                           </div>
                         <div class="box-body" id="content-pane">
+                            <div class="alert-info text-center page-header">NOTE: Tokens obtained through this page will expire after approximately 3 months.
+                                We <em>strongly</em> recommend setting up automatically refreshing tokens from the OAuth page that is built-in to your bot's panel.
+                                <br/><br/>
+                                You will need to setup the OAuth from this page first, then go to the bot's built-in web server, usually located at <a href="http://localhost:25000" target="_blank">http://localhost:25000</a> or similar</div>
+                            <br />
                             <div class="alert-success text-center page-header hide" id="success-box"></div>
                                             <br id="success-br" class="hide" />
 
@@ -254,12 +259,12 @@
                 if (queryMap.size > 0) {
                     if (queryMap.has('access_token') && queryMap.has('state')) {
                         // Get the state.
-                        state = window.localStorage.getItem('state');
+                        state = window.sessionStorage.getItem('state');
 
                         if (queryMap.get('state') === state) {
                             $('#success-box').removeClass('hide');
                             $('#success-br').removeClass('hide');
-                            $('#success-box').html('Your ' + window.localStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
+                            $('#success-box').html('Your ' + window.sessionStorage.getItem('state-type') + ' OAuth token is: ').append($('<input/>', {
                                 'class': 'form-control',
                                 'type': 'text',
                                 'readonly': true,
@@ -268,8 +273,8 @@
                             }));
 
                             // Remove the state.
-                            window.localStorage.removeItem('state');
-                            window.localStorage.removeItem('state-type');
+                            window.sessionStorage.removeItem('state');
+                            window.sessionStorage.removeItem('state-type');
                         }
                     }
                 } else {
@@ -283,8 +288,8 @@
                         }
 
                         // Save the state.
-                        window.localStorage.setItem('state', state);
-                        window.localStorage.setItem('state-type', type);
+                        window.sessionStorage.setItem('state', state);
+                        window.sessionStorage.setItem('state-type', type);
 
                         return state;
                     }

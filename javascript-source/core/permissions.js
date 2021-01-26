@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,7 +238,7 @@
      * @returns {boolean}
      */
     function isSub(username) {
-        return subUsers.contains(username.toLowerCase());
+        return subUsers.contains(java.util.Objects.toString(username.toLowerCase()));
     }
 
     /**
@@ -249,7 +249,20 @@
      * @returns {boolean}
      */
     function isSubv3(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
+        if (tags != null && tags != '{}') {
+            if (tags.containsKey('subscriber')) {
+                return tags.get('subscriber').equals('1');
+            } else {
+                $.consoleDebug('Used isSub without tags::' + tags);
+                return isSub(username);
+            }
+        } else {
+            $.consoleDebug('Used isSub without tags::' + tags);
+            return isSub(username);
+        }
+        
+        // Only use isSub is we don't have tags, using that method is our last resource.
+        // return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
 
     /**
@@ -813,7 +826,7 @@
                         $.inidb.set('group', spl[i], '2');
                     }
                 }
-                $.saveArray(modListUsers, 'addons/mods.txt', false);
+                $.saveArray(modListUsers, './addons/mods.txt', false);
             } else if (message.indexOf(vipMessageStart) > -1) {
                 spl = message.replace(vipMessageStart, '').split(', ');
                 vipUsers = [];
@@ -830,14 +843,14 @@
                         $.inidb.set('group', spl[i], '5');
                     }
                 }
-                $.saveArray(vipUsers, 'addons/vips.txt', false);
+                $.saveArray(vipUsers, './addons/vips.txt', false);
             } else if (message.indexOf(novipMessageStart) > -1) {
                 for (i in keys) {
                     if ($.inidb.get('group', keys[i]).equalsIgnoreCase('5')) {
                         $.inidb.del('group', keys[i]);
                     }
                 }
-                $.deleteFile('addons/vips.txt', true);
+                $.deleteFile('./addons/vips.txt', true);
             } else if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
@@ -848,7 +861,7 @@
                         for (var i = 0; i < subUsers.size(); i++) {
                             subsTxtList.push(subUsers.get(i));
                         }
-                        $.saveArray(subsTxtList, 'addons/subs.txt', false);
+                        $.saveArray(subsTxtList, './addons/subs.txt', false);
                     }
                 }
             }

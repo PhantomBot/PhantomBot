@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,23 +27,6 @@ public final class debug {
     private debug() {
     }
 
-    private debug(Object o) {
-        if (PhantomBot.getEnableDebugging()) {
-            String stackInfo;
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-
-            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
-
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-            Logger.instance().log(Logger.LogType.Debug, "");
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
-                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
-            }
-        }
-    }
-
     public static void println() {
         if (PhantomBot.getEnableDebugging()) {
             Logger.instance().log(Logger.LogType.Debug, "");
@@ -64,20 +47,7 @@ public final class debug {
     }
 
     public static void println(Object o) {
-        if (PhantomBot.getEnableDebugging()) {
-            String stackInfo;
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-
-            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-            Logger.instance().log(Logger.LogType.Debug, "");
-
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
-                System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
-            }
-        }
+        println(o, false);
     }
 
     public static void println(Object o, Boolean force) {
@@ -94,6 +64,23 @@ public final class debug {
             if (!PhantomBot.getEnableDebuggingLogOnly()) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + stackInfo + o);
             }
+        }
+    }
+    
+    public static void logln(Object o) {
+        logln(o, false);
+    }
+    
+    public static void logln(Object o, Boolean force) {
+        if (PhantomBot.getEnableDebugging() || force) {
+            String stackInfo;
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
+            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+
+            stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "");
         }
     }
 

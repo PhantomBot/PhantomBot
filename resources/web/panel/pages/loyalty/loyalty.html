@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2020 phantom.bot
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,14 +41,14 @@
                               <!-- Box content -->
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <lable>Configure Time Zone (<a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank">list</a>)</lable>
+                                        <label>Configure Time Zone (<a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank">list</a>)</label>
                                         <input type="text" class="form-control" id="loyalty-timezone" data-toggle="tooltip"
                                             title="Timezone the bot should use when calculating time."/>
                                     </div>
 
                                     <!-- Add offline time to user -->
                                     <div class="form-group">
-                                        <lable>Accumulate User Time Offline</lable>
+                                        <label for="time-offline">Accumulate User Time Offline</label>
                                         <div class="dropdown">
                                             <select class="form-control" id="time-offline" style="cursor: pointer;">
                                                 <option>Yes</option>
@@ -61,7 +61,7 @@
                                         <!-- Auto add users to regulars -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Auto Promote Users to Regulars</lable>
+                                                <label for="time-promote">Auto Promote Users to Regulars</label>
                                                 <div class="dropdown">
                                                     <select class="form-control" id="time-promote" style="cursor: pointer;">
                                                         <option>Yes</option>
@@ -74,7 +74,7 @@
                                         <!-- Say something in chat when auto promoted. -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Announce in Chat When Auto Promotion</lable>
+                                                <label for="time-promote-notice">Announce in Chat When Auto Promotion</label>
                                                 <div class="dropdown">
                                                     <select class="form-control" id="time-promote-notice" style="cursor: pointer;">
                                                         <option>Yes</option>
@@ -89,7 +89,7 @@
                                         <!-- Regular promotion hours -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Regular Promotion (Hours)</lable>
+                                                <label>Regular Promotion (Hours)</label>
                                                 <input type="number" class="form-control" id="loyalty-promotion" placeholder="15" data-toggle="tooltip"
                                                     title="How many hours it takes before a user gets promoted to a regular."/>
                                             </div>
@@ -98,7 +98,7 @@
                                         <!-- Top list.-->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <lable>Top Time List Amount</lable>
+                                                <label>Top Time List Amount</label>
                                                 <input type="number" class="form-control" id="loyalty-top" max="15" data-toggle="tooltip"
                                                     title="How many users will show up in the !toptime command. Max is 15 users."/>
                                             </div>
@@ -129,13 +129,13 @@
                                 <div class="box-body">
                                     <!-- Username -->
                                     <div class="form-group">
-                                        <lable>Username</lable>
+                                        <label>Username</label>
                                         <input type="text" class="form-control" id="time-username" placeholder="PhantomBot"  data-toggle="tooltip" title="Username to edit the time for.">
                                     </div>
 
                                     <!-- Number of points -->
                                     <div class="form-group">
-                                        <lable>Time (Seconds)</lable>
+                                        <label>Time (Seconds)</label>
                                         <div class="input-group input-group-md">
                                             <input type="number" class="form-control" id="time-username-time" placeholder="0" data-toggle="tooltip" title="Amount of time the user will have.">
                                             <span class="input-group-btn">

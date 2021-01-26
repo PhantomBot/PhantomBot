@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 */
 
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,15 @@
 package com.illusionaryone;
 
 import com.gmt2001.datastore.DataStore;
-import com.gmt2001.UncaughtExceptionHandler;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.engio.mbassy.listener.Handler;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.event.Listener;
@@ -29,18 +35,6 @@ import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.TwitchSession;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.json.JSONObject;
-import org.json.JSONException;
 
 /*
  * Provides a timer system for managing notices.  Reads data directly from the

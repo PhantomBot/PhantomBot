@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 $(function() {
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/hostHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
-                './systems/greetingSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
-                './handlers/streamElementsHandler.js', './handlers/twitterHandler.js']
+               './systems/greetingSystem.js', './systems/welcomeSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
+               './handlers/streamElementsHandler.js', './handlers/twitterHandler.js']
     }, true, function(e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -295,8 +295,8 @@ $(function() {
     // Host settings button.
     $('#hostHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_host_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
-            keys: ['hostReward', 'autoHostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage', 'autoHostMessage', 'hostHistory', 'hostToggle', 'autoHostToggle']
+            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
+            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage', 'hostHistory', 'hostToggle']
         }, true, function(e) {
             helpers.getModal('host-alert', 'Host Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -319,19 +319,6 @@ $(function() {
                 // Appen the reward box
                 .append(helpers.getInputGroup('host-reward', 'number', 'Host Reward', '', e.hostReward,
                     'Reward given to the user when they hosts to the channel.'))))
-            // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Auto-Host Settings', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for normal hosts
-                .append(helpers.getDropdownGroup('autohost-toggle', 'Enable Auto-Host Alerts', (e.autoHostToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone auto-hosts the channel.'))
-                // Append message box for the message
-                .append(helpers.getTextAreaGroup('autohost-msg', 'text', 'Auto-Host Message', '', e.autoHostMessage,
-                    'Message said when someone auto-hosts the channel. Tags: (name), (alert), (playsound), (reward), and (viewers)', false))
-                // Appen the reward box
-                .append(helpers.getInputGroup('autohost-reward', 'number', 'Auto-Host Reward', '', e.autoHostReward,
-                    'Reward given to the user when they auto-hosts the channel.'))))
             // Append third collapsible accordion.
             .append(helpers.getCollapsibleAccordion('main-3', 'Extra Settings', $('<form/>', {
                     'role': 'form'
@@ -349,9 +336,6 @@ $(function() {
                 let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
                     hostMsg = $('#host-msg'),
                     hostReward = $('#host-reward'),
-                    autoHostToggle = $('#autohost-toggle').find(':selected').text() === 'Yes',
-                    autoHostMsg = $('#autohost-msg'),
-                    autoHostReward = $('#autohost-reward'),
                     hostHistory = $('#host-history').find(':selected').text() === 'Yes',
                     hostMinPoints = $('#host-minpoint'),
                     hostMinAlert = $('#host-minalert');
@@ -360,19 +344,16 @@ $(function() {
                 switch (false) {
                     case helpers.handleInputString(hostMsg):
                     case helpers.handleInputNumber(hostReward, 0):
-                    case helpers.handleInputString(autoHostMsg):
-                    case helpers.handleInputNumber(autoHostReward, 0):
                     case helpers.handleInputNumber(hostMinPoints, 0):
                     case helpers.handleInputNumber(hostMinAlert, 0):
                         break;
                     default:
                         socket.updateDBValues('alerts_update_host_settings', {
-                            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings', 'settings',
-                                'settings', 'settings'],
-                            keys: ['hostReward', 'autoHostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage',
-                                'autoHostMessage', 'hostHistory', 'hostToggle', 'autoHostToggle'],
-                            values: [hostReward.val(), autoHostReward.val(), hostMinPoints.val(), hostMinAlert.val(),
-                                hostMsg.val(), autoHostMsg.val(), hostHistory, hostToggle, autoHostToggle]
+                            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
+                            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage',
+                                'hostHistory', 'hostToggle'],
+                            values: [hostReward.val(), hostMinPoints.val(), hostMinAlert.val(),
+                                hostMsg.val(), hostHistory, hostToggle]
                         }, function() {
                             socket.sendCommand('alerts_update_host_settings_cmd', 'reloadhost', function() {
                                 // Close the modal.
@@ -588,6 +569,145 @@ $(function() {
         });
     });
 
+    // Welcome esettings.
+    $('#welcomeSystemSettings').on('click', function() {
+        const updateDisabled = function(disabledUsers, welcomeDisabled, callback) {
+            let addTables = [],
+                addKeys = [],
+                addVals = [],
+                delTables = [],
+                delKeys = [];
+
+            let previouslyDisabled = {};
+            for (let row of disabledUsers) {
+                previouslyDisabled[row.key] = true;
+            }
+            let newDisabledUsers = welcomeDisabled.map(function (name) {
+                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase()
+            });
+            for (let newDisabledUser of newDisabledUsers) {
+                if (!newDisabledUser) {
+                    continue;
+                }
+                if (previouslyDisabled.hasOwnProperty(newDisabledUser)) {
+                    delete previouslyDisabled[newDisabledUser];
+                } else {
+                    addTables.push('welcome_disabled_users');
+                    addKeys.push(newDisabledUser);
+                    addVals.push('true');
+                }
+            }
+            for (let disabledUser in previouslyDisabled) {
+                if (previouslyDisabled.hasOwnProperty(disabledUser)) {
+                    delTables.push('welcome_disabled_users');
+                    delKeys.push(disabledUser)
+                }
+            }
+
+            const add = function (cb) {
+                if (addKeys.length) {
+                    socket.updateDBValues('alerts_add_welcome_disabled', {
+                        tables: addTables,
+                        keys: addKeys,
+                        values: addVals
+                    }, cb);
+                } else {
+                    cb();
+                }
+            };
+
+            const remove = function (cb) {
+                if (delKeys.length) {
+                    socket.removeDBValues('alerts_del_welcome_disabled', {
+                        tables: delTables,
+                        keys: delKeys,
+                    }, cb);
+                } else {
+                    cb();
+                }
+            };
+
+            add(function () { remove(callback) });
+        };
+
+        socket.getDBValues('alerts_get_welcome_settings', {
+            tables: ['welcome', 'welcome', 'welcome', 'welcome'],
+            keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown']
+        }, true, function(e) {
+            socket.getDBTableValues('alerts_get_welcome_disabled_users', 'welcome_disabled_users', function (disabledUsers) {
+                let disabledUserOptions = [];
+                for (let row of disabledUsers) {
+                    disabledUserOptions.push({
+                        'name': row.key,
+                        'selected': 'true'
+                    })
+                }
+                const modal = helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
+                    'role': 'form'
+                })
+                // Add the toggle for welcome alerts.
+                .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If users should be welcomed by the bot when the start chatting.'))
+                // Add the input for welcome message.
+                .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
+                // Add the input for first time welcome message.
+                .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
+                // Add the input for the welcome cooldown.
+                .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
+                    'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))
+                // Add the input for excluded users.
+                .append(helpers.getFlatMultiDropdownGroup('welcome-disabled', 'Excluded Users', disabledUserOptions,
+                    'Users that the bot will not welcome. Channel owner and this bot are always excluded.')),
+                function() { // Callback once the user clicks save.
+                    let welcomeToggle = $('#welcome-toggle').find(':selected').text() === 'Yes',
+                        welcomeMessage = $('#welcome-message').val(),
+                        welcomeMessageFirst = $('#welcome-message-first').val(),
+                        $welcomeCooldown = $('#welcome-cooldown'),
+                        welcomeDisabled = $('#welcome-disabled').val();
+
+                    // Make sure the user has someone in each box.
+                    switch (false) {
+                        case helpers.handleInputNumber($welcomeCooldown, 1):
+                            break;
+                        default:
+                            socket.updateDBValues('alerts_update_welcome_settings', {
+                                tables: ['welcome', 'welcome', 'welcome', 'welcome'],
+                                keys: ['welcomeEnabled', 'welcomeMessage', 'welcomeMessageFirst', 'cooldown'],
+                                values: [welcomeToggle, welcomeMessage, welcomeMessageFirst, (parseInt($welcomeCooldown.val()) * 36e5)]
+                            }, function() {
+                                updateDisabled(disabledUsers, welcomeDisabled, function () {
+                                    socket.sendCommand('alerts_update_welcome_settings_cmd', 'welcomepanelupdate', function() {
+                                        // Close the modal.
+                                        $('#welcome-alert').modal('toggle');
+                                        // Alert the user.
+                                        toastr.success('Successfully updated welcome alert settings!');
+                                    });
+                                });
+                            });
+                    }
+                }).modal('toggle');
+                modal.find('#welcome-disabled').select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    selectOnClose: true,
+                    createTag: function (params) {
+                        const term = params.term.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase();
+                        // Don't offset to create a tag if there is no @ symbol
+                        if (!term) {
+                            // Return null to disable tag creation
+                            return null;
+                        }
+
+                        return {
+                            id: term,
+                            text: term
+                        }
+                    }
+                });
+            });
+        });
+    });
+
     // StreamLabs settings.
     $('#donationHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_streamlabs_settings', {
@@ -602,7 +722,7 @@ $(function() {
                 'If StreamLabs tips should be posted in the chat.'))
             // Add the the text area for the tip message.
             .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.message,
-                'Message posted in the channel when someone tips with StreamLabs. Tags: (name), (amount), (points), (reward), (pointname), (currency), and (message)'))
+                'Message posted in the channel when someone tips with StreamLabs. Tags: (name), (amount), (amount.toFixed(0)), (points), (pointname), (currency), and (message)'))
             // Add the the box for the tip reward
             .append(helpers.getInputGroup('streamlabs-reward', 'number', 'Tip Reward Multiplier', '', e.reward, 'Reward multiplier for the reward.')),
             function() { // Callback once the user clicks save.

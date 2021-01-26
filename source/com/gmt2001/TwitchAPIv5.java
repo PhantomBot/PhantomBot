@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,24 +17,22 @@
 package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
-
-import tv.phantombot.cache.UsernameCache;
-
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
-import org.json.JSONException;
+import tv.phantombot.cache.UsernameCache;
 
 /**
  * Communicates with Twitch Kraken server using the version 5 API
@@ -121,8 +119,9 @@ public class TwitchAPIv5 {
             c.connect();
 
             if (!post.isEmpty()) {
-                try (OutputStream o = c.getOutputStream()) {
-                    IOUtils.write(post, o);
+                try (BufferedOutputStream stream = new BufferedOutputStream(c.getOutputStream())) {
+                    stream.write(post.getBytes());
+                    stream.flush();
                 }
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,8 @@
         if ($.inidb.exists('disabledCommands', command)) {
             $.inidb.set('tempDisabledCommandScript', command, script);
             return;
+        } else {
+            $.inidb.del('tempDisabledCommandScript', command);
         }
 
         // Get and set the command permission.
@@ -132,6 +134,7 @@
         $.inidb.set('tempDisabledCommandScript', command, commands[command].script);
         if (commandExists(command)) {
             delete commands[command];
+        } else if (aliasExists(command)) {
             delete aliases[command];
         }
     }
@@ -355,4 +358,22 @@
     $.registerChatAlias = registerChatAlias;
     $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
     $.getSubCommandFromArguments = getSubCommandFromArguments;
+
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./core/commandRegister.js')) {
+            var args = event.getArgs(),
+                eventName = args[0] + '',
+                command = args[1] + '',
+                commandLower = command.toLowerCase() + '';
+            if (eventName === 'enable') {
+                if ($.inidb.exists('tempDisabledCommandScript', commandLower)) {
+                    $.registerChatCommand($.inidb.get('tempDisabledCommandScript', commandLower), commandLower);
+                }
+            } else if (eventName === 'disable') {
+                if (commandExists(commandLower)) {
+                    tempUnRegisterChatCommand(commandLower);
+                }
+            }
+        }
+    });
 })();

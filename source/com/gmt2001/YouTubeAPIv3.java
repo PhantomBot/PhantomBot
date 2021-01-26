@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,52 +218,58 @@ public class YouTubeAPIv3 {
             }
             
             com.gmt2001.Console.debug.println("Query: " + q);
-            com.gmt2001.Console.err.println("Query: " + q);
-            
-            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + escapedQuery + "&key=" + apikey + "&type=video&part=snippet&maxResults=10");
-            if (j2.getBoolean("_success")) {
+
+             String youtubeEndpoint = "https://www.googleapis.com/youtube/v3/videos?" +
+                    "id=" + escapedQuery + 
+                    "&key=" + apikey + 
+                    "&part=snippet" +
+                    "&regionCode=US";
+             
+            JSONObject videosJson = GetData(request_type.GET, youtubeEndpoint);
+                        
+            com.gmt2001.Console.debug.println("Endpoint: " + youtubeEndpoint);
+            com.gmt2001.Console.debug.println("JSON: " + videosJson.toString(2));
+
+            if (videosJson.getBoolean("_success")) {
                 updateQuota(100L);
-                if (j2.getInt("_http") == 200) {
-                    JSONObject pageInfo = j2.getJSONObject("pageInfo");
+                if (videosJson.getInt("_http") == 200) {
+                    JSONObject pageInfo = videosJson.getJSONObject("pageInfo");
                     if (pageInfo.getInt("totalResults") == 0) {
                         com.gmt2001.Console.debug.println("Search API Called: No Results");
 
-                        return new String[] { q, "No Search Results Found", "", "", j2.toString() };
+                        return new String[] { q, "No Search Results Found", "", "", videosJson.toString() };
                     }
                     
-//                    com.gmt2001.Console.debug.println("JSON: " + j2.toString(2));
-//                    com.gmt2001.Console.err.println("JSON: " + j2.toString(2));
+                    com.gmt2001.Console.debug.println("Videos JSON: " + videosJson.toString(2));
                     
-                    JSONArray a = j2.getJSONArray("items");
+                    JSONArray items = videosJson.getJSONArray("items");
                     
-                    for (int i = 0; i < a.length(); i++) {
-                        JSONObject result = a.getJSONObject(i);
-                        JSONObject idJson = result.getJSONObject("id");
-                        String videoId = idJson.getString("videoId");
+                    for (int i = 0; i < items.length(); i++) {
+                        JSONObject item = items.getJSONObject(i);
+                        String videoId = item.getString("id");
                         
-                        com.gmt2001.Console.err.println("Checking " + q + " against " + videoId);
+                        com.gmt2001.Console.debug.println("Checking " + q + " against " + videoId);
                         
                         if (q.equalsIgnoreCase(videoId)) {
-                            JSONObject id = result.getJSONObject("id");
-                            JSONObject sn = result.getJSONObject("snippet");
+                            JSONObject snippet = item.getJSONObject("snippet");
 
                             com.gmt2001.Console.debug.println("Search API Success");
 
-                            return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle"), j2.getString("regionCode") };
+                            return new String[] { videoId, snippet.getString("title"), snippet.getString("channelTitle"), snippet.getString("channelId")};
                         }
                     }
                     
                     com.gmt2001.Console.debug.println("Search API Fail: Couldn't find request");
                     return new String[] { "", "", "", "" };
                 } else {
-                    com.gmt2001.Console.debug.println("Search API Fail: HTTP Code " + j2.getInt("_http"));
+                    com.gmt2001.Console.debug.println("Search API Fail: HTTP Code " + videosJson.getInt("_http"));
 
                     return new String[] { "", "", "", "" };
                 }
             } else {
                 com.gmt2001.Console.debug.println("Search API Fail: Returned Failure");
 
-                return new String[] { "", "", "", "" };
+                return new String[] { "", "", ""};
             }
 //        }
 //

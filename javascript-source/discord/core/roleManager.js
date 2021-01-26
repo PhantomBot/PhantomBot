@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,12 @@
             // Wait a bit to create the roles.
             setTimeout(function() {
                 for (i in users) {
-                    if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
-                        updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                    try {
+                        if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
+                            updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                        }
+                    } catch (e){
+                        $.log.error(e);
                     }
                 }
             }, 5e3);

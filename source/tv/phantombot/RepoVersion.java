@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,13 @@
  */
 package tv.phantombot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 public class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";
     private static final String repoVersion = "@repository.version@";
     private static final String buildType = "@buildtype@";
     private static final String panelVersion = "@webpanel.version@";
+    private static final String kentobotVersion = "@kentobot.version@";
 
     private RepoVersion() {
     }
@@ -54,5 +49,9 @@ public class RepoVersion {
 
     public static String getPanelVersion() {
         return panelVersion;
+    }
+    
+    public static String getKentobotVersion() {
+        return kentobotVersion;
     }
 }

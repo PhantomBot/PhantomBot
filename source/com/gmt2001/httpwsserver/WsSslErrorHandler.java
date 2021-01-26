@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,15 @@
  */
 package com.gmt2001.httpwsserver;
 
+import static com.gmt2001.httpwsserver.WebSocketFrameHandler.ATTR_URI;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
+import io.netty.util.ReferenceCountUtil;
+import java.util.List;
 import org.json.JSONStringer;
 
 /**
@@ -30,6 +33,8 @@ import org.json.JSONStringer;
  * @author gmt2001
  */
 public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
+
+    private static final List<String> ALLOWNONSSLPATHS = List.of("/ws/alertspolls");
 
     WsSslErrorHandler() {
         super();
@@ -44,7 +49,14 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-
+        QueryStringDecoder qsd = new QueryStringDecoder(ctx.channel().attr(ATTR_URI).get());
+            for (String u : ALLOWNONSSLPATHS) {
+                if (qsd.path().startsWith(u)) {
+                    ReferenceCountUtil.retain(frame);
+                    ctx.fireChannelRead(frame);
+                    return;
+                }
+            }
     }
 
     /**
@@ -59,6 +71,14 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof HandshakeComplete) {
+            HandshakeComplete hc = (HandshakeComplete) evt;
+            QueryStringDecoder qsd = new QueryStringDecoder(hc.requestUri());
+            for (String u : ALLOWNONSSLPATHS) {
+                if (qsd.path().startsWith(u)) {
+                    ctx.fireUserEventTriggered(evt);
+                    return;
+                }
+            }
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("errors").array().object()
                     .key("status").value("426")

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,8 +123,6 @@ $(function() {
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
-            case 'auto-host':
-                return (event.username + ' just auto-hosted with ' + event.viewers + ' viewers!');
             case 'tip': // To be added soon.
                 break;
             case 'raid':
@@ -155,8 +153,6 @@ $(function() {
                 return 'background-color: #6441a5;';
             case 'host':
                 return 'background-color: #ed4c1c;';
-            case 'auto-host':
-                return 'background-color: #ffff00; color: #000000;';
             case 'tip': // To be added soon.
                 return 'background-color: #6441a5;';
             case 'raid':
@@ -602,7 +598,6 @@ $(function() {
      *
      * @param  {String} id
      * @param  {String} title
-     * @param  {String} def
      * @param  {Array}  options [
         {
             'title': 'Some title',
@@ -648,7 +643,7 @@ $(function() {
                     'id': roles[i]._id
                 });
 
-                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
+                if (roles[i].selected === 'true') {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
@@ -658,6 +653,49 @@ $(function() {
             }
 
             return group;
+        }))));
+    };
+
+    /*
+     * @function Generates a multi-select dropdown.
+     *
+     * @param  {String} id
+     * @param  {String} title
+     * @param  {Array}  options [
+           {
+               'name': 'option name',
+               'selected': 'true'
+           },
+           ...
+     * ]
+     * @param  {String} toolTip
+     * @return {Object}
+     */
+    helpers.getFlatMultiDropdownGroup = function(id, title, options, toolTip) {
+        return  $('<div/>', {
+            'class': 'form-group'
+        }).append($('<lable/>', {
+            'html': $('<b/>', {
+                'text': title
+            })
+        })).append($('<div/>', {
+            'class': 'dropdown',
+            'data-toggle': 'tooltip',
+            'title': toolTip
+        }).append($('<select/>', {
+            'class': 'form-control select2 select2-hidden-accessible',
+            'multiple': 'multiple',
+            'id': id,
+            'style': 'width: 100%; cursor: pointer;'
+        }).append(options.map(function(option) {
+            let o = $('<option/>', {
+                'html': option.name,
+                'id': option._id
+            });
+            if (option.selected === 'true') {
+                o.attr('selected', 'selected');
+            }
+            return o;
         }))));
     };
 

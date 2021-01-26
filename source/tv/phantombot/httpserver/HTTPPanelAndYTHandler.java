@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-        if (!req.method().equals(HttpMethod.GET)) {
+        if (!req.method().equals(HttpMethod.GET) && !req.uri().startsWith("/oauth")) {
             com.gmt2001.Console.debug.println("403");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return;
@@ -98,7 +98,8 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, false)) {
                 com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                         + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, Files.readAllBytes(p), p.getFileName().toString()));
+                byte[] data = Files.readAllBytes(p);
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500");

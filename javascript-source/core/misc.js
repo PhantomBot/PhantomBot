@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,7 +386,7 @@
      * @returns {boolean}
      */
     function outOfRange(number, min, max) {
-        return (number < min && number > max);
+        return (number < min || number > max);
     }
 
     /**
@@ -711,9 +711,9 @@
 
     /**
      * Taken from: https://github.com/tc39/proposal-string-matchall
-     * 
+     *
      * Implementation of string.matchAll
-     * 
+     *
      * @function matchAll
      * @export $
      * @param {type} str
@@ -721,6 +721,7 @@
      * @returns {Array}
      */
     function matchAll(str, regex) {
+        regex.lastIndex = 0;
         var matches = [];
         str.replace(regex, function () {
             var match = Array.prototype.slice.call(arguments, 0, -2);
@@ -730,6 +731,21 @@
         });
 
         return matches;
+    }
+
+    function match(str, regex) {
+        regex.lastIndex = 0;
+        return str.match(regex);
+    }
+
+    function test(str, regex) {
+        regex.lastIndex = 0;
+        return regex.test(str);
+    }
+
+    function regexExec(str, regex) {
+        regex.lastIndex = 0;
+        return regex.exec(str);
     }
 
     /**
@@ -742,6 +758,14 @@
             return '@' + $.username.resolve(username) + ' ';
         }
         return '@' + $.username.resolve(username) + ', ';
+    }
+
+    function javaString(str) {
+        return new Packages.java.lang.String(str);
+    }
+
+    function jsString(str) {
+        return String(str + '');
     }
 
     /** Export functions to API */
@@ -781,6 +805,9 @@
     $.paginateArray = paginateArray;
     $.replace = replace;
     $.matchAll = matchAll;
+    $.match = match;
+    $.test = test;
+    $.regexExec = regexExec;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;
@@ -789,4 +816,6 @@
     $.sayWithTimeout = sayWithTimeout;
     $.paginateArrayDiscord = paginateArrayDiscord;
     $.equalsIgnoreCase = equalsIgnoreCase;
+    $.javaString = javaString;
+    $.jsString = jsString;
 })();

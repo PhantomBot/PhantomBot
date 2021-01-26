@@ -18,7 +18,7 @@
 3. Create several lines 
 
 	``` 
-	 TwitterUser=Twitter Account
+	 twitterUser=Twitter Account
 	 twitter_consumer_key=API key
 	 twitter_consumer_secret=API secret key
 	 twitter_access_token=Access token

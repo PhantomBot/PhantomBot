@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  */
 package tv.phantombot.script;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.List;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ScriptFileWatcher implements Runnable {
     private static ScriptFileWatcher instance;
@@ -47,7 +46,7 @@ public class ScriptFileWatcher implements Runnable {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         this.thread = new Thread(this, "tv.phantombot.script.ScriptFileWatcher::run");
-        this.thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.thread.start();
     }
 

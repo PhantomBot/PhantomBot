@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,7 @@
             }
             // Keyword just has a normal response.
             else {
-                json.response = $.replace(json.response, '.*\(keywordcount\s(.*)\).*', '');
-                json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + json.keyword + ')');
+                json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + $.escapeTags(json.keyword) + ')');
                 $.say($.tags(event, json.response, false));
             }
         }

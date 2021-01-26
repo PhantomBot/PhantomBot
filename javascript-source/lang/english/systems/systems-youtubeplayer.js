@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ $.lang.register('ytplayer.command.jumptosong.usage', 'usage: !$1 [position numbe
 $.lang.register('ytplayer.command.findsong.failed', 'Cannot find song with a title that contains $1');
 $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. Searches song requests if any exist, else current playlist, for first match.');
 
-$.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
+$.lang.register('ytplayer.command.songrequest.usage', 'Usage: !sr <YouTube Link>');
 $.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
@@ -138,3 +138,8 @@ $.lang.register('ytplayer.command.skip.delay', 'Skip is not allowed for a moment
 $.lang.register('ytplayer.command.votecount.set', 'Minimum votes now needed for viewers to skip songs: $1');
 $.lang.register('ytplayer.command.votecount.negative', 'The number of votes needed must be positive!');
 $.lang.register('ytplayer.command.votecount.usage', '!ytp votecount [amount]  ---  Current setting: $1');
+
+$.lang.register('ytplayer.restrictedmode.usage', 'Usage !restrictionmode [enable|disable]');
+$.lang.register('ytplayer.restrictedmode.status.true', 'Song request restrictions are enabled');
+$.lang.register('ytplayer.restrictedmode.status.false', 'Song request restrictions are disabled');
+

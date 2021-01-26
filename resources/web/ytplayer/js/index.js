@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ $(function () {
     var cluster = null,
             timer = null;
 
-    var DEBUG_MODE = true;
+    var DEBUG_MODE = false;
     var queueMode = '';
     /*
      * @function Loads the player page.
@@ -87,7 +87,6 @@ $(function () {
                     }).modal('toggle');
                 });
             }).modal('toggle');
-            ;
         }
     };
 

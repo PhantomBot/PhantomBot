@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
  * This module is to handle channel point redemption actions
  * Author: MzLiv
  */
-
 (function () {
     var transferToggle = $.getSetIniDbBoolean('channelPointsSettings', 'transferToggle', false),
             transferAmount = $.getSetIniDbNumber('channelPointsSettings', 'transferAmount', 0),
@@ -482,6 +481,7 @@
             var request = $.getUserRequest(username);
             if (request != null) {
                 $.autoBump(username, "points");
+                $.decrementChannelPointsBump();
             } else {
                 $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.channelpoints.404'));
             }

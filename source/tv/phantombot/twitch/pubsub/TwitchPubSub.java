@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,11 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
-import tv.phantombot.event.pubsub.moderation.*;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationDeleteEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationTimeoutEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnBanEvent;
+import tv.phantombot.event.pubsub.moderation.PubSubModerationUnTimeoutEvent;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 public class TwitchPubSub {
@@ -107,6 +111,10 @@ public class TwitchPubSub {
             com.gmt2001.Console.err.println("TwitchPubSub connection error: " + ex.getMessage());
             PhantomBot.exitError();
         }
+    }
+
+    public void setOAuth(String oAuth) {
+        this.twitchPubSubWS.setOAuth(oAuth);
     }
 
     /**
@@ -176,7 +184,7 @@ public class TwitchPubSub {
         private final TwitchPubSub twitchPubSub;
         private final Timer timer = new Timer("tv.phantombot.twitchwsirc.TwitchPubSub");
         private final int channelId;
-        private final String oAuth;
+        private String oAuth;
         private final int botId;
         private boolean hasModerator = false;
         private boolean hasRedemptions = false;
@@ -207,6 +215,10 @@ public class TwitchPubSub {
             } catch (KeyManagementException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.println("TwitchPubSubWS failed to connect: " + ex.getMessage());
             }
+        }
+
+        public void setOAuth(String oAuth) {
+            this.oAuth = oAuth;
         }
 
         /**
@@ -440,13 +452,21 @@ public class TwitchPubSub {
                     if (messageObj.getString("nonce").equalsIgnoreCase("moderator")) {
                         this.hasModerator = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
                         com.gmt2001.Console.debug.println("Got chat_moderator_actions response " + this.hasModerator);
+                        if (!this.hasModerator) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Moderation Feed (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
                     } else if (messageObj.getString("nonce").equalsIgnoreCase("redemptions")) {
                         this.hasRedemptions = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
                         com.gmt2001.Console.debug.println("Got channel-points-channel-v1 response " + this.hasRedemptions);
+                        if (!this.hasRedemptions) {
+                            com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Channel Points (You can ignore the error if you aren't using this feature)");
+                            com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
+                            return;
+                        }
                     }
-                }
-
-                if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
+                } else if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                     return;
                 }

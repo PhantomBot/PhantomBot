@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,9 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.ReferenceCountUtil;
+import java.util.List;
 
 /**
  * Redirects HTTP requests to HTTPS, when SSL is enabled
@@ -29,6 +32,9 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  * @author gmt2001
  */
 public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    private static final List<String> ALLOWNONSSLPATHS = List.of("/addons", "/alerts", "/common", "/config/audio-hooks", "/config/gif-alerts",
+            "/favicon", "/obs/poll-chart", "/ws/alertspolls");
 
     /**
      * Default Constructor
@@ -51,6 +57,15 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
             return;
         }
         
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+        for (String u : ALLOWNONSSLPATHS) {
+            if (qsd.path().startsWith(u)) {
+                ReferenceCountUtil.retain(req);
+                ctx.fireChannelRead(req);
+                return;
+            }
+        }
+
         String host = req.headers().get(HttpHeaderNames.HOST);
         
         if (host != null && !host.isBlank()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,8 +135,8 @@ public class WsYTHandler implements WsFrameHandler {
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("ytkeycheck").value(hasYTKey).endObject().toString()));
 
                 if (!hasYTKey) {
-                    com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions on the "
-                            + "PhantomBot Community Forum at: https://community.phantom.bot/t/acquire-youtube-api-key/222");
+                    com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions in the guides at "
+                            + "https://phantombot.github.io/PhantomBot/");
                     return;
                 }
 
@@ -212,7 +212,7 @@ public class WsYTHandler implements WsFrameHandler {
                     setCurrentState(dataInt);
 
                     if (bufferCounter++ == 3) {
-//                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                        EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
                         bufferCounter = 0;
                     }
                 } else {
@@ -230,6 +230,9 @@ public class WsYTHandler implements WsFrameHandler {
                 EventBus.instance().postAsync(new YTPlayerStateEvent(YTPlayerState.NEWPAUSE));
             } else if (jsonStatus.has("currentid")) {
                 String dataString = jsonStatus.getString("currentid");
+                com.gmt2001.Console.err.println(dataString);
+                com.gmt2001.Console.debug.println(dataString);
+
                 EventBus.instance().postAsync(new YTPlayerCurrentIdEvent(dataString));
             } else if (jsonStatus.has("volume")) {
                 dataInt = jsonStatus.getInt("volume");
@@ -238,7 +241,7 @@ public class WsYTHandler implements WsFrameHandler {
             } else if (jsonStatus.has("errorcode")) {
                 dataInt = jsonStatus.getInt("errorcode");
                 com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
-//                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
+                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);

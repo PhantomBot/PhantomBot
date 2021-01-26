@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 phantom.bot
+ * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,21 +18,19 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONObject;
 import org.json.JSONArray;
-
-import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
+import org.json.JSONException;
+import org.json.JSONObject;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 
 public class ViewerListCache implements Runnable {
     private static ViewerListCache instance = null;
     private final String channelName;
     private final Thread thread;
-    private List<String> cache = new ArrayList<String>();
+    private List<String> cache = new ArrayList<>();
     private boolean isKilled = false;
 
     /**
@@ -60,7 +58,7 @@ public class ViewerListCache implements Runnable {
         this.channelName = channelName;
 
         this.thread = new Thread(this, "tv.phantombot.cache.ViewerListCache");
-        this.thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.thread.start();
     }
 
@@ -144,7 +142,7 @@ public class ViewerListCache implements Runnable {
             } else {
                 com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
             }
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Failed to update: " + ex.getMessage());
         }
     }
