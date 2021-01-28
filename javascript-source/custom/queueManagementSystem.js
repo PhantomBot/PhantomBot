@@ -173,15 +173,22 @@
 
         $.log.file('queue-management', 'Clearing bump counts');
         $.inidb.RemoveFile('bumpSystem_bumpCounts');
+        $.inidb.AddFile("bumpSystem_bumpCounts");
+
 
         $.log.file('queue-management', 'Clearing used free bumps');
         $.inidb.RemoveFile('bumpSystem_freeBumps');
+        $.inidb.AddFile("bumpSystem_freeBumps");
+
 
         $.log.file('queue-management', 'Clearing pending bumps');
         $.inidb.RemoveFile('bumpSystem_pendingBumps');
+        $.inidb.AddFile("bumpSystem_pendingBumps");
+
 
         $.log.file('queue-management', 'Clearing bits counts');
         $.inidb.RemoveFile('bumpSystem_bitsCounts');
+        $.inidb.AddFile("bumpSystem_bitsCounts");
     }
 
     $.bind('command', function (event) {
