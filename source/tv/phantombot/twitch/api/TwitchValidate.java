@@ -49,14 +49,17 @@ public class TwitchValidate {
     private String clientidC = "";
     private String loginC = "";
     private String useridC = "";
+    private Thread validateC = null;
     private final List<String> scopesA = new ArrayList<>();
     private String clientidA = "";
     private String loginA = "";
     private String useridA = "";
+    private Thread validateA = null;
     private final List<String> scopesT = new ArrayList<>();
     private String clientidT = "";
     private String loginT = "";
     private String useridT = "";
+    private Thread validateT = null;
 
     /**
      * This class constructor.
@@ -189,7 +192,8 @@ public class TwitchValidate {
         try {
             scopesA.clear();
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 0);
-            new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
+            validateA = new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
+            validateA.start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
         }
@@ -199,7 +203,8 @@ public class TwitchValidate {
         try {
             scopesC.clear();
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 1);
-            new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
+            validateC = new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
+            validateC.start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
         }
@@ -209,7 +214,8 @@ public class TwitchValidate {
         try {
             scopesT.clear();
             ValidateRunnable validateRunnable = new ValidateRunnable(oAuthToken, type, 2);
-            new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable").start();
+            validateT = new Thread(validateRunnable, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
+            validateT.start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
         }
@@ -276,6 +282,22 @@ public class TwitchValidate {
     }
 
     public void checkOAuthInconsistencies(String botName) {
+        if (validateA != null && validateA.isAlive()) {
+            try {
+                validateA.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        if (validateC != null && validateC.isAlive()) {
+            try {
+                validateC.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
         if (this.hasAPIScope("chat:edit") && !this.hasChatScope("chat:edit")) {
             com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit but API (apioauth) does. OAuth tokens may be reversed");
         } else if (!this.hasChatScope("chat:edit")) {
@@ -284,10 +306,10 @@ public class TwitchValidate {
             com.gmt2001.Console.warn.println("CHAT (oauth) does not have channel:moderate. Bot may be unable to purge/timeout/ban");
         }
 
-        if (this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName)){
-            com.gmt2001.Console.warn.print("CHAT (oauth) is not logged in as " + botName + " but API (apioauth) is. OAuth tokens may be reversed");
-        } else if (!this.getChatLogin().equalsIgnoreCase(botName)){
-            com.gmt2001.Console.warn.print("CHAT (oauth) is not logged in as " + botName + ". OAuth token may be under the wrong login");
+        if (this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName)) {
+            com.gmt2001.Console.warn.println("CHAT (oauth) is not logged in as " + botName + " but API (apioauth) is. OAuth tokens may be reversed");
+        } else if (!this.getChatLogin().equalsIgnoreCase(botName)) {
+            com.gmt2001.Console.warn.println("CHAT (oauth) is not logged in as " + botName + ". OAuth token may be under the wrong login");
         }
     }
 
