@@ -83,13 +83,21 @@
                 allowed = $.isModv3(username, tags);
                 break;
             case 3:
-                allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
+                if ($.isSwappedSubscriberVIP()) {
+                    allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
+                } else {
+                    allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
+                }
                 break;
             case 4:
                 allowed = $.isDonator(username) || $.isModv3(username, tags);
                 break;
             case 5:
-                allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
+                if ($.isSwappedSubscriberVIP()) {
+                    allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
+                } else {
+                    allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
+                }
                 break;
             case 6:
                 allowed = $.isReg(username) || $.isModv3(username, tags);
@@ -460,6 +468,11 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
+                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                        group = 5;
+                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                        group = 3;
+                    }
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
