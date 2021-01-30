@@ -209,7 +209,15 @@
      */
     function getCommandGroup(command) {
         if (commandExists(command)) {
-            return commands[command].groupId;
+            var groupid = commands[command].groupId;
+
+            if ($.isSwappedSubscriberVIP() && groupid == 3) {
+                groupid = 5;
+            } else if ($.isSwappedSubscriberVIP() && groupid == 5) {
+                groupid = 3;
+            }
+
+            return groupid;
         }
         return 7;
     }
@@ -230,11 +238,11 @@
                 group = 'Administrator';
             } else if (commands[command].groupId == 2) {
                 group = 'Moderator';
-            } else if (commands[command].groupId == 3) {
+            } else if (commands[command].groupId == $.getSubscriberGroupID()) {
                 group = 'Subscriber';
             } else if (commands[command].groupId == 4) {
                 group = 'Donator';
-            } else if (commands[command].groupId == 5) {
+            } else if (commands[command].groupId == $.getVIPGroupID()) {
                 group = 'VIP';
             } else if (commands[command].groupId == 6) {
                 group = 'Regular';
@@ -280,11 +288,11 @@
                 group = 'Administrator';
             } else if (commands[command].subcommands[subcommand].groupId == 2) {
                 group = 'Moderator';
-            } else if (commands[command].subcommands[subcommand].groupId == 3) {
+            } else if (commands[command].subcommands[subcommand].groupId == $.getSubscriberGroupID()) {
                 group = 'Subscriber';
             } else if (commands[command].subcommands[subcommand].groupId == 4) {
                 group = 'Donator';
-            } else if (commands[command].subcommands[subcommand].groupId == 5) {
+            } else if (commands[command].subcommands[subcommand].groupId == $.getVIPGroupID()) {
                 group = 'VIP';
             } else if (commands[command].subcommands[subcommand].groupId == 6) {
                 group = 'Regular';

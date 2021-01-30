@@ -34,7 +34,8 @@
         botList = [],
         lastJoinPart = $.systemTime(),
         firstRun = true,
-        isUpdatingUsers = false;
+        isUpdatingUsers = false,
+        _isSwappedSubscriberVIP = false;
 
     /**
      * @function cleanTwitchBots
@@ -260,7 +261,7 @@
             $.consoleDebug('Used isSub without tags::' + tags);
             return isSub(username);
         }
-        
+
         // Only use isSub is we don't have tags, using that method is our last resource.
         // return (tags != null && tags != '{}' && tags.get('subscriber').equals('1')) || isSub(username);
     }
@@ -292,7 +293,7 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        return (tags != null && tags != '{}' && tags.get('vip').equals('1')) || getUserGroupId(username.toLowerCase()) == 5;
+        return (tags != null && tags != '{}' && tags.get('vip').equals('1')) || getUserGroupId(username.toLowerCase()) == getVIPGroupID();
     }
 
     /**
@@ -430,6 +431,8 @@
         for (i in groupKeys) {
             userGroups[parseInt(groupKeys[i])] = $.inidb.get('groups', groupKeys[i]);
         }
+
+        _isSwappedSubscriberVIP = $.inidb.GetBoolean('settings', '', 'isSwappedSubscriberVIP');
     }
 
     /**
@@ -533,12 +536,12 @@
             $.setIniDbBoolean('subscribed', username, true);
         }
 
-        if (isTwitchSub(username) && getUserGroupId(username) != 3) {
+        if (isTwitchSub(username) && getUserGroupId(username) != getSubscriberGroupID()) {
             $.inidb.set('preSubGroup', username, getUserGroupId(username));
             setUserGroupByName(username, 'Subscriber');
         }
 
-        if (!isTwitchSub(username) && getUserGroupId(username) == 3) {
+        if (!isTwitchSub(username) && getUserGroupId(username) == getSubscriberGroupID()) {
             if ($.inidb.exists('preSubGroup', username)) {
                 $.inidb.set('group', username, $.inidb.get('preSubGroup', username));
                 $.inidb.del('preSubGroup', username);
@@ -627,6 +630,48 @@
         }
         $.inidb.set('group', $.ownerName.toLowerCase(), 0);
         $.inidb.set('group', $.botName.toLowerCase(), 0);
+    }
+
+    function swapSubscriberVIP() {
+        var old3L = userGroups[3];
+        var old3D = $.inidb.get('groups', '3');
+        var old3U = $.inidb.GetKeysByLikeValues('group', '', '3');
+        var new3U = [];
+        var old5L = userGroups[5];
+        var old5D = $.inidb.get('groups', '5');
+        var old5U = $.inidb.GetKeysByLikeValues('group', '', '5');
+        var new5U = [];
+        var i;
+
+        for (i in old3U) {
+            new3U[i] = '5';
+        }
+
+        for (i in old5U) {
+            new5U[i] = '3';
+        }
+
+        userGroups[3] = old5L;
+        userGroups[5] = old3L;
+        $.inidb.set('groups', '3', old5D);
+        $.inidb.set('groups', '5', old3D);
+        $.inidb.SetBatchString('group', '', old3U, new3U);
+        $.inidb.SetBatchString('group', '', old5U, new5U);
+
+        _isSwappedSubscriberVIP = !_isSwappedSubscriberVIP;
+        $.inidb.SetBoolean('settings', '', 'isSwappedSubscriberVIP', _isSwappedSubscriberVIP);
+    }
+
+    function isSwappedSubscriberVIP() {
+        return _isSwappedSubscriberVIP;
+    }
+
+    function getSubscriberGroupID() {
+        return _isSwappedSubscriberVIP ? 5 : 3;
+    }
+
+    function getVIPGroupID() {
+        return _isSwappedSubscriberVIP ? 3 : 5;
     }
 
     /**
@@ -784,12 +829,16 @@
             }
         } else if (event.getMode().equalsIgnoreCase('vip')) {
             if (event.getAdd().toString().equals('true')) {
-                if (getUserGroupId(username) < 5) {
-                    setUserGroupById(username, 5);
+                if (getUserGroupId(username) < getVIPGroupID()) {
+                    setUserGroupById(username, getVIPGroupID());
                 }
             } else {
                 if (isVIP(username)) {
-                    setUserGroupById(username, 7);
+                    if (isSub(username)) {
+                        $.inidb.set('group', username, '3'); // Subscriber, return to that group.
+                    } else {
+                        $.inidb.set('group', username, '7');
+                    }
                 }
             }
         }
@@ -991,7 +1040,7 @@
                 return;
             }
 
-            if (groupId == 3) {
+            if (groupId == getSubscriberGroupID()) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.sub.error'));
                 return;
             }
@@ -1077,6 +1126,18 @@
         }
 
         /**
+         * @commandpath swapsubscribervip - Swaps the Subscriber and VIP usergroups for the purposes of permcom
+         */
+        if (command.equalsIgnoreCase('swapsubscribervip')) {
+            swapSubscriberVIP();
+            if (isSwappedSubscriberVIP()){
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.swapsubscribervip.swapped'));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.swapsubscribervip.normal'));
+            }
+        }
+
+        /**
          * @commandpath permission - Give's you all the ppermissions with there id's
          */
         if (command.equalsIgnoreCase('permissions') || command.equalsIgnoreCase('permissionlist')) {
@@ -1098,7 +1159,7 @@
         $.registerChatCommand('./core/permissions.js', 'ignorelist', 1);
         $.registerChatCommand('./core/permissions.js', 'ignoreadd', 1);
         $.registerChatCommand('./core/permissions.js', 'ignoreremove', 1);
-
+        $.registerChatCommand('./core/permissions.js', 'swapsubscribervip', 1);
 
         /** Load groups and generate default groups if they don't exist */
         reloadGroups();
@@ -1157,4 +1218,7 @@
     $.removeModeratorFromCache = removeModeratorFromCache;
     $.updateUsersObject = updateUsersObject;
     $.restoreSubscriberStatus = restoreSubscriberStatus;
+    $.isSwappedSubscriberVIP = isSwappedSubscriberVIP;
+    $.getSubscriberGroupID = getSubscriberGroupID;
+    $.getVIPGroupID = getVIPGroupID;
 })();
