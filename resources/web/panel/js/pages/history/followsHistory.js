@@ -56,7 +56,17 @@ $(function() {
 			follows.push([
 				name,
 				date.getFullYear() + '-' + month + '-' + day,
-				'<button type="button" className="btn btn-primary pull-right" id="follows-btn-replay-' + name + '" data="' + name + '">Replay</button>'
+				$('<div/>', {
+					'class': 'btn-group'
+				}).append($('<button/>', {
+					'type': 'button',
+					'id': 'follows-btn-replay-' + name,
+					'class': 'btn btn-xs btn-info',
+					'style': 'float: right',
+					'html': $('<i/>', {
+						'class': 'fa fa-refresh'
+					})
+				})).html()
 			]);
 
 		}
