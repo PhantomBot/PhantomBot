@@ -22,26 +22,6 @@ $(function() {
 
 	let followingOffset = 0
 
-	/**
-	 *
-	 * @param results
-	 */
-	function createClickButtonEvents(results) {
-		for (let i = 0; i < results.length; i++) {
-			let follow = results[i];
-			let name = follow.key;
-			$('#follows-btn-replay-' + name).off();
-			if ($('#follows-btn-replay-' + name).length) {
-				$('#follows-btn-replay-' + name).on('click', function () {
-					socket.sendCommand('replay_follow', 'replayfollow ' + name, function () {
-						toastr.success('Successfully replayed');
-					});
-				});
-			}
-
-		}
-	}
-
 	function pushDataIntoTable(results) {
 		followingOffset = followingOffset + FOLLOW_STEP;
 		let follows = [];
@@ -50,30 +30,26 @@ $(function() {
 			let follow = results[i];
 			let name = follow.key;
 			let date = new Date(follow.value);
-			let month = ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : '' + (date.getMonth() + 1));
-			let day = ((date.getDate()) < 10 ? '0' + (date.getDate()) : '' + (date.getDate()));
 
 			follows.push([
 				name,
-				date.getFullYear() + '-' + month + '-' + day,
+				helpers.getPaddedDateString(new Date(date).toLocaleString()) + ' ',
 				$('<div/>', {
 					'class': 'btn-group'
 				}).append($('<button/>', {
 					'type': 'button',
 					'id': 'follows-btn-replay-' + name,
+					'data-follow': name,
 					'class': 'btn btn-xs btn-info',
 					'style': 'float: right',
 					'html': $('<i/>', {
 						'class': 'fa fa-refresh'
-					})
+					}),
+					'title': 'Replay alert !'
 				})).html()
 			]);
 
 		}
-
-		$('#followsHistoryTable').on( 'draw.dt', function () {
-			createClickButtonEvents(results);
-		} );
 
 		return follows;
 	}
@@ -83,7 +59,7 @@ $(function() {
 		let follows = pushDataIntoTable(results);
 
 		// Create table.
-		$('#followsHistoryTable').DataTable({
+		let table = $('#followsHistoryTable').DataTable({
 			'searching': true,
 			'autoWidth': false,
 			'data': follows,
@@ -98,7 +74,13 @@ $(function() {
 			]
 		});
 
-		createClickButtonEvents(results);
+		table.on('click', '.btn-info', function() {
+			let follow = $(this).data('follow');
+
+			socket.sendCommand('replay_follow', 'replayfollow ' + follow, function () {
+				toastr.success('Successfully replayed');
+			});
+		});
 	});
 
 	// On load more time button.
@@ -115,8 +97,6 @@ $(function() {
 
 				// Add the rows.
 				table.rows.add(follows).draw(false);
-
-				createClickButtonEvents(results);
 			});
 		} else {
 			toastr.error('Cannot load more time since there are currently some being loaded.');
