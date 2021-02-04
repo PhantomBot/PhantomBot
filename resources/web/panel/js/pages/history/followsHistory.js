@@ -16,91 +16,91 @@
  */
 
 // Function that querys all of the data we need.
-$(function() {
+$(function () {
 
-	const FOLLOW_STEP = 100;
+    const FOLLOW_STEP = 100;
 
-	let followingOffset = 0
+    let followingOffset = 0
 
-	function pushDataIntoTable(results) {
-		followingOffset = followingOffset + FOLLOW_STEP;
-		let follows = [];
+    function pushDataIntoTable(results) {
+        followingOffset = followingOffset + FOLLOW_STEP;
+        let follows = [];
 
-		for (let i = 0; i < results.length; i++) {
-			let follow = results[i];
-			let name = follow.key;
-			let date = new Date(follow.value);
+        for (let i = 0; i < results.length; i++) {
+            let follow = results[i];
+            let name = follow.key;
+            let date = new Date(follow.value);
 
-			follows.push([
-				name,
-				helpers.getPaddedDateString(new Date(date).toLocaleString()) + ' ',
-				$('<div/>', {
-					'class': 'btn-group'
-				}).append($('<button/>', {
-					'type': 'button',
-					'id': 'follows-btn-replay-' + name,
-					'data-follow': name,
-					'class': 'btn btn-xs btn-info',
-					'style': 'float: right',
-					'html': $('<i/>', {
-						'class': 'fa fa-refresh'
-					}),
-					'title': 'Replay alert !'
-				})).html()
-			]);
+            follows.push([
+                name,
+                helpers.getPaddedDateString(new Date(date).toLocaleString()) + ' ',
+                $('<div/>', {
+                    'class': 'btn-group'
+                }).append($('<button/>', {
+                    'type': 'button',
+                    'id': 'follows-btn-replay-' + name,
+                    'data-follow': name,
+                    'class': 'btn btn-xs btn-info',
+                    'style': 'float: right',
+                    'html': $('<i/>', {
+                        'class': 'fa fa-refresh'
+                    }),
+                    'title': 'Replay alert !'
+                })).html()
+            ]);
 
-		}
+        }
 
-		return follows;
-	}
+        return follows;
+    }
 
-	socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function(results) {
+    socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function (results) {
 
-		let follows = pushDataIntoTable(results);
+        let follows = pushDataIntoTable(results);
 
-		// Create table.
-		let table = $('#followsHistoryTable').DataTable({
-			'searching': true,
-			'autoWidth': false,
-			'data': follows,
-			'pageLength': 10,
-			'columnDefs': [
-				{ 'width': '30%', 'targets': 0 }
-			],
-			'columns': [
-				{ 'title': 'Username', 'orderData' : [1], 'order' : [0, 'desc'] },
-				{ 'title': 'Date' },
-				{ 'title': 'Replay' },
-			]
-		});
+        // Create table.
+        let table = $('#followsHistoryTable').DataTable({
+            'searching': true,
+            'autoWidth': false,
+            'data': follows,
+            'pageLength': 10,
+            'columnDefs': [
+                {'width': '30%', 'targets': 0}
+            ],
+            'columns': [
+                {'title': 'Username', 'orderData': [1], 'order': [0, 'desc']},
+                {'title': 'Date'},
+                {'title': 'Replay'},
+            ]
+        });
 
-		table.on('click', '.btn-info', function() {
-			let follow = $(this).data('follow');
+        table.on('click', '.btn-info', function () {
+            let follow = $(this).data('follow');
 
-			socket.sendCommand('replay_follow', 'replayfollow ' + follow, function () {
-				toastr.success('Successfully replayed');
-			});
-		});
-	});
+            socket.sendCommand('replay_follow', 'replayfollow ' + follow, function () {
+                toastr.success('Successfully replayed');
+            });
+        });
+    });
 
-	// On load more time button.
-	$('#follows-history-load-more').on('click', function() {
-		let table = $('#followsHistoryTable').DataTable(),
-			dataCount = table.rows().count(),
-			follows = [];
-		// Only allow more data to be loaded once the last click was fully loaded.
-		if (followingOffset === dataCount) {
-			toastr.success('Loading more users into the follows table.');
-			// Get the next 100 users.
-			socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function(results) {
-				follows = pushDataIntoTable(results);
+    // On load more time button.
+    $('#follows-history-load-more').on('click', function () {
+        let table = $('#followsHistoryTable').DataTable(),
+            dataCount = table.rows().count(),
+            follows = [];
+        // Only allow more data to be loaded once the last click was fully loaded.
+        if (followingOffset === dataCount) {
+            toastr.success('Loading more users into the follows table.');
+            // Get the next 100 users.
+            socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function (results) {
+                follows = pushDataIntoTable(results);
 
-				// Add the rows.
-				table.rows.add(follows).draw(false);
-			});
-		} else {
-			toastr.error('Cannot load more time since there are currently some being loaded.');
-		}
-	});
+                // Add the rows.
+                table.rows.add(follows).draw(false);
+            });
+        } else {
+            toastr.error('Cannot load more time since there are currently some being loaded.');
+        }
+    });
 
 });
