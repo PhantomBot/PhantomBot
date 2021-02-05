@@ -16,13 +16,13 @@
  */
 
 // Function that querys all of the data we need.
-$(function () {
+$(function() {
 
     const FOLLOW_STEP = 100;
 
     let followingOffset = 0
 
-    function pushDataIntoTable(results) {
+    function prepareDataForTable(results) {
         followingOffset = followingOffset + FOLLOW_STEP;
         let follows = [];
 
@@ -33,7 +33,7 @@ $(function () {
 
             follows.push([
                 name,
-                helpers.getPaddedDateString(new Date(date).toLocaleString()) + ' ',
+                date,
                 $('<div/>', {
                     'class': 'btn-group'
                 }).append($('<button/>', {
@@ -54,9 +54,9 @@ $(function () {
         return follows;
     }
 
-    socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function (results) {
+    socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function(results) {
 
-        let follows = pushDataIntoTable(results);
+        let follows = prepareDataForTable(results);
 
         // Create table.
         let table = $('#followsHistoryTable').DataTable({
@@ -64,17 +64,29 @@ $(function () {
             'autoWidth': false,
             'data': follows,
             'pageLength': 10,
+            'order': [[ 1, "desc" ]],
             'columnDefs': [
-                {'width': '30%', 'targets': 0}
+                {
+                    'width': '35%',
+                    'targets': 0
+                },
+                {
+                    'width': '35%',
+                    'targets': 1,
+                    'createdCell': function (td, cellData) {
+                        $(td).attr('data-sort', new Date(cellData).toISOString()).text(new Date(cellData).toLocaleString())
+                    }
+                }
+
             ],
             'columns': [
-                {'title': 'Username', 'orderData': [1], 'order': [0, 'desc']},
-                {'title': 'Date'},
-                {'title': 'Replay'},
+                { 'title': 'Username' },
+                { 'title': 'Date' },
+                { 'title': 'Actions' },
             ]
         });
 
-        table.on('click', '.btn-info', function () {
+        table.on('click', '.btn-info', function() {
             let follow = $(this).data('follow');
 
             socket.sendCommand('replay_follow', 'replayfollow ' + follow, function () {
@@ -84,7 +96,7 @@ $(function () {
     });
 
     // On load more time button.
-    $('#follows-history-load-more').on('click', function () {
+    $('#follows-history-load-more').on('click', function() {
         let table = $('#followsHistoryTable').DataTable(),
             dataCount = table.rows().count(),
             follows = [];
@@ -92,8 +104,8 @@ $(function () {
         if (followingOffset === dataCount) {
             toastr.success('Loading more users into the follows table.');
             // Get the next 100 users.
-            socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function (results) {
-                follows = pushDataIntoTable(results);
+            socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function(results) {
+                follows = prepareDataForTable(results);
 
                 // Add the rows.
                 table.rows.add(follows).draw(false);
