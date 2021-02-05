@@ -739,7 +739,7 @@
                     user = String(event.getSender());
                 }
                 return {
-                    result: String($.getUserTime(user) / 3600),
+                    result: String(Math.round($.getUserTime(user) / 360)/10),
                     cache: true
                 };
             }
