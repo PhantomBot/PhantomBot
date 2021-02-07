@@ -439,8 +439,34 @@
         }
 
         if (command.equalsIgnoreCase('beanbump')) {
-            // TODO Check cooldown?
-            // TODO Call StreamElements with user and redemption ID
+            if (!($.botMode().equalsIgnoreCase("music")) || !autoBumpEnabled) {
+                // Not in music mode, exiting
+                return;
+            }
+
+            if (beanBumpsRemaining == 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.beanbumps.soldout'));
+                return;
+            }
+
+            if (getFreeBumpUsed(sender)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.beanbumps.free.bump.used'));
+                return;
+            }
+
+            var request = $.getUserRequest(sender);
+            if (request != null) {
+                request[0].setBumpFlag();
+                var bumpPosition = $.getBumpPosition();
+                $.currentPlaylist().addToQueue(request[0], bumpPosition);
+                $.getConnectedPlayerClient().pushSongList();
+                $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.command.bump.success', bumpPosition + 1));
+
+                markFreeBumpUsed(sender)
+                decrementBeanBump();
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.beanbumps.song.404'));
+            }
         }
     });
 
@@ -510,15 +536,14 @@
             return;
         }
 
-        var winner = $.inidb.GetString('sotn_winners', '', winners[0]);
-        $.log.file('queue-management', '[loadSotnWinner] - Winner: ' + winners[0]);
+        var latestWinner = winners[winners.length - 1];
+
+        var winner = $.inidb.GetString('sotn_winners', '', latestWinner);
+        $.log.file('queue-management', '[loadSotnWinner] - Winner: ' + latestWinner + ' ' + winner);
 
         var winnerJson = JSON.parse(winner);
 
-        addPendingBump(winnerJson.winner, 'sotn');
-
-        $.log.file('queue-management', '[loadSotnWinner] - Pending bump added, removing from SOTN table');
-        $.inidb.RemoveKey('sotn_winners', '', winners[0]);
+        addPendingBump(winnerJson.username, 'sotn');
     }
 
     $.autoBump = autoBump;
@@ -530,6 +555,7 @@
     $.getPendingBump = getPendingBump;
     $.resetBumps = resetBumps;
     $.enableAutobumps = enableAutobumps;
+    $.addPendingBump = addPendingBump;
 
     $.getChannelPointsBumpCount = getChannelPointsBumpCount;
     $.decrementChannelPointsBump = decrementChannelPointsBump;

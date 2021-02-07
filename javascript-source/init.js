@@ -864,6 +864,20 @@
         });
 
         /*
+         * @event yTPlayerRequestSongHistoryEvent
+         */
+        $api.on($script, 'yTPlayerRequestSongHistory', function (event) {
+            callHook('yTPlayerRequestSongHistory', event, false);
+        });
+
+        /*
+         * @event yTPlayerRequestQueueInfo
+         */
+        $api.on($script, 'yTPlayerRequestQueueInfo', function (event) {
+            callHook('yTPlayerRequestQueueInfo', event, false);
+        });
+
+        /*
          * @event yTPlayerRandomizeEvent
          */
         $api.on($script, 'yTPlayerRandomize', function (event) {

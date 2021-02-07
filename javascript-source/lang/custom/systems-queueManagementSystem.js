@@ -39,6 +39,9 @@ $.lang.register('songqueuemgmt.autobump.donation', 'Your song will be bumped for
 $.lang.register('songqueuemgmt.autobump.bits', 'Your song will be bumped for your bits!');
 $.lang.register('songqueuemgmt.autobump.sotn', 'Your song will be bumped for your Song of the Night win!');
 $.lang.register('songqueuemgmt.autobump.gift', 'Your song will be bumped!');
+$.lang.register('songqueuemgmt.autobump.prev', 'Your previous bump is being applied');
+$.lang.register('songqueuemgmt.autobump.save', 'Your bump will re-applied if you request another song');
+
 
 $.lang.register('songqueuemgmt.autobump.remove.usage', 'Usage: !removebump <user>');
 $.lang.register('songqueuemgmt.autobump.remove.success', '$1\'s bump has been removed');
@@ -54,3 +57,7 @@ $.lang.register('songqueuemgmt.bump.disabled', 'The bump system is disabled');
 $.lang.register('songqueuemgmt.autobump.control.usage', 'Usage !autobump [enable|disable]');
 $.lang.register('songqueuemgmt.autobump.enabled', 'Autobumping has been enabled');
 $.lang.register('songqueuemgmt.autobump.disabled', 'Autobumping has been disabled');
+
+$.lang.register('songqueuemgmt.beanbumps.soldout', 'Bean bumps are sold out');
+$.lang.register('songqueuemgmt.beanbumps.free.bump.used', 'You have already used your free bump for this stream');
+$.lang.register('songqueuemgmt.beanbumps.song.404', 'You do not have a song in the queue');
