@@ -53,10 +53,11 @@
                 return;
             }
 
+            var position = $.getBumpPosition();
             existingRequest[0].setBumpFlag();
-            $.currentPlaylist().addToQueue(existingRequest[0], bumpPosition);
+            $.currentPlaylist().addToQueue(existingRequest[0], position);
             $.getConnectedPlayerClient().pushSongList();
-            $.say($.whisperPrefix(userToBump) + $.lang.get('songqueuemgmt.command.bump.success', bumpPosition + 1));
+            $.say($.whisperPrefix(userToBump) + $.lang.get('songqueuemgmt.command.bump.success', position + 1));
 
             incrementBumpCount(userToBump);
         } else {
@@ -494,14 +495,15 @@
                     return;
                 }
 
-                $.log.file('queue-management', '[autoBump] - Found user request, bumping');
+                var bumpPosition = $.getBumpPosition();
+                $.log.file('queue-management', '[autoBump] - Found user request, bumping to position [' + bumpPosition + ']');
 
                 userRequest[0].setBumpFlag();
 
-                $.currentPlaylist().addToQueue(userRequest[0], $.getBumpPosition());
+                $.currentPlaylist().addToQueue(userRequest[0], bumpPosition);
                 $.getConnectedPlayerClient().pushSongList();
 
-                $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.command.bump.success', $.getBumpPosition() + 1));
+                $.say($.whisperPrefix(user) + $.lang.get('songqueuemgmt.command.bump.success', bumpPosition + 1));
             } else {
                 $.log.file('queue-management', '[autoBump] - No request found for user, saving for their next request');
                 addPendingBump(user, method);

@@ -857,7 +857,7 @@
          * @param {String}
          * @return {String}
          */
-        this.removeUserSong = function (username) {
+        this.removeUserSong = function (username, storeBump) {
             var songTitle = null,
                     requestsArray = requests.toArray(),
                     i;
@@ -865,6 +865,7 @@
             for (i = requestsArray.length - 1; i >= 0; i--) {
                 if (requestsArray[i].getOwner().equals(username) && songTitle == null) {
                     songTitle = requestsArray[i].getVideoTitle();
+                    if (requestsArray[i].isBump() && storeBump) {
                     if (requestsArray[i].isBump()) {
                         $.addPendingBump(username, 'prev');
                         $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.save'));
@@ -935,7 +936,7 @@
                 }
             }
 
-            $.log.file('youtube-player', 'User: ' + sender + ', Request count: ' + currentRequestCount + ', Max Parallel Songs: ' + songRequestsMaxParallel);
+//            $.log.file('youtube-player', 'User: ' + sender + ', Request count: ' + currentRequestCount + ', Max Parallel Songs: ' + songRequestsMaxParallel);
             return (currentRequestCount >= songRequestsMaxParallel);
         };
 
@@ -1184,7 +1185,6 @@
                 requestList = currentPlaylist.getSongRequestHistory();
                 for (i in requestList) {
                     youtubeObject = requestList[i];
-                    $.log.file('youtube-player', i + "song" + youtubeObject.getVideoTitle());
                     jsonList['requestHistory'].push({
                         "song": youtubeObject.getVideoId() + '',
                         "title": youtubeObject.getVideoTitle() + '',
@@ -1263,10 +1263,10 @@
             var requestOwner = youtubeVideo.getOwner();
 
             if (lastRequesters != null) {
-                $.log.file('youtube-player', "Last requests size = " + lastRequesters.size() + " " + "Last requests size = " + shuffleBuffer);
+//                $.log.file('youtube-player', "Last requests size = " + lastRequesters.size() + " " + "Last requests size = " + shuffleBuffer);
 
                 if (lastRequesters.size() >= shuffleBuffer) {
-                    $.log.file('youtube-player', "Polling the last requester to drop out oldest obj");
+//                    $.log.file('youtube-player', "Polling the last requester to drop out oldest obj");
                     lastRequesters.poll();
                 }
             }
@@ -2258,7 +2258,7 @@
          */
         if (command.equalsIgnoreCase('wrongsong')) {
             if (args.length == 0) {
-                var songTitle = currentPlaylist.removeUserSong(sender);
+                var songTitle = currentPlaylist.removeUserSong(sender, true);
                 if (songTitle) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.success', songTitle));
                     connectedPlayerClient.pushSongList();
@@ -2269,7 +2269,7 @@
             } else {
                 if (args[0].equalsIgnoreCase('user')) {
                     if (args[1]) {
-                        var songTitle = currentPlaylist.removeUserSong(args[1].toLowerCase());
+                        var songTitle = currentPlaylist.removeUserSong(args[1].toLowerCase(), true);
                         if (songTitle) {
                             $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.user.success', args[1], songTitle));
                             connectedPlayerClient.pushSongList();
@@ -2440,7 +2440,8 @@
             }
 
             if (isRequestAllowed(user, newRequest)) {
-                currentPlaylist.removeUserSong(user);
+                // TODO Apply flag to not trigger the pending bump check
+                currentPlaylist.removeUserSong(user, false);
                 currentPlaylist.addToQueue(newRequest, existingRequest[1]);
                 connectedPlayerClient.pushSongList();
                 connectedPlayerClient.pushQueueInformation();
@@ -2614,7 +2615,7 @@
             }
         }
 
-        $.log.file('youtube-player', 'Position in the queue to bump to: ' + bumpPosition);
+        $.log.file('queue-management', 'Position in the queue to bump to: ' + bumpPosition);
 
         return bumpPosition;
     }

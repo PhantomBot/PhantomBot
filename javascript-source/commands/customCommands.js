@@ -621,38 +621,7 @@
          * @commandpath commands - Provides a list of all available custom commands.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var cmds = $.inidb.GetKeyList('command', ''),
-                aliases = $.inidb.GetKeyList('aliases', ''),
-                externalCommands = $.inidb.GetKeyList('externalCommands', ''),
-                cmdList = [];
-
-            for (idx in cmds) {
-                if (!$.inidb.exists('disabledCommands', cmds[idx])
-                        && !$.inidb.exists('hiddenCommands', cmds[idx])
-                        && permCom(sender, cmds[idx], '') === 0) {
-                    cmdList.push('!' + cmds[idx]);
-                }
-            }
-
-            for (idx in aliases) {
-                var aliasCmd = $.inidb.get('aliases', aliases[idx]);
-
-                if (!$.inidb.exists('disabledCommands', aliases[idx])
-                        && !$.inidb.exists('hiddenCommands', aliases[idx])
-                        && permCom(sender, aliasCmd, '') === 0) {
-                    cmdList.push('!' + aliases[idx]);
-                }
-            }
-
-            for (idx in externalCommands) {
-                cmdList.push('!' + externalCommands[idx]);
-            }
-
-            if (cmdList.length > 0) {
-                $.paginateArray(cmdList, 'customcommands.cmds', ', ', true, sender);
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
-            }
+            $.say($.whisperPrefix(sender) + "The bot command list is available at https://kentobeans.live/stream/commands");
             return;
         }
 
@@ -908,12 +877,12 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        var handleExtraCooldown = function(commandLower, extra) {
+        var handleExtraCooldown = function (commandLower, extra) {
             if (extra.cooldown != null) {
                 $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
             }
         };
-        var handleExtraDisabled = function(commandLower, extra) {
+        var handleExtraDisabled = function (commandLower, extra) {
             if (extra.disabled != null) {
                 if (extra.disabled) {
                     $.tempUnRegisterChatCommand(commandLower);
@@ -925,10 +894,10 @@
 
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             var args = event.getArgs(),
-                eventName = args[0] + '',
-                command = args[1] + '',
-                commandLower = command.toLowerCase() + '',
-                extra = args[3] == null ? {} : JSON.parse(args[3]);
+                    eventName = args[0] + '',
+                    command = args[1] + '',
+                    commandLower = command.toLowerCase() + '',
+                    extra = args[3] == null ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 if (customCommands[commandLower] !== undefined) {
                     delete customCommands[commandLower];
