@@ -866,7 +866,6 @@
                 if (requestsArray[i].getOwner().equals(username) && songTitle == null) {
                     songTitle = requestsArray[i].getVideoTitle();
                     if (requestsArray[i].isBump() && storeBump) {
-                    if (requestsArray[i].isBump()) {
                         $.addPendingBump(username, 'prev');
                         $.say($.whisperPrefix(username) + $.lang.get('songqueuemgmt.autobump.save'));
                     }
@@ -2440,7 +2439,6 @@
             }
 
             if (isRequestAllowed(user, newRequest)) {
-                // TODO Apply flag to not trigger the pending bump check
                 currentPlaylist.removeUserSong(user, false);
                 currentPlaylist.addToQueue(newRequest, existingRequest[1]);
                 connectedPlayerClient.pushSongList();
