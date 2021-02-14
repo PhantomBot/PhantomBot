@@ -241,7 +241,6 @@ public class WsYTHandler implements WsFrameHandler {
             } else if (jsonStatus.has("errorcode")) {
                 dataInt = jsonStatus.getInt("errorcode");
                 com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
-                EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             }
         } catch (JSONException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
