@@ -255,6 +255,10 @@ public class TwitchWSIRCParser implements Runnable {
             return;
         }
 
+        if (PhantomBot.instance().getProperties().getProperty("ircdebug", "false").equalsIgnoreCase("true")) {
+            com.gmt2001.Console.debug.println(rawMessage);
+        }
+
         // Get tags from the messages.
         if (messageParts[0].startsWith("@")) {
             String[] tagParts = messageParts[0].substring(1).split(";");

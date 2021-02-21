@@ -83,6 +83,10 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
 
+            if (PhantomBot.instance().getProperties().getProperty("wsdebug", "false").equalsIgnoreCase("true")) {
+                com.gmt2001.Console.debug.println(jso.toString());
+            }
+
             if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 handleRestrictedCommands(ctx, frame, jso);
             }

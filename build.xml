@@ -25,7 +25,7 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.4.1" />
+    <property name="version" value="3.4.2" />
     <!-- Please see this for version numbers: https://semver.org/ -->
     <property name="webpanel.version" value="1.4.0" />
     <property name="src" location="source" />
@@ -55,7 +55,7 @@
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
 
-    <condition property="build_type" value="${buildtype}" else="stable">
+    <condition property="build_type" value="${buildtype}" else="custom">
         <and>
             <isset property="buildtype" />
             <length string="${buildtype}" trim="yes" length="0" when="greater" />

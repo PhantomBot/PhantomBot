@@ -465,6 +465,10 @@
                     subCommand = $.getSubCommandFromArguments(command, args),
                     isMod = $.isModv3(sender, event.getTags());
 
+            if (isReady === false && command.equalsIgnoreCase(bot) && args[0].equalsIgnoreCase('moderate')) {
+                $.session.getModerationStatus();
+            }
+
             // Check if the command exists or if the module is disabled.
             if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command))) {
                 return;
