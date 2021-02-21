@@ -1580,7 +1580,7 @@
             'gamesplayed': gamesplayed,
             'help': help,
             'hours': hours,
-            'hoursround': hoursrund,
+            'hoursround': hoursround,
             'keywordcount': keywordcount,
             'lasttip': lasttip,
             'offlineonly': offlineonly,
