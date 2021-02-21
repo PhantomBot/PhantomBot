@@ -739,6 +739,26 @@
                     user = String(event.getSender());
                 }
                 return {
+                    result: String($.getUserTime(user) / 3600),
+                    cache: true
+                };
+            }
+        }
+
+        /*
+         * @transformer hoursround
+         * @formula (hoursround) number of hours sender has spent in chat, with the value rounded to the nearest tenth of an hour
+         * @formula (hoursround user:str) number of hours the provided user has spent in chat, with the value rounded to the nearest tenth of an hour
+         * @cached
+         */
+        function hoursround(args, event) {
+            var user;
+            if ((match = args.match(/^(?: (.*))?$/))) {
+                user = (match[1] || '').replace(/^@/, '');
+                if (user.length === 0) {
+                    user = String(event.getSender());
+                }
+                return {
                     result: String(Math.round($.getUserTime(user) / 360)/10),
                     cache: true
                 };
@@ -1560,6 +1580,7 @@
             'gamesplayed': gamesplayed,
             'help': help,
             'hours': hours,
+            'hoursround': hoursrund,
             'keywordcount': keywordcount,
             'lasttip': lasttip,
             'offlineonly': offlineonly,
