@@ -543,6 +543,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'welcomepanelupdate', 30);
         }, 10000);
     });
 })();
