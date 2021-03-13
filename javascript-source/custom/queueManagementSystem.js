@@ -129,7 +129,7 @@
     }
 
     function resetBeanBumps() {
-        beanBumpsRemaining = 3;
+        beanBumpsRemaining = 1;
     }
 
     /**/
@@ -447,6 +447,9 @@
 
             if (beanBumpsRemaining == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.beanbumps.soldout'));
+                
+                // Phantombot already took the points to run the command, so refund them
+                $.inidb.incr('points', $.user.sanitize(sender), 300);
                 return;
             }
 
