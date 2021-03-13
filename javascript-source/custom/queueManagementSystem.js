@@ -129,7 +129,7 @@
     }
 
     function resetBeanBumps() {
-        beanBumpsRemaining = 1;
+        beanBumpsRemaining = 3;
     }
 
     /**/
