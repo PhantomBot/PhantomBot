@@ -97,6 +97,7 @@
         $.writeToFile(username + ' ', './addons/bitsHandler/latestCheer.txt', false);
         $.writeToFile(username + ': ' + bits + ' ', './addons/bitsHandler/latestCheer&Bits.txt', false);
 
+        $.inidb.incr('points', username, bits);
         checkForAutobump(username, bits);
 
     });
