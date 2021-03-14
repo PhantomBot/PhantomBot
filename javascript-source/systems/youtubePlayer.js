@@ -2553,11 +2553,15 @@
 
     function getUserRequest(user) {
         $.log.file('queue-management', 'Looking for request for user [' + user + ']');
+        
 
         var timeToPlayInSeconds = 0;
         var request;
         var requests = currentPlaylist.getRequestList();
-        for (i = 0; i < requests.length; i++) {
+        
+        $.log.file('queue-management', 'Queue size [' + requests.length + ']');
+        
+        for (var i = 0; i < requests.length; i++) {
             request = requests[i];
 
             $.log.file('queue-management', 'Request [' + i + '] owner [' + request.getOwner() + '], Given user [' + user + ']');
