@@ -39,6 +39,7 @@ $.lang.register('shufflesystem.reset', 'The shuffle has been reset.');
 $.lang.register('shufflesystem.enter.success', 'You have been entered in the shuffle.');
 $.lang.register('shufflesystem.error.recentwinner', 'You cannot enter a shuffle within $1 songs of your last song play');
 $.lang.register('shufflesystem.error.norequest', 'You do not have a request in the queue');
+$.lang.register('shufflesystem.error.bump', 'You cannot enter a shuffle if your request is already bumped');
 $.lang.register('shufflesystem.user.wins', 'You have won shuffle $1 times kentobRIGGED');
 
 $.lang.register('shufflesystem.user.first.win', 'This is their first win in shuffle!');

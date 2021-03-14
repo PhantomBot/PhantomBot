@@ -2613,27 +2613,25 @@
 
     function getBumpPosition() {
         $.log.file('queue-management', 'Checking for bump position');
-        
-        var bumpPosition = 0;
-        var i;
-
         $.log.file('queue-management', 'Number of requests: ' + currentPlaylist.getRequestsCount());
 
-        for (i = 0; i < currentPlaylist.getRequestsCount(); i++) {
+        for (var i = 0; i < currentPlaylist.getRequestsCount(); i++) {
             $.log.file('queue-management', 'Checking request at position ' + i);
             
             req = currentPlaylist.getRequestAtIndex(i);
-            $.log.file('queue-management', 'Request flags: Bump - ' + req.isBump() + ', Shuffle - ' + req.isShuffle());
-            if (!req.isBump() && !req.isShuffle()) {
-                $.log.file('queue-management', 'Request is not a bump, and request is not a shuffle, returning position ' + i);
-                bumpPosition = i;
-                break;
+            $.log.file('queue-management', 'Request [' + req.getOwner() + '] flags: Bump - ' + req.isBump() + ', Shuffle - ' + req.isShuffle());
+
+            if (req.isBump() || req.isShuffle()) {
+                $.log.file('queue-management', 'Request is a bump or a shuffle, continuing');
+                continue;
+            } else {
+                $.log.file('queue-management', 'Request is not a bump and request is not a shuffle, returning position ' + i);
+                return i;
             }
         }
 
-        $.log.file('queue-management', 'Position in the queue to bump to: ' + bumpPosition);
-
-        return bumpPosition;
+        $.log.file('queue-management', 'No bumps or shuffles in the queue, bumping postion to top');
+        return 0;
     }
 
     function clearSongHistory() {

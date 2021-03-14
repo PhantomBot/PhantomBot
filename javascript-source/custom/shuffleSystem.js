@@ -30,6 +30,7 @@
             raffleMessage = $.getSetIniDbString('shuffleSettings', 'raffleMessage', 'A raffle is still opened! Type (keyword) to enter. (entries) users have entered so far.'),
             messageInterval = $.getSetIniDbNumber('shuffleSettings', 'raffleMessageInterval', 0),
             interval, timeout, followMessage = '',
+            ignoreBumps = false,
             timerMessage = '',
             shuffleBuffer = $.getSetIniDbNumber('shuffleSettings', 'songbuffer', 2);
 
@@ -176,10 +177,16 @@
         var request = $.getUserRequest(username);
 
         // TODO if in a non-bump shuffle, move to the top, otherwise, get the bump position
-        request[0].setShuffleFlag();
-        var position = $.getBumpPosition();
+        var position;
+        if (ignoreBumps) {
+            position = 0;
+        } else {
+            position = $.getBumpPosition();
+        }
+        
         $.currentPlaylist().addToQueue(request[0], position);
         
+        request[0].setShuffleFlag();
         $.getConnectedPlayerClient().pushSongList();
     }
 
@@ -211,6 +218,12 @@
         var request = $.getUserRequest(username);
         if (request == null) {
             message(username, $.lang.get('shufflesystem.error.norequest'));
+            return;
+        }
+        
+        /* Check if the user's request is a bump */
+        if (request[0].isBump()) {
+            message(username, $.lang.get('shufflesystem.error.bump'));
             return;
         }
         
@@ -374,6 +387,8 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('shufflesystem.buffer.success', shuffleBuffer));
                 return;
             }
+            
+            
 
             /**
              * @commandpath shuffle togglewarningmessages - Toggles the raffle warning messages when entering.
@@ -436,6 +451,12 @@
         }
 
         if (command.equalsIgnoreCase('startshuffle')) {
+            if (action && action.equalsIgnoreCase("ignorebumps")) {
+                ignoreBumps = true;
+            } else {
+                ignoreBumps = false;
+            }
+            
             open(sender, 'open join 1');
         }
     });
@@ -450,6 +471,7 @@
 
         $.registerChatCommand('./custom/shuffleSystem.js', 'shufflewins');
         $.registerChatCommand('./custom/shuffleSystem.js', 'startshuffle', 2);
+        $.registerChatSubcommand('startshuffle', 'ignorebumps', 2);
 
 
         // Mark the raffle as off for the panel.
