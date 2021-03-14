@@ -23,6 +23,11 @@
 (function () {
 
     var mode = "";
+    var startMessages = [
+        "Flux capacitor, fluxing",
+        "Hyperdrive engaged",
+        "S-foils locked in attack position"
+    ];
 
     function secondsToTimestamp(timeInSeconds) {
         // multiply by 1000 because Date() requires miliseconds
@@ -132,6 +137,9 @@
                     connectedPlayerClient.pushPlayList();
                 }
             }
+            
+            $.say(startMessages[Math.floor(Math.random() * startMessages.length)]);
+            
             $.say($.lang.get('kentobot.startstream.shuffle.ready'));
 
         }
