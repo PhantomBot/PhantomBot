@@ -151,7 +151,8 @@
                 license = 0,
                 embeddable = 0,
                 bumped = false,
-                shuffle = false;
+                shuffle = false,
+                shuffleEntered = false;
 
         this.found = false;
 
@@ -189,6 +190,14 @@
 
         this.isShuffle = function () {
             return shuffle;
+        };
+        
+        this.isShuffleEntered = function () {
+            return shuffleEntered;
+        };
+        
+        this.setShuffleEntered = function (entered) {
+          shuffleEntered = entered;  
         };
 
         /**
@@ -1166,7 +1175,8 @@
                         "duration": youtubeObject.getVideoLengthMMSS() + '',
                         "requester": youtubeObject.getOwner() + '',
                         "bump": youtubeObject.isBump() + '',
-                        "shuffle": youtubeObject.isShuffle() + ''
+                        "shuffle": youtubeObject.isShuffle() + '',
+                        "shuffleEntered": youtubeObject.isShuffleEntered() + ''
                     });
                 }
                 client.sendJSONToAll(JSON.stringify(jsonList));
@@ -2602,12 +2612,20 @@
     }
 
     function getBumpPosition() {
+        $.log.file('queue-management', 'Checking for bump position');
+        
         var bumpPosition = 0;
         var i;
 
+        $.log.file('queue-management', 'Number of requests: ' + currentPlaylist.getRequestsCount());
+
         for (i = 0; i < currentPlaylist.getRequestsCount(); i++) {
+            $.log.file('queue-management', 'Checking request at position ' + i);
+            
             req = currentPlaylist.getRequestAtIndex(i);
+            $.log.file('queue-management', 'Request flags: Bump - ' + req.isBump() + ', Shuffle - ' + req.isShuffle());
             if (!req.isBump() && !req.isShuffle()) {
+                $.log.file('queue-management', 'Request is not a bump, and request is not a shuffle, returning position ' + i);
                 bumpPosition = i;
                 break;
             }
@@ -2634,6 +2652,13 @@
         currentPlaylist.loadNewPlaylist(playlistName);
         loadPanelPlaylist();
     }
+    
+    function clearShuffleEnteredFlags() {
+         for (var i = 0; i < currentPlaylist.getRequestsCount(); i++) {
+            var req = currentPlaylist.getRequestAtIndex(i);
+            req.setShuffleEntered(false);
+         }
+    }
 
     $.getSongQueue = getSongQueue;
     $.getUserRequest = getUserRequest;
@@ -2645,6 +2670,7 @@
     $.clearSongHistory = clearSongHistory;
     $.enableSongRequests = enableSongRequests;
     $.createNewSOTNPlaylist = createNewSOTNPlaylist;
+    $.clearShuffleEnteredFlags = clearShuffleEnteredFlags;
 
     $.bind('initReady', function () {
         $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 2);

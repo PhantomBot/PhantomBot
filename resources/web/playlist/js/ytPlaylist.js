@@ -171,6 +171,7 @@ function handleSongList(d) {
         var duration = d['songlist'][i]['duration'];
         var requester = d['songlist'][i]['requester'];
         var shuffle = d['songlist'][i]['shuffle'];
+        var shuffleEntered = d['songlist'][i]['shuffleEntered'];
         tableData += '<a href="https://youtu.be/' + id + '" target="_blank">';
 
         tableData += '<div class="dataRow">';
@@ -183,8 +184,11 @@ function handleSongList(d) {
             tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
             tableData += ' <i class="fas fa-star"></i>';
         } else if (shuffle == "true") {
-            tableData += '<div class="data dataQueuePosition"> #' + playerIndex
+            tableData += '<div class="data dataQueuePosition"> #' + playerIndex;
             tableData += ' <i class="fas fa-dice"></i>';
+        } else if (shuffleEntered == "true") {
+            tableData += '<div class="data dataQueuePosition">' ;
+            tableData += '<i class="fas fa-ticket-alt"></i>';
         } else if (shuffleEnabled) {
             tableData += '<div class="data dataQueuePosition">';
         } else {
@@ -252,9 +256,9 @@ function handleQueueInfo(d) {
     html += '<div id="dataSummaryOrder" class="dataSummary"> ' + d['queueStatus']['mode'] + ' </div>';
     html += '<div id="dataSummaryNoPlayed" class="dataSummary"> ' + d['queueStatus']['playedSongs'] + ' </div>';
     html += '<div id="dataSummaryNoQueued" class="dataSummary"> ' + d['queueStatus']['totalSongs'] + ' </div>';
-    html += '<div id="dataSummaryLength" class="dataSummary"> ' + d['queueStatus']['totalTime'] + ' </div>';
-    html += '<div id="dataSummaryPointsBumps" class="dataSummary"> ' + d['queueStatus']['channelPointsBumpsLeft'] + '</div>';
-    html += '<div id="dataSummaryBeanBumps" class="dataSummary endCell roundBR"> ' + d['queueStatus']['beanBumpsLeft'] + '</div>';
+    html += '<div id="dataSummaryLength" class="dataSummary endCell roundBR"> ' + d['queueStatus']['totalTime'] + ' </div>';
+    //html += '<div id="dataSummaryPointsBumps" class="dataSummary"> ' + d['queueStatus']['channelPointsBumpsLeft'] + '</div>';
+    //html += '<div id="dataSummaryBeanBumps" class="dataSummary endCell roundBR"> ' + d['queueStatus']['beanBumpsLeft'] + '</div>';
 
     $('#queueInformationHtml').html(html);
 }

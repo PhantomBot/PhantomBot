@@ -108,7 +108,7 @@ $.lang.register('ytplayer.requestsong.error.maxrequests', 'Exceeds maximum concu
 $.lang.register('ytplayer.requestsong.error.disabled', 'Song requests are disabled');
 $.lang.register('ytplayer.requestsong.error.yterror', 'YouTube error ($1)');
 $.lang.register('ytplayer.requestsong.error.exists', 'Song is already in queue');
-$.lang.register('ytplayer.requestsong.error.maxlength', 'Song length is $1 and exceeds maximum length');
+$.lang.register('ytplayer.requestsong.error.maxlength', 'Song length is $1.  Please keep requests under $2');
 
 $.lang.register('ytplayer.command.importpl.file.start', 'Import has started, please wait...');
 $.lang.register('ytplayer.command.importpl.file.success', 'Import Complete! Successfully imported $1 songs and failed to import $2 songs from $3 to playlist $4');

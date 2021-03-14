@@ -127,6 +127,9 @@
         /* Clear the timer if there is one active. */
         clearInterval(timeout);
         clearInterval(interval);
+        
+        // Clear all the shuffle entered flags
+      $.clearShuffleEnteredFlags();
 
         /* Check if there's a raffle opened */
         if (!status) {
@@ -172,11 +175,11 @@
 
         var request = $.getUserRequest(username);
 
-        // Bump users song in the queue
-        // TODO Mark song as a shuffle
+        // TODO if in a non-bump shuffle, move to the top, otherwise, get the bump position
         request[0].setShuffleFlag();
         var position = $.getBumpPosition();
         $.currentPlaylist().addToQueue(request[0], position);
+        
         $.getConnectedPlayerClient().pushSongList();
     }
 
@@ -210,6 +213,9 @@
             message(username, $.lang.get('shufflesystem.error.norequest'));
             return;
         }
+        
+        request[0].setShuffleEntered(true);
+        $.getConnectedPlayerClient().pushSongList();
 
         /* Check if the user is one of the last 2 winners */
         var recentUsers = $.currentPlaylist().getPreviousRequesters();
