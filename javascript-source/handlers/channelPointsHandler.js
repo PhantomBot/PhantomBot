@@ -480,6 +480,7 @@
         if (rewardID.equalsIgnoreCase(songBumpId)) {
             $.autoBump(username, "points");
             $.decrementChannelPointsBump();
+            $.getConnectedPlayerClient().pushQueueInformation();
         }
 
 

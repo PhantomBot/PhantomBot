@@ -135,6 +135,7 @@
                 var connectedPlayerClient = $.getConnectedPlayerClient();
                 if (connectedPlayerClient) {
                     connectedPlayerClient.pushPlayList();
+                    connectedPlayerClient.pushQueueInformation();
                 }
             }
             

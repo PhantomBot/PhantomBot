@@ -22,7 +22,7 @@ html{overflow-y: scroll;}
 
 @media (min-width: 1200px) {
 	body {
-        background-image: url("https://kentobeans.live/sotn/images/pattern-l.png"), url("https://kentobeans.live/sotn/images/pattern-r.png");
+        background-image: url("https://kentobeans.live/assets/images/pattern-l.png"), url("https://kentobeans.live/assets/images/pattern-r.png");
 		background-position: left top, right top;
 		background-repeat: repeat-y, repeat-y;
     }
@@ -30,7 +30,7 @@ html{overflow-y: scroll;}
 
 @font-face {
 	font-family: "MavenPro";
-	src: url("../fonts/MavenPro-Regular.ttf");
+	src: url("https://kentobeans.live/assets/fonts/MavenPro-Regular.ttf");
 }
 
 *{
@@ -362,7 +362,7 @@ html{overflow-y: scroll;}
 #dataContainerPlaylist{padding-bottom: 40px;}
 
 .titleSummary{
-	width: 200px;
+	width: 142px;
 	font-size: 15px;
 	font-weight: bold;
 	color: #FFFFFF;
@@ -383,7 +383,7 @@ html{overflow-y: scroll;}
 }
 
 .dataSummary{
-	width: 200px;
+	width: 142px;
 	font-size: 15px;
 	font-weight: bold;
 	color: #FFFFFF;

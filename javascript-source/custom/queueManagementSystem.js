@@ -465,8 +465,10 @@
                 $.getConnectedPlayerClient().pushSongList();
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.command.bump.success', bumpPosition + 1));
 
-                markFreeBumpUsed(sender)
+                markFreeBumpUsed(sender);
                 decrementBeanBump();
+                
+                $.getConnectedPlayerClient().pushQueueInformation();
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('songqueuemgmt.beanbumps.song.404'));
             }
