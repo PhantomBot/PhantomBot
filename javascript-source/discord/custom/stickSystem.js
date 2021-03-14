@@ -24,6 +24,7 @@
 
     $.bind('discordChannelCommand', function (event) {
         var sender = event.getSender(), // Gets the person who used the command
+                channel = event.getDiscordChannel(), // Gets the channel the command was used in
                 command = event.getCommand(), // Gets the command being used
                 args = event.getArgs(), // Arguments used in the command
 
@@ -33,14 +34,14 @@
             $.inidb.incr("sticks", "drops", 1);
 
             var drops = $.inidb.get("sticks", "drops");
-            $.discord.say($.lang.get('sticks.drops.message', drops));
+            $.discord.say(channel, $.lang.get('sticks.drops.message', drops));
         }
 
         if (command.equalsIgnoreCase('rip')) {
             $.inidb.incr("sticks", "breaks", 1);
 
             var breaks = $.inidb.get("sticks", "breaks");
-            $.discord.say($.lang.get('sticks.breaks.message', breaks));
+            $.discord.say(channel, $.lang.get('sticks.breaks.message', breaks));
         }
 
         if (command.equalsIgnoreCase('drops')) {
@@ -49,7 +50,7 @@
                 drops = 0;
             }
 
-            $.discord.say($.lang.get('sticks.drops.message', drops));
+            $.discord.say(channel, $.lang.get('sticks.drops.message', drops));
         }
 
         if (command.equalsIgnoreCase('breaks')) {
@@ -58,14 +59,14 @@
                 breaks = 0;
             }
 
-            $.discord.say($.lang.get('sticks.breaks.message', breaks));
+            $.discord.say(channel, $.lang.get('sticks.breaks.message', breaks));
         }
 
         if (command.equalsIgnoreCase('setsticks')) {
             if (action != null && action.equalsIgnoreCase('drops')) {
                 if (args[1] != null) {
                     $.inidb.set("sticks", "drops", args[1]);
-                    $.say($.lang.get('sticks.set.drops', args[1]));
+                    $.say(channel, $.lang.get('sticks.set.drops', args[1]));
                     return;
                 }
             }
@@ -73,12 +74,12 @@
             if (action != null && action.equalsIgnoreCase('breaks')) {
                 if (args[1] != null) {
                     $.inidb.set("sticks", "breaks", args[1]);
-                    $.say($.lang.get('sticks.set.breaks', args[1]));
+                    $.say(channel, $.lang.get('sticks.set.breaks', args[1]));
                     return;
                 }
             }
 
-            $.discord.say($.lang.get('sticks.set.usage', sender));
+            $.discord.say(channel, $.lang.get('sticks.set.usage', sender));
         }
     });
 
@@ -92,12 +93,12 @@
         // These are also used for the permcom command.
         // $.registerChatCommand('script', 'command', 'permission');
 
-        $.discord.registerCommand('./discord/custom/stickSystem.js', 'drops', 0);
-        $.discord.registerCommand('./discord/custom/stickSystem.js', 'breaks', 0);
-        $.discord.registerCommand('./discord/custom/stickSystem.js', 'setsticks', 0);
-        $.discord.registerSubCommand('setsticks', 'breaks', 0);
-        $.discord.registerSubCommand('setsticks', 'drops', 0);
-        $.discord.registerCommand('./discord/custom/stickSystem.js', 'oops', 0);
-        $.discord.registerCommand('./discord/custom/stickSystem.js', 'rip', 0);
+        $.discord.registerCommand('./custom/stickSystem.js', 'drops');
+        $.discord.registerCommand('./custom/stickSystem.js', 'breaks');
+        $.discord.registerCommand('./custom/stickSystem.js', 'setsticks', 2);
+        $.discord.registerSubCommand('setsticks', 'breaks', 2);
+        $.discord.registerSubCommand('setsticks', 'drops', 2);
+        $.discord.registerCommand('./custom/stickSystem.js', 'oops', 2);
+        $.discord.registerCommand('./custom/stickSystem.js', 'rip', 2);
     });
 })();
