@@ -174,3 +174,4 @@ $.lang.register('ytplayer.discord.save', '$1, requested by $2 $3');
 $.lang.register('ytplayer.discord.save.history', 'Saving request to Discord - $1 requested by $2');
 
 $.lang.register('ytplayer.autobump.sub', "Your song is automatically getting bumped for your sub!");
+$.lang.register('ytplayer.bump.shuffle.mix', "It's been $1 songs since the last shuffle");

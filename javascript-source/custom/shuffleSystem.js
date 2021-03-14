@@ -180,6 +180,7 @@
         var position;
         if (ignoreBumps) {
             position = 0;
+            $.resetShuffleBetweenBumpData();
         } else {
             position = $.getBumpPosition();
         }

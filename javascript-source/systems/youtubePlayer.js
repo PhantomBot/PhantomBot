@@ -56,7 +56,9 @@
             /* @type {BotPlayList} */
             currentPlaylist = null,
             shuffleBuffer = $.getSetIniDbNumber('shuffleSettings', 'songbuffer', 2),
-            restrictedMode = $.getSetIniDbBoolean('ytSettings', 'restrictedMode', false);
+            restrictedMode = $.getSetIniDbBoolean('ytSettings', 'restrictedMode', false),
+            songsSinceLastShuffle = 0,
+            mixInShuffleFlag = false;
     /**
      * @function reloadyt
      */
@@ -1291,6 +1293,15 @@
                         youtubeVideo.getVideoTitle(),
                         youtubeVideo.getVideoId()
                         );
+            }
+                   
+            if (songsSinceLastShuffle >= 5 || mixInShuffleFlag) {
+                mixInShuffleFlag = true;
+                $.say($.whisperPrefix("Kentobeans7") + $.lang.get('ytplayer.bump.shuffle.mix', songsSinceLastShuffle));
+            } else {
+                if (youtubeVideo.isBump()) {
+                    songsSinceLastShuffle++;
+                }
             }
 
             client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
@@ -2661,6 +2672,11 @@
             req.setShuffleEntered(false);
          }
     }
+    
+    function resetShuffleBetweenBumpData() {
+        songsSinceLastShuffle = 0;
+        mixInShuffleFlag = false;
+    }
 
     $.getSongQueue = getSongQueue;
     $.getUserRequest = getUserRequest;
@@ -2673,6 +2689,7 @@
     $.enableSongRequests = enableSongRequests;
     $.createNewSOTNPlaylist = createNewSOTNPlaylist;
     $.clearShuffleEnteredFlags = clearShuffleEnteredFlags;
+    $.resetShuffleBetweenBumpData = resetShuffleBetweenBumpData;
 
     $.bind('initReady', function () {
         $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 2);
