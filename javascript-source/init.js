@@ -509,17 +509,17 @@
                 return;
             } else
 
-            // Check the command cooldown.
-            if ($.coolDown.get(command, sender, isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
-                return;
-            } else
-
             // Check the command cost.
             if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
+                return;
+            } else
+
+            // Check the command cooldown.
+            if ($.coolDown.get(command, sender, isMod) !== 0) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             }
 
