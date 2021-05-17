@@ -313,6 +313,27 @@ public class TwitchValidate {
         }
     }
 
+    public boolean hasOAuthInconsistencies(String botName) {
+        if (validateA != null && validateA.isAlive()) {
+            try {
+                validateA.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        if (validateC != null && validateC.isAlive()) {
+            try {
+                validateC.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        return this.hasAPIScope("chat:edit") && !this.hasChatScope("chat:edit") || !this.hasChatScope("chat:edit") || !this.hasChatScope("channel:moderate")
+                ||this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName) ||!this.getChatLogin().equalsIgnoreCase(botName);
+    }
+
     /**
      * Runnable to push the validation checks to the background so as not to block the operation of the bot at start up.
      */
