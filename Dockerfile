@@ -49,9 +49,19 @@ ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
 ARG TARGETPLATFORM
 
+USER root
+
+RUN groupadd -r phantombot -g 900 \
+    && useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
+
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
 
 COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
+
+RUN chown -R -H -L phantombot:phantombot "${BASEDIR}" \
+    && chown -R -H -L phantombot:phantombot "${DATADIR}"
+
+USER phantombot:phantombot
 
 RUN cd "${BASEDIR}" \
     && rm -rf \
@@ -76,7 +86,8 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
     && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
-    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then chmod u+x ./java-runtime-linux/bin/java ; fi
+    && chmod u+x ${BASEDIR}/launch-service.sh \
+    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then chmod u+x ${BASEDIR}/java-runtime-linux/bin/java ; fi
 
 VOLUME "${DATADIR}"
 
