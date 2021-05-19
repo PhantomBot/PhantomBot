@@ -68,6 +68,10 @@ public final class HTTPWSServer {
      * The server's listen {@link Channel}
      */
     private Channel ch;
+    /**
+     * The secondary channel, used for port 80 when the primary channel is port 443
+     */
+    private Channel ch2;
 
     public boolean sslEnabled = false;
     private boolean autoSSL = false;
@@ -153,6 +157,20 @@ public final class HTTPWSServer {
                 ch = b.bind(port).sync().channel();
             } else {
                 ch = b.bind(ipOrHostname, port).sync().channel();
+            }
+
+            if (port == 443) {
+                try {
+                    if (ipOrHostname == null || ipOrHostname.isBlank()) {
+                        ch2 = b.bind(80).sync().channel();
+                    } else {
+                        ch2 = b.bind(ipOrHostname, 80).sync().channel();
+                    }
+                } catch (InterruptedException ex2) {
+                    ch2 = null;
+                    com.gmt2001.Console.out.println("Unble to bind port 80, going with only 443...");
+                    com.gmt2001.Console.err.printStackTrace(ex2);
+                }
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException | UnrecoverableKeyException | InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -288,6 +306,11 @@ public final class HTTPWSServer {
     public void close() {
         WebSocketFrameHandler.closeAllWsSessions();
         ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
+
+        if (ch2 != null) {
+            ch2.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
+        }
+
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
     }
 }
