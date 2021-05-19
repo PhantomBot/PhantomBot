@@ -25,6 +25,7 @@
         keyword = '',
         entryFee = 0,
         timerTime = 0,
+        startTime = 0,
         followers = false,
         subscribers = false,
         usePoints = true,
@@ -37,6 +38,7 @@
         subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
         regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
         interval, timeout, followMessage = '',
+        saveStateInterval,
         timerMessage = '';
 
     /**
@@ -151,6 +153,11 @@
             }, messageInterval * 6e4);
         }
 
+        startTime = $.systemTime();
+        saveStateInterval = setInterval(function() {
+           saveState();
+        }, 5 * 6e4);
+
         /* Clear the old raffle data */
         entries = [];
         $.raffleCommand = keyword;
@@ -161,6 +168,69 @@
 
         /* Mark the raffle as opened */
         status = true;
+        saveState();
+    }
+
+    function reopen() {
+        if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', 'entries') || !$.inidb.HasKey('raffleState', 'entered')
+                 || !$.inidb.HasKey('raffleState', 'keyword') || !$.inidb.HasKey('raffleState', 'entryFee') || !$.inidb.HasKey('raffleState', 'timerTime')
+                  || !$.inidb.HasKey('raffleState', 'startTime') || !$.inidb.HasKey('raffleState', 'bools')) {
+            return;
+        }
+
+        entries = JSON.parse($.inidb.get('raffleState', 'entries'));
+        entered = JSON.parse($.inidb.get('raffleState', 'entered'));
+        keyword = $.inidb.get('raffleState', 'keyword');
+        entryFee = parseInt($.inidb.get('raffleState', 'entryFee'));
+        timerTime = parseInt($.inidb.get('raffleState', 'timerTime'));
+        startTime = parseInt($.inidb.get('raffleState', 'startTime'));
+        var bools = JSON.parse($.inidb.get('raffleState', 'bools'));
+        followers = bools[0];
+        subscribers = bools[1];
+        usePoints = bools[2];
+        status = bools[3];
+
+        if (status === true) {
+            if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
+                $.say($.lang.get('rafflesystem.open.keyword-exists', keyword));
+                close();
+                return;
+            }
+
+            if (followers) {
+                followMessage = ' ' + $.lang.get('rafflesystem.common.following');
+            }
+
+            if (timerTime > 0) {
+                var timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
+                timeout = setTimeout(function() {
+                    close();
+                }, timeleft * 6e4);
+                timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
+            }
+
+            if (parseInt(messageInterval) !== 0) {
+                interval = setInterval(function() {
+                    $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length)));
+                }, messageInterval * 6e4);
+            }
+
+            saveStateInterval = setInterval(function() {
+                saveState();
+            }, 5 * 6e4);
+
+            $.raffleCommand = keyword;
+        }
+    }
+
+    function saveState() {
+        $.inidb.set('raffleState', 'entries', JSON.stringify(entries));
+        $.inidb.set('raffleState', 'entered', JSON.stringify(entered));
+        $.inidb.set('raffleState', 'keyword', keyword);
+        $.inidb.set('raffleState', 'entryFee', entryFee);
+        $.inidb.set('raffleState', 'timerTime', timerTime);
+        $.inidb.set('raffleState', 'startTime', startTime);
+        $.inidb.set('raffleState', 'bools', JSON.stringify([followers, subscribers, usePoints, status]));
     }
 
     /**
@@ -173,6 +243,7 @@
         /* Clear the timer if there is one active. */
         clearInterval(timeout);
         clearInterval(interval);
+        clearInterval(saveStateInterval);
 
         /* Check if there's a raffle opened */
         if (!status) {
@@ -186,6 +257,7 @@
 
         // Mark the raffle as off for the panel.
         $.inidb.set('raffleSettings', 'isActive', 'false');
+        saveState();
     }
 
     /**
@@ -221,6 +293,8 @@
             $.inidb.del('raffleList', username);
             $.inidb.decr('raffleresults', 'raffleEntries', 1);
         }
+
+        saveState();
     }
 
     /**
@@ -305,6 +379,7 @@
         /* Clear the timer if there is one active. */
         clearInterval(timeout);
         clearInterval(interval);
+        clearInterval(saveStateInterval);
         keyword = '';
         followMessage = '';
         timerMessage = '';
@@ -314,6 +389,7 @@
         status = false;
         entryFee = 0;
         timerTime = 0;
+        startTime = 0;
         entered = [];
         entries = [];
         $.raffleCommand = null;
@@ -321,6 +397,7 @@
         $.inidb.set('raffleresults', 'raffleEntries', 0);
         // Mark the raffle as off for the panel.
         $.inidb.set('raffleSettings', 'isActive', 'false');
+        saveState();
     }
 
     /**
@@ -506,10 +583,7 @@
         $.registerChatSubcommand('raffle', 'message', 1);
         $.registerChatSubcommand('raffle', 'messagetimer', 1);
 
-        // Mark the raffle as off for the panel.
-        $.inidb.set('raffleSettings', 'isActive', 'false');
-        $.inidb.set('raffleresults', 'raffleEntries', 0);
-        $.inidb.RemoveFile('raffleList');
+        reopen();
     });
 
     $.reloadRaffle = reloadRaffle;
