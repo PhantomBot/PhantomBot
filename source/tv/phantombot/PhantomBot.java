@@ -17,6 +17,7 @@
 package tv.phantombot;
 
 import com.gmt2001.GamesListUpdater;
+import com.gmt2001.HttpRequest;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitchAuthorizationCodeFlow;
 import com.gmt2001.YouTubeAPIv3;
@@ -1327,6 +1328,25 @@ public final class PhantomBot implements Listener {
         return new String(randomBuffer);
     }
 
+    public static String getOsSuffix() {
+        String os = "";
+        String osname = System.getProperty("os.name").toLowerCase();
+
+        if (osname.contains("win")) {
+            os = "-win";
+        } else if (osname.contains("mac")) {
+            os = "-mac";
+        } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
+            if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
+                os = "-arm";
+            } else {
+                os = "-lin";
+            }
+        }
+
+        return os;
+    }
+
     /**
      * doCheckPhantomBotUpdate
      */
@@ -1337,25 +1357,47 @@ public final class PhantomBot implements Listener {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                    String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
-                    if (newVersionInfo != null) {
-                        try {
-                            Thread.sleep(6000);
-                            print("");
-                            print("New PhantomBot Release Detected: " + newVersionInfo[0]);
-                            print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
-                            print("Download Link: " + newVersionInfo[1]);
-                            print("A reminder will be provided in 24 hours!");
-                            print("");
-                        } catch (InterruptedException ex) {
-                            com.gmt2001.Console.err.printStackTrace(ex);
-                        }
+                    if (RepoVersion.getNightlyBuild()) {
+                        String latestNightly = HttpRequest.getData(HttpRequest.RequestType.GET, "https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version", null, null).content;
+                        if (latestNightly.equals(RepoVersion.getRepoVersion())) {
+                            dataStore.del("settings", "newrelease_info");
+                        } else {
+                            try {
+                                Thread.sleep(6000);
+                                print("");
+                                print("New PhantomBot Nightly Build Detected: " + latestNightly);
+                                print("Download Link: https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
+                                print("A reminder will be provided in 24 hours!");
+                                print("");
+                            } catch (InterruptedException ex) {
+                                com.gmt2001.Console.err.printStackTrace(ex);
+                            }
 
-                        if (webEnabled) {
-                            dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                            if (webEnabled) {
+                                dataStore.set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
+                            }
                         }
                     } else {
-                        dataStore.del("settings", "newrelease_info");
+                        String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                        if (newVersionInfo != null) {
+                            try {
+                                Thread.sleep(6000);
+                                print("");
+                                print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                                print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
+                                print("Download Link: " + newVersionInfo[1]);
+                                print("A reminder will be provided in 24 hours!");
+                                print("");
+                            } catch (InterruptedException ex) {
+                                com.gmt2001.Console.err.printStackTrace(ex);
+                            }
+
+                            if (webEnabled) {
+                                dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                            }
+                        } else {
+                            dataStore.del("settings", "newrelease_info");
+                        }
                     }
                 } catch (JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
