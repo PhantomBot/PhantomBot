@@ -45,9 +45,9 @@ $(function() {
     	    	break;
     	    default:
     	    	socket.updateDBValues('discord_logs_update', {
-    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'chatModerator'],
-        			keys: ['modLogs', 'customCommandLogs', 'modLogChannel', 'moderationLogs'],
-    	    		values: [moderationLogs, customCommandLog, logChannel.val(), moderationLogs]
+    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+        			keys: ['modLogs', 'customCommandLogs', 'modLogChannel'],
+    	    		values: [moderationLogs, customCommandLog, logChannel.val()]
     	    	}, function() {
     	    		// Update the scripts variables.
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {
