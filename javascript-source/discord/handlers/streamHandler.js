@@ -63,7 +63,7 @@
     }
 
     function sanitizeTitle(s) {
-        return s.replace(/(\@everyone|\@here|<@&\d+>|<@\d+>)/ig, '');
+        return s.replace(/(\@everyone|\@here|<@&\d+>|<@\d+>|<#\d+>)/ig, '');
     }
 
     /**

@@ -232,7 +232,7 @@
             creator = event.getCreator(),
             message = event.getMessage();
 
-        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+        if (modLogs === false || modLogChannel === '') {
             return;
         }
 
@@ -249,7 +249,7 @@
             reason = event.getReason(),
             time = parseInt(event.getTime());
 
-        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+        if (modLogs === false || modLogChannel === '') {
             return;
         }
 
@@ -263,7 +263,7 @@
         var username = event.getUsername(),
             creator = event.getCreator();
 
-        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+        if (modLogs === false || modLogChannel === '') {
             return;
         }
 
@@ -277,7 +277,7 @@
         var username = event.getUsername(),
             creator = event.getCreator();
 
-        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+        if (modLogs === false || modLogChannel === '') {
             return;
         }
 
@@ -293,7 +293,7 @@
             message = event.getMessage(),
             reason = event.getReason();
 
-        if (modLogs === false || modLogChannel === '' || $.getIniDbBoolean('chatModerator', 'moderationLogs', false) === false) {
+        if (modLogs === false || modLogChannel === '') {
             return;
         }
 
