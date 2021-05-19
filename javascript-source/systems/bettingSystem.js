@@ -123,6 +123,7 @@
         $.inidb.set('bettingPanel', 'title', title);
         $.inidb.set('bettingPanel', 'options', split.join('%space_option%'));
         $.inidb.set('bettingPanel', 'isActive', 'true');
+        saveState();
     }
 
     function reopen() {
