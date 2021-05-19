@@ -40,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.RepoVersion;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
@@ -252,6 +253,8 @@ public class WsPanelHandler implements WsFrameHandler {
 
         jsonObject.object().key("versionresult").value(uniqueID);
         jsonObject.key("version").value(version);
+        jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
+        jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
         jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
         jsonObject.key("os-version").value(System.getProperty("os.name"));
         jsonObject.endObject();
