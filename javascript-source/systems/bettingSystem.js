@@ -84,7 +84,6 @@
 
         // Remove the old files.
         $.inidb.RemoveFile('bettingPanel');
-        $.inidb.RemoveFile('bettingState');
         $.inidb.RemoveFile('bettingVotes');
 
         bet.title = title;
@@ -127,6 +126,10 @@
     }
 
     function reopen() {
+        if (!$.inidb.FileExists('bettingState') || !$.inidb.HasKey('bettingState', 'bets') || !$.inidb.HasKey('bettingState', 'bet')) {
+            return;
+        }
+
         bets = JSON.parse($.inidb.get('bettingState', 'bets'));
         bet = JSON.parse($.inidb.get('bettingState', 'bet'));
 
