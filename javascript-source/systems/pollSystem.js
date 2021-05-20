@@ -21,23 +21,25 @@
  * This module enables the channel owner to start/manage polls
  * Start/stop polls is exported to $.poll for use in other scripts
  */
-(function() {
+(function () {
     var poll = {
-            pollId: 0,
-            options: [],
-            votes: [],
-            voters: [],
-            callback: function() {},
-            pollRunning: false,
-            pollMaster: '',
-            time: 0,
-            question: '',
-            minVotes: 0,
-            result: '',
-            hasTie: 0,
-            counts: [],
-        },
-        timeout;
+        pollId: 0,
+        options: [],
+        votes: [],
+        voters: [],
+        callback: function () {},
+        pollRunning: false,
+        pollMaster: '',
+        time: 0,
+        question: '',
+        minVotes: 0,
+        result: '',
+        hasTie: 0,
+        counts: [],
+        startTime: 0
+    },
+            timeout,
+            saveStateInterval;
     var objOBS = [];
 
     /**
@@ -64,12 +66,13 @@
             }
         }
         return false;
-    };
+    }
+    ;
 
     // Compile regular expressions.
     var rePollOpenFourOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)\s+(\d+)/),
-        rePollOpenThreeOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)/),
-        rePollOpenTwoOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"/);
+            rePollOpenThreeOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)/),
+            rePollOpenTwoOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"/);
 
     /**
      * @function runPoll
@@ -108,7 +111,7 @@
         $.inidb.RemoveFile('pollPanel');
         $.inidb.RemoveFile('pollVotes');
 
-        
+
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
             $.inidb.set('pollVotes', poll.options[i], 0);
@@ -117,17 +120,22 @@
                 'votes': 0
             });
         }
-        
+
 
         if (poll.time > 0) {
             $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
 
-            timeout = setTimeout(function() {
+            timeout = setTimeout(function () {
                 endPoll();
             }, poll.time);
         } else {
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
+
+        poll.startTime = $.systemTime();
+        saveStateInterval = setInterval(function () {
+            saveState();
+        }, 5 * 6e4);
 
         var msg = JSON.stringify({
             'start_poll': 'true',
@@ -138,8 +146,40 @@
         $.inidb.set('pollPanel', 'title', question);
         $.inidb.set('pollPanel', 'options', options.join(','));
         $.inidb.set('pollPanel', 'isActive', 'true');
+        saveState();
         return true;
-    };
+    }
+    ;
+
+    function reopen() {
+        if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', 'poll') || !$.inidb.HasKey('pollState', 'objOBS')) {
+            return;
+        }
+
+        poll = JSON.parse($.inidb.get('pollState', 'poll'));
+        objOBS = JSON.parse($.inidb.get('pollState', 'objOBS'));
+        poll.callback = saywinner;
+
+        if (poll.pollRunning) {
+            if (poll.time > 0) {
+                var timeleft = poll.time - ($.systemTime() - poll.startTime);
+                timeout = setTimeout(function () {
+                    endPoll();
+                }, timeleft);
+            }
+
+            var msg = JSON.stringify({
+                'start_poll': 'true',
+                'data': JSON.stringify(objOBS)
+            });
+            $.alertspollssocket.sendJSONToAll(msg);
+        }
+    }
+
+    function saveState() {
+        $.inidb.set('pollState', 'poll', JSON.stringify(poll));
+        $.inidb.set('pollState', 'objOBS', JSON.stringify(objOBS));
+    }
 
     /**
      * @function vote
@@ -177,7 +217,8 @@
         });
         $.alertspollssocket.sendJSONToAll(msg);
         $.inidb.incr('pollVotes', poll.options[optionIndex], 1);
-    };
+    }
+    ;
 
     /**
      * @function endPoll
@@ -185,13 +226,14 @@
      */
     function endPoll() {
         var mostVotes = -1,
-            i;
+                i;
 
         if (!poll.pollRunning) {
             return;
         }
 
         clearTimeout(timeout);
+        clearInterval(saveStateInterval);
 
         $.inidb.set('pollPanel', 'isActive', 'false');
         var msg = JSON.stringify({
@@ -206,11 +248,15 @@
             return;
         }
 
-        for (i = 0; i < poll.options.length; poll.counts.push(0), i++);
-        for (i = 0; i < poll.votes.length; poll.counts[poll.votes[i++]] += 1);
-        for (i = 0; i < poll.counts.length; winner = ((poll.counts[i] > mostVotes) ? i : winner), mostVotes = ((poll.counts[i] > mostVotes) ? poll.counts[i] : mostVotes), i++);
+        for (i = 0; i < poll.options.length; poll.counts.push(0), i++)
+            ;
+        for (i = 0; i < poll.votes.length; poll.counts[poll.votes[i++]] += 1)
+            ;
+        for (i = 0; i < poll.counts.length; winner = ((poll.counts[i] > mostVotes) ? i : winner), mostVotes = ((poll.counts[i] > mostVotes) ? poll.counts[i] : mostVotes), i++)
+            ;
         for (i = 0; i < poll.counts.length;
-            (i != winner && poll.counts[i] == poll.counts[winner] ? poll.hasTie = 1 : 0), (poll.hasTie == 1 ? i = poll.counts.length : 0), i++);
+                (i != winner && poll.counts[i] == poll.counts[winner] ? poll.hasTie = 1 : 0), (poll.hasTie == 1 ? i = poll.counts.length : 0), i++)
+            ;
 
         poll.result = poll.options[winner];
         poll.pollMaster = '';
@@ -224,17 +270,31 @@
         $.inidb.set('pollresults', 'counts', poll.counts.join(','));
         $.inidb.set('pollresults', 'istie', poll.hasTie);
         poll.callback(poll.result);
-    };
+        saveState();
+    }
+    ;
+
+    function saywinner(winner) {
+        if (winner === false) {
+            $.say($.lang.get('pollsystem.runpoll.novotes', poll.question));
+            return;
+        }
+        if (poll.hasTie) {
+            $.say($.lang.get('pollsystem.runpoll.tie', poll.question));
+        } else {
+            $.say($.lang.get('pollsystem.runpoll.winner', poll.question, winner));
+        }
+    }
 
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            command = event.getCommand(),
-            argsString = event.getArguments().trim(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                argsString = event.getArguments().trim(),
+                args = event.getArgs(),
+                action = args[0];
 
         if (command.equalsIgnoreCase('vote') && action !== undefined) {
             if (poll.pollRunning) {
@@ -281,9 +341,9 @@
              */
             if (action.equalsIgnoreCase('open')) {
                 var time = 0,
-                    question = '',
-                    options = [],
-                    minVotes = 1;
+                        question = '',
+                        options = [],
+                        minVotes = 1;
 
                 argsString = argsString + ""; // Cast as a JavaScript string.
 
@@ -313,17 +373,7 @@
                     return;
                 }
 
-                if (runPoll(question, options, parseInt(time), sender, minVotes, function(winner) {
-                        if (winner === false) {
-                            $.say($.lang.get('pollsystem.runpoll.novotes', question));
-                            return;
-                        }
-                        if (poll.hasTie) {
-                            $.say($.lang.get('pollsystem.runpoll.tie', question));
-                        } else {
-                            $.say($.lang.get('pollsystem.runpoll.winner', question, winner));
-                        }
-                    })) {
+                if (runPoll(question, options, parseInt(time), sender, minVotes, saywinner)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.runpoll.started'));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.running'));
@@ -343,15 +393,29 @@
         }
     });
 
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./systems/pollSystem.js')) {
+            if (poll.pollRunning) {
+                var msg = JSON.stringify({
+                    'start_poll': 'true',
+                    'data': JSON.stringify(objOBS)
+                });
+                $.alertspollssocket.sendJSONToAll(msg);
+            }
+        }
+    });
+
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
         $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
         $.registerChatSubcommand('poll', 'results', 2);
         $.registerChatSubcommand('poll', 'open', 2);
         $.registerChatSubcommand('poll', 'close', 2);
+
+        reopen();
     });
 
     /** Export functions to API */

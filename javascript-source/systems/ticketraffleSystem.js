@@ -27,9 +27,9 @@
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval', 0),
         totalEntries = 0,
-        lastTotalEntries = 0,
         totalTickets = 0,
         a = '',
+        saveStateInterval,
         interval;
 
     function reloadTRaffle() {
@@ -74,10 +74,10 @@
             followers = true;
             a = $.lang.get('ticketrafflesystem.msg.need.to.be.follwing');
         }
-        openRaffle(maxEntries, followers, cost, a, user);
+        openRaffle(maxEntries, cost, a, user);
     };
 
-    function openRaffle(maxEntries, followers, cost, a, user) {
+    function openRaffle(maxEntries, cost, a, user) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
@@ -92,9 +92,60 @@
             }, messageInterval * 6e4);
         }
 
+        saveStateInterval = setInterval(function() {
+           saveState();
+        }, 5 * 6e4);
+
         $.log.event(user + ' opened a ticket raffle.');
         $.inidb.set('traffleSettings', 'isActive', 'true');
+        saveState();
     };
+
+    function reopen() {
+        if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', 'cost') || !$.inidb.HasKey('traffleState', 'entries')
+                 || !$.inidb.HasKey('traffleState', 'subTMulti') || !$.inidb.HasKey('traffleState', 'regTMulti') || !$.inidb.HasKey('traffleState', 'maxEntries')
+                  || !$.inidb.HasKey('traffleState', 'bools') || !$.inidb.HasKey('traffleState', 'totalEntries') || !$.inidb.HasKey('traffleState', 'totalTickets')) {
+            return;
+        }
+
+        cost = parseInt($.inidb.get('traffleState', 'cost'));
+        entries = JSON.parse($.inidb.get('traffleState', 'entries'));
+        subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti'));
+        regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
+        maxEntries = parseInt($.inidb.get('traffleState', 'maxEntries'));
+        var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+        totalEntries = parseInt($.inidb.get('traffleState', 'totalEntries'));
+        totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
+        followers = bools[0];
+        raffleStatus = bools[1];
+
+        if (raffleStatus === true) {
+            if (followers) {
+                a = $.lang.get('ticketrafflesystem.msg.need.to.be.follwing');
+            }
+
+            if (messageInterval != 0) {
+                interval = setInterval(function() {
+                    $.say(raffleMessage.replace('(entries)', String(totalEntries))); //can't use regex here. why? who knows.
+                }, messageInterval * 6e4);
+            }
+
+            saveStateInterval = setInterval(function() {
+               saveState();
+            }, 5 * 6e4);
+        }
+    }
+
+    function saveState() {
+        $.inidb.set('traffleState', 'cost', cost);
+        $.inidb.set('traffleState', 'entries', JSON.stringify(entries));
+        $.inidb.set('traffleState', 'subTMulti', subTMulti);
+        $.inidb.set('traffleState', 'regTMulti', regTMulti);
+        $.inidb.set('traffleState', 'maxEntries', maxEntries);
+        $.inidb.set('traffleState', 'bools', JSON.stringify([followers, raffleStatus]));
+        $.inidb.set('traffleState', 'totalEntries', totalEntries);
+        $.inidb.set('traffleState', 'totalTickets', totalTickets);
+    }
 
     function closeRaffle(user) {
         if (!raffleStatus) {
@@ -110,6 +161,7 @@
 
     function clear() {
         clearInterval(interval);
+        clearInterval(saveStateInterval);
 
         raffleStatus = false;
         followers = false;
@@ -117,14 +169,14 @@
         cost = 0;
         a = '';
         totalEntries = 0;
-        lastTotalEntries = 0;
         totalTickets = 0;
         regTMulti = 1;
         subTMulti = 1;
         $.inidb.set('traffleSettings', 'isActive', 'false');
+        saveState();
     };
 
-    function winner(force) {
+    function winner() {
         if (entries.length == 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
@@ -263,6 +315,7 @@
                 $.inidb.RemoveFile('entered');
                 $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
                 entries = [];
+                saveState();
                 if (sender != $.botName.toLowerCase()) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
@@ -336,10 +389,7 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', 7);
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', 7);
 
-        $.inidb.set('traffleSettings', 'isActive', 'false');
-        $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
-        $.inidb.RemoveFile('ticketsList');
-        $.inidb.RemoveFile('entered');
+        reopen();
     });
 
     $.reloadTRaffle = reloadTRaffle;
