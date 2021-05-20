@@ -36,8 +36,10 @@
             result: '',
             hasTie: 0,
             counts: [],
+            startTime: 0
         },
-        timeout;
+        timeout,
+        saveStateInterval;
     var objOBS = [];
 
     /**
@@ -108,7 +110,7 @@
         $.inidb.RemoveFile('pollPanel');
         $.inidb.RemoveFile('pollVotes');
 
-        
+
         for (var i = 0; i < poll.options.length; i++) {
             optionsStr += (i + 1) + ") " + poll.options[i] + " ";
             $.inidb.set('pollVotes', poll.options[i], 0);
@@ -117,7 +119,7 @@
                 'votes': 0
             });
         }
-        
+
 
         if (poll.time > 0) {
             $.say($.lang.get('pollsystem.poll.started', $.resolveRank(pollMaster), time, poll.minVotes, poll.question, optionsStr));
@@ -129,6 +131,11 @@
             $.say($.lang.get('pollsystem.poll.started.nottime', $.resolveRank(pollMaster), poll.minVotes, poll.question, optionsStr));
         }
 
+        poll.startTime = $.systemTime();
+        saveStateInterval = setInterval(function() {
+           saveState();
+        }, 5 * 6e4);
+
         var msg = JSON.stringify({
             'start_poll': 'true',
             'data': JSON.stringify(objOBS)
@@ -138,8 +145,39 @@
         $.inidb.set('pollPanel', 'title', question);
         $.inidb.set('pollPanel', 'options', options.join(','));
         $.inidb.set('pollPanel', 'isActive', 'true');
+        saveState();
         return true;
     };
+
+    function reopen() {
+        if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', 'poll') || !$.inidb.HasKey('pollState', 'objOBS')) {
+            return;
+        }
+
+        poll = JSON.parse($.inidb.get('pollState', 'poll'));
+        objOBS = JSON.parse($.inidb.get('pollState', 'objOBS'));
+        poll.callback = saywinner;
+
+        if (poll.pollRunning) {
+            if (poll.time > 0) {
+                var timeleft = poll.time - ($.systemTime() - poll.startTime);
+                timeout = setTimeout(function() {
+                    endPoll();
+                }, timeleft);
+            }
+
+            var msg = JSON.stringify({
+                'start_poll': 'true',
+                'data': JSON.stringify(objOBS)
+            });
+            $.alertspollssocket.sendJSONToAll(msg);
+        }
+    }
+
+    function saveState() {
+        $.inidb.set('pollState', 'poll', JSON.stringify(poll));
+        $.inidb.set('pollState', 'objOBS', JSON.stringify(objOBS));
+    }
 
     /**
      * @function vote
@@ -192,6 +230,7 @@
         }
 
         clearTimeout(timeout);
+        clearInterval(saveStateInterval);
 
         $.inidb.set('pollPanel', 'isActive', 'false');
         var msg = JSON.stringify({
@@ -224,7 +263,20 @@
         $.inidb.set('pollresults', 'counts', poll.counts.join(','));
         $.inidb.set('pollresults', 'istie', poll.hasTie);
         poll.callback(poll.result);
+        saveState();
     };
+
+    function saywinner(winner) {
+        if (winner === false) {
+            $.say($.lang.get('pollsystem.runpoll.novotes', poll.question));
+            return;
+        }
+        if (poll.hasTie) {
+            $.say($.lang.get('pollsystem.runpoll.tie', poll.question));
+        } else {
+            $.say($.lang.get('pollsystem.runpoll.winner', poll.question, winner));
+        }
+    }
 
     /**
      * @event command
@@ -313,17 +365,7 @@
                     return;
                 }
 
-                if (runPoll(question, options, parseInt(time), sender, minVotes, function(winner) {
-                        if (winner === false) {
-                            $.say($.lang.get('pollsystem.runpoll.novotes', question));
-                            return;
-                        }
-                        if (poll.hasTie) {
-                            $.say($.lang.get('pollsystem.runpoll.tie', question));
-                        } else {
-                            $.say($.lang.get('pollsystem.runpoll.winner', question, winner));
-                        }
-                    })) {
+                if (runPoll(question, options, parseInt(time), sender, minVotes, saywinner)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.runpoll.started'));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.results.running'));
@@ -352,6 +394,8 @@
         $.registerChatSubcommand('poll', 'results', 2);
         $.registerChatSubcommand('poll', 'open', 2);
         $.registerChatSubcommand('poll', 'close', 2);
+
+        reopen();
     });
 
     /** Export functions to API */
