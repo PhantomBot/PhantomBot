@@ -161,6 +161,7 @@
 
     function clear() {
         clearInterval(interval);
+        clearInterval(saveStateInterval);
 
         raffleStatus = false;
         followers = false;
