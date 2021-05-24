@@ -41,7 +41,7 @@ jobs:
         BRANCH: ${{ steps.build_env.outputs.branch }}
         REVISION: ${{ steps.build_env.outputs.revision }}
       run: |
-        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/' ivy.xml
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/;s/status="[A-Za-z0-9._-]+"/status="release"/' ivy.xml
         echo $?
     - name: Build with Ant
       run: ant -noinput -Dbuildtype=stable -buildfile build.xml jar
