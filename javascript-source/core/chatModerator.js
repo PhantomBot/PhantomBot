@@ -484,7 +484,7 @@
         for (i in blackList) {
             if (blackList[i].isRegex) {
                 if ($.test(message, blackList[i].phrase)) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVip(sender, event.getTags())) {
                         return false;
                     }
 
@@ -501,7 +501,7 @@
                 }
             } else {
                 if (message.indexOf(blackList[i].phrase) !== -1) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVip(sender, event.getTags())) {
                         return false;
                     }
 
@@ -1045,6 +1045,7 @@
                     isSilent: false,
                     excludeRegulars: false,
                     excludeSubscribers: false,
+                    excludeVips: false,
                     message: timeout !== -1 ? String(blacklistMessage) : String(blacklistMessageBan),
                     banReason: String(silentTimeout.BlacklistMessage)
                 };
