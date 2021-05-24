@@ -32,8 +32,13 @@ import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Permission;
-import discord4j.rest.util.Snowflake;
-import java.awt.Color;
+import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.channel.Category;
+import discord4j.core.object.entity.channel.NewsChannel;
+import discord4j.core.object.entity.channel.StoreChannel;
+import discord4j.core.object.entity.channel.TextChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.rest.util.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -114,6 +120,7 @@ public class DiscordUtil {
      *
      * @param channel
      * @param message
+     * @param iteration
      * @return {Message}
      */
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message, int iteration) {
@@ -135,7 +142,7 @@ public class DiscordUtil {
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorResume(e -> sendMessageAsync(channel, message, iteration + 1))
-                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + ((GuildMessageChannel) channel).getName() + "] [CHAT] " + message));
+                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             return sendMessageAsync(channel, message, iteration + 1);
         } else {
@@ -194,6 +201,7 @@ public class DiscordUtil {
      *
      * @param channel
      * @param message
+     * @param iteration
      */
     public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
         if (iteration >= MAX_ITERATION) {
@@ -246,6 +254,7 @@ public class DiscordUtil {
      *
      * @param channel
      * @param embed
+     * @param iteration
      * @return {Message}
      */
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed, int iteration) {
@@ -264,7 +273,7 @@ public class DiscordUtil {
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorResume(e -> sendMessageEmbedAsync(channel, embed, iteration + 1))
-                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
+                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
             return sendMessageEmbedAsync(channel, embed, iteration + 1);
         } else {
@@ -337,6 +346,7 @@ public class DiscordUtil {
      * @param channel
      * @param message
      * @param fileLocation
+     * @param iteration
      * @return {Message}
      */
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation, int iteration) {
@@ -351,7 +361,7 @@ public class DiscordUtil {
 
         if (channel != null) {
             if (!this.isValidFilePath(fileLocation)) {
-                com.gmt2001.Console.err.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation");
+                com.gmt2001.Console.err.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation");
                 return null;
             } else {
                 if (message.isEmpty()) {
@@ -366,7 +376,7 @@ public class DiscordUtil {
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
-                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "]"));
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "]"));
                 } else {
                     return channel.createMessage(msg
                             -> {
@@ -379,7 +389,7 @@ public class DiscordUtil {
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
-                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + channel.getName() + "] [UPLOAD] [" + fileLocation + "] " + message));
+                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "] " + message));
                 }
             }
         } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
@@ -528,8 +538,8 @@ public class DiscordUtil {
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
         String schannelName = sanitizeChannelName(channelName);
         try {
-            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getName().equalsIgnoreCase(schannelName)
-                    || channel.getId().asString().equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
+            return DiscordAPI.getGuild().getChannels().filter(channel -> DiscordUtil.channelName(channel).equalsIgnoreCase(schannelName)
+                    || DiscordUtil.channelIdAsString(channel).equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
             com.gmt2001.Console.err.println("Unable to find channelName [" + channelName + "]");
             throw ex;
@@ -549,7 +559,7 @@ public class DiscordUtil {
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
         try {
-            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getId().asString().equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
+            return DiscordAPI.getGuild().getChannels().filter(channel -> DiscordUtil.channelIdAsString(channel).equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
             com.gmt2001.Console.err.println("Unable to find channelId [" + channelId + "]");
             throw ex;
@@ -934,7 +944,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("channel object was null or amount was less than 2");
         }
 
-        com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + channel.getName());
+        com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + DiscordUtil.channelName(channel));
         Thread thread;
         thread = new Thread(() -> {
             channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().doOnSuccess(msgs -> {
@@ -1070,33 +1080,33 @@ public class DiscordUtil {
         Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
 
         if (match.find()) {
-            return new Color(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+            return Color.of(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
         } else {
             switch (color) {
                 case "black":
-                    return Color.black;
+                    return Color.BLACK;
                 case "blue":
-                    return Color.blue;
+                    return Color.BLUE;
                 case "cyan":
-                    return Color.cyan;
+                    return Color.CYAN;
                 case "gray":
-                    return Color.gray;
+                    return Color.GRAY;
                 case "green":
-                    return Color.green;
+                    return Color.GREEN;
                 case "magenta":
-                    return Color.magenta;
+                    return Color.MAGENTA;
                 case "orange":
-                    return Color.orange;
+                    return Color.ORANGE;
                 case "pink":
-                    return Color.pink;
+                    return Color.PINK;
                 case "red":
-                    return Color.red;
+                    return Color.RED;
                 case "white":
-                    return Color.white;
+                    return Color.WHITE;
                 case "yellow":
-                    return Color.yellow;
+                    return Color.YELLOW;
                 default:
-                    return Color.gray;
+                    return Color.GRAY;
             }
         }
     }
@@ -1110,7 +1120,11 @@ public class DiscordUtil {
      */
     public Message getMessageById(String channelName, String messageId) {
         GuildMessageChannel channel = getChannelAsync(channelName).block();
-        return channel.getMessageById(Snowflake.of(messageId)).block();
+        if (channel != null) {
+            return channel.getMessageById(Snowflake.of(messageId)).block();
+        }
+
+        return null;
     }
 
     /**
@@ -1142,8 +1156,10 @@ public class DiscordUtil {
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
         GuildMessageChannel channel = getChannelAsync(channelName).block();
-        List<Message> messageList = new ArrayList<Message>();
-        channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        List<Message> messageList = new ArrayList<>();
+        if (channel != null) {
+            channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        }
         return messageList;
     }
 
@@ -1155,7 +1171,72 @@ public class DiscordUtil {
      */
     public Message getLastMessage(String channelName) {
         GuildMessageChannel channel = getChannelAsync(channelName).block();
-        return channel.getLastMessage().block();
+        if (channel != null) {
+            return channel.getLastMessage().block();
+        }
+
+        return null;
     }
 
+    public static Optional<Snowflake> channelId(Channel channel) {
+        if (null != channel.getType()) {
+            switch (channel.getType()) {
+                case DM:
+                case GROUP_DM:
+                    return Optional.of(((PrivateChannel) channel).getId());
+                case GUILD_CATEGORY:
+                    return Optional.of(((Category) channel).getId());
+                case GUILD_NEWS:
+                    return Optional.of(((NewsChannel) channel).getId());
+                case GUILD_STAGE_VOICE:
+                    return Optional.of(((VoiceChannel) channel).getId());
+                case GUILD_STORE:
+                    return Optional.of(((StoreChannel) channel).getId());
+                case GUILD_TEXT:
+                    return Optional.of(((TextChannel) channel).getId());
+                case GUILD_VOICE:
+                    return Optional.of(((VoiceChannel) channel).getId());
+                default:
+                    break;
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public static String channelIdAsString(Channel channel) {
+        Optional<Snowflake> channelId = DiscordUtil.channelId(channel);
+
+        if (channelId.isPresent()) {
+            return channelId.get().asString();
+        }
+
+        return "";
+    }
+
+    public static String channelName(Channel channel) {
+        if (null != channel.getType()) {
+            switch (channel.getType()) {
+                case DM:
+                case GROUP_DM:
+                    return ((PrivateChannel) channel).getMention();
+                case GUILD_CATEGORY:
+                    return ((Category) channel).getName();
+                case GUILD_NEWS:
+                    return ((NewsChannel) channel).getName();
+                case GUILD_STAGE_VOICE:
+                    return ((VoiceChannel) channel).getName();
+                case GUILD_STORE:
+                    return ((StoreChannel) channel).getName();
+                case GUILD_TEXT:
+                    return ((TextChannel) channel).getName();
+                case GUILD_VOICE:
+                    return ((VoiceChannel) channel).getName();
+                default:
+                    break;
+            }
+        }
+
+        return "";
+    }
 }
