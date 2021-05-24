@@ -134,7 +134,7 @@ public class DiscordUtil {
         }
 
         if (channel != null) {
-            if (channel.getType() == Channel.Type.DM) {
+            if (channel.getType() == Channel.Type.DM || channel.getType() == Channel.Type.GROUP_DM) {
                 sendPrivateMessage((PrivateChannel) channel, message);
                 return null;
             }
@@ -761,8 +761,12 @@ public class DiscordUtil {
             m.edit(eds
                     -> eds.setRoles(rolesSf)
             ).doOnError(e -> {
+                com.gmt2001.Console.err.println("Unable to edit member roles" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
+        }).doOnError(e -> {
+            com.gmt2001.Console.err.println("Unable to convert user to member " + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
+            com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
 
@@ -789,8 +793,12 @@ public class DiscordUtil {
 
         user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
             m.addRole(role.getId()).doOnError(e -> {
+                com.gmt2001.Console.err.println("Unable to add member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
+        }).doOnError(e -> {
+            com.gmt2001.Console.err.println("Unable to convert user to member " + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
+            com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
 
@@ -834,9 +842,13 @@ public class DiscordUtil {
 
         user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
             m.removeRole(role.getId()).doOnError(e -> {
+                com.gmt2001.Console.err.println("Unable to remove member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
-        });
+        }).doOnError(e -> {
+            com.gmt2001.Console.err.println("Unable to convert user to member " + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
     }
 
     /**
@@ -858,6 +870,7 @@ public class DiscordUtil {
         DiscordAPI.getGuild().createRole(role
                 -> role.setName(roleName)
         ).doOnError(e -> {
+            com.gmt2001.Console.err.println("Unable to create role" + roleName + " (" + DiscordAPI.getGuild().getName() + ")");
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
@@ -869,6 +882,7 @@ public class DiscordUtil {
      */
     public void deleteRole(Role role) {
         role.delete().doOnError(e -> {
+            com.gmt2001.Console.err.println("Unable to delete role" + role.getName() + " (" + DiscordAPI.getGuild().getName() + ")");
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }

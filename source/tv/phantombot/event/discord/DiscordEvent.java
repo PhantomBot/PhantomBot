@@ -19,8 +19,6 @@ package tv.phantombot.event.discord;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
-import discord4j.core.object.entity.channel.PrivateChannel;
-import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
 import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.Event;
