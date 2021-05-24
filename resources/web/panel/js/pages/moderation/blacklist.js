@@ -137,7 +137,10 @@ $(run = function() {
                     .append(helpers.getCheckBox('exclude-regulars', e.excludeRegulars, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
                     // Tooltip to toggle for subs to bypass this filter.
                     .append(helpers.getCheckBox('exclude-subscribers', e.excludeSubscribers, 'Exclude Subscribers',
-                        'If subscribers should be allowed to bypass this filter.')))
+                        'If subscribers should be allowed to bypass this filter.'))
+                    // Tooltip to toggle for subs to bypass this filter.
+                    .append(helpers.getCheckBox('exclude-vips', e.excludeVips, 'Exclude VIPs',
+                        'If vips should be allowed to bypass this filter.')))
                 // Callback function to be called once we hit the save button on the modal.
                 })), function() {
                     let phrase = $('#ban-phrase'),
@@ -147,7 +150,8 @@ $(run = function() {
                         timeoutTime = $('#timeout-timeout-time'),
                         timeoutMsg = $('#timeout-reason'),
                         isReg = $('#exclude-regulars').is(':checked'),
-                        isSub = $('#exclude-subscribers').is(':checked');
+                        isSub = $('#exclude-subscribers').is(':checked'),
+                        isVip = $('#exclude-vips').is(':checked');
 
                     // Add regex prefix is regex.
                     if (isRegex && !phrase.val().startsWith('regex:')) {
@@ -173,6 +177,7 @@ $(run = function() {
                                     isSilent: isSilent,
                                     excludeRegulars: isReg,
                                     excludeSubscribers: isSub,
+                                    excludeVips: isVip,
                                     message: banMsg.val(),
                                     banReason: timeoutMsg.val()
                                 }), function() {
@@ -232,7 +237,10 @@ $(function() {
             .append(helpers.getCheckBox('exclude-regulars', false, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
             // Tooltip to toggle for subs to bypass this filter.
             .append(helpers.getCheckBox('exclude-subscribers', false, 'Exclude Subscribers',
-                'If subscribers should be allowed to bypass this filter.')))
+                'If subscribers should be allowed to bypass this filter.'))
+            // Tooltip to toggle for vips to bypass this filter.
+            .append(helpers.getCheckBox('exclude-vips', false, 'Exclude VIPs',
+                'If vips should be allowed to bypass this filter.')))
         })), function() {
             let phrase = $('#ban-phrase'),
                 isRegex = $('#is-regex').is(':checked'),
@@ -241,7 +249,8 @@ $(function() {
                 timeoutTime = $('#timeout-timeout-time'),
                 timeoutMsg = $('#timeout-reason'),
                 isReg = $('#exclude-regulars').is(':checked'),
-                isSub = $('#exclude-subscribers').is(':checked');
+                isSub = $('#exclude-subscribers').is(':checked'),
+                isVip = $('#exclude-vips').is(':checked');
 
             // Add regex prefix is regex.
             if (isRegex && !phrase.val().startsWith('regex:')) {
@@ -265,6 +274,7 @@ $(function() {
                         isSilent: isSilent,
                         excludeRegulars: isReg,
                         excludeSubscribers: isSub,
+                        excludeVips: isVip,
                         message: banMsg.val(),
                         banReason: timeoutMsg.val()
                     }), function() {
