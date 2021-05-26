@@ -11,7 +11,13 @@ NOTE: If you access your panel at _localhost:25000_, the port number requirement
 
 If you are not interested in the Twitch chat and live feed panels, you do not need to make any changes to your bot.
 
-There are three methods for fixing the embeds:
+There are three methods for fixing the embeds
+
+Method 1 is the easiest and compatible with most setups, but does not give access to EventSub
+
+Method 2 or 3 is **required** to use EventSub, but Method 3 is preferred
+
+Method 3 is recommended if the bot is hosted on a server
 
 ## Method 1: PhantomBot Remote Panel
 
@@ -81,9 +87,9 @@ Once you restart the bot you can access the panel without using a port number (e
 
 **NOTE:** This method is not compatible with bots running on servers or other devices that already have a webserver running on them with SSL enabled.
 
-**NOTE:** You may have to run the bot as root to enable it to bind to port 443.
+**NOTE:** You may have to run the bot as root or setup a service user that has specifically been granted access to port 443.
 
-**NOTE:** This method does not work when accessing the bot by IP address. A domain, sub-domain, or hostname is required.
+**NOTE:** This method does not work, for the purposes of enabling embeds, when accessing the bot by IP address. A domain, sub-domain, or hostname is required.
 
 &nbsp;
 
@@ -195,3 +201,13 @@ If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/http
 * _(Skip this if you will be installing/running certbot after creating the config)_ Replace the 3 instances of `<folder>` with the specific folder that houses the letsencrypt certificates. The folder name is usually whichever domain certbot chooses as the primary
 * If the document root for the Apache instance is not _/var/www/html_, change it accordingly
 * If the bot is running on a port other than 25000, change it in the ProxyPass directives
+
+#### Docker
+
+* If your webserver is hosted directly on your server, with Docker only handling the bot, see the setup instructions above
+
+* If your webserver is hosted on a Docker container
+
+** Option 1: Setup the webserver container as above, but change references to _127.0.0.1:25000_ to point to the PhantomBot container by name (eg. _phantombot:25000_)
+
+** Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as nginxproxy/nginx-proxy with nginxproxy/acme-companion
