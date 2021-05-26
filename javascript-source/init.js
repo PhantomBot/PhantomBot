@@ -167,20 +167,17 @@
                 i;
 
         for (i in files) {
+            files[i] = $.jsString(files[i]);
             if (path === '.') {
-                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
-                    continue;
-                }
-            } else if (path === './discord') {
-                if (files[i] == 'core') {
+                if (files[i] === 'lang' || files[i] === 'discord' || files[i] === 'init.js') {
                     continue;
                 }
             }
 
             if ($.isDirectory('./scripts/' + path + '/' + files[i])) {
-                loadScriptRecursive(path + '/' + files[i], silent, (force ? force : false));
+                loadScriptRecursive(path + '/' + files[i], silent, (force && path !== './core' && path !== './discord/core' ? force : false));
             } else {
-                loadScript(path + '/' + files[i], (force ? force : false), silent);
+                loadScript(path + '/' + files[i], (force && path !== './core' && path !== './discord/core' ? force : false), silent);
             }
         }
     }
@@ -358,13 +355,8 @@
         loadScript('./core/whisper.js', false, silentScriptsLoad);
         loadScript('./core/commandCoolDown.js', false, silentScriptsLoad);
         loadScript('./core/keywordCoolDown.js', false, silentScriptsLoad);
-        loadScript('./core/gameMessages.js', false, silentScriptsLoad);
         loadScript('./core/patternDetector.js', false, silentScriptsLoad);
         loadScript('./core/permissions.js', false, silentScriptsLoad);
-        loadScript('./core/streamInfo.js', false, silentScriptsLoad);
-        loadScript('./core/timeSystem.js', false, silentScriptsLoad);
-        loadScript('./core/initCommands.js', false, silentScriptsLoad);
-        loadScript('./core/panelCommands.js', false, silentScriptsLoad);
 
         // Load all the other modules.
         loadScriptRecursive('.', silentScriptsLoad);
@@ -378,7 +370,6 @@
             loadScript('./discord/core/registerCommand.js', false, silentScriptsLoad);
             loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
             loadScript('./discord/core/commandCooldown.js', false, silentScriptsLoad);
-            loadScript('./discord/core/roleManager.js', false, silentScriptsLoad);
 
             // Load the other discord modules
             loadScriptRecursive('./discord', silentScriptsLoad);
@@ -388,9 +379,6 @@
         } else {
             $.inidb.set('panelData', 'hasDiscord', 'false');
         }
-
-        // Load new panel handler.
-        loadScript('./core/panelHandler.js', false, true);
 
         if (silentScriptsLoad) {
             consoleLn('Modules have been loaded.');
