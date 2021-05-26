@@ -484,6 +484,13 @@
         reopen();
     });
 
+    /**
+     * @event Shutdown
+     */
+    $.bind('Shutdown', function() {
+       saveState();
+    });
+
     /* export to the $ api */
     $.reloadBet = reloadBet;
 })();

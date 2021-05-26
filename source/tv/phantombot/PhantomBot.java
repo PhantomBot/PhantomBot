@@ -79,6 +79,7 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import tv.phantombot.event.jvm.ShutdownEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPOAuthHandler;
@@ -1032,6 +1033,10 @@ public final class PhantomBot implements Listener {
     @SuppressWarnings("SleepWhileInLoop")
     public void onExit() {
         print(this.botName + " is shutting down...");
+
+        print("Sending the shutdown event to scripts...");
+        EventBus.instance().post(new ShutdownEvent());
+
         isExiting = true;
         PhantomBot.isInExitState = true;
 

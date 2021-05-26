@@ -1085,6 +1085,13 @@
         $api.on($script, 'PubSubChannelPoints', function (event) {
             callHook('PubSubChannelPoints', event, false);
         });
+
+        /*
+         * @event Shutdown
+         */
+        $api.on($script, 'Shutdown', function (event) {
+            callHook('Shutdown', event, false);
+        });
     }
 
     // Export functions to API
