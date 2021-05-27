@@ -37,6 +37,7 @@
         quote[3] = String(quote[3]).replace(/"/g, '\'\'');
 
         $.inidb.set('quotes', quoteid, JSON.stringify([String(quote[0]), String(quote[1]), String(quote[2]), String(quote[3])]));
+        $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
     }
 
     /**
@@ -54,6 +55,7 @@
         }
         quote = String(quote).replace(/"/g, '\'\'');
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
+        $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
         return newKey;
     }
 
@@ -87,6 +89,7 @@
             }
             
             isDeleting = false;
+            $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
             return (quotes.length ? quotes.length : 0);
         } else {
             return -1;
