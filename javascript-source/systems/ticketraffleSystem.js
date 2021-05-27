@@ -392,5 +392,12 @@
         reopen();
     });
 
+    /**
+     * @event Shutdown
+     */
+    $.bind('Shutdown', function() {
+       saveState();
+    });
+
     $.reloadTRaffle = reloadTRaffle;
 })();

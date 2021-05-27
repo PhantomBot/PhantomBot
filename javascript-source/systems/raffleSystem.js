@@ -586,5 +586,12 @@
         reopen();
     });
 
+    /**
+     * @event Shutdown
+     */
+    $.bind('Shutdown', function() {
+       saveState();
+    });
+
     $.reloadRaffle = reloadRaffle;
 })();

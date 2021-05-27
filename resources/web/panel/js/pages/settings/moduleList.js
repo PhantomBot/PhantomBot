@@ -59,7 +59,7 @@ $(run = function() {
                     'type': 'button',
                     'class': 'btn btn-xs btn-' + (twitchModules[i].status ? 'success' : 'warning'),
                     'data-toggle': 'tooltip',
-                    'title': (twitchModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.') ,
+                    'title': (twitchModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.'),
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'data-mtoggle': twitchModules[i].status,

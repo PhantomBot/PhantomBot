@@ -418,6 +418,13 @@
         reopen();
     });
 
+    /**
+     * @event Shutdown
+     */
+    $.bind('Shutdown', function() {
+       saveState();
+    });
+
     /** Export functions to API */
     $.poll = {
         runPoll: runPoll,
