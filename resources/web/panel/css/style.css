@@ -118,8 +118,17 @@ ul.recent-events li p span {
     margin-right: 3px;
 }
 
-span.event-date {
+.event-date {
     color: #999;
+}
+
+.event-type {
+    margin-left: 2px;
+    margin-right: 3px;
+}
+
+.event-message {
+    font-style: italic;
 }
 
 
