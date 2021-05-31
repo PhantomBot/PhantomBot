@@ -259,6 +259,48 @@
         });
     });
 
+    /*
+     * @event tipeeeStreamDonation
+     */
+    $.bind('tipeeeStreamDonation', function (event) {
+        var data = JSON.parse(event.getJsonString());
+        addObjectToArray('panelData', 'data', 'Tip', {
+            'username': data.parameters.username,
+            'amount': data.parameters.amount.toFixed(2),
+            'currency': data.parameters.currency,
+            'date': $.systemTime(),
+            'message': data.parameters.message
+        });
+    });
+
+    /*
+     * @event streamElementsDonation
+     */
+    $.bind('streamElementsDonation', function (event) {
+        var data = JSON.parse(event.getJsonString());
+        addObjectToArray('panelData', 'data', 'Tip', {
+            'username': data.donation.user.username,
+            'amount': data.donation.amount.toFixed(2),
+            'currency': data.donation.currency,
+            'date': $.systemTime(),
+            'message': data.donation.message
+        });
+    });
+
+    /*
+     * @event streamLabsDonation
+     */
+    $.bind('streamLabsDonation', function (event) {
+        var data = JSON.parse(event.getJsonString());
+        addObjectToArray('panelData', 'data', 'Tip', {
+            'username': data.name,
+            'amount': parseFloat(data.amount).toFixed(2),
+            'currency': data.currency,
+            'date': $.systemTime(),
+            'message': data.message
+        });
+    });
+
     // Interval that updates stream data.
     setInterval(updateStreamData, 2e4);
 })();

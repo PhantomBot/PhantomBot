@@ -123,8 +123,8 @@ $(function() {
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
-            case 'tip': // To be added soon.
-                break;
+            case 'tip':
+                return (event.username + ' just tipped ' + event.amount + ' ' + event.currency +'!');
             case 'raid':
                 return (event.username + ' raided for ' + event.viewers + ' viewers!');
             case 'gifted subscription':
