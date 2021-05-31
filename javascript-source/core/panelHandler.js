@@ -140,7 +140,8 @@
         addObjectToArray('panelData', 'data', 'Bits', {
             'username': event.getUsername(),
             'amount': event.getBits(),
-            'date': $.systemTime()
+            'date': $.systemTime(),
+            'message': event.getMessage()
         });
     });
 
@@ -165,7 +166,8 @@
             'date': $.systemTime(),
             'isReSub': false,
             'months': 0,
-            'tier': event.getPlan() / 1000
+            'tier': event.getPlan() / 1000,
+            'message': event.getMessage()
         });
     });
 
@@ -191,7 +193,8 @@
             'months': event.getMonths(),
             'date': $.systemTime(),
             'isReSub': true,
-            'tier': event.getPlan() / 1000
+            'tier': event.getPlan() / 1000,
+            'message': event.getMessage()
         });
     });
 
