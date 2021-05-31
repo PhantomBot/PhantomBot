@@ -41,4 +41,4 @@ $.lang.register('queuesystem.queue.list.empty', 'No users are in the queue.');
 $.lang.register('queuesystem.queue.next', 'Users to be picked next are: $1.');
 $.lang.register('queuesystem.gamertag', '(GamerTag: $1)');
 $.lang.register('queuesystem.pick', 'Users picked: $1.');
-$.lang.register('queuesystem.usage', 'Usage: !queue [open / close / clear / next / list / pick / position / info]');
+$.lang.register('queuesystem.usage', 'Usage: !queue [open / close / clear / next / list / pick / random / position / info]');
