@@ -334,6 +334,10 @@ public abstract class DataStore {
         return GetKeysByLikeKeys(fName, "", search);
     }
 
+    public String[][] executeSql(String sql, String[] replacements) {
+        return new String[][]{};
+    }
+
     public void CreateIndexes() {
     }
 
