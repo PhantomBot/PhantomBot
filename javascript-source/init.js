@@ -505,7 +505,16 @@
             } else
 
             // Check the command cooldown.
-            if ($.coolDown.get(command, sender, isMod) !== 0) {
+            var oncooldown = false;
+            if (args.length > 1 && $.coolDown.exists(command + ' ' + args[0] + ' ' + args[1])) {
+                oncooldown = $.coolDown.get(command + ' ' + args[0] + ' ' + args[1], sender, isMod) !== 0;
+            } else if (args.length > 0 && $.coolDown.exists(command + ' ' + args[0])) {
+                oncooldown = $.coolDown.get(command + ' ' + args[0], sender, isMod) !== 0;
+            } else {
+                oncooldown = $.coolDown.get(command, sender, isMod) !== 0;
+            }
+
+            if (oncooldown) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
