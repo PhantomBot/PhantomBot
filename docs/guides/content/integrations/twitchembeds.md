@@ -208,6 +208,6 @@ If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/http
 
 * If your webserver is hosted on a Docker container
 
-** Option 1: Setup the webserver container as above, but change references to _127.0.0.1:25000_ to point to the PhantomBot container by name (eg. _phantombot:25000_)
+    * Option 1: Setup the webserver container as above, but change references to _127.0.0.1:25000_ to point to the PhantomBot container by name (eg. _phantombot:25000_)
 
-** Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as nginxproxy/nginx-proxy with nginxproxy/acme-companion
+    * Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as nginxproxy/nginx-proxy with nginxproxy/acme-companion

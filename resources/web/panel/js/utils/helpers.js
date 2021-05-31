@@ -112,23 +112,29 @@ $(function() {
     helpers.getEventMessage = function(event) {
         switch (event.type.toLowerCase()) {
             case 'subscriber':
-                return (event.username + ' just subscribed!');
+                return (event.username + ' just subscribed at tier ' + event.tier + '!');
             case 'prime subscriber':
                 return (event.username + ' just subscribed with Twitch Prime!');
             case 'resubscriber':
-                return (event.username + ' just resubscribed for ' + event.months + ' months in a row!');
+                return (event.username + ' just resubscribed at tier ' + event.tier + ' for ' + event.months + ' months in a row!');
             case 'follower':
                 return (event.username + ' just followed!');
             case 'bits':
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
-            case 'tip': // To be added soon.
-                break;
+            case 'tip':
+                return (event.username + ' just tipped ' + event.amount + ' ' + event.currency +'!');
             case 'raid':
                 return (event.username + ' raided for ' + event.viewers + ' viewers!');
             case 'gifted subscription':
-                return (event.username + ' gifted a subscription to ' + event.recipient + '!');
+                return (event.username + ' gifted a subscription to ' + event.recipient + ' at tier ' + event.tier + '!');
+            case 'anonymous gifted subscription':
+                return ('An anonymous viewer gifted a subscription to ' + event.recipient + ' at tier ' + event.tier + '!');
+            case 'mass gifted subscription':
+                return (event.username + ' gifted subscriptions to ' + event.amount + ' viewers at tier ' + event.tier + '!');
+            case 'anonymous mass gifted subscription':
+                return ('An anonymous viewer gifted subscriptions to ' + event.amount + ' viewers at tier ' + event.tier + '!');
         }
     };
 
@@ -142,23 +148,29 @@ $(function() {
     helpers.getEventColor = function(event) {
         switch (event.toLowerCase()) {
             case 'subscriber':
-                return 'background-color: #16a7d9;';
+                return 'background-color: #16b7d9;';
             case 'prime subscriber':
-                return 'background-color: #1693bc;';
+                return 'background-color: #1667d9;';
             case 'resubscriber':
-                return 'background-color: #ed961c;';
+                return 'background-color: #1697d9;';
             case 'follower':
                 return 'background-color: #c62828;';
             case 'bits':
                 return 'background-color: #6441a5;';
             case 'host':
                 return 'background-color: #ed4c1c;';
-            case 'tip': // To be added soon.
-                return 'background-color: #6441a5;';
+            case 'tip':
+                return 'background-color: #846195;';
             case 'raid':
                 return 'background-color: #4caf50;';
             case 'gifted subscription':
                 return 'background-color: #01579b;';
+            case 'anonymous gifted subscription':
+                return 'background-color: #666666;';
+            case 'mass gifted subscription':
+                return 'background-color: #01779b;';
+            case 'anonymous mass gifted subscription':
+                return 'background-color: #aaaaaa;';
         }
     };
 

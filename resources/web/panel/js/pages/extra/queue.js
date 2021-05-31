@@ -215,6 +215,33 @@ $(function () {
                         }).modal('toggle');
             });
 
+    // Draw random users command.
+    $('#random-queue').on('click', function () {
+        helpers.getModal('queue-random-users', 'Draw Random Users', 'Draw Random', $('<form/>', {
+            'role': 'form'
+        })
+                // Append amount to draw
+                .append(helpers.getInputGroup('draw-amount', 'number', 'Number of Users to Pick', '', '1', 'The amount of users to be drawn from the queue.')),
+                // Callback.
+                        function () {
+                            let amount = $('#draw-amount');
+
+                            switch (false) {
+                                case helpers.handleInputNumber(amount, 1, 5):
+                                    break;
+                                default:
+                                    socket.wsEvent('random_queue_users', QUEUE_SCRIPT, null, ['random', amount.val()], function () {
+                                        // Alert the user.
+                                        toastr.success('Drew ' + amount.val() + ' random users from the queue!');
+                                        // Update the list.
+                                        helpers.temp.updateQueueList();
+                                        // Close the modal.
+                                        $('#queue-random-users').modal('toggle');
+                                    });
+                            }
+                        }).modal('toggle');
+            });
+
     // Handle mouse over on queue list.
     $('#queueTable').on('mouseenter mouseleave', function (event) {
         canUpdate = event.type === 'mouseleave';
