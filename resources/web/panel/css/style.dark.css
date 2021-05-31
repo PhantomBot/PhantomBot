@@ -119,21 +119,17 @@ ul.recent-events li {
     line-height: 20px;
 }
 
-ul.recent-events li p {
-    font-size: 14px;
-    margin-bottom: 0;
-}
-
-ul.recent-events li p span {
-    margin-right: 3px;
+ul.recent-events li table tr td {
+    vertical-align: baseline;
 }
 
 .event-date {
     color: #999;
+    min-width: 142px;
 }
 
 .event-type {
-    margin-left: 2px;
+    margin-left: 3px;
     margin-right: 3px;
 }
 

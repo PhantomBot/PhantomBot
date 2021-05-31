@@ -68,28 +68,53 @@ $(function () {
                         'class': 'recent-events'
                     });
                     for (let i = 0; i < events.length; i++) {
-                        let p = $('<p/>');
+                        let tb = $('<table/>');
+                        let p = $('<tr/>');
 
                         // Append date.
-                        p.append($('<span/>', {
+                        p.append($('<td/>', {
                             'class': 'event-date',
-                            'html': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString()) + ' '
+                            'html': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString())
                         }));
 
                         // Append type.
-                        p.append($('<span/>', {
-                            'class': 'label',
+                        p.append($('<td/>', {
+                            'class': 'label event-type',
                             'style': helpers.getEventColor(events[i].type),
                             'html': events[i].type
-                        }))
-
-                        // Append message.
-                        p.append($('<span/>', {
-                            'html': ' ' + helpers.getEventMessage(events[i])
                         }));
 
+                        // Append message.
+                        p.append($('<td/>', {
+                            'html': helpers.getEventMessage(events[i])
+                        }));
+
+                        tb.append(p);
+
+                        if (typeof events[i].message === "string" && events[i].message.length > 0) {
+                            let p = $('<tr/>');
+
+                            // Append date.
+                            p.append($('<td/>', {
+                                'html': '&nbsp;'
+                            }));
+
+                            // Append type.
+                            p.append($('<td/>', {
+                                'html': '&nbsp;'
+                            }));
+
+                            // Append message.
+                            p.append($('<td/>', {
+                                'class': 'event-message',
+                                'html': events[i].message
+                            }));
+
+                            tb.append(p);
+                        }
+
                         // Append to list.
-                        htmlEvents.append(p);
+                        htmlEvents.append($('<li/>').append(tb));
                     }
 
                     // Append the information to the main div.
@@ -474,10 +499,11 @@ $(function () {
                         });
                     }
 
-                    let htmlEvents = $('<table/>', {
+                    let htmlEvents = $('<ul/>', {
                         'class': 'recent-events'
                     });
                     for (let i = 0; i < events.length; i++) {
+                        let tb = $('<table/>');
                         let p = $('<tr/>');
 
                         // Append date.
@@ -498,10 +524,9 @@ $(function () {
                             'html': helpers.getEventMessage(events[i])
                         }));
 
-                        // Append to list.
-                        htmlEvents.append(p);
+                        tb.append(p);
 
-                        if (events[i].message !== null && events[i].message.length > 0) {
+                        if (typeof events[i].message === "string" && events[i].message.length > 0) {
                             let p = $('<tr/>');
 
                             // Append date.
@@ -520,9 +545,11 @@ $(function () {
                                 'html': events[i].message
                             }));
 
-                            // Append to list.
-                            htmlEvents.append(p);
+                            tb.append(p);
                         }
+
+                        // Append to list.
+                        htmlEvents.append($('<li/>').append(tb));
                     }
 
                     // Append the information to the main div.
