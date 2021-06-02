@@ -38,7 +38,8 @@ $(run = function() {
                     $('<a/>', {
                         'text': url,
                         'href': url,
-                        'target': '_blank'
+                        'target': '_blank',
+                        'rel': 'noopener noreferrer'
                     })[0].outerHTML,
                     comment,
                     $('<div/>', {

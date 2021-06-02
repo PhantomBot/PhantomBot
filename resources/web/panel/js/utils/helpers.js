@@ -1110,19 +1110,19 @@ $(function() {
                 if (version.startsWith("nightly-")) {
                     html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now available to download! <br>' +
                             'You can grab your own copy of nightly build ' + version.substr(8) + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>'
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                ' on how to properly update PhantomBot.</b>';
                 } else {
                     html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
                             'You can view the changes of this version ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>'
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                ' on how to properly update PhantomBot.</b>';
                 }
 
                 // Set the total notifications.
