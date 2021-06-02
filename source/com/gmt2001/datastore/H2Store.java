@@ -877,7 +877,7 @@ public class H2Store extends DataStore {
                     while (rs.next()) {
                         results.add(new ArrayList<>());
 
-                        for (int b = 0; b < numcol; b++) {
+                        for (int b = 1; b <= numcol; b++) {
                             results.get(i).add(rs.getString(b));
                         }
 
