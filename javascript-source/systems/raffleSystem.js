@@ -172,9 +172,9 @@
     }
 
     function reopen() {
-        if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', 'entries') || !$.inidb.HasKey('raffleState', 'entered')
-                 || !$.inidb.HasKey('raffleState', 'keyword') || !$.inidb.HasKey('raffleState', 'entryFee') || !$.inidb.HasKey('raffleState', 'timerTime')
-                  || !$.inidb.HasKey('raffleState', 'startTime') || !$.inidb.HasKey('raffleState', 'bools')) {
+        if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', '', 'entries') || !$.inidb.HasKey('raffleState', '', 'entered')
+                 || !$.inidb.HasKey('raffleState', '', 'keyword') || !$.inidb.HasKey('raffleState', '', 'entryFee') || !$.inidb.HasKey('raffleState', '', 'timerTime')
+                  || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'bools')) {
             return;
         }
 

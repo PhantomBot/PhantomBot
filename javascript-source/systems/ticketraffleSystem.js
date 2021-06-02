@@ -102,9 +102,9 @@
     };
 
     function reopen() {
-        if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', 'cost') || !$.inidb.HasKey('traffleState', 'entries')
-                 || !$.inidb.HasKey('traffleState', 'subTMulti') || !$.inidb.HasKey('traffleState', 'regTMulti') || !$.inidb.HasKey('traffleState', 'maxEntries')
-                  || !$.inidb.HasKey('traffleState', 'bools') || !$.inidb.HasKey('traffleState', 'totalEntries') || !$.inidb.HasKey('traffleState', 'totalTickets')) {
+        if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', '', 'cost') || !$.inidb.HasKey('traffleState', '', 'entries')
+                 || !$.inidb.HasKey('traffleState', '', 'subTMulti') || !$.inidb.HasKey('traffleState', '', 'regTMulti') || !$.inidb.HasKey('traffleState', '', 'maxEntries')
+                  || !$.inidb.HasKey('traffleState', '', 'bools') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')) {
             return;
         }
 

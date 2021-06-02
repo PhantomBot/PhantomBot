@@ -152,7 +152,7 @@
     ;
 
     function reopen() {
-        if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', 'poll') || !$.inidb.HasKey('pollState', 'objOBS')) {
+        if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', '', 'poll') || !$.inidb.HasKey('pollState', '', 'objOBS')) {
             return;
         }
 
