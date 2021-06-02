@@ -127,7 +127,7 @@
     }
 
     function reopen() {
-        if (!$.inidb.FileExists('bettingState') || !$.inidb.HasKey('bettingState', 'bets') || !$.inidb.HasKey('bettingState', 'bet')) {
+        if (!$.inidb.FileExists('bettingState') || !$.inidb.HasKey('bettingState', '', 'bets') || !$.inidb.HasKey('bettingState', '', 'bet')) {
             return;
         }
 

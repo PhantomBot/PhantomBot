@@ -22,7 +22,7 @@
             topUser: 0,
             topPoints: 0,
             timer: 0,
-            status: false,
+            status: false
         },
         a,
         b;
