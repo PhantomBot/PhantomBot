@@ -35,6 +35,8 @@ $(function() {
     // Example: MAJOR.MINOR.PATCH
     helpers.PANEL_VERSION = "NONE";
 
+    helpers.hashmap = [];
+
     /*
      * @function adds commas to thousands.
      *
@@ -400,7 +402,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -413,7 +415,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-primary',
             'type': 'button',
@@ -451,7 +453,7 @@ $(function() {
         }).append($('<div/>', {
             'class': 'modal-content'
         }).append($('<div/>', {
-            'class': 'modal-header',
+            'class': 'modal-header'
         }).append($('<button/>', {
             'type': 'button',
             'class': 'close',
@@ -464,7 +466,7 @@ $(function() {
             'class': 'modal-body',
             'html': body
         })).append($('<div/>', {
-            'class': 'modal-footer',
+            'class': 'modal-footer'
         }).append($('<button/>', {
             'class': 'btn btn-default pull-left',
             'type': 'button',
@@ -655,7 +657,7 @@ $(function() {
                     'id': roles[i]._id
                 });
 
-                if (roles[i].selected === 'true') {
+                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
@@ -704,7 +706,7 @@ $(function() {
                 'html': option.name,
                 'id': option._id
             });
-            if (option.selected === 'true') {
+            if (option.selected !== undefined && option.selected === 'true') {
                 o.attr('selected', 'selected');
             }
             return o;
@@ -815,7 +817,7 @@ $(function() {
             if (isRemoved) {
                 onClose();
                 swal(closeMessage, {
-                    'icon': 'success',
+                    'icon': 'success'
                 });
             }
         });
@@ -1045,49 +1047,49 @@ $(function() {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/select2/select2.dark.min.css'
+                'href': 'vendors/select2/select2.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/adminlte/css/AdminLTE.dark.min.css'
+                'href': 'vendors/adminlte/css/AdminLTE.dark.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/adminlte/css/skins/skin-purple.dark.min.css'
+                'href': 'vendors/adminlte/css/skins/skin-purple.dark.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/css/style.dark.min.css'
+                'href': 'css/style.dark.min.css'
             }));
         } else {
             // select2.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/select2/select2.min.css'
+                'href': 'vendors/select2/select2.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/adminlte/css/AdminLTE.min.css'
+                'href': 'vendors/adminlte/css/AdminLTE.min.css'
             }));
 
             // skins.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/vendors/adminlte/css/skins/skin-purple.min.css'
+                'href': 'vendors/adminlte/css/skins/skin-purple.min.css'
             }));
 
             // AdminLTE.
             head.append($('<link/>', {
                 'rel': 'stylesheet',
-                'href': '/panel/css/style.min.css'
+                'href': 'css/style.min.css'
             }));
         }
     };
@@ -1110,19 +1112,19 @@ $(function() {
                 if (version.startsWith("nightly-")) {
                     html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now available to download! <br>' +
                             'You can grab your own copy of nightly build ' + version.substr(8) + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>'
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                ' on how to properly update PhantomBot.</b>';
                 } else {
                     html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
                             'You can view the changes of this version ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>'
+                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                                ' on how to properly update PhantomBot.</b>';
                 }
 
                 // Set the total notifications.
@@ -1209,6 +1211,74 @@ $(function() {
         }
 
         return parsedDate;
+    };
+
+    helpers.parseHashmap = function() {
+        var hash = window.location.hash.substr(1);
+        var kvs = hash.split('&');
+        var hashmap = [];
+        var spl;
+
+        for (var i = 0; i < kvs.length; i++) {
+            spl = kvs[i].split('=', 2);
+            hashmap[spl[0]] = spl[1];
+        }
+
+        helpers.hashmap = hashmap;
+    };
+
+    helpers.setupAuth = function() {
+        if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires')) {
+            if (window.localStorage.getItem('expires') > Date.now()) {
+                window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
+            } else {
+                window.sessionStorage.removeItem('webauth');
+            }
+        }
+        window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
+    };
+
+    helpers.getBotHost = function() {
+        var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
+        var botport = window.localStorage.getItem('botport') || 25000;
+
+        return bothostname.length > 0 ? bothostname + (botport !== 80 && botport !== 443 ? ':' + botport : '') : '!missing';
+    };
+
+    helpers.getUserLogo = function() {
+      socket.doRemote('userLogo', 'userLogo', {}, function(e) {
+          if (!e[0].errors) {
+              $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+              $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+          }
+      });
+    };
+
+    //https://stackoverflow.com/a/57380742
+    helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
+        const startPoll = async resolve => {
+            const startTime = new Date();
+            const result = await promiseFunction();
+
+            if (result) {
+                return resolve();
+            }
+
+            const timeUntilNext = Math.max(pollIntervalMs - (new Date() - startTime), 0);
+            setTimeout(() => startPoll(resolve), timeUntilNext);
+        };
+
+        return new Promise(startPoll);
+    };
+
+    helpers.toggleDebug = function() {
+        localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') !== '1' ? '1' : '0');
+        helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
+        helpers.log('Debug Output set to ' + helpers.DEBUG_STATE, helpers.LOG_TYPE.FORCE);
+    };
+
+    helpers.isLocalPanel = function() {
+        return helpers.getBotHost() === window.location.host;
     };
 
     // Export.

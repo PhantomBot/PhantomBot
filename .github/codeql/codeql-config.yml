@@ -1,3 +1,7 @@
 name: "CodeQL Config"
 paths-ignore:
   - dist
+  - resources/web/common/js/jquery-ui
+  - resources/web/panel/vendors
+  - docs/common/js/jquery-ui
+  - docs/panel/vendors

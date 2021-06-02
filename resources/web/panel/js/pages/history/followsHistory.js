@@ -20,7 +20,7 @@ $(function() {
 
     const FOLLOW_STEP = 100;
 
-    let followingOffset = 0
+    let followingOffset = 0;
 
     function prepareDataForTable(results) {
         followingOffset = followingOffset + FOLLOW_STEP;
@@ -82,7 +82,7 @@ $(function() {
             'columns': [
                 { 'title': 'Username' },
                 { 'title': 'Date' },
-                { 'title': 'Actions' },
+                { 'title': 'Actions' }
             ]
         });
 
