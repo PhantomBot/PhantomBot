@@ -17,7 +17,26 @@
 
 // Main socket and functions.
 $(function() {
-    var webSocket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/panel', null, { reconnectInterval: 500 }),
+    if (!helpers.isLocalPanel()) {
+        $.ajax(
+            {
+                type: 'GET',
+                url: 'https://' + helpers.getBotHost() + '/sslcheck',
+                crossDomain: true,
+                dataType: 'text',
+                async: false,
+                success: function (data) {
+                    if (data === 'false') {
+                        window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
+                    }
+                },
+                error: function () {
+                    window.location = window.location.origin + window.location.pathname + 'login/#sslFail=true';
+                }
+            }
+        );
+    }
+    var webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, { reconnectInterval: 500 }),
         callbacks = [],
         listeners = [],
         socket = {};
@@ -438,6 +457,29 @@ $(function() {
         }
     };
 
+    /*
+     * @function Sends a remote panel query.
+     *
+     * @param {String}   query_id
+     * @param {String}   query
+     * @param {Object}   params
+     * @param {Function} callback
+     */
+    socket.doRemote = function(query_id, query, params, callback) {
+        generateCallBack(query_id, [], false, true, callback);
+
+        sendToSocket({
+            remote: true,
+            id: query_id,
+            query: query,
+            params: params
+        });
+    };
+    
+    socket.close = function() {
+        webSocket.close(1000);
+    };
+
     // WebSocket events.
 
     /*
@@ -491,10 +533,22 @@ $(function() {
                         helpers.isAuth = true;
                     }
 
-                    // Load the main page.
-                    $.loadPage('dashboard', 'dashboard.html');
+                    sendToSocket({
+                        remote: true,
+                        id: 'initLoad.panelSettings',
+                        query: 'panelSettings'
+                    });
                 }
                 return;
+            }
+
+            if (message.id !== undefined) {
+                if (message.id === 'initLoad.panelSettings') {
+                    window.panelSettings.channelName = message.channelName;
+                    window.panelSettings.displayName = message.displayName;
+                    $.loadPage('dashboard', 'dashboard.html');
+                    helpers.getUserLogo();
+                }
             }
 
             // Make sure this isn't a version request.

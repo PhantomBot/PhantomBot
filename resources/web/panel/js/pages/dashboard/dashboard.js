@@ -256,11 +256,40 @@ $(function () {
 // Function that handlers the loading of events.
 $(function () {
     // handle auto complete.
+    var gameSearch = '';
+    var games = [];
     $('#stream-game').easyAutocomplete({
         'url': function (game) {
-            return '/games?webauth=' + getAuth() + '&search=' + game;
+            gameSearch = game;
+            return window.location;
         },
-        'getValue': 'game',
+        'ajaxSettings': {
+            'dataType': 'text',
+            'dataFilter': async() => {
+                var isDone = false;
+                socket.doRemote('games', 'games', {
+                    'search': gameSearch
+                }, function (e) {
+                    if (e.length > 0 && !e[0].errors) {
+                        games = e;
+                    } else {
+                        games = [];
+                    }
+                    isDone = true;
+                });
+
+                var checkIfGamesDoneAsync = async () => {
+                    return isDone;
+                };
+
+                await helpers.promisePoll(() => checkIfGamesDoneAsync(), {pollIntervalMs: 250});
+
+                return games;
+            }
+        },
+        'listLocation': function (data) {
+            return games;
+        },
         'requestDelay': 300,
         'list': {
             'match': {
