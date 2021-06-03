@@ -11,7 +11,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
     - name: Set up Python 3.x
       uses: actions/setup-python@v2
       with:
@@ -30,7 +30,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
     - name: Copy Files
       run: |
         rsync -rv --progress resources/web/panel docs/panel
