@@ -1,0 +1,130 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title.-->
+        <h1>Bot Settings</h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Settings</li>
+            <li class="active">Bot</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#bot_logging" data-toggle="tab">Logging</a></li>
+                <li><a href="#bot_out" data-toggle="tab">Message Output</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Logging settings -->
+                <div class="tab-pane active" id="bot_logging">
+                    <div class="form-group">
+                        <!-- Log events toggle. -->
+                        <label for="logging-events">Log Events</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="logging-events" style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Log errors toggle. -->
+                    <div class="form-group">
+                        <label for="logging-errors">Log Errors</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="logging-errors" style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Log chat toggle. -->
+                    <div class="form-group">
+                        <label for="logging-chat">Log Chat</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="logging-chat" style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Logs keep days. -->
+                    <div class="form-group">
+                        <label>Days to Keep Logs</label>
+                        <input type="number" class="form-control" id="log-days" placeholder="15" data-toggle="tooltip"
+                            title="How long in days to keep logs for. 0 means never delete logs."/>
+                    </div>
+                </div>
+
+                <!-- Output mode -->
+                <div class="tab-pane" id="bot_out">
+                    <!-- Whisper mode. -->
+                    <div class="form-group">
+                        <label>Enable Whisper Mode</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="bot-whisper-mode" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Send all responses in whispers except for custom commands.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Action mode. -->
+                    <div class="form-group">
+                        <label>Enable Action Mode</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="bot-action-mode" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Send all bot messages using colored text with /me.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Mute mode. -->
+                    <div class="form-group">
+                        <label>Mute Bot Replies</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="bot-mute-mode" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Mute all bot replies except for timeouts.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box footer -->
+                <div class="box-footer" style="padding-right: 0; padding-bottom: 0;">
+                    <button type="button" class="btn btn-primary pull-right" id="bot-logging-save"> Save</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- botSettings -->
+    <script src="js/pages/settings/botSettings.js"></script>
+</main>
