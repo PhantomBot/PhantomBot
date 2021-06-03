@@ -6,6 +6,7 @@ on:
 jobs:
   parsecommandtags:
     name: Parse Command Tags on ubuntu-latest with Python 3.x
+    if: github.repository == 'PhantomBot/PhantomBot'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
@@ -25,6 +26,7 @@ jobs:
         message: 'Updated the custom command tags guide'
   updateremotepanel:
     name: Update Remote Panel
+    if: github.repository == 'PhantomBot/PhantomBot'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
