@@ -175,11 +175,11 @@
      * @event twitchPrimeSubscriber
      */
     $.bind('twitchPrimeSubscriber', function (event) {
-        addObjectToArray('panelData', 'data', 'Prime Subscriber', {
+        addObjectToArray('panelData', 'data', 'Prime ' + (event.getMonths() > 1 ? 'Re' : '') +'Subscriber', {
             'username': event.getSubscriber(),
             'date': $.systemTime(),
             'isReSub': false,
-            'months': 0,
+            'months': event.getMonths(),
             'tier': 1
         });
     });
