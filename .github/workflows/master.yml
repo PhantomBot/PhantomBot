@@ -33,8 +33,8 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
     - name: Copy Files
       run: |
-        rsync -rv --progress resources/web/panel docs/panel
-        rsync -rv --progress resources/web/common docs/common
+        rsync -rv --progress resources/web/panel docs
+        rsync -rv --progress resources/web/common docs
     - name: Commit Changes
       uses: EndBug/add-and-commit@v7
       with:
