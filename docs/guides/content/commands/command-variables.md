@@ -614,6 +614,21 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### hoursround
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(hoursround)` - number of hours sender has spent in chat, with the value rounded to the nearest tenth of an hour
+- `(hoursround user:str)` - number of hours the provided user has spent in chat, with the value rounded to the nearest tenth of an hour
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### keywordcount
 
 Defined in script: _./javascript-source/core/commandTags.js_
