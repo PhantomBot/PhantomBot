@@ -43,7 +43,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     private final HttpAuthenticationHandler authHandler;
 
     public HTTPPanelAndYTHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass, "/panel/login");
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass, "/panel/login/");
     }
 
     @Override

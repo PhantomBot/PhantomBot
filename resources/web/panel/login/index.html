@@ -37,6 +37,13 @@
             body {
                 height: auto;
             }
+            .login-box-body {
+                background: #333;
+            }
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: inherit;
+                color: #888;
+            }
         </style>
     </head>
 
@@ -108,7 +115,7 @@
         <script>
                                 var isLocalBot = false;
                                 function doLogin(hostname, port, username, password, remember) {
-                                    var webSocket = new WebSocket((window.location.protocol === 'https:' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
+                                    var webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
                                     webSocket.onopen = function () {
                                         Pace.restart();
 
@@ -147,12 +154,15 @@
                                                 window.localStorage.setItem('webauth', webauth);
                                                 window.localStorage.setItem('remember', remember);
                                                 window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
+                                                window.localStorage.setItem('b64', btoa(username + ':' + password));
                                             } else {
                                                 window.localStorage.removeItem('webauth');
                                                 window.localStorage.removeItem('remember');
                                                 window.localStorage.removeItem('expires');
+                                                window.localStorage.removeItem('b64');
                                             }
                                             window.sessionStorage.setItem('webauth', webauth);
+                                            document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
                                             window.location = window.location.origin + window.location.pathname + '../';
                                         }
                                     };
@@ -243,6 +253,7 @@
                                         window.localStorage.removeItem('webauth');
                                         window.localStorage.removeItem('remember');
                                         window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
                                     }
 
                                     if (hashmap['connectFail'] !== undefined && hashmap['connectFail'] === 'true') {
@@ -252,6 +263,7 @@
                                         window.localStorage.removeItem('webauth');
                                         window.localStorage.removeItem('remember');
                                         window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
                                     }
 
                                     if (hashmap['sslFail'] !== undefined && hashmap['sslFail'] === 'true') {
@@ -261,6 +273,7 @@
                                         window.localStorage.removeItem('webauth');
                                         window.localStorage.removeItem('remember');
                                         window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
                                     }
 
                                     if (hashmap['missingBot'] !== undefined && hashmap['missingBot'] === 'true') {
@@ -270,6 +283,7 @@
                                         window.localStorage.removeItem('webauth');
                                         window.localStorage.removeItem('remember');
                                         window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
                                     }
 
                                     var authExpired = false;
@@ -277,11 +291,13 @@
                                         if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()) {
                                             window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
                                             window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
+                                            document.cookie = 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
                                             window.location = window.location.origin + window.location.pathname + '../';
                                         } else {
                                             window.localStorage.removeItem('webauth');
                                             window.localStorage.removeItem('remember');
                                             window.localStorage.removeItem('expires');
+                                            window.localStorage.removeItem('b64');
                                             authExpired = true;
                                         }
                                     }
