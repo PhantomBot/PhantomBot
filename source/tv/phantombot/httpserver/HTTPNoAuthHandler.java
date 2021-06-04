@@ -67,6 +67,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.uri().startsWith("/presence")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "PBok".getBytes(), null);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             com.gmt2001.Console.debug.println("200");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
