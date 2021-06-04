@@ -117,8 +117,10 @@ $(function() {
                 return (event.username + ' just subscribed at tier ' + event.tier + '!');
             case 'prime subscriber':
                 return (event.username + ' just subscribed with Twitch Prime!');
+            case 'prime resubscriber':
+                return (event.username + ' just resubscribed with Twitch Prime for ' + event.months + ' months!');
             case 'resubscriber':
-                return (event.username + ' just resubscribed at tier ' + event.tier + ' for ' + event.months + ' months in a row!');
+                return (event.username + ' just resubscribed at tier ' + event.tier + ' for ' + event.months + ' months!');
             case 'follower':
                 return (event.username + ' just followed!');
             case 'bits':
@@ -153,6 +155,8 @@ $(function() {
                 return 'background-color: #16b7d9;';
             case 'prime subscriber':
                 return 'background-color: #1667d9;';
+            case 'prime resubscriber':
+                return 'background-color: #1637d9;';
             case 'resubscriber':
                 return 'background-color: #1697d9;';
             case 'follower':
