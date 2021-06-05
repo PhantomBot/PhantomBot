@@ -336,7 +336,7 @@
                                     $.ajax(
                                             {
                                                 type: 'GET',
-                                                url: 'http://' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/presence',
+                                                url: window.location.protocol + '://' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/presence',
                                                 dataType: 'text',
                                                 success: function (presence) {
                                                     if (presence === 'PBok') {
