@@ -336,7 +336,7 @@
                                     $.ajax(
                                             {
                                                 type: 'GET',
-                                                url: window.location.protocol + '://' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/presence',
+                                                url: window.location.protocol + '//' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/presence',
                                                 dataType: 'text',
                                                 success: function (presence) {
                                                     if (presence === 'PBok') {
@@ -344,7 +344,7 @@
                                                         $('#remote-msg').addClass('hide');
                                                         $('#remote-fields').addClass('hide');
                                                         $('#hostname').val(window.location.hostname);
-                                                        $('#port').val(window.location.port);
+                                                        $('#port').val((window.location.port.length > 0 ? window.location.port : (window.location.protocol === 'https:' ? '443' : '80')));
                                                     }
                                                 }
                                             }
