@@ -186,7 +186,7 @@
                                         return;
                                     }
 
-                                    if (port === undefined || port.length === 0 || isNaN(parseInt(port)) || parseInt(port) < 1 || parseInt(port) > 65536) {
+                                    if ((port === undefined || port.length === 0 || isNaN(parseInt(port)) || parseInt(port) < 1 || parseInt(port) > 65536) && !isLocalBot) {
                                         $('#error-box').removeClass('hide');
                                         $('#alert-br').removeClass('hide');
                                         $('#error-box').html('Valid Bot Port Required');
