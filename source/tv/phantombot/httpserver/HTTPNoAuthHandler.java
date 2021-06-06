@@ -68,7 +68,9 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         if (req.uri().startsWith("/presence")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "PBok".getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            if (origin != null && !origin.isBlank()) {
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            }
             com.gmt2001.Console.debug.println("200");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
@@ -77,7 +79,9 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         if (req.uri().startsWith("/sslcheck")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled ? "true" : "false").getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            if (origin != null && !origin.isBlank()) {
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            }
             com.gmt2001.Console.debug.println("200");
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
@@ -187,10 +191,10 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 if (path.startsWith("/addons") && (qsd.parameters().containsKey("marquee") || qsd.parameters().containsKey("refresh"))) {
                     handleAddons(ctx, req, p, qsd);
                 } else {
-                com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
-                        + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
-                        req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
+                    com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
+                            + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
+                    HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
+                            req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
                 }
             }
         } catch (IOException ex) {
