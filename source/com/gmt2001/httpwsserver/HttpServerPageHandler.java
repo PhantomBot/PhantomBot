@@ -251,6 +251,9 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             HttpUtil.setContentLength(res, res.content().readableBytes());
         }
 
+        res.headers().set(HttpHeaderNames.CACHE_CONTROL, HttpHeaderValues.NO_STORE);
+        res.headers().add(HttpHeaderNames.CACHE_CONTROL, HttpHeaderValues.MAX_AGE + "=" + HttpHeaderValues.ZERO);
+
         return res;
     }
 
