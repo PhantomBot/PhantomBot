@@ -490,7 +490,7 @@ public final class PhantomBot implements Listener {
             if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
-        } else if (dataStoreType.equalsIgnoreCase("h2store")) {
+        } else if (dataStoreType.equalsIgnoreCase("h2store") || (dataStoreType.isBlank() && System.getProperty("os.name").toLowerCase().endsWith("bsd"))) {
             dataStore = H2Store.instance(dataStoreConfig);
 
             if (!dataStore.CanConnect()) {
