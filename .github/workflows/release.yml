@@ -51,7 +51,7 @@ jobs:
         FOLDERLIN: ${{ format('PhantomBot-{0}-lin', steps.build_env.outputs.version) }}
         FOLDERWIN: ${{ format('PhantomBot-{0}-win', steps.build_env.outputs.version) }}
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', steps.build_env.outputs.version) }}
-        FOLDERARM: ${{ format('PhantomBot-{0}-arm', steps.build_env.outputs.version) }}
+        FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.version) }}
       run: |
         mkdir dist/$FOLDERLIN
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
@@ -59,8 +59,8 @@ jobs:
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh
         mkdir dist/$FOLDERMAC
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat
-        mkdir dist/$FOLDERARM
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARM --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
+        mkdir dist/$FOLDERARMBSDOTHER
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
         cd dist
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
@@ -85,12 +85,12 @@ jobs:
         cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
-        echo Zip Arm
-        mv -v $FOLDERARM $FOLDERFULL
+        echo Zip Arm/BSD/Other
+        mv -v $FOLDERARMBSDOTHER $FOLDERFULL
         cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARM.zip $FOLDERFULL
+        zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
         cd ..
-        mv -v $FOLDERFULL/$FOLDERARM.zip ./$FOLDERARM.zip
+        mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
         rm -rf $FOLDERFULL
     - name: Upload Asset (Full)
       uses: actions/upload-release-asset@v1
@@ -128,12 +128,12 @@ jobs:
         asset_path: ${{ format('dist/PhantomBot-{0}-mac.zip', steps.build_env.outputs.version) }}
         asset_name: ${{ format('PhantomBot-{0}-mac.zip', steps.build_env.outputs.version) }}
         asset_content_type: application/zip
-    - name: Upload Asset (ARM)
+    - name: Upload Asset (ARM/BSD/Other)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-arm.zip', steps.build_env.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-arm.zip', steps.build_env.outputs.version) }}
+        asset_path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
+        asset_name: ${{ format('PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
         asset_content_type: application/zip
