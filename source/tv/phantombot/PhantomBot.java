@@ -490,7 +490,7 @@ public final class PhantomBot implements Listener {
             if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
-        } else if (dataStoreType.equalsIgnoreCase("h2store")) {
+        } else if (dataStoreType.equalsIgnoreCase("h2store") || (dataStoreType.isBlank() && System.getProperty("os.name").toLowerCase().endsWith("bsd"))) {
             dataStore = H2Store.instance(dataStoreConfig);
 
             if (!dataStore.CanConnect()) {
@@ -1306,9 +1306,11 @@ public final class PhantomBot implements Listener {
             os = "-win";
         } else if (osname.contains("mac")) {
             os = "-mac";
+        } else if (osname.contains("bsd")) {
+            os = "-arm-bsd-other";
         } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
             if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
-                os = "-arm";
+                os = "-arm-bsd-other";
             } else {
                 os = "-lin";
             }
