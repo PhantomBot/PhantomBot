@@ -1306,9 +1306,11 @@ public final class PhantomBot implements Listener {
             os = "-win";
         } else if (osname.contains("mac")) {
             os = "-mac";
+        } else if (osname.contains("bsd")) {
+            os = "-arm-bsd-other";
         } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
             if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
-                os = "-arm";
+                os = "-arm-bsd-other";
             } else {
                 os = "-lin";
             }
