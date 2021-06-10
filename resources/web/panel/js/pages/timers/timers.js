@@ -67,15 +67,15 @@ $(run = function() {
                         })
                     })).append($('<button/>', {
                         'type': 'button',
-                        'class': 'btn btn-xs btn-' + (disabled.contains(notices[i].key) ? 'warning' : 'success'),
+                        'class': 'btn btn-xs btn-' + (disabled.includes(notices[i].key) ? 'warning' : 'success'),
                         'data-toggle': 'tooltip',
-                        'title': (disabled.contains(notices[i].key) ? 'Click to enable the notice.' : 'Click to disable the notice.'),
+                        'title': (disabled.includes(notices[i].key) ? 'Click to enable the notice.' : 'Click to disable the notice.'),
                         'style': 'float: right',
                         'data-notice': notices[i].key,
                         'data-function': 'toggleid',
-                        'data-status': !disabled.contains(notices[i].key),
+                        'data-status': !disabled.includes(notices[i].key),
                         'html': $('<i/>', {
-                            'class': 'fa fa-' + (disabled.contains(notices[i].key) ? 'check' : 'close')
+                            'class': 'fa fa-' + (disabled.includes(notices[i].key) ? 'check' : 'close')
                         })
                     })).html()
                 ]);
