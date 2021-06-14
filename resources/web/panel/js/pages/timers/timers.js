@@ -34,8 +34,10 @@ $(run = function() {
                 results[i].key = results[i].key.substring(8);
 
                 if (results[i].key.endsWith('_disabled')) {
-                    let pos = results[i].key.indexOf('_disabled');
-                    disabled.push(results[i].key.substring(0, pos));
+                    if (parseInt(results[i].value) === 1) {
+                        let pos = results[i].key.indexOf('_disabled');
+                        disabled.push(results[i].key.substring(0, pos));
+                    }
                 } else {
                     notices.push(results[i]);
                 }
@@ -95,7 +97,7 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 2 },
+                    { 'className': 'timer-actions-th', 'orderable': false, 'targets': 2 },
                     { 'width': '3%', 'targets': 0 }
                 ],
                 'columns': [
@@ -132,7 +134,7 @@ $(run = function() {
                         toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the notice.');
 
                         // Update the button.
-                        if (!toggle) {
+                        if (toggle) {
                             t.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
                             t.prop('title', 'Click to enable the notice.').tooltip('fixTitle').tooltip('show');
                         } else {
@@ -168,6 +170,30 @@ $(run = function() {
                                     });
                             }
                         }).modal('toggle');
+                    });
+                }
+            });
+
+            // On edit button.
+            table.on('click', '.btn-success', function() {
+                let notice = $(this).data('notice'),
+                    f = $(this).data('function'),
+                    t = $(this);
+
+                if (f === 'toggleid') {
+                    let toggle = $(this).data('status');
+                    socket.sendCommand('notice_toggleid', 'notice toggleidsilent ' + notice, function() {
+                        toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the notice.');
+
+                        // Update the button.
+                        if (toggle) {
+                            t.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
+                            t.prop('title', 'Click to enable the notice.').tooltip('fixTitle').tooltip('show');
+                        } else {
+                            t.removeClass('btn-warning').addClass('btn-success').find('i').removeClass('fa-check').addClass('fa-close');
+                            t.prop('title', 'Click to disable the notice.').tooltip('fixTitle').tooltip('show');
+                        }
+                        t.data('status', !toggle);
                     });
                 }
             });

@@ -198,7 +198,7 @@
                 } else {
                     var disabled = $.inidb.GetBoolean('notices', '', 'message_' + args[1] + '_disabled');
                     $.inidb.SetBoolean('notices', '', 'message_' + args[1] + '_disabled', !disabled);
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-toggleid-success', args[1], !disabled ? 'enabled' : 'disabled'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
                     return;
                 }
             }
