@@ -53,16 +53,16 @@ jobs:
         FOLDERLIN: ${{ format('PhantomBot-{0}-lin', steps.build_env.outputs.branch) }}
         FOLDERWIN: ${{ format('PhantomBot-{0}-win', steps.build_env.outputs.branch) }}
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', steps.build_env.outputs.branch) }}
-        FOLDERARM: ${{ format('PhantomBot-{0}-arm', steps.build_env.outputs.branch) }}
+        FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.version) }}
       run: |
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat
-        mkdir dist/$FOLDERARM
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARM --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh
+        mkdir dist/$FOLDERARMBSDOTHER
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
     - name: Upload Artifact (Full)
       uses: actions/upload-artifact@v1
       with:
@@ -86,5 +86,5 @@ jobs:
     - name: Upload Artifact (ARM)
       uses: actions/upload-artifact@v1
       with:
-        name: ${{ format('PhantomBot-{0}-arm', steps.build_env.outputs.branch) }}
-        path: ${{ format('dist/PhantomBot-{0}-arm', steps.build_env.outputs.branch) }}
+        name: ${{ format('PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.branch) }}
+        path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.branch) }}
