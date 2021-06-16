@@ -34,6 +34,7 @@ import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Permission;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.channel.Category;
+import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.NewsChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -45,8 +46,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -544,6 +547,105 @@ public class DiscordUtil {
             com.gmt2001.Console.err.println("Unable to find channelName [" + channelName + "]");
             throw ex;
         }
+    }
+
+    @Deprecated
+    public Map<String, Map<String, Channel.Type>> getAllChannelNames() {
+        HashMap<String, Map<String, Channel.Type>> data = new HashMap<>();
+        getAllChannelNamesAsync(data).blockLast(Duration.ofSeconds(5L));
+        return data;
+    }
+
+    public Flux<GuildChannel> getAllChannelNamesAsync(Map<String, Map<String, Channel.Type>> data) {
+        HashMap<String, String> categoryIds = new HashMap<>();
+
+        return DiscordAPI.getGuild().getChannels().doOnNext(channel -> {
+            if (null != channel.getType()) {
+                switch (channel.getType()) {
+                    case DM:
+                    case GROUP_DM:
+                        break;
+                    case GUILD_CATEGORY:
+                        Category rc = (Category) channel;
+                        Map<String, Channel.Type> newdata = data.getOrDefault(rc.getId().asString(), new HashMap<>());
+                        data.remove(rc.getId().asString());
+                        data.putIfAbsent(rc.getName(), newdata);
+                        categoryIds.putIfAbsent(rc.getId().asString(), rc.getName());
+                    case GUILD_NEWS:
+                        NewsChannel rn = (NewsChannel) channel;
+                        if (rn.getCategoryId().isPresent()) {
+                            if (!categoryIds.containsKey(rn.getCategoryId().get().asString())) {
+                                if (!data.containsKey(rn.getCategoryId().get().asString())) {
+                                    data.putIfAbsent(rn.getCategoryId().get().asString(), new HashMap<>());
+                                }
+
+                                data.get(rn.getCategoryId().get().asString()).putIfAbsent(rn.getName(), rn.getType());
+                            } else {
+                                data.get(categoryIds.get(rn.getCategoryId().get().asString())).putIfAbsent(rn.getName(), rn.getType());
+                            }
+                        }
+                        break;
+                    case GUILD_STAGE_VOICE:
+                        VoiceChannel rsv = (VoiceChannel) channel;
+                        if (rsv.getCategoryId().isPresent()) {
+                            if (!categoryIds.containsKey(rsv.getCategoryId().get().asString())) {
+                                if (!data.containsKey(rsv.getCategoryId().get().asString())) {
+                                    data.putIfAbsent(rsv.getCategoryId().get().asString(), new HashMap<>());
+                                }
+
+                                data.get(rsv.getCategoryId().get().asString()).putIfAbsent(rsv.getName(), rsv.getType());
+                            } else {
+                                data.get(categoryIds.get(rsv.getCategoryId().get().asString())).putIfAbsent(rsv.getName(), rsv.getType());
+                            }
+                        }
+                        break;
+                    case GUILD_STORE:
+                        StoreChannel rs = (StoreChannel) channel;
+                        if (rs.getCategoryId().isPresent()) {
+                            if (!categoryIds.containsKey(rs.getCategoryId().get().asString())) {
+                                if (!data.containsKey(rs.getCategoryId().get().asString())) {
+                                    data.putIfAbsent(rs.getCategoryId().get().asString(), new HashMap<>());
+                                }
+
+                                data.get(rs.getCategoryId().get().asString()).putIfAbsent(rs.getName(), rs.getType());
+                            } else {
+                                data.get(categoryIds.get(rs.getCategoryId().get().asString())).putIfAbsent(rs.getName(), rs.getType());
+                            }
+                        }
+                        break;
+                    case GUILD_TEXT:
+                        TextChannel rt = (TextChannel) channel;
+                        if (rt.getCategoryId().isPresent()) {
+                            if (!categoryIds.containsKey(rt.getCategoryId().get().asString())) {
+                                if (!data.containsKey(rt.getCategoryId().get().asString())) {
+                                    data.putIfAbsent(rt.getCategoryId().get().asString(), new HashMap<>());
+                                }
+
+                                data.get(rt.getCategoryId().get().asString()).putIfAbsent(rt.getName(), rt.getType());
+                            } else {
+                                data.get(categoryIds.get(rt.getCategoryId().get().asString())).putIfAbsent(rt.getName(), rt.getType());
+                            }
+                        }
+                        break;
+                    case GUILD_VOICE:
+                        VoiceChannel rv = (VoiceChannel) channel;
+                        if (rv.getCategoryId().isPresent()) {
+                            if (!categoryIds.containsKey(rv.getCategoryId().get().asString())) {
+                                if (!data.containsKey(rv.getCategoryId().get().asString())) {
+                                    data.putIfAbsent(rv.getCategoryId().get().asString(), new HashMap<>());
+                                }
+
+                                data.get(rv.getCategoryId().get().asString()).putIfAbsent(rv.getName(), rv.getType());
+                            } else {
+                                data.get(categoryIds.get(rv.getCategoryId().get().asString())).putIfAbsent(rv.getName(), rv.getType());
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     /**

@@ -49,6 +49,29 @@
             } else {
                 $.say($.lang.get('corecommands.shoutout.online', streamerDisplay, streamerURL, streamerGame));
             }
+        } else if (command.equalsIgnoreCase('settimevar')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('corecommands.settimevar.usage', command));
+                return;
+            }
+
+            var time;
+            if (args.length === 1) {
+                time = $.getLocalTime();
+                $.inidb.set('timevars', action, time);
+            } else {
+                time = Date.parse(args.slice(1).join(' '));
+
+                if (isNaN(time)) {
+                    $.say($.lang.get('customcommands.datetime.format.invalid', args.slice(1).join(' ')));
+                    return;
+                } else {
+                    time = $.getLocalTimeString("yyyy-MM-dd'T'HH:mm:ss", time);
+                    $.inidb.set('timevars', action, time);
+                }
+            }
+
+            $.say($.lang.get('corecommands.settimevar.success', action, time));
         }
     });
 
@@ -57,5 +80,6 @@
      */
     $.bind('initReady', function () {
         $.registerChatCommand('./core/coreCommands.js', 'shoutout', 2);
+        $.registerChatCommand('./core/coreCommands.js', 'settimevar', 2);
     });
 })();
