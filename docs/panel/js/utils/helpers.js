@@ -521,7 +521,7 @@ $(function() {
     helpers.getInputGroup = function(id, type, title, placeholder, value, toolTip, disabled) {
         return $('<div/>', {
             'class': 'form-group'
-        }).append($('<lable/>', {
+        }).append($('<label/>', {
             'html': $('<b/>', {
                 'text': title
             })
@@ -553,7 +553,7 @@ $(function() {
     helpers.getTextAreaGroup = function(id, type, title, placeholder, value, toolTip, unlimited) {
         return $('<div/>', {
             'class': 'form-group'
-        }).append($('<lable/>', {
+        }).append($('<label/>', {
             'html': $('<b/>', {
                 'text': title
             })
@@ -585,7 +585,7 @@ $(function() {
     helpers.getDropdownGroup = function(id, title, def, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
-        }).append($('<lable/>', {
+        }).append($('<label/>', {
             'html': $('<b/>', {
                 'text': title
             })
@@ -608,6 +608,51 @@ $(function() {
             return $('<option/>', {
                 'html': option
             });
+        }))));
+    };
+
+    helpers.getDropdownGroupWithGrouping = function(id, title, options, toolTip) {
+        return  $('<div/>', {
+            'class': 'form-group'
+        }).append($('<label/>', {
+            'html': $('<b/>', {
+                'text': title
+            })
+        })).append($('<div/>', {
+            'class': 'dropdown',
+            'data-toggle': 'tooltip',
+            'title': toolTip
+        }).append($('<select/>', {
+            'class': 'form-control select2 select2-hidden-accessible',
+            'id': id,
+            'style': 'width: 100%; cursor: pointer;'
+        }).append(options.map(function(option) {
+            let selected = option.selected;
+            let roles = option.options;
+            let group = $('<optgroup/>', {
+                'label': option.title
+            });
+
+            for (let i = 0; i < roles.length; i++) {
+                let o = $('<option/>', {
+                    'html': roles[i].name,
+                    'id': roles[i]._id
+                });
+
+                if (roles[i].selected !== undefined && roles[i].selected === true) {
+                    o.attr('selected', 'selected');
+                } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
+                    o.attr('selected', 'selected');
+                }
+
+                if (roles[i].disabled !== undefined && roles[i].disabled === true) {
+                    o.attr('disabled', 'disabled');
+                }
+
+                group.append(o);
+            }
+
+            return group;
         }))));
     };
 
@@ -635,7 +680,7 @@ $(function() {
     helpers.getMultiDropdownGroup = function(id, title, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
-        }).append($('<lable/>', {
+        }).append($('<label/>', {
             'html': $('<b/>', {
                 'text': title
             })
@@ -692,7 +737,7 @@ $(function() {
     helpers.getFlatMultiDropdownGroup = function(id, title, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
-        }).append($('<lable/>', {
+        }).append($('<label/>', {
             'html': $('<b/>', {
                 'text': title
             })
@@ -1108,20 +1153,20 @@ $(function() {
         if (version !== null) {
             if ($('#notifications-total').data('isset') === false) {
                 // Send a warning to the user.
-                toastr.warning('New update available for PhantomBot!', {
+                toastr.warning('New update availabel for PhantomBot!', {
                     'timeOut': 2000
                 });
 
                 let html = '';
                 if (version.startsWith("nightly-")) {
-                    html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now available to download! <br>' +
+                    html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now availabel to download! <br>' +
                             'You can grab your own copy of nightly build ' + version.substr(8) + ' of PhantomBot ' +
                                 $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
                                 $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                                 ' on how to properly update PhantomBot.</b>';
                 } else {
-                    html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
+                    html = 'Version ' + version + ' of PhantomBot is now availabel to download! <br>' +
                             'You can view the changes of this version ' +
                                 $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
@@ -1150,7 +1195,7 @@ $(function() {
                     }
                 }).append($('<i/>', {
                     'class': 'fa fa-warning text-yellow'
-                })).append('Update available')))
+                })).append('Update availabel')))
             }
         }
     };

@@ -16,6 +16,41 @@
  */
 
 $(run = function() {
+    let discordChannels = null;
+    let allowedChannelTypes = ['GUILD_NEWS', 'GUILD_TEXT'];
+
+    function refreshChannels() {
+        socket.getDiscordChannelList('discord_customcommands1_getchannels', function (d) {
+            discordChannels = d.data;
+        });
+    }
+
+    function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
+        if (discordChannels === null) {
+            return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
+        } else {
+            let data = [];
+
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                let entry = {};
+                entry.title = category;
+                entry.options = [];
+
+                for (const [channel, type] of Object.entries(channels)) {
+                    entry.options.push({
+                        'name': channel,
+                        'selected': channel === value,
+                        'disabled': !allowedChannelTypes.includes(type)
+                    });
+                }
+
+                data.push(entry);
+            }
+
+            return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
+        }
+    }
+    
     // Check if the module is enabled.
     socket.getDBValue('discord_custom_command_module', 'modules', './discord/commands/customCommands.js', function(e) {
         // If the module is off, don't load any data.
@@ -142,8 +177,8 @@ $(run = function() {
                             .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
                                 'Cost in points that will be taken from the user when running the command.'))
                             // Append input box for the command channel.
-                            .append(helpers.getInputGroup('command-channel', 'text', 'Channel', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
-                                'Channel you want this command to work in. Seperate with commas (no spaces) for multiple. If left empty, the command will work in all channels.'))
+                            .append(getChannelSelector('command-channel', 'Channel', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
+                                'Channel you want this command to work in. Seperate with commas (no spaces) for multiple. If left empty, the command will work in all channels.', allowedChannelTypes))
                             // Append input box for the command alias.
                             .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
                                 'Another command name that will also trigger this command.'))
@@ -230,17 +265,59 @@ $(run = function() {
                                 });
                         }
                     }).on('shown.bs.modal', function(e) {
+                        refreshChannels();
                         $('#command-permission').select2();
+
+                        if (discordChannels !== null) {
+                            $('#command-channel').select2();
+                        }
                     }).modal('toggle');
                 });
             });
         });
     });
+
+    refreshChannels();
 });
 
 
 // Function that handlers the loading of events.
 $(function() {
+    let discordChannels = null;
+    let allowedChannelTypes = ['GUILD_NEWS', 'GUILD_TEXT'];
+
+    function refreshChannels() {
+        socket.getDiscordChannelList('discord_customcommands2_getchannels', function (d) {
+            discordChannels = d.data;
+        });
+    }
+
+    function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
+        if (discordChannels === null) {
+            return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
+        } else {
+            let data = [];
+
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                let entry = {};
+                entry.title = category;
+                entry.options = [];
+
+                for (const [channel, type] of Object.entries(channels)) {
+                    entry.options.push({
+                        'name': channel,
+                        'selected': channel === value,
+                        'disabled': !allowedChannelTypes.includes(type)
+                    });
+                }
+
+                data.push(entry);
+            }
+
+            return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
+        }
+    }
+    
     // Toggle for the module.
     $('#discordCustomCommandsModuleToggle').on('change', function() {
         // Enable the module then query the data.
@@ -286,8 +363,8 @@ $(function() {
                     .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
                         'Cost in points that will be taken from the user when running the command.'))
                     // Append input box for the command channel.
-                    .append(helpers.getInputGroup('command-channel', 'text', 'Channel', '#commands', '',
-                        'Channel you want this command to work in. Seperate with a space and comma for multiple. If left empty, the command will work in all channels.'))
+                    .append(getChannelSelector('command-channel', 'Channel', '#commands', '',
+                        'Channel you want this command to work in. Seperate with a space and comma for multiple. If left empty, the command will work in all channels.', allowedChannelTypes))
                     // Append input box for the command alias.
                     .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', '',
                         'Another command name that will also trigger this command.'))
@@ -383,8 +460,15 @@ $(function() {
                         });
                 }
             }).on('shown.bs.modal', function(e) {
+                refreshChannels();
                 $('#command-permission').select2();
+
+                if (discordChannels !== null) {
+                    $('#command-channel').select2();
+                }
             }).modal('toggle');
         });
     });
+
+    refreshChannels();
 });
