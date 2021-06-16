@@ -710,6 +710,29 @@
         }
 
         /*
+         * @transformer gettimevar
+         * @formula (gettimevar name:str) retrieves the specified timevar, set using !settimevar, for use in a (countdown) or (countup) transformer
+         * @example Caster: !settimevar christmas December 25 2017 00:00:00 GMT-0500
+         * Caster: !addcom !count Time Left until Christmas: (countdown (gettimevar christmas))
+         * User: !count
+         * Bot: Time Left until Christmas: 20 hours, 30 minutes and 55 seconds.
+         * @cached
+         */
+        function gettimevar(args) {
+            if (!args) {
+                return {
+                    result: $.getLocalTime(),
+                    cache: true
+                };
+            } else {
+                return {
+                    result: $.inidb.get('timevars', args),
+                    cache: true
+                };
+            }
+        }
+
+        /*
          * @formula help
          * @formula (help message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
          * @cancels sometimes
@@ -1578,6 +1601,7 @@
             'gameinfo': gameinfo,
             'gameonly': gameonly,
             'gamesplayed': gamesplayed,
+            'gettimevar': gettimevar,
             'help': help,
             'hours': hours,
             'hoursround': hoursround,
@@ -1727,7 +1751,7 @@
     function addTagTransformer(tag, transformer) {
         transformers[tag.toLowerCase()] = transformer;
     }
-    
+
     $.tags = tags;
     $.escapeTags = escapeTags;
     $.addTagTransformer = addTagTransformer;
