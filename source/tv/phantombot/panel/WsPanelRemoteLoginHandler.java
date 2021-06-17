@@ -85,8 +85,8 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                 return;
             }
 
-            jsonObject.object();
             if (jso.has("remote") && jso.getString("query").equals("login")) {
+                jsonObject.object();
                 if (jso.getJSONObject("params").getString("type").equalsIgnoreCase("AuthRO")) {
                     jsonObject.key("authtoken").value(this.panelAuthRO).key("authtype").value("read");
                 } else if (jso.getJSONObject("params").getString("user").equals(this.panelUser) && jso.getJSONObject("params").getString("pass").equals(this.panelPassword)) {
@@ -102,7 +102,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
 
                 if (!isError) {
                     jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
-                    jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
+                    jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion());
                     jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
                     jsonObject.key("os-version").value(System.getProperty("os.name"));
                     jsonObject.endObject();
