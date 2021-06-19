@@ -571,6 +571,7 @@ public class DiscordUtil {
                         data.remove(rc.getId().asString());
                         data.putIfAbsent(rc.getName(), newdata);
                         categoryIds.putIfAbsent(rc.getId().asString(), rc.getName());
+                        break;
                     case GUILD_NEWS:
                         NewsChannel rn = (NewsChannel) channel;
                         if (rn.getCategoryId().isPresent()) {
