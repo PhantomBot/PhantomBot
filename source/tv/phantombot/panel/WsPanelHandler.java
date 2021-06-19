@@ -233,8 +233,8 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDiscordChannelList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        HashMap<String, Map<String, Channel.Type>> data = new HashMap<>();
-        DiscordAPI.instance().getAllChannelNamesAsync(data).doOnComplete(() -> {
+        HashMap<String, Map<String, String>> data = new HashMap<>();
+        DiscordAPI.instance().getAllChannelInfoAsync(data).doOnComplete(() -> {
             String uniqueID = jso.has("discordchannellist") ? jso.getString("discordchannellist") : "";
 
             JSONStringer jsonObject = new JSONStringer();
@@ -243,8 +243,21 @@ public class WsPanelHandler implements WsFrameHandler {
 
             data.forEach((category, channels) -> {
                 jsonObject.key(category).object();
-                channels.forEach((channel, type) -> {
-                    jsonObject.key(channel).value(type.name());
+                channels.forEach((channel, info) -> {
+                    if (channel.equals("name")) {
+                        jsonObject.key(channel).value(info);
+                    } else {
+                        try {
+                            jsonObject.key(channel).object();
+                            String[] sinfo = info.split(":", 2);
+                            jsonObject.key("type").value(sinfo[0]);
+                            jsonObject.key("name").value(sinfo[1]);
+                        } catch (IndexOutOfBoundsException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        } finally {
+                            jsonObject.endObject();
+                        }
+                    }
                 });
                 jsonObject.endObject();
             });

@@ -21,7 +21,7 @@ $(function() {
     let allowedChannelTypes = ['GUILD_NEWS', 'GUILD_TEXT'];
 
     function refreshChannels() {
-        socket.getDiscordChannelList('discord_customcommands2_getchannels', function (d) {
+        socket.getDiscordChannelList('discord_logs_getchannels', function (d) {
             discordChannels = d.data;
         });
     }
@@ -34,14 +34,19 @@ $(function() {
 
             for (const [category, channels] of Object.entries(discordChannels)) {
                 let entry = {};
-                entry.title = category;
+                entry.title = channels.name;
                 entry.options = [];
 
-                for (const [channel, type] of Object.entries(channels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (channel === 'name') {
+                        continue;
+                    }
+
                     entry.options.push({
-                        'name': channel,
+                        'name': info.name,
+                        'value': channel,
                         'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(type)
+                        'disabled': !allowedChannelTypes.includes(info.type)
                     });
                 }
 
@@ -50,6 +55,31 @@ $(function() {
 
             return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
         }
+    }
+
+    function discordChannelTemplate(fchannel) {
+        if (fchannel.id) {
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (fchannel.id === channel) {
+                        switch (info.type) {
+                            case 'GUILD_NEWS':
+                                return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STAGE_VOICE':
+                                return $('<span><i class="fa fa-users fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STORE':
+                                return $('<span><i class="fa fa-shopping-cart fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_TEXT':
+                                return $('<span><i class="fa fa-hashtag fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_VOICE':
+                                return $('<span><i class="fa fa-volume-up fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                        }
+                    }
+                }
+            }
+        }
+
+        return fchannel.text;
     }
 
     refreshChannels();
@@ -69,7 +99,7 @@ $(function() {
             'Which channel to post the moderation logs to.', allowedChannelTypes));
 
             if (discordChannels !== null) {
-                $('#twitch-mod-channel').select2();
+                $('#twitch-mod-channel').select2({ templateResult: discordChannelTemplate });
             }
         });
     }, 500);
