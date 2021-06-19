@@ -239,7 +239,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("query_id").value(uniqueID);
-            jsonObject.key("data").object();
+            jsonObject.key("results").object().key("data").object();
 
             data.forEach((category, channels) -> {
                 jsonObject.key(category).object();
@@ -249,7 +249,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 jsonObject.endObject();
             });
 
-            jsonObject.endObject().endObject();
+            jsonObject.endObject().endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
         }).subscribe();
     }
