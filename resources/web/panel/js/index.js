@@ -104,7 +104,7 @@ $(function () {
      */
     socket.addListener = function (listener_id, callback) {
         if (listeners[listener_id] === undefined) {
-            helpers.log('Added listener with id ' + id);
+            helpers.log('Added listener with id ' + listener_id);
             listeners[listener_id] = function (e) {
                 try {
                     callback(e);
