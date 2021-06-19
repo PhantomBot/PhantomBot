@@ -61,14 +61,19 @@ $(function () {
 
             for (const [category, channels] of Object.entries(discordChannels)) {
                 let entry = {};
-                entry.title = category;
+                entry.title = channels.name;
                 entry.options = [];
 
-                for (const [channel, type] of Object.entries(channels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (channel === 'name') {
+                        continue;
+                    }
+
                     entry.options.push({
-                        'name': channel,
+                        'name': info.name,
+                        'value': channel,
                         'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(type)
+                        'disabled': !allowedChannelTypes.includes(info.type)
                     });
                 }
 
@@ -77,6 +82,31 @@ $(function () {
 
             return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
         }
+    }
+
+    function discordChannelTemplate(fchannel) {
+        if (fchannel.id) {
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (fchannel.id === channel) {
+                        switch (info.type) {
+                            case 'GUILD_NEWS':
+                                return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STAGE_VOICE':
+                                return $('<span><i class="fa fa-users fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STORE':
+                                return $('<span><i class="fa fa-shopping-cart fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_TEXT':
+                                return $('<span><i class="fa fa-hashtag fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_VOICE':
+                                return $('<span><i class="fa fa-volume-up fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                        }
+                    }
+                }
+            }
+        }
+
+        return fchannel.text;
     }
 
     // Toggle for the alert modules.
@@ -142,7 +172,7 @@ $(function () {
                 refreshChannels();
 
                 if (discordChannels !== null) {
-                    $('#follow-channel').select2();
+                    $('#follow-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -245,7 +275,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#channel-alert').select2();
+                    $('#channel-alert').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -301,7 +331,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#host-channel').select2();
+                    $('#host-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -351,7 +381,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#bits-channel').select2();
+                    $('#bits-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -401,7 +431,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#clip-channel').select2();
+                    $('#clip-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -504,7 +534,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#channel-alert').select2();
+                    $('#channel-alert').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -589,7 +619,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#channel-alert').select2();
+                    $('#channel-alert').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -641,7 +671,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#streamlabs-channel').select2();
+                    $('#streamlabs-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -693,7 +723,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#tipeeestream-channel').select2();
+                    $('#tipeeestream-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -745,7 +775,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#streamelements-channel').select2();
+                    $('#streamelements-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
@@ -792,7 +822,7 @@ $(function () {
                     }).on('shown.bs.modal', function (e) {
                 refreshChannels();
                 if (discordChannels !== null) {
-                    $('#twitter-channel').select2();
+                    $('#twitter-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });

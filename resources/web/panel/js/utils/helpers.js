@@ -639,6 +639,10 @@ $(function() {
                     'id': roles[i]._id
                 });
 
+                if (roles[i].value !== undefined) {
+                    o.attr('value', roles[i].value);
+                }
+
                 if (roles[i].selected !== undefined && roles[i].selected === true) {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {

@@ -87,7 +87,7 @@ $(function () {
                         callback(e);
                     } catch (ex) {
                         // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-                        helpers.logError('Failed to run callback: ' + ex.stack, helpers.LOG_TYPE.FORCE);
+                        helpers.logError('Failed to run callback: (' + ex.name + ') ' + ex.message + ' >> ' + ex.stack, helpers.LOG_TYPE.FORCE);
                     }
                 },
                 storeKey: storeKey,
@@ -104,13 +104,13 @@ $(function () {
      */
     socket.addListener = function (listener_id, callback) {
         if (listeners[listener_id] === undefined) {
-            helpers.log('Added listener with id ' + id);
+            helpers.log('Added listener with id ' + listener_id);
             listeners[listener_id] = function (e) {
                 try {
                     callback(e);
                 } catch (ex) {
                     // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-                    helpers.logError('Failed to run listener: ' + ex.stack, helpers.LOG_TYPE.FORCE);
+                    helpers.logError('Failed to run listener: (' + ex.name + ') ' + ex.message + ' >> ' + ex.stack, helpers.LOG_TYPE.FORCE);
                 }
             };
         }
