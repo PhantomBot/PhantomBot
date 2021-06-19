@@ -33,14 +33,19 @@ $(run = function() {
 
             for (const [category, channels] of Object.entries(discordChannels)) {
                 let entry = {};
-                entry.title = category;
+                entry.title = channels.name;
                 entry.options = [];
 
-                for (const [channel, type] of Object.entries(channels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (channel === 'name') {
+                        continue;
+                    }
+
                     entry.options.push({
-                        'name': channel,
+                        'name': info.name,
+                        'value': channel,
                         'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(type)
+                        'disabled': !allowedChannelTypes.includes(info.type)
                     });
                 }
 
@@ -49,6 +54,31 @@ $(run = function() {
 
             return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
         }
+    }
+
+    function discordChannelTemplate(fchannel) {
+        if (fchannel.id) {
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (fchannel.id === channel) {
+                        switch (info.type) {
+                            case 'GUILD_NEWS':
+                                return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STAGE_VOICE':
+                                return $('<span><i class="fa fa-users fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STORE':
+                                return $('<span><i class="fa fa-shopping-cart fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_TEXT':
+                                return $('<span><i class="fa fa-hashtag fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_VOICE':
+                                return $('<span><i class="fa fa-volume-up fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                        }
+                    }
+                }
+            }
+        }
+
+        return fchannel.text;
     }
     
     // Check if the module is enabled.
@@ -266,10 +296,10 @@ $(run = function() {
                         }
                     }).on('shown.bs.modal', function(e) {
                         refreshChannels();
-                        $('#command-permission').select2();
+                        $('#command-permission').select2({ templateResult: discordChannelTemplate });
 
                         if (discordChannels !== null) {
-                            $('#command-channel').select2();
+                            $('#command-channel').select2({ templateResult: discordChannelTemplate });
                         }
                     }).modal('toggle');
                 });
@@ -300,14 +330,19 @@ $(function() {
 
             for (const [category, channels] of Object.entries(discordChannels)) {
                 let entry = {};
-                entry.title = category;
+                entry.title = channels.name;
                 entry.options = [];
 
-                for (const [channel, type] of Object.entries(channels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (channel === 'name') {
+                        continue;
+                    }
+
                     entry.options.push({
-                        'name': channel,
+                        'name': info.name,
+                        'value': channel,
                         'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(type)
+                        'disabled': !allowedChannelTypes.includes(info.type)
                     });
                 }
 
@@ -316,6 +351,31 @@ $(function() {
 
             return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
         }
+    }
+
+    function discordChannelTemplate(fchannel) {
+        if (fchannel.id) {
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (fchannel.id === channel) {
+                        switch (info.type) {
+                            case 'GUILD_NEWS':
+                                return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STAGE_VOICE':
+                                return $('<span><i class="fa fa-users fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STORE':
+                                return $('<span><i class="fa fa-shopping-cart fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_TEXT':
+                                return $('<span><i class="fa fa-hashtag fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_VOICE':
+                                return $('<span><i class="fa fa-volume-up fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                        }
+                    }
+                }
+            }
+        }
+
+        return fchannel.text;
     }
     
     // Toggle for the module.
@@ -461,10 +521,10 @@ $(function() {
                 }
             }).on('shown.bs.modal', function(e) {
                 refreshChannels();
-                $('#command-permission').select2();
+                $('#command-permission').select2({ templateResult: discordChannelTemplate });
 
                 if (discordChannels !== null) {
-                    $('#command-channel').select2();
+                    $('#command-channel').select2({ templateResult: discordChannelTemplate });
                 }
             }).modal('toggle');
         });
