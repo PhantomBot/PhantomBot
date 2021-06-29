@@ -69,14 +69,14 @@ public class TwitchAuthorizationCodeFlow {
 
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
         c.setTimeInMillis(Long.parseLong(properties.getProperty("oauthexpires", "0")));
-        c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL));
+        c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             bot = true;
         }
 
         c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
         c.setTimeInMillis(Long.parseLong(properties.getProperty("apiexpires", "0")));
-        c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL));
+        c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             api = true;
         }
