@@ -47,7 +47,7 @@ public class TwitchClientCredentialsFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final String USER_AGENT = "PhantomBot/2020";
-    private static final long REFRESH_INTERVAL = 604800000L;
+    private static final long REFRESH_INTERVAL = 86400000L;
     private static final String[] SCOPES = {"channel:read:subscriptions", "bits:read", "channel:moderate", "moderation:read",
         "channel:read:redemptions", "channel:read:polls", "channel:read:predictions", "channel:read:hype_train"};
     private Timer t = null;
