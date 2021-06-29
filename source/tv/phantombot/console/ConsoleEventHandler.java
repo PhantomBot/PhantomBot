@@ -114,12 +114,20 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand raidtest - Tests the raid event.
+         * @consolecommand raidtest (raiderName) (numViewers) - Tests the raid event.
          */
         if (message.equalsIgnoreCase("raidtest")) {
             String raidName = PhantomBot.generateRandomString(8);
-            com.gmt2001.Console.out.println("Testing Raid Event (Username = " + raidName + ", Viewers = 10)");
-            EventBus.instance().postAsync(new TwitchRaidEvent(raidName, "10"));
+            String raidNum = "10";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                raidName = argument[0];
+            }
+
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                raidNum = argument[1];
+            }
+            com.gmt2001.Console.out.println("Testing Raid Event (Username = " + raidName + ", Viewers = " + raidNum + ")");
+            EventBus.instance().postAsync(new TwitchRaidEvent(raidName, raidNum));
             return;
         }
 
@@ -201,7 +209,7 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand retweettest [Twitter ID] - Sends a fake test Retweet event.
          */
         if (message.equalsIgnoreCase("retweettest")) {
-            if (argument == null) {
+            if (argument == null || argument.length == 0 || argument[0].isBlank()) {
                 com.gmt2001.Console.out.println(">> retweettest requires a Twitter ID (or Twitter IDs)");
                 return;
             }
@@ -278,12 +286,12 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand jointest - Sends 30 fake join events or one specific user for testing.
+         * @consolecommand jointest (userName) - Sends 30 fake join events or one specific user for testing.
          */
         if (message.equalsIgnoreCase("jointest")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing jointest");
 
-            if (argument != null) {
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
                 EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), argument[0]));
             } else {
                 for (int i = 0; i < 30; i++) {
@@ -305,7 +313,11 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand followertest [username] - Sends a fake follower event.
          */
         if (message.equalsIgnoreCase("followertest")) {
-            String user = (argument == null ? PhantomBot.generateRandomString(10) : argument[0]);
+            String user = PhantomBot.generateRandomString(10);
+
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                user = argument[0];
+            }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followertest (User: " + user + ")");
 
@@ -318,7 +330,11 @@ public class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("followerstest")) {
             String randomUser = PhantomBot.generateRandomString(10);
-            int followCount = (argument == null ? 5 : Integer.parseInt(argument[0]));
+            int followCount = 5;
+
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                followCount = Integer.parseInt(argument[0]);
+            }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
 
@@ -329,70 +345,148 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand subscribertest - Sends a fake subscriber events.
+         * @consolecommand subscribertest (userName) (tier) (months) (message) - Sends a fake subscriber events.
          */
         if (message.equalsIgnoreCase("subscribertest")) {
             String randomUser = PhantomBot.generateRandomString(10);
+            String tier = "1000";
+            String months = ((int) (Math.random() * 100.0)) + "";
+            String smessage = "No message";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing subscribertest (User: " + randomUser + ")");
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
 
-            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "1000", ((int) (Math.random() * 100.0)) + "", "No message"));
+            if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
+                months = argument[2];
+            }
+
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                smessage = arguments.substring(argument[0].length() + argument[1].length() + argument[2].length() + 3);
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing subscribertest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ", message: " + smessage + ")");
+
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, tier, months, smessage));
             return;
         }
 
         /**
-         * @consolecommand primesubscribertest - Sends a fake Prime subscriber events.
+         * @consolecommand primesubscribertest (userName) (months) - Sends a fake Prime subscriber events.
          */
         if (message.equalsIgnoreCase("primesubscribertest")) {
             String randomUser = PhantomBot.generateRandomString(10);
+            String months = ((int) (Math.random() * 100.0)) + "";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ")");
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                months = argument[1];
+            }
 
-            EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser));
+            com.gmt2001.Console.out.println("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ", months: " + months + ")");
+
+            EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser, months));
             return;
         }
 
         /**
-         * @consolecommand resubscribertest - Sends a fake re-subscriber events.
+         * @consolecommand resubscribertest (userName) (tier) (months) (message) - Sends a fake re-subscriber events.
          */
         if (message.equalsIgnoreCase("resubscribertest")) {
             String randomUser = PhantomBot.generateRandomString(10);
+            String tier = "1000";
+            String months = ((int) (Math.random() * 100.0)) + "";
+            String smessage = "No message";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing resubscribertest (User: " + randomUser + ")");
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
 
-            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, "10", "1000", "No message"));
+            if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
+                months = argument[2];
+            }
+
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                smessage = arguments.substring(argument[0].length() + argument[1].length() + argument[2].length() + 3);
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing resubscribertest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ", message: " + smessage + ")");
+
+            EventBus.instance().postAsync(new TwitchReSubscriberEvent(randomUser, months, tier, smessage));
             return;
         }
 
         /**
-         * @consolecommand giftsubtest - Sends a fake gift subscriber events.
+         * @consolecommand giftsubtest (userName) (tier) (months) - Sends a fake gift subscriber events.
          */
         if (message.equalsIgnoreCase("giftsubtest")) {
             String randomUser = PhantomBot.generateRandomString(10);
+            String tier = "1000";
+            String months = ((int) (Math.random() * 100.0)) + "";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ")");
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
 
-            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, "10", "1000"));
+            if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
+                months = argument[2];
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ")");
+
+            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, months, tier));
             return;
         }
 
         /**
-         * @consolecommand massanongiftsubtest - Test a mass anonymous gift subscription.
+         * @consolecommand massanongiftsubtest (amount) (tier) - Test a mass anonymous gift subscription.
          */
         if (message.equalsIgnoreCase("massanonsubgifttest")) {
-            String userName = PhantomBot.generateRandomString(8);
-            com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Username = " + userName + ")");
-            EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent("10", "1000"));
+            String amount = "10";
+            String tier = "1000";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                amount = argument[0];
+            }
+
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
+            com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Amount: " + amount + ", tier: " + tier + ")");
+            EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(amount, tier));
             return;
         }
 
         /**
-         * @consolecommand anonsubgifttest - Test an anonymous gift subscription
+         * @consolecommand anonsubgifttest (userName) (tier) (months) - Test an anonymous gift subscription
          */
         if (message.equalsIgnoreCase("anonsubgifttest")) {
             String userName = PhantomBot.generateRandomString(8);
-            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ")");
-            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, "1", "1000"));
+            String tier = "1000";
+            String months = ((int) (Math.random() * 100.0)) + "";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                userName = argument[0];
+            }
+
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
+
+            if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
+                months = argument[2];
+            }
+            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ", months: " + months + ", tier: " + tier + ")");
+            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, months, tier));
             return;
         }
 
@@ -420,7 +514,10 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand cliptest - Sends a fake clip event.
          */
         if (message.equalsIgnoreCase("cliptest")) {
-            String randomUser = (argument == null ? PhantomBot.generateRandomString(10) : argument[0]);
+            String randomUser = PhantomBot.generateRandomString(10);
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing cliptest " + randomUser);
 
@@ -432,26 +529,46 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand hosttest - Sends a fake host event.
+         * @consolecommand hosttest (userName) (numViewers) - Sends a fake host event.
          */
         if (message.equalsIgnoreCase("hosttest")) {
-            String randomUser = (argument == null ? PhantomBot.generateRandomString(10) : argument[0]);
+            String randomUser = PhantomBot.generateRandomString(10);
+            int users = 5;
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                users = Integer.parseInt(argument[1]);
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing hosttest " + randomUser);
+            com.gmt2001.Console.out.println("[CONSOLE] Executing hosttest (User: " + randomUser + ", viewers: " + users + ")");
 
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser));
+            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, users));
             return;
         }
 
         /**
-         * @consolecommand bitstest - Sends a fake bits event.
+         * @consolecommand bitstest (user) (amount) (message) - Sends a fake bits event.
          */
         if (message.equalsIgnoreCase("bitstest")) {
-            String sendMessage = (argument == null ? "" : arguments);
+            String randomUser = PhantomBot.generateRandomString(10);
+            String amount = ((int) (Math.random() * 100.0)) + "";
+            String smessage = "No message";
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                randomUser = argument[0];
+            }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing bitstest");
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                amount = argument[1];
+            }
 
-            EventBus.instance().postAsync(new TwitchBitsEvent(PhantomBot.instance().getBotName(), "100", sendMessage));
+            if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
+                smessage = arguments.substring(argument[0].length() + argument[1].length() + 2);
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing bitstest (User: " + randomUser + ", amount: " + amount + ", message: " + smessage + ")");
+
+            EventBus.instance().postAsync(new TwitchBitsEvent(randomUser, amount, smessage));
             return;
         }
 
@@ -631,9 +748,9 @@ public class ConsoleEventHandler implements Listener {
 
                 HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.POST, "https://streamlabs.com/api/v1.0/token",
                         "grant_type=authorization_code&client_id=" + twitchAlertsClientId + "&client_secret=" + twitchAlertsClientSecret
-                                + "&redirect_uri=" + twitchAlertsRedirectURI + "&code=" + twitchAlertsKickback,
+                        + "&redirect_uri=" + twitchAlertsRedirectURI + "&code=" + twitchAlertsKickback,
                         new HashMap<>());
-                
+
                 if (res.success) {
                     JSONObject j = new JSONObject(res.content);
                     String twitchAlertsKey = j.getString("access_token");
