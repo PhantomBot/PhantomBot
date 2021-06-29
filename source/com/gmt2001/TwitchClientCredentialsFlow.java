@@ -60,13 +60,15 @@ public class TwitchClientCredentialsFlow {
         return getAppToken(properties);
     }
 
-    public void checkExpirationAndGetNewToken(CaselessProperties properties) {
+    public boolean checkExpirationAndGetNewToken(CaselessProperties properties) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
         c.setTimeInMillis(Long.parseLong(properties.getProperty("apptokenexpires", "0")));
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL));
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
-            getAppToken(properties);
+            return getAppToken(properties);
         }
+
+        return false;
     }
 
     private boolean getAppToken(CaselessProperties properties) {
