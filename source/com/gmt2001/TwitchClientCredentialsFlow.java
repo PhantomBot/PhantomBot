@@ -122,7 +122,7 @@ public class TwitchClientCredentialsFlow {
                 @Override
                 public void run() {
                     if (PhantomBot.instance() != null) {
-                        getAppToken(PhantomBot.instance().getProperties());
+                        checkExpirationAndGetNewToken(PhantomBot.instance().getProperties());
                     }
                 }
             }, REFRESH_INTERVAL, REFRESH_INTERVAL);
