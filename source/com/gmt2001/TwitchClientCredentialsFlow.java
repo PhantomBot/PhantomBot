@@ -24,8 +24,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeSet;
@@ -45,8 +49,8 @@ public class TwitchClientCredentialsFlow {
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final String USER_AGENT = "PhantomBot/2020";
     private static final long REFRESH_INTERVAL = 604800000L;
-    private static final String[] SCOPES = { "channel:read:subscriptions", "bits:read", "channel:moderate", "moderation:read",
-        "channel:read:redemptions", "channel:read:polls", "channel:read:predictions", "channel:read:hype_train" };
+    private static final String[] SCOPES = {"channel:read:subscriptions", "bits:read", "channel:moderate", "moderation:read",
+        "channel:read:redemptions", "channel:read:polls", "channel:read:predictions", "channel:read:hype_train"};
     private Timer t = null;
 
     public TwitchClientCredentialsFlow(String clientid, String clientsecret) {
@@ -57,6 +61,15 @@ public class TwitchClientCredentialsFlow {
         return getAppToken(properties);
     }
 
+    public void checkExpirationAndGetNewToken(CaselessProperties properties) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
+        c.setTimeInMillis(Long.parseLong(properties.getProperty("apptokenexpires", "0")));
+        c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL));
+        if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
+            getAppToken(properties);
+        }
+    }
+
     private boolean getAppToken(CaselessProperties properties) {
         boolean changed = false;
         JSONObject result = tryGetAppToken(properties.getProperty("clientid"), properties.getProperty("clientsecret"));
@@ -64,7 +77,10 @@ public class TwitchClientCredentialsFlow {
         if (result.has("error")) {
             com.gmt2001.Console.err.println(result.toString());
         } else {
+            Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
+            c.add(Calendar.SECOND, result.getInt("expires_in"));
             properties.setProperty("apptoken", result.getString("access_token"));
+            properties.setProperty("apptokenexpires", c.getTimeInMillis() + "");
 
             com.gmt2001.Console.out.println("Refreshed the app token");
             changed = true;
