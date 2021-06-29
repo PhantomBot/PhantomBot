@@ -33,6 +33,12 @@ public class HMAC {
     private HMAC() {
     }
 
+    /**
+     * Calculates an HMAC-SHA256
+     * @param secretKey The secret key
+     * @param message The message to calculate the mac on
+     * @return 
+     */
     public static byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
         byte[] hmacSha256 = null;
 
@@ -48,14 +54,34 @@ public class HMAC {
         return hmacSha256;
     }
 
+    /**
+     * Calculates an HMAC-SHA256 and returns the MAC as a hex-encoded string
+     * @param secretKey The secret key
+     * @param message The message to calculate the mac on
+     * @return 
+     */
     public static String calcHmacSha256(String secretKey, String message) {
         return String.format("%064x", new BigInteger(1, calcHmacSha256(secretKey.getBytes(), message.getBytes())));
     }
 
+    /**
+     * Calculates an HMAC-SHA256 and compares it to an existing MAC
+     * @param secretKey The secret key
+     * @param message The message to calculate the mac on
+     * @param mac The MAC to compare to
+     * @return true if the calculated mac matches the provided mac
+     */
     public static boolean compareHmacSha256(byte[] secretKey, byte[] message, byte[] mac) {
         return Arrays.equals(calcHmacSha256(secretKey, message), mac);
     }
 
+    /**
+     * Calculates an HMAC-SHA256 and compares it to an existing MAC
+     * @param secretKey The secret key
+     * @param message The message to calculate the mac on
+     * @param mac The MAC to compare to
+     * @return true if the calculated mac matches the provided mac
+     */
     public static boolean compareHmacSha256(String secretKey, String message, String mac) {
         return compareHmacSha256(secretKey.getBytes(), message.getBytes(), mac.getBytes());
     }

@@ -20,6 +20,7 @@ import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitchAuthorizationCodeFlow;
+import com.gmt2001.TwitchClientCredentialsFlow;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
@@ -110,6 +111,7 @@ public final class PhantomBot implements Listener {
     private static Double messageLimit;
     private static Double whisperLimit;
     private TwitchAuthorizationCodeFlow authflow;
+    private TwitchClientCredentialsFlow appflow;
 
     /* Web Information */
     private String panelUsername;
@@ -352,7 +354,8 @@ public final class PhantomBot implements Listener {
         interactive = (System.getProperty("interactive") != null);
 
         this.authflow = new TwitchAuthorizationCodeFlow(pbProperties.getProperty("clientid"), pbProperties.getProperty("clientsecret"));
-        if (this.authflow.refresh(pbProperties)) {
+        this.appflow = new TwitchClientCredentialsFlow(pbProperties.getProperty("clientid"), pbProperties.getProperty("clientsecret"));
+        if (this.authflow.checkAndRefreshTokens(pbProperties) || this.appflow.checkExpirationAndGetNewToken(pbProperties)) {
             pbProperties = ConfigurationManager.getConfiguration();
         }
 
@@ -598,6 +601,10 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
+    }
+
+    public TwitchClientCredentialsFlow getAppFlow() {
+        return this.appflow;
     }
 
     public void reloadProperties() {

@@ -40,7 +40,7 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
- *
+ * Handles the Twitch Client Credentials Flow (App Token)
  * @author gmt2001
  */
 public class TwitchClientCredentialsFlow {
@@ -52,14 +52,29 @@ public class TwitchClientCredentialsFlow {
         "channel:read:redemptions", "channel:read:polls", "channel:read:predictions", "channel:read:hype_train"};
     private Timer t = null;
 
+    /**
+     * Constructor
+     * @param clientid The developer app Client ID for the timer
+     * @param clientsecret The developer app Client Secret for the timer
+     */
     public TwitchClientCredentialsFlow(String clientid, String clientsecret) {
         startup(clientid, clientsecret);
     }
 
+    /**
+     * Gets a new App Token, regardless of expiration
+     * @param properties The properties object containing the Client ID, Client Secret, and where the token will be stored
+     * @return true if a new token was saved
+     */
     public boolean getNewToken(CaselessProperties properties) {
         return getAppToken(properties);
     }
 
+    /**
+     * Gets a new App Token, if the existing one is near expiration
+     * @param properties The properties object containing the Client ID, Client Secret, and where the token is be stored
+     * @return true if a new token was saved
+     */
     public boolean checkExpirationAndGetNewToken(CaselessProperties properties) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
         c.setTimeInMillis(Long.parseLong(properties.getProperty("apptokenexpires", "0")));
