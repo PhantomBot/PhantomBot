@@ -25,9 +25,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * https://sorenpoulsen.com/calculate-hmac-sha256-with-java
+ *
  * @author Søren Poulsen and gmt2001
  */
 public class HMAC {
+
+    private HMAC() {
+    }
 
     public static byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
         byte[] hmacSha256 = null;
