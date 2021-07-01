@@ -16,8 +16,6 @@
  */
 package com.gmt2001.eventsub;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +28,7 @@ import java.util.Map;
 public class EventSubSubscription {
 
     private final String id;
-    private final subscription_status status;
+    private final SubscriptionStatus status;
     private final String type;
     private final String version;
     private final int cost;
@@ -41,7 +39,7 @@ public class EventSubSubscription {
     /**
      * The status of an EventSub subscription
      */
-    public enum subscription_status {
+    public enum SubscriptionStatus {
         /**
          * Designates that the subscription is in an operable state and is valid.
          */
@@ -74,29 +72,29 @@ public class EventSubSubscription {
 
     EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, String created_at, EventSubTransport transport) {
         this.id = id;
-        this.status = subscription_status.valueOf(status.toUpperCase());
+        this.status = SubscriptionStatus.valueOf(status.toUpperCase());
         this.type = type;
         this.version = version;
         this.cost = cost;
         this.condition = new HashMap<>(condition);
-        this.created_at = this.parseDate(created_at);
+        this.created_at = EventSub.parseDate(created_at);
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, subscription_status status, String type, String version, int cost, Map<String, String> condition, String created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, String created_at, EventSubTransport transport) {
         this.id = id;
         this.status = status;
         this.type = type;
         this.version = version;
         this.cost = cost;
         this.condition = new HashMap<>(condition);
-        this.created_at = this.parseDate(created_at);
+        this.created_at = EventSub.parseDate(created_at);
         this.transport = transport;
     }
 
     EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, Date created_at, EventSubTransport transport) {
         this.id = id;
-        this.status = subscription_status.valueOf(status.toUpperCase());
+        this.status = SubscriptionStatus.valueOf(status.toUpperCase());
         this.type = type;
         this.version = version;
         this.cost = cost;
@@ -105,7 +103,7 @@ public class EventSubSubscription {
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, subscription_status status, String type, String version, int cost, Map<String, String> condition, Date created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, Date created_at, EventSubTransport transport) {
         this.id = id;
         this.status = status;
         this.type = type;
@@ -118,24 +116,13 @@ public class EventSubSubscription {
 
     EventSubSubscription(String type, String version, Map<String, String> condition, EventSubTransport transport) {
         this.id = "";
-        this.status = subscription_status.NOT_CREATED_YET;
+        this.status = SubscriptionStatus.NOT_CREATED_YET;
         this.type = type;
         this.version = version;
         this.cost = -1;
         this.condition = new HashMap<>(condition);
         this.created_at = new Date();
         this.transport = transport;
-    }
-
-    private Date parseDate(String date) {
-        try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-            return fmt.parse(date);
-        } catch (ParseException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        return new Date();
     }
 
     /**
@@ -152,7 +139,7 @@ public class EventSubSubscription {
      *
      * @return
      */
-    public subscription_status getStatus() {
+    public SubscriptionStatus getStatus() {
         return this.status;
     }
 

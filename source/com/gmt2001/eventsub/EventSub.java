@@ -16,19 +16,34 @@
  */
 package com.gmt2001.eventsub;
 
+import com.gmt2001.HMAC;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import io.netty.util.CharsetUtil;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +59,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
 
 /**
  *
@@ -51,15 +67,20 @@ import tv.phantombot.PhantomBot;
  */
 public class EventSub implements HttpRequestHandler {
 
-    public EventSub() {
+    private EventSub() {
     }
 
+    private static final EventSub INSTANCE = new EventSub();
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
     private static final int TIMEOUT = 2 * 1000;
     private int subscription_total = 0;
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
-    private HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
+    private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
+
+    public static EventSub instance() {
+        return EventSub.INSTANCE;
+    }
 
     @Override
     public HttpRequestHandler register() {
@@ -74,10 +95,60 @@ public class EventSub implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        if (!req.headers().contains("Twitch-Eventsub-Message-Type")) {
+            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.BAD_REQUEST, Unpooled.buffer());
+            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
+            res.content().writeBytes(buf);
+            buf.release();
+            HttpUtil.setContentLength(res, res.content().readableBytes());
 
+            com.gmt2001.Console.debug.println("400");
+
+            res.headers().set(CONNECTION, CLOSE);
+            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            return;
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("notification")) {
+            EventBus.instance().postAsync(new EventSubInternalNotificationEvent(req));
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("revocation")) {
+            EventBus.instance().postAsync(new EventSubInternalRevocationEvent(req));
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("webhook_callback_verification")) {
+            EventSubInternalVerificationEvent event = new EventSubInternalVerificationEvent(req);
+            EventBus.instance().postAsync(event);
+            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.buffer());
+            ByteBuf buf = Unpooled.copiedBuffer(event.challenge, CharsetUtil.UTF_8);
+            res.content().writeBytes(buf);
+            buf.release();
+            HttpUtil.setContentLength(res, res.content().readableBytes());
+
+            com.gmt2001.Console.debug.println("200");
+
+            res.headers().set(CONNECTION, CLOSE);
+            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            return;
+        } else {
+            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.buffer());
+            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
+            res.content().writeBytes(buf);
+            buf.release();
+            HttpUtil.setContentLength(res, res.content().readableBytes());
+
+            com.gmt2001.Console.debug.println("404");
+
+            res.headers().set(CONNECTION, CLOSE);
+            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            return;
+        }
+
+        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NO_CONTENT, Unpooled.buffer());
+        HttpUtil.setContentLength(res, 0);
+
+        com.gmt2001.Console.debug.println("204");
+
+        res.headers().set(CONNECTION, CLOSE);
+        ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
     }
 
-    private enum request_type {
+    private enum RequestType {
 
         GET, POST, DELETE
     };
@@ -97,26 +168,17 @@ public class EventSub implements HttpRequestHandler {
      * @param filter The status to match, null for all
      * @return
      */
-    public Flux<EventSubSubscription> getSubscriptions(EventSubSubscription.subscription_status filter) {
+    public Flux<EventSubSubscription> getSubscriptions(EventSubSubscription.SubscriptionStatus filter) {
         return Flux.<EventSubSubscription>create(emitter -> {
             try {
-                JSONObject response = this.doRequest(EventSub.request_type.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
+                JSONObject response = this.doRequest(EventSub.RequestType.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
                 } else {
                     JSONArray arr = response.getJSONArray("data");
                     for (int i = 0; i < arr.length(); i++) {
-                        JSONObject subscription = arr.getJSONObject(i);
-                        Map<String, String> condition = new HashMap<>();
-
-                        subscription.getJSONObject("condition").keySet().forEach(key -> condition.put(key, subscription.getJSONObject("condition").getString(key)));
-
-                        emitter.next(new EventSubSubscription(
-                                subscription.getString("id"), subscription.getString("status"), subscription.getString("type"), subscription.getString("version"),
-                                subscription.getInt("cost"), condition, subscription.getString("created_at"),
-                                new EventSubTransport(subscription.getJSONObject("transport").getString("method"), subscription.getJSONObject("transport").getString("callback"))
-                        ));
+                        emitter.next(EventSub.JSONToEventSubSubscription(arr.getJSONObject(i)));
                     }
 
                     this.subscription_total = response.getInt("total");
@@ -167,7 +229,7 @@ public class EventSub implements HttpRequestHandler {
     public Mono deleteSubscription(String id) {
         return Mono.create(emitter -> {
             try {
-                JSONObject response = this.doRequest(EventSub.request_type.DELETE, "?id=" + id, "");
+                JSONObject response = this.doRequest(EventSub.RequestType.DELETE, "?id=" + id, "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -199,7 +261,7 @@ public class EventSub implements HttpRequestHandler {
                 request.key("secret").value(proposedSubscription.getTransport().getSecret());
                 request.endObject();
                 request.endObject();
-                JSONObject response = this.doRequest(EventSub.request_type.POST, "", request.toString());
+                JSONObject response = this.doRequest(EventSub.RequestType.POST, "", request.toString());
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -221,6 +283,29 @@ public class EventSub implements HttpRequestHandler {
                 com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
         });
+    }
+
+    static EventSubSubscription JSONToEventSubSubscription(JSONObject subscription) {
+        Map<String, String> condition = new HashMap<>();
+
+        subscription.getJSONObject("condition").keySet().forEach(key -> condition.put(key, subscription.getJSONObject("condition").getString(key)));
+
+        return new EventSubSubscription(
+                subscription.getString("id"), subscription.getString("status"), subscription.getString("type"), subscription.getString("version"),
+                subscription.getInt("cost"), condition, subscription.getString("created_at"),
+                new EventSubTransport(subscription.getJSONObject("transport").getString("method"), subscription.getJSONObject("transport").getString("callback"))
+        );
+    }
+
+    static Date parseDate(String date) {
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            return fmt.parse(date);
+        } catch (ParseException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return new Date();
     }
 
     static String getSecret() {
@@ -258,7 +343,7 @@ public class EventSub implements HttpRequestHandler {
         return Base64.getEncoder().encodeToString(secret);
     }
 
-    private JSONObject doRequest(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
+    private JSONObject doRequest(EventSub.RequestType type, String queryString, String post) throws IOException, JSONException {
         JSONObject response = this.getData(type, queryString, post);
 
         if (response.has("error") && response.getInt("status") == 401) {
@@ -286,7 +371,7 @@ public class EventSub implements HttpRequestHandler {
         jsonObject.put("_content", jsonContent);
     }
 
-    private JSONObject getData(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
+    private JSONObject getData(EventSub.RequestType type, String queryString, String post) throws IOException, JSONException {
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
         String content = "";

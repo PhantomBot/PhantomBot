@@ -805,7 +805,7 @@ public final class PhantomBot implements Listener {
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
             new HTTPOAuthHandler(panelUsername, panelPassword).register();
             if (this.getProperties().getPropertyAsBoolean("useeventsub", false)) {
-                new EventSub().register();
+                EventSub.instance().register();
             }
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
             alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(webOAuthThro, webOAuth).register();
