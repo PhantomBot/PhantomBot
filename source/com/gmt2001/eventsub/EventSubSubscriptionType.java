@@ -52,6 +52,16 @@ public abstract class EventSubSubscriptionType implements Listener {
         return EventSub.instance().createSubscription(this.proposeSubscription());
     }
 
+    /**
+     * Deletes the EventSub subscription matching the parameters this object, if it can be found in the subscription list
+     *
+     * @return
+     */
+    public Mono delete() {
+        this.validateParameters();
+        return EventSub.instance().deleteSubscription(this.findMatchingSubscriptionId());
+    }
+
     protected abstract EventSubSubscription proposeSubscription();
 
     protected EventSubSubscription proposeSubscriptionInternal(String type, Map<String, String> condition) {
@@ -72,7 +82,8 @@ public abstract class EventSubSubscriptionType implements Listener {
     public abstract boolean isAlreadySubscribed();
 
     /**
-     * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states, otherwise null
+     * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states, otherwise
+     * null
      *
      * @return
      */
