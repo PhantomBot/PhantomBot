@@ -72,6 +72,13 @@ public abstract class EventSubSubscriptionType implements Listener {
     public abstract boolean isAlreadySubscribed();
 
     /**
+     * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states, otherwise null
+     *
+     * @return
+     */
+    public abstract String findMatchingSubscriptionId();
+
+    /**
      * Gets the subscription information, if the object was created as part of a notification
      *
      * @return

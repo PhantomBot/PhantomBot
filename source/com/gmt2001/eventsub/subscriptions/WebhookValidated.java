@@ -48,6 +48,11 @@ public class WebhookValidated extends EventSubSubscriptionType {
         throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
+    @Override
+    public String findMatchingSubscriptionId() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
+    }
+
     @Handler
     public void onEventSubInternalVerificationEvent(EventSubInternalVerificationEvent e) {
         EventBus.instance().postAsync(new EventSubWebhookValidatedEvent(e.getSubscription()));

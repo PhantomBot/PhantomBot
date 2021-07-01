@@ -48,6 +48,11 @@ public class Revocation extends EventSubSubscriptionType {
         throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
+    @Override
+    public String findMatchingSubscriptionId() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
+    }
+
     @Handler
     public void onEventSubInternalVerificationEvent(EventSubInternalRevocationEvent e) {
         EventBus.instance().postAsync(new EventSubRevocationEvent(e.getSubscription()));

@@ -94,6 +94,16 @@ public class ChannelUpdate extends EventSubSubscriptionType {
         });
     }
 
+    @Override
+    public String findMatchingSubscriptionId() {
+        return EventSub.instance().getSubscriptions().stream().filter(possibleSubscription -> {
+            return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
+                    && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
+                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        }).findFirst().map(EventSubSubscription::getId).orElse(null);
+    }
+
     /**
      * The broadcaster's user ID.
      *
