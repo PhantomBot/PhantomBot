@@ -41,13 +41,20 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.zip.GZIPInputStream;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
@@ -68,15 +75,25 @@ import tv.phantombot.event.EventBus;
 public class EventSub implements HttpRequestHandler {
 
     private EventSub() {
+        t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                cleanupDuplicates();
+            }
+        }, CLEANUP_INTERVAL, CLEANUP_INTERVAL);
     }
 
     private static final EventSub INSTANCE = new EventSub();
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
     private static final int TIMEOUT = 2 * 1000;
+    private static final long CLEANUP_INTERVAL = 120000L;
     private int subscription_total = 0;
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
     private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
+    private final ConcurrentMap<String, Date> handledMessages = new ConcurrentHashMap<>();
+    private final Timer t;
 
     public static EventSub instance() {
         return EventSub.INSTANCE;
@@ -349,6 +366,21 @@ public class EventSub implements HttpRequestHandler {
         }
 
         return Base64.getEncoder().encodeToString(secret);
+    }
+
+    boolean isDuplicate(String messageId, Date timestamp) {
+        return this.handledMessages.putIfAbsent(messageId, timestamp) != null;
+    }
+
+    private void cleanupDuplicates() {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
+        c.add(Calendar.MINUTE, -10);
+        Date expires = c.getTime();
+        this.handledMessages.forEach((id, ts) -> {
+            if (ts.before(expires)) {
+                this.handledMessages.remove(id);
+            }
+        });
     }
 
     private JSONObject doRequest(EventSub.RequestType type, String queryString, String post) throws IOException, JSONException {

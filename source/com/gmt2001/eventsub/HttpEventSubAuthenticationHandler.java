@@ -31,6 +31,10 @@ import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
 import java.nio.charset.Charset;
+import java.time.ZoneOffset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -49,15 +53,22 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
         boolean authenticated = HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
 
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
+        c.add(Calendar.MINUTE, -10);
+        Date ts = EventSub.parseDate(timestamp);
+        if (ts.before(c.getTime()) || EventSub.instance().isDuplicate(id, ts)) {
+            authenticated = false;
+        }
+
         if (!authenticated) {
-            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
+            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FORBIDDEN, Unpooled.buffer());
             ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
             res.content().writeBytes(buf);
             buf.release();
             HttpUtil.setContentLength(res, res.content().readableBytes());
 
             if (PhantomBot.getEnableDebugging()) {
-                com.gmt2001.Console.debug.println("401");
+                com.gmt2001.Console.debug.println("403");
                 com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
                 com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
             }
