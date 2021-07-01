@@ -25,10 +25,11 @@ import tv.phantombot.event.eventsub.EventSubWebhookValidatedEvent;
 
 /**
  * Handles notification that a webhook has been validated and is now active.
+ *
  * @author gmt2001
  */
 public class WebhookValidated extends EventSubSubscriptionType {
-    
+
     protected WebhookValidated() {
     }
 
@@ -42,9 +43,14 @@ public class WebhookValidated extends EventSubSubscriptionType {
         throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
+    @Override
+    public boolean isAlreadySubscribed() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
+    }
+
     @Handler
     public void onEventSubInternalVerificationEvent(EventSubInternalVerificationEvent e) {
         EventBus.instance().postAsync(new EventSubWebhookValidatedEvent(e.getSubscription()));
     }
-    
+
 }

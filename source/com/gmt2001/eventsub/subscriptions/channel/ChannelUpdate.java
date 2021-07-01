@@ -16,6 +16,7 @@
  */
 package com.gmt2001.eventsub.subscriptions.channel;
 
+import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.eventsub.EventSubSubscription;
 import com.gmt2001.eventsub.EventSubSubscriptionType;
@@ -32,7 +33,7 @@ import tv.phantombot.event.eventsub.channel.EventSubChannelUpdateEvent;
  */
 public class ChannelUpdate extends EventSubSubscriptionType {
 
-    protected static final String TYPE = "channel.update";
+    public static final String TYPE = "channel.update";
     protected String broadcaster_user_id;
     private String broadcaster_user_login;
     private String broadcaster_user_name;
@@ -64,7 +65,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     @Override
     protected EventSubSubscription proposeSubscription() {
         Map<String, String> condition = new HashMap<>();
-        condition.put("broadcaster_user_id", broadcaster_user_id);
+        condition.put("broadcaster_user_id", this.broadcaster_user_id);
         return this.proposeSubscriptionInternal(ChannelUpdate.TYPE, condition);
     }
 
@@ -83,8 +84,18 @@ public class ChannelUpdate extends EventSubSubscriptionType {
         }
     }
 
+    @Override
+    public boolean isAlreadySubscribed() {
+        return EventSub.instance().getSubscriptions().stream().anyMatch(possibleSubscription -> {
+            return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
+                    && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
+                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        });
+    }
+
     /**
-     * The broadcaster’s user ID.
+     * The broadcaster's user ID.
      *
      * @return
      */
@@ -93,7 +104,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     /**
-     * The broadcaster’s user login.
+     * The broadcaster's user login.
      *
      * @return
      */
@@ -102,7 +113,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     /**
-     * The broadcaster’s user display name.
+     * The broadcaster's user display name.
      *
      * @return
      */
@@ -111,7 +122,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     /**
-     * The channel’s stream title.
+     * The channel's stream title.
      *
      * @return
      */
@@ -120,7 +131,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     /**
-     * The channel’s broadcast language.
+     * The channel's broadcast language.
      *
      * @return
      */
@@ -129,7 +140,7 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     /**
-     * The channel’s category ID.
+     * The channel's category ID.
      *
      * @return
      */

@@ -25,10 +25,11 @@ import tv.phantombot.event.eventsub.EventSubRevocationEvent;
 
 /**
  * Handles notification that a webhook has been revoked.
+ *
  * @author gmt2001
  */
 public class Revocation extends EventSubSubscriptionType {
-    
+
     protected Revocation() {
     }
 
@@ -42,9 +43,14 @@ public class Revocation extends EventSubSubscriptionType {
         throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
+    @Override
+    public boolean isAlreadySubscribed() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
+    }
+
     @Handler
     public void onEventSubInternalVerificationEvent(EventSubInternalRevocationEvent e) {
         EventBus.instance().postAsync(new EventSubRevocationEvent(e.getSubscription()));
     }
-    
+
 }

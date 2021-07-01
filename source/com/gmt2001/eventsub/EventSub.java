@@ -42,12 +42,14 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -72,11 +74,12 @@ import tv.phantombot.event.EventBus;
  *
  * @author gmt2001
  */
-public class EventSub implements HttpRequestHandler {
+public final class EventSub implements HttpRequestHandler {
 
     private EventSub() {
-        t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
+        this.getSubscriptions(true);
+        this.t = new Timer();
+        this.t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 cleanupDuplicates();
@@ -88,11 +91,14 @@ public class EventSub implements HttpRequestHandler {
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
     private static final int TIMEOUT = 2 * 1000;
     private static final long CLEANUP_INTERVAL = 120000L;
+    private static final int SUBSCRIPTION_RETRIEVE_INTERVAL = 86400;
     private int subscription_total = 0;
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
     private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
     private final ConcurrentMap<String, Date> handledMessages = new ConcurrentHashMap<>();
+    private List<EventSubSubscription> subscriptions = Collections.emptyList();
+    private Date lastSubscriptionRetrieval;
     private final Timer t;
 
     public static EventSub instance() {
@@ -179,21 +185,53 @@ public class EventSub implements HttpRequestHandler {
     };
 
     /**
-     * Gets all EventSub subscriptions
+     * Gets all EventSub subscriptions from the last API call. Retrieves the list again if it has been a while
      *
      * @return
      */
-    public Flux<EventSubSubscription> getSubscriptions() {
-        return this.getSubscriptions(null);
+    public List<EventSubSubscription> getSubscriptions() {
+        return this.getSubscriptions(false);
     }
 
     /**
-     * Gets all EventSub subscriptions matching the status in filter
+     * Gets all EventSub subscriptions from the last API call. Retrieves the list again if it has been a while or if forced
+     *
+     * @param force true to force a retrieval
+     * @return
+     */
+    public List<EventSubSubscription> getSubscriptions(boolean force) {
+        this.doGetSubscriptions(force);
+        return this.subscriptions;
+    }
+
+    private synchronized void doGetSubscriptions(boolean force) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
+        c.add(Calendar.SECOND, -EventSub.SUBSCRIPTION_RETRIEVE_INTERVAL);
+
+        if (force || this.lastSubscriptionRetrieval.before(c.getTime())) {
+            List<EventSubSubscription> n = new ArrayList<>();
+            this.getSubscriptionsFromAPI().doOnNext(n::add).doOnComplete(() -> {
+                this.subscriptions = Collections.unmodifiableList(n);
+            }).blockLast();
+        }
+    }
+
+    /**
+     * Gets all EventSub subscriptions from the API
+     *
+     * @return
+     */
+    public Flux<EventSubSubscription> getSubscriptionsFromAPI() {
+        return this.getSubscriptionsFromAPI(null);
+    }
+
+    /**
+     * Gets all EventSub subscriptions matching the status in filter from the API
      *
      * @param filter The status to match, null for all
      * @return
      */
-    public Flux<EventSubSubscription> getSubscriptions(EventSubSubscription.SubscriptionStatus filter) {
+    public Flux<EventSubSubscription> getSubscriptionsFromAPI(EventSubSubscription.SubscriptionStatus filter) {
         return Flux.<EventSubSubscription>create(emitter -> {
             try {
                 JSONObject response = this.doRequest(EventSub.RequestType.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");

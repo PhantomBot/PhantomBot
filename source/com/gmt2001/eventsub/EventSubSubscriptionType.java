@@ -65,6 +65,13 @@ public abstract class EventSubSubscriptionType implements Listener {
     protected abstract void validateParameters() throws IllegalArgumentException;
 
     /**
+     * Returns true if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states
+     *
+     * @return
+     */
+    public abstract boolean isAlreadySubscribed();
+
+    /**
      * Gets the subscription information, if the object was created as part of a notification
      *
      * @return
