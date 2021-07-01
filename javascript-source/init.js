@@ -1096,6 +1096,27 @@
         });
 
         /*
+         * @event EventSubWebhookValidated
+         */
+        $api.on($script, 'EventSubWebhookValidated', function (event) {
+            callHook('EventSubWebhookValidated', event, false);
+        });
+
+        /*
+         * @event EventSubRevocation
+         */
+        $api.on($script, 'EventSubRevocation', function (event) {
+            callHook('EventSubRevocation', event, false);
+        });
+
+        /*
+         * @event EventSubChannelUpdate
+         */
+        $api.on($script, 'EventSubChannelUpdate', function (event) {
+            callHook('EventSubChannelUpdate', event, false);
+        });
+
+        /*
          * @event Shutdown
          */
         $api.on($script, 'Shutdown', function (event) {
