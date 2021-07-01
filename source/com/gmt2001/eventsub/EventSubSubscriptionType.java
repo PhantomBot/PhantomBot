@@ -59,7 +59,7 @@ public abstract class EventSubSubscriptionType implements Listener {
     }
 
     protected EventSubTransport proposeTransport() {
-        return new EventSubTransport("webhook", PhantomBot.instance().getProperties().getProperty("eventsuburl"), EventSub.getSecret());
+        return new EventSubTransport("webhook", PhantomBot.instance().getProperties().getProperty("eventsubcallbackurl"), EventSub.getSecret());
     }
 
     protected abstract void validateParameters() throws IllegalArgumentException;
