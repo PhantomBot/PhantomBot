@@ -58,7 +58,7 @@ public class TwitchClientCredentialsFlow {
      * @param clientsecret The developer app Client Secret for the timer
      */
     public TwitchClientCredentialsFlow(String clientid, String clientsecret) {
-        startup(clientid, clientsecret);
+        this.startup(clientid, clientsecret);
     }
 
     /**
@@ -67,7 +67,15 @@ public class TwitchClientCredentialsFlow {
      * @return true if a new token was saved
      */
     public boolean getNewToken(CaselessProperties properties) {
-        return getAppToken(properties);
+        return this.getAppToken(properties);
+    }
+
+    /**
+     * Gets a new App Token, regardless of expiration
+     * @return true if a new token was saved
+     */
+    public boolean getNewToken() {
+        return this.getAppToken(PhantomBot.instance().getProperties());
     }
 
     /**
@@ -80,15 +88,23 @@ public class TwitchClientCredentialsFlow {
         c.setTimeInMillis(Long.parseLong(properties.getProperty("apptokenexpires", "0")));
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
-            return getAppToken(properties);
+            return this.getAppToken(properties);
         }
 
         return false;
     }
 
+    /**
+     * Gets a new App Token, if the existing one is near expiration
+     * @return true if a new token was saved
+     */
+    public boolean checkExpirationAndGetNewToken() {
+        return this.checkExpirationAndGetNewToken(PhantomBot.instance().getProperties());
+    }
+
     private boolean getAppToken(CaselessProperties properties) {
         boolean changed = false;
-        JSONObject result = tryGetAppToken(properties.getProperty("clientid"), properties.getProperty("clientsecret"));
+        JSONObject result = TwitchClientCredentialsFlow.tryGetAppToken(properties.getProperty("clientid"), properties.getProperty("clientsecret"));
 
         if (result.has("error")) {
             com.gmt2001.Console.err.println(result.toString());
@@ -134,12 +150,12 @@ public class TwitchClientCredentialsFlow {
         }
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
-            t = new Timer();
-            t.scheduleAtFixedRate(new TimerTask() {
+            this.t = new Timer();
+            this.t.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     if (PhantomBot.instance() != null) {
-                        checkExpirationAndGetNewToken(PhantomBot.instance().getProperties());
+                        checkExpirationAndGetNewToken();
                     }
                 }
             }, REFRESH_INTERVAL, REFRESH_INTERVAL);
@@ -163,7 +179,7 @@ public class TwitchClientCredentialsFlow {
 
         qse.addParam("scope", scopes);
 
-        return doRequest(qse);
+        return TwitchClientCredentialsFlow.doRequest(qse);
     }
 
     private static JSONObject doRequest(QueryStringEncoder qse) {

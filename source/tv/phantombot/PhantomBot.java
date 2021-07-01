@@ -27,6 +27,7 @@ import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
+import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -362,12 +363,12 @@ public final class PhantomBot implements Listener {
         /* Assign properties passed in to local instance. */
         this.pbProperties = pbProperties;
 
-        if (this.pbProperties.getProperty("reactordebug", "false").equalsIgnoreCase("true")) {
+        if (this.pbProperties.getPropertyAsBoolean("reactordebug", false)) {
             Loggers.useVerboseConsoleLoggers();
         }
 
         /* Set the default bot variables */
-        PhantomBot.enableDebugging = this.pbProperties.getProperty("debugon") == null ? false : this.pbProperties.getProperty("debugon").equalsIgnoreCase("true");
+        PhantomBot.enableDebugging = this.pbProperties.getPropertyAsBoolean("debugon", false);
         this.botName = this.pbProperties.getProperty("user").toLowerCase();
         this.channelName = this.pbProperties.getProperty("channel").toLowerCase();
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
@@ -378,13 +379,13 @@ public final class PhantomBot implements Listener {
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
         this.youtubeKey = this.pbProperties.getProperty("youtubekey", "");
-        this.basePort = Integer.parseInt(this.pbProperties.getProperty("baseport", "25000"));
+        this.basePort = this.pbProperties.getPropertyAsInt("baseport", 25000);
         this.bindIP = this.pbProperties.getProperty("bindIP", "");
         this.webOAuth = this.pbProperties.getProperty("webauth");
         this.webOAuthThro = this.pbProperties.getProperty("webauthro");
-        this.webEnabled = this.pbProperties.getProperty("webenable", "true").equalsIgnoreCase("true");
-        this.musicEnabled = this.pbProperties.getProperty("musicenable", "true").equalsIgnoreCase("true");
-        this.useHttps = this.pbProperties.getProperty("usehttps", "true").equalsIgnoreCase("true");
+        this.webEnabled = this.pbProperties.getPropertyAsBoolean("webenable", true);
+        this.musicEnabled = this.pbProperties.getPropertyAsBoolean("musicenable", true);
+        this.useHttps = this.pbProperties.getPropertyAsBoolean("usehttps", true);
 
         /* Set the datastore variables */
         this.dataStoreType = this.pbProperties.getProperty("datastore", "");
@@ -402,16 +403,16 @@ public final class PhantomBot implements Listener {
 
         /* Set the TwitchAlerts variables */
         this.twitchAlertsKey = this.pbProperties.getProperty("twitchalertskey", "");
-        this.twitchAlertsLimit = Integer.parseInt(this.pbProperties.getProperty("twitchalertslimit", "5"));
+        this.twitchAlertsLimit = this.pbProperties.getPropertyAsInt("twitchalertslimit", 5);
 
         /* Set the TipeeeStream variables */
         this.tipeeeStreamOAuth = this.pbProperties.getProperty("tipeeestreamkey", "");
-        this.tipeeeStreamLimit = Integer.parseInt(this.pbProperties.getProperty("tipeeestreamlimit", "5"));
+        this.tipeeeStreamLimit = this.pbProperties.getPropertyAsInt("tipeeestreamlimit", 5);
 
         /* Set the StreamElements variables */
         this.streamElementsJWT = this.pbProperties.getProperty("streamelementsjwt", "");
         this.streamElementsID = this.pbProperties.getProperty("streamelementsid", "");
-        this.streamElementsLimit = Integer.parseInt(this.pbProperties.getProperty("streamelementslimit", "5"));
+        this.streamElementsLimit = this.pbProperties.getPropertyAsInt("streamelementslimit", 5);
 
         /* Set the MySql variables */
         this.mySqlName = this.pbProperties.getProperty("mysqlname", "");
@@ -437,7 +438,7 @@ public final class PhantomBot implements Listener {
         this.panelPassword = this.pbProperties.getProperty("panelpassword", "panel");
 
         /* Set the tcp delay toggle. Having this set to true uses a bit more bandwidth but sends messages to Twitch faster. */
-        PhantomBot.twitchTcpNodelay = this.pbProperties.getProperty("twitch_tcp_nodelay", "true").equalsIgnoreCase("true");
+        PhantomBot.twitchTcpNodelay = this.pbProperties.getPropertyAsBoolean("twitch_tcp_nodelay", true);
 
 
         /*
@@ -446,7 +447,7 @@ public final class PhantomBot implements Listener {
          * to go above anything higher than 19 in case the bot is ever de-modded, the option is available but is
          * capped at 100.0.
          */
-        PhantomBot.messageLimit = Math.floor(Double.parseDouble(this.pbProperties.getProperty("msglimit30", "19.0")));
+        PhantomBot.messageLimit = Math.floor(this.pbProperties.getPropertyAsDouble("msglimit30", 19.0));
         if (PhantomBot.messageLimit > 99.0) {
             PhantomBot.messageLimit = 99.0;
         } else if (PhantomBot.messageLimit < 19.0) {
@@ -455,21 +456,21 @@ public final class PhantomBot implements Listener {
 
         // *Not currently being used.*
         // If this is false the bot won't limit the bot to 1 message every 1.5 second. It will still limit to 19/30 though.
-        PhantomBot.useMessageQueue = this.pbProperties.getProperty("usemessagequeue", "true").equals("true");
+        PhantomBot.useMessageQueue = this.pbProperties.getPropertyAsBoolean("usemessagequeue", true);
 
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
-        PhantomBot.whisperLimit = Double.parseDouble(this.pbProperties.getProperty("whisperlimit60", "60.0"));
+        PhantomBot.whisperLimit = this.pbProperties.getPropertyAsDouble("whisperlimit60", 60.0);
 
         /* Set the client id for the twitch api to use */
         this.clientId = this.pbProperties.getProperty("clientid", "");
 
         /* Set any DB backup options. */
-        this.backupDBAuto = this.pbProperties.getProperty("backupdbauto", this.pbProperties.getProperty("backupsqliteauto", "true")).equalsIgnoreCase("true");
-        this.backupDBHourFrequency = Integer.parseInt(this.pbProperties.getProperty("backupdbhourfrequency", this.pbProperties.getProperty("backupsqlitehourfrequency", "24")));
-        this.backupDBKeepDays = Integer.parseInt(this.pbProperties.getProperty("backupdbkeepdays", this.pbProperties.getProperty("backupsqlitekeepdays", "5")));
+        this.backupDBAuto = this.pbProperties.getPropertyAsBoolean("backupdbauto", this.pbProperties.getPropertyAsBoolean("backupsqliteauto", true));
+        this.backupDBHourFrequency = this.pbProperties.getPropertyAsInt("backupdbhourfrequency", this.pbProperties.getPropertyAsInt("backupsqlitehourfrequency", 24));
+        this.backupDBKeepDays = this.pbProperties.getPropertyAsInt("backupdbkeepdays", this.pbProperties.getPropertyAsInt("backupsqlitekeepdays", 5));
 
         // Set the newSetup flag
-        this.newSetup = this.pbProperties.getProperty("newSetup").equals("true");
+        this.newSetup = this.pbProperties.getPropertyAsBoolean("newSetup");
 
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
@@ -799,6 +800,9 @@ public final class PhantomBot implements Listener {
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
             new HTTPOAuthHandler(panelUsername, panelPassword).register();
+            if (this.getProperties().getPropertyAsBoolean("useeventsub", false)) {
+                new EventSub().register();
+            }
             panelHandler = (WsPanelHandler) new WsPanelHandler(webOAuthThro, webOAuth).register();
             alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(webOAuthThro, webOAuth).register();
             new WsPanelRemoteLoginHandler(panelUsername, panelPassword, webOAuthThro, webOAuth).register();

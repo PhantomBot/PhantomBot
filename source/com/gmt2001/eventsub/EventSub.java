@@ -16,14 +16,16 @@
  */
 package com.gmt2001.eventsub;
 
-import com.gmt2001.HMAC;
+import com.gmt2001.httpwsserver.HttpRequestHandler;
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
+import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -47,16 +49,33 @@ import tv.phantombot.PhantomBot;
  *
  * @author gmt2001
  */
-public class EventSub {
+public class EventSub implements HttpRequestHandler {
 
-    private EventSub() {
+    public EventSub() {
     }
 
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
     private static final int TIMEOUT = 2 * 1000;
-    private static int subscription_total = 0;
-    private static int subscription_total_cost = 0;
-    private static int subscription_max_cost = 0;
+    private int subscription_total = 0;
+    private int subscription_total_cost = 0;
+    private int subscription_max_cost = 0;
+    private HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
+
+    @Override
+    public HttpRequestHandler register() {
+        HttpServerPageHandler.registerHttpHandler("/eventsub", this);
+        return this;
+    }
+
+    @Override
+    public HttpAuthenticationHandler getAuthHandler() {
+        return this.authHandler;
+    }
+
+    @Override
+    public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+
+    }
 
     private enum request_type {
 
@@ -68,8 +87,8 @@ public class EventSub {
      *
      * @return
      */
-    public static Flux<EventSubSubscription> getSubscriptions() {
-        return getSubscriptions(null);
+    public Flux<EventSubSubscription> getSubscriptions() {
+        return this.getSubscriptions(null);
     }
 
     /**
@@ -78,10 +97,10 @@ public class EventSub {
      * @param filter The status to match, null for all
      * @return
      */
-    public static Flux<EventSubSubscription> getSubscriptions(EventSubSubscription.subscription_status filter) {
+    public Flux<EventSubSubscription> getSubscriptions(EventSubSubscription.subscription_status filter) {
         return Flux.<EventSubSubscription>create(emitter -> {
             try {
-                JSONObject response = doRequest(EventSub.request_type.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
+                JSONObject response = this.doRequest(EventSub.request_type.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -100,9 +119,9 @@ public class EventSub {
                         ));
                     }
 
-                    EventSub.subscription_total = response.getInt("total");
-                    EventSub.subscription_total_cost = response.getInt("total_cost");
-                    EventSub.subscription_max_cost = response.getInt("max_total_cost");
+                    this.subscription_total = response.getInt("total");
+                    this.subscription_total_cost = response.getInt("total_cost");
+                    this.subscription_max_cost = response.getInt("max_total_cost");
                     emitter.complete();
                 }
             } catch (IOException | JSONException ex) {
@@ -117,8 +136,8 @@ public class EventSub {
      *
      * @return
      */
-    public static int getTotalSubscriptionCount() {
-        return EventSub.subscription_total;
+    public int getTotalSubscriptionCount() {
+        return this.subscription_total;
     }
 
     /**
@@ -126,8 +145,8 @@ public class EventSub {
      *
      * @return
      */
-    public static int getTotalSubscriptionCost() {
-        return EventSub.subscription_total_cost;
+    public int getTotalSubscriptionCost() {
+        return this.subscription_total_cost;
     }
 
     /**
@@ -135,8 +154,8 @@ public class EventSub {
      *
      * @return
      */
-    public static int getSubscriptionCostLimit() {
-        return EventSub.subscription_max_cost;
+    public int getSubscriptionCostLimit() {
+        return this.subscription_max_cost;
     }
 
     /**
@@ -145,10 +164,10 @@ public class EventSub {
      * @param id The id of the subscription to delete
      * @return
      */
-    public static Mono deleteSubscription(String id) {
+    public Mono deleteSubscription(String id) {
         return Mono.create(emitter -> {
             try {
-                JSONObject response = doRequest(EventSub.request_type.DELETE, "?id=" + id, "");
+                JSONObject response = this.doRequest(EventSub.request_type.DELETE, "?id=" + id, "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -162,7 +181,7 @@ public class EventSub {
         });
     }
 
-    static Mono<EventSubSubscription> createSubscription(EventSubSubscription proposedSubscription) {
+    Mono<EventSubSubscription> createSubscription(EventSubSubscription proposedSubscription) {
         return Mono.<EventSubSubscription>create(emitter -> {
             try {
                 JSONStringer request = new JSONStringer();
@@ -180,7 +199,7 @@ public class EventSub {
                 request.key("secret").value(proposedSubscription.getTransport().getSecret());
                 request.endObject();
                 request.endObject();
-                JSONObject response = doRequest(EventSub.request_type.POST, "", request.toString());
+                JSONObject response = this.doRequest(EventSub.request_type.POST, "", request.toString());
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -204,23 +223,8 @@ public class EventSub {
         });
     }
 
-    /**
-     * Validates an EventSub signature
-     *
-     * @param req The FullHttpRequest of the EventSub notification
-     * @return true if the signature is valid and matches
-     */
-    public static boolean verifyEventSubSignature(FullHttpRequest req) {
-        String id = req.headers().get("Twitch-Eventsub-Message-Id");
-        String timestamp = req.headers().get("Twitch-Eventsub-Message-Timestamp");
-        String body = req.content().toString(Charset.defaultCharset());
-        String signature = req.headers().get("Twitch-Eventsub-Message-Signature").replaceAll("sha256=", "");
-
-        return HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
-    }
-
     static String getSecret() {
-        return PhantomBot.instance().getProperties().getProperty("appsecret", EventSub.generateSecret());
+        return PhantomBot.instance().getProperties().getProperty("appsecret", EventSub::generateSecret);
     }
 
     private static String generateSecret() {
@@ -254,11 +258,11 @@ public class EventSub {
         return Base64.getEncoder().encodeToString(secret);
     }
 
-    private static JSONObject doRequest(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
-        JSONObject response = getData(type, queryString, post);
+    private JSONObject doRequest(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
+        JSONObject response = this.getData(type, queryString, post);
 
         if (response.has("error") && response.getInt("status") == 401) {
-            PhantomBot.instance().getAppFlow().getNewToken(PhantomBot.instance().getProperties());
+            PhantomBot.instance().getAppFlow().getNewToken();
             try {
                 Thread.sleep(TIMEOUT);
             } catch (InterruptedException ex) {
@@ -269,7 +273,7 @@ public class EventSub {
         return response;
     }
 
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String post,
+    private void fillJSONObject(JSONObject jsonObject, boolean success, String type, String post,
             String url, int responseCode, String exception,
             String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
@@ -282,7 +286,7 @@ public class EventSub {
         jsonObject.put("_content", jsonContent);
     }
 
-    private static JSONObject getData(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
+    private JSONObject getData(EventSub.request_type type, String queryString, String post) throws IOException, JSONException {
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
         String content = "";
