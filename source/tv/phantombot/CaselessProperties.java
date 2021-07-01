@@ -17,13 +17,18 @@
 package tv.phantombot;
 
 import java.util.Properties;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 public class CaselessProperties extends Properties {
+
     public static final long serialVersionUID = 1L;
 
     @Override
     public Object put(Object key, Object value) {
-        return super.put(((String)key).toLowerCase(), value);
+        return super.put(((String) key).toLowerCase(), value);
     }
 
     @Override
@@ -34,5 +39,103 @@ public class CaselessProperties extends Properties {
     @Override
     public String getProperty(String key, String defaultValue) {
         return super.getProperty(key.toLowerCase(), defaultValue);
+    }
+
+    public String getProperty(String key, Supplier<String> defaultValueSupplier) {
+        String retval = super.getProperty(key.toLowerCase(), null);
+
+        if (retval == null) {
+            return defaultValueSupplier.get();
+        }
+
+        return retval;
+    }
+
+    public int getPropertyAsInt(String key) {
+        return Integer.parseInt(this.getProperty(key));
+    }
+
+    public int getPropertyAsInt(String key, int defaultValue) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Integer.parseInt(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValue;
+        }
+    }
+
+    public int getPropertyAsInt(String key, IntSupplier defaultValueSupplier) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValueSupplier.getAsInt();
+        }
+
+        try {
+            return Integer.parseInt(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValueSupplier.getAsInt();
+        }
+    }
+
+    public double getPropertyAsDouble(String key) {
+        return Double.parseDouble(this.getProperty(key));
+    }
+
+    public double getPropertyAsDouble(String key, double defaultValue) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Double.parseDouble(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValue;
+        }
+    }
+
+    public double getPropertyAsDouble(String key, DoubleSupplier defaultValueSupplier) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValueSupplier.getAsDouble();
+        }
+
+        try {
+            return Double.parseDouble(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValueSupplier.getAsDouble();
+        }
+    }
+
+    public boolean getPropertyAsBoolean(String key) {
+        return this.getProperty(key).toLowerCase().matches("(1|true|yes)");
+    }
+
+    public boolean getPropertyAsBoolean(String key, boolean defaultValue) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValue;
+        }
+
+        return retval.toLowerCase().matches("(1|true|yes)");
+    }
+
+    public boolean getPropertyAsBoolean(String key, BooleanSupplier defaultValueSupplier) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValueSupplier.getAsBoolean();
+        }
+
+        return retval.toLowerCase().matches("(1|true|yes)");
     }
 }
