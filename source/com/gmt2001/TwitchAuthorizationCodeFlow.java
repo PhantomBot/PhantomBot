@@ -43,6 +43,7 @@ import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.httpserver.HTTPOAuthHandler;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  *
@@ -112,7 +113,10 @@ public class TwitchAuthorizationCodeFlow {
                 if (PhantomBot.instance() != null) {
                     PhantomBot.instance().reloadProperties();
                 }
-            } catch (IOException ex) {
+
+                TwitchValidate.instance().updateChatToken(PhantomBot.instance().getProperties().getProperty("oauth"));
+                TwitchValidate.instance().updateAPIToken(PhantomBot.instance().getProperties().getProperty("apioauth"));
+            } catch (NullPointerException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }

@@ -528,6 +528,10 @@ public final class PhantomBot implements Listener {
 
         TwitchValidate.instance().checkOAuthInconsistencies(this.botName);
 
+        if (pbProperties.getPropertyAsBoolean("useeventsub", false)) {
+            TwitchValidate.instance().validateApp(pbProperties.getProperty("apptoken"), "APP (EventSub)");
+        }
+
         /* Set the TwitchAlerts OAuth key and limiter. */
         if (!twitchAlertsKey.isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(twitchAlertsKey);

@@ -38,9 +38,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * Handles the Twitch Client Credentials Flow (App Token)
+ *
  * @author gmt2001
  */
 public class TwitchClientCredentialsFlow {
@@ -54,6 +56,7 @@ public class TwitchClientCredentialsFlow {
 
     /**
      * Constructor
+     *
      * @param clientid The developer app Client ID for the timer
      * @param clientsecret The developer app Client Secret for the timer
      */
@@ -63,6 +66,7 @@ public class TwitchClientCredentialsFlow {
 
     /**
      * Gets a new App Token, regardless of expiration
+     *
      * @param properties The properties object containing the Client ID, Client Secret, and where the token will be stored
      * @return true if a new token was saved
      */
@@ -72,6 +76,7 @@ public class TwitchClientCredentialsFlow {
 
     /**
      * Gets a new App Token, regardless of expiration
+     *
      * @return true if a new token was saved
      */
     public boolean getNewToken() {
@@ -80,6 +85,7 @@ public class TwitchClientCredentialsFlow {
 
     /**
      * Gets a new App Token, if the existing one is near expiration
+     *
      * @param properties The properties object containing the Client ID, Client Secret, and where the token is be stored
      * @return true if a new token was saved
      */
@@ -96,6 +102,7 @@ public class TwitchClientCredentialsFlow {
 
     /**
      * Gets a new App Token, if the existing one is near expiration
+     *
      * @return true if a new token was saved
      */
     public boolean checkExpirationAndGetNewToken() {
@@ -136,7 +143,9 @@ public class TwitchClientCredentialsFlow {
                 if (PhantomBot.instance() != null) {
                     PhantomBot.instance().reloadProperties();
                 }
-            } catch (IOException ex) {
+
+                TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
+            } catch (NullPointerException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
