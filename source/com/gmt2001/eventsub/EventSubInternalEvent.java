@@ -27,13 +27,13 @@ import tv.phantombot.event.Event;
  *
  * @author gmt2001
  */
-abstract class EventSubInternalEvent extends Event {
+public abstract class EventSubInternalEvent extends Event {
 
-    final String challenge;
-    final JSONObject event;
-    final String messageId;
-    final Date messageTimestamp;
-    final EventSubSubscription subscription;
+    private final String challenge;
+    private final JSONObject event;
+    private final String messageId;
+    private final Date messageTimestamp;
+    private final EventSubSubscription subscription;
 
     EventSubInternalEvent(FullHttpRequest req) {
         JSONObject data = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
@@ -42,5 +42,25 @@ abstract class EventSubInternalEvent extends Event {
         this.messageId = req.headers().get("Twitch-Eventsub-Message-Id");
         this.messageTimestamp = EventSub.parseDate(req.headers().get("Twitch-Eventsub-Message-Timestamp"));
         this.subscription = EventSub.JSONToEventSubSubscription(data.getJSONObject("subscription"));
+    }
+
+    String getChallenge() {
+        return this.challenge;
+    }
+
+    public JSONObject getEvent() {
+        return this.event;
+    }
+
+    public String getMessageId() {
+        return this.messageId;
+    }
+
+    public Date getMessageTimestamp() {
+        return this.messageTimestamp;
+    }
+
+    public EventSubSubscription getSubscription() {
+        return this.subscription;
     }
 }

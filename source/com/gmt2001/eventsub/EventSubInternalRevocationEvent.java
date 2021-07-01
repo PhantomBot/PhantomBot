@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
  *
  * @author gmt2001
  */
-class EventSubInternalRevocationEvent extends EventSubInternalEvent {
+public class EventSubInternalRevocationEvent extends EventSubInternalEvent {
 
     EventSubInternalRevocationEvent(FullHttpRequest req) {
         super(req);

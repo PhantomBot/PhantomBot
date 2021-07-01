@@ -14,18 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package tv.phantombot.event.eventsub.channel;
 
-import io.netty.handler.codec.http.FullHttpRequest;
+import com.gmt2001.eventsub.subscriptions.channel.ChannelUpdate;
 
 /**
- * Internal event subclass denoting an EventSub webhook callback verification notification
- *
+ * The channel.update subscription type sends notifications when a broadcaster updates the category, title, mature flag, or broadcast language for their channel.
  * @author gmt2001
  */
-public class EventSubInternalVerificationEvent extends EventSubInternalEvent {
+public class EventSubChannelUpdateEvent extends EventSubChannelEvent {
 
-    EventSubInternalVerificationEvent(FullHttpRequest req) {
-        super(req);
+    private final ChannelUpdate event;
+
+    public EventSubChannelUpdateEvent(ChannelUpdate event) {
+        this.event = event;
+    }
+
+    public ChannelUpdate getEvent() {
+        return this.event;
     }
 }

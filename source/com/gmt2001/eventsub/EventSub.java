@@ -16,6 +16,7 @@
  */
 package com.gmt2001.eventsub;
 
+import com.gmt2001.Reflect;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -35,6 +36,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -82,6 +84,14 @@ public class EventSub implements HttpRequestHandler {
 
     @Override
     public HttpRequestHandler register() {
+        Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
+        Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
+            try {
+                EventBus.instance().register(c.getDeclaredConstructor().newInstance());
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        });
         HttpServerPageHandler.registerHttpHandler("/eventsub", this);
         return this;
     }
@@ -113,7 +123,7 @@ public class EventSub implements HttpRequestHandler {
             EventSubInternalVerificationEvent event = new EventSubInternalVerificationEvent(req);
             EventBus.instance().postAsync(event);
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.buffer());
-            ByteBuf buf = Unpooled.copiedBuffer(event.challenge, CharsetUtil.UTF_8);
+            ByteBuf buf = Unpooled.copiedBuffer(event.getChallenge(), CharsetUtil.UTF_8);
             res.content().writeBytes(buf);
             buf.release();
             HttpUtil.setContentLength(res, res.content().readableBytes());

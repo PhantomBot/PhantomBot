@@ -17,14 +17,17 @@
 package com.gmt2001.eventsub;
 
 import java.util.Date;
+import java.util.Map;
 import reactor.core.publisher.Mono;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.event.Listener;
 
 /**
  * Abstract base class for EventSub Subscription Types
  *
  * @author gmt2001
  */
-public abstract class EventSubSubscriptionType {
+public abstract class EventSubSubscriptionType implements Listener {
 
     protected EventSubSubscription subscription;
     protected String messageId;
@@ -50,6 +53,14 @@ public abstract class EventSubSubscriptionType {
     }
 
     protected abstract EventSubSubscription proposeSubscription();
+
+    protected EventSubSubscription proposeSubscriptionInternal(String type, Map<String, String> condition) {
+        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, new Date(), proposeTransport());
+    }
+
+    protected EventSubTransport proposeTransport() {
+        return new EventSubTransport("webhook", PhantomBot.instance().getProperties().getProperty("eventsuburl"), EventSub.getSecret());
+    }
 
     protected abstract void validateParameters() throws IllegalArgumentException;
 
