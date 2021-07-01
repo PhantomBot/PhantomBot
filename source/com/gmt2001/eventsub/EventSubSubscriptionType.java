@@ -39,11 +39,19 @@ public abstract class EventSubSubscriptionType {
         this.messageTimestamp = messageTimestamp;
     }
 
-    protected Mono<EventSubSubscription> create() {
-        return EventSub.instance().createSubscription(proposeSubscription());
+    /**
+     * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor
+     *
+     * @return
+     */
+    public Mono<EventSubSubscription> create() {
+        this.validateParameters();
+        return EventSub.instance().createSubscription(this.proposeSubscription());
     }
 
     protected abstract EventSubSubscription proposeSubscription();
+
+    protected abstract void validateParameters() throws IllegalArgumentException;
 
     /**
      * Gets the subscription information, if the object was created as part of a notification
