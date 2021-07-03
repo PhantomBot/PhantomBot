@@ -77,9 +77,9 @@ $filters = array(
 $allowed_environments = array(
     'stable',
     'stable_docker',
-    'nightly',
-    'nightly_docker',
-    'edge'
+    'nightly_build',
+    'nightly_build_docker',
+    'edge_build'
 );
 
 ?>
