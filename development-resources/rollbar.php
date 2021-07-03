@@ -42,8 +42,10 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
 $lastframe = count($trace['frames']) - 1;
 
 foreach ($filters as $filter) {
+    $checked = false;
     if (array_key_exists('exception', $filter)) {
         if (array_key_exists('class', $filter['exception'])) {
+            $checked = true;
             $tec = $trace['exception']['class'];
             $ec = $filter['exception']['class'];
 
@@ -58,6 +60,7 @@ foreach ($filters as $filter) {
         }
 
         if (array_key_exists('message', $filter['exception'])) {
+            $checked = true;
             if (strtolower($trace['exception']['message']) != strtolower($filter['exception']['message'])) {
                 continue;
             }
@@ -72,6 +75,7 @@ foreach ($filters as $filter) {
         }
 
         if (array_key_exists('class_name', $filter['frame'])) {
+            $checked = true;
             $tcn = trace['frame'][$frameno]['class_name'];
             $cn = $filter['frame']['class_name'];
 
@@ -86,10 +90,15 @@ foreach ($filters as $filter) {
         }
 
         if (array_key_exists('method', $filter['frame'])) {
+            $checked = true;
             if ($trace['frame'][$frameno]['method'] != $filter['frame']['method']) {
                 continue;
             }
         }
+    }
+    
+    if (!$checked) {
+        continue;
     }
 
     doexit(409, 'filtered');

@@ -6,6 +6,35 @@ $rollbar_token = ''; //API Token for Rollbar
 $client_token = ''; //Access Token for clients to submit to this script
 $reverse = false;
 
+/*
+ * Filter format
+ * All parts are optional but at least one must be defined
+ * Only 1 exception and frame may be defined per filter
+ * All parts provided in a filter definition must match for the filter to trigger
+ *
+ * array(
+ *     'exception' => array( //Defines a match against the actual exception thrown and/or it's message
+ *         'class' => 'java.lang.Exception',
+ *         'message' => 'You did something wrong'
+ *     ),
+ *     'frame' => array( //Defines a match against the 'at' lines in the stacktrace
+ *         'index' => 2, //Optional parameter that indicates which 'at' line in the stacktrace to run the frame match against. Defaults to 0
+ *         'class_name' => 'mypackage.MyClass',
+ *         'method' => 'myMethod'
+ *     )
+ * )
+ *
+ * Wildcards are supported at the end of exception.class and frame.class_name
+ * array(
+ *     'exception' => array(
+ *         'class' => 'mypackage.exceptionpackage.*' //Matches all sub-packages and classes defined under the package 'mypackage.exceptionpackage'
+ *     ),
+ *     'frame' => array(
+ *         'class_name' => 'mypackage.*' //Matches all sub-packages and classes defined under the package 'mypackage'
+ *     )
+ * )
+ */
+
 $filters = array(
     array(
         'exception' => array(
