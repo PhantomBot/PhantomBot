@@ -62,6 +62,10 @@
         </and>
     </condition>
 
+    <condition property="isdocker" value="true" else="false">
+        <isset property="isdocker" />
+    </condition>
+
     <available file=".git" type="dir" property="git.present"/>
 
     <target name="download-ivy" unless="offline">
@@ -83,14 +87,14 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml"
                  uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
-    
+
     <target name="init">
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
         <mkdir dir="${version.folder}" />
     </target>
-    
+
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:retrieve sync="true"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
@@ -104,19 +108,19 @@
             <arg value="resources/licenses/tv.phantombot-phantombot-default.html"/>
         </exec>
     </target>
-    
+
     <target depends="init-ivy" name="ivy-cleancache">
         <ivy:cleancache/>
     </target>
-    
+
     <target name="clearlib">
         <delete>
             <fileset dir="${reference}" includes="**/*.jar" />
         </delete>
     </target>
-    
+
     <target depends="clearlib,ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve" />
-    
+
     <target depends="ivy-retrieve" name="classpaths">
         <path id="reference.class.path">
             <fileset dir="${reference}">
@@ -125,7 +129,7 @@
                 <exclude name="*javadoc.jar"/>
             </fileset>
         </path>
-        
+
         <pathconvert property="mf.classpath" pathsep=" ">
             <path refid="reference.class.path" />
             <mapper>
@@ -170,6 +174,10 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;${webpanel.version}&quot;;" />
+        <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isDocker = false;"
+            replace="isDocker = ${isdocker};" />
     </target>
 
     <target depends="pre.compile" name="compile.src">

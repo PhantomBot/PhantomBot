@@ -239,7 +239,7 @@ public final class PhantomBot implements Listener {
      * @return String Display version of PhantomBot.
      */
     public String botVersion() {
-        return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getBuildType() + ")";
+        return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getBuildType() + (RepoVersion.isDocker() ? ", Docker" : "") + ")";
     }
 
     /**
