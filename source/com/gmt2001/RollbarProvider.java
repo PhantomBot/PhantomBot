@@ -154,7 +154,10 @@ public class RollbarProvider implements AutoCloseable {
     }
 
     public void enable() {
-        this.enabled = true;
+        if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
+                && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
+            this.enabled = true;
+        }
     }
 
     public void critical(Throwable error) {
