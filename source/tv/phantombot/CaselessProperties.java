@@ -138,4 +138,12 @@ public class CaselessProperties extends Properties {
 
         return retval.toLowerCase().matches("(1|true|yes)");
     }
+
+    public Object putIfAbsent(String key, Object value) {
+        if (this.containsKey(key)) {
+            return this.getProperty(key);
+        } else {
+            return this.put(key, value);
+        }
+    }
 }
