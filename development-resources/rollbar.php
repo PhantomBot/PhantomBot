@@ -14,7 +14,7 @@ function doexit($code, $message) {
     exit();
 }
 
-if(!array_key_exists('x-rollbar-access-token', $headers) || dofilter($headers['x-rollbar-access-token']) != $client_token) {
+if (!array_key_exists('x-rollbar-access-token', $headers) || dofilter($headers['x-rollbar-access-token']) != $client_token) {
     doexit(403, 'access denied');
 }
 
@@ -74,29 +74,31 @@ foreach ($filters as $filter) {
             $frameno -= $filter['frame']['index'];
         }
 
-        if (array_key_exists('class_name', $filter['frame'])) {
-            $checked = true;
-            $tcn = trace['frame'][$frameno]['class_name'];
-            $cn = $filter['frame']['class_name'];
+        if ($frameno < 0) {
+            if (array_key_exists('class_name', $filter['frame'])) {
+                $checked = true;
+                $tcn = trace['frame'][$frameno]['class_name'];
+                $cn = $filter['frame']['class_name'];
 
-            if (substr($cn, -2) == '.*') {
-                $cn = substr($cn, 0, -2);
-                $tcn = substr($tcn, 0, strlen($cn));
+                if (substr($cn, -2) == '.*') {
+                    $cn = substr($cn, 0, -2);
+                    $tcn = substr($tcn, 0, strlen($cn));
+                }
+
+                if ($tcn != $cn) {
+                    continue;
+                }
             }
 
-            if ($tcn != $cn) {
-                continue;
-            }
-        }
-
-        if (array_key_exists('method', $filter['frame'])) {
-            $checked = true;
-            if ($trace['frame'][$frameno]['method'] != $filter['frame']['method']) {
-                continue;
+            if (array_key_exists('method', $filter['frame'])) {
+                $checked = true;
+                if ($trace['frame'][$frameno]['method'] != $filter['frame']['method']) {
+                    continue;
+                }
             }
         }
     }
-    
+
     if (!$checked) {
         continue;
     }
@@ -111,7 +113,7 @@ $c = curl_init();
 curl_setopt($c, CURLOPT_URL, $rollbar_url);
 curl_setopt($c, CURLOPT_POST, true);
 curl_setopt($c, CURLOPT_POSTFIELDS, json_encode($item));
-curl_setopt($c, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=UTF-8', 'Accept: application/json', 'Accept-Charset: UTF-8', 'X-Rollbar-Access-Token: '.$rollbar_token));
+curl_setopt($c, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=UTF-8', 'Accept: application/json', 'Accept-Charset: UTF-8', 'X-Rollbar-Access-Token: ' . $rollbar_token));
 curl_setopt($c, CURLOPT_USERAGENT, $headers['User-Agent']);
 curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 
@@ -121,5 +123,4 @@ http_response_code(curl_getinfo($c, CURLINFO_RESPONSE_CODE));
 echo $response;
 
 curl_close($c);
-
 ?>
