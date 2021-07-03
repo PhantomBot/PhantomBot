@@ -16,10 +16,13 @@
  */
 package com.gmt2001.Console;
 
+import static com.gmt2001.Console.debug.logStackTrace;
 import com.gmt2001.Logger;
+import com.gmt2001.RollbarProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import tv.phantombot.PhantomBot;
 
 public final class warn {
@@ -32,7 +35,7 @@ public final class warn {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         System.out.print("[" + logTimestamp.log() + "] [WARN] " + o);
@@ -52,7 +55,7 @@ public final class warn {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
@@ -64,7 +67,7 @@ public final class warn {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
@@ -74,13 +77,40 @@ public final class warn {
     }
 
     public static void printStackTrace(Throwable e) {
+        printStackTrace(e, "");
+    }
+
+    public static void printStackTrace(Throwable e, String description) {
+        printStackTrace(e, null, description);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom) {
+        printStackTrace(e, custom, "");
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
             e.printStackTrace(System.err);
         }
-        logStackTrace(e);
+
+        logStackTrace(e, custom, description);
     }
 
     public static void logStackTrace(Throwable e) {
+        logStackTrace(e, "");
+    }
+
+    public static void logStackTrace(Throwable e, String description) {
+        logStackTrace(e, null, description);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom) {
+        logStackTrace(e, custom, "");
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom, String description) {
+        RollbarProvider.instance().warning(e, custom, description);
+
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 

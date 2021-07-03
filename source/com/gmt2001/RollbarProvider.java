@@ -181,9 +181,9 @@ public class RollbarProvider implements AutoCloseable {
         this.critical(error, custom, description, false);
     }
 
-    public void critical(Throwable error, Map<String, Object> custom, String description, boolean uncaught) {
+    public void critical(Throwable error, Map<String, Object> custom, String description, boolean isUncaught) {
         if (this.enabled) {
-            if (uncaught) {
+            if (isUncaught) {
                 if (custom == null) {
                     custom = new HashMap<>();
                 }
@@ -218,15 +218,16 @@ public class RollbarProvider implements AutoCloseable {
         this.error(error, custom, description, false);
     }
 
-    public void error(Throwable error, Map<String, Object> custom, String description, boolean uncaught) {
+    public void error(Throwable error, Map<String, Object> custom, String description, boolean isUncaught) {
         if (this.enabled) {
-            if (uncaught) {
+            if (isUncaught) {
                 if (custom == null) {
                     custom = new HashMap<>();
                 }
 
                 custom.put("uncaught", true);
             }
+
             this.rollbar.error(error, custom, description);
         }
     }

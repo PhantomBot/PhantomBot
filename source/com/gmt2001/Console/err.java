@@ -17,9 +17,11 @@
 package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
+import com.gmt2001.RollbarProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -36,7 +38,7 @@ public final class err {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
@@ -56,7 +58,7 @@ public final class err {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
@@ -68,7 +70,7 @@ public final class err {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
         int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" +  methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
@@ -78,13 +80,56 @@ public final class err {
     }
 
     public static void printStackTrace(Throwable e) {
+        printStackTrace(e, false);
+    }
+
+    public static void printStackTrace(Throwable e, boolean isUncaught) {
+        printStackTrace(e, null, isUncaught);
+    }
+
+    public static void printStackTrace(Throwable e, String description) {
+        printStackTrace(e, null, description, false);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom) {
+        printStackTrace(e, custom, false);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, boolean isUncaught) {
+        printStackTrace(e, custom, "", isUncaught);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught) {
         if (PhantomBot.getEnableDebugging()) {
             e.printStackTrace(System.err);
         }
-        logStackTrace(e);
+
+        logStackTrace(e, custom, description, isUncaught);
     }
 
     public static void logStackTrace(Throwable e) {
+        logStackTrace(e, false);
+    }
+
+    public static void logStackTrace(Throwable e, boolean isUncaught) {
+        logStackTrace(e, null, isUncaught);
+    }
+
+    public static void logStackTrace(Throwable e, String description) {
+        logStackTrace(e, null, description, false);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom) {
+        logStackTrace(e, custom, false);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom, boolean isUncaught) {
+        logStackTrace(e, custom, "", false);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught) {
+        RollbarProvider.instance().error(e, custom, description, isUncaught);
+
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 
