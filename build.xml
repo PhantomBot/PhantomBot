@@ -62,6 +62,20 @@
         </and>
     </condition>
 
+    <condition property="rollbar_token" value="${rollbar_token}" else="notoken">
+        <and>
+            <isset property="rollbar_token" />
+            <length string="${rollbar_token}" trim="yes" length="0" when="greater" />
+        </and>
+    </condition>
+
+    <condition property="rollbar_endpoint" value="${rollbar_endpoint}" else="">
+        <and>
+            <isset property="rollbar_endpoint" />
+            <length string="${rollbar_endpoint}" trim="yes" length="0" when="greater" />
+        </and>
+    </condition>
+
     <condition property="isdocker" value="true" else="false">
         <isset property="isdocker" />
     </condition>
@@ -178,6 +192,14 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="isDocker = false;"
             replace="isDocker = ${isdocker};" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
+            replace="ACCESS_TOKEN = &quot;${rollbar_token}&quot;;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ENDPOINT = &quot;(.*)&quot;;"
+            replace="ENDPOINT = &quot;${rollbar_endpoint}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
