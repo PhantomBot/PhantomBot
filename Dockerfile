@@ -37,7 +37,7 @@ RUN mkdir -p "${BUILDDIR}" \
 COPY . "${BUILDDIR}"
 
 RUN cd "${BUILDDIR}" \
-    && ant -noinput -buildfile build.xml ${ANT_ARGS} jar
+    && ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar
 
 # Application container
 FROM adoptopenjdk:11-jre-hotspot-bionic

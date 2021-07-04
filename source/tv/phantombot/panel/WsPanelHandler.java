@@ -88,7 +88,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
 
-            if (PhantomBot.instance().getProperties().getProperty("wsdebug", "false").equalsIgnoreCase("true")) {
+            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("wsdebug", false)) {
                 com.gmt2001.Console.debug.println(jso.toString());
             }
 

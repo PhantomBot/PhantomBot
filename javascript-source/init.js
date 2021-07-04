@@ -302,10 +302,19 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                try {
+                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                } catch (ex2) {
+                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                }
                 if (ex.javaException !== undefined) {
                     $.consoleLn("Sending stack trace to error log...");
                     Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                } else {
+                    try {
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                    } catch (ex3) {
+                    }
                 }
             }
         } else {
@@ -314,10 +323,19 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        try {
+                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        } catch (ex2) {
+                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                        }
                         if (ex.javaException !== undefined) {
                             $.consoleLn("Sending stack trace to error log...");
                             Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                        } else {
+                            try {
+                                Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                            } catch (ex3) {
+                            }
                         }
                     }
                 }
@@ -503,9 +521,8 @@
                 consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
                 return;
             } else
-
-            // Check the command cooldown.
-            var oncooldown = false;
+                // Check the command cooldown.
+                var oncooldown = false;
             if (args.length > 1 && $.coolDown.exists(command + ' ' + args[0] + ' ' + args[1])) {
                 oncooldown = $.coolDown.get(command + ' ' + args[0] + ' ' + args[1], sender, isMod) !== 0;
             } else if (args.length > 0 && $.coolDown.exists(command + ' ' + args[0])) {

@@ -18,6 +18,7 @@ package tv.phantombot;
 
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
+import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitchAuthorizationCodeFlow;
 import com.gmt2001.TwitchClientCredentialsFlow;
@@ -239,7 +240,7 @@ public final class PhantomBot implements Listener {
      * @return String Display version of PhantomBot.
      */
     public String botVersion() {
-        return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getBuildType() + ")";
+        return "PhantomBot Version: " + RepoVersion.getPhantomBotVersion() + " (" + RepoVersion.getBuildType() + (RepoVersion.isDocker() ? ", Docker" : "") + ")";
     }
 
     /**
@@ -338,6 +339,10 @@ public final class PhantomBot implements Listener {
      * @param Properties Properties object which configures the PhantomBot instance.
      */
     public PhantomBot(CaselessProperties pbProperties) {
+
+        if (pbProperties.getPropertyAsBoolean("userollbar", true)) {
+            RollbarProvider.instance().enable();
+        }
 
         /* Set the exeption handler */
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -470,12 +475,16 @@ public final class PhantomBot implements Listener {
         this.backupDBKeepDays = this.pbProperties.getPropertyAsInt("backupdbkeepdays", this.pbProperties.getPropertyAsInt("backupsqlitekeepdays", 5));
 
         // Set the newSetup flag
-        this.newSetup = this.pbProperties.getPropertyAsBoolean("newSetup");
+        this.newSetup = this.pbProperties.getPropertyAsBoolean("newSetup", false);
 
         /* Load up a new SecureRandom for the scripts to use */
         random = new SecureRandom();
 
         /* Load the datastore */
+        if (dataStoreType.isBlank() && System.getProperty("os.name").toLowerCase().endsWith("bsd")) {
+            dataStoreType = "h2store";
+        }
+
         if (dataStoreType.equalsIgnoreCase("mysqlstore")) {
             if (this.mySqlPort.isEmpty()) {
                 this.mySqlConn = "jdbc:mysql://" + this.mySqlHost + "/" + this.mySqlName + "?useSSL=false&user=" + this.mySqlUser + "&password=" + this.mySqlPass;
@@ -494,7 +503,7 @@ public final class PhantomBot implements Listener {
             if (SqliteStore.hasDatabase(dataStoreConfig) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
-        } else if (dataStoreType.equalsIgnoreCase("h2store") || (dataStoreType.isBlank() && System.getProperty("os.name").toLowerCase().endsWith("bsd"))) {
+        } else if (dataStoreType.equalsIgnoreCase("h2store")) {
             dataStore = H2Store.instance(dataStoreConfig);
 
             if (!dataStore.CanConnect()) {
@@ -757,6 +766,10 @@ public final class PhantomBot implements Listener {
         } catch (NullPointerException ex) {
             return false;
         }
+    }
+
+    public String getDataStoreType() {
+        return this.dataStoreType;
     }
 
     /**
@@ -1081,6 +1094,12 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.out.print("\r\n");
         print("Closing the database...");
         dataStore.dispose();
+
+        try {
+            RollbarProvider.instance().close();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
 
         print(this.botName + " is exiting.");
     }
