@@ -131,6 +131,8 @@ public class RollbarProvider implements AutoCloseable {
                             }
                         }
 
+                        com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+
                         return false;
                     }
 
