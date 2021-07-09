@@ -124,6 +124,10 @@ public class RollbarProvider implements AutoCloseable {
                                 return true;
                             }
 
+                            if (error.getClass().equals(discord4j.common.close.CloseExceptionclass)) {
+                                return true;
+                            }
+
                             if (error.getClass().equals(java.io.IOException.class)
                                     && error.getStackTrace()[0].getClassName().equals("java.base/sun.nio.ch.SocketDispatcher")
                                     && error.getStackTrace()[0].getMethodName().equals("read0")) {
@@ -159,6 +163,7 @@ public class RollbarProvider implements AutoCloseable {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
             this.enabled = true;
+            com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
         }
     }
 
