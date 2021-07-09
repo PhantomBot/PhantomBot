@@ -246,6 +246,18 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;@webpanel.version@&quot;;" />
+        <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isDocker = (.*);"
+            replace="isDocker = false;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
+            replace="ACCESS_TOKEN = &quot;@access.token@&quot;;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ENDPOINT = &quot;(.*)&quot;;"
+            replace="ENDPOINT = &quot;@endpoint@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
