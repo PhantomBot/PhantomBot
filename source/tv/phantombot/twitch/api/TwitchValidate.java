@@ -281,7 +281,11 @@ public class TwitchValidate {
     }
 
     public void updateChatToken(String token) {
-        this.validaterC.updateToken(token);
+        if (this.validaterC == null) {
+            this.validateChat(token, "CHAT (oauth)");
+        } else {
+            this.validaterC.updateToken(token);
+        }
     }
 
     public boolean hasAPIScope(String scope) {
@@ -305,7 +309,11 @@ public class TwitchValidate {
     }
 
     public void updateAPIToken(String token) {
-        this.validaterA.updateToken(token);
+        if (this.validaterA == null) {
+            this.validateAPI(token, "API (apioauth)");
+        } else {
+            this.validaterA.updateToken(token);
+        }
     }
 
     public boolean hasAppScope(String scope) {
@@ -329,7 +337,11 @@ public class TwitchValidate {
     }
 
     public void updateAppToken(String token) {
-        this.validaterT.updateToken(token);
+        if (this.validaterT == null) {
+            this.validateApp(token, "APP (EventSub)");
+        } else {
+            this.validaterT.updateToken(token);
+        }
     }
 
     public void checkOAuthInconsistencies(String botName) {
@@ -402,12 +414,16 @@ public class TwitchValidate {
         }
 
         public void updateToken(String token) {
-            this.oAuthToken = token;
+            this.oAuthToken = token.replace("oauth:", "");
         }
 
         @Override
         public void run() {
             try {
+                if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
+                    return;
+                }
+
                 JSONObject requestObj = handleRequest(oAuthToken);
                 com.gmt2001.Console.debug.println(type + requestObj.toString());
 

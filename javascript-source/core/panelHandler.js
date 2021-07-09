@@ -39,14 +39,14 @@
         // Only keep 50 objects in the array.
         if (array.length > 50) {
             // Sort for newer events
-            array.sort(function (a, b) {
+            /*array.sort(function (a, b) {
                 var d1 = new Date(a.date);
                 var d2 = new Date(b.date);
                 return d1 - d2;
-            });
+            });*/
 
             // Remove old events.
-            array = array.slice(0, 50);
+            array = array.slice(array.length - 50);
         }
 
         // Save it.

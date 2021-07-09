@@ -71,6 +71,11 @@ $filters = array(
         'frame' => array(
             'class_name' => 'reactor.core.publisher.*'
         )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'discord4j.common.close.CloseException'
+        )
     )
 );
 
