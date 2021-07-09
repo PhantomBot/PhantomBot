@@ -124,7 +124,7 @@ public class RollbarProvider implements AutoCloseable {
                                 return true;
                             }
 
-                            if (error.getClass().equals(discord4j.common.close.CloseExceptionclass)) {
+                            if (error.getClass().equals(discord4j.common.close.CloseException.class)) {
                                 return true;
                             }
 
