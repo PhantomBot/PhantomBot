@@ -325,7 +325,8 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
-    public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title, int delay) throws JSONException, IllegalArgumentException {
+    public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
+            int delay) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -397,7 +398,8 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
-    public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+    public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
         if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {
             throw new IllegalArgumentException("from_id or to_id");
         }
@@ -430,7 +432,8 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
-    public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+    public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -604,6 +607,202 @@ public class Helix {
      */
     public JSONObject getCheermotes(@Nullable String broadcaster_id) throws JSONException {
         return this.handleRequest(RequestType.GET, "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id));
+    }
+
+    /**
+     * Gets video information by one or more video IDs, user ID, or game ID. For lookup by user or game, several filters are available that can be
+     * specified as query parameters. Each request must specify one or more video ids, one user_id, or one game_id. A request that uses video ids can
+     * not use any other parameter. If a game is specified, a maximum of 500 results are available.
+     *
+     * @param id ID of the video being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param user_id ID of the user who owns the video.
+     * @param game_id ID of the game the video is of.
+     * @param first Number of values to be returned when getting videos by user or game ID. Limit: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param language Language of the video being queried. Limit: 1. A language value must be either the ISO 639-1 two-letter code for a supported
+     * stream language or “other”.
+     * @param period Period during which the video was created. Valid values: "all", "day", "week", "month". Default: "all".
+     * @param sort Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".
+     * @param type Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getVideos(@Nullable List<String> id, @Nullable String user_id, @Nullable String game_id, int first, @Nullable String before,
+            @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
+            throws JSONException, IllegalArgumentException {
+        if ((id == null || id.isEmpty()) && (user_id == null || user_id.isBlank()) && (game_id == null || game_id.isBlank())) {
+            throw new IllegalArgumentException("id, user_id, or game_id");
+        }
+
+        if (id != null && !id.isEmpty() && ((after != null && !after.isBlank()) || (before != null && !before.isBlank()) || (language != null && !language.isBlank())
+                || (period != null && !period.isBlank()) || (sort != null && !sort.isBlank()) || (type != null && !type.isBlank()))) {
+            throw new IllegalArgumentException("other parameters not allowed with video id");
+        }
+
+        int c = 0;
+        if (id != null && !id.isEmpty()) {
+            c++;
+        }
+
+        if (user_id != null && !user_id.isBlank()) {
+            c++;
+        }
+
+        if (game_id != null && !game_id.isBlank()) {
+            c++;
+        }
+
+        if (c > 1) {
+            throw new IllegalArgumentException("only one of id, user_id, or game_id may be specified");
+        }
+
+        if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
+            throw new IllegalArgumentException("can not use before and after at the same time");
+        }
+
+        if (period != null && !period.isBlank() && !period.equals("all") && !period.equals("day") && !period.equals("week") && !period.equals("month")) {
+            throw new IllegalArgumentException("period");
+        }
+
+        if (sort != null && !sort.isBlank() && !sort.equals("time") && !sort.equals("trending") && !sort.equals("views")) {
+            throw new IllegalArgumentException("sort");
+        }
+
+        if (type != null && !type.isBlank() && !type.equals("all") && !type.equals("upload") && !type.equals("archive") && !type.equals("highlight")) {
+            throw new IllegalArgumentException("type");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        String ids = null;
+
+        if (id != null && id.size() > 0) {
+            ids = id.stream().limit(100).collect(Collectors.joining("&id="));
+        }
+
+        return this.handleRequest(RequestType.GET, "/videos?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
+                + this.qspValid("&user_id", user_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
+                + this.qspValid("&before", before) + this.qspValid("&language", language) + this.qspValid("&period", period)
+                + this.qspValid("&sort", sort) + this.qspValid("&type", type));
+    }
+
+    /**
+     * Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.
+     *
+     * @param broadcaster_id User ID for a Twitch user.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getChannelTeams(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        return this.handleRequest(RequestType.GET, "/teams/channel?broadcaster_id=" + broadcaster_id);
+    }
+
+    /**
+     * Gets information for a specific Twitch Team. One of the two query parameters must be specified to return Team information.
+     *
+     * @param name Team name.
+     * @param id Team ID.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getTeams(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
+        if ((name == null || name.isBlank()) && (id == null || id.isBlank())) {
+            throw new IllegalArgumentException("name or id");
+        }
+
+        if (name != null && !name.isBlank() && id != null && !id.isBlank()) {
+            throw new IllegalArgumentException("only one of name or id can be specified");
+        }
+
+        return this.handleRequest(RequestType.GET, "/teams?" + this.qspValid("name", name) + this.qspValid("id", id));
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips, in RFC3339 format. (The seconds value is ignored.) If this is specified, ended_at also
+     * should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
+     * started_at also must be specified; otherwise, the time period is ignored.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getClips(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
+            throws JSONException, IllegalArgumentException {
+        if ((id == null || id.isEmpty()) && (broadcaster_id == null || broadcaster_id.isBlank()) && (game_id == null || game_id.isBlank())) {
+            throw new IllegalArgumentException("id, broadcaster_id, or game_id");
+        }
+
+        if (id != null && !id.isEmpty() && ((after != null && !after.isBlank()) || (before != null && !before.isBlank())
+                || (ended_at != null && !ended_at.isBlank()) || (started_at != null && !started_at.isBlank()))) {
+            throw new IllegalArgumentException("other parameters not allowed with clip id");
+        }
+
+        if (ended_at != null && !ended_at.isBlank() && (started_at == null || started_at.isBlank())) {
+            throw new IllegalArgumentException("started_at");
+        }
+
+        int c = 0;
+        if (id != null && !id.isEmpty()) {
+            c++;
+        }
+
+        if (broadcaster_id != null && !broadcaster_id.isBlank()) {
+            c++;
+        }
+
+        if (game_id != null && !game_id.isBlank()) {
+            c++;
+        }
+
+        if (c > 1) {
+            throw new IllegalArgumentException("only one of id, broadcaster_id, or game_id may be specified");
+        }
+
+        if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
+            throw new IllegalArgumentException("can not use before and after at the same time");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        String ids = null;
+
+        if (id != null && id.size() > 0) {
+            ids = id.stream().limit(100).collect(Collectors.joining("&id="));
+        }
+
+        return this.handleRequest(RequestType.GET, "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
+                + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
+                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at));
     }
 
     /**

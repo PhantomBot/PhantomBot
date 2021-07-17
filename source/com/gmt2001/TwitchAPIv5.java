@@ -17,8 +17,10 @@
 package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import org.json.JSONArray;
@@ -411,7 +413,7 @@ public class TwitchAPIv5 {
         JSONArray jsonArray;
 
         if (type.equals("current")) {
-            jsonInput = GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/videos?broadcast_type=archive&limit=1", false);
+            jsonInput = this.translateGetChannelVODs(Helix.instance().getVideos(null, this.getIDFromChannel(channel), null, 1, null, null, null, null, "time", "archive"));
             if (jsonInput.has("videos")) {
                 jsonArray = jsonInput.getJSONArray("videos");
                 if (jsonArray.length() > 0) {
@@ -434,7 +436,7 @@ public class TwitchAPIv5 {
         }
 
         if (type.equals("highlights")) {
-            jsonInput = GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/videos?broadcast_type=highlight&limit=5", false);
+            jsonInput = this.translateGetChannelVODs(Helix.instance().getVideos(null, this.getIDFromChannel(channel), null, 5, null, null, null, null, "time", "highlight"));
             if (jsonInput.has("videos")) {
                 jsonArray = jsonInput.getJSONArray("videos");
                 if (jsonArray.length() > 0) {
@@ -457,7 +459,7 @@ public class TwitchAPIv5 {
         }
 
         if (type.equals("archives")) {
-            jsonInput = GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/videos?broadcast_type=archive,upload&limit=5", false);
+            jsonInput = this.translateGetChannelVODs(Helix.instance().getVideos(null, this.getIDFromChannel(channel), null, 5, null, null, null, null, "time", "archive"));
             if (jsonInput.has("videos")) {
                 jsonArray = jsonInput.getJSONArray("videos");
                 if (jsonArray.length() > 0) {
@@ -483,6 +485,10 @@ public class TwitchAPIv5 {
         return "";
     }
 
+    private JSONObject translateGetChannelVODs(JSONObject vodData) {
+        return vodData;
+    }
+
     /**
      * Returns when a Twitch account was created.
      *
@@ -504,7 +510,11 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject getChannelTeams(String channelName) throws JSONException {
-        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channelName) + "/teams", false);
+        return this.translateGetChannelTeams(Helix.instance().getChannelTeams(this.getIDFromChannel(channelName)));
+    }
+
+    private JSONObject translateGetChannelTeams(JSONObject teamsData) {
+        return teamsData;
     }
 
     /**
@@ -514,7 +524,11 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject getTeam(String teamName) throws JSONException {
-        return GetData(request_type.GET, base_url + "/teams/" + teamName, false);
+        return this.translateGetTeam(Helix.instance().getTeams(teamName, null));
+    }
+
+    private JSONObject translateGetTeam(JSONObject teamData) {
+        return teamData;
     }
 
     /**
@@ -534,8 +548,18 @@ public class TwitchAPIv5 {
      * @return JSONObject clips object.
      */
     public JSONObject getClipsToday(String channel) throws JSONException {
-        /* Yes, the v5 endpoint for this does use the Channel Name and not the ID. */
-        return GetData(request_type.GET, base_url + "/clips/top?channel=" + channel + "&limit=100&period=day", false);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        String start = sdf.format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        String end = sdf.format(c.getTime());
+        return this.translateGetClipsToday(Helix.instance().getClips(null, this.getIDFromChannel(channel), null, 100, null, null, start, end));
+    }
+
+    private JSONObject translateGetClipsToday(JSONObject clipsData) {
+        return clipsData;
     }
 
     /**
