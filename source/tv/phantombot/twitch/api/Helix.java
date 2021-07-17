@@ -568,6 +568,45 @@ public class Helix {
     }
 
     /**
+     * Gets all custom emotes for a specific Twitch channel including subscriber emotes, Bits tier emotes, and follower emotes. Custom channel emotes
+     * are custom emoticons that viewers may use in Twitch chat once they are subscribed to, cheered in, or followed the channel that owns the emotes.
+     *
+     * @param broadcaster_id The broadcaster whose emotes are being requested.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getChannelEmotes(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        return this.handleRequest(RequestType.GET, "/chat/emotes?broadcaster_id=" + broadcaster_id);
+    }
+
+    /**
+     * Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.
+     *
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject getGlobalEmotes() throws JSONException {
+        return this.handleRequest(RequestType.GET, "/chat/emotes/global");
+    }
+
+    /**
+     * Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat. Cheermotes returned are
+     * available throughout Twitch, in all Bits-enabled channels.
+     *
+     * @param broadcaster_id ID for the broadcaster who might own specialized Cheermotes.
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject getCheermotes(@Nullable String broadcaster_id) throws JSONException {
+        return this.handleRequest(RequestType.GET, "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id));
+    }
+
+    /**
      * The types of requests we can make to Helix.
      */
     private enum RequestType {
