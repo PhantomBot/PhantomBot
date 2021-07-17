@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
@@ -340,7 +341,22 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetEmotes() throws JSONException {
-        return GetData(request_type.GET, base_url + "/chat/emoticons", false);
+        JSONArray arr = Helix.instance().getGlobalEmotes().getJSONArray("data");
+        JSONObject jo2 = Helix.instance().getChannelEmotes(this.getIDFromChannel(PhantomBot.instance().getChannelName()));
+
+        if (jo2.getInt("_http") == 200) {
+            jo2.getJSONArray("data").forEach(obj -> {
+                arr.put(obj);
+            });
+        }
+
+        return this.translateGetEmotes(arr);
+    }
+
+    private JSONObject translateGetEmotes(JSONArray arr) {
+        JSONObject jso = new JSONObject();
+        jso.put("data", arr);
+        return jso;
     }
 
     /**
@@ -349,7 +365,11 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetCheerEmotes() throws JSONException {
-        return GetData(request_type.GET, base_url + "/bits/actions", false);
+        return this.translateGetCheerEmotes(Helix.instance().getCheermotes(null));
+    }
+
+    private JSONObject translateGetCheerEmotes(JSONObject cheerData) {
+        return cheerData;
     }
 
     private String cheerEmotes = "";
