@@ -327,7 +327,7 @@ public class Helix {
      */
     public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title, int delay) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
-            throw new IllegalArgumentException("channelId");
+            throw new IllegalArgumentException("broadcaster_id");
         }
 
         if (game_id == null && (language == null || language.isBlank()) && (title == null || title.isBlank()) && delay < 0) {
@@ -432,7 +432,7 @@ public class Helix {
      */
     public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
-            throw new IllegalArgumentException("channelId");
+            throw new IllegalArgumentException("broadcaster_id");
         }
 
         if (first <= 0) {
@@ -510,13 +510,69 @@ public class Helix {
     }
 
     /**
+     * Gets information about one or more specified Twitch users. Users are identified by optional user IDs and/or login name. If neither a user ID
+     * nor a login name is specified, the user is looked up by Bearer token. Note: The limit of 100 IDs and login names is the total limit. You can
+     * request, for example, 50 of each or 100 of one of them. You cannot request 100 of both.
+     *
+     * @param id User ID. Multiple user IDs can be specified. Limit: 100.
+     * @param login User login name. Multiple login names can be specified. Limit: 100.
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject getUsers(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
+        String userIds = null;
+
+        if (id != null && id.size() > 0) {
+            userIds = id.stream().limit(100).collect(Collectors.joining("&id="));
+        }
+
+        String userLogins = null;
+
+        if (login != null && login.size() > 0) {
+            userLogins = login.stream().limit(100 - (id != null ? id.stream().count() : 0)).collect(Collectors.joining("&login="));
+        }
+
+        boolean both = false;
+
+        if (id != null && id.size() > 0 && id.size() < 100 && login != null && login.size() > 0) {
+            both = true;
+        }
+
+        return this.handleRequest(RequestType.GET, "/users" + (userIds != null || userLogins != null ? "?" : "") + this.qspValid("id", userIds)
+                + (both ? "&" : "") + this.qspValid("login", userLogins));
+    }
+
+    /**
+     * Starts a commercial on a specified channel.
+     *
+     * @param broadcaster_id ID of the channel requesting a commercial.
+     * @param length Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject startCommercial(String broadcaster_id, int length) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (length != 30 && length != 60 && length != 90 && length != 120 && length != 150 && length != 180) {
+            throw new IllegalArgumentException("length");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object().key("broadcaster_id").value(broadcaster_id).key("length").value(length).endObject();
+
+        return this.handleRequest(RequestType.POST, "/channels/commercial", js.toString());
+    }
+
+    /**
      * The types of requests we can make to Helix.
      */
     private enum RequestType {
         GET,
         PATCH,
-        PUT,
-        POST,
-        DELETE
+        POST
     }
 }
