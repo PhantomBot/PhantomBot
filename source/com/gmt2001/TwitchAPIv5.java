@@ -17,25 +17,18 @@
 package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import javax.net.ssl.HttpsURLConnection;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import tv.phantombot.cache.UsernameCache;
+import tv.phantombot.twitch.api.Helix;
 
 /**
- * Communicates with Twitch Kraken server using the version 5 API
+ * Stubs to @see Helix for backwards compatibility
  *
  * @author gmt2001
  * @author illusionaryone
@@ -43,17 +36,6 @@ import tv.phantombot.cache.UsernameCache;
 public class TwitchAPIv5 {
 
     private static final TwitchAPIv5 instance = new TwitchAPIv5();
-    private static final String base_url = "https://api.twitch.tv/kraken";
-    private static final String header_accept = "application/vnd.twitchtv.v5+json";
-    private static final int timeout = 2 * 1000;
-    private String clientid = "";
-    private String oauth = "";
-    private String cheerEmotes = "";
-
-    private enum request_type {
-
-        GET, POST, PUT, DELETE
-    };
 
     public static TwitchAPIv5 instance() {
         return instance;
@@ -61,144 +43,6 @@ public class TwitchAPIv5 {
 
     private TwitchAPIv5() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-    }
-
-    private JSONObject GetData(request_type type, String url, boolean isJson) throws JSONException {
-        return GetData(type, url, "", isJson);
-    }
-
-    private JSONObject GetData(request_type type, String url, String post, boolean isJson) throws JSONException {
-        return GetData(type, url, post, "", isJson);
-    }
-
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String post,
-                                       String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_post", post);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
-    @SuppressWarnings("UseSpecificCatch")
-    private JSONObject GetData(request_type type, String url, String post, String oauth, boolean isJson) throws JSONException {
-        JSONObject j = new JSONObject("{}");
-        InputStream i = null;
-        String content = "";
-
-        try {
-            URL u = new URL(url);
-            HttpsURLConnection c = (HttpsURLConnection) u.openConnection();
-            c.addRequestProperty("Accept", header_accept);
-            c.addRequestProperty("Content-Type", isJson ? "application/json" : "application/x-www-form-urlencoded");
-
-            if (!clientid.isEmpty()) {
-                c.addRequestProperty("Client-ID", clientid);
-            }
-
-            if (!oauth.isEmpty()) {
-                c.addRequestProperty("Authorization", "OAuth " + oauth);
-            } else {
-                if (!this.oauth.isEmpty()) {
-                    c.addRequestProperty("Authorization", "OAuth " + oauth);
-                }
-            }
-
-            c.setRequestMethod(type.name());
-            c.setConnectTimeout(timeout);
-            c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-
-            if (!post.isEmpty()) {
-                c.setDoOutput(true);
-            }
-
-            c.connect();
-
-            if (!post.isEmpty()) {
-                try (BufferedOutputStream stream = new BufferedOutputStream(c.getOutputStream())) {
-                    stream.write(post.getBytes());
-                    stream.flush();
-                }
-            }
-
-            if (c.getResponseCode() == 200) {
-                i = c.getInputStream();
-            } else {
-                i = c.getErrorStream();
-            }
-
-            if (c.getResponseCode() == 204 || i == null) {
-                content = "{}";
-            } else {
-                // default to UTF-8, it'll probably be the best bet if there's
-                // no charset specified.
-                String charset = "utf-8";
-                String ct = c.getContentType();
-                if (ct != null) {
-                    String[] cts = ct.split(" *; *");
-                    for (int idx = 1; idx < cts.length; ++idx) {
-                        String[] val = cts[idx].split("=", 2);
-                        if (val[0] == "charset" && val.length > 1) {
-                            charset = val[1];
-                        }
-                    }
-                }
-
-                if ("gzip".equals(c.getContentEncoding())) {
-                    i = new GZIPInputStream(i);
-                }
-
-                content = IOUtils.toString(i, charset);
-            }
-
-            j = new JSONObject(content);
-            fillJSONObject(j, true, type.name(), post, url, c.getResponseCode(), "", "", content);
-        } catch (Exception ex) {
-            Throwable rootCause = ex;
-            while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
-                rootCause = rootCause.getCause();
-            }
-
-            fillJSONObject(j, false, type.name(), post, url, 0, ex.getClass().getSimpleName(), ex.getMessage(), content);
-            com.gmt2001.Console.debug.println("Failed to get data [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        } finally {
-            if (i != null) {
-                try {
-                    i.close();
-                } catch (IOException ex) {
-                    fillJSONObject(j, false, type.name(), post, url, 0, "IOException", ex.getMessage(), content);
-                    com.gmt2001.Console.err.println("IOException: " + ex.getMessage());
-                }
-            }
-        }
-
-        return j;
-    }
-
-    /**
-     * Sets the Twitch API Client-ID header
-     *
-     * @param clientid
-     */
-    public void SetClientID(String clientid) {
-        this.clientid = clientid;
-    }
-
-    /**
-     * Sets the Twitch API OAuth header
-     *
-     * @param oauth
-     */
-    public void SetOAuth(String oauth) {
-        this.oauth = oauth.replace("oauth:", "");
-    }
-
-    public boolean HasOAuth() {
-        return !this.oauth.isEmpty();
     }
 
     /**
@@ -219,33 +63,11 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChannel(String channel) throws JSONException {
-        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel), false);
+        return this.translateGetChannel(Helix.instance().getChannelInformation(this.getIDFromChannel(channel)));
     }
 
-    /**
-     * Updates the status and game of a channel
-     *
-     * @param channel
-     * @param status
-     * @param game
-     * @param delay -1 to not update
-     * @return
-     */
-    public JSONObject UpdateChannel(String channel, String status, String game, int delay) throws JSONException {
-        return UpdateChannel(channel, this.oauth, status, game, delay);
-    }
-
-    /**
-     * Updates the status and game of a channel
-     *
-     * @param channel
-     * @param oauth
-     * @param status
-     * @param game
-     * @return
-     */
-    public JSONObject UpdateChannel(String channel, String oauth, String status, String game) throws JSONException {
-        return UpdateChannel(channel, oauth, status, game, -1);
+    private JSONObject translateGetChannel(JSONObject channelData) {
+        return channelData;
     }
 
     /**
@@ -257,7 +79,7 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject UpdateChannel(String channel, String status, String game) throws JSONException {
-        return UpdateChannel(channel, this.oauth, status, game, -1);
+        return UpdateChannel(channel, status, game, -1);
     }
 
     /**
@@ -270,17 +92,10 @@ public class TwitchAPIv5 {
      * @param delay -1 to not update
      * @return
      */
-    public JSONObject UpdateChannel(String channel, String oauth, String status, String game, int delay) throws JSONException {
-        JSONObject j = new JSONObject("{}");
-        JSONObject c = new JSONObject("{}");
-
-        if (!status.isEmpty()) {
-            c.put("status", status);
-        }
-
+    public JSONObject UpdateChannel(String channel, String status, String game, int delay) throws JSONException {
+        String gn = null;
         if (!game.isEmpty()) {
             JSONObject g = SearchGame(game);
-            String gn = game;
 
             if (g.getBoolean("_success")) {
                 if (g.getInt("_http") == 200) {
@@ -292,7 +107,7 @@ public class TwitchAPIv5 {
                         for (int i = 0; i < a.length() && !found; i++) {
                             JSONObject o = a.getJSONObject(i);
 
-                            gn = o.getString("name");
+                            gn = o.getString("id");
 
                             if (gn.equalsIgnoreCase(game)) {
                                 found = true;
@@ -302,68 +117,39 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = o.getString("name");
+                            gn = o.getString("id");
                         }
                     }
                 }
             }
-
-            c.put("game", gn);
         }
 
-        if (delay >= 0) {
-            c.put("delay", delay);
-        }
-
-        j.put("channel", c);
-
-        return GetData(request_type.PUT, base_url + "/channels/" + getIDFromChannel(channel), j.toString(), oauth, true);
+        return Helix.instance().updateChannelInformation(this.getIDFromChannel(channel), gn, null, status, delay);
     }
 
     /*
      * Updates the channel communities.
      */
     public JSONObject UpdateCommunities(String channel, String[] communities) throws JSONException {
-        JSONObject j = new JSONObject("{}");
-        List<String> c = new ArrayList<String>();
-
-        if (communities.length < 1) {
-            j.put("community_ids", c.toArray(new String[c.size()]));
-            return GetData(request_type.PUT, base_url + "/channels/" + getIDFromChannel(channel) + "/communities", j.toString(), oauth, true);
-        }
-
-        for (String community : communities) {
-            JSONObject o = GetCommunityID(community);
-            if (o.getBoolean("_success") && o.getInt("_http") == 200) {
-                c.add(o.getString("_id"));
-            }
-        }
-
-        j.put("community_ids", c.toArray(new String[c.size()]));
-
-        return GetData(request_type.PUT, base_url + "/channels/" + getIDFromChannel(channel) + "/communities", j.toString(), oauth, true);
+        throw new UnsupportedOperationException("removed by Twitch");
     }
 
     /*
      * Searches for a game.
      */
     public JSONObject SearchGame(String game) throws JSONException {
-        try {
-            String url = base_url + "/search/games?q=" + URLEncoder.encode(game, "UTF-8") + "&type=suggest";
-            return GetData(request_type.GET, url, false);
-        } catch (UnsupportedEncodingException ex) {
-            JSONObject j = new JSONObject("{}");
-            fillJSONObject(j, false, "", "", base_url + "/search/games", 0, ex.getClass().getName(), ex.getMessage(), "");
-            com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
-            return j;
-        }
+        return this.translateSearchGame(Helix.instance().searchCategories(game, 20, null));
+    }
+
+    private JSONObject translateSearchGame(JSONObject gameData) {
+        return gameData;
     }
 
     /*
      * Gets a communities id.
      */
     public JSONObject GetCommunityID(String name) throws JSONException {
-        return GetData(request_type.GET, base_url + "/communities?name=" + name, false);
+        throw new UnsupportedOperationException("removed by Twitch");
     }
 
     /**
@@ -376,23 +162,19 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChannelFollows(String channel, int limit, int offset, boolean ascending) throws JSONException {
-        limit = Math.max(0, Math.min(limit, 100));
-        offset = Math.max(0, offset);
-        String dir = ascending ? "asc" : "desc";
-        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/follows?limit=" + limit + "&offset=" + offset + "&direction=" + dir, false);
-    }
+        if (offset > 0) {
+            com.gmt2001.Console.warn.println("The offset parameter in is no longer supported, please update to use pagination from Helix");
+        }
 
-    /**
-     * Gets an object listing the users subscribing to a channel
-     *
-     * @param channel
-     * @param limit between 1 and 100
-     * @param offset
-     * @param ascending
-     * @return
-     */
-    public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending) throws JSONException {
-        return GetChannelSubscriptions(channel, limit, offset, ascending, this.oauth);
+        if (ascending) {
+            com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
+        }
+
+        return this.translateGetChannelFollows(Helix.instance().getUsersFollows(null, this.getIDFromChannel(channel), limit, null));
+    }
+    
+    private JSONObject translateGetChannelFollows(JSONObject followData) {
+        return followData;
     }
 
     /**
@@ -405,11 +187,20 @@ public class TwitchAPIv5 {
      * @param oauth
      * @return
      */
-    public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending, String oauth) throws JSONException {
-        limit = Math.max(0, Math.min(limit, 100));
-        offset = Math.max(0, offset);
-        String dir = ascending ? "asc" : "desc";
-        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/subscriptions?limit=" + limit + "&offset=" + offset + "&direction=" + dir, "", oauth, false);
+    public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending) throws JSONException {
+        if (offset > 0) {
+            com.gmt2001.Console.warn.println("The offset parameter in is no longer supported, please update to use pagination from Helix");
+        }
+
+        if (ascending) {
+            com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
+        }
+        
+        return this.translateGetChannelSubscriptions(Helix.instance().getBroadcasterSubscriptions(this.getIDFromChannel(channel), null, limit, null));
+    }
+    
+    private JSONObject translateGetChannelSubscriptions(JSONObject subscriptionData) {
+        return subscriptionData;
     }
 
     /**
@@ -419,7 +210,13 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetStream(String channel) throws JSONException {
-        return GetData(request_type.GET, base_url + "/streams/" + getIDFromChannel(channel), false);
+        List<String> user_id = new ArrayList<>();
+        user_id.add(this.getIDFromChannel(channel));
+        return this.translateGetStream(Helix.instance().getStreams(1, null, null, user_id, null, null, null));
+    }
+    
+    private JSONObject translateGetStream(JSONObject streamData) {
+        return streamData;
     }
 
     /**
@@ -439,7 +236,7 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetCommunities(String channel) throws JSONException {
-        return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channel) + "/communities", false);
+        throw new UnsupportedOperationException("removed by Twitch");
     }
 
     /**
@@ -648,22 +445,22 @@ public class TwitchAPIv5 {
         }
         return "ERROR";
     }
-    
+
     /**
      * Method that gets the teams that the channel is in.
-     * 
+     *
      * @param channelName
-     * @return 
+     * @return
      */
     public JSONObject getChannelTeams(String channelName) throws JSONException {
         return GetData(request_type.GET, base_url + "/channels/" + getIDFromChannel(channelName) + "/teams", false);
     }
-    
+
     /**
      * Method that gets a Twitch team.
-     * 
+     *
      * @param teamName
-     * @return 
+     * @return
      */
     public JSONObject getTeam(String teamName) throws JSONException {
         return GetData(request_type.GET, base_url + "/teams/" + teamName, false);
@@ -798,29 +595,6 @@ public class TwitchAPIv5 {
         }
     }
 
-    /**
-     * Class for Thread for running the FixFollowedTableWorker job in the background.
-     */
-    private class FixFollowedTableRunnable implements Runnable {
-        private final DataStore dataStore;
-        private final String channel;
-        private final int followerCount;
-
-        public FixFollowedTableRunnable(String channel, DataStore dataStore, int followerCount) {
-            this.channel = channel;
-            this.dataStore = dataStore;
-            this.followerCount = followerCount;
-        }
-
-        @Override
-        public void run() {
-            try {
-                FixFollowedTableWorker(channel, dataStore, followerCount);
-            } catch (JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
-            }
-        }
-    }
 
     /**
      * Tests the Twitch API to ensure that authentication is good.
@@ -858,6 +632,29 @@ public class TwitchAPIv5 {
      * @return  int      the channel id.
      */
     public int getChannelId(String channel) {
-        return Integer.parseUnsignedInt(UsernameCache.instance().getID(channel));
+        return Integer.parseUnsignedInt(this.getIDFromChannel(channel));
+    }
+    /**
+     * Class for Thread for running the FixFollowedTableWorker job in the background.
+     */
+    private class FixFollowedTableRunnable implements Runnable {
+        private final DataStore dataStore;
+        private final String channel;
+        private final int followerCount;
+
+        public FixFollowedTableRunnable(String channel, DataStore dataStore, int followerCount) {
+            this.channel = channel;
+            this.dataStore = dataStore;
+            this.followerCount = followerCount;
+        }
+
+        @Override
+        public void run() {
+            try {
+                FixFollowedTableWorker(channel, dataStore, followerCount);
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
     }
 }
