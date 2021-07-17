@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.twitch.api;
 
 import java.io.BufferedReader;
@@ -22,21 +21,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import reactor.util.annotation.Nullable;
+import tv.phantombot.PhantomBot;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
- * 
+ *
  * @author ScaniaTV
+ * @author gmt2001
  */
 public class Helix {
+
     // The current instance of Helix.
-    private static Helix INSTANCE;
+    private static final Helix INSTANCE = new Helix();
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://api.twitch.tv/helix";
     // The user agent for our requests to Helix.
@@ -45,60 +51,35 @@ public class Helix {
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
     private static final int TIMEOUT_TIME = 5000;
+
+    /**
+     * Method that returns the instance of Helix.
+     *
+     * @return
+     */
+    public static Helix instance() {
+        return INSTANCE;
+    }
+
     // Time when our limit will fully reset.
     private long rateLimitResetEpoch = System.currentTimeMillis();
     // Our current rate limit before making any requests.
     private int remainingRateLimit = 120;
     // The rate limit, when full
     private int maxRateLimit = 120;
-    // The user's oauth token -- this is required.
-    private final String oAuthToken;
-    private final String clientid;
-    
-    /**
-     * This class constructor.
-     * 
-     * @param oAuthToken The token used for all requests.
-     */
-    public Helix(String oAuthToken) {
-        this.oAuthToken = oAuthToken.replace("oauth:", "");
-        this.clientid = TwitchValidate.instance().getAPIClientID();
-        
-        // Set the default exception handler thread.
+    private String oAuthToken = null;
+
+    private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
-    
-    /**
-     * Method that sets the default instance.
-     * 
-     * @param instance The instance to be set by default.
-     */
-    public static void setInstance(Helix instance) {
-        INSTANCE = instance;
+
+    public void setOAuth(String oauth) {
+        this.oAuthToken = oauth;
     }
-    
-    /**
-     * Method that returns the instance of Helix.
-     * 
-     * @return 
-     */
-    public static Helix getInstance() {
-        return INSTANCE;
-    }
-    
-    /**
-     * The types of requests we can make to Helix.
-     */
-    private enum RequestType {
-        GET,
-        PUT,
-        POST,
-        DELETE
-    };
-    
+
     /**
      * Method that update the rate limits in sync.
-     * 
+     *
      * @param limit The number of requests left.
      * @param reset The time when our limits will reset.
      */
@@ -107,25 +88,25 @@ public class Helix {
         remainingRateLimit = limit;
         rateLimitResetEpoch = reset;
     }
-    
+
     /**
      * Method that gets the reset time for the rate limit.
-     * 
-     * @return 
+     *
+     * @return
      */
     private synchronized long getLimitResetTime() {
         return rateLimitResetEpoch;
     }
-    
+
     /**
      * Method that gets the current rate limits.
-     * 
-     * @return 
+     *
+     * @return
      */
     private synchronized int getRemainingRateLimit() {
         return remainingRateLimit;
     }
-    
+
     /**
      * Method that checks if we hit the limit.
      */
@@ -133,50 +114,58 @@ public class Helix {
         if (getRemainingRateLimit() <= 0) {
             try {
                 // Sleep until a token is returned to the bucket
-                Thread.sleep(System.currentTimeMillis() - (getLimitResetTime() / maxRateLimit) + 20);
+                Thread.sleep(System.currentTimeMillis() - (this.getLimitResetTime() / maxRateLimit) + 20);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
     }
-    
+
     /**
      * Method that handles our rate limits.
-     * 
+     *
      * @param limitReturned The limit returned from Helix.
      * @param limitResetTimeReturned The reset time for our limit returned from Helix.
      */
     private void handleUpdateRateLimits(String maxLimit, String limitReturned, String limitResetTimeReturned) {
         try {
             // Parse the rate limit returned.
-            updateRateLimits(Integer.parseInt(maxLimit), Integer.parseInt(limitReturned), 
+            updateRateLimits(Integer.parseInt(maxLimit), Integer.parseInt(limitReturned),
                     Long.parseLong(limitResetTimeReturned));
         } catch (NumberFormatException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-    
+
+    private String uriEncode(String input) {
+        return URLEncoder.encode(input, Charset.forName("UTF-8"));
+    }
+
+    private String qspValid(String key, String value) {
+        return value != null && !value.isBlank() ? key + "=" + value : "";
+    }
+
     /**
      * Method that gets data from an InputStream.
-     * 
+     *
      * @param stream
-     * @return 
+     * @return
      */
     private String getStringFromInputStream(InputStream stream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder returnString = new StringBuilder();
         String line;
-        
+
         while ((line = reader.readLine()) != null) {
             returnString.append(line);
         }
-        
+
         return returnString.toString();
     }
-    
+
     /**
      * Method that adds extra information to our returned object.
-     * 
+     *
      * @param obj
      * @param isSuccess
      * @param requestType
@@ -186,10 +175,10 @@ public class Helix {
      * @param exception
      * @param exceptionMessage
      */
-    private void generateJSONObject(JSONObject obj, boolean isSuccess, 
-            String requestType, String data, String url, int responseCode, 
+    private void generateJSONObject(JSONObject obj, boolean isSuccess,
+            String requestType, String data, String url, int responseCode,
             String exception, String exceptionMessage) throws JSONException {
-        
+
         obj.put("_success", isSuccess);
         obj.put("_type", requestType);
         obj.put("_post", data);
@@ -198,29 +187,33 @@ public class Helix {
         obj.put("_exception", exception);
         obj.put("_exceptionMessage", exceptionMessage);
     }
-    
+
     /**
      * Method that handles data for Helix.
-     * 
+     *
      * @param type
      * @param url
      * @param data
-     * @return 
+     * @return
      */
     private JSONObject handleRequest(RequestType type, String endPoint, String data) throws JSONException {
         JSONObject returnObject = new JSONObject();
         InputStream inStream = null;
         int responseCode = 0;
-        
+
         // Check our rate limit.
-        checkRateLimit();
-        
+        this.checkRateLimit();
+
         // Update the end point URL, if it is an endpoint and not full URL.
         if (endPoint.startsWith("/")) {
             endPoint = BASE_URL + endPoint;
         }
-        
+
         try {
+            if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
+                throw new IllegalArgumentException("apioauth is required");
+            }
+
             // Generate a new URL.
             URL url = new URL(endPoint);
             // Open the connection over HTTPS.
@@ -228,13 +221,9 @@ public class Helix {
             // Add our headers.
             connection.addRequestProperty("Content-Type", CONTENT_TYPE);
 
-            if (!clientid.isEmpty()) {
-                connection.addRequestProperty("Client-ID", clientid);
-            }
+            connection.addRequestProperty("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
 
-            if (!oAuthToken.isEmpty()) {
-                connection.addRequestProperty("Authorization", "Bearer " + oAuthToken);
-            }
+            connection.addRequestProperty("Authorization", "Bearer " + this.oAuthToken);
 
             connection.addRequestProperty("User-Agent", USER_AGENT);
             // Add our request method.
@@ -243,10 +232,10 @@ public class Helix {
             connection.setConnectTimeout(TIMEOUT_TIME);
             // Set if we're doing output.
             connection.setDoOutput(!data.isEmpty());
-            
+
             // Connect!
             connection.connect();
-            
+
             // If we're outputting.
             if (connection.getDoOutput()) {
                 // Get the output stream
@@ -256,17 +245,17 @@ public class Helix {
                     outStream.flush();
                 }
             }
-            
+
             // Get our response code.
             responseCode = connection.getResponseCode();
-            
+
             // Get the current rate limits.
             String maxlimit = connection.getHeaderField("Ratelimit-Limit");
             String limit = connection.getHeaderField("Ratelimit-Remaining");
             String reset = connection.getHeaderField("Ratelimit-Reset");
             // Handle the current limits.
-            handleUpdateRateLimits(maxlimit, limit, reset);
-                
+            this.handleUpdateRateLimits(maxlimit, limit, reset);
+
             // Get our response stream.
             if (responseCode == 200) {
                 inStream = connection.getInputStream();
@@ -275,348 +264,259 @@ public class Helix {
             }
 
             // Parse the data.
-            returnObject = new JSONObject(getStringFromInputStream(inStream));
+            returnObject = new JSONObject(this.getStringFromInputStream(inStream));
             // Generate the return object,
-            generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (JSONException ex) {
+            this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
+        } catch (IOException | IllegalArgumentException | JSONException ex) {
             // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "JSONException", ex.getMessage());
-        } catch (NullPointerException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "NullPointerException", ex.getMessage());
-        } catch (MalformedURLException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "MalformedURLException", ex.getMessage());
-        } catch (SocketTimeoutException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "SocketTimeoutException", ex.getMessage());
-        } catch (IOException ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "IOException", ex.getMessage());
-        } catch (Exception ex) {
-            // Generate the return object.
-            generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "Exception", ex.getMessage());
+            this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         } finally {
             if (inStream != null) {
                 try {
                     inStream.close();
                 } catch (IOException ex) {
                     // Generate the return object.
-                    generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, "IOException", ex.getMessage());
+                    this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
                 }
             }
         }
-        
+
         return returnObject;
-    }
-    
-    /**
-     * Method that handles a request without any data being passed.
-     * 
-     * @param type
-     * @param endPoint
-     * @return 
-     */
-    private JSONObject handleRequest(RequestType type, String endPoint) throws JSONException {
-        return handleRequest(type, endPoint, "");
-    }
-    
-    /**
-     * Method that get users by type.
-     * 
-     * @param type Either id or login
-     * @param usernames A string array of Twitch usernames. Limit: 100
-     * @return 
-     */
-    public JSONObject getUsersByType(String type, String[] usernames) throws JSONException {
-        return handleRequest(RequestType.GET, "/users?" + type + "=" + String.join("&" + type + "=", usernames));
-    }
-    
-    /**
-     * Method that get users by their names.
-     * 
-     * @param usernames A string array of Twitch usernames. Limit: 100
-     * @return 
-     */
-    public JSONObject getUsersByNames(String[] usernames) throws JSONException {
-        return getUsersByType("login", usernames);
-    }
-    
-    /**
-     * Method that gets a user by their name.
-     * 
-     * @param username The Twitch username.
-     * @return 
-     */
-    public JSONObject getUserByName(String username) throws JSONException {
-        return getUsersByNames(new String[] { 
-            username 
-        });
-    }
-    
-    /**
-     * Method that get users by their ID.
-     * 
-     * @param ids A string array of user IDs. Limit: 100
-     * @return 
-     */
-    public JSONObject getUsersByIds(String[] ids) throws JSONException {
-        return getUsersByType("id", ids);
-    }
-    
-    /**
-     * Method that gets a user by their ID.
-     * 
-     * @param id The ID of the user on Twitch.
-     * @return 
-     */
-    public JSONObject getUserById(String id) throws JSONException {
-        return getUsersByIds(new String[] { 
-            id 
-        });
-    }
-    
-    /**
-     * Method that gets streams by type.
-     * 
-     * @param type Either user_login or user_id.
-     * @param streams A string array of stream names. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    private JSONObject getStreamsByType(String type, String[] streams, String[] parameters) throws JSONException {
-        return handleRequest(RequestType.GET, "/streams?" + type + "=" + String.join("&" + type + "=", streams) + (parameters.length > 0 ? "&" + String.join("&", parameters) : "")); 
-    }
-    
-    /**
-     * Method that gets streams by their names.
-     * 
-     * @param streams A string array of stream names. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getStreamsByNames(String[] streams, String[] parameters) throws JSONException {
-        return getStreamsByType("user_login", streams, parameters);
-    }
-    
-    /**
-     * Method that gets streams by their names.
-     * 
-     * @param stream The name of the stream to get.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getStreamByName(String stream, String[] parameters) throws JSONException {
-        return getStreamsByNames(new String[] { 
-            stream 
-        }, parameters);
-    }
-    
-    /**
-     * Method that gets streams by their names.
-     * 
-     * @param stream The name of the stream to get.
-     * @return 
-     */
-    public JSONObject getStreamByName(String stream) throws JSONException {
-        return getStreamsByNames(new String[] { 
-            stream 
-        }, new String[0]);
-    }
-    
-    /**
-     * Method that gets streams by their ID.
-     * 
-     * @param ids A string array of stream IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getStreamsByIds(String[] ids, String[] parameters) throws JSONException {
-        return getStreamsByType("user_id", ids, parameters);
-    }
-    
-    /**
-     * Method that gets streams by their id.
-     * 
-     * @param id The id of the stream to get.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getStreamById(String id, String[] parameters) throws JSONException {
-        return getStreamsByIds(new String[] {
-            id
-        }, parameters);
-    }
-    
-    /**
-     * Method that gets streams by their IDs.
-     * 
-     * @param ids The IDs of the streams to get. Limit: 100
-     * @return 
-     */
-    public JSONObject getStreamsByIds(String[] ids) throws JSONException {
-        return getStreamsByIds(ids, new String[0]);
     }
 
     /**
-     * Method that gets streams by their ID.
-     * 
-     * @param id The id of the stream to get.
-     * @return 
+     * Method that handles a request without any data being passed.
+     *
+     * @param type
+     * @param endPoint
+     * @return
      */
-    public JSONObject getStreamById(String id) throws JSONException {
-        return getStreamsByIds(new String[] { 
-            id 
-        }, new String[0]);
+    private JSONObject handleRequest(RequestType type, String endPoint) throws JSONException {
+        return this.handleRequest(type, endPoint, "");
     }
-    
+
     /**
-     * Method that gets games by their type
-     * 
-     * @param type Either id or name
-     * @param games The list of games. Limit: 100
-     * @return 
+     * Gets channel information for users.
+     *
+     * @param broadcaster_id ID of the channel to be retrieved.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    private JSONObject getGamesByType(String type, String games[]) throws JSONException {
-        return handleRequest(RequestType.GET, "/games?" + type + "=" + String.join("&" + type + "=", games));
+    public JSONObject getChannelInformation(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("channelId");
+        }
+
+        return this.handleRequest(RequestType.GET, "/channels?broadcaster_id=" + broadcaster_id);
     }
-    
+
     /**
-     * Method that gets games by their names.
-     * 
-     * @param gameNames A string array of game names. Limit: 100
-     * @return 
+     * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
+     *
+     * @param broadcaster_id ID of the channel to be updated.
+     * @param game_id The current game ID being played on the channel. Use “0” or “” (an empty string) to unset the game.
+     * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
+     * “other”.
+     * @param title The title of the stream. Value must not be an empty string.
+     * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
+     * 400 error.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    public JSONObject getGamesByNames(String gameNames[]) throws JSONException {
-        return getGamesByType("name", gameNames);
+    public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title, int delay) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("channelId");
+        }
+
+        if (game_id == null && (language == null || language.isBlank()) && (title == null || title.isBlank()) && delay < 0) {
+            throw new IllegalArgumentException("must provide one valid argument");
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object();
+
+        if (game_id != null) {
+            js.key("game_id").value(game_id);
+        }
+
+        if (language != null && !language.isBlank()) {
+            js.key("broadcaster_language").value(language);
+        }
+
+        if (title != null && !title.isBlank()) {
+            js.key("title").value(title);
+        }
+
+        if (delay >= 0) {
+            js.key("delay").value(delay);
+        }
+
+        js.endObject();
+
+        return this.handleRequest(RequestType.PATCH, "/channels?broadcaster_id=" + broadcaster_id, js.toString());
     }
-    
+
     /**
-     * Method that gets a game by its name.
-     * 
-     * @param gameName The name of the game.
-     * @return 
+     * Returns a list of games or categories that match the query via name either entirely or partially.
+     *
+     * @param query Search query.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    public JSONObject getGameByName(String gameName) throws JSONException {
-        return getGamesByNames(new String[] {
-            gameName
-        });
+    public JSONObject searchCategories(String query, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+        if (query == null || query.isBlank()) {
+            throw new IllegalArgumentException("query");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        return this.handleRequest(RequestType.GET, "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after));
     }
-    
+
     /**
-     * Method that gets games by their IDs.
-     * 
-     * @param gameIDs A string array of game IDs. Limit: 100
-     * @return 
+     * Gets information on follow relationships between two Twitch users. This can return information like “who is qotrok following,” “who is
+     * following qotrok,” or “is user X following user Y.” Information returned is sorted in order, most recent follow first. At minimum, from_id or
+     * to_id must be provided for a query to be valid.
+     *
+     * @param from_id User ID. The request returns information about users who are being followed by the from_id user.
+     * @param to_id User ID. The request returns information about users who are following the to_id user.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    public JSONObject getGamesByIds(String gameIDs[]) throws JSONException {
-        return getGamesByType("id", gameIDs);
+    public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+        if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {
+            throw new IllegalArgumentException("from_id or to_id");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        boolean both = false;
+        if (from_id != null && !from_id.isBlank() && to_id != null && !to_id.isBlank()) {
+            both = true;
+        }
+
+        return this.handleRequest(RequestType.GET, "/users/follows?" + this.qspValid("from_id", from_id) + (both ? "&" : "")
+                + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after));
     }
-    
+
     /**
-     * Method that gets a game by its ID.
-     * 
-     * @param gameID The Id of the game.
-     * @return 
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    public JSONObject getGameById(String gameID) throws JSONException {
-        return getGamesByNames(new String[] {
-            gameID
-        });
+    public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("channelId");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        String userIds = null;
+
+        if (user_id != null && user_id.size() > 0) {
+            userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
+        }
+
+        return this.handleRequest(RequestType.GET, "/subscriptions?broadcaster_id=" + broadcaster_id + "&first=" + first
+                + this.qspValid("&user_id", userIds) + this.qspValid("&after", after));
     }
-    
+
     /**
-     * Method that gets clips by type.
-     * 
-     * @param type Either broadcaster_id, game_id or id.
-     * @param clipIds A string array of clips, games, or channel IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or “other”.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
-    private JSONObject getClipsByType(String type, String clipIds[], String[] parameters) throws JSONException {
-        return handleRequest(RequestType.GET, "/clips?" + type + "=" + String.join("&" + type + "=", clipIds) + (parameters.length > 0 ? "&" + String.join("&", parameters) : ""));
+    public JSONObject getStreams(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
+            @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
+        if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
+            throw new IllegalArgumentException("can not use before and after at the same time");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        String userIds = null;
+
+        if (user_id != null && user_id.size() > 0) {
+            userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
+        }
+
+        String userLogins = null;
+
+        if (user_login != null && user_login.size() > 0) {
+            userLogins = user_login.stream().limit(100).collect(Collectors.joining("&user_login="));
+        }
+
+        String gameIds = null;
+
+        if (game_id != null && game_id.size() > 0) {
+            gameIds = game_id.stream().limit(100).collect(Collectors.joining("&game_id="));
+        }
+
+        String languages = null;
+
+        if (language != null && language.size() > 0) {
+            languages = language.stream().limit(100).collect(Collectors.joining("&language="));
+        }
+
+        return this.handleRequest(RequestType.GET, "/streams?first=" + first + this.qspValid("&after", after) + this.qspValid("&before", before)
+                + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages));
     }
-    
+
     /**
-     * Method that gets clips from a broadcaster (channel).
-     * 
-     * @param channelId the ID of the broadcaster (channel).
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * The types of requests we can make to Helix.
      */
-    public JSONObject getBroadcasterClipsById(String channelId, String[] parameters) throws JSONException {
-        return getClipsByType("broadcaster_id", new String[] {
-            channelId
-        }, parameters);
-    }
-    
-    /**
-     * Method that gets clips from a broadcaster (channel).
-     * 
-     * @param channelId the ID of the broadcaster (channel).
-     * @return 
-     */
-    public JSONObject getBroadcasterClipsById(String channelId) throws JSONException {
-        return getClipsByType("broadcaster_id", new String[] {
-            channelId
-        }, new String[0]);
-    }
-    
-    /**
-     * Method that gets clips from a certain game.
-     * 
-     * @param gameId The ID of the game.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getGameClipsById(String gameId, String[] parameters) throws JSONException {
-        return getClipsByType("game_id", new String[] { 
-            gameId
-        }, parameters);
-    }
-    
-    /**
-     * Method that gets clips from a certain game.
-     * 
-     * @param gameId The ID of the game.
-     * @return 
-     */
-    public JSONObject getGameClipsById(String gameId) throws JSONException {
-        return getClipsByType("game_id", new String[] { 
-            gameId
-        }, new String[0]);
-    }
-    
-    /**
-     * Method that gets a bunch of clips by their IDs.
-     * 
-     * @param clipIds A string array of clip IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
-     */
-    public JSONObject getClipsById(String[] clipIds, String[] parameters) throws JSONException {
-        return getClipsByType("id", clipIds, parameters);
-    }
-    
-    /**
-     * Method that gets a bunch of clips by their IDs.
-     * 
-     * @param clipIds A string array of clip IDs.
-     * @return 
-     */
-    public JSONObject getClipsById(String[] clipIds) throws JSONException {
-        return getClipsByType("id", clipIds, new String[0]);
-    }
-    
-    /**
-     * Method that gets a clip by its ID.
-     * 
-     * @param clipId The ID of the clip
-     * @return 
-     */
-    public JSONObject getClipById(String clipId) throws JSONException {
-        return getClipsByType("id", new String[] { 
-            clipId 
-        }, new String[0]);
+    private enum RequestType {
+        GET,
+        PATCH,
+        PUT,
+        POST,
+        DELETE
     }
 }

@@ -90,6 +90,7 @@ import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.script.ScriptManager;
 import tv.phantombot.scripts.core.Moderation;
+import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
 import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
@@ -510,12 +511,9 @@ public final class PhantomBot implements Listener {
 
         /* Set the oauth key in the Twitch api and perform a validation. */
         if (!this.apiOAuth.isEmpty()) {
-            TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+            Helix.instance().setOAuth(this.apiOAuth);
             TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
         }
-
-        /* Set the client Id in the Twitch api. */
-        TwitchAPIv5.instance().SetClientID(this.clientId.isBlank() ? (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID()) : this.clientId);
 
         /* Validate the chat OAUTH token. */
         TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
@@ -603,8 +601,7 @@ public final class PhantomBot implements Listener {
         this.clientId = this.pbProperties.getProperty("clientid", "");
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
-        TwitchAPIv5.instance().SetClientID(this.clientId);
-        TwitchAPIv5.instance().SetOAuth(this.apiOAuth);
+        Helix.instance().setOAuth(this.apiOAuth);
         if (this.session != null) {
             this.session.setOAuth(this.oauth);
         }

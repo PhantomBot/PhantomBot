@@ -228,56 +228,52 @@
                     'use strict';
                     $(function () {
                         var scopesBot = {
-                            "channel_editor": {
-                                "desc": "[v5] Write access to channel metadata (game, status, etc)",
-                                "tooltip": "Used by some custom scripts to start raids"
-                            },
-                            "chat:read": {
-                                "desc": "[Helix] View live Stream Chat and Rooms messages",
-                                "tooltip": "Used to login to chat and read messages"
-                            },
-                            "chat:edit": {
-                                "desc": "[Helix] Send live Stream Chat and Rooms messages",
-                                "tooltip": "Used to send responses in chat"
+                            "channel:manage:broadcast": {
+                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags",
+                                "tooltip": "Used by custom scripts to start raids"
                             },
                             "channel:moderate": {
-                                "desc": "[Helix] Perform moderation actions in a channel",
+                                "desc": "Perform moderation actions in a channel",
                                 "tooltip": "Used to perform moderation actions (purge, timeout, ban)"
                             },
-                            "whispers:read": {
-                                "desc": "[Helix] View your whisper messages",
-                                "tooltip": "Used to receive whispers to the bot"
+                            "chat:edit": {
+                                "desc": "Send live Stream Chat and Rooms messages",
+                                "tooltip": "Used to send responses in chat"
+                            },
+                            "chat:read": {
+                                "desc": "View live Stream Chat and Rooms messages",
+                                "tooltip": "Used to login to chat and read messages"
                             },
                             "whispers:edit": {
-                                "desc": "[Helix] Send whisper messages",
+                                "desc": "Send whisper messages",
                                 "tooltip": "Used to send whispers from the bot"
+                            },
+                            "whispers:read": {
+                                "desc": "View your whisper messages",
+                                "tooltip": "Used to receive whispers to the bot"
                             }
                         };
 
                         var scopesBroadcaster = {
-                            "channel_editor": {
-                                "desc": "[v5] Write access to channel metadata (game, status, etc)",
+                            "channel:manage:broadcast": {
+                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags",
                                 "tooltip": "Used to change the title/game"
                             },
-                            "channel_commercial": {
-                                "desc": "[v5] Access to trigger commercials on channel",
-                                "tooltip": "Used to trigger commercials on partnered streams"
-                            },
-                            "channel_subscriptions": {
-                                "desc": "[v5] Read access to all subscribers to your channel",
-                                "tooltip": "Used to get the current subscriber count. Can also be used by custom scripts to query Twitch for a list of subscribers"
-                            },
-                            "chat:read": {
-                                "desc": "[Helix] View live Stream Chat and Rooms messages",
-                                "tooltip": "Used by the second chat connection to watch for host notifications"
-                            },
                             "channel:moderate": {
-                                "desc": "[Helix] Perform moderation actions in a channel",
+                                "desc": "Perform moderation actions in a channel",
                                 "tooltip": "Used to watch for moderation actions in PubSub"
                             },
                             "channel:read:redemptions": {
-                                "desc": "[Helix] View your channel points custom reward redemptions",
+                                "desc": "View your channel points custom reward redemptions",
                                 "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub"
+                            },
+                            "channel:read:subscriptions": {
+                                "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel",
+                                "tooltip": "Used to watch for new subscribers that haven't shared with chat"
+                            },
+                            "chat:read": {
+                                "desc": "View live Stream Chat and Rooms messages",
+                                "tooltip": "Used by the second chat connection to watch for host notifications"
                             }
                         };
 
