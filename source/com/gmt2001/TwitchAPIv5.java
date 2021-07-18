@@ -432,6 +432,10 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateRunCommercial(JSONObject commercialData) {
+        if (!commercialData.getString("message").isBlank()) {
+            commercialData.put("_http", 422);
+        }
+
         return commercialData;
     }
 
@@ -479,9 +483,32 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetEmotes(JSONArray arr) {
-        JSONObject jso = new JSONObject();
-        jso.put("data", arr);
-        return jso;
+        JSONObject result = new JSONObject();
+        JSONArray emoticons = new JSONArray();
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject data = arr.getJSONObject(i);
+            JSONObject emoticon = new JSONObject();
+            emoticon.put("id", Long.parseLong(data.getString("id")));
+            emoticon.put("regex", data.getString("name"));
+
+            JSONObject images = new JSONObject();
+            if (data.has("emote_set_id")) {
+                images.put("emoticon_set", Long.parseLong(data.getString("emote_set_id")));
+            } else {
+                images.put("emoticon_set", 0);
+            }
+
+            images.put("height", 28);
+            images.put("width", 25);
+            images.put("url", data.getJSONObject("images").getString("url_1x"));
+
+            emoticon.put("images", images);
+            emoticons.put(emoticon);
+        }
+
+        result.put("emoticons", emoticons);
+        return result;
     }
 
     /**
@@ -494,7 +521,39 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetCheerEmotes(JSONObject cheerData) {
-        return cheerData;
+        JSONObject result = new JSONObject();
+        JSONArray actions = new JSONArray();
+
+        for (int i = 0; i < cheerData.getJSONArray("data").length(); i++) {
+            JSONObject data = cheerData.getJSONArray("data").getJSONObject(i);
+            JSONObject action = new JSONObject();
+            action.put("prefix", data.getString("prefix"));
+            action.put("tiers", data.getJSONArray("tiers"));
+
+            JSONArray backgrounds = new JSONArray();
+            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").keySet().forEach(s -> {
+                backgrounds.put(s);
+            });
+
+            JSONArray states = new JSONArray();
+            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.getString(0)).keySet().forEach(s -> {
+                states.put(s);
+            });
+
+            JSONArray scales = new JSONArray();
+            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.getString(0))
+                    .getJSONObject(states.getString(0)).keySet().forEach(s -> {
+                scales.put(s);
+            });
+
+            action.put("backgrounds", backgrounds);
+            action.put("states", states);
+            action.put("scales", scales);
+            actions.put(action);
+        }
+
+        result.put("actions", actions);
+        return result;
     }
 
     private String cheerEmotes = "";
