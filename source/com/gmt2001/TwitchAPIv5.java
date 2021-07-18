@@ -350,7 +350,7 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetStream(JSONObject streamData) {
-        return streamData;
+        return streamData.getJSONArray("data").length() == 1 ? this.translateGetStreams(streamData).getJSONArray("streams").getJSONObject(0) : new JSONObject();
     }
 
     /**
