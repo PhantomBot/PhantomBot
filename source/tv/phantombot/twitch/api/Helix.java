@@ -21,15 +21,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 
@@ -51,6 +66,8 @@ public class Helix {
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
     private static final int TIMEOUT_TIME = 5000;
+    private static final int QUEUE_TIME = 5000;
+    private static final int CACHE_TIME = 30000;
 
     /**
      * Method that returns the instance of Helix.
@@ -68,9 +85,14 @@ public class Helix {
     // The rate limit, when full
     private int maxRateLimit = 120;
     private String oAuthToken = null;
+    private final ScheduledThreadPoolExecutor tp = new ScheduledThreadPoolExecutor(1);
+    private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
+    private final ReentrantLock lock = new ReentrantLock();
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        tp.scheduleWithFixedDelay(Helix::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
     }
 
     public void setOAuth(String oauth) {
@@ -117,6 +139,37 @@ public class Helix {
                 Thread.sleep(System.currentTimeMillis() - (this.getLimitResetTime() / maxRateLimit) + 20);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+    }
+
+    private Mono<Long> waitForRateLimit() {
+        if (getRemainingRateLimit() <= 0) {
+            return Mono.delay(Duration.ofMillis(System.currentTimeMillis() - (this.getLimitResetTime() / maxRateLimit) + 20));
+        }
+
+        return Mono.delay(Duration.ZERO);
+    }
+
+    private void processQueue() {
+        if (!lock.isHeldByCurrentThread() && lock.tryLock()) {
+            try {
+                while (!requestQueue.isEmpty()) {
+                    waitForRateLimit().doOnSuccess(L -> {
+                        Mono processor = requestQueue.poll();
+
+                        if (processor != null) {
+                            processor.block();
+                        }
+                    }).subscribe();
+                }
+
+                Date d = Calendar.getInstance().getTime();
+                calls.entrySet().stream().filter(kvp -> (kvp.getValue().expires.before(d))).forEachOrdered(kvp -> {
+                    calls.remove(kvp.getKey());
+                });
+            } finally {
+                lock.unlock();
             }
         }
     }
@@ -295,6 +348,35 @@ public class Helix {
         return this.handleRequest(type, endPoint, "");
     }
 
+    private Mono<JSONObject> handleCallAsync(String callid, Supplier<JSONObject> action) {
+        return calls.computeIfAbsent(callid, k -> {
+            Calendar c = Calendar.getInstance();
+            c.add(CACHE_TIME, Calendar.MILLISECOND);
+            Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
+                try {
+                    emitter.success(action.get());
+                } catch (JSONException | IllegalArgumentException ex) {
+                    emitter.error(ex);
+                }
+            }).cache();
+            requestQueue.add(processor);
+            return new CallRequest(c.getTime(), processor);
+        }).processor;
+    }
+
+    private String digest(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            md.update(input.getBytes());
+            BigInteger bi = new BigInteger(1, md.digest());
+            return bi.toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+
+        return "";
+    }
+
     /**
      * Gets channel information for users.
      *
@@ -309,6 +391,12 @@ public class Helix {
         }
 
         return this.handleRequest(RequestType.GET, "/channels?broadcaster_id=" + broadcaster_id);
+    }
+
+    public Mono<JSONObject> getChannelInformationAsync(String broadcaster_id) {
+        return this.handleCallAsync("getChannelInformation-" + broadcaster_id, () -> {
+            return getChannelInformation(broadcaster_id);
+        });
     }
 
     /**
@@ -543,6 +631,29 @@ public class Helix {
 
         return this.handleRequest(RequestType.GET, "/users" + (userIds != null || userLogins != null ? "?" : "") + this.qspValid("id", userIds)
                 + (both ? "&" : "") + this.qspValid("login", userLogins));
+    }
+
+    public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) {
+        String userIds = "";
+
+        if (id != null && id.size() > 0) {
+            userIds = id.stream().limit(100).collect(Collectors.joining(""));
+        }
+
+        String userLogins = "";
+
+        if (login != null && login.size() > 0) {
+            userLogins = login.stream().limit(100 - (id != null ? id.stream().count() : 0)).collect(Collectors.joining(""));
+        }
+
+        String digest = "@self@";
+        if (!userIds.isBlank() || !userLogins.isBlank()) {
+            digest = this.digest(userIds + userLogins);
+        }
+
+        return this.handleCallAsync("getUsers-" + digest, () -> {
+            return getUsers(id, login);
+        });
     }
 
     /**
@@ -812,5 +923,16 @@ public class Helix {
         GET,
         PATCH,
         POST
+    }
+
+    private class CallRequest {
+
+        private final Date expires;
+        private final Mono<JSONObject> processor;
+
+        private CallRequest(Date expires, Mono<JSONObject> processor) {
+            this.expires = expires;
+            this.processor = processor;
+        }
     }
 }
