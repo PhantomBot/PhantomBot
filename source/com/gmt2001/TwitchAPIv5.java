@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -248,7 +249,34 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetChannelFollows(JSONObject followData) {
-        return followData;
+        JSONObject result = new JSONObject();
+        JSONArray follows = new JSONArray();
+
+        result.put("_total", followData.getLong("total"));
+        result.put("_cursor", followData.getJSONObject("pagination").getString("cursor"));
+
+        for (int i = 0; i < followData.getJSONArray("data").length(); i++) {
+            JSONObject data = followData.getJSONArray("data").getJSONObject(i);
+            JSONObject follow = new JSONObject();
+            follow.put("created_at", data.getString("followed_at"));
+            follow.put("notifications", false);
+
+            JSONObject user = new JSONObject();
+            user.put("display_name", data.getString("from_name"));
+            user.put("_id", data.getString("from_id"));
+            user.put("name", data.getString("from_login"));
+            user.put("type", "user");
+            user.put("bio", "");
+            user.put("created_at", "");
+            user.put("updated_at", "");
+            user.put("logo", "");
+
+            follow.put("user", user);
+            follows.put(follow);
+        }
+
+        result.put("follows", follows);
+        return result;
     }
 
     /**
@@ -273,7 +301,36 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetChannelSubscriptions(JSONObject subscriptionData) {
-        return subscriptionData;
+        JSONObject result = new JSONObject();
+        JSONArray subscriptions = new JSONArray();
+        Date now = new Date();
+
+        result.put("_total", subscriptionData.getLong("total"));
+
+        for (int i = 0; i < subscriptionData.getJSONArray("data").length(); i++) {
+            JSONObject data = subscriptionData.getJSONArray("data").getJSONObject(i);
+            JSONObject subscription = new JSONObject();
+            subscription.put("_id", "");
+            subscription.put("created_at", now);
+            subscription.put("sub_plan", data.get("tier"));
+            subscription.put("sub_plan_name", data.get("plan_name"));
+
+            JSONObject user = new JSONObject();
+            user.put("display_name", data.getString("user_name"));
+            user.put("_id", data.getString("user_id"));
+            user.put("name", data.getString("user_login"));
+            user.put("type", "user");
+            user.put("bio", "");
+            user.put("created_at", "");
+            user.put("updated_at", "");
+            user.put("logo", "");
+
+            subscription.put("user", user);
+            subscriptions.put(subscription);
+        }
+
+        result.put("subscriptions", subscriptions);
+        return result;
     }
 
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending, String oauth) throws JSONException {
