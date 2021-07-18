@@ -78,7 +78,8 @@ public class TwitchAPIv5 {
     public JSONObject GetChannel(String channel) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.add(this.getIDFromChannel(channel));
-        return this.translateGetChannel(Helix.instance().getChannelInformation(this.getIDFromChannel(channel)), Helix.instance().getUsers(user_id, null));
+        return this.translateGetChannel(Helix.instance().getChannelInformationAsync(this.getIDFromChannel(channel)).block(),
+                Helix.instance().getUsersAsync(user_id, null).block());
     }
 
     private JSONObject translateGetChannel(JSONObject channelData, JSONObject userData) {
@@ -388,7 +389,7 @@ public class TwitchAPIv5 {
     public JSONObject GetUser(String user) throws JSONException {
         List<String> user_login = new ArrayList<>();
         user_login.add(user);
-        return this.translateGetUser(Helix.instance().getUsers(null, user_login));
+        return this.translateGetUser(Helix.instance().getUsersAsync(null, user_login).block());
     }
 
     private JSONObject translateGetUser(JSONObject userData) {
@@ -416,7 +417,7 @@ public class TwitchAPIv5 {
     public JSONObject GetUserByID(String userID) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.add(userID);
-        return this.translateGetUser(Helix.instance().getUsers(user_id, null));
+        return this.translateGetUser(Helix.instance().getUsersAsync(user_id, null).block());
     }
 
     /**
