@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,11 +75,36 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChannel(String channel) throws JSONException {
-        return this.translateGetChannel(Helix.instance().getChannelInformation(this.getIDFromChannel(channel)));
+        List<String> user_id = new ArrayList<>();
+        user_id.add(this.getIDFromChannel(channel));
+        return this.translateGetChannel(Helix.instance().getChannelInformation(this.getIDFromChannel(channel)), Helix.instance().getUsers(user_id, null));
     }
 
-    private JSONObject translateGetChannel(JSONObject channelData) {
-        return channelData;
+    private JSONObject translateGetChannel(JSONObject channelData, JSONObject userData) {
+        JSONObject result = new JSONObject();
+        channelData = channelData.getJSONArray("data").getJSONObject(0);
+        userData = userData.getJSONArray("data").getJSONObject(0);
+
+        result.put("_id", Long.parseLong(channelData.getString("broadcaster_id")));
+        result.put("broadcaster_language", channelData.getString("broadcaster_language"));
+        result.put("created_at", userData.getString("created_at"));
+        result.put("display_name", channelData.getString("broadcaster_name"));
+        result.put("followers", 0);
+        result.put("game", channelData.getString("game_name"));
+        result.put("language", channelData.getString("broadcaster_language"));
+        result.put("logo", userData.getString("profile_image_url"));
+        result.put("mature", false);
+        result.put("name", channelData.getString("broadcaster_login"));
+        result.put("partner", userData.getString("broadcaster_type").equals("partner"));
+        result.put("profile_banner", "");
+        result.put("profile_banner_background_color", "");
+        result.put("status", channelData.getString("title"));
+        result.put("updated_at", "");
+        result.put("url", "https://www.twitch.tv/" + channelData.getString("broadcaster_login"));
+        result.put("video_banner", "");
+        result.put("views", channelData.getLong("view_count"));
+
+        return result;
     }
 
     /**
@@ -162,7 +186,37 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateSearchGame(JSONObject gameData) {
-        return gameData;
+        JSONObject result = new JSONObject();
+        JSONArray games = new JSONArray();
+
+        for (int i = 0; i < gameData.getJSONArray("data").length(); i++) {
+            JSONObject data = gameData.getJSONArray("data").getJSONObject(i);
+            String logo = data.getString("box_art_url");
+
+            JSONObject boxart = new JSONObject();
+            boxart.put("template", logo);
+            boxart.put("large", logo.replaceAll("\\{width\\}", "272").replaceAll("\\{height\\}", "380"));
+            boxart.put("medium", logo.replaceAll("\\{width\\}", "136").replaceAll("\\{height\\}", "190"));
+            boxart.put("small", logo.replaceAll("\\{width\\}", "52").replaceAll("\\{height\\}", "72"));
+
+            JSONObject logos = new JSONObject();
+            logos.put("template", logo);
+            logos.put("large", logo.replaceAll("\\{width\\}", "240").replaceAll("\\{height\\}", "144"));
+            logos.put("medium", logo.replaceAll("\\{width\\}", "120").replaceAll("\\{height\\}", "72"));
+            logos.put("small", logo.replaceAll("\\{width\\}", "60").replaceAll("\\{height\\}", "36"));
+
+            JSONObject game = new JSONObject();
+            game.put("_id", Long.parseLong(data.getString("id")));
+            game.put("box", boxart);
+            game.put("giantbomb_id", 0);
+            game.put("logo", logos);
+            game.put("name", data.getString("name"));
+
+            games.put(game);
+        }
+
+        result.put("games", games);
+        return result;
     }
 
     /*
@@ -281,7 +335,19 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetUser(JSONObject userData) {
-        return userData;
+        JSONObject result = new JSONObject();
+        userData = userData.getJSONArray("data").getJSONObject(0);
+
+        result.put("_id", Long.parseLong(userData.getString("id")));
+        result.put("bio", userData.getString("description"));
+        result.put("created_at", userData.getString("created_at"));
+        result.put("display_name", userData.getString("display_name"));
+        result.put("logo", userData.getString("profile_image_url"));
+        result.put("name", userData.getString("login"));
+        result.put("type", userData.getString("type"));
+        result.put("updated_at", "");
+
+        return result;
     }
 
     /**
