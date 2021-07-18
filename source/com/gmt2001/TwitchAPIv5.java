@@ -252,7 +252,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONArray follows = new JSONArray();
 
-        result.put("_total", followData.getLong("total"));
+        result.put("_total", followData.getInt("total"));
         result.put("_cursor", followData.getJSONObject("pagination").getString("cursor"));
 
         for (int i = 0; i < followData.getJSONArray("data").length(); i++) {
@@ -305,7 +305,7 @@ public class TwitchAPIv5 {
         JSONArray subscriptions = new JSONArray();
         Date now = new Date();
 
-        result.put("_total", subscriptionData.getLong("total"));
+        result.put("_total", subscriptionData.getInt("total"));
 
         for (int i = 0; i < subscriptionData.getJSONArray("data").length(); i++) {
             JSONObject data = subscriptionData.getJSONArray("data").getJSONObject(i);
@@ -457,7 +457,7 @@ public class TwitchAPIv5 {
     }
 
     private JSONObject translateGetUserFollowsChannel(JSONObject followData) {
-        return followData;
+        return followData.getInt("total") == 1 ? this.translateGetChannelFollows(followData).getJSONArray("follows").getJSONObject(0) : new JSONObject();
     }
 
     /**
