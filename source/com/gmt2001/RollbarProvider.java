@@ -147,6 +147,8 @@ public class RollbarProvider implements AutoCloseable {
                             return false;
                         }
                     }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+        } else {
+            this.rollbar = null;
         }
     }
 
