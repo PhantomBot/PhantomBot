@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
@@ -78,12 +79,22 @@ public class TwitchAPIv5 {
     public JSONObject GetChannel(String channel) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.add(this.getIDFromChannel(channel));
-        return this.translateGetChannel(Helix.instance().getChannelInformationAsync(this.getIDFromChannel(channel)).block(),
-                Helix.instance().getUsersAsync(user_id, null).block());
-    }
+        Mono<JSONObject> channelDataMono = Helix.instance().getChannelInformationAsync(this.getIDFromChannel(channel));
+        Mono<JSONObject> userDataMono = Helix.instance().getUsersAsync(user_id, null);
+        Mono<JSONObject> followMono = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), 1, null);
 
-    private JSONObject translateGetChannel(JSONObject channelData, JSONObject userData) {
+        Mono.when(Arrays.asList(channelDataMono, userDataMono, followMono)).materialize().block();
+
+        JSONObject channelData = channelDataMono.block();
+        JSONObject userData = userDataMono.block();
+        JSONObject followData = followMono.block();
+
         JSONObject result = new JSONObject();
+
+        if (channelData == null || userData == null || followData == null) {
+            return result;
+        }
+
         channelData = channelData.getJSONArray("data").getJSONObject(0);
         userData = userData.getJSONArray("data").getJSONObject(0);
 
@@ -91,7 +102,7 @@ public class TwitchAPIv5 {
         result.put("broadcaster_language", channelData.getString("broadcaster_language"));
         result.put("created_at", userData.getString("created_at"));
         result.put("display_name", channelData.getString("broadcaster_name"));
-        result.put("followers", 0);
+        result.put("followers", followData.getInt("total"));
         result.put("game", channelData.getString("game_name"));
         result.put("language", channelData.getString("broadcaster_language"));
         result.put("logo", userData.getString("profile_image_url"));
@@ -184,11 +195,13 @@ public class TwitchAPIv5 {
      * Searches for a game.
      */
     public JSONObject SearchGame(String game) throws JSONException {
-        return this.translateSearchGame(Helix.instance().searchCategories(game, 20, null));
-    }
-
-    private JSONObject translateSearchGame(JSONObject gameData) {
+        JSONObject gameData = Helix.instance().searchCategoriesAsync(game, 20, null).block();
         JSONObject result = new JSONObject();
+
+        if (gameData == null) {
+            return result;
+        }
+
         JSONArray games = new JSONArray();
 
         for (int i = 0; i < gameData.getJSONArray("data").length(); i++) {
@@ -207,14 +220,14 @@ public class TwitchAPIv5 {
             logos.put("medium", logo.replaceAll("\\{width\\}", "120").replaceAll("\\{height\\}", "72"));
             logos.put("small", logo.replaceAll("\\{width\\}", "60").replaceAll("\\{height\\}", "36"));
 
-            JSONObject game = new JSONObject();
-            game.put("_id", Long.parseLong(data.getString("id")));
-            game.put("box", boxart);
-            game.put("giantbomb_id", 0);
-            game.put("logo", logos);
-            game.put("name", data.getString("name"));
+            JSONObject gameo = new JSONObject();
+            gameo.put("_id", Long.parseLong(data.getString("id")));
+            gameo.put("box", boxart);
+            gameo.put("giantbomb_id", 0);
+            gameo.put("logo", logos);
+            gameo.put("name", data.getString("name"));
 
-            games.put(game);
+            games.put(gameo);
         }
 
         result.put("games", games);
@@ -246,10 +259,16 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
-        return this.translateGetChannelFollows(Helix.instance().getUsersFollows(null, this.getIDFromChannel(channel), limit, null));
+        JSONObject followData = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), limit, null).block();
+
+        if (followData == null) {
+            return new JSONObject();
+        }
+
+        return this.translateFollowData(followData);
     }
 
-    private JSONObject translateGetChannelFollows(JSONObject followData) {
+    private JSONObject translateFollowData(JSONObject followData) {
         JSONObject result = new JSONObject();
         JSONArray follows = new JSONArray();
 
@@ -298,13 +317,14 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
-        return this.translateGetChannelSubscriptions(Helix.instance().getBroadcasterSubscriptions(this.getIDFromChannel(channel), null, limit, null));
-    }
-
-    private JSONObject translateGetChannelSubscriptions(JSONObject subscriptionData) {
+        JSONObject subscriptionData = Helix.instance().getBroadcasterSubscriptionsAsync(this.getIDFromChannel(channel), null, limit, null).block();
         JSONObject result = new JSONObject();
         JSONArray subscriptions = new JSONArray();
         Date now = new Date();
+
+        if (subscriptionData == null) {
+            return result;
+        }
 
         result.put("_total", subscriptionData.getInt("total"));
 
@@ -345,13 +365,8 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetStream(String channel) throws JSONException {
-        List<String> user_id = new ArrayList<>();
-        user_id.add(this.getIDFromChannel(channel));
-        return this.translateGetStream(Helix.instance().getStreams(1, null, null, user_id, null, null, null));
-    }
-
-    private JSONObject translateGetStream(JSONObject streamData) {
-        return streamData.getJSONArray("data").length() == 1 ? this.translateGetStreams(streamData).getJSONArray("streams").getJSONObject(0) : new JSONObject();
+        JSONObject streamData = this.GetStreams(channel);
+        return streamData.getJSONArray("streams").length() == 1 ? streamData.getJSONArray("streams").getJSONObject(0) : new JSONObject();
     }
 
     /**
@@ -363,11 +378,80 @@ public class TwitchAPIv5 {
     public JSONObject GetStreams(String channels) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.addAll(Arrays.asList(channels.split(",")));
-        return this.translateGetStreams(Helix.instance().getStreams(user_id.size(), null, null, user_id, null, null, null));
-    }
+        Mono<JSONObject> streamDataMono = Helix.instance().getStreamsAsync(user_id.size(), null, null, user_id, null, null, null);
+        Mono<JSONObject> userDataMono = Helix.instance().getUsersAsync(user_id, null);
 
-    private JSONObject translateGetStreams(JSONObject streamData) {
-        return streamData;
+        Mono.when(Arrays.asList(streamDataMono, userDataMono)).materialize().block();
+
+        JSONObject streamData = streamDataMono.block();
+        JSONObject userData = userDataMono.block();
+
+        JSONObject result = new JSONObject();
+        JSONArray streams = new JSONArray();
+
+        if (streamData == null || userData == null) {
+            return result;
+        }
+
+        for (int i = 0; i < streamData.getJSONArray("data").length(); i++) {
+            JSONObject data = streamData.getJSONArray("data").getJSONObject(i);
+            JSONObject udata = null;
+
+            for (int b = 0; b < userData.getJSONArray("data").length(); b++) {
+                if (userData.getJSONArray("data").getJSONObject(i).getString("id").equals(data.getString("user_id"))) {
+                    udata = userData.getJSONArray("data").getJSONObject(i);
+                    break;
+                }
+            }
+
+            if (udata == null) {
+                continue;
+            }
+
+            JSONObject stream = new JSONObject();
+            stream.put("_id", Long.parseLong(data.getString("id")));
+            stream.put("average_fps", 0);
+            stream.put("created_at", data.getString("started_at"));
+            stream.put("delay", 0);
+            stream.put("game", data.getString("game_name"));
+            stream.put("is_playlist", false);
+            stream.put("video_height", 0);
+            stream.put("viewers", data.getInt("viewer_count"));
+
+            JSONObject channel = new JSONObject();
+            channel.put("_id", Long.parseLong(udata.getString("id")));
+            channel.put("broadcaster_language", data.getString("language"));
+            channel.put("created_at", udata.getString("created_at"));
+            channel.put("display_name", udata.getString("display_name"));
+            channel.put("followers", 0);
+            channel.put("game", data.getString("game_name"));
+            channel.put("language", data.getString("language"));
+            channel.put("logo", udata.getString("profile_image_url"));
+            channel.put("mature", data.getBoolean("is_mature"));
+            channel.put("name", udata.getString("login"));
+            channel.put("partner", udata.getString("broadcaster_type").equals("partner"));
+            channel.put("profile_banner", "");
+            channel.put("profile_banner_background_color", "");
+            channel.put("status", data.getString("title"));
+            channel.put("updated_at", "");
+            channel.put("url", "https://www.twitch.tv/" + udata.getString("login"));
+            channel.put("video_banner", udata.getString("offline_image_url"));
+            channel.put("views", udata.getInt("view_count"));
+
+            JSONObject preview = new JSONObject();
+            String img = data.getString("thumbnail_url");
+            preview.put("template", img);
+            preview.put("large", img.replaceAll("\\{width\\}", "640").replaceAll("\\{height\\}", "360"));
+            preview.put("medium", img.replaceAll("\\{width\\}", "320").replaceAll("\\{height\\}", "180"));
+            preview.put("small", img.replaceAll("\\{width\\}", "80").replaceAll("\\{height\\}", "45"));
+
+            stream.put("channel", channel);
+            stream.put("preview", preview);
+            streams.put(stream);
+        }
+
+        result.put("streams", streams);
+        return result;
     }
 
     /**
@@ -458,11 +542,13 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetUserFollowsChannel(String user, String channel) throws JSONException {
-        return this.translateGetUserFollowsChannel(Helix.instance().getUsersFollows(this.getIDFromChannel(user), this.getIDFromChannel(channel), 1, null));
-    }
+        JSONObject followData = Helix.instance().getUsersFollowsAsync(this.getIDFromChannel(user), this.getIDFromChannel(channel), 1, null).block();
 
-    private JSONObject translateGetUserFollowsChannel(JSONObject followData) {
-        return followData.getInt("total") == 1 ? this.translateGetChannelFollows(followData).getJSONArray("follows").getJSONObject(0) : new JSONObject();
+        if (followData == null) {
+            return new JSONObject();
+        }
+
+        return followData.getInt("total") == 1 ? this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0) : new JSONObject();
     }
 
     /**
