@@ -349,7 +349,7 @@ public class Helix {
         return this.handleRequest(type, endPoint, "");
     }
 
-    private Mono<JSONObject> handleCallAsync(String callid, Supplier<JSONObject> action) {
+    private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
         return calls.computeIfAbsent(this.digest(callid), k -> {
             Calendar c = Calendar.getInstance();
             c.add(CACHE_TIME, Calendar.MILLISECOND);
@@ -421,7 +421,7 @@ public class Helix {
 
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
-        return this.handleCallAsync(endpoint, () -> {
+        return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(RequestType.GET, endpoint);
         });
     }
@@ -536,7 +536,7 @@ public class Helix {
 
         String endpoint = "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after);
 
-        return this.handleCallAsync(endpoint, () -> {
+        return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(RequestType.GET, endpoint);
         });
     }
@@ -594,7 +594,7 @@ public class Helix {
         String endpoint = "/users/follows?" + this.qspValid("from_id", from_id) + (both ? "&" : "")
                 + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after);
 
-        return this.handleCallAsync(endpoint, () -> {
+        return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(RequestType.GET, endpoint);
         });
     }
@@ -614,6 +614,24 @@ public class Helix {
      */
     public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
+        return this.getBroadcasterSubscriptionsAsync(broadcaster_id, user_id, first, after).block();
+    }
+
+    /**
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getBroadcasterSubscriptionsAsync(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -630,8 +648,12 @@ public class Helix {
             userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
         }
 
-        return this.handleRequest(RequestType.GET, "/subscriptions?broadcaster_id=" + broadcaster_id + "&first=" + first
-                + this.qspValid("&user_id", userIds) + this.qspValid("&after", after));
+        String endpoint = "/subscriptions?broadcaster_id=" + broadcaster_id + "&first=" + first
+                + this.qspValid("&user_id", userIds) + this.qspValid("&after", after);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -653,6 +675,29 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getStreams(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
+            @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
+        return this.getStreamsAsync(first, before, after, user_id, user_login, game_id, language).block();
+    }
+
+    /**
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or "other".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getStreamsAsync(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
             @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
         if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
             throw new IllegalArgumentException("can not use before and after at the same time");
@@ -688,8 +733,12 @@ public class Helix {
             languages = language.stream().limit(100).collect(Collectors.joining("&language="));
         }
 
-        return this.handleRequest(RequestType.GET, "/streams?first=" + first + this.qspValid("&after", after) + this.qspValid("&before", before)
-                + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages));
+        String endpoint = "/streams?first=" + first + this.qspValid("&after", after) + this.qspValid("&before", before)
+                + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -738,7 +787,7 @@ public class Helix {
         String endpoint = "/users" + (userIds != null || userLogins != null ? "?" : "") + this.qspValid("id", userIds)
                 + (both ? "&" : "") + this.qspValid("login", userLogins);
 
-        return this.handleCallAsync(endpoint, () -> {
+        return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(RequestType.GET, endpoint);
         });
     }
@@ -753,6 +802,19 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject startCommercial(String broadcaster_id, int length) throws JSONException, IllegalArgumentException {
+        return this.startCommercialAsync(broadcaster_id, length).block();
+    }
+
+    /**
+     * Starts a commercial on a specified channel.
+     *
+     * @param broadcaster_id ID of the channel requesting a commercial.
+     * @param length Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> startCommercialAsync(String broadcaster_id, int length) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -765,7 +827,11 @@ public class Helix {
 
         js.object().key("broadcaster_id").value(broadcaster_id).key("length").value(length).endObject();
 
-        return this.handleRequest(RequestType.POST, "/channels/commercial", js.toString());
+        String endpoint = "/channels/commercial";
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(RequestType.POST, endpoint, js.toString());
+        });
     }
 
     /**
@@ -778,11 +844,28 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getChannelEmotes(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        return this.getChannelEmotesAsync(broadcaster_id).block();
+    }
+
+    /**
+     * Gets all custom emotes for a specific Twitch channel including subscriber emotes, Bits tier emotes, and follower emotes. Custom channel emotes
+     * are custom emoticons that viewers may use in Twitch chat once they are subscribed to, cheered in, or followed the channel that owns the emotes.
+     *
+     * @param broadcaster_id The broadcaster whose emotes are being requested.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChannelEmotesAsync(String broadcaster_id) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
 
-        return this.handleRequest(RequestType.GET, "/chat/emotes?broadcaster_id=" + broadcaster_id);
+        String endpoint = "/chat/emotes?broadcaster_id=" + broadcaster_id;
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -792,7 +875,21 @@ public class Helix {
      * @throws JSONException
      */
     public JSONObject getGlobalEmotes() throws JSONException {
-        return this.handleRequest(RequestType.GET, "/chat/emotes/global");
+        return this.getGlobalEmotesAsync().block();
+    }
+
+    /**
+     * Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.
+     *
+     * @return
+     * @throws JSONException
+     */
+    public Mono<JSONObject> getGlobalEmotesAsync() throws JSONException {
+        String endpoint = "/chat/emotes/global";
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -804,7 +901,23 @@ public class Helix {
      * @throws JSONException
      */
     public JSONObject getCheermotes(@Nullable String broadcaster_id) throws JSONException {
-        return this.handleRequest(RequestType.GET, "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id));
+        return this.getCheermotesAsync(broadcaster_id).block();
+    }
+
+    /**
+     * Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat. Cheermotes returned are
+     * available throughout Twitch, in all Bits-enabled channels.
+     *
+     * @param broadcaster_id ID for the broadcaster who might own specialized Cheermotes.
+     * @return
+     * @throws JSONException
+     */
+    public Mono<JSONObject> getCheermotesAsync(@Nullable String broadcaster_id) throws JSONException {
+        String endpoint = "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -830,6 +943,34 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getVideos(@Nullable List<String> id, @Nullable String user_id, @Nullable String game_id, int first, @Nullable String before,
+            @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
+            throws JSONException, IllegalArgumentException {
+        return this.getVideosAsync(id, user_id, game_id, first, before, after, language, period, sort, type).block();
+    }
+
+    /**
+     * Gets video information by one or more video IDs, user ID, or game ID. For lookup by user or game, several filters are available that can be
+     * specified as query parameters. Each request must specify one or more video ids, one user_id, or one game_id. A request that uses video ids can
+     * not use any other parameter. If a game is specified, a maximum of 500 results are available.
+     *
+     * @param id ID of the video being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param user_id ID of the user who owns the video.
+     * @param game_id ID of the game the video is of.
+     * @param first Number of values to be returned when getting videos by user or game ID. Limit: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param language Language of the video being queried. Limit: 1. A language value must be either the ISO 639-1 two-letter code for a supported
+     * stream language or "other".
+     * @param period Period during which the video was created. Valid values: "all", "day", "week", "month". Default: "all".
+     * @param sort Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".
+     * @param type Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getVideosAsync(@Nullable List<String> id, @Nullable String user_id, @Nullable String game_id, int first, @Nullable String before,
             @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
             throws JSONException, IllegalArgumentException {
         if ((id == null || id.isEmpty()) && (user_id == null || user_id.isBlank()) && (game_id == null || game_id.isBlank())) {
@@ -886,10 +1027,14 @@ public class Helix {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
-        return this.handleRequest(RequestType.GET, "/videos?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
+        String endpoint = "/videos?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
                 + this.qspValid("&user_id", user_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
                 + this.qspValid("&before", before) + this.qspValid("&language", language) + this.qspValid("&period", period)
-                + this.qspValid("&sort", sort) + this.qspValid("&type", type));
+                + this.qspValid("&sort", sort) + this.qspValid("&type", type);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -901,11 +1046,27 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getChannelTeams(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        return this.getChannelTeamsAsync(broadcaster_id).block();
+    }
+
+    /**
+     * Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.
+     *
+     * @param broadcaster_id User ID for a Twitch user.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChannelTeamsAsync(String broadcaster_id) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
 
-        return this.handleRequest(RequestType.GET, "/teams/channel?broadcaster_id=" + broadcaster_id);
+        String endpoint = "/teams/channel?broadcaster_id=" + broadcaster_id;
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -918,6 +1079,19 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getTeams(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
+        return this.getTeamsAsync(name, id).block();
+    }
+
+    /**
+     * Gets information for a specific Twitch Team. One of the two query parameters must be specified to return Team information.
+     *
+     * @param name Team name.
+     * @param id Team ID.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getTeamsAsync(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
         if ((name == null || name.isBlank()) && (id == null || id.isBlank())) {
             throw new IllegalArgumentException("name or id");
         }
@@ -926,7 +1100,11 @@ public class Helix {
             throw new IllegalArgumentException("only one of name or id can be specified");
         }
 
-        return this.handleRequest(RequestType.GET, "/teams?" + this.qspValid("name", name) + this.qspValid("id", id));
+        String endpoint = "/teams?" + this.qspValid("name", name) + this.qspValid("id", id);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -950,6 +1128,32 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getClips(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
+            throws JSONException, IllegalArgumentException {
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at).block();
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips, in RFC3339 format. (The seconds value is ignored.) If this is specified, ended_at also
+     * should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
+     * started_at also must be specified; otherwise, the time period is ignored.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
             @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
             throws JSONException, IllegalArgumentException {
         if ((id == null || id.isEmpty()) && (broadcaster_id == null || broadcaster_id.isBlank()) && (game_id == null || game_id.isBlank())) {
@@ -998,9 +1202,13 @@ public class Helix {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
-        return this.handleRequest(RequestType.GET, "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
+        String endpoint = "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
                 + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
-                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at));
+                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
