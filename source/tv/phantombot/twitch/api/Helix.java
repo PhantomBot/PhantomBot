@@ -61,7 +61,7 @@ public class Helix {
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://api.twitch.tv/helix";
     // The user agent for our requests to Helix.
-    private static final String USER_AGENT = "PhantomBot/2018";
+    private static final String USER_AGENT = "PhantomBot/2021";
     // Our content type, should always be JSON.
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
@@ -92,7 +92,7 @@ public class Helix {
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        tp.scheduleWithFixedDelay(Helix::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
+        tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
     }
 
     public void setOAuth(String oauth) {
@@ -156,7 +156,7 @@ public class Helix {
             try {
                 while (!requestQueue.isEmpty()) {
                     waitForRateLimit().doOnSuccess(L -> {
-                        Mono processor = requestQueue.poll();
+                        Mono<JSONObject> processor = requestQueue.poll();
 
                         if (processor != null) {
                             processor.block();
@@ -349,7 +349,7 @@ public class Helix {
     }
 
     private Mono<JSONObject> handleCallAsync(String callid, Supplier<JSONObject> action) {
-        return calls.computeIfAbsent(callid, k -> {
+        return calls.computeIfAbsent(this.digest(callid), k -> {
             Calendar c = Calendar.getInstance();
             c.add(CACHE_TIME, Calendar.MILLISECOND);
             Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
@@ -386,16 +386,26 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject getChannelInformation(String broadcaster_id) throws JSONException, IllegalArgumentException {
+        return this.getChannelInformationAsync(broadcaster_id).block();
+    }
+
+    /**
+     * Gets channel information for users.
+     *
+     * @param broadcaster_id ID of the channel to be retrieved.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChannelInformationAsync(String broadcaster_id) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("channelId");
         }
 
-        return this.handleRequest(RequestType.GET, "/channels?broadcaster_id=" + broadcaster_id);
-    }
+        String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
-    public Mono<JSONObject> getChannelInformationAsync(String broadcaster_id) {
-        return this.handleCallAsync("getChannelInformation-" + broadcaster_id, () -> {
-            return getChannelInformation(broadcaster_id);
+        return this.handleCallAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
         });
     }
 
@@ -403,9 +413,9 @@ public class Helix {
      * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
      *
      * @param broadcaster_id ID of the channel to be updated.
-     * @param game_id The current game ID being played on the channel. Use “0” or “” (an empty string) to unset the game.
+     * @param game_id The current game ID being played on the channel. Use "0" or "" (an empty string) to unset the game.
      * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
-     * “other”.
+     * "other".
      * @param title The title of the stream. Value must not be an empty string.
      * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
      * 400 error.
@@ -473,8 +483,8 @@ public class Helix {
     }
 
     /**
-     * Gets information on follow relationships between two Twitch users. This can return information like “who is qotrok following,” “who is
-     * following qotrok,” or “is user X following user Y.” Information returned is sorted in order, most recent follow first. At minimum, from_id or
+     * Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
+     * following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
      * to_id must be provided for a query to be valid.
      *
      * @param from_id User ID. The request returns information about users who are being followed by the from_id user.
@@ -555,7 +565,7 @@ public class Helix {
      * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
      * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
      * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
-     * supported stream language or “other”.
+     * supported stream language or "other".
      * @return
      * @throws JSONException
      * @throws IllegalArgumentException
@@ -611,6 +621,20 @@ public class Helix {
      * @throws JSONException
      */
     public JSONObject getUsers(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
+        return this.getUsersAsync(id, login).block();
+    }
+
+    /**
+     * Gets information about one or more specified Twitch users. Users are identified by optional user IDs and/or login name. If neither a user ID
+     * nor a login name is specified, the user is looked up by Bearer token. Note: The limit of 100 IDs and login names is the total limit. You can
+     * request, for example, 50 of each or 100 of one of them. You cannot request 100 of both.
+     *
+     * @param id User ID. Multiple user IDs can be specified. Limit: 100.
+     * @param login User login name. Multiple login names can be specified. Limit: 100.
+     * @return
+     * @throws JSONException
+     */
+    public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
         String userIds = null;
 
         if (id != null && id.size() > 0) {
@@ -629,30 +653,11 @@ public class Helix {
             both = true;
         }
 
-        return this.handleRequest(RequestType.GET, "/users" + (userIds != null || userLogins != null ? "?" : "") + this.qspValid("id", userIds)
-                + (both ? "&" : "") + this.qspValid("login", userLogins));
-    }
+        String endpoint = "/users" + (userIds != null || userLogins != null ? "?" : "") + this.qspValid("id", userIds)
+                + (both ? "&" : "") + this.qspValid("login", userLogins);
 
-    public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) {
-        String userIds = "";
-
-        if (id != null && id.size() > 0) {
-            userIds = id.stream().limit(100).collect(Collectors.joining(""));
-        }
-
-        String userLogins = "";
-
-        if (login != null && login.size() > 0) {
-            userLogins = login.stream().limit(100 - (id != null ? id.stream().count() : 0)).collect(Collectors.joining(""));
-        }
-
-        String digest = "@self@";
-        if (!userIds.isBlank() || !userLogins.isBlank()) {
-            digest = this.digest(userIds + userLogins);
-        }
-
-        return this.handleCallAsync("getUsers-" + digest, () -> {
-            return getUsers(id, login);
+        return this.handleCallAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
         });
     }
 
@@ -734,7 +739,7 @@ public class Helix {
      * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
      * cursor value specified here is from the pagination response field of a prior query.
      * @param language Language of the video being queried. Limit: 1. A language value must be either the ISO 639-1 two-letter code for a supported
-     * stream language or “other”.
+     * stream language or "other".
      * @param period Period during which the video was created. Valid values: "all", "day", "week", "month". Default: "all".
      * @param sort Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".
      * @param type Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".
