@@ -473,10 +473,16 @@ public class TwitchAPIv5 {
     public JSONObject GetUser(String user) throws JSONException {
         List<String> user_login = new ArrayList<>();
         user_login.add(user);
-        return this.translateGetUser(Helix.instance().getUsersAsync(null, user_login).block());
+        JSONObject userData = Helix.instance().getUsersAsync(null, user_login).block();
+
+        if (userData == null) {
+            return new JSONObject();
+        }
+
+        return this.translateUserData(userData);
     }
 
-    private JSONObject translateGetUser(JSONObject userData) {
+    private JSONObject translateUserData(JSONObject userData) {
         JSONObject result = new JSONObject();
         userData = userData.getJSONArray("data").getJSONObject(0);
 
@@ -501,7 +507,13 @@ public class TwitchAPIv5 {
     public JSONObject GetUserByID(String userID) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.add(userID);
-        return this.translateGetUser(Helix.instance().getUsersAsync(user_id, null).block());
+        JSONObject userData = Helix.instance().getUsersAsync(user_id, null).block();
+
+        if (userData == null) {
+            return new JSONObject();
+        }
+
+        return this.translateUserData(userData);
     }
 
     /**
@@ -513,10 +525,12 @@ public class TwitchAPIv5 {
      * listed in the method description
      */
     public JSONObject RunCommercial(String channel, int length) throws JSONException {
-        return this.translateRunCommercial(Helix.instance().startCommercial(this.getIDFromChannel(channel), length));
-    }
+        JSONObject commercialData = Helix.instance().startCommercialAsync(this.getIDFromChannel(channel), length).block();
 
-    private JSONObject translateRunCommercial(JSONObject commercialData) {
+        if (commercialData == null) {
+            return new JSONObject();
+        }
+
         if (!commercialData.getString("message").isBlank()) {
             commercialData.put("_http", 422);
         }
@@ -557,20 +571,22 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetEmotes() throws JSONException {
-        JSONArray arr = Helix.instance().getGlobalEmotes().getJSONArray("data");
-        JSONObject jo2 = Helix.instance().getChannelEmotes(this.getIDFromChannel(PhantomBot.instance().getChannelName()));
+        JSONObject globalEmoteData = Helix.instance().getGlobalEmotesAsync().block();
+        JSONObject channelEmoteData = Helix.instance().getChannelEmotesAsync(this.getIDFromChannel(PhantomBot.instance().getChannelName())).block();
+        JSONObject result = new JSONObject();
 
-        if (jo2.getInt("_http") == 200) {
-            jo2.getJSONArray("data").forEach(obj -> {
+        if (globalEmoteData == null) {
+            return result;
+        }
+
+        JSONArray arr = globalEmoteData.getJSONArray("data");
+
+        if (channelEmoteData != null && channelEmoteData.getInt("_http") == 200) {
+            channelEmoteData.getJSONArray("data").forEach(obj -> {
                 arr.put(obj);
             });
         }
 
-        return this.translateGetEmotes(arr);
-    }
-
-    private JSONObject translateGetEmotes(JSONArray arr) {
-        JSONObject result = new JSONObject();
         JSONArray emoticons = new JSONArray();
 
         for (int i = 0; i < arr.length(); i++) {
@@ -604,11 +620,13 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetCheerEmotes() throws JSONException {
-        return this.translateGetCheerEmotes(Helix.instance().getCheermotes(null));
-    }
-
-    private JSONObject translateGetCheerEmotes(JSONObject cheerData) {
+        JSONObject cheerData = Helix.instance().getCheermotesAsync(null).block();
         JSONObject result = new JSONObject();
+
+        if (cheerData == null) {
+            return result;
+        }
+
         JSONArray actions = new JSONArray();
 
         for (int i = 0; i < cheerData.getJSONArray("data").length(); i++) {
