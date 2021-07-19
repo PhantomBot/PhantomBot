@@ -68,6 +68,7 @@ public class Helix {
     private static final int TIMEOUT_TIME = 5000;
     private static final int QUEUE_TIME = 5000;
     private static final int CACHE_TIME = 30000;
+    private static final int MUTATOR_CACHE_TIME = 1000;
 
     /**
      * Method that returns the instance of Helix.
@@ -364,6 +365,22 @@ public class Helix {
         }).processor;
     }
 
+    private Mono<JSONObject> handleMutatorAsync(String callid, Supplier<JSONObject> action) {
+        return calls.computeIfAbsent(this.digest(callid), k -> {
+            Calendar c = Calendar.getInstance();
+            c.add(MUTATOR_CACHE_TIME, Calendar.MILLISECOND);
+            Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
+                try {
+                    emitter.success(action.get());
+                } catch (JSONException | IllegalArgumentException ex) {
+                    emitter.error(ex);
+                }
+            }).cache();
+            requestQueue.add(processor);
+            return new CallRequest(c.getTime(), processor);
+        }).processor;
+    }
+
     private String digest(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -475,7 +492,7 @@ public class Helix {
 
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
-        return this.handleCallAsync(endpoint + js.toString(), () -> {
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(RequestType.PATCH, endpoint, js.toString());
         });
     }
