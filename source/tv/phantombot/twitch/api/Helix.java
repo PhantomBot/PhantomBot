@@ -425,6 +425,25 @@ public class Helix {
      */
     public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
             int delay) throws JSONException, IllegalArgumentException {
+        return this.updateChannelInformationAsync(broadcaster_id, game_id, language, title, delay).block();
+    }
+
+    /**
+     * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
+     *
+     * @param broadcaster_id ID of the channel to be updated.
+     * @param game_id The current game ID being played on the channel. Use "0" or "" (an empty string) to unset the game.
+     * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
+     * "other".
+     * @param title The title of the stream. Value must not be an empty string.
+     * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
+     * 400 error.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateChannelInformationAsync(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
+            int delay) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -454,7 +473,11 @@ public class Helix {
 
         js.endObject();
 
-        return this.handleRequest(RequestType.PATCH, "/channels?broadcaster_id=" + broadcaster_id, js.toString());
+        String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
+
+        return this.handleCallAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(RequestType.PATCH, endpoint, js.toString());
+        });
     }
 
     /**
@@ -469,6 +492,21 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public JSONObject searchCategories(String query, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
+        return this.searchCategoriesAsync(query, first, after).block();
+    }
+
+    /**
+     * Returns a list of games or categories that match the query via name either entirely or partially.
+     *
+     * @param query Search query.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> searchCategoriesAsync(String query, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("query");
         }
@@ -479,7 +517,11 @@ public class Helix {
 
         first = Math.max(1, Math.min(100, first));
 
-        return this.handleRequest(RequestType.GET, "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after));
+        String endpoint = "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after);
+
+        return this.handleCallAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
@@ -498,6 +540,25 @@ public class Helix {
      */
     public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
+        return this.getUsersFollowsAsync(from_id, to_id, first, after).block();
+    }
+
+    /**
+     * Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
+     * following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
+     * to_id must be provided for a query to be valid.
+     *
+     * @param from_id User ID. The request returns information about users who are being followed by the from_id user.
+     * @param to_id User ID. The request returns information about users who are following the to_id user.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getUsersFollowsAsync(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
         if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {
             throw new IllegalArgumentException("from_id or to_id");
         }
@@ -513,8 +574,12 @@ public class Helix {
             both = true;
         }
 
-        return this.handleRequest(RequestType.GET, "/users/follows?" + this.qspValid("from_id", from_id) + (both ? "&" : "")
-                + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after));
+        String endpoint = "/users/follows?" + this.qspValid("from_id", from_id) + (both ? "&" : "")
+                + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after);
+
+        return this.handleCallAsync(endpoint, () -> {
+            return this.handleRequest(RequestType.GET, endpoint);
+        });
     }
 
     /**
