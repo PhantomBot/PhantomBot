@@ -131,7 +131,7 @@
             } else if (channelData.isNull('status') && channelData.getInt('_http') == 200) {
                 return $.lang.get('common.twitch.no.status');
             }
-            $.log.error('Failed to get the current status: ' + channelData.getString('message'));
+            $.log.error('Failed to get the current status: ' + channelData.optString('message', 'no message'));
             return '';
         }
     }
