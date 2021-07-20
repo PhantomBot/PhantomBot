@@ -485,29 +485,6 @@
         }
     }
 
-    /**
-     * @function updateStatus
-     * @export $
-     * @param {string} channelName
-     * @param {string} communities
-     * @param {string} sender
-     * @param {boolean} silent
-     */
-    function updateCommunity(channelName, communities, sender, silent) {
-        var http = $.twitch.UpdateCommunities(channelName, communities);
-
-        if (http.getBoolean('_success') && http.getInt('_http') == 204) {
-            if (!silent) {
-                $.say($.lang.get('common.communities.change'));
-            }
-            $.twitchcache.setCommunities(communities);
-            $.inidb.set('streamInfo', 'communities', communities.join(', '));
-        } else {
-            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
-            $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
-        }
-    }
-
     /** Export functions to API */
     $.getPlayTime = getPlayTime;
     $.getFollows = getFollows;
@@ -521,7 +498,6 @@
     $.isOnline = isOnline;
     $.updateGame = updateGame;
     $.updateStatus = updateStatus;
-    $.updateCommunity = updateCommunity;
     $.getFollowAge = getFollowAge;
     $.getFollowDate = getFollowDate;
     $.getChannelAge = getChannelAge;

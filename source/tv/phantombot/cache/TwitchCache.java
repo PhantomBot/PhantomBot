@@ -66,7 +66,6 @@ public class TwitchCache implements Runnable {
     private String streamTitle = "Some Title";
     private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
-    private String[] communities = new String[3];
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
     private int views = 0;
@@ -410,20 +409,6 @@ public class TwitchCache implements Runnable {
             com.gmt2001.Console.debug.println(ex);
         }
 
-        /* Update communities */
-        try {
-            JSONObject object = TwitchAPIv5.instance().GetCommunities(this.channel);
-            if (object.has("communities") && object.getJSONArray("communities").length() > 0) {
-                JSONArray array = object.getJSONArray("communities");
-                for (int i = 0; i < array.length(); i++) {
-                    communities[i] = array.getJSONObject(i).getString("name");
-                }
-            }
-            this.communities = communities;
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: Failed to get communities: " + ex.getMessage());
-        }
-
         if (PhantomBot.twitchCacheReady.equals("false") && success) {
             com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
             PhantomBot.instance().setTwitchCacheReady("true");
@@ -525,20 +510,6 @@ public class TwitchCache implements Runnable {
      */
     public int getViews() {
         return this.views;
-    }
-
-    /**
-     * Set the communities
-     */
-    public void setCommunities(String[] communities) {
-        this.communities = communities;
-    }
-
-    /**
-     * Returns an array of communities if set.
-     */
-    public String[] getCommunities() {
-        return this.communities;
     }
 
     /**
