@@ -137,7 +137,7 @@ public class TwitchAPIv5 {
         result.put("updated_at", "");
         result.put("url", "https://www.twitch.tv/" + channelData.getString("broadcaster_login"));
         result.put("video_banner", "");
-        result.put("views", channelData.getLong("view_count"));
+        result.put("views", userData.getLong("view_count"));
 
         return result;
     }
@@ -404,7 +404,7 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetStream(String channel) throws JSONException {
-        JSONObject streamData = this.GetStreams(channel);
+        JSONObject streamData = this.GetStreams(this.getIDFromChannel(channel));
         return streamData.has("streams") && streamData.getJSONArray("streams").length() == 1 ? streamData.getJSONArray("streams").getJSONObject(0) : new JSONObject();
     }
 
