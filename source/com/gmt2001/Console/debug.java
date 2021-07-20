@@ -30,6 +30,32 @@ public final class debug {
     private debug() {
     }
 
+    static StackTraceElement findCaller() {
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        for (StackTraceElement st1 : st) {
+            if (!st1.getClassName().startsWith("com.gmt2001.Console") && !st1.getMethodName().startsWith("getStackTrace")
+                    && !st1.getClassName().startsWith("reactor.")) {
+                return st1;
+            }
+        }
+
+        return st.length >= 4 ? st[3] : st[0];
+    }
+
+    public static StackTraceElement findCaller(String myClassName) {
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        StackTraceElement foundme = null;
+        for (StackTraceElement st1 : st) {
+            if (st1.getClassName().startsWith(myClassName)) {
+                foundme = st1;
+            } else if (foundme != null && !st1.getClassName().startsWith("reactor.")) {
+                return st1;
+            }
+        }
+
+        return foundme != null ? foundme : st[0];
+    }
+
     public static void println() {
         if (PhantomBot.getEnableDebugging()) {
             Logger.instance().log(Logger.LogType.Debug, "");
@@ -56,11 +82,9 @@ public final class debug {
     public static void println(Object o, Boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+            StackTraceElement st = findCaller();
 
-            stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
+            stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
@@ -69,19 +93,15 @@ public final class debug {
             }
         }
     }
-
     public static void logln(Object o) {
         logln(o, false);
     }
-
     public static void logln(Object o, Boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-            int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+            StackTraceElement st = findCaller();
 
-            stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
+            stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
         }

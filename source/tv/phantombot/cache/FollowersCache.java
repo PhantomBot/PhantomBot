@@ -90,6 +90,7 @@ public class FollowersCache implements Runnable {
                 } catch (Exception ex) {
                     checkLastFail();
                     com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + ex.getMessage());
+                    com.gmt2001.Console.debug.printStackTrace(ex);
                 }
             } catch (Exception ex) {
                 com.gmt2001.Console.err.println("FollowersCache.run: Failed to update followers [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());

@@ -242,18 +242,6 @@
         }
 
         /*
-         * Sets the community on stream
-         */
-        if (command.equalsIgnoreCase('setcommunitysilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            var argsString = args.join(' ').split(', ');
-            $.updateCommunity($.channelName, argsString, sender, true);
-            return;
-        }
-
-        /*
          * Reloads the adventure variables.
          */
         if (command.equalsIgnoreCase('reloadadventure')) {
