@@ -162,13 +162,7 @@ public class Helix {
         if (!lock.isHeldByCurrentThread() && lock.tryLock()) {
             try {
                 while (!requestQueue.isEmpty()) {
-                    waitForRateLimit().doOnSuccess(L -> {
-                        Mono<JSONObject> processor = requestQueue.poll();
-
-                        if (processor != null) {
-                            processor.block();
-                        }
-                    }).subscribe();
+                    waitForRateLimit().then(requestQueue.poll()).block();
                 }
 
                 Date d = Calendar.getInstance().getTime();
