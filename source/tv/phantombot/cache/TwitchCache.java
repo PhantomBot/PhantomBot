@@ -1,6 +1,6 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
-/*
+ /*
  * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,15 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
+ /*
  * @author illusionaryone
  */
-
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.ImgDownload;
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -47,8 +48,8 @@ import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 /**
  * TwitchCache Class
  *
- * This class keeps track of certain Twitch information such as if the channel is online or not
- * and sends events to the JS side to indicate when the channel has gone off or online.
+ * This class keeps track of certain Twitch information such as if the channel is online or not and sends events to the JS side to indicate when the
+ * channel has gone off or online.
  */
 public class TwitchCache implements Runnable {
 
@@ -74,8 +75,8 @@ public class TwitchCache implements Runnable {
     /**
      * Creates an instance for a channel.
      *
-     * @param   channel      Name of the Twitch Channel for which this instance is created.
-     * @return  TwitchCache  The new TwitchCache instance object.
+     * @param channel Name of the Twitch Channel for which this instance is created.
+     * @return TwitchCache The new TwitchCache instance object.
      */
     public static TwitchCache instance(String channel) {
         TwitchCache instance = instances.get(channel);
@@ -90,7 +91,7 @@ public class TwitchCache implements Runnable {
     /**
      * Constructor for TwitchCache object.
      *
-     * @param  channel  Name of the Twitch Channel for which this object is created.
+     * @param channel Name of the Twitch Channel for which this object is created.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchCache(String channel) {
@@ -109,9 +110,8 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitch API.  This loop runs every 30 seconds, querying data
-     * from Twitch.
+     * Thread run instance. This is the main loop for the thread that is created to manage retrieving data from the Twitch API. This loop runs every
+     * 30 seconds, querying data from Twitch.
      */
     @Override
     @SuppressWarnings("SleepWhileInLoop")
@@ -142,13 +142,10 @@ public class TwitchCache implements Runnable {
 
         while (!killed) {
             try {
-                try {
-                    this.updateCache();
-                } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
-                }
+                this.updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.printStackTrace(ex);
             }
 
             if (doUpdateClips) {
@@ -171,12 +168,10 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Polls the Clips endppint, trying to find the most recent clip.  Note that because Twitch
-     * reports by the viewcount, and has a limit of 100 clips, it is possible to miss the most
-     * recent clip until it has views.
+     * Polls the Clips endppint, trying to find the most recent clip. Note that because Twitch reports by the viewcount, and has a limit of 100 clips,
+     * it is possible to miss the most recent clip until it has views.
      *
-     * We do not throw an exception because this is not a critical function unlike the gathering
-     * of data via the updateCache() method.
+     * We do not throw an exception because this is not a critical function unlike the gathering of data via the updateCache() method.
      */
     private void updateClips() throws JSONException {
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
@@ -224,21 +219,20 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Polls the Twitch API and updates the database cache with information.  This method also
-     * sends events when appropriate.
+     * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
     private void updateCache() throws Exception {
         Boolean success = true;
         Boolean isOnline = false;
         Boolean sentTwitchOnlineEvent = false;
-        String  gameTitle = "";
-        String  streamTitle = "";
-        String  previewLink = "";
-        String  logoLink = "";
+        String gameTitle = "";
+        String streamTitle = "";
+        String previewLink = "";
+        String logoLink = "";
         String[] communities = new String[3];
-        Date    streamCreatedDate = new Date();
-        Date    currentDate = new Date();
-        long    streamUptimeSeconds = 0L;
+        Date streamCreatedDate = new Date();
+        Date currentDate = new Date();
+        long streamUptimeSeconds = 0L;
 
         com.gmt2001.Console.debug.println("TwitchCache::updateCache");
 
@@ -269,9 +263,10 @@ public class TwitchCache implements Runnable {
                         streamUptimeSeconds = (long) (Math.floor(currentDate.getTime() - streamCreatedDate.getTime()) / 1000);
                         this.streamUptimeSeconds = streamUptimeSeconds;
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
-                    } catch (Exception ex) {
+                    } catch (ParseException | JSONException ex) {
                         success = false;
                         com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.debug.printStackTrace(ex);
                     }
 
                     /* Determine the preview link. */
@@ -279,8 +274,7 @@ public class TwitchCache implements Runnable {
                     this.previewLink = previewLink;
 
                     /* Get the viewer count. */
-                    viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
-                    this.viewerCount = viewerCount;
+                    this.viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
                 } else {
                     streamUptimeSeconds = 0L;
                     this.streamUptimeSeconds = streamUptimeSeconds;
@@ -296,8 +290,9 @@ public class TwitchCache implements Runnable {
                     com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
                 }
             }
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
+            com.gmt2001.Console.debug.printStackTrace(ex);
             success = false;
         }
 
@@ -397,8 +392,9 @@ public class TwitchCache implements Runnable {
                     com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException | JSONException ex) {
             com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
+            com.gmt2001.Console.debug.printStackTrace(ex);
             success = false;
         }
 
@@ -454,7 +450,7 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Sets the game title.  Useful for when !game is used.
+     * Sets the game title. Useful for when !game is used.
      */
     public void setGameTitle(String gameTitle) {
         forcedGameTitleUpdate = true;
@@ -470,13 +466,14 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Sets the title (status) of the stream.  Useful for when !title is used.
+     * Sets the title (status) of the stream. Useful for when !title is used.
      */
     public void setStreamStatus(String streamTitle) {
         forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
         EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
     }
+
     /**
      * Returns the display name of the streamer.
      */
@@ -531,19 +528,19 @@ public class TwitchCache implements Runnable {
     /**
      * Gets a string from the database. Simply a wrapper around the PhantomBot instance.
      *
-     * @param   String  The database key to search for in the streamInfo table.
-     * @return  String  Returns the found value or null.
+     * @param String The database key to search for in the streamInfo table.
+     * @return String Returns the found value or null.
      */
     private String getDBString(String dbKey) {
         return PhantomBot.instance().getDataStore().GetString("streamInfo", "", dbKey);
     }
 
     /**
-     * Sets a string into the database.  Simply a wrapper around the PhantomBot instance.
+     * Sets a string into the database. Simply a wrapper around the PhantomBot instance.
      *
-     * @param   String  The database key to use for inserting the value into the streamInfo table.
-     * @param   String  The value to insert.
-     * @return  String  Returns the found value or null.
+     * @param String The database key to use for inserting the value into the streamInfo table.
+     * @param String The value to insert.
+     * @return String Returns the found value or null.
      */
     private void setDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("streamInfo", "", dbKey, dbValue);
