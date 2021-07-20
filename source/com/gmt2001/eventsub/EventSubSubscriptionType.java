@@ -57,7 +57,7 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public Mono delete() {
+    public Mono<Void> delete() {
         this.validateParameters();
         return EventSub.instance().deleteSubscription(this.findMatchingSubscriptionId());
     }

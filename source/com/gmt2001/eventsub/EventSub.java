@@ -289,8 +289,8 @@ public final class EventSub implements HttpRequestHandler {
      * @param id The id of the subscription to delete
      * @return
      */
-    public Mono deleteSubscription(String id) {
-        return Mono.create(emitter -> {
+    public Mono<Void> deleteSubscription(String id) {
+        return Mono.<Void>create(emitter -> {
             try {
                 JSONObject response = this.doRequest(EventSub.RequestType.DELETE, "?id=" + id, "");
 

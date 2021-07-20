@@ -354,7 +354,11 @@ public class RollbarProvider implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-        this.rollbar.close(true);
+    public void close() {
+        try {
+            this.rollbar.close(true);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 }
