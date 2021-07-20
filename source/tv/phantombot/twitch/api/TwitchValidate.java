@@ -332,17 +332,18 @@ public class TwitchValidate {
         public void run() {
             try {
                 JSONObject requestObj = handleRequest(oAuthToken);
-                com.gmt2001.Console.debug.println(type + requestObj.toString());
+                com.gmt2001.Console.debug.println(type + requestObj.toString(4));
 
                 if (requestObj.has("message") && requestObj.getString("message").equals("invalid access token")) {
                     com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "
                             + "been disabled, or the Twitch API is experiencing issues.");
+                    com.gmt2001.Console.debug.println(requestObj.toString(4));
                     return;
                 }
 
                 if (!requestObj.getBoolean("_success")) {
                     com.gmt2001.Console.err.println("Attempt to validate " + type + " OAUTH token failed.");
-                    com.gmt2001.Console.err.println("http=" + requestObj.getInt("_http") + "; exception=" + requestObj.getString("_exception") + "; exceptionMessage=" + requestObj.getString("_exceptionMessage"));
+                    com.gmt2001.Console.debug.println(requestObj.toString(4));
                     return;
                 }
 
