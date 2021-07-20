@@ -287,9 +287,10 @@ public class Helix {
             // Get our response code.
             responseCode = connection.getResponseCode();
 
-            // Get the current rate limits.
-            com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
-                    + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
+            if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
+                        + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
+            }
             // Handle the current limits.
             this.updateRateLimits(connection.getHeaderFieldInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
                     connection.getHeaderFieldInt("Ratelimit-Remaining", 1),
@@ -329,7 +330,9 @@ public class Helix {
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
-        com.gmt2001.Console.debug.println(returnObject.toString(4));
+        if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+            com.gmt2001.Console.debug.println(returnObject.toString(4));
+        }
 
         return returnObject;
     }
