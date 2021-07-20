@@ -103,7 +103,7 @@ public class Helix {
     }
 
     public void setOAuth(String oauth) {
-        this.oAuthToken = oauth;
+        this.oAuthToken = oauth.replaceFirst("oauth:", "");
     }
 
     /**
@@ -328,6 +328,8 @@ public class Helix {
             com.gmt2001.Console.warn.println("Helix rejected a request [" + endPoint + "] " + returnObject.optInt("status", 0) + " "
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
+
+        com.gmt2001.Console.debug.println(returnObject.toString(4));
 
         return returnObject;
     }
