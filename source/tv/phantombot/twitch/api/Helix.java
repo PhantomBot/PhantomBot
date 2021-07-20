@@ -93,7 +93,9 @@ public class Helix {
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
+        tp.schedule(() -> {
+            tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
+        }, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void setOAuth(String oauth) {
