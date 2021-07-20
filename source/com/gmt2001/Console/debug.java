@@ -30,7 +30,8 @@ public final class debug {
     static StackTraceElement findCaller() {
         StackTraceElement[] st = Thread.currentThread().getStackTrace();
         for (StackTraceElement st1 : st) {
-            if (!st1.getClassName().startsWith("com.gmt2001.Console") && !st1.getMethodName().startsWith("getStackTrace")) {
+            if (!st1.getClassName().startsWith("com.gmt2001.Console") && !st1.getMethodName().startsWith("getStackTrace")
+                    && !st1.getClassName().startsWith("reactor.")) {
                 return st1;
             }
         }
@@ -44,7 +45,7 @@ public final class debug {
         for (StackTraceElement st1 : st) {
             if (st1.getClassName().startsWith(myClassName)) {
                 foundme = st1;
-            } else if (foundme != null) {
+            } else if (foundme != null && !st1.getClassName().startsWith("reactor.")) {
                 return st1;
             }
         }
