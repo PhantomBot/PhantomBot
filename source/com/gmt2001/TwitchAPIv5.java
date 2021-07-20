@@ -134,10 +134,18 @@ public class TwitchAPIv5 {
     }
 
     public JSONObject UpdateChannel(String channel, String oauth, String status, String game) throws JSONException {
+        if (oauth != null && !oauth.isBlank()) {
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
+        }
+
         return UpdateChannel(channel, status, game, -1);
     }
 
     public JSONObject UpdateChannel(String channel, String oauth, String status, String game, int delay) throws JSONException {
+        if (oauth != null && !oauth.isBlank()) {
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
+        }
+
         return UpdateChannel(channel, status, game, delay);
     }
 
@@ -356,6 +364,10 @@ public class TwitchAPIv5 {
     }
 
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending, String oauth) throws JSONException {
+        if (oauth != null && !oauth.isBlank()) {
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
+        }
+
         return GetChannelSubscriptions(channel, limit, offset, ascending);
     }
 
@@ -989,6 +1001,45 @@ public class TwitchAPIv5 {
             JSONObject data = clipsData.getJSONArray("data").getJSONObject(i);
             JSONObject clip = new JSONObject();
 
+            clip.put("slug", data.getString("id"));
+            clip.put("tracking_id", "");
+            clip.put("url", data.getString("url"));
+            clip.put("embed_url", data.getString("embed_url"));
+            clip.put("embed_html", "<iframe src='" + data.getString("embed_url") + "' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>");
+            clip.put("game", "game_id:" + data.getString("game_id"));
+            clip.put("language", data.getString("language"));
+            clip.put("title", data.getString("title"));
+            clip.put("views", data.getInt("view_count"));
+            clip.put("duration", data.getFloat("duration"));
+            clip.put("created_at", data.getString("created_at"));
+
+            JSONObject broadcaster = new JSONObject();
+            broadcaster.put("id", data.getString("broadcaster_id"));
+            broadcaster.put("name", data.getString("broadcaster_name"));
+            broadcaster.put("display_name", data.getString("broadcaster_name"));
+            broadcaster.put("channel_url", "https://www.twitch.tv/" + data.getString("broadcaster_name"));
+            broadcaster.put("logo", "");
+
+            JSONObject curator = new JSONObject();
+            curator.put("id", data.getString("creator_id"));
+            curator.put("name", data.getString("creator_name"));
+            curator.put("display_name", data.getString("creator_name"));
+            curator.put("channel_url", "https://www.twitch.tv/" + data.getString("creator_name"));
+            curator.put("logo", "");
+
+            JSONObject vod = new JSONObject();
+            vod.put("id", data.getString("video_id"));
+            vod.put("url", "https://www.twitch.tv/videos/" + data.getString("video_id"));
+
+            JSONObject thumbnails = new JSONObject();
+            thumbnails.put("medium", data.getString("thumbnail_url"));
+            thumbnails.put("small", data.getString("thumbnail_url"));
+            thumbnails.put("tiny", data.getString("thumbnail_url"));
+
+            clip.put("broadcaster", broadcaster);
+            clip.put("curator", curator);
+            clip.put("vod", vod);
+            clip.put("thumbnails", thumbnails);
             clips.put(clip);
         }
 
@@ -1110,7 +1161,7 @@ public class TwitchAPIv5 {
      * @return String The name of the user or null to indicate that there was an error.
      */
     public String GetUserFromOauth(String userOauth) throws JSONException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("The oauth parameter in is no longer supported");
     }
 
     /**
