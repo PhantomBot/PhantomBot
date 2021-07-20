@@ -51,100 +51,105 @@ public class RollbarProvider implements AutoCloseable {
     private boolean enabled = false;
 
     private RollbarProvider() {
-        this.rollbar = Rollbar.init(ConfigBuilder.withAccessToken(ACCESS_TOKEN).endpoint(ENDPOINT)
-                .codeVersion(RepoVersion.getBuildType().equals("stable") ? RepoVersion.getPhantomBotVersion() : RepoVersion.getRepoVersion())
-                .environment(RepoVersion.getBuildTypeWithDocker()).platform(RollbarProvider.determinePlatform())
-                .server(() -> {
-                    Map<String, Object> metadata = new HashMap<>();
-                    metadata.put("cpu", System.getProperty("os.arch", "unknown"));
-                    metadata.put("java.home", System.getProperty("java.home", "unknown"));
-                    metadata.put("java.specification.name", System.getProperty("java.specification.name", "unknown"));
-                    metadata.put("java.specification.vendor", System.getProperty("java.specification.vendor", "unknown"));
-                    metadata.put("java.specification.version", System.getProperty("java.specification.version", "unknown"));
-                    metadata.put("java.vendor", System.getProperty("java.vendor", "unknown"));
-                    metadata.put("java.version", System.getProperty("java.version", "unknown"));
-                    metadata.put("os.arch", System.getProperty("os.arch", "unknown"));
-                    metadata.put("os.name", System.getProperty("os.name", "unknown"));
-                    metadata.put("os.version", System.getProperty("os.version", "unknown"));
-                    return new Server.Builder().metadata(metadata).build();
-                })
-                .person(() -> {
-                    Map<String, Object> metadata = new HashMap<>();
-                    String username = "";
-                    if (PhantomBot.instance() != null) {
-                        metadata.put("user", PhantomBot.instance().getBotName());
-                        metadata.put("channel", PhantomBot.instance().getChannelName());
-                        username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
-                    }
-
-                    return new Person.Builder().id(RollbarProvider.getId()).username(username).metadata(metadata).build();
-                })
-                .custom(() -> {
-                    Map<String, Object> metadata = new HashMap<>();
-                    if (PhantomBot.instance() != null) {
-                        metadata.put("phantombot.datastore", PhantomBot.instance().getDataStoreType());
-                        metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
-                        metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
-                        metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
-
-                        PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
-                            if (RollbarProvider.SEND_VALUES.contains(s)) {
-                                metadata.put("config." + s, PhantomBot.instance().getProperties().getProperty(s));
-                            } else {
-                                metadata.put("config." + s, "set");
-                            }
-                        });
-                    } else {
-                        metadata.put("phantombot.instance", "null");
-                    }
-
-                    return metadata;
-                })
-                .filter(new Filter() {
-                    @Override
-                    public boolean preProcess(Level level, @Nullable Throwable error, @Nullable Map<String, Object> custom, @Nullable String description) {
-                        if (!level.equals(Level.ERROR) && !level.equals(Level.CRITICAL)) {
-                            return true;
+        if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
+                && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
+            this.rollbar = Rollbar.init(ConfigBuilder.withAccessToken(ACCESS_TOKEN).endpoint(ENDPOINT)
+                    .codeVersion(RepoVersion.getBuildType().equals("stable") ? RepoVersion.getPhantomBotVersion() : RepoVersion.getRepoVersion())
+                    .environment(RepoVersion.getBuildTypeWithDocker()).platform(RollbarProvider.determinePlatform())
+                    .server(() -> {
+                        Map<String, Object> metadata = new HashMap<>();
+                        metadata.put("cpu", System.getProperty("os.arch", "unknown"));
+                        metadata.put("java.home", System.getProperty("java.home", "unknown"));
+                        metadata.put("java.specification.name", System.getProperty("java.specification.name", "unknown"));
+                        metadata.put("java.specification.vendor", System.getProperty("java.specification.vendor", "unknown"));
+                        metadata.put("java.specification.version", System.getProperty("java.specification.version", "unknown"));
+                        metadata.put("java.vendor", System.getProperty("java.vendor", "unknown"));
+                        metadata.put("java.version", System.getProperty("java.version", "unknown"));
+                        metadata.put("os.arch", System.getProperty("os.arch", "unknown"));
+                        metadata.put("os.name", System.getProperty("os.name", "unknown"));
+                        metadata.put("os.version", System.getProperty("os.version", "unknown"));
+                        return new Server.Builder().metadata(metadata).build();
+                    })
+                    .person(() -> {
+                        Map<String, Object> metadata = new HashMap<>();
+                        String username = "";
+                        if (PhantomBot.instance() != null) {
+                            metadata.put("user", PhantomBot.instance().getBotName());
+                            metadata.put("channel", PhantomBot.instance().getChannelName());
+                            username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
                         }
 
-                        if (error != null) {
-                            if (error.getClass().getName().startsWith("org.mozilla.javascript")
-                                    || (error.getStackTrace().length >= 4
-                                    && error.getStackTrace()[3].getClassName().startsWith("org.mozilla.javascript"))) {
-                                return true;
-                            }
+                        return new Person.Builder().id(RollbarProvider.getId()).username(username).metadata(metadata).build();
+                    })
+                    .custom(() -> {
+                        Map<String, Object> metadata = new HashMap<>();
+                        if (PhantomBot.instance() != null) {
+                            metadata.put("phantombot.datastore", PhantomBot.instance().getDataStoreType());
+                            metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
+                            metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
+                            metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
 
-                            if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
-                                return true;
-                            }
-
-                            if (error.getClass().equals(java.lang.Exception.class)
-                                    && error.getStackTrace()[0].getClassName().equals(reactor.netty.channel.ChannelOperations.class.getName())
-                                    && error.getStackTrace()[0].getMethodName().equals("terminate")) {
-                                return true;
-                            }
-
-                            if (error.getClass().equals(discord4j.common.close.CloseException.class)) {
-                                return true;
-                            }
-
-                            if (error.getClass().equals(java.io.IOException.class)
-                                    && error.getStackTrace()[0].getClassName().equals("java.base/sun.nio.ch.SocketDispatcher")
-                                    && error.getStackTrace()[0].getMethodName().equals("read0")) {
-                                return true;
-                            }
+                            PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
+                                if (RollbarProvider.SEND_VALUES.contains(s)) {
+                                    metadata.put("config." + s, PhantomBot.instance().getProperties().getProperty(s));
+                                } else {
+                                    metadata.put("config." + s, "set");
+                                }
+                            });
+                        } else {
+                            metadata.put("phantombot.instance", "null");
                         }
 
-                        com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+                        return metadata;
+                    })
+                    .filter(new Filter() {
+                        @Override
+                        public boolean preProcess(Level level, @Nullable Throwable error, @Nullable Map<String, Object> custom, @Nullable String description) {
+                            if (!level.equals(Level.ERROR) && !level.equals(Level.CRITICAL)) {
+                                return true;
+                            }
 
-                        return false;
-                    }
+                            if (error != null) {
+                                if (error.getClass().getName().startsWith("org.mozilla.javascript")
+                                        || (error.getStackTrace().length >= 4
+                                        && error.getStackTrace()[3].getClassName().startsWith("org.mozilla.javascript"))) {
+                                    return true;
+                                }
 
-                    @Override
-                    public boolean postProcess(Data data) {
-                        return false;
-                    }
-                }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+                                if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.Exception.class)
+                                        && error.getStackTrace()[0].getClassName().equals(reactor.netty.channel.ChannelOperations.class.getName())
+                                        && error.getStackTrace()[0].getMethodName().equals("terminate")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(discord4j.common.close.CloseException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.IOException.class)
+                                        && error.getStackTrace()[0].getClassName().equals("java.base/sun.nio.ch.SocketDispatcher")
+                                        && error.getStackTrace()[0].getMethodName().equals("read0")) {
+                                    return true;
+                                }
+                            }
+
+                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+
+                            return false;
+                        }
+
+                        @Override
+                        public boolean postProcess(Data data) {
+                            return false;
+                        }
+                    }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+        } else {
+            this.rollbar = null;
+        }
     }
 
     public static RollbarProvider instance() {

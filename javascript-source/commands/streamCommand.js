@@ -76,18 +76,6 @@
         }
 
         /*
-         * @commandpath setcommunities [communities] - Set your Twitch communities.
-         */
-        if (command.equalsIgnoreCase('setcommunities')) {
-            if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.communities.set.usage', $.twitchcache.getCommunities().join(', ').replace(/\s,/g, '')));
-                return;
-            }
-            $.updateCommunity($.channelName, args.join('').replace(/\s/g, '').split(','), sender);
-            return;
-        }
-
-        /*
          * @commandpath vod - Displays stream uptime and current VOD or, if offline, the last VOD available.
          */
         if (command.equalsIgnoreCase('vod')) {

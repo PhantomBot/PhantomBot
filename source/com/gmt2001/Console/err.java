@@ -35,10 +35,9 @@ public final class err {
 
     public static void print(Object o) {
         String stackInfo;
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        StackTraceElement st = debug.findCaller();
+
+        stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
@@ -55,10 +54,9 @@ public final class err {
 
     public static void println(Object o) {
         String stackInfo;
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        StackTraceElement st = debug.findCaller();
+
+        stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
@@ -67,10 +65,9 @@ public final class err {
 
     public static void println(Object o, Boolean logOnly) {
         String stackInfo;
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        String fileName = Thread.currentThread().getStackTrace()[2].getFileName();
-        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
-        stackInfo = "[" + methodName + "()@" + fileName + ":" + lineNumber + "] ";
+        StackTraceElement st = debug.findCaller();
+
+        stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");

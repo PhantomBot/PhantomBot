@@ -97,7 +97,6 @@
      */
     function updateStreamData() {
         saveObject('panelData', 'stream', {
-            'communities': $.twitchcache.getCommunities().join(','),
             'views': $.twitchcache.getViews() + '',
             'followers': $.getFollows($.channelName),
             'viewers': $.getViewers($.channelName),
