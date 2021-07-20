@@ -38,6 +38,20 @@ public final class debug {
         return st.length >= 4 ? st[3] : st[0];
     }
 
+    public static StackTraceElement findCaller(String myClassName) {
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        StackTraceElement foundme = null;
+        for (StackTraceElement st1 : st) {
+            if (st1.getClassName().startsWith(myClassName)) {
+                foundme = st1;
+            } else if (foundme != null) {
+                return st1;
+            }
+        }
+
+        return foundme != null ? foundme : st[0];
+    }
+
     public static void println() {
         if (PhantomBot.getEnableDebugging()) {
             Logger.instance().log(Logger.LogType.Debug, "");

@@ -331,6 +331,8 @@ public class Helix {
         }
 
         if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
+            com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
         }
 
