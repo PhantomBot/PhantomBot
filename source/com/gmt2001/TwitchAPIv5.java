@@ -545,6 +545,8 @@ public class TwitchAPIv5 {
             user.put("name", data.getString("login"));
             user.put("type", data.getString("type"));
             user.put("updated_at", "");
+
+            users.put(user);
         }
 
         result.put("_total", users.length());
