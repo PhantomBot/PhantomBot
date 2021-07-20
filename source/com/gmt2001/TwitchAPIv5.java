@@ -526,18 +526,29 @@ public class TwitchAPIv5 {
 
     private JSONObject translateUserData(JSONObject userData) {
         JSONObject result = new JSONObject();
+        JSONArray users = new JSONArray();
         this.setupResult(result, userData);
-        userData = userData.getJSONArray("data").getJSONObject(0);
 
-        result.put("_id", Long.parseLong(userData.getString("id")));
-        result.put("bio", userData.getString("description"));
-        result.put("created_at", userData.getString("created_at"));
-        result.put("display_name", userData.getString("display_name"));
-        result.put("logo", userData.getString("profile_image_url"));
-        result.put("name", userData.getString("login"));
-        result.put("type", userData.getString("type"));
-        result.put("updated_at", "");
+        if (userData == null || userData.has("error")) {
+            return result;
+        }
 
+        for (int i = 0; i < userData.getJSONArray("data").length(); i++) {
+            JSONObject data = userData.getJSONArray("data").getJSONObject(i);
+            JSONObject user = new JSONObject();
+
+            user.put("_id", Long.parseLong(data.getString("id")));
+            user.put("bio", data.getString("description"));
+            user.put("created_at", data.getString("created_at"));
+            user.put("display_name", data.getString("display_name"));
+            user.put("logo", data.getString("profile_image_url"));
+            user.put("name", data.getString("login"));
+            user.put("type", data.getString("type"));
+            user.put("updated_at", "");
+        }
+
+        result.put("_total", users.length());
+        result.put("users", users);
         return result;
     }
 
@@ -552,13 +563,20 @@ public class TwitchAPIv5 {
         user_id.add(userID);
         JSONObject userData = Helix.instance().getUsersAsync(user_id, null).block();
 
+        JSONObject result = new JSONObject();
+        this.setupResult(result, userData);
         if (userData == null || userData.has("error") || userData.getJSONArray("data").length() == 0) {
-            JSONObject result = new JSONObject();
-            this.setupResult(result, userData);
             return result;
         }
 
-        return this.translateUserData(userData);
+        JSONObject r2 = this.translateUserData(userData);
+
+        if (r2.has("users") && r2.getJSONArray("users").length() > 0) {
+            result = r2.getJSONArray("users").getJSONObject(0);
+            this.setupResult(result, userData);
+        }
+
+        return result;
     }
 
     /**
