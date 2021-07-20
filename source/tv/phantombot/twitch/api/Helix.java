@@ -354,7 +354,7 @@ public class Helix {
     private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
         return calls.computeIfAbsent(this.digest(callid), k -> {
             Calendar c = Calendar.getInstance();
-            c.add(CACHE_TIME, Calendar.MILLISECOND);
+            c.add(Calendar.MILLISECOND, CACHE_TIME);
             Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
                 try {
                     emitter.success(action.get());
@@ -370,7 +370,7 @@ public class Helix {
     private Mono<JSONObject> handleMutatorAsync(String callid, Supplier<JSONObject> action) {
         return calls.computeIfAbsent(this.digest(callid), k -> {
             Calendar c = Calendar.getInstance();
-            c.add(MUTATOR_CACHE_TIME, Calendar.MILLISECOND);
+            c.add(Calendar.MILLISECOND, MUTATOR_CACHE_TIME);
             Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
                 try {
                     emitter.success(action.get());
