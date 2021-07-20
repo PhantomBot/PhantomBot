@@ -537,7 +537,7 @@ public class TwitchAPIv5 {
             JSONObject data = userData.getJSONArray("data").getJSONObject(i);
             JSONObject user = new JSONObject();
 
-            user.put("_id", Long.parseLong(data.getString("id")));
+            user.put("_id", data.getString("id"));
             user.put("bio", data.getString("description"));
             user.put("created_at", data.getString("created_at"));
             user.put("display_name", data.getString("display_name"));
