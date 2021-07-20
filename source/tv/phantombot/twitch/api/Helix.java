@@ -28,6 +28,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +70,8 @@ public class Helix {
     private static final int QUEUE_TIME = 5000;
     private static final int CACHE_TIME = 30000;
     private static final int MUTATOR_CACHE_TIME = 1000;
+    private static final int RATELIMIT_DEFMAX = 120;
+    private static final int WARNING_INTERVAL_MINS = 5;
 
     /**
      * Method that returns the instance of Helix.
@@ -90,6 +93,7 @@ public class Helix {
     private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
+    private Date nextWarning = new Date();
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -174,22 +178,6 @@ public class Helix {
             } finally {
                 lock.unlock();
             }
-        }
-    }
-
-    /**
-     * Method that handles our rate limits.
-     *
-     * @param limitReturned The limit returned from Helix.
-     * @param limitResetTimeReturned The reset time for our limit returned from Helix.
-     */
-    private void handleUpdateRateLimits(String maxLimit, String limitReturned, String limitResetTimeReturned) {
-        try {
-            // Parse the rate limit returned.
-            updateRateLimits(Integer.parseInt(maxLimit), Integer.parseInt(limitReturned),
-                    Long.parseLong(limitResetTimeReturned));
-        } catch (NumberFormatException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -306,11 +294,12 @@ public class Helix {
             responseCode = connection.getResponseCode();
 
             // Get the current rate limits.
-            String maxlimit = connection.getHeaderField("Ratelimit-Limit");
-            String limit = connection.getHeaderField("Ratelimit-Remaining");
-            String reset = connection.getHeaderField("Ratelimit-Reset");
+            com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
+                    + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
             // Handle the current limits.
-            this.handleUpdateRateLimits(maxlimit, limit, reset);
+            this.updateRateLimits(connection.getHeaderFieldInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
+                    connection.getHeaderFieldInt("Ratelimit-Remaining", 1),
+                    connection.getHeaderFieldLong("Ratelimit-Reset", Date.from(Instant.now()).getTime()));
 
             // Get our response stream.
             if (responseCode == 200) {
@@ -335,6 +324,15 @@ public class Helix {
                     this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
                 }
             }
+        }
+
+        if (returnObject.has("error") && nextWarning.before(new Date())) {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.MINUTE, WARNING_INTERVAL_MINS);
+            nextWarning = c.getTime();
+
+            com.gmt2001.Console.warn.println("Helix rejected a request [" + endPoint + "] " + returnObject.optInt("status", 0) + " "
+                    + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
         return returnObject;

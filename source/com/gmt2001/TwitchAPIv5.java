@@ -91,8 +91,8 @@ public class TwitchAPIv5 {
 
         JSONObject result = new JSONObject();
 
-        if (channelData == null || userData == null || followData == null || channelData.getJSONArray("data").length() == 0
-                || userData.getJSONArray("data").length() == 0) {
+        if (channelData == null || userData == null || followData == null || channelData.has("error") || userData.has("error")
+                || followData.has("error") || channelData.getJSONArray("data").length() == 0 || userData.getJSONArray("data").length() == 0) {
             return result;
         }
 
@@ -163,7 +163,7 @@ public class TwitchAPIv5 {
         if (!game.isEmpty()) {
             JSONObject g = SearchGame(game);
 
-            if (g.getBoolean("_success")) {
+            if (g.has("_success") && g.getBoolean("_success")) {
                 if (g.getInt("_http") == 200) {
                     JSONArray a = g.getJSONArray("games");
 
@@ -207,7 +207,7 @@ public class TwitchAPIv5 {
         JSONObject gameData = Helix.instance().searchCategoriesAsync(game, 20, null).block();
         JSONObject result = new JSONObject();
 
-        if (gameData == null) {
+        if (gameData == null || gameData.has("error")) {
             return result;
         }
 
@@ -270,7 +270,7 @@ public class TwitchAPIv5 {
 
         JSONObject followData = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), limit, null).block();
 
-        if (followData == null) {
+        if (followData == null || followData.has("error")) {
             return new JSONObject();
         }
 
@@ -331,7 +331,7 @@ public class TwitchAPIv5 {
         JSONArray subscriptions = new JSONArray();
         Date now = new Date();
 
-        if (subscriptionData == null) {
+        if (subscriptionData == null || subscriptionData.has("error")) {
             return result;
         }
 
@@ -379,7 +379,7 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetStream(String channel) throws JSONException {
         JSONObject streamData = this.GetStreams(channel);
-        return streamData.getJSONArray("streams").length() == 1 ? streamData.getJSONArray("streams").getJSONObject(0) : new JSONObject();
+        return streamData.has("streams") && streamData.getJSONArray("streams").length() == 1 ? streamData.getJSONArray("streams").getJSONObject(0) : new JSONObject();
     }
 
     /**
@@ -402,7 +402,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONArray streams = new JSONArray();
 
-        if (streamData == null || userData == null) {
+        if (streamData == null || userData == null || streamData.has("error") || userData.has("error")) {
             return result;
         }
 
@@ -488,7 +488,7 @@ public class TwitchAPIv5 {
         user_login.add(user);
         JSONObject userData = Helix.instance().getUsersAsync(null, user_login).block();
 
-        if (userData == null || userData.getJSONArray("data").length() == 0) {
+        if (userData == null || userData.has("error") || userData.getJSONArray("data").length() == 0) {
             return new JSONObject();
         }
 
@@ -522,7 +522,7 @@ public class TwitchAPIv5 {
         user_id.add(userID);
         JSONObject userData = Helix.instance().getUsersAsync(user_id, null).block();
 
-        if (userData == null || userData.getJSONArray("data").length() == 0) {
+        if (userData == null || userData.has("error") || userData.getJSONArray("data").length() == 0) {
             return new JSONObject();
         }
 
@@ -541,10 +541,11 @@ public class TwitchAPIv5 {
         JSONObject commercialData = Helix.instance().startCommercialAsync(this.getIDFromChannel(channel), length).block();
 
         if (commercialData == null) {
-            return new JSONObject();
+            commercialData = new JSONObject();
+            commercialData.put("_http", 422);
         }
 
-        if (!commercialData.getString("message").isBlank()) {
+        if (commercialData.has("error") || !commercialData.getString("message").isBlank()) {
             commercialData.put("_http", 422);
         }
 
@@ -571,11 +572,11 @@ public class TwitchAPIv5 {
     public JSONObject GetUserFollowsChannel(String user, String channel) throws JSONException {
         JSONObject followData = Helix.instance().getUsersFollowsAsync(this.getIDFromChannel(user), this.getIDFromChannel(channel), 1, null).block();
 
-        if (followData == null) {
+        if (followData == null || followData.has("error")) {
             return new JSONObject();
         }
 
-        return followData.getInt("total") == 1 ? this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0) : new JSONObject();
+        return followData.has("total") && followData.getInt("total") == 1 ? this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0) : new JSONObject();
     }
 
     /**
@@ -588,13 +589,13 @@ public class TwitchAPIv5 {
         JSONObject channelEmoteData = Helix.instance().getChannelEmotesAsync(this.getIDFromChannel(PhantomBot.instance().getChannelName())).block();
         JSONObject result = new JSONObject();
 
-        if (globalEmoteData == null) {
+        if (globalEmoteData == null || globalEmoteData.has("error")) {
             return result;
         }
 
         JSONArray arr = globalEmoteData.getJSONArray("data");
 
-        if (channelEmoteData != null && channelEmoteData.getInt("_http") == 200) {
+        if (channelEmoteData != null && !channelEmoteData.has("error") && channelEmoteData.getInt("_http") == 200) {
             channelEmoteData.getJSONArray("data").forEach(obj -> {
                 arr.put(obj);
             });
@@ -636,7 +637,7 @@ public class TwitchAPIv5 {
         JSONObject cheerData = Helix.instance().getCheermotesAsync(null).block();
         JSONObject result = new JSONObject();
 
-        if (cheerData == null) {
+        if (cheerData == null || cheerData.has("error")) {
             return result;
         }
 
@@ -785,7 +786,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONArray videos = new JSONArray();
 
-        if (vodData == null) {
+        if (vodData == null || vodData.has("error")) {
             return result;
         }
 
@@ -861,7 +862,7 @@ public class TwitchAPIv5 {
         user_login.add(channel);
         JSONObject userData = Helix.instance().getUsersAsync(null, user_login).block();
 
-        if (userData == null || userData.getJSONArray("data").length() == 0) {
+        if (userData == null || userData.has("error") || userData.getJSONArray("data").length() == 0) {
             return "ERROR";
         }
 
@@ -878,7 +879,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONObject teamsData = Helix.instance().getChannelTeamsAsync(this.getIDFromChannel(channelName)).block();
 
-        if (teamsData == null) {
+        if (teamsData == null || teamsData.has("error")) {
             return result;
         }
 
@@ -915,7 +916,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONObject teamsData = Helix.instance().getTeamsAsync(teamName, null).block();
 
-        if (teamsData == null || teamsData.getJSONArray("data").length() == 0) {
+        if (teamsData == null || teamsData.has("error") || teamsData.getJSONArray("data").length() == 0) {
             return result;
         }
 
@@ -991,7 +992,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, start, end).block();
 
-        if (clipsData == null) {
+        if (clipsData == null || clipsData.has("error")) {
             return result;
         }
 
