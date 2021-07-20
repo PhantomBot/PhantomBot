@@ -62,9 +62,11 @@ public class HttpRequest {
                 h.setRequestProperty("Authorization", basicAuth);
             }
 
-            headers.entrySet().stream().forEach((e) -> {
-                h.addRequestProperty(e.getKey(), e.getValue());
-            });
+            if (headers != null) {
+                headers.entrySet().stream().forEach((e) -> {
+                    h.addRequestProperty(e.getKey(), e.getValue());
+                });
+            }
 
             h.setRequestMethod(type.name());
             h.setUseCaches(false);
