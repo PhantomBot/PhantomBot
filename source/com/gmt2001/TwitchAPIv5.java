@@ -312,7 +312,7 @@ public class TwitchAPIv5 {
         JSONArray follows = new JSONArray();
 
         result.put("_total", followData.getInt("total"));
-        result.put("_cursor", followData.getJSONObject("pagination").getString("cursor"));
+        result.put("_cursor", followData.getJSONObject("pagination").optString("cursor", ""));
 
         for (int i = 0; i < followData.getJSONArray("data").length(); i++) {
             JSONObject data = followData.getJSONArray("data").getJSONObject(i);
@@ -410,7 +410,17 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetStream(String channel) throws JSONException {
         JSONObject streamData = this.GetStreams(this.getIDFromChannel(channel));
-        return streamData.has("streams") && streamData.getJSONArray("streams").length() == 1 ? streamData.getJSONArray("streams").getJSONObject(0) : new JSONObject();
+
+        JSONObject result = new JSONObject();
+        this.setupResult(result, streamData, null);
+        if (streamData == null || streamData.has("error") || !streamData.has("streams") || streamData.getJSONArray("streams").length() == 0) {
+            return result;
+        }
+
+        result = streamData.getJSONArray("streams").getJSONObject(0);
+        this.setupResult(result, streamData, null);
+
+        return result;
     }
 
     /**
