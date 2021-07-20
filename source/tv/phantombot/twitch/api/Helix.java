@@ -286,7 +286,7 @@ public class Helix {
             // Get our response code.
             responseCode = connection.getResponseCode();
 
-            if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
                 com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
                         + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
             }
@@ -329,7 +329,7 @@ public class Helix {
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
-        if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
             StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
             com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
