@@ -29,40 +29,41 @@ import org.json.JSONObject;
  * @author ScaniaTV
  */
 public class TwitchTeamsCache implements Runnable {
+
     private static TwitchTeamsCache INSTANCE;
     private static final Map<String, Team> teams = new HashMap<>();
     private final Thread updateThread;
     private final String channelName;
     private boolean isKilled = false;
-    
+
     /**
      * Method that starts this cache, and returns it.
-     * 
+     *
      * @param channelName
-     * @return 
+     * @return
      */
     public static synchronized TwitchTeamsCache instance(String channelName) {
         if (INSTANCE == null) {
             INSTANCE = new TwitchTeamsCache(channelName);
         }
-        
+
         return INSTANCE;
     }
-    
+
     /**
      * Class constructor.
-     * 
-     * @param channelName 
+     *
+     * @param channelName
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchTeamsCache(String channelName) {
         this.channelName = channelName;
-        
+
         this.updateThread = new Thread(this, "tv.phantombot.cache.TwitchTeamsCache");
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.start();
     }
-    
+
     /**
      * Method that updates the Twitch teams.
      */
@@ -71,161 +72,162 @@ public class TwitchTeamsCache implements Runnable {
         while (!isKilled) {
             try {
                 updateCache();
-                try {
-                    Thread.sleep(60 * 1000);
-                } catch (InterruptedException ex) {
-                    // Ignore this.
-                    // ex.printStackTrace();
-                }
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+            try {
+                Thread.sleep(60 * 1000);
+            } catch (InterruptedException ex) {
+                // Ignore this.
+                // ex.printStackTrace();
+            }
         }
     }
-    
+
     /**
      * Method that updates the cache.
      */
     private void updateCache() throws JSONException {
         JSONObject teamsObj = TwitchAPIv5.instance().getChannelTeams(channelName);
-        
+
         if (teamsObj.getBoolean("_success") && teamsObj.getInt("_http") == 200) {
             JSONArray teamsArr = teamsObj.getJSONArray("teams");
             for (int i = 0; i < teamsArr.length(); i++) {
                 JSONObject team = TwitchAPIv5.instance().getTeam(teamsArr.getJSONObject(i).getString("name"));
-                
+
                 if (team.getBoolean("_success") && team.getInt("_http") == 200) {
                     teams.put(team.getString("name"), new Team(team));
                 }
             }
         }
     }
-    
+
     /**
      * Method that gets a team from the cache.
-     * 
+     *
      * @param teamName
-     * @return 
+     * @return
      */
     public Team getTeam(String teamName) {
         return teams.get(teamName);
     }
-    
+
     /**
      * Private class that holds the teams information.
      */
     public class Team {
+
         private final JSONObject obj;
-        
+
         /**
          * Class constructor.
-         * 
-         * @param obj 
+         *
+         * @param obj
          */
         public Team(JSONObject obj) {
             this.obj = obj;
         }
-        
+
         /**
          * Method that returns the display name of the team.
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getName() throws JSONException {
             return (obj.getString("display_name"));
         }
-        
+
         /**
          * Method that gets the date the team was created on.
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getCreatedAt() throws JSONException {
             return (obj.getString("created_at"));
         }
-        
+
         /**
          * Method that gets the team information.
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getInfo() throws JSONException {
             return (obj.getString("info"));
         }
-        
+
         /**
          * Method that returns the team url.
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getUrl() throws JSONException {
             return ("https://twitch.tv/team/" + obj.getString("name"));
         }
-        
+
         /**
          * Method that gets the amount of users in the team.
-         * 
-         * @return 
+         *
+         * @return
          */
         public int getTotalMembers() throws JSONException {
             return (obj.getJSONArray("users").length());
         }
-        
+
         /**
          * Method that returns a random member from the team.
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getRandomMember() throws JSONException {
             int random = new Random().nextInt(this.getTotalMembers());
-            
+
             return obj.getJSONArray("users").getJSONObject(random).getString("name");
         }
-        
+
         /**
          * Method that returns a team member.
-         * 
+         *
          * @param username
-         * @return 
+         * @return
          */
         public JSONObject getTeamMember(String username) throws JSONException {
             JSONArray users = obj.getJSONArray("users");
             JSONObject user = null;
-            
+
             for (int i = 0; i < users.length(); i++) {
                 if (users.getJSONObject(i).getString("name").equalsIgnoreCase(username)) {
                     user = users.getJSONObject(i);
                     break;
                 }
             }
-            
+
             return user;
         }
-        
+
         /**
          * Method that checks if a user is apart of a team.
-         * 
+         *
          * @param username
-         * @return 
+         * @return
          */
         public boolean hasUser(String username) throws JSONException {
             JSONArray users = obj.getJSONArray("users");
             boolean foundUser = false;
-            
+
             for (int i = 0; i < users.length(); i++) {
                 if (users.getJSONObject(i).getString("name").equalsIgnoreCase(username)) {
                     foundUser = true;
                     break;
                 }
             }
-            
+
             return foundUser;
         }
-        
+
         /**
          * Method that returns the raw object.
-         * 
-         * @return 
+         *
+         * @return
          */
         public JSONObject getObject() {
             return obj;

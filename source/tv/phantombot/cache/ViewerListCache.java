@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
@@ -27,6 +26,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 
 public class ViewerListCache implements Runnable {
+
     private static ViewerListCache instance = null;
     private final String channelName;
     private final Thread thread;
@@ -36,7 +36,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to get this instance.
      *
-     * @param  {String} channelName
+     * @param {String} channelName
      * @return {Object}
      */
     public static synchronized ViewerListCache instance(String channelName) {
@@ -50,7 +50,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Class constructor.
      *
-     * @param  {String} channelName
+     * @param {String} channelName
      */
     private ViewerListCache(String channelName) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -70,13 +70,10 @@ public class ViewerListCache implements Runnable {
     public void run() {
         while (!isKilled) {
             try {
-                try {
-                    this.updateCache();
-                } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("ViewerListCache::run: " + ex.getMessage());
-                }
+                this.updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("ViewerListCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("ViewerListCache::run: " + ex.getMessage());
+                com.gmt2001.Console.debug.printStackTrace(ex);
             }
 
             try {
@@ -91,7 +88,7 @@ public class ViewerListCache implements Runnable {
      * Method that updates the cache.
      */
     private void updateCache() throws Exception {
-        String[] types = new String[] { "moderators", "staff", "admins", "vips", "viewers" };
+        String[] types = new String[]{"moderators", "staff", "admins", "vips", "viewers"};
         List<String> cache = new ArrayList<>();
         List<String> joins = new ArrayList<>();
         List<String> parts = new ArrayList<>();
@@ -150,7 +147,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to check if a user is in the cache.
      *
-     * @param  {String} username
+     * @param {String} username
      * @return {Boolean}
      */
     public boolean hasUser(String username) {
@@ -160,7 +157,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to add users to the cache.
      *
-     * @param  {String} username
+     * @param {String} username
      */
     public void addUser(String username) {
         this.cache.add(username);
