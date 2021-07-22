@@ -174,6 +174,10 @@ public class Helix {
     }
 
     private String uriEncode(String input) {
+        if (input == null) {
+            return input;
+        }
+
         return URLEncoder.encode(input, Charset.forName("UTF-8"));
     }
 
@@ -1148,7 +1152,7 @@ public class Helix {
 
         String endpoint = "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
                 + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
-                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
+                + this.qspValid("&before", before) + this.qspValid("&started_at", this.uriEncode(started_at)) + this.qspValid("&ended_at", this.uriEncode(ended_at));
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
