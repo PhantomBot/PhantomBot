@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="joda-time" name="joda-time" rev="2.4"/>
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.49"/>
         <dependency org="net.engio" name="mbassador" rev="1.3.2"/>
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0"/>
+        <dependency org="org.apache.commons" name="commons-text" rev="1.9"/>
         <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>
         <dependency org="org.json" name="json" rev="20200518"/>
         <dependency org="org.mozilla" name="rhino" rev="1.7.12"/>
