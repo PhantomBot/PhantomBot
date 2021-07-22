@@ -199,9 +199,9 @@ public class TwitchAPIv5 {
                         for (int i = 0; i < a.length() && !found; i++) {
                             JSONObject o = a.getJSONObject(i);
 
-                            gn = o.getString("id");
+                            gn = o.getString("_id");
 
-                            if (gn.equalsIgnoreCase(game)) {
+                            if (o.getString("name").equalsIgnoreCase(game)) {
                                 found = true;
                             }
                         }
@@ -209,7 +209,7 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = o.getString("id");
+                            gn = o.getString("_id");
                         }
                     }
                 }
