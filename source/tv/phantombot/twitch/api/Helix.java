@@ -16,13 +16,8 @@
  */
 package tv.phantombot.twitch.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -41,11 +36,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
+import reactor.netty.ByteBufFlux;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.client.HttpClient.RequestSender;
+import reactor.netty.http.client.HttpClientResponse;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 
@@ -97,7 +95,7 @@ public class Helix {
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        tp.schedule(() -> {
+        this.tp.schedule(() -> {
             tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
         }, 1000, TimeUnit.MILLISECONDS);
     }
@@ -184,24 +182,6 @@ public class Helix {
     }
 
     /**
-     * Method that gets data from an InputStream.
-     *
-     * @param stream
-     * @return
-     */
-    private String getStringFromInputStream(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder returnString = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            returnString.append(line);
-        }
-
-        return returnString.toString();
-    }
-
-    /**
      * Method that adds extra information to our returned object.
      *
      * @param obj
@@ -234,91 +214,55 @@ public class Helix {
      * @param data
      * @return
      */
-    private JSONObject handleRequest(RequestType type, String endPoint, String data) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
         JSONObject returnObject = new JSONObject();
-        InputStream inStream = null;
         int responseCode = 0;
 
-        // Check our rate limit.
         this.checkRateLimit();
-
-        // Update the end point URL, if it is an endpoint and not full URL.
-        if (endPoint.startsWith("/")) {
-            endPoint = BASE_URL + endPoint;
-        }
 
         try {
             if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
                 throw new IllegalArgumentException("apioauth is required");
             }
 
-            // Generate a new URL.
-            URL url = new URL(endPoint);
-            // Open the connection over HTTPS.
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            // Add our headers.
-            connection.addRequestProperty("Content-Type", CONTENT_TYPE);
+            RequestSender client = HttpClient.create().secure().baseUrl(BASE_URL).headers(h -> {
+                h.add("Content-Type", CONTENT_TYPE);
+                h.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
+                        ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
+                h.add("Authorization", "Bearer " + this.oAuthToken);
+                h.add("User-Agent", USER_AGENT);
+            }).request(type).uri(endPoint);
 
-            connection.addRequestProperty("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
-
-            connection.addRequestProperty("Authorization", "Bearer " + this.oAuthToken);
-
-            connection.addRequestProperty("User-Agent", USER_AGENT);
-            // Add our request method.
-            connection.setRequestMethod(type.name());
-            // Set out timeout.
-            connection.setConnectTimeout(TIMEOUT_TIME);
-            // Set if we're doing output.
-            connection.setDoOutput(!data.isEmpty());
-
-            // Connect!
-            connection.connect();
-
-            // If we're outputting.
-            if (connection.getDoOutput()) {
-                // Get the output stream
-                try (OutputStream outStream = connection.getOutputStream()) {
-                    // Write to it and flush.
-                    outStream.write(data.getBytes("UTF-8"));
-                    outStream.flush();
-                }
+            if (data == null) {
+                data = "";
             }
 
-            // Get our response code.
-            responseCode = connection.getResponseCode();
+            CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
+                    .responseSingle((res, buf) -> Mono.just(new CallResponse(res, buf.asString().block(Duration.ofMillis(TIMEOUT_TIME)))))
+                    .block(Duration.ofMillis(TIMEOUT_TIME));
+
+            if (response == null) {
+                throw new NullPointerException("response");
+            }
+
+            responseCode = response.response.status().code();
 
             if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
-                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
-                        + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
-            }
-            // Handle the current limits.
-            this.updateRateLimits(connection.getHeaderFieldInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
-                    connection.getHeaderFieldInt("Ratelimit-Remaining", 1),
-                    connection.getHeaderFieldLong("Ratelimit-Reset", Date.from(Instant.now()).getTime()));
-
-            // Get our response stream.
-            if (responseCode == 200) {
-                inStream = connection.getInputStream();
-            } else {
-                inStream = connection.getErrorStream();
+                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + response.response.responseHeaders().getAsString("Ratelimit-Limit")
+                        + " <> Remaining: " + response.response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
+                        + response.response.responseHeaders().getAsString("Ratelimit-Reset"));
             }
 
-            // Parse the data.
-            returnObject = new JSONObject(this.getStringFromInputStream(inStream));
+            this.updateRateLimits(response.response.responseHeaders().getInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
+                    response.response.responseHeaders().getInt("Ratelimit-Remaining", 1),
+                    response.response.responseHeaders().getTimeMillis("Ratelimit-Reset", Date.from(Instant.now()).getTime()));
+
+            returnObject = new JSONObject(response.body);
             // Generate the return object,
             this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IOException | IllegalArgumentException | JSONException ex) {
+        } catch (IllegalArgumentException | JSONException | NullPointerException ex) {
             // Generate the return object.
             this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException ex) {
-                    // Generate the return object.
-                    this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
-                }
-            }
         }
 
         if (returnObject.has("error") && nextWarning.before(new Date())) {
@@ -346,7 +290,7 @@ public class Helix {
      * @param endPoint
      * @return
      */
-    private JSONObject handleRequest(RequestType type, String endPoint) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint) throws JSONException {
         return this.handleRequest(type, endPoint, "");
     }
 
@@ -423,7 +367,7 @@ public class Helix {
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -494,7 +438,7 @@ public class Helix {
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(RequestType.PATCH, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
         });
     }
 
@@ -538,7 +482,7 @@ public class Helix {
         String endpoint = "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -596,7 +540,7 @@ public class Helix {
                 + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -653,7 +597,7 @@ public class Helix {
                 + this.qspValid("&user_id", userIds) + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -738,7 +682,7 @@ public class Helix {
                 + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -789,7 +733,7 @@ public class Helix {
                 + (both ? "&" : "") + this.qspValid("login", userLogins);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -831,7 +775,7 @@ public class Helix {
         String endpoint = "/channels/commercial";
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(RequestType.POST, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
         });
     }
 
@@ -865,7 +809,7 @@ public class Helix {
         String endpoint = "/chat/emotes?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -889,7 +833,7 @@ public class Helix {
         String endpoint = "/chat/emotes/global";
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -917,7 +861,7 @@ public class Helix {
         String endpoint = "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -1034,7 +978,7 @@ public class Helix {
                 + this.qspValid("&sort", sort) + this.qspValid("&type", type);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -1066,7 +1010,7 @@ public class Helix {
         String endpoint = "/teams/channel?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -1104,7 +1048,7 @@ public class Helix {
         String endpoint = "/teams?" + this.qspValid("name", name) + this.qspValid("id", id);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -1208,17 +1152,8 @@ public class Helix {
                 + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
-    }
-
-    /**
-     * The types of requests we can make to Helix.
-     */
-    private enum RequestType {
-        GET,
-        PATCH,
-        POST
     }
 
     private class CallRequest {
@@ -1229,6 +1164,17 @@ public class Helix {
         private CallRequest(Date expires, Mono<JSONObject> processor) {
             this.expires = expires;
             this.processor = processor;
+        }
+    }
+
+    private class CallResponse {
+
+        private final HttpClientResponse response;
+        private final String body;
+
+        private CallResponse(HttpClientResponse response, String body) {
+            this.response = response;
+            this.body = body;
         }
     }
 }
