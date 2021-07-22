@@ -129,7 +129,7 @@ public class TwitchAPIv5 {
         result.put("broadcaster_language", channelData.getString("broadcaster_language"));
         result.put("created_at", userData.getString("created_at"));
         result.put("display_name", channelData.getString("broadcaster_name"));
-        result.put("followers", followData.getInt("total"));
+        result.put("followers", followData.optInt("total", 0));
         result.put("game", channelData.getString("game_name"));
         result.put("language", channelData.getString("broadcaster_language"));
         result.put("logo", userData.getString("profile_image_url"));
