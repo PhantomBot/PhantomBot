@@ -14,16 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.twitch.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -42,20 +36,25 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
+import reactor.netty.ByteBufFlux;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.client.HttpClient.RequestSender;
+import reactor.netty.http.client.HttpClientResponse;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
- * 
+ *
  * @author ScaniaTV
+ * @author gmt2001
  */
 public class Helix {
+
     // The current instance of Helix.
     private static final Helix INSTANCE = new Helix();
     // The base URL for Twitch API Helix.
@@ -96,7 +95,7 @@ public class Helix {
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        tp.schedule(() -> {
+        this.tp.schedule(() -> {
             tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
         }, 1000, TimeUnit.MILLISECONDS);
     }
@@ -104,10 +103,10 @@ public class Helix {
     public void setOAuth(String oauth) {
         this.oAuthToken = oauth.replaceFirst("oauth:", "");
     }
-    
+
     /**
      * Method that update the rate limits in sync.
-     * 
+     *
      * @param limit The number of requests left.
      * @param reset The time when our limits will reset.
      */
@@ -116,25 +115,25 @@ public class Helix {
         remainingRateLimit = limit;
         rateLimitResetEpoch = reset;
     }
-    
+
     /**
      * Method that gets the reset time for the rate limit.
-     * 
-     * @return 
+     *
+     * @return
      */
     private synchronized long getLimitResetTime() {
         return rateLimitResetEpoch;
     }
-    
+
     /**
      * Method that gets the current rate limits.
-     * 
-     * @return 
+     *
+     * @return
      */
     private synchronized int getRemainingRateLimit() {
         return remainingRateLimit;
     }
-    
+
     /**
      * Method that checks if we hit the limit.
      */
@@ -181,28 +180,10 @@ public class Helix {
     private String qspValid(String key, String value) {
         return value != null && !value.isBlank() ? key + "=" + value : "";
     }
-    
-    /**
-     * Method that gets data from an InputStream.
-     * 
-     * @param stream
-     * @return 
-     */
-    private String getStringFromInputStream(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder returnString = new StringBuilder();
-        String line;
-        
-        while ((line = reader.readLine()) != null) {
-            returnString.append(line);
-        }
-        
-        return returnString.toString();
-    }
-    
+
     /**
      * Method that adds extra information to our returned object.
-     * 
+     *
      * @param obj
      * @param isSuccess
      * @param requestType
@@ -212,10 +193,10 @@ public class Helix {
      * @param exception
      * @param exceptionMessage
      */
-    private void generateJSONObject(JSONObject obj, boolean isSuccess, 
-            String requestType, String data, String url, int responseCode, 
+    private void generateJSONObject(JSONObject obj, boolean isSuccess,
+            String requestType, String data, String url, int responseCode,
             String exception, String exceptionMessage) throws JSONException {
-        
+
         obj.put("_success", isSuccess);
         obj.put("_type", requestType);
         obj.put("_post", data);
@@ -224,100 +205,63 @@ public class Helix {
         obj.put("_exception", exception);
         obj.put("_exceptionMessage", exceptionMessage);
     }
-    
+
     /**
      * Method that handles data for Helix.
-     * 
+     *
      * @param type
      * @param url
      * @param data
-     * @return 
+     * @return
      */
-    private JSONObject handleRequest(RequestType type, String endPoint, String data) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
         JSONObject returnObject = new JSONObject();
-        InputStream inStream = null;
         int responseCode = 0;
-        
-        // Check our rate limit.
+
         this.checkRateLimit();
 
-        // Update the end point URL, if it is an endpoint and not full URL.
-        if (endPoint.startsWith("/")) {
-            endPoint = BASE_URL + endPoint;
-        }
-        
         try {
             if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
                 throw new IllegalArgumentException("apioauth is required");
             }
 
-            // Generate a new URL.
-            URL url = new URL(endPoint);
-            // Open the connection over HTTPS.
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            // Add our headers.
-            connection.addRequestProperty("Content-Type", CONTENT_TYPE);
+            RequestSender client = HttpClient.create().secure().baseUrl(BASE_URL).headers(h -> {
+                h.add("Content-Type", CONTENT_TYPE);
+                h.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
+                        ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
+                h.add("Authorization", "Bearer " + this.oAuthToken);
+                h.add("User-Agent", USER_AGENT);
+            }).request(type).uri(endPoint);
 
-            connection.addRequestProperty("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank() ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
-
-            connection.addRequestProperty("Authorization", "Bearer " + this.oAuthToken);
-
-            connection.addRequestProperty("User-Agent", USER_AGENT);
-            // Add our request method.
-            connection.setRequestMethod(type.name());
-            // Set out timeout.
-            connection.setConnectTimeout(TIMEOUT_TIME);
-            // Set if we're doing output.
-            connection.setDoOutput(!data.isEmpty());
-            
-            // Connect!
-            connection.connect();
-            
-            // If we're outputting.
-            if (connection.getDoOutput()) {
-                // Get the output stream
-                try (OutputStream outStream = connection.getOutputStream()) {
-                    // Write to it and flush.
-                    outStream.write(data.getBytes("UTF-8"));
-                    outStream.flush();
-                }
-            }
-            
-            // Get our response code.
-            responseCode = connection.getResponseCode();
-
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
-                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + connection.getHeaderField("Ratelimit-Limit") + " <> Remaining: "
-                        + connection.getHeaderField("Ratelimit-Remaining") + " <> Reset: " + connection.getHeaderField("Ratelimit-Reset"));
-            }
-            // Handle the current limits.
-            this.updateRateLimits(connection.getHeaderFieldInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
-                    connection.getHeaderFieldInt("Ratelimit-Remaining", 1),
-                    connection.getHeaderFieldLong("Ratelimit-Reset", Date.from(Instant.now()).getTime()));
-
-            // Get our response stream.
-            if (responseCode == 200) {
-                inStream = connection.getInputStream();
-            } else {
-                inStream = connection.getErrorStream();
+            if (data == null) {
+                data = "";
             }
 
-            // Parse the data.
-            returnObject = new JSONObject(this.getStringFromInputStream(inStream));
+            CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
+                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content))).block(Duration.ofMillis(TIMEOUT_TIME));
+
+            if (response == null) {
+                throw new NullPointerException("response");
+            }
+
+            responseCode = response.response.status().code();
+
+            if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
+                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + response.response.responseHeaders().getAsString("Ratelimit-Limit")
+                        + " <> Remaining: " + response.response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
+                        + response.response.responseHeaders().getAsString("Ratelimit-Reset"));
+            }
+
+            this.updateRateLimits(response.response.responseHeaders().getInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
+                    response.response.responseHeaders().getInt("Ratelimit-Remaining", 1),
+                    response.response.responseHeaders().getInt("Ratelimit-Reset", (int) (Date.from(Instant.now()).getTime() / 1000)) * 1000);
+
+            returnObject = new JSONObject(response.body);
             // Generate the return object,
             this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IOException | IllegalArgumentException | JSONException ex) {
+        } catch (IllegalArgumentException | JSONException | NullPointerException ex) {
             // Generate the return object.
             this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException ex) {
-                    // Generate the return object.
-                    this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
-                }
-            }
         }
 
         if (returnObject.has("error") && nextWarning.before(new Date())) {
@@ -329,7 +273,7 @@ public class Helix {
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
+        if (PhantomBot.instance().getProperties().getProperty("helixdebug", "false").equals("true")) {
             StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
             com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
@@ -337,15 +281,15 @@ public class Helix {
 
         return returnObject;
     }
-    
+
     /**
      * Method that handles a request without any data being passed.
-     * 
+     *
      * @param type
      * @param endPoint
-     * @return 
+     * @return
      */
-    private JSONObject handleRequest(RequestType type, String endPoint) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint) throws JSONException {
         return this.handleRequest(type, endPoint, "");
     }
 
@@ -393,23 +337,26 @@ public class Helix {
 
         return "";
     }
-    
+
     /**
-     * Method that get users by type.
-     * 
-     * @param type Either id or login
-     * @param usernames A string array of Twitch usernames. Limit: 100
-     * @return 
+     * Gets channel information for users.
+     *
+     * @param broadcaster_id ID of the channel to be retrieved.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getChannelInformation(String broadcaster_id) throws JSONException, IllegalArgumentException {
         return this.getChannelInformationAsync(broadcaster_id).block();
     }
-    
+
     /**
-     * Method that get users by their names.
-     * 
-     * @param usernames A string array of Twitch usernames. Limit: 100
-     * @return 
+     * Gets channel information for users.
+     *
+     * @param broadcaster_id ID of the channel to be retrieved.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getChannelInformationAsync(String broadcaster_id) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
@@ -419,15 +366,23 @@ public class Helix {
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets a user by their name.
-     * 
-     * @param username The Twitch username.
-     * @return 
+     * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
+     *
+     * @param broadcaster_id ID of the channel to be updated.
+     * @param game_id The current game ID being played on the channel. Use "0" or "" (an empty string) to unset the game.
+     * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
+     * "other".
+     * @param title The title of the stream. Value must not be an empty string.
+     * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
+     * 400 error.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
             int delay) throws JSONException, IllegalArgumentException {
@@ -482,25 +437,35 @@ public class Helix {
         String endpoint = "/channels?broadcaster_id=" + broadcaster_id;
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(RequestType.PATCH, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
         });
     }
-    
+
     /**
-     * Method that get users by their ID.
-     * 
-     * @param ids A string array of user IDs. Limit: 100
-     * @return 
+     * Returns a list of games or categories that match the query via name either entirely or partially.
+     *
+     * @param query Search query.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject searchCategories(String query, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
         return this.searchCategoriesAsync(query, first, after).block();
     }
-    
+
     /**
-     * Method that gets a user by their ID.
-     * 
-     * @param id The ID of the user on Twitch.
-     * @return 
+     * Returns a list of games or categories that match the query via name either entirely or partially.
+     *
+     * @param query Search query.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> searchCategoriesAsync(String query, int first, @Nullable String after) throws JSONException, IllegalArgumentException {
         if (query == null || query.isBlank()) {
@@ -516,29 +481,42 @@ public class Helix {
         String endpoint = "/search/categories?query=" + this.uriEncode(query) + "&first=" + first + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets streams by type.
-     * 
-     * @param type Either user_login or user_id.
-     * @param streams A string array of stream names. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
+     * following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
+     * to_id must be provided for a query to be valid.
+     *
+     * @param from_id User ID. The request returns information about users who are being followed by the from_id user.
+     * @param to_id User ID. The request returns information about users who are following the to_id user.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         return this.getUsersFollowsAsync(from_id, to_id, first, after).block();
     }
-    
+
     /**
-     * Method that gets streams by their names.
-     * 
-     * @param streams A string array of stream names. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
+     * following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
+     * to_id must be provided for a query to be valid.
+     *
+     * @param from_id User ID. The request returns information about users who are being followed by the from_id user.
+     * @param to_id User ID. The request returns information about users who are following the to_id user.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getUsersFollowsAsync(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
@@ -561,27 +539,40 @@ public class Helix {
                 + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets streams by their names.
-     * 
-     * @param stream The name of the stream to get.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         return this.getBroadcasterSubscriptionsAsync(broadcaster_id, user_id, first, after).block();
     }
-    
+
     /**
-     * Method that gets streams by their names.
-     * 
-     * @param stream The name of the stream to get.
-     * @return 
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getBroadcasterSubscriptionsAsync(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
@@ -605,28 +596,50 @@ public class Helix {
                 + this.qspValid("&user_id", userIds) + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets streams by their ID.
-     * 
-     * @param ids A string array of stream IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or "other".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getStreams(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
             @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
         return this.getStreamsAsync(first, before, after, user_id, user_login, game_id, language).block();
     }
-    
+
     /**
-     * Method that gets streams by their id.
-     * 
-     * @param id The id of the stream to get.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or "other".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getStreamsAsync(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
             @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
@@ -668,25 +681,33 @@ public class Helix {
                 + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets streams by their IDs.
-     * 
-     * @param ids The IDs of the streams to get. Limit: 100
-     * @return 
+     * Gets information about one or more specified Twitch users. Users are identified by optional user IDs and/or login name. If neither a user ID
+     * nor a login name is specified, the user is looked up by Bearer token. Note: The limit of 100 IDs and login names is the total limit. You can
+     * request, for example, 50 of each or 100 of one of them. You cannot request 100 of both.
+     *
+     * @param id User ID. Multiple user IDs can be specified. Limit: 100.
+     * @param login User login name. Multiple login names can be specified. Limit: 100.
+     * @return
+     * @throws JSONException
      */
     public JSONObject getUsers(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
         return this.getUsersAsync(id, login).block();
     }
 
     /**
-     * Method that gets streams by their ID.
-     * 
-     * @param id The id of the stream to get.
-     * @return 
+     * Gets information about one or more specified Twitch users. Users are identified by optional user IDs and/or login name. If neither a user ID
+     * nor a login name is specified, the user is looked up by Bearer token. Note: The limit of 100 IDs and login names is the total limit. You can
+     * request, for example, 50 of each or 100 of one of them. You cannot request 100 of both.
+     *
+     * @param id User ID. Multiple user IDs can be specified. Limit: 100.
+     * @param login User login name. Multiple login names can be specified. Limit: 100.
+     * @return
+     * @throws JSONException
      */
     public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
         String userIds = null;
@@ -711,26 +732,31 @@ public class Helix {
                 + (both ? "&" : "") + this.qspValid("login", userLogins);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets games by their type
-     * 
-     * @param type Either id or name
-     * @param games The list of games. Limit: 100
-     * @return 
+     * Starts a commercial on a specified channel.
+     *
+     * @param broadcaster_id ID of the channel requesting a commercial.
+     * @param length Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject startCommercial(String broadcaster_id, int length) throws JSONException, IllegalArgumentException {
         return this.startCommercialAsync(broadcaster_id, length).block();
     }
-    
+
     /**
-     * Method that gets games by their names.
-     * 
-     * @param gameNames A string array of game names. Limit: 100
-     * @return 
+     * Starts a commercial on a specified channel.
+     *
+     * @param broadcaster_id ID of the channel requesting a commercial.
+     * @param length Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> startCommercialAsync(String broadcaster_id, int length) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
@@ -748,15 +774,18 @@ public class Helix {
         String endpoint = "/channels/commercial";
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(RequestType.POST, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
         });
     }
-    
+
     /**
-     * Method that gets a game by its name.
-     * 
-     * @param gameName The name of the game.
-     * @return 
+     * Gets all custom emotes for a specific Twitch channel including subscriber emotes, Bits tier emotes, and follower emotes. Custom channel emotes
+     * are custom emoticons that viewers may use in Twitch chat once they are subscribed to, cheered in, or followed the channel that owns the emotes.
+     *
+     * @param broadcaster_id The broadcaster whose emotes are being requested.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getChannelEmotes(String broadcaster_id) throws JSONException, IllegalArgumentException {
         return this.getChannelEmotesAsync(broadcaster_id).block();
@@ -779,79 +808,111 @@ public class Helix {
         String endpoint = "/chat/emotes?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets games by their IDs.
-     * 
-     * @param gameIDs A string array of game IDs. Limit: 100
-     * @return 
+     * Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.
+     *
+     * @return
+     * @throws JSONException
      */
     public JSONObject getGlobalEmotes() throws JSONException {
         return this.getGlobalEmotesAsync().block();
     }
-    
+
     /**
-     * Method that gets a game by its ID.
-     * 
-     * @param gameID The Id of the game.
-     * @return 
+     * Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.
+     *
+     * @return
+     * @throws JSONException
      */
     public Mono<JSONObject> getGlobalEmotesAsync() throws JSONException {
         String endpoint = "/chat/emotes/global";
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets clips by type.
-     * 
-     * @param type Either broadcaster_id, game_id or id.
-     * @param clipIds A string array of clips, games, or channel IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat. Cheermotes returned are
+     * available throughout Twitch, in all Bits-enabled channels.
+     *
+     * @param broadcaster_id ID for the broadcaster who might own specialized Cheermotes.
+     * @return
+     * @throws JSONException
      */
     public JSONObject getCheermotes(@Nullable String broadcaster_id) throws JSONException {
         return this.getCheermotesAsync(broadcaster_id).block();
     }
-    
+
     /**
-     * Method that gets clips from a broadcaster (channel).
-     * 
-     * @param channelId the ID of the broadcaster (channel).
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat. Cheermotes returned are
+     * available throughout Twitch, in all Bits-enabled channels.
+     *
+     * @param broadcaster_id ID for the broadcaster who might own specialized Cheermotes.
+     * @return
+     * @throws JSONException
      */
     public Mono<JSONObject> getCheermotesAsync(@Nullable String broadcaster_id) throws JSONException {
         String endpoint = "/bits/cheermotes" + this.qspValid("?broadcaster_id", broadcaster_id);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets clips from a broadcaster (channel).
-     * 
-     * @param channelId the ID of the broadcaster (channel).
-     * @return 
+     * Gets video information by one or more video IDs, user ID, or game ID. For lookup by user or game, several filters are available that can be
+     * specified as query parameters. Each request must specify one or more video ids, one user_id, or one game_id. A request that uses video ids can
+     * not use any other parameter. If a game is specified, a maximum of 500 results are available.
+     *
+     * @param id ID of the video being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param user_id ID of the user who owns the video.
+     * @param game_id ID of the game the video is of.
+     * @param first Number of values to be returned when getting videos by user or game ID. Limit: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param language Language of the video being queried. Limit: 1. A language value must be either the ISO 639-1 two-letter code for a supported
+     * stream language or "other".
+     * @param period Period during which the video was created. Valid values: "all", "day", "week", "month". Default: "all".
+     * @param sort Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".
+     * @param type Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getVideos(@Nullable List<String> id, @Nullable String user_id, @Nullable String game_id, int first, @Nullable String before,
             @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
             throws JSONException, IllegalArgumentException {
         return this.getVideosAsync(id, user_id, game_id, first, before, after, language, period, sort, type).block();
     }
-    
+
     /**
-     * Method that gets clips from a certain game.
-     * 
-     * @param gameId The ID of the game.
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Gets video information by one or more video IDs, user ID, or game ID. For lookup by user or game, several filters are available that can be
+     * specified as query parameters. Each request must specify one or more video ids, one user_id, or one game_id. A request that uses video ids can
+     * not use any other parameter. If a game is specified, a maximum of 500 results are available.
+     *
+     * @param id ID of the video being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param user_id ID of the user who owns the video.
+     * @param game_id ID of the game the video is of.
+     * @param first Number of values to be returned when getting videos by user or game ID. Limit: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param language Language of the video being queried. Limit: 1. A language value must be either the ISO 639-1 two-letter code for a supported
+     * stream language or "other".
+     * @param period Period during which the video was created. Valid values: "all", "day", "week", "month". Default: "all".
+     * @param sort Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".
+     * @param type Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getVideosAsync(@Nullable List<String> id, @Nullable String user_id, @Nullable String game_id, int first, @Nullable String before,
             @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
@@ -916,26 +977,29 @@ public class Helix {
                 + this.qspValid("&sort", sort) + this.qspValid("&type", type);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets clips from a certain game.
-     * 
-     * @param gameId The ID of the game.
-     * @return 
+     * Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.
+     *
+     * @param broadcaster_id User ID for a Twitch user.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getChannelTeams(String broadcaster_id) throws JSONException, IllegalArgumentException {
         return this.getChannelTeamsAsync(broadcaster_id).block();
     }
-    
+
     /**
-     * Method that gets a bunch of clips by their IDs.
-     * 
-     * @param clipIds A string array of clip IDs. Limit: 100
-     * @param parameters A string array of parameters allow by Twitch. You have to add the parameterName=value in the array.
-     * @return 
+     * Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.
+     *
+     * @param broadcaster_id User ID for a Twitch user.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getChannelTeamsAsync(String broadcaster_id) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
@@ -945,25 +1009,31 @@ public class Helix {
         String endpoint = "/teams/channel?broadcaster_id=" + broadcaster_id;
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
-    
+
     /**
-     * Method that gets a bunch of clips by their IDs.
-     * 
-     * @param clipIds A string array of clip IDs.
-     * @return 
+     * Gets information for a specific Twitch Team. One of the two query parameters must be specified to return Team information.
+     *
+     * @param name Team name.
+     * @param id Team ID.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public JSONObject getTeams(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
         return this.getTeamsAsync(name, id).block();
     }
-    
+
     /**
-     * Method that gets a clip by its ID.
-     * 
-     * @param clipId The ID of the clip
-     * @return 
+     * Gets information for a specific Twitch Team. One of the two query parameters must be specified to return Team information.
+     *
+     * @param name Team name.
+     * @param id Team ID.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getTeamsAsync(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
         if ((name == null || name.isBlank()) && (id == null || id.isBlank())) {
@@ -977,7 +1047,7 @@ public class Helix {
         String endpoint = "/teams?" + this.qspValid("name", name) + this.qspValid("id", id);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 
@@ -1081,17 +1151,8 @@ public class Helix {
                 + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
 
         return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(RequestType.GET, endpoint);
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
-    }
-
-    /**
-     * The types of requests we can make to Helix.
-     */
-    private enum RequestType {
-        GET,
-        PATCH,
-        POST
     }
 
     private class CallRequest {
@@ -1102,6 +1163,17 @@ public class Helix {
         private CallRequest(Date expires, Mono<JSONObject> processor) {
             this.expires = expires;
             this.processor = processor;
+        }
+    }
+
+    private class CallResponse {
+
+        private final HttpClientResponse response;
+        private final String body;
+
+        private CallResponse(HttpClientResponse response, String body) {
+            this.response = response;
+            this.body = body;
         }
     }
 }

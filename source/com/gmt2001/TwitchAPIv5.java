@@ -129,7 +129,7 @@ public class TwitchAPIv5 {
         result.put("broadcaster_language", channelData.getString("broadcaster_language"));
         result.put("created_at", userData.getString("created_at"));
         result.put("display_name", channelData.getString("broadcaster_name"));
-        result.put("followers", followData.getInt("total"));
+        result.put("followers", followData.optInt("total", 0));
         result.put("game", channelData.getString("game_name"));
         result.put("language", channelData.getString("broadcaster_language"));
         result.put("logo", userData.getString("profile_image_url"));
@@ -199,9 +199,9 @@ public class TwitchAPIv5 {
                         for (int i = 0; i < a.length() && !found; i++) {
                             JSONObject o = a.getJSONObject(i);
 
-                            gn = o.getString("id");
+                            gn = o.getString("_id");
 
-                            if (gn.equalsIgnoreCase(game)) {
+                            if (o.getString("name").equalsIgnoreCase(game)) {
                                 found = true;
                             }
                         }
@@ -209,7 +209,7 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = o.getString("id");
+                            gn = o.getString("_id");
                         }
                     }
                 }
@@ -417,8 +417,7 @@ public class TwitchAPIv5 {
             return result;
         }
 
-        result = streamData.getJSONArray("streams").getJSONObject(0);
-        this.setupResult(result, streamData, null);
+        result.put("stream", streamData.getJSONArray("streams").getJSONObject(0));
 
         return result;
     }
