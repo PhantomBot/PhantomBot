@@ -238,7 +238,7 @@ public class Helix {
             }
 
             CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
-                    .responseSingle((res, buf) -> Mono.just(new CallResponse(res, buf.asString().block(Duration.ofMillis(TIMEOUT_TIME)))))
+                    .responseSingle((res, buf) -> Mono.just(new CallResponse(res, buf.asString())))
                     .block(Duration.ofMillis(TIMEOUT_TIME));
 
             if (response == null) {
@@ -257,7 +257,7 @@ public class Helix {
                     response.response.responseHeaders().getInt("Ratelimit-Remaining", 1),
                     response.response.responseHeaders().getTimeMillis("Ratelimit-Reset", Date.from(Instant.now()).getTime()));
 
-            returnObject = new JSONObject(response.body);
+            returnObject = new JSONObject(response.body.block(Duration.ofMillis(TIMEOUT_TIME)));
             // Generate the return object,
             this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
         } catch (IllegalArgumentException | JSONException | NullPointerException ex) {
@@ -1170,9 +1170,9 @@ public class Helix {
     private class CallResponse {
 
         private final HttpClientResponse response;
-        private final String body;
+        private final Mono<String> body;
 
-        private CallResponse(HttpClientResponse response, String body) {
+        private CallResponse(HttpClientResponse response, Mono<String> body) {
             this.response = response;
             this.body = body;
         }
