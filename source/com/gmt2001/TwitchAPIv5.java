@@ -417,8 +417,7 @@ public class TwitchAPIv5 {
             return result;
         }
 
-        result = streamData.getJSONArray("streams").getJSONObject(0);
-        this.setupResult(result, streamData, null);
+        result.put("stream", streamData.getJSONArray("streams").getJSONObject(0));
 
         return result;
     }
