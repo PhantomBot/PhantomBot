@@ -55,7 +55,7 @@
             donationJson = new JSONObject(donationJsonStr),
             donationID = donationJson.get("donation_id"),
             donationCurrency = donationJson.getString("currency"),
-            donationAmount = donationJson.getString("amount"),
+            donationAmount = parseFloat(donationJson.getString("amount")),
             donationUsername = donationJson.getString("name"),
             donationMsg = donationJson.getString("message"),
             s = message;
@@ -71,11 +71,11 @@
         }
 
         if (s.match(/\(amount\)/g)) {
-            s = $.replace(s, '(amount)', parseInt(donationAmount).toFixed(2).toString());
+            s = $.replace(s, '(amount)', donationAmount.toFixed(2).toString());
         }
 
         if (s.match(/\(amount\.toFixed\(0\)\)/)) {
-            s = $.replace(s, '(amount.toFixed(0))', parseInt(donationAmount).toFixed(0).toString());
+            s = $.replace(s, '(amount.toFixed(0))', donationAmount.toFixed(0).toString());
         }
 
         if (s.match(/\(currency\)/g)) {
