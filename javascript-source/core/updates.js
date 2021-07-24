@@ -89,6 +89,7 @@
             './discord/handlers/keywordHandler.js',
             './discord/handlers/streamHandler.js',
             './discord/systems/greetingsSystem.js',
+            './systems/welcomeSystem.js',
             './discord/commands/customCommands.js',
             './discord/games/8ball.js',
             './discord/games/kill.js',
@@ -226,6 +227,66 @@
 
         $.consoleLn('PhantomBot update 3.5.0 completed!');
         $.inidb.set('updates', 'installedv3.5.0', 'true');
+    }
+
+    /* version 3.4.7 updates */
+    if (!$.inidb.exists('updates', 'installedv3.4.7') || $.inidb.get('updates', 'installedv3.4.7') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.4.7 updates...');
+
+        if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
+            $.consoleLn('Updating timers...');
+            var noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
+                noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
+                noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
+                noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
+                noticeKeys = $.inidb.GetKeyList('notices', ''),
+                noticeIdx,
+                notice,
+                notices = [],
+                disabled = [],
+                disabledKey,
+                noticeTimer;
+
+            noticeKeys.sort();
+
+            for (noticeIdx = 0; noticeIdx < noticeKeys.length; noticeIdx++) {
+                if (noticeKeys[noticeIdx].endsWith('_disabled')) {
+                    continue;
+                }
+                notice = $.inidb.get('notices', noticeKeys[noticeIdx]);
+                if (notice) {
+                    // JSON.stringify will indefinitely hang on serializing Java strings
+                    notices.push($.jsString(notice));
+                    disabledKey = noticeKeys[noticeIdx] + '_disabled';
+                    if ($.inidb.exists('notices', disabledKey)) {
+                        disabled.push($.inidb.GetBoolean('notices', '',disabledKey));
+                    } else {
+                        disabled.push(false);
+                    }
+                }
+            }
+
+            noticeTimer = {
+                'name': 'Announcements',
+                'reqMessages': noticeReqMessages,
+                'intervalMin': noticeInterval,
+                'intervalMax': noticeInterval,
+                'shuffle': false,
+                'noticeToggle': noticeToggle,
+                'noticeOfflineToggle': noticeOffline,
+                'messages': notices,
+                'disabled': disabled
+            };
+
+            $.inidb.set('noticeTmp', '0', JSON.stringify(noticeTimer));
+            $.inidb.RemoveFile('noticeSettings');
+            $.inidb.RemoveFile('notices');
+            $.inidb.RenameFile('noticeTmp', 'notices');
+        }
+
+
+        $.consoleLn('PhantomBot update 3.4.7 completed!');
+        $.inidb.set('updates', 'installedv3.4.7', 'true');
     }
 
     /**

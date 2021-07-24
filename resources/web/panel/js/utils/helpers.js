@@ -181,33 +181,37 @@ $(function() {
     };
 
     /*
-     * @function handles the string input checks.
+     * @function handle input validation
      *
      * @param {Object} obj
+     * @param {Function} validator
      * @return {Boolean}
+     *
+     * Validator takes obj as argument should return null if the input is valid or else an error message.
      */
-    helpers.handleInputString = function(obj) {
+    helpers.handleInput = function(obj, validator) {
         if (obj.length === 0) {
-            helpers.logError('Failed to handle string due to the object being null.', helpers.LOG_TYPE.FORCE);
+            helpers.logError('Failed to validate input due to the object being null.', helpers.LOG_TYPE.FORCE);
             return;
         }
 
         // Make sure the input has a value in it.
-        if (obj.val().length < 1) {
+        const validationResult = validator(obj);
+        if (typeof validationResult === 'string') {
             if (!obj.parent().hasClass('has-error')) {
                 // Add the error class to the parent.
                 obj.parent().addClass('has-error');
                 // Append text saying the form cannot be empty.
                 obj.after($('<p/>', {
                     'class': 'help-block',
-                    'text': 'You cannot leave this field empty.'
+                    'text': validationResult
                 }));
                 let btn = obj.closest('form').find('button');
                 if (btn.data('candisable') !== undefined) {
                     // Disable the button
                     obj.closest('form').find('button').prop('disabled', true).addClass('disabled');
                 }
-                toastr.error('Missing data in input field.');
+                toastr.error('Invalid input field.');
                 return false;
             }
         } else {
@@ -227,53 +231,36 @@ $(function() {
     };
 
     /*
+     * @function handles the string input checks.
+     *
+     * @param {Object} obj
+     * @return {Boolean}
+     */
+    helpers.handleInputString = function(obj) {
+        return helpers.handleInput(obj, function (obj) {
+            if (obj.val().length < 1) {
+                return 'You cannot leave this field empty.';
+            }
+            return null;
+        });
+    };
+
+    /*
      * @function handles the number input checks.
      *
      * @param  {Object} obj
      * @return {Boolean}
      */
     helpers.handleInputNumber = function(obj, min, max) {
-        if (obj.length === 0) {
-            helpers.logError('Failed to handle number due to the object being null.', helpers.LOG_TYPE.FORCE);
-            return;
-        }
+        return helpers.handleInput(obj, function (obj) {
+            min = (min === undefined ? 0 : min);
+            let newMax = (max === undefined ? Number.MAX_SAFE_INTEGER : max);
 
-        min = (min === undefined ? 0 : min);
-        let newMax = (max === undefined ? Number.MAX_SAFE_INTEGER : max);
-
-        // Make sure the input has a value in it.
-        if (isNaN(parseInt(obj.val())) || isNaN(obj.val()) || parseInt(obj.val()) < min || parseInt(obj.val()) > newMax) {
-            if (!obj.parent().hasClass('has-error')) {
-                // Add the error class to the parent.
-                obj.parent().addClass('has-error');
-                // Append text saying the form cannot be empty.
-                obj.after($('<p/>', {
-                    'class': 'help-block',
-                    'text': 'Please enter a number that is greater or equal to ' + min + (max !== undefined ? ' and less or equal than ' + newMax + '' : '') + '.'
-                }));
-                let btn = obj.closest('form').find('button');
-                if (btn.data('candisable') !== undefined) {
-                    // Disable the button
-                    obj.closest('form').find('button').prop('disabled', true).addClass('disabled');
-                }
-                toastr.error('Missing data in input field.');
-                return false;
+            if (isNaN(parseInt(obj.val())) || isNaN(obj.val()) || parseInt(obj.val()) < min || parseInt(obj.val()) > newMax) {
+                return 'Please enter a number that is greater or equal to ' + min + (max !== undefined ? ' and less or equal than ' + newMax + '' : '') + '.';
             }
-        } else {
-            if (obj.parent().find('p').length > 0) {
-                if (obj.parent().hasClass('has-error')) {
-                    // Remove error class.
-                    obj.parent().removeClass('has-error');
-                    // Remove the help text.
-                    obj.parent().find('p').remove();
-                    // Enabled the button again.
-                    obj.closest('form').find('button').removeClass('disabled');
-                    return true;
-                }
-            }
-        }
-
-        return !obj.parent().hasClass('has-error');
+            return null;
+        });
     };
 
     /*
@@ -283,45 +270,14 @@ $(function() {
      * @return {Boolean}
      */
     helpers.handleInputDate = function(obj) {
-        if (obj.length === 0) {
-            helpers.logError('Failed to handle date due to the object being null.', helpers.LOG_TYPE.FORCE);
-            return;
-        }
+        return helpers.handleInput(obj, function (obj) {
+            let matched = obj.val().match(/^((\d{2}|\d{4})(\\|\/|\.|-)(\d{2})(\\|\/|\.|-)(\d{4}|\d{2}))$/);
 
-        let matched = obj.val().match(/^((\d{2}|\d{4})(\\|\/|\.|-)(\d{2})(\\|\/|\.|-)(\d{4}|\d{2}))$/);
-
-        // Make sure the input has a value in it.
-        if (matched === null || ((matched[6].length < 4 && matched[2].length == 2) || (matched[6].length == 2 && matched[2].length < 4))) {
-            if (!obj.parent().hasClass('has-error')) {
-                // Add the error class to the parent.
-                obj.parent().addClass('has-error');
-                // Append text saying the form cannot be empty.
-                obj.after($('<p/>', {
-                    'class': 'help-block',
-                    'text': 'Please enter a valid date (mm/dd/yyyy or dd/mm/yyyy).'
-                }));
-                let btn = obj.closest('form').find('button');
-                if (btn.data('candisable') !== undefined) {
-                    // Disable the button
-                    obj.closest('form').find('button').prop('disabled', true).addClass('disabled');
-                }
-                toastr.error('Bad date in field.');
-                return false;
+            if (matched === null || ((matched[6].length < 4 && matched[2].length == 2) || (matched[6].length == 2 && matched[2].length < 4))) {
+                return 'Please enter a valid date (mm/dd/yyyy or dd/mm/yyyy).';
             }
-        } else {
-            if (obj.parent().find('p').length > 0) {
-                if (obj.parent().hasClass('has-error')) {
-                    // Remove error class.
-                    obj.parent().removeClass('has-error');
-                    // Remove the help text.
-                    obj.parent().find('p').remove();
-                    // Enabled the button again.
-                    obj.closest('form').find('button').removeClass('disabled');
-                    return true;
-                }
-            }
-        }
-        return !obj.parent().hasClass('has-error');
+            return null;
+        });
     };
 
     /*
