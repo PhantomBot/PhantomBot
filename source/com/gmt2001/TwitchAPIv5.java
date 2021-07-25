@@ -101,6 +101,10 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChannel(String channel) throws JSONException {
+        return this.GetChannel2(channel, null);
+    }
+
+    public JSONObject GetChannel2(String channel, String[] updates) throws JSONException {
         List<String> user_id = new ArrayList<>();
         user_id.add(this.getIDFromChannel(channel));
         Mono<JSONObject> channelDataMono = Helix.instance().getChannelInformationAsync(this.getIDFromChannel(channel));
@@ -130,7 +134,7 @@ public class TwitchAPIv5 {
         result.put("created_at", userData.getString("created_at"));
         result.put("display_name", channelData.getString("broadcaster_name"));
         result.put("followers", followData.optInt("total", 0));
-        result.put("game", channelData.getString("game_name"));
+        result.put("game", updates != null && updates.length > 1 && updates[1] != null && !updates[1].isBlank() ? updates[1] : channelData.getString("game_name"));
         result.put("language", channelData.getString("broadcaster_language"));
         result.put("logo", userData.getString("profile_image_url"));
         result.put("mature", false);
@@ -138,7 +142,7 @@ public class TwitchAPIv5 {
         result.put("partner", userData.getString("broadcaster_type").equals("partner"));
         result.put("profile_banner", "");
         result.put("profile_banner_background_color", "");
-        result.put("status", channelData.getString("title"));
+        result.put("status", updates != null && updates.length > 0 && updates[0] != null && !updates[0].isBlank() ? updates[0] : channelData.getString("title"));
         result.put("updated_at", "");
         result.put("url", "https://www.twitch.tv/" + channelData.getString("broadcaster_login"));
         result.put("video_banner", "");
@@ -186,6 +190,7 @@ public class TwitchAPIv5 {
      */
     public JSONObject UpdateChannel(String channel, String status, String game, int delay) throws JSONException {
         String gn = null;
+        String gnn = null;
         if (!game.isEmpty()) {
             JSONObject g = SearchGame(game);
 
@@ -200,6 +205,7 @@ public class TwitchAPIv5 {
                             JSONObject o = a.getJSONObject(i);
 
                             gn = "" + o.getLong("_id");
+                            gnn = o.getString("name");
 
                             if (o.getString("name").equalsIgnoreCase(game)) {
                                 found = true;
@@ -209,14 +215,21 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = o.getString("_id");
+                            gn = "" + o.getLong("_id");
+                            gnn = o.getString("name");
                         }
                     }
                 }
             }
         }
 
-        return Helix.instance().updateChannelInformation(this.getIDFromChannel(channel), gn, null, status, delay);
+        JSONObject result = Helix.instance().updateChannelInformation(this.getIDFromChannel(channel), gn, null, status, delay);
+
+        if (result.has("_http") && result.getInt("_http") == 204) {
+            return this.GetChannel2(channel, new String[]{status, gnn});
+        } else {
+            return result;
+        }
     }
 
     /*
