@@ -134,7 +134,7 @@ public class TwitchAPIv5 {
         result.put("created_at", userData.getString("created_at"));
         result.put("display_name", channelData.getString("broadcaster_name"));
         result.put("followers", followData.optInt("total", 0));
-        result.put("game", updates != null && updates.length > 1 && !updates[1].isBlank() ? updates[1] : channelData.getString("game_name"));
+        result.put("game", updates != null && updates.length > 1 && updates[1] != null && !updates[1].isBlank() ? updates[1] : channelData.getString("game_name"));
         result.put("language", channelData.getString("broadcaster_language"));
         result.put("logo", userData.getString("profile_image_url"));
         result.put("mature", false);
@@ -142,7 +142,7 @@ public class TwitchAPIv5 {
         result.put("partner", userData.getString("broadcaster_type").equals("partner"));
         result.put("profile_banner", "");
         result.put("profile_banner_background_color", "");
-        result.put("status", updates != null && updates.length > 0 && !updates[0].isBlank() ? updates[0] : channelData.getString("title"));
+        result.put("status", updates != null && updates.length > 0 && updates[0] != null && !updates[0].isBlank() ? updates[0] : channelData.getString("title"));
         result.put("updated_at", "");
         result.put("url", "https://www.twitch.tv/" + channelData.getString("broadcaster_login"));
         result.put("video_banner", "");
