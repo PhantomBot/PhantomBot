@@ -209,7 +209,7 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = o.getString("_id");
+                            gn = "" + o.getLong("_id");
                         }
                     }
                 }
