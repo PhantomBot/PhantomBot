@@ -64,7 +64,7 @@ public class Helix {
     // Our content type, should always be JSON.
     private static final String CONTENT_TYPE = "application/json";
     // Timeout which to wait for a response before killing it (5 seconds).
-    private static final int TIMEOUT_TIME = 5000;
+    private static final int TIMEOUT_TIME = 10000;
     private static final int QUEUE_TIME = 5000;
     private static final int CACHE_TIME = 30000;
     private static final int MUTATOR_CACHE_TIME = 1000;
@@ -242,7 +242,8 @@ public class Helix {
             }
 
             CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
-                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content))).block(Duration.ofMillis(TIMEOUT_TIME));
+                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content)).defaultIfEmpty(new CallResponse(res, "{}")))
+                    .block(Duration.ofMillis(TIMEOUT_TIME));
 
             if (response == null) {
                 throw new NullPointerException("response");
