@@ -45,7 +45,7 @@ $(run = function () {
         // Update the open button to close if the queue is active.
         if (e['isActive'] === 'true') {
             $('#open-or-close-queue').html($('<i/>', {
-                'class': 'fas fa-sm fa-lock'
+                'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
@@ -101,7 +101,7 @@ $(run = function () {
                             'class': 'btn btn-xs btn-danger',
                             'style': 'float: right',
                             'html': $('<i/>', {
-                                'class': 'fas fa-sm fa-trash'
+                                'class': 'fa fa-trash'
                             }),
                             'click': function () {
                                 socket.wsEvent('rm_queue_user', './systems/queueSystem.js', null,
@@ -161,7 +161,7 @@ $(function () {
                                 toastr.success('Successfully opened the queue!');
                                 // Update the button.
                                 $('#open-or-close-queue').html($('<i/>', {
-                                    'class': 'fas fa-sm fa-lock'
+                                    'class': 'fa fa-lock'
                                 })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                             });
                         });
@@ -173,7 +173,7 @@ $(function () {
                 clearQueueInput();
                 // Update the button.
                 $('#open-or-close-queue').html($('<i/>', {
-                    'class': 'fas fa-sm fa-unlock-alt'
+                    'class': 'fa fa-unlock-alt'
                 })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
             });
         }
@@ -210,6 +210,33 @@ $(function () {
                                         helpers.temp.updateQueueList();
                                         // Close the modal.
                                         $('#queue-draw-users').modal('toggle');
+                                    });
+                            }
+                        }).modal('toggle');
+            });
+
+    // Draw random users command.
+    $('#random-queue').on('click', function () {
+        helpers.getModal('queue-random-users', 'Draw Random Users', 'Draw Random', $('<form/>', {
+            'role': 'form'
+        })
+                // Append amount to draw
+                .append(helpers.getInputGroup('draw-amount', 'number', 'Number of Users to Pick', '', '1', 'The amount of users to be drawn from the queue.')),
+                // Callback.
+                        function () {
+                            let amount = $('#draw-amount');
+
+                            switch (false) {
+                                case helpers.handleInputNumber(amount, 1, 5):
+                                    break;
+                                default:
+                                    socket.wsEvent('random_queue_users', QUEUE_SCRIPT, null, ['random', amount.val()], function () {
+                                        // Alert the user.
+                                        toastr.success('Drew ' + amount.val() + ' random users from the queue!');
+                                        // Update the list.
+                                        helpers.temp.updateQueueList();
+                                        // Close the modal.
+                                        $('#queue-random-users').modal('toggle');
                                     });
                             }
                         }).modal('toggle');

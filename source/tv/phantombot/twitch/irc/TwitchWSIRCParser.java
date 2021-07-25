@@ -255,7 +255,7 @@ public class TwitchWSIRCParser implements Runnable {
             return;
         }
 
-        if (PhantomBot.instance().getProperties().getProperty("ircdebug", "false").equalsIgnoreCase("true")) {
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
             com.gmt2001.Console.debug.println(rawMessage);
         }
 

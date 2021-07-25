@@ -1,15 +1,20 @@
-name: Command Tag Guide Update
+name: On Push Actions
 on:
   push:
     branches:
       - 'master'
+    paths-ignore:
+      - 'docs/**'
 jobs:
   parsecommandtags:
-    name: Parse command tags on ubuntu-latest with Python 3.x
+    name: Parse Command Tags on ubuntu-latest with Python 3.x
+    if: github.repository == 'PhantomBot/PhantomBot'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_TOKEN }}
     - name: Set up Python 3.x
       uses: actions/setup-python@v2
       with:
@@ -18,8 +23,23 @@ jobs:
     - name: Execute Script
       run: python3 development-resources/parse_transformers.py
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v4
+      uses: EndBug/add-and-commit@v7
       with:
         message: 'Updated the custom command tags guide'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  updateremotepanel:
+    name: Update Remote Panel
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+    - name: Copy Files
+      run: |
+        rsync -rv --progress resources/web/panel docs
+        rsync -rv --progress resources/web/common docs
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v7
+      with:
+        message: 'Updated the remote panel'

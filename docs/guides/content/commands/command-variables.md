@@ -599,6 +599,29 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
+### gettimevar
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(gettimevar name:str)` - retrieves the specified timevar, set using !settimevar, for use in a (countdown) or (countup) transformer
+
+
+**Example:**
+```text
+Caster: !settimevar christmas December 25 2017 00:00:00 GMT-0500
+Caster: !addcom !count Time Left until Christmas: (countdown (gettimevar christmas))
+User: !count
+Bot: Time Left until Christmas: 20 hours, 30 minutes and 55 seconds.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### hours
 
 Defined in script: _./javascript-source/core/commandTags.js_
@@ -607,6 +630,21 @@ Defined in script: _./javascript-source/core/commandTags.js_
 
 - `(hours)` - number of hours sender has spent in chat
 - `(hours user:str)` - number of hours the provided user has spent in chat
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### hoursround
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(hoursround)` - number of hours sender has spent in chat, with the value rounded to the nearest tenth of an hour
+- `(hoursround user:str)` - number of hours the provided user has spent in chat, with the value rounded to the nearest tenth of an hour
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------

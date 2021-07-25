@@ -55,6 +55,7 @@ public class ConfigurationManager {
     public static final String PROP_YTAUTH_RO = "ytauthro";
     public static final String PROP_API_OAUTH = "apioauth";
     public static final String PROP_SILENTSCRIPTSLOAD = "silentscriptsload";
+    public static final String PROP_USEROLLBAR = "userollbar";
 
     private ConfigurationManager() {
         // private constructor to prevent users from instantiating a pure static class
@@ -160,6 +161,8 @@ public class ConfigurationManager {
 
     private static Boolean generateDefaultValues(CaselessProperties startProperties) {
         Boolean changed = false;
+        
+        changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "true", "Enabled Rollbar");
 
         /* Check to see if there's a webOauth set */
         changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth, "New webauth key has been generated for " + BOTLOGIN_TXT_LOCATION);

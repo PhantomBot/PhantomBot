@@ -17,18 +17,92 @@
 
 // Function that querys all of the data we need.
 $(function() {
-    // Get Discord logging settings.
-    socket.getDBValues('get_discord_logging_settings', {
-        tables: ['discordSettings', 'discordSettings', 'discordSettings'],
-        keys: ['modLogs', 'customCommandLogs', 'modLogChannel']
-    }, true, function(e) {
-        // Mod toggle.
-        $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Yes' : 'No'));
-        // Commands toggle.
-        $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
-        // Log channels
-        $('#twitch-mod-channel, #twitch-command-channel').val((e['modLogChannel'] == null ? '' : e['modLogChannel']));
-    });
+    let discordChannels = null;
+    let allowedChannelTypes = ['GUILD_NEWS', 'GUILD_TEXT'];
+
+    function refreshChannels() {
+        socket.getDiscordChannelList('discord_logs_getchannels', function (d) {
+            discordChannels = d.data;
+        });
+    }
+
+    function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
+        if (discordChannels === null) {
+            return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
+        } else {
+            let data = [];
+
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                let entry = {};
+                entry.title = channels.name;
+                entry.options = [];
+
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (channel === 'name') {
+                        continue;
+                    }
+
+                    entry.options.push({
+                        'name': info.name,
+                        'value': channel,
+                        'selected': channel === value,
+                        'disabled': !allowedChannelTypes.includes(info.type)
+                    });
+                }
+
+                data.push(entry);
+            }
+
+            return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
+        }
+    }
+
+    function discordChannelTemplate(fchannel) {
+        if (fchannel.id) {
+            for (const [category, channels] of Object.entries(discordChannels)) {
+                for (const [channel, info] of Object.entries(channels)) {
+                    if (fchannel.id === channel) {
+                        switch (info.type) {
+                            case 'GUILD_NEWS':
+                                return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STAGE_VOICE':
+                                return $('<span><i class="fa fa-users fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_STORE':
+                                return $('<span><i class="fa fa-shopping-cart fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_TEXT':
+                                return $('<span><i class="fa fa-hashtag fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                            case 'GUILD_VOICE':
+                                return $('<span><i class="fa fa-volume-up fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
+                        }
+                    }
+                }
+            }
+        }
+
+        return fchannel.text;
+    }
+
+    refreshChannels();
+
+    setTimeout(function() {
+        // Get Discord logging settings.
+        socket.getDBValues('get_discord_logging_settings', {
+            tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+            keys: ['modLogs', 'customCommandLogs', 'modLogChannel']
+        }, true, function(e) {
+            // Mod toggle.
+            $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Yes' : 'No'));
+            // Commands toggle.
+            $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
+            // Log channels
+            $('#discord_logs_pubsub').appendChild(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
+            'Which channel to post the moderation logs to.', allowedChannelTypes));
+
+            if (discordChannels !== null) {
+                $('#twitch-mod-channel').select2({ templateResult: discordChannelTemplate });
+            }
+        });
+    }, 500);
 });
 
 // Function that handles events.
@@ -45,9 +119,9 @@ $(function() {
     	    	break;
     	    default:
     	    	socket.updateDBValues('discord_logs_update', {
-    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings', 'chatModerator'],
-        			keys: ['modLogs', 'customCommandLogs', 'modLogChannel', 'moderationLogs'],
-    	    		values: [moderationLogs, customCommandLog, logChannel.val(), moderationLogs]
+    	    		tables: ['discordSettings', 'discordSettings', 'discordSettings'],
+        			keys: ['modLogs', 'customCommandLogs', 'modLogChannel'],
+    	    		values: [moderationLogs, customCommandLog, logChannel.val()]
     	    	}, function() {
     	    		// Update the scripts variables.
     	    		socket.wsEvent('discord_logs', './core/logging.js', '', [], function() {

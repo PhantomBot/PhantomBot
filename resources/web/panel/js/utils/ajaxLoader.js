@@ -36,7 +36,7 @@ $(function() {
             // Add the load for the master script.
             $('body').append($('<script>', {
                 'async': true,
-                'src': '/panel/js/pages/global.js'
+                'src': 'js/pages/global.js'
             }));
             helpers.log('Page shown', helpers.LOG_TYPE.DEBUG);
         }
@@ -68,7 +68,7 @@ $(function() {
             $.ajax({
                 cache: false,
                 dataType: 'html',
-                url: '/panel/pages/' + folder + '/' + page,
+                url: 'pages/' + folder + '/' + page,
                 success: function(data) {
                     // Set the new page.
                     $('#page-content').html(data);
@@ -77,8 +77,6 @@ $(function() {
                     if (href !== undefined) {
                         // Set the current tab as active.
                         $.fn.dinamicMenu(href);
-                        // Update URL.
-                        window.history.pushState(null, '', '/panel');
                     }
                     helpers.log('Completed ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
                 },

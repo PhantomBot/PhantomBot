@@ -167,20 +167,17 @@
                 i;
 
         for (i in files) {
+            files[i] = $.jsString(files[i]);
             if (path === '.') {
-                if (files[i] == 'core' || files[i] == 'lang' || files[i] == 'discord' || files[i] == 'init.js') {
-                    continue;
-                }
-            } else if (path === './discord') {
-                if (files[i] == 'core') {
+                if (files[i] === 'lang' || files[i] === 'discord' || files[i] === 'init.js') {
                     continue;
                 }
             }
 
             if ($.isDirectory('./scripts/' + path + '/' + files[i])) {
-                loadScriptRecursive(path + '/' + files[i], silent, (force ? force : false));
+                loadScriptRecursive(path + '/' + files[i], silent, (force && path !== './core' && path !== './discord/core' ? force : false));
             } else {
-                loadScript(path + '/' + files[i], (force ? force : false), silent);
+                loadScript(path + '/' + files[i], (force && path !== './core' && path !== './discord/core' ? force : false), silent);
             }
         }
     }
@@ -305,10 +302,19 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                try {
+                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                } catch (ex2) {
+                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                }
                 if (ex.javaException !== undefined) {
                     $.consoleLn("Sending stack trace to error log...");
                     Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                } else {
+                    try {
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                    } catch (ex3) {
+                    }
                 }
             }
         } else {
@@ -317,10 +323,19 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        try {
+                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                        } catch (ex2) {
+                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                        }
                         if (ex.javaException !== undefined) {
                             $.consoleLn("Sending stack trace to error log...");
                             Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                        } else {
+                            try {
+                                Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                            } catch (ex3) {
+                            }
                         }
                     }
                 }
@@ -358,13 +373,8 @@
         loadScript('./core/whisper.js', false, silentScriptsLoad);
         loadScript('./core/commandCoolDown.js', false, silentScriptsLoad);
         loadScript('./core/keywordCoolDown.js', false, silentScriptsLoad);
-        loadScript('./core/gameMessages.js', false, silentScriptsLoad);
         loadScript('./core/patternDetector.js', false, silentScriptsLoad);
         loadScript('./core/permissions.js', false, silentScriptsLoad);
-        loadScript('./core/streamInfo.js', false, silentScriptsLoad);
-        loadScript('./core/timeSystem.js', false, silentScriptsLoad);
-        loadScript('./core/initCommands.js', false, silentScriptsLoad);
-        loadScript('./core/panelCommands.js', false, silentScriptsLoad);
 
         // Load all the other modules.
         loadScriptRecursive('.', silentScriptsLoad);
@@ -378,7 +388,6 @@
             loadScript('./discord/core/registerCommand.js', false, silentScriptsLoad);
             loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
             loadScript('./discord/core/commandCooldown.js', false, silentScriptsLoad);
-            loadScript('./discord/core/roleManager.js', false, silentScriptsLoad);
 
             // Load the other discord modules
             loadScriptRecursive('./discord', silentScriptsLoad);
@@ -388,9 +397,6 @@
         } else {
             $.inidb.set('panelData', 'hasDiscord', 'false');
         }
-
-        // Load new panel handler.
-        loadScript('./core/panelHandler.js', false, true);
 
         if (silentScriptsLoad) {
             consoleLn('Modules have been loaded.');
@@ -465,7 +471,7 @@
                     subCommand = $.getSubCommandFromArguments(command, args),
                     isMod = $.isModv3(sender, event.getTags());
 
-            if (isReady === false && command.equalsIgnoreCase(bot) && args[0].equalsIgnoreCase('moderate')) {
+            if (isReady === false && command.equalsIgnoreCase($.botName) && args[0].equalsIgnoreCase('moderate')) {
                 $.session.getModerationStatus();
             }
 
@@ -509,17 +515,25 @@
                 return;
             } else
 
-            // Check the command cooldown.
-            if ($.coolDown.get(command, sender, isMod) !== 0) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
-                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
-                return;
-            } else
-
             // Check the command cost.
             if ($.priceCom(sender, command, subCommand, isMod) === 1) {
                 $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('cmd.needpoints', $.getPointsString($.getCommandPrice(command, subCommand, ''))), $.getIniDbBoolean('settings', 'priceComMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to the user not having enough points.');
+                return;
+            } else
+                // Check the command cooldown.
+                var oncooldown = false;
+            if (args.length > 1 && $.coolDown.exists(command + ' ' + args[0] + ' ' + args[1])) {
+                oncooldown = $.coolDown.get(command + ' ' + args[0] + ' ' + args[1], sender, isMod) !== 0;
+            } else if (args.length > 0 && $.coolDown.exists(command + ' ' + args[0])) {
+                oncooldown = $.coolDown.get(command + ' ' + args[0], sender, isMod) !== 0;
+            } else {
+                oncooldown = $.coolDown.get(command, sender, isMod) !== 0;
+            }
+
+            if (oncooldown) {
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             }
 
@@ -1096,6 +1110,34 @@
          */
         $api.on($script, 'PubSubChannelPoints', function (event) {
             callHook('PubSubChannelPoints', event, false);
+        });
+
+        /*
+         * @event EventSubWebhookValidated
+         */
+        $api.on($script, 'EventSubWebhookValidated', function (event) {
+            callHook('EventSubWebhookValidated', event, false);
+        });
+
+        /*
+         * @event EventSubRevocation
+         */
+        $api.on($script, 'EventSubRevocation', function (event) {
+            callHook('EventSubRevocation', event, false);
+        });
+
+        /*
+         * @event EventSubChannelUpdate
+         */
+        $api.on($script, 'EventSubChannelUpdate', function (event) {
+            callHook('EventSubChannelUpdate', event, false);
+        });
+
+        /*
+         * @event Shutdown
+         */
+        $api.on($script, 'Shutdown', function (event) {
+            callHook('Shutdown', event, false);
         });
     }
 

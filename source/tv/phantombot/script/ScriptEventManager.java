@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import tv.phantombot.event.Event;
 import tv.phantombot.event.Listener;
 

@@ -109,17 +109,22 @@ ul.recent-events li {
     line-height: 20px;
 }
 
-ul.recent-events li p {
-    font-size: 14px;
-    margin-bottom: 0px;
+ul.recent-events li table tr td {
+    vertical-align: baseline;
 }
 
-ul.recent-events li p span {
+.event-date {
+    color: #999;
+    min-width: 142px;
+}
+
+.event-type {
+    margin-left: 3px;
     margin-right: 3px;
 }
 
-span.event-date {
-    color: #999;
+.event-message {
+    font-style: italic;
 }
 
 
@@ -186,12 +191,12 @@ a.disabled {
 .panel,
 .panel-default,
 .panel-group {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
 }
 
 /* Sweetalert */
 .swal-modal {
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--cancel,
@@ -200,14 +205,14 @@ a.disabled {
     background-color: #f4f4f4;
     color: #444;
     border: 1px solid #ddd;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--cancel:hover {
     background-color: #e7e7e7;
     color: #444;
     border: 1px solid #ddd;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--danger,
@@ -215,13 +220,13 @@ a.disabled {
 .swal-button--danger:active  {
     background-color: #dd4b39 !important;
     border: 1px solid #d73925 !important;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--danger:hover {
     background-color: #d73925 !important;
     border: 1px solid #d73925 !important;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--confirm,
@@ -230,14 +235,14 @@ a.disabled {
     background-color: #6441a5;
     text-decoration: none;
     border: 1px solid #2f098c;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button--confirm:hover {
     background-color: #6b49ab;
     text-decoration: none;
     border: 1px solid #2f098c;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .swal-button {

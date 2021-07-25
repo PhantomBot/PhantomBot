@@ -47,7 +47,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-quote': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-trash'
+                            'class': 'fa fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -55,7 +55,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-quote': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-edit'
+                            'class': 'fa fa-edit'
                         })
                     })).html()
                 ]);
@@ -168,6 +168,10 @@ $(run = function() {
 
 // Function that handlers the loading of events.
 $(function() {
+    socket.addListener('quote_update', function() {
+       run();
+    });
+
     // Module toggle.
     $('#quotesModuleToggle').on('change', function() {
         // Enable the module then query the data.
@@ -190,8 +194,6 @@ $(function() {
                 default:
                     // Add quote.
                     socket.sendCommandSync('add_quote_cmd', 'addquotesilent ' + quoteQuote.val().replace(/"/g, '\'\''), function() {
-                        // Reload the table.
-                        run();
                         // Close the modal.
                         $('#add-quote').modal('hide');
                         // Alert the user.

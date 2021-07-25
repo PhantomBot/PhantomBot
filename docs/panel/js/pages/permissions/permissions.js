@@ -40,7 +40,7 @@ $(run = function() {
                     'title': 'This will reset the user\'s permission back to viewer. Viewers aren\'t shown in this list',
                     'data-username': results[i].key,
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-trash'
+                        'class': 'fa fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -48,7 +48,7 @@ $(run = function() {
                     'style': 'float: right',
                     'data-username': results[i].key,
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-edit'
+                        'class': 'fa fa-edit'
                     })
                 })).html()
             ]);

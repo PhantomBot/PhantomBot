@@ -21,9 +21,17 @@ import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import java.util.LinkedList;
+import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONStringer;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 /**
  *
@@ -50,8 +58,57 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
 
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+        if (frame instanceof TextWebSocketFrame) {
+            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
+
+            JSONObject jso;
+
+            try {
+                jso = new JSONObject(tframe.text());
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+                return;
+            }
+
+            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("wsdebug", false)) {
+                com.gmt2001.Console.debug.println(jso.toString());
+            }
+
+            if (jso.has("socket_event")) {
+                handleSocketEvent(ctx, frame, jso);
+            }
+        }
     }
-    
+
+    private void handleSocketEvent(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        String script = jso.getString("script");
+        String arguments = jso.getJSONObject("args").getString("arguments");
+        JSONArray jsonArray = jso.getJSONObject("args").getJSONArray("args");
+        String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
+
+        JSONStringer jsonObject = new JSONStringer();
+        List<String> tempArgs = new LinkedList<>();
+        String[] args = null;
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            tempArgs.add(jsonArray.getString(i));
+        }
+
+        if (!tempArgs.isEmpty()) {
+            int i = 0;
+            args = new String[tempArgs.size()];
+
+            for (String str : tempArgs) {
+                args[i] = str;
+                ++i;
+            }
+        }
+
+        EventBus.instance().post(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
+        jsonObject.object().key("query_id").value(uniqueID).endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
     public void sendJSONToAll(String jsonString) {
         try {
             WebSocketFrameHandler.broadcastWsFrame("/ws/alertspolls", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));

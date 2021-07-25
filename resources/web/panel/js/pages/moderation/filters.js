@@ -61,8 +61,8 @@ $(function() {
     $('#filter-links-btn').on('click', function() {
         // Get link filter settings.
         socket.getDBValues('moderation_get_link_settings', {
-            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
-            keys: ['linksMessage', 'linkPermitTime', 'subscribersModerateLinks', 'regularsModerateLinks', 'silentTimeoutLinks', 'silentLinkMessage', 'warningTimeLinks', 'timeoutTimeLinks']
+            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+            keys: ['linksMessage', 'linkPermitTime', 'subscribersModerateLinks', 'regularsModerateLinks', 'vipsModerateLinks', 'silentTimeoutLinks', 'silentLinkMessage', 'warningTimeLinks', 'timeoutTimeLinks']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('link-settings', 'Link Settings', 'Save', $('<form/>', {
@@ -101,7 +101,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLinks !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLinks !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -111,7 +114,8 @@ $(function() {
                     timeoutReason = $('#timeout-banmsg'),
                     permitTime = $('#permit-time'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -125,10 +129,10 @@ $(function() {
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_links', {
                             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                                    'chatModerator', 'chatModerator', 'chatModerator'],
-                            keys: ['linksMessage', 'linkPermitTime', 'subscribersModerateLinks', 'regularsModerateLinks', 'silentTimeoutLinks',
+                                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                            keys: ['linksMessage', 'linkPermitTime', 'subscribersModerateLinks', 'regularsModerateLinks', 'vipsModerateLinks', 'silentTimeoutLinks',
                                     'silentLinkMessage', 'warningTimeLinks', 'timeoutTimeLinks'],
-                            values: [timeoutMessage.val(), permitTime.val(), isSub, isReg, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
+                            values: [timeoutMessage.val(), permitTime.val(), isSub, isReg, isVip, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
                                 // Hide modal
@@ -147,9 +151,9 @@ $(function() {
         // Get caps filter settings.
         socket.getDBValues('moderation_get_caps_settings', {
             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
             keys: ['capsMessage', 'capsLimitPercent', 'capsTriggerLength', 'subscribersModerateCaps',
-                    'regularsModerateCaps', 'silentTimeoutCaps', 'silentCapMessage', 'warningTimeCaps', 'timeoutTimeCaps']
+                    'regularsModerateCaps', 'vipsModerateCaps', 'silentTimeoutCaps', 'silentCapMessage', 'warningTimeCaps', 'timeoutTimeCaps']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('caps-settings', 'Caps Settings', 'Save', $('<form/>', {
@@ -191,7 +195,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateCaps !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateCaps !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -202,7 +209,8 @@ $(function() {
                     capsTrigger = $('#caps-trigger-amount'),
                     capsLimit = $('#caps-amount'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -217,10 +225,10 @@ $(function() {
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_caps', {
                             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
                             keys: ['capsMessage', 'capsLimitPercent', 'capsTriggerLength', 'subscribersModerateCaps',
-                                    'regularsModerateCaps', 'silentTimeoutCaps', 'silentCapMessage', 'warningTimeCaps', 'timeoutTimeCaps'],
-                            values: [timeoutMessage.val(), capsLimit.val(), capsTrigger.val(), isSub, isReg, timeoutMessageToggle,
+                                    'regularsModerateCaps', 'vipsModerateCaps', 'silentTimeoutCaps', 'silentCapMessage', 'warningTimeCaps', 'timeoutTimeCaps'],
+                            values: [timeoutMessage.val(), capsLimit.val(), capsTrigger.val(), isSub, isReg, isVip, timeoutMessageToggle,
                                     timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
@@ -240,9 +248,9 @@ $(function() {
         // Get symbols filter settings.
         socket.getDBValues('moderation_get_symbols_settings', {
             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
             keys: ['symbolsMessage', 'symbolsLimitPercent', 'symbolsGroupLimit', 'symbolsTriggerLength',
-                    'subscribersModerateSymbols', 'regularsModerateSymbols', 'silentTimeoutSymbols', 'silentSymbolsMessage', 'warningTimeSymbols', 'timeoutTimeSymbols']
+                    'subscribersModerateSymbols', 'regularsModerateSymbols', 'vipsModerateSymbols', 'silentTimeoutSymbols', 'silentSymbolsMessage', 'warningTimeSymbols', 'timeoutTimeSymbols']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('symbols-settings', 'Symbols Settings', 'Save', $('<form/>', {
@@ -287,7 +295,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSymbols !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSymbols !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -299,7 +310,8 @@ $(function() {
                     symbolsLimit = $('#symbols-amount'),
                     symbolsLimitGroup = $('#symbols-amount-group'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -315,11 +327,11 @@ $(function() {
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_symbols', {
                             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                                'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                                'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
                             keys: ['symbolsMessage', 'symbolsLimitPercent', 'symbolsGroupLimit', 'symbolsTriggerLength',
-                                'subscribersModerateSymbols', 'regularsModerateSymbols', 'silentTimeoutSymbols', 'silentSymbolsMessage', 'warningTimeSymbols', 'timeoutTimeSymbols'],
+                                'subscribersModerateSymbols', 'regularsModerateSymbols', 'vipsModerateSymbols', 'silentTimeoutSymbols', 'silentSymbolsMessage', 'warningTimeSymbols', 'timeoutTimeSymbols'],
                             values: [timeoutMessage.val(), symbolsLimit.val(), symbolsLimitGroup.val(), symbolsTrigger.val(),
-                                    isSub, isReg, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
+                                    isSub, isReg, isVip, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
                                 // Hide modal
@@ -338,8 +350,8 @@ $(function() {
         // Get spam filter settings.
         socket.getDBValues('moderation_get_spam_settings', {
             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                    'chatModerator', 'chatModerator', 'chatModerator'],
-            keys: ['spamMessage', 'spamLimit', 'subscribersModerateSpam', 'regularsModerateSpam',
+                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+            keys: ['spamMessage', 'spamLimit', 'subscribersModerateSpam', 'regularsModerateSpam', 'vipsModerateSpam',
                     'silentTimeoutSpam', 'silentSpamMessage', 'warningTimeSpam', 'timeoutTimeSpam']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
@@ -381,7 +393,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpam !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.subscribersModerateSpam !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -391,7 +406,8 @@ $(function() {
                     timeoutReason = $('#timeout-banmsg'),
                     spamLimit = $('#spam-amount'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -405,10 +421,10 @@ $(function() {
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_spam', {
                             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
-                            keys: ['spamMessage', 'spamLimit', 'subscribersModerateSpam', 'regularsModerateSpam',
+                                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+                            keys: ['spamMessage', 'spamLimit', 'subscribersModerateSpam', 'regularsModerateSpam', 'vipsModerateSpam',
                                      'silentTimeoutSpam', 'silentSpamMessage', 'warningTimeSpam', 'timeoutTimeSpam'],
-                            values: [timeoutMessage.val(), spamLimit.val(), isSub, isReg, timeoutMessageToggle,
+                            values: [timeoutMessage.val(), spamLimit.val(), isSub, isReg, isVip, timeoutMessageToggle,
                                     timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
@@ -428,9 +444,9 @@ $(function() {
         // Get emotes filter settings.
         socket.getDBValues('moderation_get_emotes_settings', {
             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                    'chatModerator', 'chatModerator', 'chatModerator'],
+                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
             keys: ['emotesMessage', 'emotesLimit', 'subscribersModerateEmotes',
-                    'regularsModerateEmotes', 'silentTimeoutEmotes', 'silentEmoteMessage', 'warningTimeEmotes', 'timeoutTimeEmotes']
+                    'regularsModerateEmotes', 'vipsModerateEmotes', 'silentTimeoutEmotes', 'silentEmoteMessage', 'warningTimeEmotes', 'timeoutTimeEmotes']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('emotes-settings', 'Emotes Settings', 'Save', $('<form/>', {
@@ -471,7 +487,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateEmotes !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateEmotes !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -481,7 +500,8 @@ $(function() {
                     timeoutReason = $('#timeout-banmsg'),
                     emoteLimit = $('#emote-amount'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -494,11 +514,11 @@ $(function() {
                     default:
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_emotes', {
-                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
                             keys: ['emotesMessage', 'emotesLimit', 'subscribersModerateEmotes',
-                                    'regularsModerateEmotes', 'silentTimeoutEmotes', 'silentEmoteMessage', 'warningTimeEmotes', 'timeoutTimeEmotes'],
-                            values: [timeoutMessage.val(), emoteLimit.val(), isSub, isReg, timeoutMessageToggle,
+                                    'regularsModerateEmotes', 'vipsModerateEmotes', 'silentTimeoutEmotes', 'silentEmoteMessage', 'warningTimeEmotes', 'timeoutTimeEmotes'],
+                            values: [timeoutMessage.val(), emoteLimit.val(), isSub, isReg, isVip, timeoutMessageToggle,
                                     timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
@@ -518,8 +538,8 @@ $(function() {
         // Get me filter settings.
         socket.getDBValues('moderation_get_me_settings', {
             tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
-                    'chatModerator', 'chatModerator', 'chatModerator'],
-            keys: ['colorsMessage', 'subscribersModerateColors', 'regularsModerateColors',
+                    'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+            keys: ['colorsMessage', 'subscribersModerateColors', 'regularsModerateColors', 'vipsModerateColors',
                     'silentTimeoutColors', 'silentColorMessage', 'warningTimeColors', 'timeoutTimeColors']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
@@ -558,7 +578,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateColors !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateColors !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -567,7 +590,8 @@ $(function() {
                     timeoutTime = $('#timeout-timeout-time'),
                     timeoutReason = $('#timeout-banmsg'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -579,11 +603,11 @@ $(function() {
                     default:
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_me', {
-                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
-                            keys: ['colorsMessage', 'subscribersModerateColors', 'regularsModerateColors',
+                            keys: ['colorsMessage', 'subscribersModerateColors', 'regularsModerateColors', 'vipsModerateColors',
                                     'silentTimeoutColors', 'silentColorMessage', 'warningTimeColors', 'timeoutTimeColors'],
-                            values: [timeoutMessage.val(), isSub, isReg, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
+                            values: [timeoutMessage.val(), isSub, isReg, isVip, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
                                 // Hide modal
@@ -601,10 +625,10 @@ $(function() {
     $('#filter-msglen-btn').on('click', function() {
         // Get message length filter settings.
         socket.getDBValues('moderation_get_msglen_settings', {
-            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
             keys: ['longMessageMessage', 'longMessageLimit', 'subscribersModerateLongMsg',
-                    'regularsModerateLongMsg', 'silentTimeoutLongMsg', 'silentLongMessage', 'warningTimeLongMsg', 'timeoutTimeLongMsg']
+                    'regularsModerateLongMsg', 'vipsModerateLongMsg', 'silentTimeoutLongMsg', 'silentLongMessage', 'warningTimeLongMsg', 'timeoutTimeLongMsg']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('msglen-settings', 'Paragraph Settings', 'Save', $('<form/>', {
@@ -645,7 +669,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLongMsg !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLongMsg !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -655,7 +682,8 @@ $(function() {
                     timeoutReason = $('#timeout-banmsg'),
                     msgLimit = $('#msg-limit'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -668,11 +696,11 @@ $(function() {
                     default:
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_longmsg', {
-                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
                             keys: ['longMessageMessage', 'longMessageLimit', 'subscribersModerateLongMsg',
-                                    'regularsModerateLongMsg', 'silentTimeoutLongMsg', 'silentLongMessage', 'warningTimeLongMsg', 'timeoutTimeLongMsg'],
-                            values: [timeoutMessage.val(), msgLimit.val(), isSub, isReg, timeoutMessageToggle,
+                                    'regularsModerateLongMsg', 'vipsModerateLongMsg', 'silentTimeoutLongMsg', 'silentLongMessage', 'warningTimeLongMsg', 'timeoutTimeLongMsg'],
+                            values: [timeoutMessage.val(), msgLimit.val(), isSub, isReg, isVip, timeoutMessageToggle,
                                     timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
@@ -691,8 +719,8 @@ $(function() {
     $('#filter-purges-btn').on('click', function() {
         // Get purges filter settings.
         socket.getDBValues('moderation_get_purges_settings', {
-            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
-            keys: ['fakePurgeMessage', 'subscribersModerateFakePurge', 'regularsModerateFakePurge',
+            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
+            keys: ['fakePurgeMessage', 'subscribersModerateFakePurge', 'regularsModerateFakePurge', 'vipsModerateFakePurge',
                     'silentTimeoutFakePurge', 'silentFakePurgeMessage', 'warningTimeFakePurge', 'timeoutTimeFakePurge']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
@@ -729,7 +757,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateFakePurge !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateFakePurge !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -738,7 +769,8 @@ $(function() {
                     timeoutTime = $('#timeout-timeout-time'),
                     timeoutReason = $('#timeout-banmsg'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -750,11 +782,11 @@ $(function() {
                     default:
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_purges', {
-                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
-                            keys: ['fakePurgeMessage', 'subscribersModerateFakePurge', 'regularsModerateFakePurge',
+                            keys: ['fakePurgeMessage', 'subscribersModerateFakePurge', 'regularsModerateFakePurge', 'vipsModerateFakePurge',
                                     'silentTimeoutFakePurge', 'silentFakePurgeMessage', 'warningTimeFakePurge', 'timeoutTimeFakePurge'],
-                            values: [timeoutMessage.val(), isSub, isReg, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
+                            values: [timeoutMessage.val(), isSub, isReg, isVip, timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {
                                 // Hide modal
@@ -772,10 +804,10 @@ $(function() {
     $('#filter-tracker-btn').on('click', function() {
         // Get tracker length filter settings.
         socket.getDBValues('moderation_get_msglen_settings', {
-            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
+            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
             keys: ['spamTrackerMessage', 'spamTrackerTime', 'spamTrackerLimit', 'subscribersModerateSpamTracker',
-                    'regularsModerateSpamTracker', 'silentTimeoutSpamTracker', 'silentSpamTrackerMessage', 'warningTimeSpamTracker', 'timeoutTimeSpamTracker']
+                    'regularsModerateSpamTracker', 'vipsModerateSpamTracker', 'silentTimeoutSpamTracker', 'silentSpamTrackerMessage', 'warningTimeSpamTracker', 'timeoutTimeSpamTracker']
         }, true, function(e) {
             // Get advance modal from our util functions in /utils/helpers.js
             helpers.getAdvanceModal('tracker-settings', 'User Moderation Settings', 'Save', $('<form/>', {
@@ -819,7 +851,10 @@ $(function() {
                     'If regulars should be allowed to bypass this filter.'))
                 // Tooltip to toggle for subs to bypass this filter.
                 .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpamTracker !== 'true', 'Exclude Subscribers',
-                    'If subscribers should be allowed to bypass this filter.')))
+                    'If subscribers should be allowed to bypass this filter.'))
+                // Tooltip to toggle for vips to bypass this filter.
+                .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSpamTracker !== 'true', 'Exclude VIPs',
+                    'If vips should be allowed to bypass this filter.')))
             // Callback function to be called once we hit the save button on the modal.
             })), function() {
                 let timeoutMessage = $('#timeout-message'),
@@ -830,7 +865,8 @@ $(function() {
                     trackTime = $('#track-time'),
                     trackLimit = $('#track-limit'),
                     isReg = $('#exclude-regulars').is(':checked') !== true,
-                    isSub = $('#exclude-subscribers').is(':checked') !== true;
+                    isSub = $('#exclude-subscribers').is(':checked') !== true,
+                    isVip = $('#exclude-vips').is(':checked') !== true;
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -844,11 +880,11 @@ $(function() {
                     default:
                         // Update moderation settings.
                         socket.updateDBValues('moderation_update_tracker', {
-                            tables: ['chatModerator', 'chatModerator', 'chatModerator',
+                            tables: ['chatModerator', 'chatModerator', 'chatModerator', 'chatModerator',
                                     'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator', 'chatModerator'],
                             keys: ['spamTrackerMessage', 'spamTrackerTime', 'spamTrackerLimit',
-                                    'subscribersModerateSpamTracker', 'regularsModerateSpamTracker', 'silentTimeoutSpamTracker', 'silentSpamTrackerMessage', 'warningTimeSpamTracker', 'timeoutTimeSpamTracker'],
-                            values: [timeoutMessage.val(), trackTime.val(), trackLimit.val(), isSub, isReg,
+                                    'subscribersModerateSpamTracker', 'regularsModerateSpamTracker', 'vipsModerateSpamTracker', 'silentTimeoutSpamTracker', 'silentSpamTrackerMessage', 'warningTimeSpamTracker', 'timeoutTimeSpamTracker'],
+                            values: [timeoutMessage.val(), trackTime.val(), trackLimit.val(), isSub, isReg, isVip,
                                     timeoutMessageToggle, timeoutReason.val(), warningTime.val(), timeoutTime.val()]
                         }, function() {
                             socket.sendCommand('moderation_update_filter_cmd', 'reloadmod', function() {

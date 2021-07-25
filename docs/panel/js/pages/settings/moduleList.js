@@ -53,18 +53,18 @@ $(run = function() {
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-trash'
+                        'class': 'fa fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
                     'class': 'btn btn-xs btn-' + (twitchModules[i].status ? 'success' : 'warning'),
                     'data-toggle': 'tooltip',
-                    'title': (twitchModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.') ,
+                    'title': (twitchModules[i].status ? 'Click to disable the module.' : 'Click to enable the module.'),
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'data-mtoggle': twitchModules[i].status,
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-' + (twitchModules[i].status ? 'times' : 'check')
+                        'class': 'fa fa-' + (twitchModules[i].status ? 'close' : 'check')
                     })
                 })).html()
             ]);
@@ -152,7 +152,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-module': discordModules[i].module,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-trash'
+                            'class': 'fa fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -163,7 +163,7 @@ $(run = function() {
                         'data-module': discordModules[i].module,
                         'data-mtoggle': discordModules[i].status,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-' + (discordModules[i].status ? 'times' : 'check')
+                            'class': 'fa fa-' + (discordModules[i].status ? 'close' : 'check')
                         })
                     })).html()
                 ]);

@@ -860,6 +860,39 @@ public class H2Store extends DataStore {
     }
 
     @Override
+    public String[][] executeSql(String sql, String[] replacements) {
+        ArrayList<ArrayList<String>> results = new ArrayList<>();
+
+        try (Connection connection = GetConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                int i = 1;
+                for (String k : replacements) {
+                    statement.setString(i++, k);
+                }
+
+                try (ResultSet rs = statement.executeQuery()) {
+                    int numcol = rs.getMetaData().getColumnCount();
+                    i = 0;
+
+                    while (rs.next()) {
+                        results.add(new ArrayList<>());
+
+                        for (int b = 1; b <= numcol; b++) {
+                            results.get(i).add(rs.getString(b));
+                        }
+
+                        i++;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return results.stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
+    }
+
+    @Override
     public void CreateIndexes() {
         try (Connection connection = GetConnection()) {
             String[] tableNames = GetFileList();

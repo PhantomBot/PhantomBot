@@ -16,10 +16,13 @@
  */
 package com.gmt2001.Console;
 
+import static com.gmt2001.Console.debug.logStackTrace;
 import com.gmt2001.Logger;
+import com.gmt2001.RollbarProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import tv.phantombot.PhantomBot;
 
 public final class warn {
@@ -71,13 +74,40 @@ public final class warn {
     }
 
     public static void printStackTrace(Throwable e) {
+        printStackTrace(e, "");
+    }
+
+    public static void printStackTrace(Throwable e, String description) {
+        printStackTrace(e, null, description);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom) {
+        printStackTrace(e, custom, "");
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
             e.printStackTrace(System.err);
         }
-        logStackTrace(e);
+
+        logStackTrace(e, custom, description);
     }
 
     public static void logStackTrace(Throwable e) {
+        logStackTrace(e, "");
+    }
+
+    public static void logStackTrace(Throwable e, String description) {
+        logStackTrace(e, null, description);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom) {
+        logStackTrace(e, custom, "");
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom, String description) {
+        RollbarProvider.instance().warning(e, custom, description);
+
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 

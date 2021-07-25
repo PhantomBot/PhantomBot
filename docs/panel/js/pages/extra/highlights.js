@@ -38,7 +38,8 @@ $(run = function() {
                     $('<a/>', {
                         'text': url,
                         'href': url,
-                        'target': '_blank'
+                        'target': '_blank',
+                        'rel': 'noopener noreferrer'
                     })[0].outerHTML,
                     comment,
                     $('<div/>', {
@@ -49,7 +50,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-key': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-trash'
+                            'class': 'fa fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
@@ -57,7 +58,7 @@ $(run = function() {
                         'style': 'float: right',
                         'data-key': results[i].key,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-edit'
+                            'class': 'fa fa-edit'
                         })
                     })).html()
                 ]);

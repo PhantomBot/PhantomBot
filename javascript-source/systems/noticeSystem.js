@@ -25,13 +25,26 @@
     var noticeReqMessages = $.getSetIniDbNumber('noticeSettings', 'reqmessages', 25),
         noticeInterval = $.getSetIniDbNumber('noticeSettings', 'interval', 10),
         noticeToggle = $.getSetIniDbBoolean('noticeSettings', 'noticetoggle', false),
-        numberOfNotices = (parseInt($.inidb.GetKeyList('notices', '').length) ? parseInt($.inidb.GetKeyList('notices', '').length) : 0),
+        numberOfNotices = 0,
         noticeOffline = $.getSetIniDbBoolean('noticeSettings', 'noticeOfflineToggle', false),
         isReloading = false,
         messageCount = 0,
         RandomNotice = 0,
         lastNoticeSent = 0,
         interval;
+
+    function updateNumberOfNotices() {
+        var keys = $.inidb.GetKeyList('notices', ''),
+            count = 0;
+
+        for (i = 0; i < keys.length; i++) {
+            if (!$.jsString(keys[i]).endsWith('_disabled')) {
+                count++;
+            }
+        }
+
+        numberOfNotices = count;
+    };
 
     /**
      * @function reloadNotices
@@ -40,24 +53,31 @@
         if (!isReloading) {
             isReloading = true;
             var keys = $.inidb.GetKeyList('notices', ''),
-                count = 0,
                 temp = [],
+                temp2 = [],
                 i;
 
             for (i = 0; i < keys.length; i++) {
-                if ($.inidb.get('notices', keys[i]) != null) {
-                    temp[i] = $.inidb.get('notices', keys[i])
+                if (!$.jsString(keys[i]).endsWith('_disabled') && $.inidb.get('notices', keys[i]) !== null) {
+                    temp[i] = $.inidb.get('notices', keys[i]);
+                    if ($.inidb.exists('notices', keys[i] + '_disabled')) {
+                        temp2[i] = $.jsString($.inidb.get('notices', keys[i] + '_disabled'));
+                    } else {
+                        temp2[i] = '0';
+                    }
                 }
             }
 
             $.inidb.RemoveFile('notices');
 
             for (i = 0; i < temp.length; i++) {
-                $.inidb.set('notices', 'message_' + count, temp[i]);
-                count++;
+                $.inidb.set('notices', 'message_' + i, temp[i]);
+                if (temp2[i] === '1') {
+                    $.inidb.set('notices', 'message_' + i + '_disabled', temp2[i]);
+                }
             }
 
-            numberOfNotices = $.inidb.GetKeyList('notices', '').length;
+            updateNumberOfNotices();
             if (RandomNotice >= numberOfNotices) {
                 RandomNotice = 0;
             }
@@ -72,17 +92,23 @@
         var EventBus = Packages.tv.phantombot.event.EventBus,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
             start = RandomNotice,
-            notice = null;
-                        
+            notice = null,
+            disabled;
+
         do {
             notice = $.inidb.get('notices', 'message_' + RandomNotice);
+            disabled = $.inidb.GetBoolean('notices', '', 'message_' + RandomNotice + '_disabled');
 
             RandomNotice++;
 
             if (RandomNotice >= numberOfNotices) {
                 RandomNotice = 0;
             }
-            
+
+            if (disabled) {
+                notice = null;
+            }
+
             if (notice && notice.match(/\(gameonly=.*\)/g)) {
                 var game = notice.match(/\(gameonly=(.*)\)/)[1];
                 if ($.getGame($.channelName).equalsIgnoreCase(game)) {
@@ -93,7 +119,7 @@
             }
         } while(!notice && start !== RandomNotice);
 
-        if (notice == null) {
+        if (notice === null) {
             return;
         }
 
@@ -133,14 +159,13 @@
             command = event.getCommand(),
             argsString = event.getArguments().trim(),
             args = event.getArgs(),
-            action = args[0],
-            message = '';
+            action = args[0];
 
         /**
          * @commandpath notice - Base command for managing notices
          */
         if (command.equalsIgnoreCase('notice')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-usage'));
                 return;
             }
@@ -180,6 +205,34 @@
             }
 
             /**
+             * @commandpath notice toggleid [id] - Toggles on/off the notice at the given ID
+             */
+            if (action.equalsIgnoreCase('toggleid')) {
+                if (args.length < 2) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-toggleid-usage', numberOfNotices));
+                    return;
+                } else if (!$.inidb.exists('notices', 'message_' + args[1])) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-error-notice-404'));
+                    return;
+                } else {
+                    var disabled = $.inidb.GetBoolean('notices', '', 'message_' + args[1] + '_disabled');
+                    $.inidb.SetBoolean('notices', '', 'message_' + args[1] + '_disabled', !disabled);
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
+                    return;
+                }
+            }
+
+            if (action.equalsIgnoreCase('toggleidsilent')) {
+                if (args.length < 2 || !$.inidb.exists('notices', 'message_' + args[1])) {
+                    return;
+                } else {
+                    var disabled = $.inidb.GetBoolean('notices', '', 'message_' + args[1] + '_disabled');
+                    $.inidb.SetBoolean('notices', '', 'message_' + args[1] + '_disabled', !disabled);
+                    return;
+                }
+            }
+
+            /**
              * USED FOR THE PANEL
              */
             if (action.equalsIgnoreCase('editsilent')) {
@@ -210,7 +263,7 @@
                     return;
                 } else {
                     $.inidb.del('notices', 'message_' + args[1]);
-                    numberOfNotices--;
+                    $.inidb.del('notices', 'message_' + args[1] + '_disabled');
                     reloadNotices();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-success'));
                     return;
@@ -229,7 +282,7 @@
                     return;
                 } else {
                     $.inidb.del('notices', 'message_' + args[1]);
-                    numberOfNotices--;
+                    $.inidb.del('notices', 'message_' + args[1] + '_disabled');
                     reloadNotices();
                     //$.say($.whisperPrefix(sender) + $.lang.get('noticehandler.notice-remove-success'));
                     return;
@@ -360,6 +413,8 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
+
+        updateNumberOfNotices();
     });
 
     $.reloadNoticeSettings = reloadNoticeSettings;

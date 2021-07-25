@@ -28,17 +28,10 @@ $(function() {
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function() {
-        $.ajax({
-            'type': 'GET',
-            'url': window.location.pathname,
-            'username': 'log',
-            'password': 'out'
-        }).done(function() {
-            window.location = '/panel/login?logout=true';
-        }).fail(function() {
-            // We logged out. We want a 401, this means the old password was dumped (The good one).
-            window.location = '/';
-        });
+        toastr.info('Signing out...', '', { timeOut: 0 });
+        socket.close();
+        window.sessionStorage.removeItem("webauth");
+        window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
     });
 
     // Load the display name.
@@ -81,4 +74,33 @@ $(function() {
             }, 3e4);
         }
     });
+
+    /**
+    $.fn.dinamicMenu = function(t) {
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href !== t;
+        }).parent().removeClass("active");
+        $("ul.sidebar-menu a").filter(function() {
+            return this.href === t;
+        }).parent().addClass("active");
+        $("ul.treeview-menu a").filter(function() {
+            return this.href === t;
+        }).parentsUntil(".sidebar-menu > .treeview-menu > li").addClass("active");
+    };
+
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]',
+        container: "body",
+        trigger: "hover",
+        delay: {
+            show: 400,
+            hide: 30
+        }
+    });
+
+    toastr.options.progressBar = !0
+    toastr.options.preventDuplicates = !1
+    toastr.options.closeButton = !0
+    toastr.options.newestOnTop = !0
+     */
 });
