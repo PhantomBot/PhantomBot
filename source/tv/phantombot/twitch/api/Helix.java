@@ -242,7 +242,8 @@ public class Helix {
             }
 
             CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
-                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content))).block(Duration.ofMillis(TIMEOUT_TIME));
+                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content)).defaultIfEmpty(new CallResponse(res, "{}")))
+                    .block(Duration.ofMillis(TIMEOUT_TIME));
 
             if (response == null) {
                 throw new NullPointerException("response");
