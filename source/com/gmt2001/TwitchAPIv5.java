@@ -660,6 +660,11 @@ public class TwitchAPIv5 {
         if (followData != null && !followData.has("error") && followData.has("total") && followData.getInt("total") == 1) {
             result = this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0);
             this.setupResult(result, followData, null);
+        } else {
+            result.put("_http", 404);
+            result.put("error", "Not Found");
+            result.put("message", user + " is not following " + channel);
+            result.put("status", 404);
         }
 
         return result;

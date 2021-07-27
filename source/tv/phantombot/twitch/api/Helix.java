@@ -264,7 +264,7 @@ public class Helix {
             returnObject = new JSONObject(response.body);
             // Generate the return object,
             this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IllegalArgumentException | JSONException | NullPointerException ex) {
+        } catch (IllegalStateException | IllegalArgumentException | JSONException | NullPointerException ex) {
             // Generate the return object.
             this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }
