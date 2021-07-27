@@ -31,8 +31,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -243,7 +245,7 @@ public class Helix {
 
             CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
                     .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content)).defaultIfEmpty(new CallResponse(res, "{}")))
-                    .block(Duration.ofMillis(TIMEOUT_TIME));
+                    .toFuture().get(TIMEOUT_TIME, TimeUnit.MILLISECONDS);
 
             if (response == null) {
                 throw new NullPointerException("response");
@@ -264,7 +266,7 @@ public class Helix {
             returnObject = new JSONObject(response.body);
             // Generate the return object,
             this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IllegalArgumentException | JSONException | NullPointerException ex) {
+        } catch (IllegalArgumentException | InterruptedException | NullPointerException | ExecutionException | TimeoutException | JSONException ex) {
             // Generate the return object.
             this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }
