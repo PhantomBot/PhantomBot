@@ -27,7 +27,7 @@ $(function() {
     });
 
     // the button that signs out.
-    $('#sign-out-btn').on('click', function () {
+    $('#sign-out-btn').on('click', function() {
         toastr.info('Signing out...', '', { timeOut: 0 });
         socket.close();
         window.sessionStorage.removeItem("webauth");
@@ -75,6 +75,7 @@ $(function() {
         }
     });
 
+    /**
     $.fn.dinamicMenu = function(t) {
         $("ul.sidebar-menu a").filter(function() {
             return this.href !== t;
@@ -101,4 +102,5 @@ $(function() {
     toastr.options.preventDuplicates = !1
     toastr.options.closeButton = !0
     toastr.options.newestOnTop = !0
+     */
 });

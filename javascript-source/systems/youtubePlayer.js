@@ -1150,7 +1150,7 @@
      */
     $.bind('yTPlayerStealSong', function(event) {
         var youTubeID = (event.getYouTubeID() + ''),
-            refundUser = (event.getRequester() + ''),
+            refundUser = $.jsString(event.getRequester()).toLowerCase(),
             retval;
 
         if (youTubeID.length > 1) {

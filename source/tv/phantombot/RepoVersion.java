@@ -22,6 +22,7 @@ public class RepoVersion {
     private static final String repoVersion = "@repository.version@";
     private static final String buildType = "@buildtype@";
     private static final String panelVersion = "@webpanel.version@";
+    private static final boolean isDocker = false;
 
     private RepoVersion() {
     }
@@ -38,6 +39,10 @@ public class RepoVersion {
         return buildType;
     }
 
+    public static String getBuildTypeWithDocker() {
+        return buildType + (isDocker ? "_docker" : "");
+    }
+
     public static boolean getNightlyBuild() {
         return buildType.equals("nightly_build");
     }
@@ -48,5 +53,9 @@ public class RepoVersion {
 
     public static String getPanelVersion() {
         return panelVersion;
+    }
+
+    public static boolean isDocker() {
+        return isDocker;
     }
 }

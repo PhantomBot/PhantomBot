@@ -27,6 +27,7 @@
         saveBets = $.getSetIniDbBoolean('bettingSettings', 'save', true),
         saveFormat = $.getSetIniDbString('bettingSettings', 'format', 'yyyy.M.dd'),
         warningMessages = $.getSetIniDbBoolean('bettingSettings', 'warningMessages', false),
+        saveStateInterval,
         bet = {
             status: false,
             opened: false,
@@ -36,6 +37,7 @@
             maximum: 0,
             timer: 0,
             pointsWon: 0,
+            startTime: 0,
             title: '',
             winners: '',
             options: {},
@@ -89,6 +91,7 @@
         bet.maximum = parseInt(maximum);
         bet.status = true;
         bet.opened = true;
+        bet.startTime = $.systemTime();
 
         if (timer !== undefined && !isNaN(parseInt(timer)) && timer > 0) {
             bet.timer = timer;
@@ -96,6 +99,10 @@
                 stop();
             }, timer * 6e4);
         }
+
+        saveStateInterval = setInterval(function() {
+           saveState();
+        }, 5 * 6e4);
 
         // Trim first spaces.
         var split = options.trim().split(', ');
@@ -116,6 +123,34 @@
         $.inidb.set('bettingPanel', 'title', title);
         $.inidb.set('bettingPanel', 'options', split.join('%space_option%'));
         $.inidb.set('bettingPanel', 'isActive', 'true');
+        saveState();
+    }
+
+    function reopen() {
+        if (!$.inidb.FileExists('bettingState') || !$.inidb.HasKey('bettingState', '', 'bets') || !$.inidb.HasKey('bettingState', '', 'bet')) {
+            return;
+        }
+
+        bets = JSON.parse($.inidb.get('bettingState', 'bets'));
+        bet = JSON.parse($.inidb.get('bettingState', 'bet'));
+
+        if (bet.status === true) {
+            if (bet.timer > 0) {
+                var timeleft = bet.timer - (($.systemTime() - bet.startTime) / 6e4);
+                timeout = setTimeout(function() {
+                    stop();
+                }, timeleft * 6e4);
+            }
+
+            saveStateInterval = setInterval(function() {
+                saveState();
+            }, 5 * 6e4);
+        }
+    }
+
+    function saveState() {
+        $.inidb.set('bettingState', 'bets', JSON.stringify(bets));
+        $.inidb.set('bettingState', 'bet', JSON.stringify(bet));
     }
 
     /**
@@ -139,7 +174,8 @@
             return;
         }
 
-        clearInterval(timeout);
+        clearTimeout(timeout);
+        clearInterval(saveStateInterval);
 
         $.inidb.set('bettingPanel', 'isActive', 'false');
 
@@ -153,7 +189,6 @@
 
         $.say($.lang.get('bettingsystem.close.success', option));
 
-        
         for (i in bets) {
             if (bets[i].option.equalsIgnoreCase(option)) {
                 winners.push(i.toLowerCase());
@@ -162,7 +197,6 @@
                 $.inidb.incr('points', i.toLowerCase(), Math.floor(give));
             }
         }
-        
 
         bet.winners = winners.join(', ');
         bet.pointsWon = total;
@@ -215,7 +249,8 @@
      *
      */
     function clear() {
-        clearInterval(timeout);
+        clearTimeout(timeout);
+        clearInterval(saveStateInterval);
         bets = {};
         bet = {
             status: false,
@@ -226,12 +261,14 @@
             maximum: 0,
             timer: 0,
             pointsWon: 0,
+            startTime: 0,
             title: '',
             winners: '',
             options: {},
             opt: []
         };
         $.inidb.set('bettingPanel', 'isActive', 'false');
+        saveState();
     }
 
     /*
@@ -244,11 +281,11 @@
         if (refund) {
             var betters = Object.keys(bets);
 
-            
+
             for (var i = 0; i < betters.length; i++) {
                 $.inidb.incr('points', betters[i], bets[betters[i]].amount);
             }
-            
+
         }
 
         clear();
@@ -443,6 +480,15 @@
         $.registerChatSubcommand('bet', 'save', 1);
         $.registerChatSubcommand('bet', 'saveformat', 1);
         $.registerChatSubcommand('bet', 'gain', 1);
+
+        reopen();
+    });
+
+    /**
+     * @event Shutdown
+     */
+    $.bind('Shutdown', function() {
+       saveState();
     });
 
     /* export to the $ api */

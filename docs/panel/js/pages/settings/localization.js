@@ -75,7 +75,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fas fa-sm fa-trash'
+                                'class': 'fa fa-trash'
                             })
                         })).append($('<button/>', {
                             'type': 'button',
@@ -84,7 +84,7 @@ $(function() {
                             'data-id': langId.val(),
                             'data-response': langRes.val(),
                             'html': $('<i/>', {
-                                'class': 'fas fa-sm fa-edit'
+                                'class': 'fa fa-edit'
                             })
                         })).html()
                     ]).draw();
@@ -145,7 +145,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-trash'
+                        'class': 'fa fa-trash'
                     })
                 })).append($('<button/>', {
                     'type': 'button',
@@ -154,7 +154,7 @@ $(function() {
                     'data-id': langArray[i]['id'],
                     'data-response': langArray[i]['response'],
                     'html': $('<i/>', {
-                        'class': 'fas fa-sm fa-edit'
+                        'class': 'fa fa-edit'
                     })
                 })).html()
             ])
@@ -233,7 +233,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fas fa-sm fa-trash'
+                                    'class': 'fa fa-trash'
                                 })
                             })).append($('<button/>', {
                                 'type': 'button',
@@ -242,7 +242,7 @@ $(function() {
                                 'data-id': id,
                                 'data-response': response.val(),
                                 'html': $('<i/>', {
-                                    'class': 'fas fa-sm fa-edit'
+                                    'class': 'fa fa-edit'
                                 })
                             })).html()
                         ]).draw(false);

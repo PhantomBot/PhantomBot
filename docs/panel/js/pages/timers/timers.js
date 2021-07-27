@@ -27,31 +27,57 @@ $(run = function() {
         // Query aliases.
         socket.getDBTableValues('timers_get_all', 'notices', function(results) {
             let tableData = [];
+            let notices = [];
+            let disabled = [];
 
             for (let i = 0; i < results.length; i++) {
-                // Strip the "message_" part to get the ID.
                 results[i].key = results[i].key.substring(8);
 
+                if (results[i].key.endsWith('_disabled')) {
+                    if (parseInt(results[i].value) === 1) {
+                        let pos = results[i].key.indexOf('_disabled');
+                        disabled.push(results[i].key.substring(0, pos));
+                    }
+                } else {
+                    notices.push(results[i]);
+                }
+            }
+
+            for (let i = 0; i < notices.length; i++) {
+                // Strip the "message_" part to get the ID.
                 tableData.push([
-                    results[i].key,
-                    results[i].value,
+                    notices[i].key,
+                    notices[i].value,
                     $('<div/>', {
                         'class': 'btn-group'
                     }).append($('<button/>', {
                         'type': 'button',
                         'class': 'btn btn-xs btn-danger',
                         'style': 'float: right',
-                        'data-notice': results[i].key,
+                        'data-notice': notices[i].key,
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-trash'
+                            'class': 'fa fa-trash'
                         })
                     })).append($('<button/>', {
                         'type': 'button',
                         'class': 'btn btn-xs btn-warning',
                         'style': 'float: right',
-                        'data-notice': results[i].key,
+                        'data-notice': notices[i].key,
+                        'data-function': 'edit',
                         'html': $('<i/>', {
-                            'class': 'fas fa-sm fa-edit'
+                            'class': 'fa fa-edit'
+                        })
+                    })).append($('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-' + (disabled.includes(notices[i].key) ? 'warning' : 'success'),
+                        'data-toggle': 'tooltip',
+                        'title': (disabled.includes(notices[i].key) ? 'Click to enable the notice.' : 'Click to disable the notice.'),
+                        'style': 'float: right',
+                        'data-notice': notices[i].key,
+                        'data-function': 'toggleid',
+                        'data-status': !disabled.includes(notices[i].key),
+                        'html': $('<i/>', {
+                            'class': 'fa fa-' + (disabled.includes(notices[i].key) ? 'check' : 'close')
                         })
                     })).html()
                 ]);
@@ -71,7 +97,7 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 2 },
+                    { 'className': 'timer-actions-th', 'orderable': false, 'targets': 2 },
                     { 'width': '3%', 'targets': 0 }
                 ],
                 'columns': [
@@ -99,35 +125,77 @@ $(run = function() {
             // On edit button.
             table.on('click', '.btn-warning', function() {
                 let notice = $(this).data('notice'),
+                    f = $(this).data('function'),
                     t = $(this);
 
-                socket.getDBValue('notice_get_edit', 'notices', 'message_' + notice, function(e) {
-                    helpers.getModal('edit-timer', 'Edit Timer', 'Save', $('<form/>', {
-                        'role': 'form'
-                    })
-                    // Append timer text.
-                    .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer Message', '', e.notices, 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
-                    // Callback once the user clicks save.
-                    function() {// Callback once we click the save button.
-                        let noticeText = $('#notice-text');
+                if (f === 'toggleid') {
+                    let toggle = $(this).data('status');
+                    socket.sendCommand('notice_toggleid', 'notice toggleidsilent ' + notice, function() {
+                        toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the notice.');
 
-                        // Handle each input to make sure they have a value.
-                        switch (false) {
-                            case helpers.handleInputString(noticeText):
-                                break;
-                            default:
-                                // Edit the timer
-                                socket.sendCommand('notice_edit_cmd', 'notice editsilent ' + notice + ' ' + noticeText.val(), function() {
-                                    // Update the table.
-                                    t.parents('tr').find('td:eq(1)').text(noticeText.val());
-                                    // Close the modal.
-                                    $('#edit-timer').modal('hide');
-                                    // Alert the user.
-                                    toastr.success('Successfully edited the timer!');
-                                });
+                        // Update the button.
+                        if (toggle) {
+                            t.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
+                            t.prop('title', 'Click to enable the notice.').tooltip('fixTitle').tooltip('show');
+                        } else {
+                            t.removeClass('btn-warning').addClass('btn-success').find('i').removeClass('fa-check').addClass('fa-close');
+                            t.prop('title', 'Click to disable the notice.').tooltip('fixTitle').tooltip('show');
                         }
-                    }).modal('toggle');
-                });
+                        t.data('status', !toggle);
+                    });
+                } else {
+                    socket.getDBValue('notice_get_edit', 'notices', 'message_' + notice, function(e) {
+                        helpers.getModal('edit-timer', 'Edit Timer', 'Save', $('<form/>', {
+                            'role': 'form'
+                        })
+                        // Append timer text.
+                        .append(helpers.getTextAreaGroup('notice-text', 'text', 'Timer Message', '', e.notices, 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
+                        // Callback once the user clicks save.
+                        function() {// Callback once we click the save button.
+                            let noticeText = $('#notice-text');
+
+                            // Handle each input to make sure they have a value.
+                            switch (false) {
+                                case helpers.handleInputString(noticeText):
+                                    break;
+                                default:
+                                    // Edit the timer
+                                    socket.sendCommand('notice_edit_cmd', 'notice editsilent ' + notice + ' ' + noticeText.val(), function() {
+                                        // Update the table.
+                                        t.parents('tr').find('td:eq(1)').text(noticeText.val());
+                                        // Close the modal.
+                                        $('#edit-timer').modal('hide');
+                                        // Alert the user.
+                                        toastr.success('Successfully edited the timer!');
+                                    });
+                            }
+                        }).modal('toggle');
+                    });
+                }
+            });
+
+            // On edit button.
+            table.on('click', '.btn-success', function() {
+                let notice = $(this).data('notice'),
+                    f = $(this).data('function'),
+                    t = $(this);
+
+                if (f === 'toggleid') {
+                    let toggle = $(this).data('status');
+                    socket.sendCommand('notice_toggleid', 'notice toggleidsilent ' + notice, function() {
+                        toastr.success('successfully ' + (!toggle ? 'enabled' : 'disabled') + ' the notice.');
+
+                        // Update the button.
+                        if (toggle) {
+                            t.removeClass('btn-success').addClass('btn-warning').find('i').removeClass('fa-close').addClass('fa-check');
+                            t.prop('title', 'Click to enable the notice.').tooltip('fixTitle').tooltip('show');
+                        } else {
+                            t.removeClass('btn-warning').addClass('btn-success').find('i').removeClass('fa-check').addClass('fa-close');
+                            t.prop('title', 'Click to disable the notice.').tooltip('fixTitle').tooltip('show');
+                        }
+                        t.data('status', !toggle);
+                    });
+                }
             });
         });
     });

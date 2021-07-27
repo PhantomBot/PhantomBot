@@ -16,10 +16,13 @@
  */
 package com.gmt2001.Console;
 
+import static com.gmt2001.Console.err.logStackTrace;
 import com.gmt2001.Logger;
+import com.gmt2001.RollbarProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import tv.phantombot.PhantomBot;
 
 public final class debug {
@@ -90,11 +93,9 @@ public final class debug {
             }
         }
     }
-
     public static void logln(Object o) {
         logln(o, false);
     }
-
     public static void logln(Object o, Boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
@@ -107,12 +108,23 @@ public final class debug {
     }
 
     public static void printStackTrace(Throwable e) {
+        printStackTrace(e, "");
+    }
+
+    public static void printStackTrace(Throwable e, String description) {
+        printStackTrace(e, null, description);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom) {
+        printStackTrace(e, custom, "");
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
-            if (!PhantomBot.getEnableDebuggingLogOnly()) {
-                e.printStackTrace(System.err);
-            }
-            logStackTrace(e);
+            e.printStackTrace(System.err);
         }
+
+        logStackTrace(e, custom, description);
     }
 
     /**
@@ -125,15 +137,29 @@ public final class debug {
     public static void printOrLogStackTrace(Throwable e) {
         if (PhantomBot.getEnableDebugging()) {
             if (!PhantomBot.getEnableDebuggingLogOnly()) {
-                e.printStackTrace(System.err);
+                printStackTrace(e);
+            } else {
+                logStackTrace(e);
             }
         }
-
-        logStackTrace(e);
     }
 
     public static void logStackTrace(Throwable e) {
+        logStackTrace(e, "");
+    }
+
+    public static void logStackTrace(Throwable e, String description) {
+        logStackTrace(e, null, description);
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom) {
+        logStackTrace(e, custom, "");
+    }
+
+    public static void logStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
+            RollbarProvider.instance().debug(e, custom, description);
+
             Writer trace = new StringWriter();
             PrintWriter ptrace = new PrintWriter(trace);
 

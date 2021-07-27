@@ -36,31 +36,44 @@ jobs:
         echo "##[set-output name=branch;]$(echo ${GITHUB_REF:10})"
         echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
         echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
+    - name: Notify Rollbar of Deloy Start
+      id: rollbar_deploy
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable"
+        version: ${{ steps.build_env.outputs.version }}
+        status: "started"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
     - name: Prep Ant script
       env:
         BRANCH: ${{ steps.build_env.outputs.branch }}
         REVISION: ${{ steps.build_env.outputs.revision }}
       run: |
-        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/' ivy.xml
+        sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$REVISION'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/;s/status="[A-Za-z0-9._-]+"/status="release"/' ivy.xml
         echo $?
     - name: Build with Ant
-      run: ant -noinput -Dbuildtype=stable -buildfile build.xml jar
+      env:
+        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
+        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
+      run: ant -noinput -Dbuildtype=stable -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml jar
     - name: Prep Assets
       env:
         FOLDERFULL: ${{ format('PhantomBot-{0}', steps.build_env.outputs.version) }}
         FOLDERLIN: ${{ format('PhantomBot-{0}-lin', steps.build_env.outputs.version) }}
         FOLDERWIN: ${{ format('PhantomBot-{0}-win', steps.build_env.outputs.version) }}
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', steps.build_env.outputs.version) }}
-        FOLDERARM: ${{ format('PhantomBot-{0}-arm', steps.build_env.outputs.version) }}
+        FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.version) }}
       run: |
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat
-        mkdir dist/$FOLDERARM
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARM --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh
+        mkdir dist/$FOLDERARMBSDOTHER
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat
         cd dist
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
@@ -85,12 +98,12 @@ jobs:
         cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
-        echo Zip Arm
-        mv -v $FOLDERARM $FOLDERFULL
+        echo Zip Arm/BSD/Other
+        mv -v $FOLDERARMBSDOTHER $FOLDERFULL
         cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARM.zip $FOLDERFULL
+        zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
         cd ..
-        mv -v $FOLDERFULL/$FOLDERARM.zip ./$FOLDERARM.zip
+        mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
         rm -rf $FOLDERFULL
     - name: Upload Asset (Full)
       uses: actions/upload-release-asset@v1
@@ -128,12 +141,34 @@ jobs:
         asset_path: ${{ format('dist/PhantomBot-{0}-mac.zip', steps.build_env.outputs.version) }}
         asset_name: ${{ format('PhantomBot-{0}-mac.zip', steps.build_env.outputs.version) }}
         asset_content_type: application/zip
-    - name: Upload Asset (ARM)
+    - name: Upload Asset (ARM/BSD/Other)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-arm.zip', steps.build_env.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-arm.zip', steps.build_env.outputs.version) }}
+        asset_path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
+        asset_name: ${{ format('PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
         asset_content_type: application/zip
+    - name: Notify Rollbar of Deloy Failure
+      if: ${{ failure() || cancelled() }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable"
+        version: ${{ steps.build_env.outputs.version }}
+        status: "failed"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Notify Rollbar of Deloy Success
+      if: ${{ success() }}
+      uses: rollbar/github-deploy-action@2.1.1
+      with:
+        environment: "stable"
+        version: ${{ steps.build_env.outputs.version }}
+        status: "succeeded"
+      env:
+        ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
+        ROLLBAR_USERNAME: ${{ github.actor }}
+        DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}

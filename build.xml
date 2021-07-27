@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.4.7" />
+    <property name="version" value="3.5.0" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.4.0" />
+    <property name="webpanel.version" value="1.5.0" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -39,7 +39,7 @@
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
     <!-- Apache Ivy properties -->
-    <property name="ivy.install.version" value="2.5.0-rc1"/>
+    <property name="ivy.install.version" value="2.5.0"/>
     <condition property="ivy.home" value="${env.IVY_HOME}">
         <isset property="env.IVY_HOME"/>
     </condition>
@@ -60,6 +60,24 @@
             <isset property="buildtype" />
             <length string="${buildtype}" trim="yes" length="0" when="greater" />
         </and>
+    </condition>
+
+    <condition property="rollbar_token" value="${rollbar_token}" else="notoken">
+        <and>
+            <isset property="rollbar_token" />
+            <length string="${rollbar_token}" trim="yes" length="0" when="greater" />
+        </and>
+    </condition>
+
+    <condition property="rollbar_endpoint" value="${rollbar_endpoint}" else="">
+        <and>
+            <isset property="rollbar_endpoint" />
+            <length string="${rollbar_endpoint}" trim="yes" length="0" when="greater" />
+        </and>
+    </condition>
+
+    <condition property="isdocker" value="true" else="false">
+        <isset property="isdocker" />
     </condition>
 
     <available file=".git" type="dir" property="git.present"/>
@@ -170,6 +188,18 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;${webpanel.version}&quot;;" />
+        <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isDocker = false;"
+            replace="isDocker = ${isdocker};" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
+            replace="ACCESS_TOKEN = &quot;${rollbar_token}&quot;;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ENDPOINT = &quot;(.*)&quot;;"
+            replace="ENDPOINT = &quot;${rollbar_endpoint}&quot;;" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -216,6 +246,18 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="panelVersion = &quot;(.*)&quot;;"
             replace="panelVersion = &quot;@webpanel.version@&quot;;" />
+        <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isDocker = (.*);"
+            replace="isDocker = false;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
+            replace="ACCESS_TOKEN = &quot;@access.token@&quot;;" />
+        <replaceregexp
+            file="source/com/gmt2001/RollbarProvider.java"
+            match="ENDPOINT = &quot;(.*)&quot;;"
+            replace="ENDPOINT = &quot;@endpoint@&quot;;" />
     </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">

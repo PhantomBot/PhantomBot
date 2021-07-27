@@ -22,8 +22,9 @@ public class TwitchFollowEvent extends TwitchFollowerEvent {
      * Class constructor.
      *
      * @param {String} follower
+     * @param {String} date
      */
-    public TwitchFollowEvent(String follower) {
-        super(follower);
+    public TwitchFollowEvent(String follower, String date) {
+        super(follower, date);
     }
 }

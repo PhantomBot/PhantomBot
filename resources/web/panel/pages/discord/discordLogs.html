@@ -41,17 +41,11 @@
                         <label>Enable Twitch Moderation Logs</label>
                         <div class="dropdown">
                             <select class="form-control" id="twitch-mod-log" data-toggle="tooltip"
-                                title="Enables the moderation logs for the bot. A restart is required after enabling." style="cursor: pointer;">
+                                title="Enables the moderation logs for the bot." style="cursor: pointer;">
                                 <option>Yes</option>
                                 <option>No</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Logging Channel</label>
-                        <input type="text" class="form-control" id="twitch-mod-channel" placeholder="#logs" data-toggle="tooltip"
-                            title="Which channel to post the moderation logs to."/>
                     </div>
                 </div>
 
@@ -67,12 +61,6 @@
                             </select>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Logging Channel</label>
-                        <input type="text" class="form-control" id="twitch-command-channel" placeholder="#logs" data-toggle="tooltip"
-                            title="Which channel to post the command logs to. Currently the same as the moderation log one." disabled />
-                    </div>
                 </div>
 
                 <!-- Box footer -->
@@ -84,5 +72,5 @@
     </section>
 
     <!-- discordLogs -->
-    <script src="/panel/js/pages/discord/discordLogs.js"></script>
+    <script src="js/pages/discord/discordLogs.js"></script>
 </main>
