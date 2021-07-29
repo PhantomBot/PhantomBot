@@ -863,7 +863,8 @@
                     shuffle: params["shuffle"] == null ? false : !!params["shuffle"],
                     noticeToggle: params["noticeToggle"] == null ? false : !!params["noticeToggle"],
                     noticeOfflineToggle: params["noticeOfflineToggle"] == null ? false : !!params["noticeOfflineToggle"],
-                    messages: []
+                    messages: [],
+                    disabled: []
                 });
                 noticeTimoutIds.push(null);
                 messageCounts.push(0);
