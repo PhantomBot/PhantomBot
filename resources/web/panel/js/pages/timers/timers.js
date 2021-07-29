@@ -25,7 +25,7 @@
               noticeToggle  = groupData == null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
               noticeOfflineToggle = groupData == null ? 'No' : (groupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
               intervalMin = groupData == null ? '10' : groupData.intervalMin,
-              intervalMax = groupData == null ? '' : groupData.intervalMax,
+              intervalMax = groupData == null ? '' : (intervalMin === groupData.intervalMax ? '' : groupData.intervalMax),
               reqMessages = groupData == null ? '0' : groupData.reqMessages,
               shuffle = groupData == null ? 'No' : (groupData.shuffle === true ? 'Yes' : 'No');
 
@@ -224,7 +224,8 @@
                                 intervalMax: result.noticeIntervalMax,
                                 reqMessages: result.noticeReqMsg,
                                 shuffle: result.groupShuffle,
-                                messages: groupData.messages
+                                messages: groupData.messages,
+                                disabled: groupData.disabled,
                             }), function () {
                                 socket.wsEvent('timer_group_edit_ws', './systems/noticeSystem.js', null,
                                     ['reloadGroup', groupId], function() {
@@ -367,6 +368,7 @@
                                 break;
                             default:
                                 groupData.messages.push($messageText.val());
+                                groupData.disabled.push(false);
                                 socket.updateDBValue('timer_group_add_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
                                     socket.wsEvent('timer_group_add_message_ws', './systems/noticeSystem.js', null,
                                         ['reloadGroup', String(groupId)], function() {
@@ -394,6 +396,7 @@
                     'You\'ve successfully removed the message!', function() {
                         // Remove the message
                         groupData.messages.splice(messageId, 1);
+                        groupData.disabled.splice(messageId, 1);
                         table.rows(messageId).remove();
                         table.draw(false);
                         socket.updateDBValue('timer_group_remove_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
