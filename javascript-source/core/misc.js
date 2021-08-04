@@ -761,10 +761,18 @@
     }
 
     function javaString(str) {
+        if (str === null || str === undefined) {
+            return null;
+        }
+
         return new Packages.java.lang.String(str);
     }
 
     function jsString(str) {
+        if (str === null || str === undefined) {
+            return null;
+        }
+
         return String(str + '');
     }
 
