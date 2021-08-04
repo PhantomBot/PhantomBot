@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
 public class CaselessProperties extends Properties {
@@ -80,6 +81,38 @@ public class CaselessProperties extends Properties {
             return Integer.parseInt(retval);
         } catch (NumberFormatException ex) {
             return defaultValueSupplier.getAsInt();
+        }
+    }
+
+    public long getPropertyAsLong(String key) {
+        return Long.parseLong(this.getProperty(key));
+    }
+
+    public long getPropertyAsLong(String key, long defaultValue) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Long.parseLong(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValue;
+        }
+    }
+
+    public long getPropertyAsLong(String key, LongSupplier defaultValueSupplier) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValueSupplier.getAsLong();
+        }
+
+        try {
+            return Long.parseLong(retval);
+        } catch (NumberFormatException ex) {
+            return defaultValueSupplier.getAsLong();
         }
     }
 
