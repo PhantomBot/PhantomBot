@@ -69,14 +69,14 @@ public class TwitchAuthorizationCodeFlow {
         boolean api = false;
 
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.setTimeInMillis(Long.parseLong(properties.getProperty("oauthexpires", "0")));
+        c.setTimeInMillis(properties.getPropertyAsLong("oauthexpires", 0L));
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             bot = true;
         }
 
         c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.setTimeInMillis(Long.parseLong(properties.getProperty("apiexpires", "0")));
+        c.setTimeInMillis(properties.getPropertyAsLong("apiexpires", 0L));
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             api = true;
@@ -126,8 +126,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private boolean refreshBotOAuth(CaselessProperties properties) {
         boolean changed = false;
-        if (properties != null && properties.getProperty("refresh") != null
-                && !properties.getProperty("refresh").isBlank()) {
+        if (properties != null && properties.contains("refresh") && !properties.getProperty("refresh").isBlank()) {
             JSONObject result = tryRefresh(properties.getProperty("clientid"), properties.getProperty("clientsecret"), properties.getProperty("refresh"));
 
             if (result.has("error")) {
@@ -149,8 +148,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private boolean refreshAPIOAuth(CaselessProperties properties) {
         boolean changed = false;
-        if (properties != null && properties.getProperty("apirefresh") != null
-                && !properties.getProperty("apirefresh").isBlank()) {
+        if (properties != null && properties.contains("apirefresh") && !properties.getProperty("apirefresh").isBlank()) {
             JSONObject result = tryRefresh(properties.getProperty("clientid"), properties.getProperty("clientsecret"), properties.getProperty("apirefresh"));
 
             if (result.has("error")) {

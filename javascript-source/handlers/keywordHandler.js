@@ -58,8 +58,10 @@
             }
             // Keyword just has a normal response.
             else {
+                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                var cmdEvent = new CommandEvent(sender, "keyword_" + json.keyword, event.getMessage(), event.getTags());
                 json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + $.escapeTags(json.keyword) + ')');
-                $.say($.tags(event, json.response, false));
+                $.say($.tags(cmdEvent, json.response, false));
             }
         }
 
