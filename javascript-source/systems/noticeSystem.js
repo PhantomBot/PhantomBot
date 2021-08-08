@@ -202,7 +202,7 @@
             i,
             timer = noticeGroups[groupIdx],
             notices = timer.messages,
-            disabled = timer.disable,
+            disabled = timer.disabled,
             tmp,
             randOptions = [],
             notice = null;
