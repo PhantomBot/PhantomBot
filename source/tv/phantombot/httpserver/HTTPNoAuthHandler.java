@@ -77,8 +77,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/sslcheck")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().sslEnabled
-                    || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false) ? "true" : "false").getBytes(), null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().isSsl() ? "true" : "false").getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             if (origin != null && !origin.isBlank()) {
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
@@ -95,7 +94,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             if (host == null) {
                 host = "";
-            } else if (HTTPWSServer.instance().sslEnabled) {
+            } else if (HTTPWSServer.instance().isSsl()) {
                 host = "https://" + host;
             } else {
                 host = "http://" + host;
@@ -125,16 +124,18 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
 
             if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "")
+                        + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST)) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes())) + (HTTPWSServer.instance().sslEnabled ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes()))
+                        + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
             String host = req.headers().get(HttpHeaderNames.HOST);
 
             if (host == null) {
                 host = "";
-            } else if (HTTPWSServer.instance().sslEnabled) {
+            } else if (HTTPWSServer.instance().isSsl()) {
                 host = "https://" + host;
             } else {
                 host = "http://" + host;

@@ -144,7 +144,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
             if (host == null) {
                 host = "";
-            } else if (HTTPWSServer.instance().sslEnabled) {
+            } else if (HTTPWSServer.instance().isSsl()) {
                 host = "https://" + host;
             } else {
                 host = "http://" + host;

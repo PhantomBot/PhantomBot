@@ -73,7 +73,7 @@ public final class HTTPWSServer {
      */
     private Channel ch2;
 
-    public boolean sslEnabled = false;
+    private boolean sslEnabled = false;
     private boolean autoSSL = false;
     private SslContext sslCtx;
     private KeyStore ks = null;
@@ -176,6 +176,10 @@ public final class HTTPWSServer {
             com.gmt2001.Console.err.printStackTrace(ex);
             group.shutdownGracefully();
         }
+    }
+
+    public boolean isSsl() {
+        return this.sslEnabled || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
     private void generateAutoSsl() {
