@@ -583,7 +583,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
             com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:25000/oauth");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:25000/oauth/");
             com.gmt2001.Console.warn.println("Please restart the bot after setting up OAuth");
             com.gmt2001.Console.warn.println();
         } else {
