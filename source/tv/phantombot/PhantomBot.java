@@ -1361,8 +1361,8 @@ public final class PhantomBot implements Listener {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
                     if (RepoVersion.getNightlyBuild()) {
-                        String latestNightly = HttpRequest.getData(HttpRequest.RequestType.GET, "https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version", null, null).content;
-                        if (latestNightly.equals(RepoVersion.getRepoVersion())) {
+                        String latestNightly = HttpRequest.getData(HttpRequest.RequestType.GET, "https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version", null, null).content.trim();
+                        if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             dataStore.del("settings", "newrelease_info");
                         } else {
                             try {
