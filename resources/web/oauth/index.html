@@ -333,7 +333,7 @@
                                 queryMap = new Map(), // Create a new map for save our keys and values.
                                 baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
                                 redirectURI = window.location.origin + window.location.pathname,
-                                redirectURIBroadcaster = redirectURI + "/broadcaster",
+                                redirectURIBroadcaster = (redirectURI + "/broadcaster").replaceAll('//', '/'),
                                 broadcaster = "",
                                 clientID,
                                 state;
