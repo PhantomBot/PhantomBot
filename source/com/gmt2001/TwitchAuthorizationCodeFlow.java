@@ -288,7 +288,7 @@ public class TwitchAuthorizationCodeFlow {
                             outputProperties.store(outputStream, "PhantomBot Configuration File");
                         }
 
-                        data = "success".getBytes();
+                        data = PhantomBot.instance().getProperties().getProperty("clientid").getBytes();
                         com.gmt2001.Console.debug.println("reloading properties");
                         PhantomBot.instance().reloadProperties();
                     } catch (IOException ex) {

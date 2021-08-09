@@ -302,17 +302,19 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
+                var errmsg;
                 try {
-                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                    errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']'
                 } catch (ex2) {
-                    $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                    errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']';
                 }
+                $.log.error(errmsg);
                 if (ex.javaException !== undefined) {
                     $.consoleLn("Sending stack trace to error log...");
-                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
                 } else {
                     try {
-                        Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex, errmsg);
                     } catch (ex3) {
                     }
                 }
@@ -323,17 +325,19 @@
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
+                        var errmsg;
                         try {
-                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']');
+                            errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']'
                         } catch (ex2) {
-                            $.log.error('Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']');
+                            errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']';
                         }
+                        $.log.error(errmsg);
                         if (ex.javaException !== undefined) {
                             $.consoleLn("Sending stack trace to error log...");
-                            Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                            Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
                         } else {
                             try {
-                                Packages.com.gmt2001.Console.err.printStackTrace(ex);
+                                Packages.com.gmt2001.Console.err.printStackTrace(ex, errmsg);
                             } catch (ex3) {
                             }
                         }

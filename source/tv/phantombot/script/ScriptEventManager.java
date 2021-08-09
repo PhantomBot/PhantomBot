@@ -72,7 +72,9 @@ public class ScriptEventManager implements Listener {
                 String eventName = event.getClass().getSimpleName();
                 ScriptEventHandler e = events.get(eventName);
 
-                e.handle(event);
+                if (e != null) {
+                    e.handle(event);
+                }
 
                 com.gmt2001.Console.debug.println("Dispatched event " + eventName);
             } catch (Exception ex) {

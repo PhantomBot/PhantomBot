@@ -33,6 +33,7 @@ import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  *
@@ -45,8 +46,8 @@ public class RollbarProvider implements AutoCloseable {
     private static final String ENDPOINT = "@endpoint@";
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
-            "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "reactordebug", "reloadscripts", "rhinodebugger", "rollbarid", "twitch_tcp_nodelay",
-            "usehttps", "usemessagequeue", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
+            "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
+            "rollbarid", "twitch_tcp_nodelay", "usehttps", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
 
@@ -76,6 +77,7 @@ public class RollbarProvider implements AutoCloseable {
                         if (PhantomBot.instance() != null) {
                             metadata.put("user", PhantomBot.instance().getBotName());
                             metadata.put("channel", PhantomBot.instance().getChannelName());
+                            metadata.put("owner", PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName()));
                             username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
                         }
 
@@ -88,6 +90,8 @@ public class RollbarProvider implements AutoCloseable {
                             metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                             metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                             metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
+                            metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(PhantomBot.instance().getBotName()) ? "true" : "false");
+                            metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(PhantomBot.instance().getChannelName()) ? "true" : "false");
 
                             PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
                                 if (RollbarProvider.SEND_VALUES.contains(s)) {
@@ -110,12 +114,6 @@ public class RollbarProvider implements AutoCloseable {
                             }
 
                             if (error != null) {
-                                if (error.getClass().getName().startsWith("org.mozilla.javascript")
-                                        || (error.getStackTrace().length >= 4
-                                        && error.getStackTrace()[3].getClassName().startsWith("org.mozilla.javascript"))) {
-                                    return true;
-                                }
-
                                 if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
                                     return true;
                                 }
@@ -137,7 +135,8 @@ public class RollbarProvider implements AutoCloseable {
                                 }
                             }
 
-                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false)
+                                    ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
 
                             return false;
                         }
@@ -168,7 +167,11 @@ public class RollbarProvider implements AutoCloseable {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
             this.enabled = true;
+            com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
+            com.gmt2001.Console.out.println("You can disable this by adding the following to a new line in botlogin.txt and restarting: userollbar=false");
+            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GPDR delete requests to gpdr@phantombot.hopto.org");
+            com.gmt2001.Console.out.println();
         }
     }
 
