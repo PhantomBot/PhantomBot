@@ -33,6 +33,7 @@ import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  *
@@ -76,6 +77,7 @@ public class RollbarProvider implements AutoCloseable {
                         if (PhantomBot.instance() != null) {
                             metadata.put("user", PhantomBot.instance().getBotName());
                             metadata.put("channel", PhantomBot.instance().getChannelName());
+                            metadata.put("owner", PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName()));
                             username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
                         }
 
@@ -88,6 +90,8 @@ public class RollbarProvider implements AutoCloseable {
                             metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                             metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                             metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
+                            metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(PhantomBot.instance().getBotName()) ? "true" : "false");
+                            metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(PhantomBot.instance().getChannelName()) ? "true" : "false");
 
                             PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
                                 if (RollbarProvider.SEND_VALUES.contains(s)) {
@@ -110,12 +114,6 @@ public class RollbarProvider implements AutoCloseable {
                             }
 
                             if (error != null) {
-                                if (error.getClass().getName().startsWith("org.mozilla.javascript")
-                                        || (error.getStackTrace().length >= 4
-                                        && error.getStackTrace()[3].getClassName().startsWith("org.mozilla.javascript"))) {
-                                    return true;
-                                }
-
                                 if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
                                     return true;
                                 }
