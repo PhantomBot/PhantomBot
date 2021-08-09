@@ -986,7 +986,7 @@ public class TwitchAPIv5 {
             JSONObject team = new JSONObject();
 
             team.put("_id", Long.parseLong(data.getString("id")));
-            team.put("background", data.getString("background_image_url"));
+            team.put("background", data.isNull("background_image_url") ? "" : data.getString("background_image_url"));
             team.put("banner", data.getString("banner"));
             team.put("created_at", data.getString("created_at"));
             team.put("display_name", data.getString("team_display_name"));
