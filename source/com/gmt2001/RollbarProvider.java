@@ -135,7 +135,8 @@ public class RollbarProvider implements AutoCloseable {
                                 }
                             }
 
-                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false)
+                                    ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
 
                             return false;
                         }
@@ -166,7 +167,11 @@ public class RollbarProvider implements AutoCloseable {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
             this.enabled = true;
+            com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
+            com.gmt2001.Console.out.println("You can disable this by adding the following to a new line in botlogin.txt and restarting: userollbar=false");
+            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GPDR delete requests to gpdr@phantombot.hopto.org");
+            com.gmt2001.Console.out.println();
         }
     }
 
