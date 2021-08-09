@@ -45,8 +45,8 @@ public class RollbarProvider implements AutoCloseable {
     private static final String ENDPOINT = "@endpoint@";
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
-            "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "reactordebug", "reloadscripts", "rhinodebugger", "rollbarid", "twitch_tcp_nodelay",
-            "usehttps", "usemessagequeue", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
+            "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
+            "rollbarid", "twitch_tcp_nodelay", "usehttps", "usemessagequeue", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
 
