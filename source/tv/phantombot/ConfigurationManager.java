@@ -136,7 +136,7 @@ public class ConfigurationManager {
             PhantomBot.exitError();
         }
 
-        if (!startProperties.getProperty("allownonascii", "false").equalsIgnoreCase("true")) {
+        if (!startProperties.getPropertyAsBoolean("allownonascii", false)) {
             for (String propertyKey : startProperties.stringPropertyNames()) {
                 String olds = startProperties.getProperty(propertyKey);
                 String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
@@ -275,15 +275,7 @@ public class ConfigurationManager {
      * @return the value of the property. If parsing the value to a Boolean fails, the default value is returned.
      */
     public static Boolean getBoolean(CaselessProperties properties, String propertyName, Boolean defaulValue) {
-        Boolean result = defaulValue;
-        try {
-            result = Boolean.parseBoolean(properties.getProperty(propertyName));
-        } catch (Exception e) {
-            com.gmt2001.Console.err.printStackTrace(e);
-            com.gmt2001.Console.err.println("[Error] could not load property '" + propertyName + "'. Fallback to default value (" + defaulValue + ")");
-        }
-
-        return result;
+        return properties.getPropertyAsBoolean(propertyName, defaulValue);
     }
 
     private static void doSetup(CaselessProperties startProperties) {
