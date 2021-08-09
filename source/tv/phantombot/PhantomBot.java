@@ -194,7 +194,6 @@ public final class PhantomBot implements Listener {
     private static Boolean enableDebuggingLogOnly = false;
     private static Boolean enableRhinoDebugger = false;
     private static String timeZone = "GMT";
-    private static Boolean useMessageQueue = true;
     private static Boolean twitchTcpNodelay = true;
     private static Boolean isInExitState = false;
     private Boolean isExiting = false;
@@ -459,10 +458,6 @@ public final class PhantomBot implements Listener {
         } else if (PhantomBot.messageLimit < 19.0) {
             PhantomBot.messageLimit = 19.0;
         }
-
-        // *Not currently being used.*
-        // If this is false the bot won't limit the bot to 1 message every 1.5 second. It will still limit to 19/30 though.
-        PhantomBot.useMessageQueue = this.pbProperties.getPropertyAsBoolean("usemessagequeue", true);
 
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
         PhantomBot.whisperLimit = this.pbProperties.getPropertyAsDouble("whisperlimit60", 60.0);
@@ -1576,10 +1571,6 @@ public final class PhantomBot implements Listener {
 
     public static String getTimeZone() {
         return timeZone;
-    }
-
-    public static Boolean getUseMessageQueue() {
-        return useMessageQueue;
     }
 
     public static Boolean getTwitchTcpNodelay() {
