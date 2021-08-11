@@ -24,10 +24,11 @@ $reverse = false;
  *     )
  * )
  *
- * Wildcards are supported at the end of exception.class and frame.class_name
+ * Wildcards are supported at the end of exception.class, exception.message, and frame.class_name
  * array(
  *     'exception' => array(
  *         'class' => 'mypackage.exceptionpackage.*' //Matches all sub-packages and classes defined under the package 'mypackage.exceptionpackage'
+ *         'message' => 'This is a.*' //Matches all messages that start with 'This is a'
  *     ),
  *     'frame' => array(
  *         'class_name' => 'mypackage.*' //Matches all sub-packages and classes defined under the package 'mypackage'
@@ -57,17 +58,6 @@ $filters = array(
         )
     ),
     array(
-        'exception' => array(
-            'class' => 'org.mozilla.javascript.*'
-        )
-    ),
-    array(
-        'frame' => array(
-            'index' => 4,
-            'class_name' => 'org.mozilla.javascript.*'
-        )
-    ),
-    array(
         'frame' => array(
             'class_name' => 'reactor.core.publisher.*'
         )
@@ -76,7 +66,44 @@ $filters = array(
         'exception' => array(
             'class' => 'discord4j.common.close.CloseException'
         )
-    )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'org.sqlite.SQLiteException',
+            'message' => '[SQLITE_BUSY].*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'org.sqlite.SQLiteException',
+            'message' => '[SQLITE_CORRUPT].*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'org.sqlite.SQLiteException',
+            'message' => '[SQLITE_CONSTRAINT].*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'org.sqlite.SQLiteException',
+            'message' => 'opening db.*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.FileNotFoundException',
+            'message' => './logs.*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.nio.file.NoSuchFileException',
+            'message' => './web/panel/js/utils/gamesList.txt'
+        )
+    ),
+    a
 );
 
 $allowed_environments = array(

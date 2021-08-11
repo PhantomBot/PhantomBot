@@ -61,7 +61,15 @@ foreach ($filters as $filter) {
 
         if (array_key_exists('message', $filter['exception'])) {
             $checked = true;
-            if (strtolower($trace['exception']['message']) != strtolower($filter['exception']['message'])) {
+            $tem = strtolower($trace['exception']['message']);
+            $em = strtolower($filter['exception']['message']);
+
+            if (substr($em, -2) == '.*') {
+                $em = substr($em, 0, -2);
+                $tem = substr($tem, 0, strlen($em));
+            }
+
+            if ($tem != $em) {
                 continue;
             }
         }
