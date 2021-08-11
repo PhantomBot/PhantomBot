@@ -366,7 +366,7 @@ public class TwitchPubSub {
                 com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
 
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
-                    String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? "" : this.botId + ".") + this.channelId};
+                    String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? this.channelId : this.botId) + "." + this.channelId};
                     JSONObject jsonObject = new JSONObject();
                     JSONObject topics = new JSONObject();
 
