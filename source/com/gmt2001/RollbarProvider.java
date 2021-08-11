@@ -345,11 +345,21 @@ public class RollbarProvider implements AutoCloseable {
     }
 
     private static String getId() {
+        String id = null;
         if (PhantomBot.instance() != null) {
-            return (String) PhantomBot.instance().getProperties().putIfAbsent("rollbarid", PhantomBot.instance().getProperties().getProperty("rollbarid", RollbarProvider::generateId));
+            id = PhantomBot.instance().getProperties().getProperty("rollbarid");
         }
 
-        return RollbarProvider.generateId();
+        if (id == null || id.isBlank()) {
+            id = RollbarProvider.generateId();
+
+            if (PhantomBot.instance() != null) {
+                PhantomBot.instance().getProperties().put("rollbarid", id);
+                PhantomBot.instance().saveProperties();
+            }
+        }
+
+        return id;
     }
 
     private static String generateId() {
