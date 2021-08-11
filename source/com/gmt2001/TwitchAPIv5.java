@@ -627,7 +627,7 @@ public class TwitchAPIv5 {
             this.setupResult(commercialData, commercialData, null);
         }
 
-        if (commercialData.has("error") || !commercialData.getString("message").isBlank()) {
+        if (commercialData.has("error") || (commercialData.has("message") && !commercialData.getString("message").isBlank())) {
             commercialData.put("_http", 422);
         }
 

@@ -54,14 +54,22 @@ foreach ($filters as $filter) {
                 $tec = substr($tec, 0, strlen($ec));
             }
 
-            if (tec != $ec) {
+            if ($tec != $ec) {
                 continue;
             }
         }
 
         if (array_key_exists('message', $filter['exception'])) {
             $checked = true;
-            if (strtolower($trace['exception']['message']) != strtolower($filter['exception']['message'])) {
+            $tem = strtolower($trace['exception']['message']);
+            $em = strtolower($filter['exception']['message']);
+
+            if (substr($em, -2) == '.*') {
+                $em = substr($em, 0, -2);
+                $tem = substr($tem, 0, strlen($em));
+            }
+
+            if ($tem != $em) {
                 continue;
             }
         }
@@ -77,7 +85,7 @@ foreach ($filters as $filter) {
         if ($frameno < 0) {
             if (array_key_exists('class_name', $filter['frame'])) {
                 $checked = true;
-                $tcn = trace['frame'][$frameno]['class_name'];
+                $tcn = $trace['frame'][$frameno]['class_name'];
                 $cn = $filter['frame']['class_name'];
 
                 if (substr($cn, -2) == '.*') {

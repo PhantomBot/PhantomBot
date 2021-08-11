@@ -196,13 +196,15 @@ public class TwitchCache implements Runnable {
                 largestTrackingId = lastTrackingId;
                 for (int i = 0; i < clipsData.length(); i++) {
                     JSONObject clipData = clipsData.getJSONObject(i);
-                    int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
-                    if (trackingId > largestTrackingId) {
-                        largestTrackingId = trackingId;
-                        clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
-                        creator = clipData.getJSONObject("curator").getString("display_name");
-                        thumbnailObj = clipData.getJSONObject("thumbnails");
-                        title = clipData.getString("title");
+                    if (clipData.has("tracking_id")) {
+                        int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
+                        if (trackingId > largestTrackingId) {
+                            largestTrackingId = trackingId;
+                            clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
+                            creator = clipData.getJSONObject("curator").getString("display_name");
+                            thumbnailObj = clipData.getJSONObject("thumbnails");
+                            title = clipData.getString("title");
+                        }
                     }
                 }
             }
