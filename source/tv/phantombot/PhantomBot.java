@@ -339,6 +339,12 @@ public final class PhantomBot implements Listener {
      * @param Properties Properties object which configures the PhantomBot instance.
      */
     public PhantomBot(CaselessProperties pbProperties) {
+        if (pbProperties.getPropertyAsBoolean("reactordebug", false)) {
+            Loggers.useVerboseConsoleLoggers();
+        }
+
+        /* Set the default bot variables */
+        PhantomBot.enableDebugging = pbProperties.getPropertyAsBoolean("debugon", false);
 
         if (pbProperties.getPropertyAsBoolean("userollbar", true)) {
             RollbarProvider.instance().enable();
@@ -367,13 +373,6 @@ public final class PhantomBot implements Listener {
 
         /* Assign properties passed in to local instance. */
         this.pbProperties = pbProperties;
-
-        if (this.pbProperties.getPropertyAsBoolean("reactordebug", false)) {
-            Loggers.useVerboseConsoleLoggers();
-        }
-
-        /* Set the default bot variables */
-        PhantomBot.enableDebugging = this.pbProperties.getPropertyAsBoolean("debugon", false);
         this.botName = this.pbProperties.getProperty("user").toLowerCase();
         this.channelName = this.pbProperties.getProperty("channel").toLowerCase();
         this.ownerName = this.pbProperties.getProperty("owner").toLowerCase();
