@@ -69,25 +69,21 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'org.sqlite.SQLiteException',
             'message' => '[SQLITE_BUSY].*'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'org.sqlite.SQLiteException',
             'message' => '[SQLITE_CORRUPT].*'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'org.sqlite.SQLiteException',
             'message' => '[SQLITE_CONSTRAINT].*'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'org.sqlite.SQLiteException',
             'message' => 'opening db.*'
         )
     ),
@@ -99,11 +95,26 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'java.io.FileNotFoundException',
+            'message' => './config.*'
+        )
+    ),
+    array(
+        'exception' => array(
             'class' => 'java.nio.file.NoSuchFileException',
             'message' => './web/panel/js/utils/gamesList.txt'
         )
     ),
-    a
+    array(
+        'exception' => array(
+            'message' => 'Connection reset by peer'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'java.io.IOException: Connection reset by peer'
+        )
+    )
 );
 
 $allowed_environments = array(
