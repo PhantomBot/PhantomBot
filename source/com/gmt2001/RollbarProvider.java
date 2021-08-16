@@ -114,13 +114,19 @@ public class RollbarProvider implements AutoCloseable {
                             }
 
                             if (error != null) {
-                                if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
-                                    return true;
-                                }
-
                                 if (error.getClass().equals(java.lang.Exception.class)
                                         && error.getStackTrace()[0].getClassName().equals(reactor.netty.channel.ChannelOperations.class.getName())
                                         && error.getStackTrace()[0].getMethodName().equals("terminate")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.IOException.class)
+                                        && error.getStackTrace()[0].getClassName().equals("java.base/sun.nio.ch.SocketDispatcher")
+                                        && error.getStackTrace()[0].getMethodName().equals("read0")) {
+                                    return true;
+                                }
+
+                                if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
                                     return true;
                                 }
 
@@ -128,9 +134,43 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.io.IOException.class)
-                                        && error.getStackTrace()[0].getClassName().equals("java.base/sun.nio.ch.SocketDispatcher")
-                                        && error.getStackTrace()[0].getMethodName().equals("read0")) {
+                                if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_CORRUPT]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_READONLY]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("opening db")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./logs")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./config")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.nio.file.NoSuchFileException.class) && error.getMessage().equals("./web/panel/js/utils/gamesList.txt")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().equals("Connection reset by peer")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().equals("java.io.IOException: Connection reset by peer")) {
                                     return true;
                                 }
                             }
