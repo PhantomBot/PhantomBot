@@ -79,6 +79,11 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'message' => '[SQLITE_READONLY].*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '[SQLITE_CONSTRAINT].*'
         )
     ),
