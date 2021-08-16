@@ -150,6 +150,10 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().startsWith("[SQLITE_CANTOPEN]")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().startsWith("opening db")) {
                                     return true;
                                 }
