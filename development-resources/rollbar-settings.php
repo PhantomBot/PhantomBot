@@ -89,6 +89,11 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'message' => '[SQLITE_CANTOPEN].*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => 'opening db.*'
         )
     ),
