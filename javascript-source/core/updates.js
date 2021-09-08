@@ -219,7 +219,8 @@
         i;
 
         for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
+            var key = $.javaString(keys[i]);
+            if (key && key.startsWith('org.mozilla.javascript')) {
                 $.inidb.RemoveKey('time', '', keys[i]);
             }
         }
