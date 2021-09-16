@@ -986,8 +986,8 @@ public class TwitchAPIv5 {
             JSONObject team = new JSONObject();
 
             team.put("_id", Long.parseLong(data.getString("id")));
-            team.put("background", data.isNull("background_image_url") ? "" : data.getString("background_image_url"));
-            team.put("banner", data.getString("banner"));
+            team.put("background", data.optString("background_image_url"));
+            team.put("banner", data.optString("banner"));
             team.put("created_at", data.getString("created_at"));
             team.put("display_name", data.getString("team_display_name"));
             team.put("info", data.getString("info"));
@@ -1020,8 +1020,8 @@ public class TwitchAPIv5 {
         teamsData = teamsData.getJSONArray("data").getJSONObject(0);
 
         result.put("_id", Long.parseLong(teamsData.getString("id")));
-        result.put("background", teamsData.getString("background_image_url"));
-        result.put("banner", teamsData.getString("banner"));
+        result.put("background", teamsData.optString("background_image_url"));
+        result.put("banner", teamsData.optString("banner"));
         result.put("created_at", teamsData.getString("created_at"));
         result.put("display_name", teamsData.getString("team_display_name"));
         result.put("info", teamsData.getString("info"));
