@@ -56,6 +56,7 @@ public class TwitchCache implements Runnable {
     private final String channel;
     private final Thread updateThread;
     private boolean killed = false;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     /* Cached data */
     private Boolean isOnline = false;
@@ -85,6 +86,10 @@ public class TwitchCache implements Runnable {
             return instance;
         }
         return instance;
+    }
+
+    static {
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
@@ -151,7 +156,7 @@ public class TwitchCache implements Runnable {
                 doUpdateClips = false;
                 try {
                     updateClips();
-                } catch (JSONException ex) {
+                } catch (ParseException | JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             } else {
@@ -172,7 +177,7 @@ public class TwitchCache implements Runnable {
      *
      * We do not throw an exception because this is not a critical function unlike the gathering of data via the updateCache() method.
      */
-    private void updateClips() throws JSONException {
+    private void updateClips() throws JSONException, ParseException {
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
         String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
         if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {
@@ -185,21 +190,23 @@ public class TwitchCache implements Runnable {
         String creator = "";
         String title = "";
         JSONObject thumbnailObj = new JSONObject();
-        int largestTrackingId = 0;
+        Date latestClip = new Date();
+        latestClip.setTime(0L);
 
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");
             if (clipsData.length() > 0) {
                 setDBString("most_viewed_clip_url", "https://clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
-                String lastTrackingIdStr = getDBString("last_clips_tracking_id");
-                int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
-                largestTrackingId = lastTrackingId;
+                String lastDateStr = getDBString("last_clips_tracking_date");
+                if (lastDateStr != null && !lastDateStr.isBlank()) {
+                    latestClip = dateFormat.parse(lastDateStr);
+                }
                 for (int i = 0; i < clipsData.length(); i++) {
                     JSONObject clipData = clipsData.getJSONObject(i);
-                    if (clipData.has("tracking_id")) {
-                        int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
-                        if (trackingId > largestTrackingId) {
-                            largestTrackingId = trackingId;
+                    if (clipData.has("created_at")) {
+                        Date clipDate = dateFormat.parse(clipData.getString("created_at"));
+                        if (clipDate.after(latestClip)) {
+                            latestClip = clipDate;
                             clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
                             creator = clipData.getJSONObject("curator").getString("display_name");
                             thumbnailObj = clipData.getJSONObject("thumbnails");
@@ -211,7 +218,7 @@ public class TwitchCache implements Runnable {
         }
 
         if (clipURL.length() > 0) {
-            setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
+            setDBString("last_clips_tracking_date", dateFormat.format(latestClip));
             setDBString("last_clip_url", clipURL);
             EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, title, thumbnailObj));
         }
@@ -254,8 +261,6 @@ public class TwitchCache implements Runnable {
 
                 if (isOnlinen) {
                     /* Calculate the stream uptime in seconds. */
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     try {
                         streamCreatedDate = dateFormat.parse(streamObj.getJSONObject("stream").getString("created_at"));
                         streamUptimeSecondsn = (long) (Math.floor(currentDate.getTime() - streamCreatedDate.getTime()) / 1000);
