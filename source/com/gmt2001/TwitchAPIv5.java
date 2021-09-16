@@ -123,6 +123,7 @@ public class TwitchAPIv5 {
         if (channelData == null || userData == null || followData == null || channelData.has("error") || userData.has("error")
                 || followData.has("error") || channelData.isNull("data") || userData.isNull("data")
                 || channelData.getJSONArray("data").length() == 0 || userData.getJSONArray("data").length() == 0) {
+            result.put("_success", false);
             return result;
         }
 
@@ -248,6 +249,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, gameData, "games");
         if (gameData == null || gameData.has("error") || gameData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -313,6 +315,7 @@ public class TwitchAPIv5 {
         if (followData == null || followData.has("error") || followData.isNull("data")) {
             JSONObject result = new JSONObject();
             this.setupResult(result, followData, "follows");
+            result.put("_success", false);
             return result;
         }
 
@@ -322,6 +325,7 @@ public class TwitchAPIv5 {
     private JSONObject translateFollowData(JSONObject followData) {
         JSONObject result = new JSONObject();
         this.setupResult(result, followData, "follows");
+        result.put("_success", false);
         JSONArray follows = new JSONArray();
 
         result.put("_total", followData.getInt("total"));
@@ -376,6 +380,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, subscriptionData, "subscriptions");
         if (subscriptionData == null || subscriptionData.has("error") || subscriptionData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -427,6 +432,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         this.setupResult(result, streamData, null);
         if (streamData == null || streamData.has("error") || !streamData.has("streams") || streamData.getJSONArray("streams").length() == 0) {
+            result.put("_success", false);
             return result;
         }
 
@@ -458,6 +464,7 @@ public class TwitchAPIv5 {
         this.setupResult(result, userData, "streams");
         if (streamData == null || userData == null || streamData.has("error") || userData.has("error")
                 || streamData.isNull("data") || userData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -546,6 +553,7 @@ public class TwitchAPIv5 {
         if (userData == null || userData.has("error") || userData.isNull("data") || userData.getJSONArray("data").length() == 0) {
             JSONObject result = new JSONObject();
             this.setupResult(result, userData, "users");
+            result.put("_success", false);
             return result;
         }
 
@@ -558,6 +566,7 @@ public class TwitchAPIv5 {
         this.setupResult(result, userData, "users");
 
         if (userData == null || userData.has("error") || userData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -596,6 +605,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         this.setupResult(result, userData, null);
         if (userData == null || userData.has("error") || userData.isNull("data") || userData.getJSONArray("data").length() == 0) {
+            result.put("_success", false);
             return result;
         }
 
@@ -682,6 +692,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, globalEmoteData, "emoticons");
         if (globalEmoteData == null || globalEmoteData.has("error") || globalEmoteData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -731,6 +742,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, cheerData, "actions");
         if (cheerData == null || cheerData.has("error") || cheerData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -881,6 +893,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, vodData, "videos");
         if (vodData == null || vodData.has("error") || vodData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -976,6 +989,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, teamsData, "teams");
         if (teamsData == null || teamsData.has("error") || teamsData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
@@ -1014,6 +1028,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, teamsData, "users");
         if (teamsData == null || teamsData.has("error") || teamsData.isNull("data") || teamsData.getJSONArray("data").length() == 0) {
+            result.put("_success", false);
             return result;
         }
 
@@ -1091,6 +1106,7 @@ public class TwitchAPIv5 {
 
         this.setupResult(result, clipsData, "clips");
         if (clipsData == null || clipsData.has("error") || clipsData.isNull("data")) {
+            result.put("_success", false);
             return result;
         }
 
