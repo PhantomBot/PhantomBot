@@ -290,13 +290,13 @@ public class TwitchPubSub {
                                 data.getJSONObject("reward").getInt("cost"), data.getJSONObject("reward").optString("prompt"), data.optString("user_input"), data.optString("status")
                         ));
                     } else if (dataObj.getString("topic").startsWith("chat_moderator_actions")) {
-                        if (data.has("moderation_action") && data.has("args") && data.has("created_by")) {
-                            JSONArray args = data.getJSONArray("args");
+                        if (data.has("moderation_action") && !data.isNull("moderation_action") && data.has("created_by")) {
+                            JSONArray args = data.optJSONArray("args");
                             String action = data.getString("moderation_action");
                             String creator = data.getString("created_by");
-                            String args1 = args.getString(0);
-                            String args2 = (args.length() == 2 || args.length() == 3 ? args.getString(1) : "");
-                            String args3 = (args.length() == 3 ? args.getString(2) : "");
+                            String args1 = args != null ? args.optString(0, data.getString("target_user_id")) : data.getString("target_user_id");
+                            String args2 = args != null ? args.optString(1) : "";
+                            String args3 = args != null ? args.optString(2) : "";
 
                             if (timeoutCache.containsKey(data.getString("target_user_id")) && (timeoutCache.get(data.getString("target_user_id")) - System.currentTimeMillis()) > 0) {
                                 return;
