@@ -158,6 +158,11 @@ $filters = array(
         'exception' => array(
             'class' => 'java.net.SocketTimeoutException'
         )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Connection pool has been disposed*'
+        )
     )
 );
 
