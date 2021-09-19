@@ -90,11 +90,13 @@ public class TwitchAuthorizationCodeFlow {
     private boolean refreshTokens(CaselessProperties properties, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
-            changed = changed || refreshBotOAuth(properties);
+            boolean botchanged = refreshBotOAuth(properties);
+            changed = changed || botchanged;
         }
 
         if (api) {
-            changed = changed || refreshAPIOAuth(properties);
+            boolean apichanged = refreshAPIOAuth(properties);
+            changed = changed || apichanged;
         }
 
         if (changed) {

@@ -136,7 +136,7 @@ public class FollowersCache implements Runnable {
                                     + jsonObject.getString("_type") + " " + jsonObject.getString("_url") + " " + jsonObject.getString("_post") + "  "
                                     + (jsonObject.has("message") && !jsonObject.isNull("message") ? "message=" + jsonObject.getString("message") : "content=" + jsonObject.getString("_content")));
             }
-        } else {
+        } else if (!jsonObject.getString("_exception").isBlank()) {
             throw new Exception("[" + jsonObject.getString("_exception") + "] " + jsonObject.getString("_exceptionMessage"));
         }
 
