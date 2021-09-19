@@ -37,4 +37,6 @@ pause
 GOTO :EOF
 
 :SWITCHTOWT
-wt nt --profile "Command Prompt" --startingDirectory %~dp0 --title PhantomBot launch.bat --nowt
+setlocal enableextensions enabledelayedexpansion
+wt nt --profile "Command Prompt" --startingDirectory %~dp0 --title PhantomBot launch.bat --nowt %1
+endlocal
