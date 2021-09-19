@@ -69,7 +69,7 @@ public class RollbarProvider implements AutoCloseable {
                         metadata.put("os.arch", System.getProperty("os.arch", "unknown"));
                         metadata.put("os.name", System.getProperty("os.name", "unknown"));
                         metadata.put("os.version", System.getProperty("os.version", "unknown"));
-                        return new Server.Builder().metadata(metadata).build();
+                        return new Server.Builder().root("/").metadata(metadata).build();
                     })
                     .person(() -> {
                         Map<String, Object> metadata = new HashMap<>();
