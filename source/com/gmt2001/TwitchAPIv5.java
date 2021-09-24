@@ -501,7 +501,7 @@ public class TwitchAPIv5 {
             channel.put("followers", 0);
             channel.put("game", data.getString("game_name"));
             channel.put("language", data.getString("language"));
-            channel.put("logo", udata.getString("profile_image_url"));
+            channel.put("logo", udata.optString("profile_image_url"));
             channel.put("mature", data.getBoolean("is_mature"));
             channel.put("name", udata.getString("login"));
             channel.put("partner", udata.getString("broadcaster_type").equals("partner"));
@@ -510,11 +510,11 @@ public class TwitchAPIv5 {
             channel.put("status", data.getString("title"));
             channel.put("updated_at", "");
             channel.put("url", "https://www.twitch.tv/" + udata.getString("login"));
-            channel.put("video_banner", udata.getString("offline_image_url"));
+            channel.put("video_banner", udata.optString("offline_image_url"));
             channel.put("views", udata.getInt("view_count"));
 
             JSONObject preview = new JSONObject();
-            String img = data.getString("thumbnail_url");
+            String img = data.optString("thumbnail_url", "");
             preview.put("template", img);
             preview.put("large", img.replaceAll("\\{width\\}", "640").replaceAll("\\{height\\}", "360"));
             preview.put("medium", img.replaceAll("\\{width\\}", "320").replaceAll("\\{height\\}", "180"));
@@ -932,7 +932,7 @@ public class TwitchAPIv5 {
             fps.put("mobile", 30.0);
 
             JSONObject preview = new JSONObject();
-            String img = data.getString("thumbnail_url");
+            String img = data.optString("thumbnail_url", "");
             preview.put("template", img);
             preview.put("large", img.replaceAll("\\{width\\}", "640").replaceAll("\\{height\\}", "360"));
             preview.put("medium", img.replaceAll("\\{width\\}", "320").replaceAll("\\{height\\}", "180"));
@@ -1005,7 +1005,7 @@ public class TwitchAPIv5 {
             team.put("created_at", data.getString("created_at"));
             team.put("display_name", data.getString("team_display_name"));
             team.put("info", data.getString("info"));
-            team.put("logo", data.getString("thumbnail_url"));
+            team.put("logo", data.optString("thumbnail_url"));
             team.put("name", data.getString("team_name"));
             team.put("updated_at", data.getString("updated_at"));
 
@@ -1040,7 +1040,7 @@ public class TwitchAPIv5 {
         result.put("created_at", teamsData.getString("created_at"));
         result.put("display_name", teamsData.getString("team_display_name"));
         result.put("info", teamsData.getString("info"));
-        result.put("logo", teamsData.getString("thumbnail_url"));
+        result.put("logo", teamsData.optString("thumbnail_url"));
         result.put("name", teamsData.getString("team_name"));
         result.put("updated_at", teamsData.getString("updated_at"));
 
@@ -1147,9 +1147,9 @@ public class TwitchAPIv5 {
             vod.put("url", "https://www.twitch.tv/videos/" + data.getString("video_id"));
 
             JSONObject thumbnails = new JSONObject();
-            thumbnails.put("medium", data.getString("thumbnail_url"));
-            thumbnails.put("small", data.getString("thumbnail_url"));
-            thumbnails.put("tiny", data.getString("thumbnail_url"));
+            thumbnails.put("medium", data.optString("thumbnail_url"));
+            thumbnails.put("small", data.optString("thumbnail_url"));
+            thumbnails.put("tiny", data.optString("thumbnail_url"));
 
             clip.put("broadcaster", broadcaster);
             clip.put("curator", curator);
