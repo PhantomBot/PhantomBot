@@ -920,6 +920,10 @@ public class SqliteStore extends DataStore {
 
     @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
+        if (keys.length == 0) {
+            return;
+        }
+
         try (Connection connection = GetConnection()) {
             fName = validateFname(fName);
 
