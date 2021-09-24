@@ -391,7 +391,7 @@
     function getChannelAge(event) {
         var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])));
 
-        if (channelData.getInt('_http') === 404) {
+        if (channelData.getInt('_http') === 404 || !channelData.getBoolean('_success')) {
             $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
             return;
         }

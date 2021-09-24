@@ -21,7 +21,7 @@
         lockdown: false,
         timer: null
     };
-    var alphaFilter = /([^a-z0-9\s!@,.?:;"'+=\-_#$%^&*()])/ig;
+    var alphaFilter = /([^a-z0-9\s!@,.?:;"\u201C\u201D'\u2019+=\-_#$%^&*()])/ig;
     
     /**
      * @event ircChannelMessage

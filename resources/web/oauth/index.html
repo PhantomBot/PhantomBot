@@ -228,6 +228,10 @@
                     'use strict';
                     $(function () {
                         var scopesBot = {
+                            "channel_editor": {
+                                "desc": "Write channel metadata (game, status, etc).",
+                                "tooltip": "Used start/end raids and hosting."
+                            },
                             "channel:manage:broadcast": {
                                 "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
                                 "tooltip": "Used by custom scripts to start raids."
@@ -332,8 +336,8 @@
                                 queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
                                 queryMap = new Map(), // Create a new map for save our keys and values.
                                 baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
-                                redirectURI = window.location.origin + window.location.pathname,
-                                redirectURIBroadcaster = (redirectURI + "/broadcaster").replaceAll('//', '/'),
+                                redirectURI = (window.location.origin + window.location.pathname).replace(/\/$/, ''),
+                                redirectURIBroadcaster = redirectURI + "/broadcaster",
                                 broadcaster = "",
                                 clientID,
                                 state;
