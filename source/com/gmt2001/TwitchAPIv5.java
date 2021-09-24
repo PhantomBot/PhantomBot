@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ import tv.phantombot.twitch.api.Helix;
 public class TwitchAPIv5 {
 
     private static final TwitchAPIv5 instance = new TwitchAPIv5();
+    private static final Pattern DURATIONREGEX = Pattern.compile("((?<week>[0-9]+)w)?((?<day>[0-9]+)d)?((?<hour>[0-9]+)h)?((?<minute>[0-9]+)m)?((?<second>[0-9]+)s)", Pattern.CASE_INSENSITIVE);
 
     public static TwitchAPIv5 instance() {
         return instance;
@@ -825,7 +828,7 @@ public class TwitchAPIv5 {
                 if (jsonArray.length() > 0) {
                     jsonOutput.object().key("videos").array().object();
                     jsonOutput.key("url").value(jsonArray.getJSONObject(0).getString("url"));
-                    jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(0).getString("recorded_at"));
+                    jsonOutput.key("published_at").value(jsonArray.getJSONObject(0).getString("published_at"));
                     jsonOutput.key("length").value(jsonArray.getJSONObject(0).getInt("length"));
                     jsonOutput.endObject().endArray().endObject();
                     com.gmt2001.Console.debug.println("TwitchAPIv5::GetChannelVODs: " + jsonOutput.toString());
@@ -846,7 +849,7 @@ public class TwitchAPIv5 {
                     for (int idx = 0; idx < jsonArray.length(); idx++) {
                         jsonOutput.object();
                         jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
-                        jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(idx).getString("recorded_at"));
+                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).getString("published_at"));
                         jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
                         jsonOutput.endObject();
                     }
@@ -869,7 +872,7 @@ public class TwitchAPIv5 {
                     for (int idx = 0; idx < jsonArray.length(); idx++) {
                         jsonOutput.object();
                         jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
-                        jsonOutput.key("recorded_at").value(jsonArray.getJSONObject(idx).getString("recorded_at"));
+                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).getString("published_at"));
                         jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
                         jsonOutput.endObject();
                     }
@@ -885,6 +888,44 @@ public class TwitchAPIv5 {
 
         /* Just return an empty string. */
         return "";
+    }
+
+    private int durationToLength(String duration) {
+        int length = 0;
+        Matcher m = DURATIONREGEX.matcher(duration);
+        String s;
+
+        try {
+            while (m.find()) {
+                s = m.group("week");
+                if (s != null && !s.isBlank()) {
+                    length += Integer.parseInt(s) * 604800;
+                }
+
+                s = m.group("day");
+                if (s != null && !s.isBlank()) {
+                    length += Integer.parseInt(s) * 86400;
+                }
+
+                s = m.group("hour");
+                if (s != null && !s.isBlank()) {
+                    length += Integer.parseInt(s) * 3600;
+                }
+
+                s = m.group("minute");
+                if (s != null && !s.isBlank()) {
+                    length += Integer.parseInt(s) * 60;
+                }
+
+                s = m.group("second");
+                if (s != null && !s.isBlank()) {
+                    length += Integer.parseInt(s);
+                }
+            }
+        } catch (NumberFormatException e) {
+        }
+
+        return length;
     }
 
     private JSONObject translateChannelVODs(JSONObject vodData) {
@@ -909,7 +950,7 @@ public class TwitchAPIv5 {
             video.put("description_html", data.getString("description") + "<br>");
             video.put("game", "");
             video.put("language", data.getString("language"));
-            video.put("length", 0);
+            video.put("length", this.durationToLength(data.optString("duration")));
             video.put("published_at", data.getString("published_at"));
             video.put("status", "recorded");
             video.put("tag_list", "");
