@@ -168,11 +168,11 @@
                                 <br />
                                 <br />
                                 <div>
-                                    Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
+                                    Clicking <span id="connectone">one of </span>the <div class="text-bold" style="display: inline;">Connect with Twitch</div> button<span id="connectplural">s</span> below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
                                     <br />
                                     <div style="padding-left: 25px;">
                                         <ul>
-                                            <li><div id="connectbotinstruction" class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                            <li id="connectbotinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
                                             <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
                                         </ul>
                                     </div>
@@ -539,6 +539,8 @@
 
                         if (redirectURI.includes("/broadcaster")) {
                             $('#instructions').addClass('hide');
+                            $('#connectone').addClass('hide');
+                            $('#connectplural').addClass('hide');
                             $('#connectbotinstruction').addClass('hide');
                             $('#connectbotscope').addClass('hide');
                             $('#connect-bot').addClass('hide');
