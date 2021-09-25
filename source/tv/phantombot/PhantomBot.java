@@ -188,6 +188,7 @@ public final class PhantomBot implements Listener {
     private WsAlertsPollsHandler alertsPollsHandler;
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
+    private HTTPOAuthHandler oauthHandler;
 
     /* PhantomBot Information */
     private static PhantomBot instance;
@@ -705,6 +706,10 @@ public final class PhantomBot implements Listener {
         return this.botName;
     }
 
+    public HTTPOAuthHandler getHTTPOAuthHandler() {
+        return this.oauthHandler;
+    }
+
     /**
      * Gives you the current data store
      *
@@ -839,7 +844,7 @@ public final class PhantomBot implements Listener {
             new HTTPNoAuthHandler().register();
             new HTTPAuthenticatedHandler(webOAuth, oauth.replace("oauth:", "")).register();
             new HTTPPanelAndYTHandler(panelUsername, panelPassword).register();
-            new HTTPOAuthHandler(panelUsername, panelPassword).register();
+            this.oauthHandler = (HTTPOAuthHandler) new HTTPOAuthHandler(panelUsername, panelPassword).register();
             if (this.getProperties().getPropertyAsBoolean("useeventsub", false)) {
                 EventSub.instance().register();
             }

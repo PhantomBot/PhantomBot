@@ -132,4 +132,8 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         return ret;
     }
 
+    public boolean validateBroadcasterToken(String token) {
+        return this.token.equals(token);
+    }
+
 }
