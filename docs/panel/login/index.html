@@ -357,5 +357,12 @@
                                     );
                                 });
         </script>
+        <script>
+        if (window.location.pathname.endsWith("/login")) {
+            let newURL = window.location.toString().replace("/login", "/login/");
+            document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
+            window.location.replace(newURL);
+        }
+        </script>
     </body>
 </html>
