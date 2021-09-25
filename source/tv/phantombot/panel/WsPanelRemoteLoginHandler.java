@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
 /**
@@ -91,6 +92,9 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                     jsonObject.key("authtoken").value(this.panelAuthRO).key("authtype").value("read");
                 } else if (jso.getJSONObject("params").getString("user").equals(this.panelUser) && jso.getJSONObject("params").getString("pass").equals(this.panelPassword)) {
                     jsonObject.key("authtoken").value(this.panelAuth).key("authtype").value("read/write");
+                } else if (jso.getJSONObject("params").getString("user").equals("broadcaster")
+                        && PhantomBot.instance().getHTTPOAuthHandler().validateBroadcasterToken(jso.getJSONObject("params").getString("pass"))) {
+                    jsonObject.key("authtoken").value(jso.getJSONObject("params").getString("pass")).key("authtype").value("oauth/broadcaster");
                 } else {
                     jsonObject.key("errors").array().object()
                             .key("status").value("401")
