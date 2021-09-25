@@ -219,7 +219,7 @@
         i;
 
         for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
+            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
                 $.inidb.RemoveKey('time', '', keys[i]);
             }
         }
