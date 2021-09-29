@@ -287,7 +287,7 @@ public class TwitchPubSub {
                 dataObj = message.getJSONObject("data");
                 if (dataObj.has("message")) {
                     messageObj = new JSONObject(dataObj.getString("message"));
-                    data = messageObj.getJSONObject("data");
+                    data = messageObj.optJSONObject("data");
                     if (dataObj.getString("topic").startsWith("channel-points-channel-v1")) {
                         data = data.getJSONObject("redemption");
                         com.gmt2001.Console.out.println("Channel points redeemed by " + data.getJSONObject("user").getString("login") + " for reward " + data.getJSONObject("reward").getString("title"));
