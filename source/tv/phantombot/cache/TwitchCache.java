@@ -60,6 +60,7 @@ public class TwitchCache implements Runnable {
 
     /* Cached data */
     private Boolean isOnline = false;
+    private Boolean isOnlinePS = false;
     private Boolean forcedGameTitleUpdate = false;
     private Boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
@@ -69,6 +70,7 @@ public class TwitchCache implements Runnable {
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
+    private int viewerCountPS = 0;
     private int views = 0;
     private String displayName;
 
@@ -252,11 +254,11 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    //EventBus.instance().postAsync(new TwitchOnlineEvent());
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
                     this.isOnline = false;
-                    EventBus.instance().postAsync(new TwitchOfflineEvent());
+                    //EventBus.instance().postAsync(new TwitchOfflineEvent());
                 }
 
                 if (isOnlinen) {
@@ -417,14 +419,14 @@ public class TwitchCache implements Runnable {
      * Returns if the channel is online or not.
      */
     public Boolean isStreamOnline() {
-        return this.isOnline;
+        return this.isOnlinePS;
     }
 
     /**
      * Returns a String representation of true/false to indicate if the stream is online or not.
      */
     public String isStreamOnlineString() {
-        if (this.isOnline) {
+        if (this.isOnlinePS) {
             return "true";
         }
         return "false";
@@ -501,7 +503,7 @@ public class TwitchCache implements Runnable {
      * Returns the viewer count.
      */
     public int getViewerCount() {
-        return this.viewerCount;
+        return this.viewerCountPS;
     }
 
     /**
@@ -546,5 +548,19 @@ public class TwitchCache implements Runnable {
      */
     private void setDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("streamInfo", "", dbKey, dbValue);
+    }
+
+    public void goOnline() {
+        this.isOnlinePS = true;
+        this.streamUptimeSeconds = 0L;
+    }
+
+    public void goOffline() {
+        this.isOnlinePS = false;
+        this.viewerCountPS = 0;
+    }
+
+    public void updateViewerCount(int viewers) {
+        this.viewerCountPS = viewers;
     }
 }
