@@ -20,15 +20,26 @@ import com.rollbar.api.payload.data.Data;
 import com.rollbar.api.payload.data.Level;
 import com.rollbar.api.payload.data.Person;
 import com.rollbar.api.payload.data.Server;
+import com.rollbar.api.payload.data.body.BodyContent;
+import com.rollbar.api.payload.data.body.Trace;
+import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
@@ -44,12 +55,17 @@ public class RollbarProvider implements AutoCloseable {
     private static final RollbarProvider INSTANCE = new RollbarProvider();
     private static final String ACCESS_TOKEN = "@access.token@";
     private static final String ENDPOINT = "@endpoint@";
+    private static final int REPEAT_INTERVAL_MINUTES = 180;
+    private static final long REPEAT_CHECK_INTERVAL = 1800000L;
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
             "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
             "rollbarid", "twitch_tcp_nodelay", "usehttps", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
+    private MessageDigest md;
+    private final ConcurrentHashMap<String, Date> reportsPassedFilters = new ConcurrentHashMap<>();
+    private final Timer t = new Timer();
 
     private RollbarProvider() {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
@@ -187,11 +203,79 @@ public class RollbarProvider implements AutoCloseable {
 
                         @Override
                         public boolean postProcess(Data data) {
+                            if (md != null) {
+                                md.reset();
+
+                                md.update(data.getCodeVersion().getBytes());
+                                md.update(data.getEnvironment().getBytes());
+                                md.update(data.getLevel().name().getBytes());
+                                md.update(data.getTitle().getBytes());
+
+                                BodyContent bc = data.getBody().getContents();
+
+                                if (bc instanceof TraceChain) {
+                                    TraceChain tc = (TraceChain) bc;
+                                    tc.getTraces().stream().forEachOrdered(t -> {
+                                        md.update(t.getException().getClassName().getBytes());
+                                        md.update(t.getException().getDescription().getBytes());
+                                        md.update(t.getException().getMessage().getBytes());
+                                        t.getFrames().stream().forEachOrdered(f -> {
+                                            md.update(f.getClassName().getBytes());
+                                            md.update(f.getFilename().getBytes());
+                                            md.update(f.getLineNumber().toString().getBytes());
+                                            md.update(f.getMethod().getBytes());
+                                        });
+                                    });
+                                } else if (bc instanceof Trace) {
+                                    Trace t = (Trace) bc;
+                                    md.update(t.getException().getClassName().getBytes());
+                                    md.update(t.getException().getDescription().getBytes());
+                                    md.update(t.getException().getMessage().getBytes());
+                                    t.getFrames().stream().forEachOrdered(f -> {
+                                        md.update(f.getClassName().getBytes());
+                                        md.update(f.getFilename().getBytes());
+                                        md.update(f.getLineNumber().toString().getBytes());
+                                        md.update(f.getMethod().getBytes());
+                                    });
+                                }
+
+                                byte[] bytes = md.digest();
+                                BigInteger bi = new BigInteger(1, bytes);
+                                String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
+
+                                Calendar c = Calendar.getInstance();
+                                if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
+                                    return true;
+                                } else {
+                                    c.add(Calendar.MINUTE, REPEAT_INTERVAL_MINUTES);
+                                    reportsPassedFilters.put(digest, c.getTime());
+                                }
+                            }
+
                             return false;
                         }
                     }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Date now = Calendar.getInstance().getTime();
+
+                    reportsPassedFilters.forEach((digest, date) -> {
+                        if (date.before(now)) {
+                            reportsPassedFilters.remove(digest);
+                        }
+                    });
+                }
+            }, REPEAT_CHECK_INTERVAL, REPEAT_CHECK_INTERVAL);
         } else {
             this.rollbar = null;
+        }
+
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
