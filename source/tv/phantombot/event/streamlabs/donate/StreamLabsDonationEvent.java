@@ -16,6 +16,8 @@
  */
 package tv.phantombot.event.streamlabs.donate;
 
+import org.json.JSONObject;
+
 public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
 
     /**
@@ -23,7 +25,7 @@ public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
      *
      * @param {String} jsonString
      */
-    public StreamLabsDonationEvent(String jsonString) {
-        super(jsonString);
+    public StreamLabsDonationEvent(JSONObject data) {
+        super(data);
     }
 }
