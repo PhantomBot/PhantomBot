@@ -16,18 +16,24 @@
  */
 package tv.phantombot.event.streamlabs.donate;
 
+import org.json.JSONObject;
 import tv.phantombot.event.streamlabs.StreamLabsEvent;
 
 public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
-    private final String jsonString;
+
+    private final JSONObject data;
 
     /**
      * Abstract constructor.
      *
      * @param {String} jsonString
      */
-    protected StreamLabsDonateEvent(String jsonString) {
-        this.jsonString = jsonString;
+    protected StreamLabsDonateEvent(JSONObject data) {
+        this.data = data;
+    }
+
+    public JSONObject getData() {
+        return this.data;
     }
 
     /**
@@ -36,7 +42,7 @@ public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
      * @return {String} jsonString
      */
     public String getJsonString() {
-        return this.jsonString;
+        return this.data.toString();
     }
 
     /**
@@ -46,6 +52,6 @@ public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
      */
     @Override
     public String toString() {
-        return "TwitchAlertsDonateEvent -> { jsonString: [" + this.jsonString + "] }";
+        return "TwitchAlertsDonateEvent -> { jsonString: [" + this.getJsonString() + "] }";
     }
 }

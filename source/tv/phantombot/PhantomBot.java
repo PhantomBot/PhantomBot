@@ -175,7 +175,6 @@ public final class PhantomBot implements Listener {
 
     /* Caches */
     private FollowersCache followersCache;
-    private DonationsCache twitchAlertsCache;
     private EmotesCache emotesCache;
     private TwitchCache twitchCache;
     private TwitchTeamsCache twitchTeamCache;
@@ -1072,10 +1071,8 @@ public final class PhantomBot implements Listener {
             FollowersCache.killall();
         }
 
-        if (twitchAlertsCache != null) {
-            print("Terminating the Streamlabs cache...");
-            DonationsCache.killall();
-        }
+        print("Terminating the Streamlabs cache...");
+        DonationsCache.instance().kill();
 
         if (tipeeeStreamCache != null) {
             print("Terminating the TipeeeStream cache...");
@@ -1162,7 +1159,7 @@ public final class PhantomBot implements Listener {
 
         /* Start the donations cache if the keys are not null and the module is enabled */
         if (this.twitchAlertsKey != null && !this.twitchAlertsKey.isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
-            this.twitchAlertsCache = DonationsCache.instance(this.channelName);
+            DonationsCache.instance().start();
         }
 
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
