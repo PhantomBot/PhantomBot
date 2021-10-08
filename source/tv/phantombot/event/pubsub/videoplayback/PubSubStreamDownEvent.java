@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.streamlabs.donate;
+package tv.phantombot.event.pubsub.videoplayback;
 
-import org.json.JSONObject;
-
-public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
+public class PubSubStreamDownEvent extends PubSubVideoPlaybackEvent {
 
     /**
-     * Class constructor.
+     * Constructor.
      *
-     * @param {String} jsonString
+     * @param {int} channelId
+     * @param {float} serverTime
      */
-    public StreamLabsDonationEvent(JSONObject data) {
-        super(data);
+    public PubSubStreamDownEvent(int channelId, float serverTime) {
+        super(channelId, serverTime);
     }
 }

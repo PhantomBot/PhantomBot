@@ -33,6 +33,7 @@ import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Permission;
 import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.channel.Category;
 import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.NewsChannel;
@@ -983,7 +984,9 @@ public class DiscordUtil {
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
-        return DiscordAPI.getGuild().getRoles().collectList();
+        return Optional.ofNullable(Optional.ofNullable(DiscordAPI.getGuild()).map(Guild::getRoles).orElseGet(() -> Flux.<Role>empty())).map(Flux<Role>::collectList).orElseGet(() -> {
+            return Flux.<Role>empty().collectList();
+        });
     }
 
     /**

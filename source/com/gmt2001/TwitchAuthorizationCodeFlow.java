@@ -82,17 +82,21 @@ public class TwitchAuthorizationCodeFlow {
             api = true;
         }
 
+        com.gmt2001.Console.debug.println("bot=" + (bot ? "t" : "f") + "; api=" + (api ? "t" : "f"));
+
         return refreshTokens(properties, bot, api);
     }
 
     private boolean refreshTokens(CaselessProperties properties, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
-            changed = changed || refreshBotOAuth(properties);
+            boolean botchanged = refreshBotOAuth(properties);
+            changed = changed || botchanged;
         }
 
         if (api) {
-            changed = changed || refreshAPIOAuth(properties);
+            boolean apichanged = refreshAPIOAuth(properties);
+            changed = changed || apichanged;
         }
 
         if (changed) {
@@ -109,13 +113,13 @@ public class TwitchAuthorizationCodeFlow {
                     outputProperties.store(outputStream, "PhantomBot Configuration File");
                 }
 
-                com.gmt2001.Console.debug.println("reloading properties");
                 if (PhantomBot.instance() != null) {
+                    com.gmt2001.Console.debug.println("reloading properties");
                     PhantomBot.instance().reloadProperties();
-                }
 
-                TwitchValidate.instance().updateChatToken(PhantomBot.instance().getProperties().getProperty("oauth"));
-                TwitchValidate.instance().updateAPIToken(PhantomBot.instance().getProperties().getProperty("apioauth"));
+                    TwitchValidate.instance().updateChatToken(PhantomBot.instance().getProperties().getProperty("oauth"));
+                    TwitchValidate.instance().updateAPIToken(PhantomBot.instance().getProperties().getProperty("apioauth"));
+                }
             } catch (NullPointerException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -126,7 +130,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private boolean refreshBotOAuth(CaselessProperties properties) {
         boolean changed = false;
-        if (properties != null && properties.contains("refresh") && !properties.getProperty("refresh").isBlank()) {
+        if (properties != null && properties.containsKey("refresh") && !properties.getProperty("refresh").isBlank()) {
             JSONObject result = tryRefresh(properties.getProperty("clientid"), properties.getProperty("clientsecret"), properties.getProperty("refresh"));
 
             if (result.has("error")) {
@@ -141,6 +145,9 @@ public class TwitchAuthorizationCodeFlow {
                 com.gmt2001.Console.out.println("Refreshed the bot token");
                 changed = true;
             }
+        } else {
+            com.gmt2001.Console.debug.println("skipped refresh " + (properties != null ? "t" : "f") + (properties != null && properties.containsKey("refresh") ? "t" : "f")
+                    + (properties != null && properties.containsKey("refresh") && !properties.getProperty("refresh").isBlank() ? "t" : "f"));
         }
 
         return changed;
@@ -148,7 +155,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private boolean refreshAPIOAuth(CaselessProperties properties) {
         boolean changed = false;
-        if (properties != null && properties.contains("apirefresh") && !properties.getProperty("apirefresh").isBlank()) {
+        if (properties != null && properties.containsKey("apirefresh") && !properties.getProperty("apirefresh").isBlank()) {
             JSONObject result = tryRefresh(properties.getProperty("clientid"), properties.getProperty("clientsecret"), properties.getProperty("apirefresh"));
 
             if (result.has("error")) {
@@ -163,6 +170,9 @@ public class TwitchAuthorizationCodeFlow {
                 com.gmt2001.Console.out.println("Refreshed the broadcaster token");
                 changed = true;
             }
+        } else {
+            com.gmt2001.Console.debug.println("skipped refresh " + (properties != null ? "t" : "f") + (properties != null && properties.containsKey("apirefresh") ? "t" : "f")
+                    + (properties != null && properties.containsKey("apirefresh") && !properties.getProperty("apirefresh").isBlank() ? "t" : "f"));
         }
 
         return changed;
@@ -170,8 +180,10 @@ public class TwitchAuthorizationCodeFlow {
 
     private synchronized void startup(String clientid, String clientsecret) {
         if (t != null) {
+            com.gmt2001.Console.debug.println("timer exists");
             return;
         }
+
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
             t = new Timer();
@@ -183,6 +195,8 @@ public class TwitchAuthorizationCodeFlow {
                     }
                 }
             }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+        } else {
+            com.gmt2001.Console.debug.println("not starting");
         }
     }
 
@@ -288,7 +302,7 @@ public class TwitchAuthorizationCodeFlow {
                             outputProperties.store(outputStream, "PhantomBot Configuration File");
                         }
 
-                        data = "success".getBytes();
+                        data = PhantomBot.instance().getProperties().getProperty("clientid").getBytes();
                         com.gmt2001.Console.debug.println("reloading properties");
                         PhantomBot.instance().reloadProperties();
                     } catch (IOException ex) {

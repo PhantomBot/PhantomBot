@@ -220,7 +220,7 @@
         i;
 
         for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
+            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
                 $.inidb.RemoveKey('time', '', keys[i]);
             }
         }
@@ -230,8 +230,8 @@
     }
 
     /* version 3.4.7 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.7') || $.inidb.get('updates', 'installedv3.4.7') != 'true') {
-        $.consoleLn('Starting PhantomBot update 3.4.7 updates...');
+    if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') != 'true') {
+        $.consoleLn('Starting PhantomBot update 3.4.8 updates...');
 
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
             $.consoleLn('Updating timers...');
@@ -285,8 +285,8 @@
         }
 
 
-        $.consoleLn('PhantomBot update 3.4.7 completed!');
-        $.inidb.set('updates', 'installedv3.4.7', 'true');
+        $.consoleLn('PhantomBot update 3.4.8 completed!');
+        $.inidb.set('updates', 'installedv3.4.8', 'true');
     }
 
     /**

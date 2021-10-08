@@ -20,19 +20,31 @@ import com.rollbar.api.payload.data.Data;
 import com.rollbar.api.payload.data.Level;
 import com.rollbar.api.payload.data.Person;
 import com.rollbar.api.payload.data.Server;
+import com.rollbar.api.payload.data.body.BodyContent;
+import com.rollbar.api.payload.data.body.Trace;
+import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  *
@@ -43,12 +55,17 @@ public class RollbarProvider implements AutoCloseable {
     private static final RollbarProvider INSTANCE = new RollbarProvider();
     private static final String ACCESS_TOKEN = "@access.token@";
     private static final String ENDPOINT = "@endpoint@";
+    private static final int REPEAT_INTERVAL_MINUTES = 180;
+    private static final long REPEAT_CHECK_INTERVAL = 1800000L;
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
-            "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "reactordebug", "reloadscripts", "rhinodebugger", "rollbarid", "twitch_tcp_nodelay",
-            "usehttps", "usemessagequeue", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
+            "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
+            "rollbarid", "twitch_tcp_nodelay", "usehttps", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
+    private MessageDigest md;
+    private final ConcurrentHashMap<String, Date> reportsPassedFilters = new ConcurrentHashMap<>();
+    private final Timer t = new Timer();
 
     private RollbarProvider() {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
@@ -68,7 +85,7 @@ public class RollbarProvider implements AutoCloseable {
                         metadata.put("os.arch", System.getProperty("os.arch", "unknown"));
                         metadata.put("os.name", System.getProperty("os.name", "unknown"));
                         metadata.put("os.version", System.getProperty("os.version", "unknown"));
-                        return new Server.Builder().metadata(metadata).build();
+                        return new Server.Builder().root("/").metadata(metadata).build();
                     })
                     .person(() -> {
                         Map<String, Object> metadata = new HashMap<>();
@@ -76,6 +93,7 @@ public class RollbarProvider implements AutoCloseable {
                         if (PhantomBot.instance() != null) {
                             metadata.put("user", PhantomBot.instance().getBotName());
                             metadata.put("channel", PhantomBot.instance().getChannelName());
+                            metadata.put("owner", PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName()));
                             username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
                         }
 
@@ -88,6 +106,8 @@ public class RollbarProvider implements AutoCloseable {
                             metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                             metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                             metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
+                            metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(PhantomBot.instance().getBotName()) ? "true" : "false");
+                            metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(PhantomBot.instance().getChannelName()) ? "true" : "false");
 
                             PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
                                 if (RollbarProvider.SEND_VALUES.contains(s)) {
@@ -110,23 +130,9 @@ public class RollbarProvider implements AutoCloseable {
                             }
 
                             if (error != null) {
-                                if (error.getClass().getName().startsWith("org.mozilla.javascript")
-                                        || (error.getStackTrace().length >= 4
-                                        && error.getStackTrace()[3].getClassName().startsWith("org.mozilla.javascript"))) {
-                                    return true;
-                                }
-
-                                if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
-                                    return true;
-                                }
-
                                 if (error.getClass().equals(java.lang.Exception.class)
                                         && error.getStackTrace()[0].getClassName().equals(reactor.netty.channel.ChannelOperations.class.getName())
                                         && error.getStackTrace()[0].getMethodName().equals("terminate")) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(discord4j.common.close.CloseException.class)) {
                                     return true;
                                 }
 
@@ -135,20 +141,141 @@ public class RollbarProvider implements AutoCloseable {
                                         && error.getStackTrace()[0].getMethodName().equals("read0")) {
                                     return true;
                                 }
+
+                                if (error.getStackTrace()[0].getClassName().startsWith("reactor.core.publisher")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(discord4j.common.close.CloseException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_CORRUPT]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_READONLY]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_CANTOPEN]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("opening db")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./logs")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./config")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.nio.file.NoSuchFileException.class) && error.getMessage().equals("./web/panel/js/utils/gamesList.txt")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().equals("Connection reset by peer")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().equals("java.io.IOException: Connection reset by peer")) {
+                                    return true;
+                                }
                             }
 
-                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false) ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
+                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false)
+                                    ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
 
                             return false;
                         }
 
                         @Override
                         public boolean postProcess(Data data) {
+                            if (md != null) {
+                                md.reset();
+
+                                md.update(data.getCodeVersion().getBytes());
+                                md.update(data.getEnvironment().getBytes());
+                                md.update(data.getLevel().name().getBytes());
+                                md.update(data.getTitle().getBytes());
+
+                                BodyContent bc = data.getBody().getContents();
+
+                                if (bc instanceof TraceChain) {
+                                    TraceChain tc = (TraceChain) bc;
+                                    tc.getTraces().stream().forEachOrdered(t -> {
+                                        md.update(t.getException().getClassName().getBytes());
+                                        md.update(t.getException().getDescription().getBytes());
+                                        md.update(t.getException().getMessage().getBytes());
+                                        t.getFrames().stream().forEachOrdered(f -> {
+                                            md.update(f.getClassName().getBytes());
+                                            md.update(f.getFilename().getBytes());
+                                            md.update(f.getLineNumber().toString().getBytes());
+                                            md.update(f.getMethod().getBytes());
+                                        });
+                                    });
+                                } else if (bc instanceof Trace) {
+                                    Trace t = (Trace) bc;
+                                    md.update(t.getException().getClassName().getBytes());
+                                    md.update(t.getException().getDescription().getBytes());
+                                    md.update(t.getException().getMessage().getBytes());
+                                    t.getFrames().stream().forEachOrdered(f -> {
+                                        md.update(f.getClassName().getBytes());
+                                        md.update(f.getFilename().getBytes());
+                                        md.update(f.getLineNumber().toString().getBytes());
+                                        md.update(f.getMethod().getBytes());
+                                    });
+                                }
+
+                                byte[] bytes = md.digest();
+                                BigInteger bi = new BigInteger(1, bytes);
+                                String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
+
+                                Calendar c = Calendar.getInstance();
+                                if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
+                                    return true;
+                                } else {
+                                    c.add(Calendar.MINUTE, REPEAT_INTERVAL_MINUTES);
+                                    reportsPassedFilters.put(digest, c.getTime());
+                                }
+                            }
+
                             return false;
                         }
                     }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Date now = Calendar.getInstance().getTime();
+
+                    reportsPassedFilters.forEach((digest, date) -> {
+                        if (date.before(now)) {
+                            reportsPassedFilters.remove(digest);
+                        }
+                    });
+                }
+            }, REPEAT_CHECK_INTERVAL, REPEAT_CHECK_INTERVAL);
         } else {
             this.rollbar = null;
+        }
+
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -168,7 +295,11 @@ public class RollbarProvider implements AutoCloseable {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
             this.enabled = true;
+            com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
+            com.gmt2001.Console.out.println("You can disable this by adding the following to a new line in botlogin.txt and restarting: userollbar=false");
+            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GPDR delete requests to gpdr@phantombot.hopto.org");
+            com.gmt2001.Console.out.println();
         }
     }
 
@@ -342,11 +473,21 @@ public class RollbarProvider implements AutoCloseable {
     }
 
     private static String getId() {
+        String id = null;
         if (PhantomBot.instance() != null) {
-            return (String) PhantomBot.instance().getProperties().putIfAbsent("rollbarid", PhantomBot.instance().getProperties().getProperty("rollbarid", RollbarProvider::generateId));
+            id = PhantomBot.instance().getProperties().getProperty("rollbarid");
         }
 
-        return RollbarProvider.generateId();
+        if (id == null || id.isBlank()) {
+            id = RollbarProvider.generateId();
+
+            if (PhantomBot.instance() != null) {
+                PhantomBot.instance().getProperties().put("rollbarid", id);
+                PhantomBot.instance().saveProperties();
+            }
+        }
+
+        return id;
     }
 
     private static String generateId() {

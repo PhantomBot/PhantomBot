@@ -109,9 +109,15 @@ If you have the webserver and a domain, but have not yet setup SSL, consider loo
 
 #### NGINX Sample Config
 
-**NOTE:** When using this method, port 25000 should be ***blocked*** in your firewall and `usehttps` should be set to `false` in your _botlogin.txt_
+**NOTE:** When using this method, port 25000 should be ***blocked*** in your firewall and the following lines should be in your _botlogin.txt_
+```
+# botlogin.txt
+usehttps=false
+proxybypasshttps=true
+```
 
 ```
+# NGINX Config
 upstream phantombot {
     server 127.0.0.1:25000; # set this to the IP:Baseport of the bot
 }
@@ -150,7 +156,12 @@ server {
 
 **NOTE:** Proxying with Apache requires Apache httpd 2.2.15 or later with all of the following Apache modules: mod_alias, mod_proxy, mod_proxy_http, mod_proxy_wstunnel
 
-**NOTE:** When using this method, the baseport (default 25000) should be ***blocked*** in your firewall (iptables/firewall-cmd) and `usehttps` should be set to `false` in your _botlogin.txt_
+**NOTE:** When using this method, the baseport (default 25000) should be ***blocked*** in your firewall (iptables/firewall-cmd) and the following lines should be in your _botlogin.txt_
+```
+# botlogin.txt
+usehttps=false
+proxybypasshttps=true
+```
 
 If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/httpd/conf.d_, then it is best to put this config into a new file ending in _.conf_ in that folder, for example _/etc/httpd/conf.d/phantombot.conf_
 

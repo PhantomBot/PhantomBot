@@ -163,7 +163,13 @@
                                             }
                                             window.sessionStorage.setItem('webauth', webauth);
                                             document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
-                                            window.location = window.location.origin + window.location.pathname + '../';
+                                            let params = new URLSearchParams(document.location.search.substring(1));
+
+                                            if (params.get("kickback") !== null && params.get("kickback").length > 0) {
+                                                window.location = window.location.origin + params.get("kickback");
+                                            } else {
+                                                window.location = window.location.origin + window.location.pathname + '../';
+                                            }
                                         }
                                     };
                                 }
@@ -350,6 +356,13 @@
                                             }
                                     );
                                 });
+        </script>
+        <script>
+        if (window.location.pathname.endsWith("/login")) {
+            let newURL = window.location.toString().replace("/login", "/login/");
+            document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
+            window.location.replace(newURL);
+        }
         </script>
     </body>
 </html>

@@ -102,6 +102,14 @@
                             <div>
                                 This page will setup the bot to automatically refresh the Bot's OAuth tokens. Please follow all instructions below to set this up properly.
                             </div>
+                            <br />
+                            <div>
+                                How will you be performing the OAuths?<br />
+                                <input id="authmodeboth" type="radio" checked="checked" name="authmode" value="both"> <label for="authmodeboth">I will authorize both the Bot and the Broadcaster</label>
+                                <br /><br />
+                                <input id="authmodeseparate" type="radio" name="authmode" value="separate"> <label for="authmodeseparate">I will authorize only the Bot, the Broadcaster will authorize themselves separately</label>
+                            </div>
+                            <br />
                             <div id="instructions">
                                 <ol>
                                     <li>Create a new Twitch Application, if not already created<br />
@@ -140,10 +148,10 @@
                                         Click here to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
                                     </li>
                                     <li>
-                                        Re-authorize the bot and broadcaster using the buttons below
+                                        Re-authorize the bot <span id="auththebroadcaster">and broadcaster </span>using the buttons below
                                     </li>
-                                    <li>
-                                        (Optional) If the broadcaster is a different person and prefers to do the broadcaster authorization themselves
+                                    <li id="broadcasteroauthinstructions" class="hide">
+                                        Have the broadcaster perform their OAuth
                                         <ol>
                                             <li>Go back to the <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
                                             <li>Click <i>Your Console</i> in the top-right corner</li>
@@ -168,12 +176,16 @@
                                 <br />
                                 <br />
                                 <div>
-                                    Clicking one of the <div class="text-bold" style="display: inline;">Connect with Twitch</div> buttons below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
+                                    Clicking <span id="connectone">one of </span>the <div class="text-bold" style="display: inline;">Connect with Twitch</div> button<span id="connectplural">s</span> below will have you be redirected to Twitch.TV to authorize the bot to make requests on your behalf.
                                     <br />
                                     <div style="padding-left: 25px;">
                                         <ul>
-                                            <li><div id="connectbotinstruction" class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
-                                            <li><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.</li>
+                                            <li id="connectbotinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.                                      
+                                                <ul><li>This is the account the bot will show up as in chat, and the account the bot will speak as.</li></ul>
+                                            </li>
+                                            <li id="connectbroadcasterinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.
+                                                <ul><li>This is the account of the broadcaster, whose channel the bot will participate in.</li></ul>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -189,7 +201,7 @@
                                 </div>
                                 <br />
                                 <br />
-                                <div>
+                                <div id="connectbroadcasterscope">
                                     The following permissions are requested for the <div class="text-bold" style="display: inline;">broadcaster's</div> Twitch account (Twitch will display this list too. For more info check <a href="https://dev.twitch.tv/docs/authentication/" target="devdoc">this</a>):
                                     <br />
                                     <div style="padding-left: 25px;">
@@ -228,6 +240,10 @@
                     'use strict';
                     $(function () {
                         var scopesBot = {
+                            "channel_editor": {
+                                "desc": "Write channel metadata (game, status, etc).",
+                                "tooltip": "Used start/end raids and hosting."
+                            },
                             "channel:manage:broadcast": {
                                 "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
                                 "tooltip": "Used by custom scripts to start raids."
@@ -332,7 +348,7 @@
                                 queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
                                 queryMap = new Map(), // Create a new map for save our keys and values.
                                 baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
-                                redirectURI = window.location.origin + window.location.pathname,
+                                redirectURI = (window.location.origin + window.location.pathname).replace(/\/$/, ''),
                                 redirectURIBroadcaster = redirectURI + "/broadcaster",
                                 broadcaster = "",
                                 clientID,
@@ -513,6 +529,26 @@
                             window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
                         });
 
+                        $('input[type=radio][name=authmode]').change(function () {
+                            if (this.value === 'separate') {
+                                $('#connectone').addClass('hide');
+                                $('#connectplural').addClass('hide');
+                                $('#auththebroadcaster').addClass('hide');
+                                $('#connectbroadcasterinstruction').addClass('hide');
+                                $('#connectbroadcasterscope').addClass('hide');
+                                $('#connect-caster').addClass('hide');
+                                $('#broadcasteroauthinstructions').removeClass('hide');
+                            } else {
+                                $('#connectone').removeClass('hide');
+                                $('#connectplural').removeClass('hide');
+                                $('#auththebroadcaster').removeClass('hide');
+                                $('#connectbroadcasterinstruction').removeClass('hide');
+                                $('#connectbroadcasterscope').removeClass('hide');
+                                $('#connect-caster').removeClass('hide');
+                                $('#broadcasteroauthinstructions').addClass('hide');
+                            }
+                        });
+
                         $.ajax({
                             cache: false,
                             dataType: 'text',
@@ -535,6 +571,8 @@
 
                         if (redirectURI.includes("/broadcaster")) {
                             $('#instructions').addClass('hide');
+                            $('#connectone').addClass('hide');
+                            $('#connectplural').addClass('hide');
                             $('#connectbotinstruction').addClass('hide');
                             $('#connectbotscope').addClass('hide');
                             $('#connect-bot').addClass('hide');

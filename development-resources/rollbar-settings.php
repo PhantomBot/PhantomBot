@@ -15,7 +15,7 @@ $reverse = false;
  * array(
  *     'exception' => array( //Defines a match against the actual exception thrown and/or it's message
  *         'class' => 'java.lang.Exception',
- *         'message' => 'You did something wrong'
+ *         'message' => 'You did something wrong' //Note that the message match always ignores case
  *     ),
  *     'frame' => array( //Defines a match against the 'at' lines in the stacktrace
  *         'index' => 2, //Optional parameter that indicates which 'at' line in the stacktrace to run the frame match against. Defaults to 0
@@ -24,13 +24,16 @@ $reverse = false;
  *     )
  * )
  *
- * Wildcards are supported at the end of exception.class and frame.class_name
+ * Wildcards are supported at the beginning and/or end of all string parameters.
+ * Regex is supported if the prefix 'regex:' is used.
  * array(
  *     'exception' => array(
- *         'class' => 'mypackage.exceptionpackage.*' //Matches all sub-packages and classes defined under the package 'mypackage.exceptionpackage'
+ *         'class' => 'mypackage.exceptionpackage.*', //Matches all sub-packages and classes defined under the package 'mypackage.exceptionpackage'
+ *         'message' => '*exception' //Matches all messages that end with 'exception'
  *     ),
  *     'frame' => array(
- *         'class_name' => 'mypackage.*' //Matches all sub-packages and classes defined under the package 'mypackage'
+ *         'class_name' => '*.mypackage.*', //Matches all sub-packages and classes containing '.mypackage.' in the name
+           'method' => 'regex:/mymethod[0-9]+/' // Matches all methods that pass the regex 'mymethod[0-9]+'
  *     )
  * )
  */
@@ -57,17 +60,6 @@ $filters = array(
         )
     ),
     array(
-        'exception' => array(
-            'class' => 'org.mozilla.javascript.*'
-        )
-    ),
-    array(
-        'frame' => array(
-            'index' => 4,
-            'class_name' => 'org.mozilla.javascript.*'
-        )
-    ),
-    array(
         'frame' => array(
             'class_name' => 'reactor.core.publisher.*'
         )
@@ -75,6 +67,101 @@ $filters = array(
     array(
         'exception' => array(
             'class' => 'discord4j.common.close.CloseException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'discord4j.rest.http.client.ClientException',
+            'message' => 'regex:/401(.*)Unauthorized/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*setAutoCommit*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/path to(.*)phantombot.db(.*)not exist/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*attempt to write a readonly database*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL)/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'opening db*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/sql(.*)unrecognized token(.*)/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/sql(.*)no such table(.*)/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.FileNotFoundException',
+            'message' => './logs*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.FileNotFoundException',
+            'message' => './config*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/java.io.FileNotFoundException(.*)\/\/addons/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.FileNotFoundException',
+            'message' => 'regex:/..web.panel.img/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.nio.file.NoSuchFileException',
+            'message' => 'regex:/..web.panel.js.utils.gamesList.txt/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Connection reset by peer'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.lang.OutOfMemoryError'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.UnknownHostException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.SocketTimeoutException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Connection pool has been disposed*'
         )
     )
 );

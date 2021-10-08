@@ -14,18 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.streamlabs.donate;
+package tv.phantombot.event.pubsub.videoplayback;
 
-import org.json.JSONObject;
+public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
 
-public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
+    private final int viewers;
 
     /**
-     * Class constructor.
+     * Constructor.
      *
-     * @param {String} jsonString
+     * @param {int} channelId
+     * @param {float} serverTime
+     * @param {int} viewers
      */
-    public StreamLabsDonationEvent(JSONObject data) {
-        super(data);
+    public PubSubViewCountEvent(int channelId, float serverTime, int viewers) {
+        super(channelId, serverTime);
+        this.viewers = viewers;
+    }
+
+    /**
+     * Method that returns the number of viewers in the channel at @see getServerTime.
+     *
+     * @return {int} viewers
+     */
+    public int getViewers() {
+        return this.viewers;
     }
 }

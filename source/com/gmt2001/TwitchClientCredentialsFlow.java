@@ -95,6 +95,8 @@ public class TwitchClientCredentialsFlow {
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             return this.getAppToken(properties);
+        } else {
+            com.gmt2001.Console.debug.println("skip update");
         }
 
         return false;
@@ -110,8 +112,9 @@ public class TwitchClientCredentialsFlow {
     }
 
     private boolean getAppToken(CaselessProperties properties) {
-        if (properties == null || !properties.contains("clientid") || properties.getProperty("clientid").isBlank()
-                || !properties.contains("clientsecret") || properties.getProperty("clientsecret").isBlank()) {
+        if (properties == null || !properties.containsKey("clientid") || properties.getProperty("clientid").isBlank()
+                || !properties.containsKey("clientsecret") || properties.getProperty("clientsecret").isBlank()) {
+            com.gmt2001.Console.debug.println("skipped refresh");
             return false;
         }
 
@@ -144,12 +147,12 @@ public class TwitchClientCredentialsFlow {
                     outputProperties.store(outputStream, "PhantomBot Configuration File");
                 }
 
-                com.gmt2001.Console.debug.println("reloading properties");
                 if (PhantomBot.instance() != null) {
+                    com.gmt2001.Console.debug.println("reloading properties");
                     PhantomBot.instance().reloadProperties();
-                }
 
-                TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
+                    TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
+                }
             } catch (NullPointerException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -160,6 +163,7 @@ public class TwitchClientCredentialsFlow {
 
     private synchronized void startup(String clientid, String clientsecret) {
         if (t != null) {
+            com.gmt2001.Console.debug.println("Timer exists");
             return;
         }
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
@@ -173,6 +177,8 @@ public class TwitchClientCredentialsFlow {
                     }
                 }
             }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+        } else {
+            com.gmt2001.Console.debug.println("not starting");
         }
     }
 

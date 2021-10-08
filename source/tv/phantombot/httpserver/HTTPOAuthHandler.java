@@ -47,9 +47,9 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     private String token;
 
     public HTTPOAuthHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login");
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login/");
         token = generateToken();
-        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
+        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
     }
 
     @Override
@@ -130,6 +130,10 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         }
 
         return ret;
+    }
+
+    public boolean validateBroadcasterToken(String token) {
+        return this.token.equals(token);
     }
 
 }

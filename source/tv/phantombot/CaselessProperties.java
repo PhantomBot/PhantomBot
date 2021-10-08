@@ -16,7 +16,14 @@
  */
 package tv.phantombot;
 
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -178,5 +185,30 @@ public class CaselessProperties extends Properties {
         } else {
             return this.put(key, value);
         }
+    }
+
+    @Override
+    public Set<Object> keySet() {
+        return Collections.unmodifiableSet(new TreeSet<>(super.keySet()));
+    }
+
+    @Override
+    public Set<Map.Entry<Object, Object>> entrySet() {
+
+        Set<Map.Entry<Object, Object>> set1 = super.entrySet();
+        Set<Map.Entry<Object, Object>> set2 = new LinkedHashSet<>(set1.size());
+
+        Iterator<Map.Entry<Object, Object>> iterator = set1.stream().sorted((java.util.Map.Entry<Object, Object> o1, java.util.Map.Entry<Object, Object> o2) -> o1.getKey().toString().compareTo(o2.getKey().toString())).iterator();
+
+        while (iterator.hasNext()) {
+            set2.add(iterator.next());
+        }
+
+        return set2;
+    }
+
+    @Override
+    public synchronized Enumeration<Object> keys() {
+        return Collections.enumeration(new TreeSet<>(super.keySet()));
     }
 }

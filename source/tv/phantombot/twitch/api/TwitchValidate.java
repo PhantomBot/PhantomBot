@@ -52,18 +52,21 @@ public class TwitchValidate {
     private String clientidC = "";
     private String loginC = "";
     private String useridC = "";
+    public boolean validC = false;
     private Thread validateC = null;
     private ValidateRunnable validaterC = null;
     private final List<String> scopesA = new ArrayList<>();
     private String clientidA = "";
     private String loginA = "";
     private String useridA = "";
+    public boolean validA = false;
     private Thread validateA = null;
     private ValidateRunnable validaterA = null;
     private final List<String> scopesT = new ArrayList<>();
     private String clientidT = "";
     private String loginT = "";
     private String useridT = "";
+    public boolean validT = false;
     private Thread validateT = null;
     private ValidateRunnable validaterT = null;
     private final Timer t;
@@ -280,6 +283,10 @@ public class TwitchValidate {
         return this.useridC;
     }
 
+    public boolean isChatValid() {
+        return this.validC;
+    }
+
     public void updateChatToken(String token) {
         if (this.validaterC == null) {
             this.validateChat(token, "CHAT (oauth)");
@@ -308,6 +315,10 @@ public class TwitchValidate {
         return this.useridA;
     }
 
+    public boolean isAPIValid() {
+        return this.validA;
+    }
+
     public void updateAPIToken(String token) {
         if (this.validaterA == null) {
             this.validateAPI(token, "API (apioauth)");
@@ -334,6 +345,10 @@ public class TwitchValidate {
 
     public String getAppUserID() {
         return this.useridT;
+    }
+
+    public boolean isAppValid() {
+        return this.validT;
     }
 
     public void updateAppToken(String token) {
@@ -486,6 +501,20 @@ public class TwitchValidate {
                             break;
                         default:
                             useridA = requestObj.getString("user_id");
+                            break;
+                    }
+                }
+
+                if (requestObj.has("user_id")) {
+                    switch (tokenType) {
+                        case 1:
+                            validC = true;
+                            break;
+                        case 2:
+                            validT = true;
+                            break;
+                        default:
+                            validA = true;
                             break;
                     }
                 }

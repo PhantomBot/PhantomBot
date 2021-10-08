@@ -99,7 +99,7 @@
             currentSet = String(ffzLocalEmotes.getJSONObject('room').getInt('set'));
             jsonArray = ffzLocalEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
             for (i = 0; i < jsonArray.length(); i++) {
-                emote = $.replace($.replace($.replace($.replace($.replace(jsonArray.getJSONObject(j).getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
+                emote = $.replace($.replace($.replace($.replace($.replace(jsonArray.getJSONObject(i).getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
                 emoteRegExp = '\\b' + emote + '\\b';

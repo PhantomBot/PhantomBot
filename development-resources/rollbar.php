@@ -4,6 +4,28 @@ require_once('rollbar-settings.php');
 
 $headers = apache_request_headers();
 
+function contains($haystack, $needle) {
+    if(strpos($needle, 'regex:') === 0) {
+        return preg_match(substr($needle, 6), $haystack) === 1;
+    } else if (strpos($needle, '*') === 0 || strrpos($needle, '*') === strlen($needle) - 1){
+        if (strpos($needle, '*') === 0) {
+            $needle = substr($needle, 1);
+
+            if (strrpos($needle, '*') === strlen($needle) - 1) {
+                $needle = substr($needle, 0, -1);
+                return strpos($haystack, $needle) !== false;
+            } else {
+                return substr($haystack, -strlen($needle)) === $needle;
+            }
+        } else {
+            $needle = substr($needle, 0, -1);
+            return substr($haystack, 0, strlen($needle)) === $needle;
+        }
+    } else {
+        return $haystack === $needle;
+    }
+}
+
 function dofilter($data) {
     return filter_var($data, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_BACKTICK);
 }
@@ -46,22 +68,14 @@ foreach ($filters as $filter) {
     if (array_key_exists('exception', $filter)) {
         if (array_key_exists('class', $filter['exception'])) {
             $checked = true;
-            $tec = $trace['exception']['class'];
-            $ec = $filter['exception']['class'];
-
-            if (substr($ec, -2) == '.*') {
-                $ec = substr($ec, 0, -2);
-                $tec = substr($tec, 0, strlen($ec));
-            }
-
-            if (tec != $ec) {
+            if (!contains($trace['exception']['class'], $filter['exception']['class'])) {
                 continue;
             }
         }
 
         if (array_key_exists('message', $filter['exception'])) {
             $checked = true;
-            if (strtolower($trace['exception']['message']) != strtolower($filter['exception']['message'])) {
+            if (!contains(strtolower($trace['exception']['message']), strtolower($filter['exception']['message']))) {
                 continue;
             }
         }
@@ -77,22 +91,14 @@ foreach ($filters as $filter) {
         if ($frameno < 0) {
             if (array_key_exists('class_name', $filter['frame'])) {
                 $checked = true;
-                $tcn = trace['frame'][$frameno]['class_name'];
-                $cn = $filter['frame']['class_name'];
-
-                if (substr($cn, -2) == '.*') {
-                    $cn = substr($cn, 0, -2);
-                    $tcn = substr($tcn, 0, strlen($cn));
-                }
-
-                if ($tcn != $cn) {
+                if (!contains($trace['frame'][$frameno]['class_name'], $filter['frame']['class_name'])) {
                     continue;
                 }
             }
 
             if (array_key_exists('method', $filter['frame'])) {
                 $checked = true;
-                if ($trace['frame'][$frameno]['method'] != $filter['frame']['method']) {
+                if (!contains($trace['frame'][$frameno]['method'], $filter['frame']['method'])) {
                     continue;
                 }
             }

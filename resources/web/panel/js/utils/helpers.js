@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$(function() {
+$(function () {
     const helpers = {};
 
     // Delay in ms for animations.
@@ -43,7 +43,7 @@ $(function() {
      * @param  {String} number
      * @return {String}
      */
-    helpers.parseNumber = function(number) {
+    helpers.parseNumber = function (number) {
         return (number + '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 
@@ -53,7 +53,7 @@ $(function() {
      * @param  {String} number
      * @return {JSON}
      */
-    helpers.fixNumber = function(number, force) {
+    helpers.fixNumber = function (number, force) {
         const newNumber = parseInt(number.toString().replace(/,/g, ''));
         const thousandReplace = 9999;
         const millionReplace = 999999;
@@ -75,7 +75,7 @@ $(function() {
      * @param  {Object} obj
      * @return {Boolean}
      */
-    helpers.isValidNumberOrString = function(obj) {
+    helpers.isValidNumberOrString = function (obj) {
         let value = (typeof obj === 'object' ? obj.val() : obj);
 
         if (isNaN(value)) {
@@ -97,7 +97,7 @@ $(function() {
      * @param  {String} def
      * @return {String}
      */
-    helpers.getDefaultIfNullOrUndefined = function(value, def) {
+    helpers.getDefaultIfNullOrUndefined = function (value, def) {
         if (value === null || value === undefined) {
             return def;
         } else {
@@ -111,7 +111,7 @@ $(function() {
      * @param  {Object} event
      * @return {String}
      */
-    helpers.getEventMessage = function(event) {
+    helpers.getEventMessage = function (event) {
         switch (event.type.toLowerCase()) {
             case 'subscriber':
                 return (event.username + ' just subscribed at tier ' + event.tier + '!');
@@ -128,7 +128,7 @@ $(function() {
             case 'host':
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
             case 'tip':
-                return (event.username + ' just tipped ' + event.amount + ' ' + event.currency +'!');
+                return (event.username + ' just tipped ' + event.amount + ' ' + event.currency + '!');
             case 'raid':
                 return (event.username + ' raided for ' + event.viewers + ' viewers!');
             case 'gifted subscription':
@@ -149,7 +149,7 @@ $(function() {
      * @return {String}
      */
     // Use these colours for this function: https://mdbootstrap.com/css/colors/
-    helpers.getEventColor = function(event) {
+    helpers.getEventColor = function (event) {
         switch (event.toLowerCase()) {
             case 'subscriber':
                 return 'background-color: #16b7d9;';
@@ -189,7 +189,7 @@ $(function() {
      *
      * Validator takes obj as argument should return null if the input is valid or else an error message.
      */
-    helpers.handleInput = function(obj, validator) {
+    helpers.handleInput = function (obj, validator) {
         if (obj.length === 0) {
             helpers.logError('Failed to validate input due to the object being null.', helpers.LOG_TYPE.FORCE);
             return;
@@ -251,7 +251,7 @@ $(function() {
      * @param  {Object} obj
      * @return {Boolean}
      */
-    helpers.handleInputNumber = function(obj, min, max) {
+    helpers.handleInputNumber = function (obj, min, max) {
         return helpers.handleInput(obj, function (obj) {
             min = (min === undefined ? 0 : min);
             let newMax = (max === undefined ? Number.MAX_SAFE_INTEGER : max);
@@ -269,7 +269,7 @@ $(function() {
      * @param  {Object} obj
      * @return {Boolean}
      */
-    helpers.handleInputDate = function(obj) {
+    helpers.handleInputDate = function (obj) {
         return helpers.handleInput(obj, function (obj) {
             let matched = obj.val().match(/^((\d{2}|\d{4})(\\|\/|\.|-)(\d{2})(\\|\/|\.|-)(\d{4}|\d{2}))$/);
 
@@ -286,7 +286,7 @@ $(function() {
      * @param {Object} obj
      * @param {String} id
      */
-    helpers.handlePanelToggleInfo = function(obj, id) {
+    helpers.handlePanelToggleInfo = function (obj, id) {
         id = 'phantombot_' + id.substring(id.indexOf('-') + 1);
 
         if (localStorage.getItem(id) === 'false') {
@@ -308,9 +308,9 @@ $(function() {
      * @param {Object} obj
      * @param {String} id
      */
-    helpers.handlePanelSetInfo = function(obj, id, parsed) {
+    helpers.handlePanelSetInfo = function (obj, id, parsed) {
         let item = localStorage.getItem('phantombot_' + id.substring(id.indexOf('-') + 1)),
-            isSmall = $('.small-box').width() < 230;
+                isSmall = $('.small-box').width() < 230;
 
         if (item === 'true' || item === null) {
             if (parseInt(obj.data('number').replace(/,/g, '')) < 9999) {
@@ -330,7 +330,7 @@ $(function() {
      * @param  {String} dateString
      * @return {String}
      */
-    helpers.getPaddedDateString = function(dateString) {
+    helpers.getPaddedDateString = function (dateString) {
         let dateMatches = dateString.match(/((\d+)|([^\d]*))/g);
 
         for (let i = 0; i < dateMatches.length; i++) {
@@ -352,7 +352,7 @@ $(function() {
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getModal = function(id, title, btn, body, onClose) {
+    helpers.getModal = function (id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
             'tabindex': '99',
@@ -386,9 +386,9 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function() {
+        }))))).on('shown.bs.modal', function () {
             $('#' + id).focus();
-        }).on('hidden.bs.modal', function() {
+        }).on('hidden.bs.modal', function () {
             $('#' + id).remove();
         });
     };
@@ -403,7 +403,7 @@ $(function() {
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getAdvanceModal = function(id, title, btn, body, onClose) {
+    helpers.getAdvanceModal = function (id, title, btn, body, onClose) {
         return $('<div/>', {
             'class': 'modal fade',
             'tabindex': '99',
@@ -449,14 +449,14 @@ $(function() {
             'type': 'button',
             'text': 'Cancel',
             'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function() {
+        }))))).on('shown.bs.modal', function () {
             $('#' + id).focus();
-        }).on('hidden.bs.modal', function() {
+        }).on('hidden.bs.modal', function () {
             $('#' + id).remove();
-        }).on('show.bs.collapse', function() {
+        }).on('show.bs.collapse', function () {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
             $(this).find('.collapse-btn').html('Hide Advanced');
-        }).on('hide.bs.collapse', function() {
+        }).on('hide.bs.collapse', function () {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
             $(this).find('.collapse-btn').html('Show Advanced');
         });
@@ -474,7 +474,7 @@ $(function() {
      * @param  {Boolean} disabled
      * @return {Object}
      */
-    helpers.getInputGroup = function(id, type, title, placeholder, value, toolTip, disabled) {
+    helpers.getInputGroup = function (id, type, title, placeholder, value, toolTip, disabled) {
         return $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -506,7 +506,7 @@ $(function() {
      * @param  {Boolean} unlimited
      * @return {Object}
      */
-    helpers.getTextAreaGroup = function(id, type, title, placeholder, value, toolTip, unlimited) {
+    helpers.getTextAreaGroup = function (id, type, title, placeholder, value, toolTip, unlimited) {
         return $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -538,7 +538,7 @@ $(function() {
      * @param  {String} toolTip
      * @return {Object}
      */
-    helpers.getDropdownGroup = function(id, title, def, options, toolTip) {
+    helpers.getDropdownGroup = function (id, title, def, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -560,14 +560,14 @@ $(function() {
             'selected': 'true',
             'disabled': 'true',
             'hidden': 'true'
-        })).append(options.map(function(option) {
+        })).append(options.map(function (option) {
             return $('<option/>', {
                 'html': option
             });
         }))));
     };
 
-    helpers.getDropdownGroupWithGrouping = function(id, title, options, toolTip) {
+    helpers.getDropdownGroupWithGrouping = function (id, title, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -582,7 +582,7 @@ $(function() {
             'class': 'form-control select2 select2-hidden-accessible',
             'id': id,
             'style': 'width: 100%; cursor: pointer;'
-        }).append(options.map(function(option) {
+        }).append(options.map(function (option) {
             let selected = option.selected;
             let roles = option.options;
             let group = $('<optgroup/>', {
@@ -622,22 +622,22 @@ $(function() {
      * @param  {String} id
      * @param  {String} title
      * @param  {Array}  options [
-        {
-            'title': 'Some title',
-            'options': [
-                {
-                    'name': 'option name',
-                    'selected': 'true'
-                },
-                ...
-            ]
-        },
-        ...
+     {
+     'title': 'Some title',
+     'options': [
+     {
+     'name': 'option name',
+     'selected': 'true'
+     },
+     ...
+     ]
+     },
+     ...
      ]
      * @param  {String} toolTip
      * @return {Object}
      */
-    helpers.getMultiDropdownGroup = function(id, title, options, toolTip) {
+    helpers.getMultiDropdownGroup = function (id, title, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -653,7 +653,7 @@ $(function() {
             'multiple': 'multiple',
             'id': id,
             'style': 'width: 100%; cursor: pointer;'
-        }).append(options.map(function(option) {
+        }).append(options.map(function (option) {
             let selected = option.selected;
             let roles = option.options;
             let group = $('<optgroup/>', {
@@ -685,16 +685,16 @@ $(function() {
      * @param  {String} id
      * @param  {String} title
      * @param  {Array}  options [
-           {
-               'name': 'option name',
-               'selected': 'true'
-           },
-           ...
+     {
+     'name': 'option name',
+     'selected': 'true'
+     },
+     ...
      * ]
      * @param  {String} toolTip
      * @return {Object}
      */
-    helpers.getFlatMultiDropdownGroup = function(id, title, options, toolTip) {
+    helpers.getFlatMultiDropdownGroup = function (id, title, options, toolTip) {
         return  $('<div/>', {
             'class': 'form-group'
         }).append($('<label/>', {
@@ -710,7 +710,7 @@ $(function() {
             'multiple': 'multiple',
             'id': id,
             'style': 'width: 100%; cursor: pointer;'
-        }).append(options.map(function(option) {
+        }).append(options.map(function (option) {
             let o = $('<option/>', {
                 'html': option.name,
                 'id': option._id
@@ -731,7 +731,7 @@ $(function() {
      * @param  {String}  tooltip
      * @return {Object}
      */
-    helpers.getCheckBox = function(id, value, text, tooltip) {
+    helpers.getCheckBox = function (id, value, text, tooltip) {
         return $('<div/>', {
             'class': 'pretty p-icon'
         }).append($('<input/>', {
@@ -772,7 +772,7 @@ $(function() {
      * @param  {String} body
      * @return {Object}
      */
-    helpers.getCollapsibleAccordion = function(id, title, body) {
+    helpers.getCollapsibleAccordion = function (id, title, body) {
         return $('<div/>', {
             'class': 'panel panel-default'
         }).append($('<div/>', {
@@ -805,7 +805,7 @@ $(function() {
      * @param  {Function} onClose
      * @return {Object}
      */
-    helpers.getConfirmDeleteModal = function(id, title, hasBodyMsg, closeMessage, onClose) {
+    helpers.getConfirmDeleteModal = function (id, title, hasBodyMsg, closeMessage, onClose) {
         swal({
             'title': title,
             'text': (hasBodyMsg ? 'Once removed, it be will gone forever.' : ''),
@@ -822,7 +822,7 @@ $(function() {
                 }
             },
             'dangerMode': true
-        }).then(function(isRemoved) {
+        }).then(function (isRemoved) {
             if (isRemoved) {
                 onClose();
                 swal(closeMessage, {
@@ -838,9 +838,9 @@ $(function() {
      * @param  {Number} len
      * @return {String}
      */
-    helpers.getRandomString = function(len) {
+    helpers.getRandomString = function (len) {
         let randStr = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-            str = '';
+                str = '';
 
         for (let i = 0; i < len; i++) {
             str += randStr.charAt(Math.floor(Math.random() * randStr.length));
@@ -855,7 +855,7 @@ $(function() {
      * @param {Function} func
      * @param {Number}   interval
      */
-    helpers.setInterval = function(func, interval) {
+    helpers.setInterval = function (func, interval) {
         timers.push(setInterval(func, interval));
     };
 
@@ -865,14 +865,14 @@ $(function() {
      * @param {Function} func
      * @param {Number}   timeout
      */
-    helpers.setTimeout = function(func, timeout) {
+    helpers.setTimeout = function (func, timeout) {
         timers.push(setTimeout(func, timeout));
     };
 
     /*
      * @function Clears all timers.
      */
-    helpers.clearTimers = function() {
+    helpers.clearTimers = function () {
         for (let i = 0; i < timers.length; i++) {
             clearInterval(timers[i]);
         }
@@ -884,7 +884,7 @@ $(function() {
      * @param  {String}|{Array} id
      * @return {Boolean}
      */
-    helpers.getModuleStatus = function(id, toggle, swit) {
+    helpers.getModuleStatus = function (id, toggle, swit) {
         if (typeof id === 'object') {
             for (let i = 0; i < id.length; i++) {
                 if (toggle === 'false') {
@@ -917,7 +917,7 @@ $(function() {
      * @param  {String}|{Array} id
      * @return {Boolean}
      */
-    helpers.handleModuleLoadUp = function(id, toggle, swit) {
+    helpers.handleModuleLoadUp = function (id, toggle, swit) {
         return helpers.getModuleStatus(id, toggle, swit);
     };
 
@@ -928,7 +928,7 @@ $(function() {
      * @param  {Boolean} asString
      * @return {Number}
      */
-    helpers.getGroupIdByName = function(name, asString) {
+    helpers.getGroupIdByName = function (name, asString) {
         switch (name.toLowerCase()) {
             case 'casters':
             case 'caster':
@@ -963,14 +963,14 @@ $(function() {
      * @param  {Boolean} asString
      * @return {Number}
      */
-    helpers.getDiscordGroupIdByName = function(name, asString) {
+    helpers.getDiscordGroupIdByName = function (name, asString) {
         /*switch (name.toLowerCase()) {
-            case 'administrators':
-            case 'administrator':
-                return (asString ? '1' : 1);
-            default:
-                return (asString ? '0' : 0);
-        }*/
+         case 'administrators':
+         case 'administrator':
+         return (asString ? '1' : 1);
+         default:
+         return (asString ? '0' : 0);
+         }*/
 
         return 'null';
     };
@@ -981,7 +981,7 @@ $(function() {
      * @param  {String} id
      * @return {Number}
      */
-    helpers.getGroupNameById = function(id) {
+    helpers.getGroupNameById = function (id) {
         switch (id.toString()) {
             case '0':
                 return 'Caster';
@@ -1008,7 +1008,7 @@ $(function() {
      * @param  {String} j
      * @return {Number}
      */
-    helpers.getDiscordGroupNameById = function(j) {
+    helpers.getDiscordGroupNameById = function (j) {
         let json = JSON.parse(j);
         let roles = [];
         let perms = [];
@@ -1043,7 +1043,7 @@ $(function() {
      * @param {Boolean} isDark
      * @param {Boolean} isAtLoadUp
      */
-    helpers.handleDarkMode = function(isDark, isAtLoadUp) {
+    helpers.handleDarkMode = function (isDark, isAtLoadUp) {
         // Only load styles once.
         if (helpers.isStylesLoaded !== undefined) {
             return;
@@ -1103,17 +1103,29 @@ $(function() {
         }
     };
 
+    helpers.addNotification = function (html) {
+        if ($('#notifications-total').data('notification-amount') === undefined) {
+            $('#notifications-total').data('notification-amount', 0);
+        }
+        let newval = $('#notifications-total').data('notification-amount') + 1;
+
+        $('#notifications-total').data('notification-amount', newval);
+        $('#notifications-total').html(newval);
+        $('#notifications-amount').html(newval).prop('style', 'display: inline;');
+        $('#notifications-menu-ul').append($('<li/>').append(html));
+    };
+
     /*
      * @function Handles showing new updates to the user.
      *
      * @param {String} version
      * @param {String} downloadLink
      */
-    helpers.handleNewBotUpdate = function(version, downloadLink) {
+    helpers.handleNewBotUpdate = function (version, downloadLink) {
         if (version !== null) {
-            if ($('#notifications-total').data('isset') === false) {
+            if ($('#notifications-total').data('updateisset') === undefined) {
                 // Send a warning to the user.
-                toastr.warning('New update availabel for PhantomBot!', {
+                toastr.warning('New update available for PhantomBot!', {
                     'timeOut': 2000
                 });
 
@@ -1121,41 +1133,39 @@ $(function() {
                 if (version.startsWith("nightly-")) {
                     html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now availabel to download! <br>' +
                             'You can grab your own copy of nightly build ' + version.substr(8) + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>';
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            ' on how to properly update PhantomBot.</b>';
                 } else {
                     html = 'Version ' + version + ' of PhantomBot is now availabel to download! <br>' +
                             'You can view the changes of this version ' +
-                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here.')[0].outerHTML + ' <br>' +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here')[0].outerHTML + '. <br>' +
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
-                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                                $('<a/>', { 'target': '_blank', 'rel': 'noopener noreferrer' }).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
-                                ' on how to properly update PhantomBot.</b>';
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            ' on how to properly update PhantomBot.</b>';
                 }
 
                 // Set the total notifications.
-                $('#notifications-total').html('1').data('isset', 'true');
-                // Show the notification.
-                $('#notifications-amount').prop('style', 'display: inline;');
+                $('#notifications-total').data('updateisset', 'true');
                 // Add a new notfication.
-                $('#notifications-menu-ul').append($('<li/>').append($('<a/>', {
+                helpers.addNotification($('<a/>', {
                     'href': 'javascript:void(0);',
-                    'click': function() {
+                    'click': function () {
                         helpers.getModal('pb-update', 'PhantomBot Update', 'Ok', $('<form/>', {
                             'role': 'form'
                         })
-                        .append($('<p/>', {
-                            'html': html
-                        })), function() {
+                                .append($('<p/>', {
+                                    'html': html
+                                })), function () {
                             $('#pb-update').modal('toggle');
                         }).modal('toggle');
                     }
                 }).append($('<i/>', {
                     'class': 'fa fa-warning text-yellow'
-                })).append('Update availabel')))
+                })).append('Update available'));
             }
         }
     };
@@ -1165,7 +1175,7 @@ $(function() {
      *
      * @return {String}
      */
-    helpers.getRandomRgbColor = function() {
+    helpers.getRandomRgbColor = function () {
         return 'rgb(' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ')';
     };
 
@@ -1175,7 +1185,7 @@ $(function() {
      * @param {String}  message
      * @param {Number} type
      */
-    helpers.log = function(message, type) {
+    helpers.log = function (message, type) {
         if (helpers.DEBUG_STATE === helpers.DEBUG_STATES.DEBUG || type === helpers.DEBUG_STATE || type === helpers.LOG_TYPE.FORCE) {
             console.log('%c[PhantomBot Log]', 'color: #6441a5; font-weight: 900;', message);
         }
@@ -1187,7 +1197,7 @@ $(function() {
      * @param {String}  message
      * @param {Number} type
      */
-    helpers.logError = function(message, type) {
+    helpers.logError = function (message, type) {
         console.log('%c[PhantomBot Error]', 'color: red; font-weight: 900;', message);
     };
 
@@ -1198,9 +1208,9 @@ $(function() {
      * @param  {Boolean} force - If you know the format is wrong, force.
      * @return {Number}
      */
-    helpers.getEpochFromDate = function(date, force) {
+    helpers.getEpochFromDate = function (date, force) {
         let parsedDate = Date.parse(date),
-            now = Date.now();
+                now = Date.now();
 
         if (isNaN(parsedDate) || force) {
             let matcher = date.match(/((\d{1,2})(\\|\/|\.|-)(\d{1,2})(\\|\/|\.|-)(\d{2,4}))/);
@@ -1222,7 +1232,7 @@ $(function() {
         return parsedDate;
     };
 
-    helpers.parseHashmap = function() {
+    helpers.parseHashmap = function () {
         var hash = window.location.hash.substr(1);
         var kvs = hash.split('&');
         var hashmap = [];
@@ -1236,7 +1246,7 @@ $(function() {
         helpers.hashmap = hashmap;
     };
 
-    helpers.setupAuth = function() {
+    helpers.setupAuth = function () {
         if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires')) {
             if (window.localStorage.getItem('expires') > Date.now()) {
                 window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
@@ -1247,20 +1257,20 @@ $(function() {
         window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
     };
 
-    helpers.getBotHost = function() {
+    helpers.getBotHost = function () {
         var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
         var botport = window.localStorage.getItem('botport') || 25000;
 
         return bothostname.length > 0 ? bothostname + (botport !== 80 && botport !== 443 ? ':' + botport : '') : '!missing';
     };
 
-    helpers.getUserLogo = function() {
-      socket.doRemote('userLogo', 'userLogo', {}, function(e) {
-          if (!e[0].errors) {
-              $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
-              $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
-          }
-      });
+    helpers.getUserLogo = function () {
+        socket.doRemote('userLogo', 'userLogo', {}, function (e) {
+            if (!e[0].errors) {
+                $('#user-image1').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+                $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
+            }
+        });
     };
 
     //https://stackoverflow.com/a/57380742
@@ -1280,13 +1290,13 @@ $(function() {
         return new Promise(startPoll);
     };
 
-    helpers.toggleDebug = function() {
+    helpers.toggleDebug = function () {
         localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') !== '1' ? '1' : '0');
         helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
         helpers.log('Debug Output set to ' + helpers.DEBUG_STATE, helpers.LOG_TYPE.FORCE);
     };
 
-    helpers.isLocalPanel = function() {
+    helpers.isLocalPanel = function () {
         return helpers.getBotHost() === window.location.host;
     };
 

@@ -56,9 +56,11 @@ public class TwitchCache implements Runnable {
     private final String channel;
     private final Thread updateThread;
     private boolean killed = false;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     /* Cached data */
     private Boolean isOnline = false;
+    private Boolean isOnlinePS = false;
     private Boolean forcedGameTitleUpdate = false;
     private Boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
@@ -68,6 +70,7 @@ public class TwitchCache implements Runnable {
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private long streamUptimeSeconds = 0L;
     private int viewerCount = 0;
+    private int viewerCountPS = 0;
     private int views = 0;
     private String displayName;
 
@@ -85,6 +88,10 @@ public class TwitchCache implements Runnable {
             return instance;
         }
         return instance;
+    }
+
+    static {
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
@@ -151,7 +158,7 @@ public class TwitchCache implements Runnable {
                 doUpdateClips = false;
                 try {
                     updateClips();
-                } catch (JSONException ex) {
+                } catch (ParseException | JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             } else {
@@ -172,7 +179,7 @@ public class TwitchCache implements Runnable {
      *
      * We do not throw an exception because this is not a critical function unlike the gathering of data via the updateCache() method.
      */
-    private void updateClips() throws JSONException {
+    private void updateClips() throws JSONException, ParseException {
         String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
         String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
         if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {
@@ -185,31 +192,35 @@ public class TwitchCache implements Runnable {
         String creator = "";
         String title = "";
         JSONObject thumbnailObj = new JSONObject();
-        int largestTrackingId = 0;
+        Date latestClip = new Date();
+        latestClip.setTime(0L);
 
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");
             if (clipsData.length() > 0) {
                 setDBString("most_viewed_clip_url", "https://clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
-                String lastTrackingIdStr = getDBString("last_clips_tracking_id");
-                int lastTrackingId = (lastTrackingIdStr == null ? 0 : Integer.parseInt(lastTrackingIdStr));
-                largestTrackingId = lastTrackingId;
+                String lastDateStr = getDBString("last_clips_tracking_date");
+                if (lastDateStr != null && !lastDateStr.isBlank()) {
+                    latestClip = dateFormat.parse(lastDateStr);
+                }
                 for (int i = 0; i < clipsData.length(); i++) {
                     JSONObject clipData = clipsData.getJSONObject(i);
-                    int trackingId = Integer.parseInt(clipData.getString("tracking_id"));
-                    if (trackingId > largestTrackingId) {
-                        largestTrackingId = trackingId;
-                        clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
-                        creator = clipData.getJSONObject("curator").getString("display_name");
-                        thumbnailObj = clipData.getJSONObject("thumbnails");
-                        title = clipData.getString("title");
+                    if (clipData.has("created_at")) {
+                        Date clipDate = dateFormat.parse(clipData.getString("created_at"));
+                        if (clipDate.after(latestClip)) {
+                            latestClip = clipDate;
+                            clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
+                            creator = clipData.getJSONObject("curator").getString("display_name");
+                            thumbnailObj = clipData.getJSONObject("thumbnails");
+                            title = clipData.getString("title");
+                        }
                     }
                 }
             }
         }
 
         if (clipURL.length() > 0) {
-            setDBString("last_clips_tracking_id", String.valueOf(largestTrackingId));
+            setDBString("last_clips_tracking_date", dateFormat.format(latestClip));
             setDBString("last_clip_url", clipURL);
             EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, title, thumbnailObj));
         }
@@ -243,17 +254,15 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    //EventBus.instance().postAsync(new TwitchOnlineEvent());
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
                     this.isOnline = false;
-                    EventBus.instance().postAsync(new TwitchOfflineEvent());
+                    //EventBus.instance().postAsync(new TwitchOfflineEvent());
                 }
 
                 if (isOnlinen) {
                     /* Calculate the stream uptime in seconds. */
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     try {
                         streamCreatedDate = dateFormat.parse(streamObj.getJSONObject("stream").getString("created_at"));
                         streamUptimeSecondsn = (long) (Math.floor(currentDate.getTime() - streamCreatedDate.getTime()) / 1000);
@@ -410,14 +419,14 @@ public class TwitchCache implements Runnable {
      * Returns if the channel is online or not.
      */
     public Boolean isStreamOnline() {
-        return this.isOnline;
+        return this.isOnlinePS;
     }
 
     /**
      * Returns a String representation of true/false to indicate if the stream is online or not.
      */
     public String isStreamOnlineString() {
-        if (this.isOnline) {
+        if (this.isOnlinePS) {
             return "true";
         }
         return "false";
@@ -494,7 +503,7 @@ public class TwitchCache implements Runnable {
      * Returns the viewer count.
      */
     public int getViewerCount() {
-        return this.viewerCount;
+        return this.viewerCountPS;
     }
 
     /**
@@ -539,5 +548,19 @@ public class TwitchCache implements Runnable {
      */
     private void setDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("streamInfo", "", dbKey, dbValue);
+    }
+
+    public void goOnline() {
+        this.isOnlinePS = true;
+        this.streamUptimeSeconds = 0L;
+    }
+
+    public void goOffline() {
+        this.isOnlinePS = false;
+        this.viewerCountPS = 0;
+    }
+
+    public void updateViewerCount(int viewers) {
+        this.viewerCountPS = viewers;
     }
 }

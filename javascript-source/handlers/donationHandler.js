@@ -66,12 +66,9 @@
             return;
         }
 
-        var donationJsonStr = event.getJsonString(),
-                JSONObject = Packages.org.json.JSONObject,
-                donationJson = new JSONObject(donationJsonStr);
+        var donationJson = event.getData();
 
-        var donationID = donationJson.get("donation_id"),
-                donationCreatedAt = donationJson.get("created_at"),
+        var donationID = donationJson.get("donation_id").toString(),
                 donationCurrency = donationJson.getString("currency"),
                 donationAmount = parseFloat(donationJson.getString("amount")),
                 donationUsername = donationJson.getString("name"),
@@ -81,9 +78,9 @@
             return;
         }
 
-        $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
+        $.inidb.set('donations', donationID, event.getJsonString());
 
-        $.inidb.set('donations', donationID, donationJson);
+        $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
 
         $.inidb.set('donations', 'last_donation', donationID);
 

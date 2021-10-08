@@ -14,44 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.streamlabs.donate;
+package tv.phantombot.event.pubsub.videoplayback;
 
-import org.json.JSONObject;
-import tv.phantombot.event.streamlabs.StreamLabsEvent;
+import tv.phantombot.event.pubsub.PubSubEvent;
 
-public abstract class StreamLabsDonateEvent extends StreamLabsEvent {
+public abstract class PubSubVideoPlaybackEvent extends PubSubEvent {
 
-    private final JSONObject data;
+    private final int channelId;
+    private final float serverTime;
 
     /**
      * Abstract constructor.
      *
-     * @param {String} jsonString
+     * @param {int} channelId
+     * @param {float} serverTime
      */
-    protected StreamLabsDonateEvent(JSONObject data) {
-        this.data = data;
-    }
-
-    public JSONObject getData() {
-        return this.data;
-    }
-
-    /**
-     * Method that returns the donation's JSON string.
-     *
-     * @return {String} jsonString
-     */
-    public String getJsonString() {
-        return this.data.toString();
+    protected PubSubVideoPlaybackEvent(int channelId, float serverTime) {
+        this.channelId = channelId;
+        this.serverTime = serverTime;
     }
 
     /**
-     * Method that converts the class into a string.
+     * Method that returns the channel ID that the event was triggered for.
      *
-     * @return {String}
+     * @return {int} channelId
      */
-    @Override
-    public String toString() {
-        return "TwitchAlertsDonateEvent -> { jsonString: [" + this.getJsonString() + "] }";
+    public int getChannelId() {
+        return this.channelId;
+    }
+
+    /**
+     * Method that returns the timestamp of the event actually happening
+     *
+     * @return {float} serverTime
+     */
+    public float getServerTime() {
+        return this.serverTime;
     }
 }

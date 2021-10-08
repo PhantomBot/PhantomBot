@@ -22,25 +22,27 @@
  */
 
 var setTimeout,
-    clearTimeout,
-    setInterval,
-    clearInterval;
+        clearTimeout,
+        setInterval,
+        clearInterval;
 
-(function() {
+(function () {
     var counter = 1,
-        registry = {};
+            registry = {};
 
     /**
      * @function setTimeout
      * @param {Function} fn
      * @param {Number} delay
      * @param {String} name
-
+     *
      * @returns {Number}
-    */
-    setTimeout = function(fn, delay, name) {
+     */
+    setTimeout = function (fn, delay, name) {
         var id = counter++,
-            timer;
+                timer;
+
+        delay = Math.max(1, Math.abs(delay));
 
         if (name !== undefined) {
             timer = new java.util.Timer(name);
@@ -64,9 +66,11 @@ var setTimeout,
      *
      * @returns {Number}
      */
-    setInterval = function(fn, interval, name) {
+    setInterval = function (fn, interval, name) {
         var id = counter++,
-            timer;
+                timer;
+
+        interval = Math.max(1, Math.abs(interval));
 
         if (name !== undefined) {
             timer = new java.util.Timer(name);
@@ -86,7 +90,7 @@ var setTimeout,
      * @function clearTimeout
      * @param {Number} id
      */
-    clearTimeout = function(id) {
+    clearTimeout = function (id) {
         if (id == undefined) {
             return;
         }
