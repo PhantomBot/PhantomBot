@@ -40,7 +40,9 @@
             inconsistent = false,
             i,
             messages,
-            disabled;
+            disabled,
+            intervalMin,
+            intervalMax;
 
         noticeGroups = [];
         noticeTimoutIds = [];
@@ -55,6 +57,16 @@
             noticeGroups.push(JSON.parse($.inidb.get('notices', keys[i])));
             messages = noticeGroups[noticeGroups.length - 1].messages;
             disabled = noticeGroups[noticeGroups.length - 1].disabled;
+            intervalMin = noticeGroups[noticeGroups.length - 1].intervalMin;
+            intervalMax = noticeGroups[noticeGroups.length - 1].intervalMax;
+            if (intervalMin == null) {
+                intervalMin = intervalMax || 10;
+                inconsistent = true;
+            }
+            if (intervalMax == null) {
+                intervalMax = intervalMin;
+                inconsistent = true;
+            }
             if (messages.length > disabled.length) {
                 while (messages.length > disabled.length) {
                     disabled.push(false);
