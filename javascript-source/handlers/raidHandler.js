@@ -186,7 +186,7 @@
             }
 
             if (hasRaided && message.match(/\(times\)/)) {
-                message = $.replace(message, '(times)', raidObj.totalRaids);
+                message = $.replace(message, '(times)', parseInt(raidObj.totalRaids) + 1);
             }
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
