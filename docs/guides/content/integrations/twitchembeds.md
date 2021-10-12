@@ -140,6 +140,7 @@ server {
  
     location / {
         proxy_pass http://phantombot;
+        proxy_set_header Host $host;
     }
  
     error_log /var/log/nginx/twitch_error.log;
@@ -201,6 +202,7 @@ If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/http
     ProxyPassReverse "/ws/" "ws://127.0.0.1:25000/ws/"                  # Points to the bot running on localhost:25000, change the port number if necessary
     ProxyPass "/" "http://127.0.0.1:25000/"                             # Points to the bot running on localhost:25000, change the port number if necessary
     ProxyPassReverse "/" "http://127.0.0.1:25000/"                      # Points to the bot running on localhost:25000, change the port number if necessary
+    ProxyPreserveHost On                                                # Maintain proper hostname for redirects
 
     # Enables logging
     ErrorLog ${APACHE_LOG_DIR}/error.log
