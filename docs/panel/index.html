@@ -543,6 +543,13 @@
                 }));
             });
         </script>
+        <script>
+        if (!window.location.pathname.endsWith("/")) {
+            let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
+            document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
+            window.location.replace(newURL);
+        }
+        </script>
     </body>
 
 </html>
