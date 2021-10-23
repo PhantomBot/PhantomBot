@@ -79,7 +79,7 @@ public class ScriptEventManager implements Listener {
                 com.gmt2001.Console.debug.println("Dispatched event " + eventName);
             } catch (Exception ex) {
                 com.gmt2001.Console.err.println("Failed to dispatch event " + event.getClass().getName());
-                com.gmt2001.Console.err.printStackTrace(ex);
+                com.gmt2001.Console.err.printStackTrace(ex, false, true);
             }
         }
     }

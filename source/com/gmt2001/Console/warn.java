@@ -16,7 +16,6 @@
  */
 package com.gmt2001.Console;
 
-import static com.gmt2001.Console.debug.logStackTrace;
 import com.gmt2001.Logger;
 import com.gmt2001.RollbarProvider;
 import java.io.PrintWriter;
@@ -77,6 +76,10 @@ public final class warn {
         printStackTrace(e, "");
     }
 
+    public static void printStackTrace(Throwable e, boolean force) {
+        printStackTrace(e, null, "", force);
+    }
+
     public static void printStackTrace(Throwable e, String description) {
         printStackTrace(e, null, description);
     }
@@ -86,7 +89,11 @@ public final class warn {
     }
 
     public static void printStackTrace(Throwable e, Map<String, Object> custom, String description) {
-        if (PhantomBot.getEnableDebugging()) {
+        printStackTrace(e, custom, description, false);
+    }
+
+    public static void printStackTrace(Throwable e, Map<String, Object> custom, String description, boolean force) {
+        if (PhantomBot.getEnableDebugging() || force) {
             e.printStackTrace(System.err);
         }
 
