@@ -328,7 +328,6 @@ public class TwitchAPIv5 {
     private JSONObject translateFollowData(JSONObject followData) {
         JSONObject result = new JSONObject();
         this.setupResult(result, followData, "follows");
-        result.put("_success", false);
         JSONArray follows = new JSONArray();
 
         result.put("_total", followData.getInt("total"));
