@@ -37,7 +37,6 @@ public class FollowersCache implements Runnable {
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private Boolean firstUpdate = true;
-    private Boolean hasFail = false;
     private Boolean killed = false;
     private int numfail = 0;
 
@@ -62,6 +61,7 @@ public class FollowersCache implements Runnable {
      *
      * @param {String} channelName
      */
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache(String channelName) {
         this.updateThread = new Thread(this, "tv.phantombot.cache.FollowersCache");
         this.channelName = channelName;
@@ -111,7 +111,6 @@ public class FollowersCache implements Runnable {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
 
         JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, 0, false);
-        Map<String, String> newCache = new HashMap<String, String>();
         DataStore datastore = PhantomBot.instance().getDataStore();
 
         if (jsonObject.getBoolean("_success")) {
@@ -127,7 +126,7 @@ public class FollowersCache implements Runnable {
                         datastore.set("followed", follower, "true");
                     }
 
-                    if (!datastore.exists("followed_date", follower)) {
+                    if (!datastore.exists("followedDate", follower)) {
                         datastore.set("followedDate", follower, followDate);
                     }
                 }
@@ -172,8 +171,8 @@ public class FollowersCache implements Runnable {
      * @function killall
      */
     public static void killall() {
-        for (FollowersCache instance : instances.values()) {
+        instances.values().forEach(instance -> {
             instance.kill();
-        }
+        });
     }
 }
