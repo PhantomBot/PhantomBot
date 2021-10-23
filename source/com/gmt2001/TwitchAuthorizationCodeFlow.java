@@ -55,6 +55,7 @@ public class TwitchAuthorizationCodeFlow {
     private static final String USER_AGENT = "PhantomBot/2020";
     private static final long REFRESH_INTERVAL = 900000L;
     private Timer t = null;
+    private static boolean lock = false;
 
     public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
         startup(clientid, clientsecret);
@@ -82,6 +83,11 @@ public class TwitchAuthorizationCodeFlow {
             api = true;
         }
 
+        if (lock) {
+            com.gmt2001.Console.debug.println("Skipping due to lock...");
+            return false;
+        }
+
         com.gmt2001.Console.debug.println("bot=" + (bot ? "t" : "f") + "; api=" + (api ? "t" : "f"));
 
         return refreshTokens(properties, bot, api);
@@ -89,6 +95,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private boolean refreshTokens(CaselessProperties properties, boolean bot, boolean api) {
         boolean changed = false;
+        lock = true;
         if (bot) {
             boolean botchanged = refreshBotOAuth(properties);
             changed = changed || botchanged;
@@ -117,6 +124,8 @@ public class TwitchAuthorizationCodeFlow {
                     com.gmt2001.Console.debug.println("reloading properties");
                     PhantomBot.instance().reloadProperties();
 
+                    com.gmt2001.Console.debug.println("Saved oauth=" + PhantomBot.instance().getProperties().getProperty("oauth") + " refresh=" + PhantomBot.instance().getProperties().getProperty("refresh") + " oauthexpires=" + PhantomBot.instance().getProperties().getProperty("oauthexpires"));
+                    com.gmt2001.Console.debug.println("Saved apioauth=" + PhantomBot.instance().getProperties().getProperty("apioauth") + " apirefresh=" + PhantomBot.instance().getProperties().getProperty("apirefresh") + " apiexpires=" + PhantomBot.instance().getProperties().getProperty("apiexpires"));
                     TwitchValidate.instance().updateChatToken(PhantomBot.instance().getProperties().getProperty("oauth"));
                     TwitchValidate.instance().updateAPIToken(PhantomBot.instance().getProperties().getProperty("apioauth"));
                 }
@@ -125,6 +134,7 @@ public class TwitchAuthorizationCodeFlow {
             }
         }
 
+        lock = false;
         return changed;
     }
 
@@ -143,6 +153,7 @@ public class TwitchAuthorizationCodeFlow {
                 properties.setProperty("oauthexpires", c.getTimeInMillis() + "");
 
                 com.gmt2001.Console.out.println("Refreshed the bot token");
+                com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
@@ -168,6 +179,7 @@ public class TwitchAuthorizationCodeFlow {
                 properties.setProperty("apiexpires", c.getTimeInMillis() + "");
 
                 com.gmt2001.Console.out.println("Refreshed the broadcaster token");
+                com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
@@ -225,8 +237,10 @@ public class TwitchAuthorizationCodeFlow {
                 }
                 data = "false".getBytes();
             } else {
-                PhantomBot.instance().getProperties().setProperty("clientid", qsd.parameters().get("clientid").get(0));
-                PhantomBot.instance().getProperties().setProperty("clientsecret", qsd.parameters().get("clientsecret").get(0));
+                lock = true;
+                CaselessProperties properties = PhantomBot.instance().getProperties();
+                properties.setProperty("clientid", qsd.parameters().get("clientid").get(0));
+                properties.setProperty("clientsecret", qsd.parameters().get("clientsecret").get(0));
 
                 CaselessProperties outputProperties = new CaselessProperties() {
                     @Override
@@ -237,7 +251,7 @@ public class TwitchAuthorizationCodeFlow {
 
                 try {
                     try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                        outputProperties.putAll(PhantomBot.instance().getProperties());
+                        outputProperties.putAll(properties);
                         outputProperties.store(outputStream, "PhantomBot Configuration File");
                     }
 
@@ -249,6 +263,7 @@ public class TwitchAuthorizationCodeFlow {
                     com.gmt2001.Console.err.printStackTrace(ex);
                     data = "true".getBytes();
                 }
+                lock = false;
             }
 
             com.gmt2001.Console.debug.println(new String(data));
@@ -279,14 +294,22 @@ public class TwitchAuthorizationCodeFlow {
                     data = ("false|invalidJSONResponse" + result.toString()).getBytes();
                     com.gmt2001.Console.err.println(result.toString());
                 } else {
+                    lock = true;
+                    CaselessProperties properties = PhantomBot.instance().getProperties();
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                     c.add(Calendar.SECOND, result.getInt("expires_in"));
-                    PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", result.getString("access_token"));
-                    PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
-                    PhantomBot.instance().getProperties().setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "oauth" : "api") + "expires", c.getTimeInMillis() + "");
+                    properties.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", result.getString("access_token"));
+                    properties.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
+                    properties.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "oauth" : "api") + "expires", c.getTimeInMillis() + "");
 
                     if (!qsd.parameters().get("type").get(0).equals("bot")) {
                         handler.changeBroadcasterToken();
+                    }
+
+                    if (qsd.parameters().get("type").get(0).equals("bot")) {
+                        com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
+                    } else {
+                        com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
                     }
 
                     CaselessProperties outputProperties = new CaselessProperties() {
@@ -298,17 +321,24 @@ public class TwitchAuthorizationCodeFlow {
 
                     try {
                         try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                            outputProperties.putAll(PhantomBot.instance().getProperties());
+                            outputProperties.putAll(properties);
                             outputProperties.store(outputStream, "PhantomBot Configuration File");
                         }
 
                         data = PhantomBot.instance().getProperties().getProperty("clientid").getBytes();
                         com.gmt2001.Console.debug.println("reloading properties");
                         PhantomBot.instance().reloadProperties();
+
+                        if (qsd.parameters().get("type").get(0).equals("bot")) {
+                            com.gmt2001.Console.debug.println("Saved oauth=" + PhantomBot.instance().getProperties().getProperty("oauth") + " refresh=" + PhantomBot.instance().getProperties().getProperty("refresh") + " oauthexpires=" + PhantomBot.instance().getProperties().getProperty("oauthexpires"));
+                        } else {
+                            com.gmt2001.Console.debug.println("Saved apioauth=" + PhantomBot.instance().getProperties().getProperty("apioauth") + " apirefresh=" + PhantomBot.instance().getProperties().getProperty("apirefresh") + " apiexpires=" + PhantomBot.instance().getProperties().getProperty("apiexpires"));
+                        }
                     } catch (IOException ex) {
                         com.gmt2001.Console.err.printStackTrace(ex);
                         data = "true".getBytes();
                     }
+                    lock = false;
                 }
             }
 
