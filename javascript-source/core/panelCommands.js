@@ -380,7 +380,7 @@
             if (!$.isBot(sender)) {
                 return;
             }
-            $.reloadNoticeSettings();
+            $.reloadNoticeTimers();
         }
 
         /*

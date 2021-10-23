@@ -13,17 +13,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<style>
-.timer-actions-th {
-    width: 69px;
-    min-width: 69px;
-}
-</style>
-
 <main>
     <!-- Header -->
     <section class="content-header">
-        <h1>Timers</h1>
+        <h1>
+            Timers
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="noticesModuleToggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Timers</li>
@@ -32,32 +31,54 @@
 
     <!-- Main content -->
     <section class="content">
-    	<div class="box box-solid">
-            <div class="box-header with-border">
-                <label class="switch" data-toggle="tooltip" title="Module toggle">
-                    <input type="checkbox" id="noticesModuleToggle" checked>
-                    <span class="slider round"></span>
-                </label>
+        <form role="form" id="noticesModule">
+            <div class="row">
 
-                <h3 class="box-title">Timers</h3>
-            </div>
-            <form role="form" id="noticesModule">
-                <!-- Box content -->
-                <div class="box-body">
-                    <div class="btn-toolbar pull-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="add-timer-button"><i class="fa fa-plus"></i>&nbsp; Add Timer</button>
-                        <button class="btn btn-primary btn-sm" type="button" id="timer-settings-button"><i class="fa fa-cog"></i>&nbsp; Settings</button>
-                    </div>
+                <!-- Groups table -->
+                <div class="col-md-6">
+                    <div class="box box-solid" id="groups-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Timer Groups</h3>
+                        </div>
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <div class="btn-toolbar pull-right">
+                                <button class="btn btn-primary btn-sm" type="button" id="btn-add-group">
+                                    <i class="fa fa-plus"></i>&nbsp; Add Group
+                                </button>
+                            </div>
 
-                    <div class="load-ajax">
-                        <div class="spinner"></div>
-                        <p class="load-ajax-text">Loading...</p>
+                            <div class="load-ajax">
+                                <div class="spinner"></div>
+                                <p class="load-ajax-text">Loading...</p>
+                            </div>
+
+                            <table id="groups-table" class="table table-bordered table-hover"></table>
+                        </div>
                     </div>
-                    
-                    <table id="timersTable" class="table table-bordered table-hover"></table>
                 </div>
-            </form>
-        </div>
+
+                <!-- Messages table -->
+                <div class="col-md-6">
+                    <div class="box box-solid hidden" id="messages-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Messages in <span></span></h3>
+                        </div>
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <div class="btn-toolbar pull-right">
+                                <button class="btn btn-primary btn-sm" type="button" id="add-message-button">
+                                    <i class="fa fa-plus"></i>&nbsp; Add Message
+                                </button>
+                            </div>
+
+                            <table id="messages-table" class="table table-bordered table-hover"></table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
     </section>
 
     <!-- timers -->
