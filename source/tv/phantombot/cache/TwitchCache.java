@@ -40,8 +40,6 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
-import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 
 /**

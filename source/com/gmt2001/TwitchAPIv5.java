@@ -313,7 +313,19 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
-        JSONObject followData = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), limit, null).block();
+        return this.GetChannelFollows(channel, limit, null);
+    }
+
+    /**
+     * Gets an object listing the users following a channel
+     *
+     * @param channel
+     * @param limit between 1 and 100
+     * @param from
+     * @return
+     */
+    public JSONObject GetChannelFollows(String channel, int limit, String from) throws JSONException {
+        JSONObject followData = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), limit, from).block();
 
         if (followData == null || followData.has("error") || followData.isNull("data")) {
             JSONObject result = new JSONObject();
@@ -375,7 +387,19 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
-        JSONObject subscriptionData = Helix.instance().getBroadcasterSubscriptionsAsync(this.getIDFromChannel(channel), null, limit, null).block();
+        return this.GetChannelSubscriptions(channel, limit, null);
+    }
+
+    /**
+     * Gets an object listing the users subscribing to a channel
+     *
+     * @param channel
+     * @param limit between 1 and 100
+     * @param from
+     * @return
+     */
+    public JSONObject GetChannelSubscriptions(String channel, int limit, String from) throws JSONException {
+        JSONObject subscriptionData = Helix.instance().getBroadcasterSubscriptionsAsync(this.getIDFromChannel(channel), null, limit, from).block();
         JSONObject result = new JSONObject();
         JSONArray subscriptions = new JSONArray();
         Date now = new Date();
@@ -419,7 +443,7 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
         }
 
-        return GetChannelSubscriptions(channel, limit, offset, ascending);
+        return this.GetChannelSubscriptions(channel, limit, offset, ascending);
     }
 
     /**
