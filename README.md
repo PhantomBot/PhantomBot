@@ -109,4 +109,9 @@ Docker users can opt out using the above method, or by adding the following envi
 PHANTOMBOT_USEROLLBAR=false
 ```
 
+for docker-compose.yml
+```
+PHANTOMBOT_USEROLLBAR: "false"
+```
+
 If you believe your data has already been sent and want to issue a GPDR delete request, please opt out as above and then send your bot name, broadcaster name, and  the _rollbarid_ from _botlogin.txt_ to: **gpdr** /A\T/ phantombot // hopto \\ org
