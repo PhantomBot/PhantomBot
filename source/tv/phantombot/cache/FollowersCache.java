@@ -111,19 +111,10 @@ public class FollowersCache implements Runnable {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
         DataStore datastore = PhantomBot.instance().getDataStore();
 
-        String from = null;
-
-        if (datastore.exists("settings", "followCursor")) {
-            from = datastore.get("settings", "followCursor");
-        }
-
-        JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, from);
+        JSONObject jsonObject = TwitchAPIv5.instance().GetChannelFollows(this.channelName, 100, null);
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
-                if (jsonObject.has("_cursor") && !jsonObject.getString("_cursor").isBlank()) {
-                    datastore.set("settings", "followCursor", jsonObject.getString("_cursor"));
-                }
 
                 JSONArray jsonArray = jsonObject.getJSONArray("follows");
 

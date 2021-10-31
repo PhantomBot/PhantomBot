@@ -1,0 +1,24 @@
+# It is strongly recommended to add the following directive block into the Apache httpd directives for rollbar.php
+# Place this block inside the <VirtualHost><Directory> tags for the directory containing the website files
+# This block rate-limits inbound requests to 5 per 2.5 minutes per IP address
+        <Files "rollbar.php">
+            # Init vars and grab the IP
+            SecAction id:1,initcol:ip=%{REMOTE_ADDR},pass,nolog
+            # Reduce ratelimit-used by 1 every 30 seconds, until hitting 0
+            SecAction "id:2,phase:5,deprecatevar:ip.rollbarlimit=1/30,pass,nolog"
+            # If ratelimit-used > 5, deny with HTTP 429, set temporary environment variable RATELIMITED, and skip the next directive
+            SecRule IP:ROLLBARLIMIT "@gt 5" "id:3,phase:2,deny,status:429,setenv:RATELIMITED=true,skip:1,nolog"
+            # Add 1 to ratelimit-used
+            SecAction "id:4,phase:2,pass,setvar:ip.rollbarlimit=+1,nolog"
+            # If RATELIMITED is set true, set header hinting to client to wait at least 1- seconds before trying again
+            Header always set Retry-After "10" env=RATELIMITED
+            # Enable rewrite-engine
+            RewriteEngine on
+            # Condition: RATELIMITED is set true
+            RewriteCond %{ENV:RATELIMITED} =true
+            # Condition matches: Serve 429.txt instead, don't process anymore Rewrite directives after this
+            RewriteRule ^/rollbar.php(.*) /429.txt [L]
+        </Files>
+
+# Also create a file called "429.txt" with the contents of the following line (Without the #)
+# {"err":1,"message":"too many requests"}

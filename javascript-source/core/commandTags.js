@@ -782,7 +782,7 @@
                     user = String(event.getSender());
                 }
                 return {
-                    result: String(Math.round($.getUserTime(user) / 360)/10),
+                    result: String(Math.round($.getUserTime(user) / 360) / 10),
                     cache: true
                 };
             }
@@ -1022,8 +1022,14 @@
         function random(args) {
             if (!args) {
                 try {
+                    var name = $.username.resolve($.randElement($.users));
+
+                    if ($.users.length === 0 || name === null || name === undefined) {
+                        name = $.username.resolve($.botName);
+                    }
+
                     return {
-                        result: String($.username.resolve($.randElement($.users))),
+                        result: String(name),
                         cache: false
                     };
                 } catch (ex) {

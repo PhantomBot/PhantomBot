@@ -38,6 +38,8 @@ $reverse = false;
  * )
  */
 
+// Main Filter List
+// It is recommended to not touch this and to instead add custom filters near the bottom near the "Custom Filters" comment
 $filters = array(
     array(
         'exception' => array(
@@ -163,6 +165,12 @@ $filters = array(
         'exception' => array(
             'message' => '*Connection pool has been disposed*'
         )
+    )
+);
+
+//Custom Filters
+array_push($filters,
+    array(
     )
 );
 

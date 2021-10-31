@@ -139,7 +139,6 @@
         }
 
         $.writeToFile(hoster + ' ', './addons/hostHandler/latestHost.txt', false);
-        $.writeToFile(hoster + ' ', './addons/hostHandler/latestHostOrAutoHost.txt', false);
         if (hostReward > 0 && viewers >= hostMinViewerCount) {
             $.inidb.incr('points', hoster.toLowerCase(), hostReward);
         }

@@ -95,8 +95,8 @@ The other data sent includes:
 - _os.version_ - Indicates the version of the operating system
 - The current state of _debugon_, even if set from the console
 - The current state of _debuglog_, even if set from the console
-- A boolean indicator of whether the OAuth is logged in as the Bot
-- A boolean indicator of whether the API OAuth is logged in as the Broadcaster
+- A boolean indicator of whether the OAuth is logged in as the Bot (but not the actual OAuth token)
+- A boolean indicator of whether the API OAuth is logged in as the Broadcaster (but not the actual OAuth token)
 - The full stack trace of the exception
 
 To opt out of Rollbar exception reporting, add the following line to the _botlogin.txt_:
@@ -108,5 +108,12 @@ Docker users can opt out using the above method, or by adding the following envi
 ```
 PHANTOMBOT_USEROLLBAR=false
 ```
+
+for docker-compose.yml
+```
+PHANTOMBOT_USEROLLBAR: "false"
+```
+
+You must restart the bot after putting the opt-out for the change to take effect. Editing a Docker container or docker-compose may require more steps to apply the changes, consult your manual
 
 If you believe your data has already been sent and want to issue a GPDR delete request, please opt out as above and then send your bot name, broadcaster name, and  the _rollbarid_ from _botlogin.txt_ to: **gpdr** /A\T/ phantombot // hopto \\ org

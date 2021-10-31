@@ -18,6 +18,7 @@ package tv.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class ScriptApi {
 
@@ -39,6 +40,14 @@ public class ScriptApi {
             }
         });
         ScriptEventManager.instance().register(eventName, handler);
+    }
+
+    public List<String> getEventNames() {
+        return ScriptEventManager.instance().getEventNames();
+    }
+
+    public String formatEventName(String eventName) {
+        return ScriptEventManager.instance().formatEventName(eventName);
     }
 
     public boolean exists(String eventName) {

@@ -38,7 +38,7 @@
 
         this.getModuleName = function () {
             return this.scriptName.match(/((\w+)\.js)$/)[2];
-        }
+        };
     }
 
     /*
@@ -432,19 +432,14 @@
     function events() {
         // Load all API events.
 
+        var loadedHooks = [];
         /*
          * @event ircModeration
          */
         $api.on($script, 'ircModeration', function (event) {
             $.performModeration(event);
         });
-
-        /*
-         * @event ircChannelMessage
-         */
-        $api.on($script, 'ircChannelMessage', function (event) {
-            callHook('ircChannelMessage', event, false);
-        });
+        loadedHooks.push('ircModeration');
 
         /*
          * @event ircChannelUserMode
@@ -464,6 +459,7 @@
                 }
             }
         });
+        loadedHooks.push('ircChannelUserMode');
 
         /*
          * @event command
@@ -553,6 +549,7 @@
                 $.inidb.incr('points', sender, $.getCommandPay(command));
             }
         });
+        loadedHooks.push('command');
 
         /*
          * @event discordChannelCommand
@@ -617,6 +614,7 @@
                 $.discord.decrUserPoints(senderId, $.discord.getCommandCost(command));
             }
         });
+        loadedHooks.push('discordChannelCommand');
 
         /*
          * @event discordReady
@@ -639,510 +637,19 @@
 
             callHook('discordReady', event, false);
         });
-
-        /*
-         * @event consoleInput
-         */
-        $api.on($script, 'consoleInput', function (event) {
-            callHook('consoleInput', event, false);
-        });
-
-        /*
-         * @event twitchFollow
-         */
-        $api.on($script, 'twitchFollow', function (event) {
-            callHook('twitchFollow', event, false);
-        });
-
-        /*
-         * @event twitchUnFollow
-         */
-        $api.on($script, 'twitchUnfollow', function (event) {
-            callHook('twitchUnfollow', event, false);
-        });
-
-        /*
-         * @event twitchFollowsInitialized
-         */
-        $api.on($script, 'twitchFollowsInitialized', function (event) {
-            callHook('twitchFollowsInitialized', event, false);
-        });
-
-        /*
-         * @event twitchHosted
-         */
-        $api.on($script, 'twitchHosted', function (event) {
-            callHook('twitchHosted', event, false);
-        });
-
-        /*
-         * @event twitchHostsInitialized
-         */
-        $api.on($script, 'twitchHostsInitialized', function (event) {
-            callHook('twitchHostsInitialized', event, false);
-        });
-
-        /*
-         * @event twitchClip
-         */
-        $api.on($script, 'twitchClip', function (event) {
-            callHook('twitchClip', event, false);
-        });
-
-        /*
-         * @event ircChannelJoin
-         */
-        $api.on($script, 'ircChannelJoin', function (event) {
-            callHook('ircChannelJoin', event, false);
-        });
-
-        /*
-         * @event ircChannelUsersUpdate
-         */
-        $api.on($script, 'ircChannelUsersUpdate', function (event) {
-            callHook('ircChannelUsersUpdate', event, false);
-        });
-
-        /*
-         * @event ircChannelLeave
-         */
-        $api.on($script, 'ircChannelLeave', function (event) {
-            callHook('ircChannelLeave', event, false);
-        });
-
-        /*
-         * @event ircJoinComplete
-         */
-        $api.on($script, 'ircJoinComplete', function (event) {
-            callHook('ircJoinComplete', event, false);
-        });
-
-        /*
-         * @event ircConnectComplete
-         */
-        $api.on($script, 'ircConnectComplete', function (event) {
-            callHook('ircConnectComplete', event, false);
-        });
-
-        /*
-         * @event ircPrivateMessage
-         */
-        $api.on($script, 'ircPrivateMessage', function (event) {
-            callHook('ircPrivateMessage', event, false);
-        });
-
-        /*
-         * @event ircClearchat
-         */
-        $api.on($script, 'ircClearchat', function (event) {
-            callHook('ircClearchat', event, false);
-        });
-
-        /*
-         * @event streamLabsDonation
-         */
-        $api.on($script, 'streamLabsDonation', function (event) {
-            callHook('streamLabsDonation', event, false);
-        });
-
-        /*
-         * @event streamLabsDonationInitialized
-         */
-        $api.on($script, 'streamLabsDonationInitialized', function (event) {
-            callHook('streamLabsDonationInitialized', event, false);
-        });
-
-        /*
-         * @event tipeeeStreamDonationInitialized
-         */
-        $api.on($script, 'tipeeeStreamDonationInitialized', function (event) {
-            callHook('tipeeeStreamDonationInitialized', event, false);
-        });
-
-        /*
-         * @event tipeeeStreamDonation
-         */
-        $api.on($script, 'tipeeeStreamDonation', function (event) {
-            callHook('tipeeeStreamDonation', event, false);
-        });
-
-        /*
-         * @event streamElementsDonationInitialized
-         */
-        $api.on($script, 'streamElementsDonationInitialized', function (event) {
-            callHook('streamElementsDonationInitialized', event, false);
-        });
-
-        /*
-         * @event streamElementsDonation
-         */
-        $api.on($script, 'streamElementsDonation', function (event) {
-            callHook('streamElementsDonation', event, false);
-        });
-
-        /*
-         * @event getEmotes
-         */
-        $api.on($script, 'emotesGet', function (event) {
-            callHook('emotesGet', event, false);
-        });
-
-        /*
-         * @event yTPlayerConnect
-         */
-        $api.on($script, 'yTPlayerConnect', function (event) {
-            callHook('yTPlayerConnect', event, false);
-        });
-
-        /*
-         * @event yTPlayerLoadPlaylistEvent
-         */
-        $api.on($script, 'yTPlayerLoadPlaylist', function (event) {
-            callHook('yTPlayerLoadPlaylist', event, false);
-        });
-
-        /*
-         * @event yTPlayerDisconnect
-         */
-        $api.on($script, 'yTPlayerDisconnect', function (event) {
-            callHook('yTPlayerDisconnect', event, false);
-        });
-
-        /*
-         * @event yTPlayerState
-         */
-        $api.on($script, 'yTPlayerState', function (event) {
-            callHook('yTPlayerState', event, false);
-        });
-
-        /*
-         * @event yTPlayeCurrentId
-         */
-        $api.on($script, 'yTPlayerCurrentId', function (event) {
-            callHook('yTPlayerCurrentId', event, false);
-        });
-
-        /*
-         * @event yTPlayerRequestSonglist
-         */
-        $api.on($script, 'yTPlayerRequestSonglist', function (event) {
-            callHook('yTPlayerRequestSonglist', event, false);
-        });
-
-        /*
-         * @event yTPlayerRequestPlaylist
-         */
-        $api.on($script, 'yTPlayerRequestPlaylist', function (event) {
-            callHook('yTPlayerRequestPlaylist', event, false);
-        });
-
-        /*
-         * @event yTPlayerDeleteSREvent
-         */
-        $api.on($script, 'yTPlayerDeleteSR', function (event) {
-            callHook('yTPlayerDeleteSR', event, false);
-        });
-
-        /*
-         * @event yTPlayerVolumeEvent
-         */
-        $api.on($script, 'yTPlayerVolume', function (event) {
-            callHook('yTPlayerVolume', event, false);
-        });
-
-        /*
-         * @event yTPlayerSkipSongEvent
-         */
-        $api.on($script, 'yTPlayerSkipSong', function (event) {
-            callHook('yTPlayerSkipSong', event, false);
-        });
-
-        /*
-         * @event yTPlayerStealSongEvent
-         */
-        $api.on($script, 'yTPlayerStealSong', function (event) {
-            callHook('yTPlayerStealSong', event, false);
-        });
-
-        /*
-         * @event yTPlayerSongRequestEvent
-         */
-        $api.on($script, 'yTPlayerSongRequest', function (event) {
-            callHook('yTPlayerSongRequest', event, false);
-        });
-
-        /*
-         * @event yTPlayerDeletePlaylistByIDEvent
-         */
-        $api.on($script, 'yTPlayerDeletePlaylistByID', function (event) {
-            callHook('yTPlayerDeletePlaylistByID', event, false);
-        });
-
-        /*
-         * @event yTPlayerRequestCurrentSongEvent
-         */
-        $api.on($script, 'yTPlayerRequestCurrentSong', function (event) {
-            callHook('yTPlayerRequestCurrentSong', event, false);
-        });
-
-        /*
-         * @event yTPlayerRandomizeEvent
-         */
-        $api.on($script, 'yTPlayerRandomize', function (event) {
-            callHook('yTPlayerRandomize', event, false);
-        });
-
-        /*
-         * @event yTPlayerDeleteCurrentEvent
-         */
-        $api.on($script, 'yTPlayerDeleteCurrent', function (event) {
-            callHook('yTPlayerDeleteCurrent', event, false);
-        });
-
-        /*
-         * @event twitterEvent
-         */
-        $api.on($script, 'twitter', function (event) {
-            callHook('twitter', event, false);
-        });
-
-        /*
-         * @event twitterRetweetEvent
-         */
-        $api.on($script, 'twitterRetweet', function (event) {
-            callHook('twitterRetweet', event, false);
-        });
-
-        /*
-         * @event twitchOnlineEvent
-         */
-        $api.on($script, 'twitchOnline', function (event) {
-            callHook('twitchOnline', event, false);
-        });
-
-        /*
-         * @event twitchOfflineEvent
-         */
-        $api.on($script, 'twitchOffline', function (event) {
-            callHook('twitchOffline', event, false);
-        });
-
-        /*
-         * @event twitchGameChangeEvent
-         */
-        $api.on($script, 'twitchGameChange', function (event) {
-            callHook('twitchGameChange', event, false);
-        });
-
-        /*
-         * @event twitchTitleChangeEvent
-         */
-        $api.on($script, 'twitchTitleChange', function (event) {
-            callHook('twitchTitleChange', event, false);
-        });
-
-        /*
-         * @event twitchSubscriber
-         */
-        $api.on($script, 'twitchSubscriber', function (event) {
-            callHook('twitchSubscriber', event, false);
-        });
-
-        /*
-         * @event twitchPrimeSubscriber
-         */
-        $api.on($script, 'twitchPrimeSubscriber', function (event) {
-            callHook('twitchPrimeSubscriber', event, false);
-        });
-
-        /*
-         * @event reSubscriber
-         */
-        $api.on($script, 'twitchReSubscriber', function (event) {
-            callHook('twitchReSubscriber', event, false);
-        });
-
-        /*
-         * @event twitchSubscriptionGift
-         */
-        $api.on($script, 'twitchSubscriptionGift', function (event) {
-            callHook('twitchSubscriptionGift', event, false);
-        });
-
-        /*
-         * @event twitchMassSubscriptionGifted
-         */
-        $api.on($script, 'twitchMassSubscriptionGifted', function (event) {
-            callHook('twitchMassSubscriptionGifted', event, false);
-        });
-
-        /*
-         * @event twitchAnonymousSubscriptionGift
-         */
-        $api.on($script, 'twitchAnonymousSubscriptionGift', function (event) {
-            callHook('twitchAnonymousSubscriptionGift', event, false);
-        });
-
-        /*
-         * @event twitchMassAnonymousSubscriptionGifted
-         */
-        $api.on($script, 'twitchMassAnonymousSubscriptionGifted', function (event) {
-            callHook('twitchMassAnonymousSubscriptionGifted', event, false);
-        });
-
-        /*
-         * @event twitchBits
-         */
-        $api.on($script, 'twitchBits', function (event) {
-            callHook('twitchBits', event, false);
-        });
-
-        /*
-         * @event twitchRaid
-         */
-        $api.on($script, 'twitchRaid', function (event) {
-            callHook('twitchRaid', event, false);
-        });
-
-        /*
-         * @event discordChannelMessage
-         */
-        $api.on($script, 'discordChannelMessage', function (event) {
-            callHook('discordChannelMessage', event, false);
-        });
-
-        /*
-         * @event discordChannelJoin
-         */
-        $api.on($script, 'discordChannelJoin', function (event) {
-            callHook('discordChannelJoin', event, false);
-        });
-
-        /*
-         * @event discordChannelPart
-         */
-        $api.on($script, 'discordChannelPart', function (event) {
-            callHook('discordChannelPart', event, false);
-        });
-
-        /*
-         * @event discordUserVoiceChannelJoin
-         */
-        $api.on($script, 'discordUserVoiceChannelJoin', function (event) {
-            callHook('discordUserVoiceChannelJoin', event, false);
-        });
-
-        /*
-         * @event discordUserVoiceChannelPart
-         */
-        $api.on($script, 'discordUserVoiceChannelPart', function (event) {
-            callHook('discordUserVoiceChannelPart', event, false);
-        });
-
-        /*
-         * @event discordMessageReaction
-         */
-        $api.on($script, 'discordMessageReaction', function (event) {
-            callHook('discordMessageReaction', event, false);
-        });
-
-        /*
-         * @event discordRoleCreated
-         */
-        $api.on($script, 'discordRoleCreated', function (event) {
-            callHook('discordRoleCreated', event, false);
-        });
-
-        /*
-         * @event discordRoleUpdated
-         */
-        $api.on($script, 'discordRoleUpdated', function (event) {
-            callHook('discordRoleUpdated', event, false);
-        });
-
-        /*
-         * @event discordRoleDeleted
-         */
-        $api.on($script, 'discordRoleDeleted', function (event) {
-            callHook('discordRoleDeleted', event, false);
-        });
-
-        /*
-         * @event webPanelSocketUpdate
-         */
-        $api.on($script, 'webPanelSocketUpdate', function (event) {
-            callHook('webPanelSocketUpdate', event, false);
-        });
-
-        /*
-         * @event PubSubModerationDelete
-         */
-        $api.on($script, 'PubSubModerationDelete', function (event) {
-            callHook('PubSubModerationDelete', event, false);
-        });
-
-        /*
-         * @event PubSubModerationTimeout
-         */
-        $api.on($script, 'PubSubModerationTimeout', function (event) {
-            callHook('PubSubModerationTimeout', event, false);
-        });
-
-        /*
-         * @event PubSubModerationUnTimeout
-         */
-        $api.on($script, 'PubSubModerationUnTimeout', function (event) {
-            callHook('PubSubModerationUnTimeout', event, false);
-        });
-
-        /*
-         * @event PubSubModerationBan
-         */
-        $api.on($script, 'PubSubModerationBan', function (event) {
-            callHook('PubSubModerationBan', event, false);
-        });
-
-        /*
-         * @event PubSubModerationUnBan
-         */
-        $api.on($script, 'PubSubModerationUnBan', function (event) {
-            callHook('PubSubModerationUnBan', event, false);
-        });
-
-        /*
-         * @event PubSubChannelPoints
-         */
-        $api.on($script, 'PubSubChannelPoints', function (event) {
-            callHook('PubSubChannelPoints', event, false);
-        });
-
-        /*
-         * @event EventSubWebhookValidated
-         */
-        $api.on($script, 'EventSubWebhookValidated', function (event) {
-            callHook('EventSubWebhookValidated', event, false);
-        });
-
-        /*
-         * @event EventSubRevocation
-         */
-        $api.on($script, 'EventSubRevocation', function (event) {
-            callHook('EventSubRevocation', event, false);
-        });
-
-        /*
-         * @event EventSubChannelUpdate
-         */
-        $api.on($script, 'EventSubChannelUpdate', function (event) {
-            callHook('EventSubChannelUpdate', event, false);
-        });
-
-        /*
-         * @event Shutdown
-         */
-        $api.on($script, 'Shutdown', function (event) {
-            callHook('Shutdown', event, false);
-        });
+        loadedHooks.push('discordReady');
+
+        var hookNames = $api.getEventNames();
+        for (var i = 0; i < hookNames.size(); i++) {
+            var hookName = String(hookNames.get(i) + '');
+            if (!loadedHooks.includes(hookName)) {
+                $api.on($script, hookName, function (event) {
+                    var hookname = String($api.formatEventName(event.getClass().getSimpleName()) + '');
+                    callHook(hookname, event, false);
+                });
+                loadedHooks.push(hookName);
+            }
+        }
     }
 
     // Export functions to API

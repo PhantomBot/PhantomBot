@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.text.WordUtils;
 import tv.phantombot.event.Event;
@@ -31,7 +32,7 @@ public class ScriptEventManager implements Listener {
 
     private static final ScriptEventManager instance = new ScriptEventManager();
     private final ConcurrentHashMap<String, ScriptEventHandler> events = new ConcurrentHashMap<>();
-    private final List<String> classes = new ArrayList<String>();
+    private final List<String> classes = new ArrayList<>();
     private boolean isKilled = false;
 
     /**
@@ -102,6 +103,15 @@ public class ScriptEventManager implements Listener {
      */
     public void register(String eventName, ScriptEventHandler handler) {
         register(eventName, handler, true);
+    }
+
+    protected String formatEventName(String input) {
+        return input.substring(0, 1).toLowerCase() + input.substring(1).replace("Event", "");
+    }
+
+    protected List<String> getEventNames() {
+        Reflect.instance().loadPackageRecursive(Event.class.getName().substring(0, Event.class.getName().lastIndexOf('.')));
+        return Reflect.instance().getSubTypesOf(Event.class).stream().map((c) -> this.formatEventName(c.getName().substring(c.getName().lastIndexOf('.') + 1))).collect(Collectors.toList());
     }
 
     private void register(String eventName, ScriptEventHandler handler, boolean recurse) {
