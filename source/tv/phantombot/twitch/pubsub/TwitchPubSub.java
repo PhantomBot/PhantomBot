@@ -23,6 +23,7 @@ package tv.phantombot.twitch.pubsub;
 
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.Logger;
+import com.gmt2001.datastore.DataStore;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -382,7 +383,14 @@ public class TwitchPubSub {
                         if (chanid == this.channelId) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
                             Calendar c = Calendar.getInstance();
-                            EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), sdf.format(c.getTime())));
+                            DataStore datastore = PhantomBot.instance().getDataStore();
+                            if (!datastore.exists("followed", messageObj.getString("username"))) {
+                                EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), sdf.format(c.getTime())));
+                                datastore.set("followed", messageObj.getString("username"), "true");
+                            }
+                            if (!datastore.exists("followedDate", messageObj.getString("username"))) {
+                                datastore.set("followedDate", messageObj.getString("username"), sdf.format(c.getTime()));
+                            }
                         }
                         EventBus.instance().postAsync(new PubSubFollowEvent(messageObj.getString("username"), messageObj.getString("user_id"), messageObj.getString("display_name")));
                     }
