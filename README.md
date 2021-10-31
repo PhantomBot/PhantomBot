@@ -95,8 +95,8 @@ The other data sent includes:
 - _os.version_ - Indicates the version of the operating system
 - The current state of _debugon_, even if set from the console
 - The current state of _debuglog_, even if set from the console
-- A boolean indicator of whether the OAuth is logged in as the Bot
-- A boolean indicator of whether the API OAuth is logged in as the Broadcaster
+- A boolean indicator of whether the OAuth is logged in as the Bot (but not the actual OAuth token)
+- A boolean indicator of whether the API OAuth is logged in as the Broadcaster (but not the actual OAuth token)
 - The full stack trace of the exception
 
 To opt out of Rollbar exception reporting, add the following line to the _botlogin.txt_:
