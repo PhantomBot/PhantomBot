@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -195,7 +196,7 @@ public class RollbarProvider implements AutoCloseable {
                                 }
                             }
 
-                            com.gmt2001.Console.debug.println("[ROLLBAR] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false)
+                            com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (Boolean) custom.getOrDefault("isUncaught", false)
                                     ? "[Uncaught]" : "") + (description != null && !description.isBlank() ? " (" + description + ")" : "") + " " + (error != null ? error.toString() : "Null"));
 
                             return false;
@@ -204,53 +205,63 @@ public class RollbarProvider implements AutoCloseable {
                         @Override
                         public boolean postProcess(Data data) {
                             if (md != null) {
-                                md.reset();
+                                try {
+                                    md.reset();
 
-                                md.update(data.getCodeVersion().getBytes());
-                                md.update(data.getEnvironment().getBytes());
-                                md.update(data.getLevel().name().getBytes());
-                                md.update(data.getTitle().getBytes());
+                                    md.update(Optional.ofNullable(data.getCodeVersion()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(data.getEnvironment()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(data.getLevel()).orElse(Level.ERROR).name().getBytes());
+                                    md.update(Optional.ofNullable(data.getTitle()).orElse("").getBytes());
 
-                                BodyContent bc = data.getBody().getContents();
+                                    BodyContent bc = data.getBody().getContents();
 
-                                if (bc instanceof TraceChain) {
-                                    TraceChain tc = (TraceChain) bc;
-                                    tc.getTraces().stream().forEachOrdered(t -> {
-                                        md.update(t.getException().getClassName().getBytes());
-                                        md.update(t.getException().getDescription().getBytes());
-                                        md.update(t.getException().getMessage().getBytes());
-                                        t.getFrames().stream().forEachOrdered(f -> {
-                                            md.update(f.getClassName().getBytes());
-                                            md.update(f.getFilename().getBytes());
-                                            md.update(f.getLineNumber().toString().getBytes());
-                                            md.update(f.getMethod().getBytes());
+                                    if (bc instanceof TraceChain) {
+                                        TraceChain tc = (TraceChain) bc;
+                                        tc.getTraces().stream().forEachOrdered(t -> {
+                                            md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
+                                            md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
+                                            md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
+                                            t.getFrames().stream().forEachOrdered(f -> {
+                                                md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
+                                                md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
+                                                md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
+                                                md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
+                                            });
                                         });
-                                    });
-                                } else if (bc instanceof Trace) {
-                                    Trace t = (Trace) bc;
-                                    md.update(t.getException().getClassName().getBytes());
-                                    md.update(t.getException().getDescription().getBytes());
-                                    md.update(t.getException().getMessage().getBytes());
-                                    t.getFrames().stream().forEachOrdered(f -> {
-                                        md.update(f.getClassName().getBytes());
-                                        md.update(f.getFilename().getBytes());
-                                        md.update(f.getLineNumber().toString().getBytes());
-                                        md.update(f.getMethod().getBytes());
-                                    });
-                                }
+                                    } else if (bc instanceof Trace) {
+                                        Trace t = (Trace) bc;
+                                        md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
+                                        t.getFrames().stream().forEachOrdered(f -> {
+                                            md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
+                                            md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
+                                            md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
+                                            md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
+                                        });
+                                    }
 
-                                byte[] bytes = md.digest();
-                                BigInteger bi = new BigInteger(1, bytes);
-                                String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
+                                    byte[] bytes = md.digest();
+                                    BigInteger bi = new BigInteger(1, bytes);
+                                    String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
 
-                                Calendar c = Calendar.getInstance();
-                                if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
-                                    return true;
-                                } else {
-                                    c.add(Calendar.MINUTE, REPEAT_INTERVAL_MINUTES);
-                                    reportsPassedFilters.put(digest, c.getTime());
+                                    Calendar c = Calendar.getInstance();
+
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
+
+                                    if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
+                                        com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
+                                        return true;
+                                    } else {
+                                        c.add(Calendar.MINUTE, REPEAT_INTERVAL_MINUTES);
+                                        reportsPassedFilters.put(digest, c.getTime());
+                                    }
+                                } catch (Exception e) {
+                                    com.gmt2001.Console.debug.printOrLogStackTrace(e);
                                 }
                             }
+
+                            com.gmt2001.Console.debug.println("[ROLLBAR-POST] not filtered");
 
                             return false;
                         }
