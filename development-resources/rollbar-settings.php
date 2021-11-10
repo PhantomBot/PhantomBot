@@ -165,6 +165,12 @@ $filters = array(
         'exception' => array(
             'message' => '*Connection pool has been disposed*'
         )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.ConnectException',
+            'message' => 'Connection refused*'
+        )
     )
 );
 
