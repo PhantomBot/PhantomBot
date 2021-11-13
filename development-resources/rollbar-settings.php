@@ -114,31 +114,22 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'java.io.FileNotFoundException',
-            'message' => './logs*'
+            'class' => 'java.io.FileNotFoundException'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'java.io.FileNotFoundException',
-            'message' => './config*'
+            'class' => 'java.nio.file.NoSuchFileException'
         )
     ),
     array(
         'exception' => array(
-            'message' => 'regex:/java.io.FileNotFoundException(.*)\/\/addons/'
+            'message' => '*java.io.FileNotFoundException*'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'java.io.FileNotFoundException',
-            'message' => 'regex:/..web.panel.img/'
-        )
-    ),
-    array(
-        'exception' => array(
-            'class' => 'java.nio.file.NoSuchFileException',
-            'message' => 'regex:/..web.panel.js.utils.gamesList.txt/'
+            'message' => '*java.nio.file.NoSuchFileException*'
         )
     ),
     array(
