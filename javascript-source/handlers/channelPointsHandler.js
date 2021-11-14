@@ -457,7 +457,7 @@
     /*
      * @event channelPointRedemptions
      */
-    $.bind('PubSubChannelPoints', function (event) {
+    $.bind('pubSubChannelPoints', function (event) {
         var redemptionID = event.getRedemptionID(),
             rewardID = event.getRewardID(),
             userID = event.getUserID(),
