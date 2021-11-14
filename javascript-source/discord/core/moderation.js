@@ -227,7 +227,7 @@
     /*
      * @event PubSubModerationDelete
      */
-    $.bind('PubSubModerationDelete', function (event) {
+    $.bind('pubSubModerationDelete', function (event) {
         var username = event.getUsername(),
             creator = event.getCreator(),
             message = event.getMessage();
@@ -242,7 +242,7 @@
     /*
      * @event PubSubModerationTimeout
      */
-    $.bind('PubSubModerationTimeout', function(event) {
+    $.bind('pubSubModerationTimeout', function(event) {
         var username = event.getUsername(),
             creator = event.getCreator(),
             message = event.getMessage(),
@@ -259,7 +259,7 @@
     /*
      * @event PubSubModerationUnTimeout
      */
-    $.bind('PubSubModerationUnTimeout', function(event) {
+    $.bind('pubSubModerationUnTimeout', function(event) {
         var username = event.getUsername(),
             creator = event.getCreator();
 
@@ -273,7 +273,7 @@
     /*
      * @event PubSubModerationUnBan
      */
-    $.bind('PubSubModerationUnBan', function(event) {
+    $.bind('pubSubModerationUnBan', function(event) {
         var username = event.getUsername(),
             creator = event.getCreator();
 
@@ -287,7 +287,7 @@
     /*
      * @event PubSubModerationBan
      */
-    $.bind('PubSubModerationBan', function(event) {
+    $.bind('pubSubModerationBan', function(event) {
         var username = event.getUsername(),
             creator = event.getCreator(),
             message = event.getMessage(),
