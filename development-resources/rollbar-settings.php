@@ -162,6 +162,11 @@ $filters = array(
             'class' => 'java.net.ConnectException',
             'message' => 'Connection refused*'
         )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'javax.net.ssl.SSLHandshakeException'
+        )
     )
 );
 
