@@ -115,12 +115,12 @@ public class ScriptEventManager implements Listener {
     }
 
     private void register(String eventName, ScriptEventHandler handler, boolean recurse) {
-        eventName = WordUtils.capitalize(eventName) + "Event";
+        String ceventName = WordUtils.capitalize(eventName) + (eventName.equalsIgnoreCase("Event") ? "" : "Event");
         Class<? extends Event> event = null;
 
         for (String c : classes) {
             try {
-                event = Class.forName(c + "." + eventName).asSubclass(Event.class);
+                event = Class.forName(c + "." + ceventName).asSubclass(Event.class);
                 break;
             } catch (ClassNotFoundException ex) {
 

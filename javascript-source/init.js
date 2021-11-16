@@ -252,6 +252,7 @@
      * @param {Function} handler
      */
     function addHook(hookName, handler) {
+        hookName = $api.formatEventName(hookName);
         var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
