@@ -52,7 +52,7 @@ OAuth tokens, Client IDs, and API Secrets are **NOT** sent. All information is k
 
 Data is only sent when an exception occurs. Some very common, safe to ignore, exceptions are not sent, such as the ones that occur when shutting down the bot while an active panel connection exists.
 
-Exceptions are sent through a server owned by @gmt2001 for additional filtering before continuing on to Rollbar. No data is saved on this server beyond normal logs used for DDOS mitigation.
+Exceptions are sent through a server owned by @gmt2001 for additional filtering before continuing on to Rollbar. No data is saved on this server beyond normal logs used for DDOS mitigation. These logs may include IP addresses and are deleted after 5 weeks. IP addresses are **NOT** sent on to Rollbar.
 
 The following values are sent from _botlogin.txt_:
 - _allownonascii_ - Indicates if other config values in _botlogin.txt_ are allowed to use non-US-ASCII characters
@@ -114,6 +114,10 @@ for docker-compose.yml
 PHANTOMBOT_USEROLLBAR: "false"
 ```
 
-You must restart the bot after putting the opt-out for the change to take effect. Editing a Docker container or docker-compose may require more steps to apply the changes, consult your manual
+You must restart the bot after putting the opt-out for the change to take effect. Editing a Docker container or docker-compose may require more steps to apply the changes, consult your manual.
 
-If you believe your data has already been sent and want to issue a GPDR delete request, please opt out as above and then send your bot name, broadcaster name, and  the _rollbarid_ from _botlogin.txt_ to: **gpdr** /A\T/ phantombot // hopto \\ org
+If you believe your data has already been sent and want to issue a GDPR delete request, please opt out as above and then send your bot name, broadcaster name, and  the _rollbarid_ from _botlogin.txt_ to: **gdpr** /A\T/ phantombot // hopto \\ org
+
+We also accept requests for copies of your data. GDPR requests are accepted from all users, even those who do not live in a locale that has such laws.
+
+Please note that the IP addresses in the DDOS logs can not be retrieved or deleted manually, but will be automatically deleted after 5 weeks by log rotation.
