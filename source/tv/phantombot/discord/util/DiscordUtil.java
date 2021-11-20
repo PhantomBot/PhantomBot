@@ -542,7 +542,7 @@ public class DiscordUtil {
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
         String schannelName = sanitizeChannelName(channelName);
         try {
-            return DiscordAPI.getGuild().getChannels().filter(channel -> DiscordUtil.channelName(channel).equalsIgnoreCase(schannelName)
+            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).filter(channel -> DiscordUtil.channelName(channel).equalsIgnoreCase(schannelName)
                     || DiscordUtil.channelIdAsString(channel).equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
             com.gmt2001.Console.err.println("Unable to find channelName [" + channelName + "]");
@@ -558,7 +558,7 @@ public class DiscordUtil {
     }
 
     public Flux<GuildChannel> getAllChannelInfoAsync(Map<String, Map<String, String>> data) {
-        return DiscordAPI.getGuild().getChannels().doOnNext(channel -> {
+        return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).doOnNext(channel -> {
             if (null != channel.getType()) {
                 switch (channel.getType()) {
                     case GUILD_CATEGORY:
@@ -636,7 +636,7 @@ public class DiscordUtil {
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
         try {
-            return DiscordAPI.getGuild().getChannels().filter(channel -> DiscordUtil.channelIdAsString(channel).equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
+            return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).filter(channel -> DiscordUtil.channelIdAsString(channel).equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
             com.gmt2001.Console.err.println("Unable to find channelId [" + channelId + "]");
             throw ex;
