@@ -47,7 +47,7 @@ Detailed upgrade instructions are listed on our [documentation](https://phantomb
 PhantomBot is licensed under the [**GNU General Public License v3 (GPL-3)**](https://www.gnu.org/copyleft/gpl.html).
 
 ## Rollbar Exception Reporting
-:information_source: ***Notice:*** As of Phantombot Nightly Build 49687f9 (July 4, 2021), we now use [Rollbar](rollbar.com) to automatically report exceptions to the dev team.
+:information_source: ***Notice:*** As of Phantombot Nightly Build 49687f9 (July 4, 2021) and PhantomBot v3.5.0, we now use [Rollbar](https://rollbar.com) to automatically report exceptions to the dev team.
 
 NOTE: This is ***not*** included in stable builds until v3.5.0
 
