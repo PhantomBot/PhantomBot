@@ -151,6 +151,23 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(discord4j.rest.http.client.ClientException.class) && error.getMessage().contains("401")
+                                        && error.getMessage().contains("Unauthorized")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("setAutoCommit")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("path to") && error.getMessage().contains("phantombot.db") && error.getMessage().contains("not exist")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("attempt to write a readonly database")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
                                     return true;
                                 }
@@ -171,27 +188,63 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().startsWith("[SQLITE_PROTOCOL]")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().startsWith("opening db")) {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./logs")) {
+                                if (error.getMessage().contains("sql") && error.getMessage().contains("unrecognized token")) {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.io.FileNotFoundException.class) && error.getMessage().startsWith("./config")) {
+                                if (error.getMessage().contains("sql") && error.getMessage().contains("no such table")) {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.nio.file.NoSuchFileException.class) && error.getMessage().equals("./web/panel/js/utils/gamesList.txt")) {
+                                if (error.getClass().equals(java.io.FileNotFoundException.class) || error.getMessage().contains("java.io.FileNotFoundException")) {
                                     return true;
                                 }
 
-                                if (error.getMessage().equals("Connection reset by peer")) {
+                                if (error.getClass().equals(java.nio.file.NoSuchFileException.class) || error.getMessage().contains("java.nio.file.NoSuchFileException")) {
                                     return true;
                                 }
 
-                                if (error.getMessage().equals("java.io.IOException: Connection reset by peer")) {
+                                if (error.getMessage().contains("Connection reset by peer")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.OutOfMemoryError.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.net.UnknownHostException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.net.SocketTimeoutException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Connection pool has been disposed")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.net.ConnectException.class) && error.getMessage().contains("Connection refused")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(javax.net.ssl.SSLHandshakeException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Input/output error")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Stream closed")) {
                                     return true;
                                 }
                             }

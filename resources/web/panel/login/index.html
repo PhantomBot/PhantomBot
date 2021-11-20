@@ -166,9 +166,17 @@
                                             let params = new URLSearchParams(document.location.search.substring(1));
 
                                             if (params.get("kickback") !== null && params.get("kickback").length > 0) {
-                                                window.location = window.location.origin + params.get("kickback");
+                                                let kickback = params.get("kickback");
+                                                if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                                    kickback = kickback.replace("/panel", "/panel-stable");
+                                                }
+                                                window.location = window.location.origin + kickback;
                                             } else {
-                                                window.location = window.location.origin + window.location.pathname + '../';
+                                                let kickback = window.location.pathname;
+                                                if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                                    kickback = kickback.replace("/panel", "/panel-stable");
+                                                }
+                                                window.location = window.location.origin + kickback + '../';
                                             }
                                         }
                                     };

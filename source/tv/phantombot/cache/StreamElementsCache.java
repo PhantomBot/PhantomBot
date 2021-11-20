@@ -16,6 +16,7 @@
  */
 package tv.phantombot.cache;
 
+import com.gmt2001.datastore.DataStore;
 import com.scaniatv.StreamElementsAPIv2;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String}  channel  Channel to run the cache for.
+     * @param {String} channel Channel to run the cache for.
      */
     public static StreamElementsCache instance(String channel) {
         StreamElementsCache instance = instances.get(channel);
@@ -59,7 +60,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String}  channel  Channel to run the cache for.
+     * @param {String} channel Channel to run the cache for.
      */
     private StreamElementsCache(String channel) {
         this.channel = channel;
@@ -180,7 +181,8 @@ public class StreamElementsCache implements Runnable {
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
-                if (cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id"))) {
+                if ((cache == null || !cache.containsKey(donations.getJSONObject(i).getString("_id")))
+                        && !PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).getString("_id"))) {
                     EventBus.instance().postAsync(new StreamElementsDonationEvent(donations.getJSONObject(i).toString()));
                 }
             }
@@ -192,7 +194,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map}  Cache
+     * @param {Map} Cache
      */
     public void setCache(Map<String, JSONObject> cache) {
         this.cache = cache;

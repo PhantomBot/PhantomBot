@@ -143,7 +143,9 @@ public class DonationsCache implements Runnable {
                 int donationId = Integer.parseInt(donations.getJSONObject(i).get("donation_id").toString());
                 if (donationId > lastId) {
                     lastId = donationId;
-                    EventBus.instance().post(new StreamLabsDonationEvent(donations.getJSONObject(i)));
+                    if (!PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("donation_id").toString())) {
+                        EventBus.instance().post(new StreamLabsDonationEvent(donations.getJSONObject(i)));
+                    }
                 }
             }
         }
