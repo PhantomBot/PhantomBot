@@ -44,7 +44,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String}  channel  Channel to run the cache for.
+     * @param {String} channel Channel to run the cache for.
      */
     public static TipeeeStreamCache instance(String channel) {
         TipeeeStreamCache instance = instances.get(channel);
@@ -59,7 +59,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String}  channel  Channel to run the cache for.
+     * @param {String} channel Channel to run the cache for.
      */
     private TipeeeStreamCache(String channel) {
         this.channel = channel;
@@ -164,10 +164,10 @@ public class TipeeeStreamCache implements Runnable {
                 }
             } else {
                 try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
-                                        jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
-                                        (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
-                                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
+                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req="
+                            + jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   "
+                            + (jsonResult.has("message") && !jsonResult.isNull("message") ? "message="
+                            + jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
                 } catch (Exception ex) {
                     /* Kill this cache if the tipeeestream token is bad and disable the module. */
                     if (ex.getMessage().contains("authentification")) {
@@ -197,7 +197,8 @@ public class TipeeeStreamCache implements Runnable {
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
-                if (cache == null || !cache.containsKey(donations.getJSONObject(i).get("id").toString())) {
+                if ((cache == null || !cache.containsKey(donations.getJSONObject(i).get("id").toString()))
+                        && !PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("id").toString())) {
                     EventBus.instance().post(new TipeeeStreamDonationEvent(donations.getJSONObject(i).toString()));
                 }
             }
@@ -208,7 +209,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map}  Cache
+     * @param {Map} Cache
      */
     public void setCache(Map<String, String> cache) {
         this.cache = cache;
