@@ -484,7 +484,7 @@
         for (i in blackList) {
             if (blackList[i].isRegex) {
                 if ($.test(message, blackList[i].phrase)) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVip(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVIP(sender, event.getTags())) {
                         return false;
                     }
 
@@ -501,7 +501,7 @@
                 }
             } else {
                 if (message.indexOf(blackList[i].phrase) !== -1) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVip(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVIP(sender, event.getTags())) {
                         return false;
                     }
 
@@ -585,7 +585,7 @@
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
-                } else if (!regulars.Links && $.isReg(sender) || !subscribers.Links && $.isSubv3(sender, event.getTags()) || !vips.Links && $.isVip(sender, event.getTags())) {
+                } else if ((!regulars.Links && $.isReg(sender)) || (!subscribers.Links && $.isSubv3(sender, event.getTags())) || (!vips.Links && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -598,7 +598,7 @@
             // Symbol filter
             if (symbolsToggle && messageLength >= symbolsTriggerLength) {
                 if ($.patternDetector.getLongestNonLetterSequence(event) >= symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) >= symbolsLimitPercent) {
-                    if (!regulars.Symbols && $.isReg(sender) || !subscribers.Symbols && $.isSubv3(sender, event.getTags()) || !vips.Symbols && $.isVip(sender, event.getTags())) {
+                    if ((!regulars.Symbols && $.isReg(sender)) || (!subscribers.Symbols && $.isSubv3(sender, event.getTags())) || (!vips.Symbols && $.isVIP(sender, event.getTags()))) {
                         return;
                     }
 
@@ -610,7 +610,7 @@
 
             // Spam filter
             if (spamToggle && $.patternDetector.getLongestRepeatedSequence(event) >= spamLimit) {
-                if (!regulars.Spam && $.isReg(sender) || !subscribers.Spam && $.isSubv3(sender, event.getTags()) || !vips.Spam && $.isVip(sender, event.getTags())) {
+                if ((!regulars.Spam && $.isReg(sender)) || (!subscribers.Spam && $.isSubv3(sender, event.getTags())) || (!vips.Spam && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -621,7 +621,7 @@
 
             // Long msg filter
             if (longMessageToggle && messageLength >= longMessageLimit) {
-                if (!regulars.LongMsg && $.isReg(sender) || !subscribers.LongMsg && $.isSubv3(sender, event.getTags()) || !vips.LongMsg && $.isVip(sender, event.getTags())) {
+                if ((!regulars.LongMsg && $.isReg(sender)) || (!subscribers.LongMsg && $.isSubv3(sender, event.getTags())) || (!vips.LongMsg && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -632,7 +632,7 @@
 
             // Fake purge filter
             if (fakePurgeToggle && $.patternDetector.getFakePurge(event)) {
-                if (!regulars.FakePurge && $.isReg(sender) || !subscribers.FakePurge && $.isSubv3(sender, event.getTags()) || !vips.FakePurge && $.isVip(sender, event.getTags())) {
+                if ((!regulars.FakePurge && $.isReg(sender)) || (!subscribers.FakePurge && $.isSubv3(sender, event.getTags())) || (!vips.FakePurge && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -643,7 +643,7 @@
 
             // Emotes folter
             if (emotesToggle && $.patternDetector.getEmotesCount(event) >= emotesLimit) {
-                if (!regulars.Emotes && $.isReg(sender) || !subscribers.Emotes && $.isSubv3(sender, event.getTags()) || !vips.Emotes && $.isVip(sender, event.getTags())) {
+                if ((!regulars.Emotes && $.isReg(sender)) || (!subscribers.Emotes && $.isSubv3(sender, event.getTags())) || (!vips.Emotes && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -655,7 +655,7 @@
             // Caps filter
             if (capsToggle && messageLength >= capsTriggerLength) {
                 if ((($.patternDetector.getNumberOfCaps(event) / messageLength) * 100) >= capsLimitPercent) {
-                    if (!regulars.Caps && $.isReg(sender) || !subscribers.Caps && $.isSubv3(sender, event.getTags()) || !vips.Caps && $.isVip(sender, event.getTags())) {
+                    if ((!regulars.Caps && $.isReg(sender)) || (!subscribers.Caps && $.isSubv3(sender, event.getTags())) || (!vips.Caps && $.isVIP(sender, event.getTags()))) {
                         return;
                     }
 
@@ -667,7 +667,7 @@
 
             // Color filter
             if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
-                if (!regulars.Colors && $.isReg(sender) || !subscribers.Colors && $.isSubv3(sender, event.getTags()) || !vips.Colors && $.isVip(sender, event.getTags())) {
+                if ((!regulars.Colors && $.isReg(sender)) || (!subscribers.Colors && $.isSubv3(sender, event.getTags())) || (!vips.Colors && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
@@ -678,7 +678,7 @@
 
             // Spam tracker
             if (spamTrackerToggle) {
-                if (!regulars.SpamTracker && $.isReg(sender) || !subscribers.SpamTracker && $.isSubv3(sender, event.getTags()) || !vips.SpamTracker && $.isVip(sender, event.getTags())) {
+                if ((!regulars.SpamTracker && $.isReg(sender)) || (!subscribers.SpamTracker && $.isSubv3(sender, event.getTags())) || (!vips.SpamTracker && $.isVIP(sender, event.getTags()))) {
                     return;
                 }
 
