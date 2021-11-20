@@ -1,6 +1,8 @@
 
 # <img alt="PhantomBot" src="https://phantombot.github.io/PhantomBot/common/images/brand.png" width="600px"/>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8a81c0455094373abd29aab7abc5260)](https://app.codacy.com/gh/PhantomBot/PhantomBot?utm_source=github.com&utm_medium=referral&utm_content=PhantomBot/PhantomBot&utm_campaign=Badge_Grade_Settings)
+
 ![Java CI](https://github.com/PhantomBot/PhantomBot/workflows/Java%20CI/badge.svg)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/YKvMd78)
 
