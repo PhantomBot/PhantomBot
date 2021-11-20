@@ -49,6 +49,7 @@
      * @param {Function} handler
      */
     function Hook(scriptName, hookName, handler) {
+        hookName = $api.formatEventName(hookName) + '';
         this.scriptName = scriptName;
         this.hookName = hookName;
         this.handler = handler;
@@ -221,6 +222,7 @@
      * @return {Object}
      */
     function getHook(scriptName, hookName) {
+        hookName = $api.formatEventName(hookName) + '';
         return (hooks[hookName] !== undefined ? hooks[hookName].handlers[getHookIndex(scriptName, hookName)] : null);
     }
 
@@ -232,6 +234,7 @@
      * @return {Number}
      */
     function getHookIndex(scriptName, hookName) {
+        hookName = $api.formatEventName(hookName) + '';
         var hook = hooks[hookName],
                 i;
 
@@ -252,7 +255,7 @@
      * @param {Function} handler
      */
     function addHook(hookName, handler) {
-        hookName = $api.formatEventName(hookName);
+        hookName = $api.formatEventName(hookName) + '';
         var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
@@ -274,6 +277,7 @@
      * @param {String} hookName
      */
     function removeHook(hookName) {
+        hookName = $api.formatEventName(hookName) + '';
         var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
@@ -290,6 +294,7 @@
      * @param {Boolean} force
      */
     function callHook(hookName, event, force) {
+        hookName = $api.formatEventName(hookName) + '';
         var hook = hooks[hookName],
                 i;
 
