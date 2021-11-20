@@ -167,6 +167,18 @@ $filters = array(
         'exception' => array(
             'class' => 'javax.net.ssl.SSLHandshakeException'
         )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.IOException',
+            'message' => 'Input/output error'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.io.IOException',
+            'message' => 'Stream closed'
+        )
     )
 );
 
