@@ -1,0 +1,76 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title.-->
+        <h1>Discord Logging</h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Discord</li>
+            <li class="active">Logging</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#discord_logs_pubsub" data-toggle="tab">Twitch Moderation</a></li>
+                <li><a href="#discord_logs_cmds" data-toggle="tab">Twitch Commands</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Twitch Moderation -->
+                <div class="tab-pane active" id="discord_logs_pubsub">
+                    <div class="form-group">
+                        <label>Enable Twitch Moderation Logs</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="twitch-mod-log" data-toggle="tooltip"
+                                title="Enables the moderation logs for the bot." style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twitch Commands -->
+                <div class="tab-pane" id="discord_logs_cmds">
+                    <div class="form-group">
+                        <label>Enable Twitch Command Logs</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="twitch-command-log" data-toggle="tooltip"
+                                title="Enables the logging for command edit, removing, and adding for Twitch." style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box footer -->
+                <div class="box-footer" style="padding-right: 0; padding-bottom: 0;">
+                    <button type="button" class="btn btn-primary pull-right" id="discord-logging-save"> Save</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- discordLogs -->
+    <script src="js/pages/discord/discordLogs.js"></script>
+</main>

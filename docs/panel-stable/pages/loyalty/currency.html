@@ -1,0 +1,409 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Currency
+        <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="pointsModuleToggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Loyalty</li>
+            <li class="active">Currency</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content" id="pointsModule">
+        <div class="row">
+            <!-- Left section -->
+            <section class="col-lg-6">
+                <div class="row">
+                    <!-- Currency settings -->
+                    <div class="col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active" id="main-settings"><a href="#loyalty_settings" data-toggle="tab" aria-expanded="true">Settings</a></li>
+                                <li><a href="#loyalty_settings_adv" data-toggle="tab" aria-expanded="false">Advanced Settings</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="loyalty_settings">
+                                    <div class="row">
+                                        <!-- Points message -->
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="points-message">Currency Message</label>
+                                                <input type="text" class="form-control" id="points-message" data-toggle="tooltip"
+                                                    title="Message said in chat when someone uses the !points command. Tags: (userprefix), (user), (points),
+                                                        (pointsname), (pointsstring), (time), and (rank)"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Points name single -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-name-single">Currency Name (Single)</label>
+                                                <input type="text" class="form-control" id="points-name-single" placeholder="Point" data-toggle="tooltip"
+                                                    title="Name of your currency for single."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Points name multiple -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-name-multiple">Currency Name (Multiple)</label>
+                                                <input type="text" class="form-control" id="points-name-multiple" placeholder="Points" data-toggle="tooltip"
+                                                    title="Name of your currency for multiple."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- online interval -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-interval-online">Payout Interval (Online)</label>
+                                                <input type="number" class="form-control" id="points-interval-online" placeholder="15" data-toggle="tooltip"
+                                                    title="Online payout interval in minutes."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- offline interval -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-interval-offline">Payout Interval (Offline)</label>
+                                                <input type="number" class="form-control" id="points-interval-offline" placeholder="10" data-toggle="tooltip"
+                                                    title="Offline payout interval in minutes."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- online payout -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-online">Payout Amount (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-online" placeholder="10" data-toggle="tooltip" title="Online payout amount."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- offline payout -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-offline">Payout Amount (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-offline" placeholder="15" data-toggle="tooltip" title="Offline payout amount."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Active bonus -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-active">Active Bonus</label>
+                                                <input type="number" class="form-control" id="points-active" placeholder="1" data-toggle="tooltip"
+                                                    title="Amount of extra points active users get at each payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Top list amount -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-top">Top List Amount</label>
+                                                <input type="number" class="form-control" id="points-top" max="15" placeholder="5" data-toggle="tooltip"
+                                                    title="Amount of users who show up in the top list. Max is 15."/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="loyalty_settings_adv">
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-caster-on">Caster Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-caster-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the caster group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-caster-off">Caster Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-caster-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the caster group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-administrator-on">Administrator Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-administrator-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the administrator group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-administrator-off">Administrator Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-administrator-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the administrator group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-moderator-on">Moderator Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-moderator-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the moderator group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-moderator-off">Moderator Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-moderator-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the moderator group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-subscriber-on">Subscriber Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-subscriber-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the subscriber group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-subscriber-off">Subscriber Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-subscriber-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the subscriber group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-donator-on">Donator Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-donator-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the donator group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-donator-off">Donator Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-donator-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the donator group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-regular-on">Regular Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-regular-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the regular group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-regular-off">Regular Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-regular-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the regular group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Caster payout online -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-viewer-on">Viewer Payout (Online)</label>
+                                                <input type="number" class="form-control" id="points-payout-viewer-on" placeholder="1" data-toggle="tooltip"
+                                                    title="Payout of for the viewer group while online. -1 is default payout."/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caster payout offline -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="points-payout-viewer-off">Viewer Payout (Offline)</label>
+                                                <input type="number" class="form-control" id="points-payout-viewer-off" placeholder="5" data-toggle="tooltip"
+                                                    title="Payout of for the viewer group while offline. -1 is default payout."/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Box footer -->
+                                <div class="box-footer" style="padding-right: 0; padding-bottom: 0;">
+                                    <button type="button" class="btn btn-primary pull-right" id="points-save-all"> Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Currency Penalty</h3>
+                            </div>
+                            <form role="form">
+                                <!-- Box content -->
+                                <div class="box-body">
+                                    <!-- Username -->
+                                    <div class="form-group">
+                                        <label for="points-panalty-user">Username</label>
+                                        <input type="text" class="form-control" id="points-panalty-user" placeholder="PhantomBot" data-toggle="tooltip"
+                                            title="Username that won't gain points for the time given.">
+                                    </div>
+
+                                    <!-- Bonus Time -->
+                                    <div class="form-group">
+                                        <label for="points-panalty-time">Penalty Time (Minutes)</label>
+                                        <input type="number" class="form-control" id="points-panalty-time" placeholder="1" data-toggle="tooltip"
+                                            title="Minutes that the given user won't gain points for.">
+                                    </div>
+                                </div>
+
+                                <!-- Box footer -->
+                                <div class="box-footer">
+                                    <button type="button" class="btn btn-primary pull-right" id="points-panalty-btn"> Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right section -->
+            <section class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Currency Manager</h3>
+                            </div>
+                            <form role="form">
+                                <!-- Box content -->
+                                <div class="box-body">
+                                    <!-- Username -->
+                                    <div class="form-group">
+                                        <label for="points-username">Username</label>
+                                        <input type="text" class="form-control" id="points-username" placeholder="PhantomBot"  data-toggle="tooltip" title="Username to edit the points for.">
+                                    </div>
+
+                                    <!-- Number of points -->
+                                    <div class="form-group">
+                                        <label for="points-username-points">Currency</label>
+                                        <div class="input-group input-group-md">
+                                            <input type="number" class="form-control" id="points-username-points" placeholder="0" data-toggle="tooltip" title="Amount of points the user will have.">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success btn-flat" id="points-get-user" data-toggle="tooltip"
+                                                    title="Get the user's points if they have any.">Get</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Box footer -->
+                                <div class="box-footer">
+                                    <button type="button" class="btn btn-primary pull-right" id="points-save-user" data-toggle="tooltip" title="Save the user's points."> Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Currency Bonus</h3>
+                            </div>
+                            <form role="form">
+                                <!-- Box content -->
+                                <div class="box-body">
+                                    <!-- Amount -->
+                                    <div class="form-group">
+                                        <label for="points-bonus-amount">Amount</label>
+                                        <input type="number" class="form-control" id="points-bonus-amount" placeholder="10">
+                                    </div>
+
+                                    <!-- Bonus Time -->
+                                    <div class="form-group">
+                                        <label for="points-bonus-time">Bonus Time (Minutes)</label>
+                                        <input type="number" class="form-control" id="points-bonus-time" placeholder="1" data-toggle="tooltip" title="Time that the bonus will last.">
+                                    </div>
+                                </div>
+
+                                <!-- Box footer -->
+                                <div class="box-footer">
+                                    <div class="btn-toolbar pull-right">
+                                        <button type="button" class="btn btn-default" id="points-bonus-btn" data-toggle="tooltip"
+                                            title="Bonus amount of points to give at each payout. The bonus time box must have a value."> Bonus</button>
+                                        <button type="button" class="btn btn-default" id="points-makeitrain-btn" data-toggle="tooltip"
+                                            title="Make it rain a  certain amount of points and gets devided with everyone in the channel."> Make it Rain</button>
+                                        <button type="button" class="btn btn-default" id="points-giveall-btn" data-toggle="tooltip"
+                                            title="Give points to everyone in the channel."> Give to All</button>
+                                        <button type="button" class="btn btn-default" id="points-takeall-btn" data-toggle="tooltip"
+                                            title="Take points from everyone in the channel."> Take from All</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- currency -->
+    <script src="js/pages/loyalty/currency.js"></script>
+</main>

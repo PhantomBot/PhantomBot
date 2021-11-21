@@ -1,0 +1,72 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <!-- Page title and switch toggle. -->
+        <h1>Audio Hooks
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="audioHookModuleToggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </h1>
+
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Audio</li>
+            <li class="active">Audio Hooks</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#audiohooks" id="audiohooks_t" data-toggle="tab">Audio Hooks</a></li>
+                <li><a href="#audiocommands" id="audiocommands_t" data-toggle="tab">Audio Commands</a></li>
+            </ul>
+
+            <div class="tab-content" id="audioHookModule">
+                <!-- Audio hook list -->
+                <div class="tab-pane active" id="audiohooks">
+                    <div class="btn-toolbar pull-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="reload-audio-hooks" data-toggle="tooltip"
+                            title="In case that you added an audio hook and didn't restart the bot, this will reload all audio hooks and add the new one(s).">
+                            <i class="fa fa-refresh"></i>&nbsp; Refresh List
+                        </button>
+                        <button class="btn btn-success btn-sm" type="button" id="audio-hooks-settings"><i class="fa fa-external-link"></i>&nbsp; Browser Source</button>
+                    </div>
+
+                    <table id="audioHooksTable" class="table table-bordered table-hover"></table>
+                </div>
+
+                <!-- Audio commands -->
+                <div class="tab-pane" id="audiocommands">
+                    <div class="btn-toolbar pull-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="audio-hooks-cmd-add"><i class="fa fa-plus"></i>&nbsp; Add Command</button>
+                        <!-- Comming soon tm. -->
+                        <!-- <button class="btn btn-default btn-sm" type="button" id="audio-hooks-cmd-settings"><i class="fa fa-cog"></i>&nbsp; Settings</button> -->
+                    </div>
+
+                    <table id="audioHookCommandsTable" class="table table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- audioHooks -->
+    <script src="js/pages/audio/audioHooks.js"></script>
+</main>

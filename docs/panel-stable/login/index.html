@@ -1,0 +1,376 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>PhantomBot | Log in</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" href="../vendors/bootstrap/css/bootstrap.min.css">
+        <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../vendors/adminlte/css/AdminLTE.dark.min.css">
+        <link rel="stylesheet" href="../vendors/adminlte/css/skins/skin-purple.dark.min.css">
+        <!-- Pace theme -->
+        <link rel="stylesheet" href="../vendors/PACE/pace.min.css">
+        <link rel="stylesheet" href="../vendors/select2/select2.dark.min.css">
+        <!-- Google fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <!-- Custom style for the body height -->
+        <style>
+            body {
+                height: auto;
+            }
+            .login-box-body {
+                background: #333;
+            }
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: inherit;
+                color: #888;
+            }
+        </style>
+    </head>
+
+    <!-- Main body -->
+    <body class="hold-transition login-page">
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="https://phantombot.github.io/PhantomBot"><b>Phantom</b>Bot</a>
+            </div>
+
+            <div class="login-box-body">
+                <p class="login-box-msg">Log in to start your session<span id="remote-msg"><br/><br/>This version of the panel is entirely client-side.
+                        <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser</span></p>
+
+                <div class="alert-error text-center hide" id="error-box"></div>
+                <div class="alert-success text-center hide" id="success-box"></div>
+                <br id="alert-br" class="hide" />
+
+                <form>
+                    <div id="remote-fields">
+                        <div class="form-group">
+                            <input type="text" id="hostname" name="hostname" class="form-control" placeholder="Bot IP or Hostname">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="port" name="port" class="form-control" placeholder="Bot Port">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="username" name="user" class="form-control" placeholder="Username">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" id="password" name="pass" class="form-control" placeholder="Password">
+                    </div>
+
+                    <div class="form-group">
+                        Remember me:
+                        <select class="form-control select2 select2-hidden-accessible" id="remember" aria-hidden="true">
+                            <option selected value="session">Until I Close the Browser</option>
+                            <option value="4">4 hours</option>
+                            <option value="12">12 hours</option>
+                            <option value="24">24 hours</option>
+                            <option value="48">2 days</option>
+                            <option value="168">7 days</option>
+                            <option value="336">14 days</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4 pull-right">
+                            <button type="button" id="login-button" class="btn btn-primary btn-block btn-flat" onclick="login();">Login</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- this could link to a how-to reset the password guide -->
+                <!-- <a href="#">Unable to login?</a><br> -->
+            </div>
+        </div>
+
+        <!-- jQuery 3 -->
+        <script src="../vendors/jquery/jquery.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="../vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../vendors/PACE/pace.min.js"></script>
+        <script src="../vendors/select2/select2.full.min.js"></script>
+        <script src="../../common/reconnecting-websocket/reconnectingWS.min.js"></script>
+        <script>
+                                var isLocalBot = false;
+                                function doLogin(hostname, port, username, password, remember) {
+                                    var webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
+                                    webSocket.onopen = function () {
+                                        Pace.restart();
+
+                                        webSocket.send(JSON.stringify({
+                                            remote: true,
+                                            query: 'login',
+                                            params: {
+                                                type: 'Auth',
+                                                user: username,
+                                                pass: password
+                                            }
+                                        }));
+                                    };
+
+                                    webSocket.onmessage = function (e) {
+                                        let message = JSON.parse(e.data);
+
+                                        if (message.errors !== undefined) {
+                                            if (message.errors[0].status === '401') {
+                                                $('#error-box').removeClass('hide');
+                                                $('#alert-br').removeClass('hide');
+                                                $('#error-box').html('Invalid Login');
+                                                webSocket.close(1000);
+                                            } else {
+                                                $('#error-box').removeClass('hide');
+                                                $('#alert-br').removeClass('hide');
+                                                $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
+                                                webSocket.close(1000);
+                                            }
+                                        } else if (message.authtoken !== undefined) {
+                                            var webauth = message.authtoken;
+                                            webSocket.close(1000);
+                                            window.localStorage.setItem('bothostname', hostname);
+                                            window.localStorage.setItem('botport', port);
+                                            if (remember !== 'session') {
+                                                window.localStorage.setItem('webauth', webauth);
+                                                window.localStorage.setItem('remember', remember);
+                                                window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
+                                                window.localStorage.setItem('b64', btoa(username + ':' + password));
+                                            } else {
+                                                window.localStorage.removeItem('webauth');
+                                                window.localStorage.removeItem('remember');
+                                                window.localStorage.removeItem('expires');
+                                                window.localStorage.removeItem('b64');
+                                            }
+                                            window.sessionStorage.setItem('webauth', webauth);
+                                            document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+                                            let params = new URLSearchParams(document.location.search.substring(1));
+
+                                            if (params.get("kickback") !== null && params.get("kickback").length > 0) {
+                                                let kickback = params.get("kickback");
+                                                if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                                    kickback = kickback.replace("/panel", "/panel-stable");
+                                                }
+                                                window.location = window.location.origin + kickback;
+                                            } else {
+                                                let kickback = window.location.pathname;
+                                                if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                                    kickback = kickback.replace("/panel", "/panel-stable");
+                                                }
+                                                window.location = window.location.origin + kickback + '../';
+                                            }
+                                        }
+                                    };
+                                }
+
+                                function login() {
+                                    $('#error-box').addClass('hide');
+                                    $('#success-box').addClass('hide');
+                                    $('#alert-br').addClass('hide');
+
+                                    var hostname = $('#hostname').val();
+                                    var port = $('#port').val();
+                                    var username = $('#username').val();
+                                    var password = $('#password').val();
+                                    var remember = $('#remember').val();
+
+                                    if (hostname === undefined || hostname.length === 0) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Bot IP or Hostname Required');
+                                        return;
+                                    }
+
+                                    if (port === undefined || port.length === 0 || isNaN(parseInt(port)) || parseInt(port) < 1 || parseInt(port) > 65536) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Valid Bot Port Required');
+                                        return;
+                                    }
+
+                                    if (username === undefined || username.length === 0) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Username Required');
+                                        return;
+                                    }
+
+                                    if (password === undefined || password.length === 0) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Password Required');
+                                        return;
+                                    }
+
+                                    if (isLocalBot) {
+                                        doLogin(hostname, port, username, password, remember);
+                                    } else {
+                                        $.ajax(
+                                                {
+                                                    type: 'GET',
+                                                    url: 'https://' + hostname + (port.length > 0 ? ':' + port : '') + '/sslcheck',
+                                                    crossDomain: true,
+                                                    dataType: 'text',
+                                                    success: function (sslStatus) {
+                                                        if (sslStatus === 'true') {
+                                                            doLogin(hostname, port, username, password, remember);
+                                                        } else {
+                                                            $('#error-box').removeClass('hide');
+                                                            $('#alert-br').removeClass('hide');
+                                                            $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        $('#error-box').removeClass('hide');
+                                                        $('#alert-br').removeClass('hide');
+                                                        $('#error-box').html('Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                                    }
+                                                }
+                                        );
+                                    }
+                                }
+
+                                $(function () {
+                                    var hash = window.location.hash.substr(1);
+                                    var kvs = hash.split('&');
+                                    var hashmap = [];
+                                    var spl;
+
+                                    for (var i = 0; i < kvs.length; i++) {
+                                        spl = kvs[i].split('=', 2);
+                                        hashmap[spl[0]] = spl[1];
+                                    }
+
+                                    if (hashmap['logoutSuccess'] !== undefined && hashmap['logoutSuccess'] === 'true') {
+                                        $('#success-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#success-box').html('Successfully logged out');
+                                        window.localStorage.removeItem('webauth');
+                                        window.localStorage.removeItem('remember');
+                                        window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
+                                    }
+
+                                    if (hashmap['connectFail'] !== undefined && hashmap['connectFail'] === 'true') {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Timed out connecting to the bot');
+                                        window.localStorage.removeItem('webauth');
+                                        window.localStorage.removeItem('remember');
+                                        window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
+                                    }
+
+                                    if (hashmap['sslFail'] !== undefined && hashmap['sslFail'] === 'true') {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('SSL is required but is not enabled on this bot.<br />For help setting up SSL, please see <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">this guide</a>');
+                                        window.localStorage.removeItem('webauth');
+                                        window.localStorage.removeItem('remember');
+                                        window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
+                                    }
+
+                                    if (hashmap['missingBot'] !== undefined && hashmap['missingBot'] === 'true') {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('The selected bot hostname was missing from the panel login parameters, please login again');
+                                        window.localStorage.removeItem('webauth');
+                                        window.localStorage.removeItem('remember');
+                                        window.localStorage.removeItem('expires');
+                                        window.localStorage.removeItem('b64');
+                                    }
+
+                                    var authExpired = false;
+                                    if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
+                                        if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()) {
+                                            window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
+                                            window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
+                                            document.cookie = 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+                                            window.location = window.location.origin + window.location.pathname + '../';
+                                        } else {
+                                            window.localStorage.removeItem('webauth');
+                                            window.localStorage.removeItem('remember');
+                                            window.localStorage.removeItem('expires');
+                                            window.localStorage.removeItem('b64');
+                                            authExpired = true;
+                                        }
+                                    }
+
+                                    if ((hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true') || authExpired) {
+                                        $('#error-box').removeClass('hide');
+                                        $('#alert-br').removeClass('hide');
+                                        $('#error-box').html('Your session has expired, please login again');
+                                    }
+
+                                    if (hashmap['bothostname'] !== undefined && hashmap['bothostname'].length > 0) {
+                                        window.localStorage.setItem('bothostname', hashmap['bothostname']);
+                                    }
+
+                                    if (hashmap['botport'] !== undefined && hashmap['botport'].length > 0 && !isNaN(parseInt(hashmap['botport']))
+                                            && parseInt(hashmap['botport']) >= 1 && parseInt(hashmap['botport']) <= 65536) {
+                                        window.localStorage.setItem('botport', hashmap['botport']);
+                                    }
+
+                                    if (window.localStorage.getItem('bothostname')) {
+                                        $('#hostname').val(window.localStorage.getItem('bothostname'));
+                                    } else {
+                                        $('#hostname').val('localhost');
+                                    }
+
+                                    if (window.localStorage.getItem('botport')) {
+                                        $('#port').val(window.localStorage.getItem('botport'));
+                                    } else {
+                                        $('#port').val('25000');
+                                    }
+
+                                    $('#remember').select2({
+                                        width: '100%'
+                                    });
+
+                                    $.ajax(
+                                            {
+                                                type: 'GET',
+                                                url: window.location.protocol + '//' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/presence',
+                                                dataType: 'text',
+                                                success: function (presence) {
+                                                    if (presence === 'PBok') {
+                                                        isLocalBot = true;
+                                                        $('#remote-msg').addClass('hide');
+                                                        $('#remote-fields').addClass('hide');
+                                                        $('#hostname').val(window.location.hostname);
+                                                        $('#port').val((window.location.port.length > 0 ? window.location.port : (window.location.protocol === 'https:' ? '443' : '80')));
+                                                    }
+                                                }
+                                            }
+                                    );
+                                });
+        </script>
+        <script>
+        if (!window.location.pathname.endsWith("/")) {
+            let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
+            document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
+            window.location.replace(newURL);
+        }
+        </script>
+    </body>
+</html>
