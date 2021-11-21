@@ -36,6 +36,7 @@ jobs:
       uses: EndBug/add-and-commit@v7
       with:
         message: 'Updated the remote panel (stable)'
+        branch: master
   build:
     name: Build and upload on ubuntu-latest with JDK 11.0.4
     runs-on: ubuntu-latest
@@ -55,7 +56,7 @@ jobs:
         echo "##[set-output name=branch;]$(echo ${GITHUB_REF:10})"
         echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
         echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
-    - name: Notify Rollbar of Deloy Start
+    - name: Notify Rollbar of Deploy Start
       id: rollbar_deploy
       uses: rollbar/github-deploy-action@2.1.1
       with:
@@ -169,7 +170,7 @@ jobs:
         asset_path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
         asset_name: ${{ format('PhantomBot-{0}-arm-bsd-other.zip', steps.build_env.outputs.version) }}
         asset_content_type: application/zip
-    - name: Notify Rollbar of Deloy Failure
+    - name: Notify Rollbar of Deploy Failure
       if: ${{ failure() || cancelled() }}
       uses: rollbar/github-deploy-action@2.1.1
       with:
@@ -180,7 +181,7 @@ jobs:
         ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
         ROLLBAR_USERNAME: ${{ github.actor }}
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
-    - name: Notify Rollbar of Deloy Success
+    - name: Notify Rollbar of Deploy Success
       if: ${{ success() }}
       uses: rollbar/github-deploy-action@2.1.1
       with:

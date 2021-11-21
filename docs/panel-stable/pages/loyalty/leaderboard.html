@@ -1,0 +1,70 @@
+<!--
+    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Leaderboard</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Loyalty</li>
+            <li class="active">Leaderboard</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- Points leader board -->
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title" id="currency-top-title">Top Currency</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <button class="btn btn-primary btn-sm pull-right" type="button" id="currency-load-more"><i class="fa fa-undo"></i>&nbsp; Load More</button>
+
+                            <table id="leaderboard-points" class="table table-bordered table-hover"></table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Time leader board -->
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title" id="loyalty-top-title">Top Loyalty</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <button class="btn btn-primary btn-sm pull-right" type="button" id="loyalty-load-more"><i class="fa fa-undo"></i>&nbsp; Load More</button>
+
+                            <table id="leaderboard-time" class="table table-bordered table-hover"></table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- highlights -->
+    <script src="js/pages/loyalty/leaderboard.js"></script>
+</main>
