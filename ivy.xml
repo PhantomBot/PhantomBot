@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="org.apache.commons" name="commons-text" rev="1.9"/>
         <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>
         <dependency org="org.json" name="json" rev="20200518"/>
-        <dependency org="org.mozilla" name="rhino" rev="1.7.12"/>
+        <dependency org="org.mozilla" name="rhino" rev="1.7.14-RC1"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
         <dependency org="org.twitter4j" name="twitter4j-core" rev="4.0.4"/>
         <dependency org="org.xerial" name="sqlite-jdbc" rev="3.31.1"/>
