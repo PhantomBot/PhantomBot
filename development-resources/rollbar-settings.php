@@ -124,12 +124,38 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'java.nio.file.InvalidPathException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.nio.file.AccessDeniedException'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*java.io.FileNotFoundException*'
         )
     ),
     array(
         'exception' => array(
             'message' => '*java.nio.file.NoSuchFileException*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*java.nio.file.InvalidPathException*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*java.nio.file.AccessDeniedException*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.SocketException',
+            'message' => 'Operation not permitted'
         )
     ),
     array(

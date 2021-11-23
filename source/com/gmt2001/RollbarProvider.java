@@ -212,6 +212,18 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.nio.file.InvalidPathException.class) || error.getMessage().contains("java.nio.file.InvalidPathException")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.nio.file.AccessDeniedException.class) || error.getMessage().contains("java.nio.file.AccessDeniedException")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.net.SocketException.class) && error.getMessage().equals("Operation not permitted")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("Connection reset by peer")) {
                                     return true;
                                 }
