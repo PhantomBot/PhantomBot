@@ -160,28 +160,36 @@ public class GitHubAPIv3 {
     }
 
     /*
+     * Pulls release information from GitHub.
+     *
+     * @return  JSONObject  JSONObject from GitHub
+     */
+    public JSONObject GetLatestRelease() throws JSONException {
+        return readJsonFromUrl(sAPIURL + "/releases/latest", true);
+    }
+
+    /*
      * Pulls release information from GitHub and checks to see if there is a new release.
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
     public String[] CheckNewRelease() throws JSONException {
-        JSONObject jsonObject = GetReleases();
-        JSONArray jsonArray = jsonObject.getJSONArray("array");
-        if (!jsonArray.getJSONObject(0).has("tag_name")) {
+        JSONObject jsonObject = GetLatestRelease();
+        if (!jsonObject.has("tag_name")) {
             return null;
         }
-        String tagName = jsonArray.getJSONObject(0).getString("tag_name");
+        String tagName = jsonObject.getString("tag_name");
         if (tagName.equals("v" + RepoVersion.getPhantomBotVersion().split("-")[0])) {
             return null;
         }
 
-        if (!jsonArray.getJSONObject(0).has("assets")) {
+        if (!jsonObject.has("assets")) {
             return null;
         }
 
         String os = PhantomBot.getOsSuffix();
 
-        JSONArray assetsArray = jsonArray.getJSONObject(0).getJSONArray("assets");
+        JSONArray assetsArray = jsonObject.getJSONArray("assets");
         Pattern p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
         int i;
         boolean found = false;
