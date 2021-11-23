@@ -7,7 +7,7 @@ Push-Location $PSScriptRoot
 [Environment]::CurrentDirectory = $PSScriptRoot
 
 Start-Transcript -OutputDirectory $PWD
-.\launch.bat
+.\launch.bat --nowt
 Stop-Transcript
 
 Pop-Location
