@@ -82,16 +82,18 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
 
     private void handleSocketEvent(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         String script = jso.getString("script");
-        String arguments = jso.getJSONObject("args").getString("arguments");
-        JSONArray jsonArray = jso.getJSONObject("args").getJSONArray("args");
+        String arguments = jso.getJSONObject("args").optString("arguments");
+        JSONArray jsonArray = jso.getJSONObject("args").optJSONArray("args");
         String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
 
         JSONStringer jsonObject = new JSONStringer();
         List<String> tempArgs = new LinkedList<>();
         String[] args = null;
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            tempArgs.add(jsonArray.getString(i));
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                tempArgs.add(jsonArray.getString(i));
+            }
         }
 
         if (!tempArgs.isEmpty()) {
