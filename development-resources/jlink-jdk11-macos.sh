@@ -25,6 +25,6 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 cd "$DIR"
 
-JDK="/Library/Java/JavaVirtualMachines/jdk-11.0.4.jdk/Contents/Home/bin"
-${JDK}/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent --output ../resources/java-runtime-macos
+JDK="/Library/Java/JavaVirtualMachines/jdk-11.0.11.jdk/Contents/Home/bin"
+${JDK}/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent --output ../resources/java-runtime-macos
 find ../resources/java-runtime-macos -type l -delete
