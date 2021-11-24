@@ -38,5 +38,5 @@ GOTO :EOF
 
 :SWITCHTOWT
 setlocal enableextensions enabledelayedexpansion
-wt nt --profile "Command Prompt" --startingDirectory %~dp0 --title PhantomBot launch.bat --nowt %1
+wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch.bat --nowt %1
 endlocal

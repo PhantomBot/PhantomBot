@@ -67,7 +67,7 @@ $.lang.register('customcommands.enable.success', 'Command !$1 has been re-enable
 $.lang.register('customcommands.hide.usage', 'Usage: !hidecom (command)');
 $.lang.register('customcommands.hide.404', 'That command does not exist.');
 $.lang.register('customcommands.hide.err', 'That command is already hidden.');
-$.lang.register('customcommands.hide.success', 'Command !$1 has is now hidden.');
+$.lang.register('customcommands.hide.success', 'Command !$1 is now hidden.');
 $.lang.register('customcommands.show.usage', 'Usage: !showcom (command)');
 $.lang.register('customcommands.show.404', 'That command does not exist.');
 $.lang.register('customcommands.show.err', 'That command is not hidden.');

@@ -54,6 +54,7 @@ public class TwitchAuthorizationCodeFlow {
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final String USER_AGENT = "PhantomBot/2020";
     private static final long REFRESH_INTERVAL = 900000L;
+    private static final int DEFAULT_EXPIRE_TIME = 900000;
     private Timer t = null;
     private static boolean lock = false;
 
@@ -147,7 +148,7 @@ public class TwitchAuthorizationCodeFlow {
                 com.gmt2001.Console.err.println(result.toString());
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-                c.add(Calendar.SECOND, result.getInt("expires_in"));
+                c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
                 properties.setProperty("oauth", result.getString("access_token"));
                 properties.setProperty("refresh", result.getString("refresh_token"));
                 properties.setProperty("oauthexpires", c.getTimeInMillis() + "");
@@ -173,7 +174,7 @@ public class TwitchAuthorizationCodeFlow {
                 com.gmt2001.Console.err.println(result.toString());
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-                c.add(Calendar.SECOND, result.getInt("expires_in"));
+                c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
                 properties.setProperty("apioauth", result.getString("access_token"));
                 properties.setProperty("apirefresh", result.getString("refresh_token"));
                 properties.setProperty("apiexpires", c.getTimeInMillis() + "");

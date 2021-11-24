@@ -677,7 +677,11 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChatUsers(String channel) throws JSONException {
-        return new JSONObject(HttpRequest.getData(HttpRequest.RequestType.GET, "https://tmi.twitch.tv/group/user/" + channel + "/chatters", null, null).content);
+        HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.GET, "https://tmi.twitch.tv/group/user/" + channel + "/chatters", null, null);
+        JSONObject ret = new JSONObject(res.content);
+        ret.put("_success", res.success);
+        ret.put("_http", res.httpCode);
+        return ret;
     }
 
     /**
