@@ -26,7 +26,6 @@ import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -41,6 +40,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
@@ -306,9 +306,7 @@ public class RollbarProvider implements AutoCloseable {
                                         });
                                     }
 
-                                    byte[] bytes = md.digest();
-                                    BigInteger bi = new BigInteger(1, bytes);
-                                    String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
+                                    String digest = Hex.encodeHexString(md.digest());
 
                                     Calendar c = Calendar.getInstance();
 
