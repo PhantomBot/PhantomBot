@@ -43,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
-import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
@@ -312,7 +311,7 @@ public class RollbarProvider implements AutoCloseable {
 
                                     Calendar c = Calendar.getInstance();
 
-                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
 
                                     if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
                                         com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
@@ -374,7 +373,7 @@ public class RollbarProvider implements AutoCloseable {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
             com.gmt2001.Console.out.println("You can disable this by adding the following to a new line in botlogin.txt and restarting: userollbar=false");
-            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GPDR delete requests to gpdr@phantombot.hopto.org");
+            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GDPR delete requests to gdpr@phantombot.hopto.org");
             com.gmt2001.Console.out.println();
         }
     }
