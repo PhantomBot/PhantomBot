@@ -40,6 +40,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
+import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 
 /**
@@ -59,6 +60,7 @@ public class TwitchCache implements Runnable {
     /* Cached data */
     private Boolean isOnline = false;
     private Boolean isOnlinePS = false;
+    private Boolean gotOnlineFromPS = false;
     private Boolean forcedGameTitleUpdate = false;
     private Boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
@@ -252,7 +254,9 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    //EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    if (!this.gotOnlineFromPS) {
+                        EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    }
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
                     this.isOnline = false;
@@ -550,11 +554,13 @@ public class TwitchCache implements Runnable {
 
     public void goOnline() {
         this.isOnlinePS = true;
+        this.gotOnlineFromPS = true;
         this.streamUptimeSeconds = 0L;
     }
 
     public void goOffline() {
         this.isOnlinePS = false;
+        this.gotOnlineFromPS = true;
         this.viewerCountPS = 0;
     }
 
