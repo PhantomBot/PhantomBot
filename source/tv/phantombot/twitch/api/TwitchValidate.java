@@ -81,34 +81,48 @@ public class TwitchValidate {
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (validaterA != null) {
-                    if (validateA != null && validateA.isAlive()) {
-                        validateA.interrupt();
-                        validateA = null;
-                    }
-
-                    validaterA.run();
-                }
-
-                if (validaterC != null) {
-                    if (validateC != null && validateC.isAlive()) {
-                        validateC.interrupt();
-                        validateC = null;
-                    }
-
-                    validaterC.run();
-                }
-
-                if (validaterT != null) {
-                    if (validateT != null && validateT.isAlive()) {
-                        validateT.interrupt();
-                        validateT = null;
-                    }
-
-                    validaterT.run();
-                }
+                doValidations();
             }
         }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+    }
+
+    private void doValidationA() {
+        if (validaterA != null) {
+            if (validateA != null && validateA.isAlive()) {
+                validateA.interrupt();
+                validateA = null;
+            }
+
+            validaterA.run();
+        }
+    }
+
+    private void doValidationC() {
+        if (validaterC != null) {
+            if (validateC != null && validateC.isAlive()) {
+                validateC.interrupt();
+                validateC = null;
+            }
+
+            validaterC.run();
+        }
+    }
+
+    private void doValidationT() {
+        if (validaterT != null) {
+            if (validateT != null && validateT.isAlive()) {
+                validateT.interrupt();
+                validateT = null;
+            }
+
+            validaterT.run();
+        }
+    }
+
+    private void doValidations() {
+        this.doValidationA();
+        this.doValidationC();
+        this.doValidationT();
     }
 
     /**
@@ -292,6 +306,12 @@ public class TwitchValidate {
             this.validateChat(token, "CHAT (oauth)");
         } else {
             this.validaterC.updateToken(token);
+            this.t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    doValidationC();
+                }
+            }, 1000);
         }
     }
 
@@ -324,6 +344,12 @@ public class TwitchValidate {
             this.validateAPI(token, "API (apioauth)");
         } else {
             this.validaterA.updateToken(token);
+            this.t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    doValidationA();
+                }
+            }, 1000);
         }
     }
 
@@ -356,6 +382,12 @@ public class TwitchValidate {
             this.validateApp(token, "APP (EventSub)");
         } else {
             this.validaterT.updateToken(token);
+            this.t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    doValidationT();
+                }
+            }, 1000);
         }
     }
 
