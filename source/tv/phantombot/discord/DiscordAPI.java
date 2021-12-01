@@ -167,7 +167,7 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     private void subscribeToEvents() {
-        DiscordAPI.gateway.getEventDispatcher().on(DisconnectEvent.class).subscribe(event -> DiscordEventListener.onDiscordDisconnectEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(DisconnectEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordDisconnectEvent(event));
 
         DiscordAPI.gateway.getEventDispatcher().on(ReadyEvent.class) // Listen for ReadyEvent(s)
                 .map(event -> event.getGuilds().size()) // Get how many guilds the bot is in
@@ -175,17 +175,18 @@ public class DiscordAPI extends DiscordUtil {
                 .on(GuildCreateEvent.class) // Listen for GuildCreateEvent(s)
                 .take(size) // Take only the first `size` GuildCreateEvent(s) to be received
                 .collectList()) // Take all received GuildCreateEvents and make it a List
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry()
                 .subscribe(events -> DiscordEventListener.onDiscordReadyEvent(events));
 
-        DiscordAPI.gateway.getEventDispatcher().on(MessageCreateEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(MemberJoinEvent.class).subscribe(event -> DiscordEventListener.onDiscordUserJoinEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(MemberLeaveEvent.class).subscribe(event -> DiscordEventListener.onDiscordUserLeaveEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(RoleCreateEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleCreateEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(RoleUpdateEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleUpdateEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(RoleDeleteEvent.class).subscribe(event -> DiscordEventListener.onDiscordRoleDeleteEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(ReactionAddEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageReactionAddEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(ReactionRemoveEvent.class).subscribe(event -> DiscordEventListener.onDiscordMessageReactionRemoveEvent(event));
-        DiscordAPI.gateway.getEventDispatcher().on(VoiceStateUpdateEvent.class).subscribe(event -> DiscordEventListener.onDiscordVoiceStateUpdateEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(MessageCreateEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordMessageEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(MemberJoinEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordUserJoinEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(MemberLeaveEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordUserLeaveEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(RoleCreateEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordRoleCreateEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(RoleUpdateEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordRoleUpdateEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(RoleDeleteEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordRoleDeleteEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(ReactionAddEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordMessageReactionAddEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(ReactionRemoveEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordMessageReactionRemoveEvent(event));
+        DiscordAPI.gateway.getEventDispatcher().on(VoiceStateUpdateEvent.class).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).retry().subscribe(event -> DiscordEventListener.onDiscordVoiceStateUpdateEvent(event));
     }
 
     /**

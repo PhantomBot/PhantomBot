@@ -26,7 +26,6 @@ import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -41,8 +40,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -306,13 +307,11 @@ public class RollbarProvider implements AutoCloseable {
                                         });
                                     }
 
-                                    byte[] bytes = md.digest();
-                                    BigInteger bi = new BigInteger(1, bytes);
-                                    String digest = String.format("%0" + (bytes.length << 1) + "X", bi);
+                                    String digest = Hex.encodeHexString(md.digest());
 
                                     Calendar c = Calendar.getInstance();
 
-                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
 
                                     if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
                                         com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
@@ -374,7 +373,7 @@ public class RollbarProvider implements AutoCloseable {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Sending exceptions to Rollbar");
             com.gmt2001.Console.out.println("You can disable this by adding the following to a new line in botlogin.txt and restarting: userollbar=false");
-            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GPDR delete requests to gpdr@phantombot.hopto.org");
+            com.gmt2001.Console.out.println("If you got this from the official PhantomBot GitHub, you can submit GDPR delete requests to gdpr@phantombot.hopto.org");
             com.gmt2001.Console.out.println();
         }
     }
@@ -555,12 +554,10 @@ public class RollbarProvider implements AutoCloseable {
         }
 
         if (id == null || id.isBlank()) {
+            Transaction transaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_NORMAL);
             id = RollbarProvider.generateId();
-
-            if (PhantomBot.instance() != null) {
-                PhantomBot.instance().getProperties().put("rollbarid", id);
-                PhantomBot.instance().saveProperties();
-            }
+            transaction.setProperty("rollbarid", id);
+            transaction.commit();
         }
 
         return id;

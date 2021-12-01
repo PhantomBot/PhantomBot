@@ -133,24 +133,24 @@ public class TwitchAPIv5 {
         channelData = channelData.getJSONArray("data").getJSONObject(0);
         userData = userData.getJSONArray("data").getJSONObject(0);
 
-        result.put("_id", Long.parseLong(channelData.getString("broadcaster_id")));
-        result.put("broadcaster_language", channelData.getString("broadcaster_language"));
-        result.put("created_at", userData.getString("created_at"));
-        result.put("display_name", channelData.getString("broadcaster_name"));
+        result.put("_id", Long.parseLong(channelData.optString("broadcaster_id")));
+        result.put("broadcaster_language", channelData.optString("broadcaster_language"));
+        result.put("created_at", userData.optString("created_at"));
+        result.put("display_name", channelData.optString("broadcaster_name"));
         result.put("followers", followData.optInt("total", 0));
-        result.put("game", updates != null && updates.length > 1 && updates[1] != null && !updates[1].isBlank() ? updates[1] : channelData.getString("game_name"));
-        result.put("language", channelData.getString("broadcaster_language"));
-        result.put("logo", userData.getString("profile_image_url"));
+        result.put("game", updates != null && updates.length > 1 && updates[1] != null && !updates[1].isBlank() ? updates[1] : channelData.optString("game_name"));
+        result.put("language", channelData.optString("broadcaster_language"));
+        result.put("logo", userData.optString("profile_image_url"));
         result.put("mature", false);
-        result.put("name", channelData.getString("broadcaster_login"));
-        result.put("partner", userData.getString("broadcaster_type").equals("partner"));
+        result.put("name", channelData.optString("broadcaster_login"));
+        result.put("partner", userData.optString("broadcaster_type").equals("partner"));
         result.put("profile_banner", "");
         result.put("profile_banner_background_color", "");
-        result.put("status", updates != null && updates.length > 0 && updates[0] != null && !updates[0].isBlank() ? updates[0] : channelData.getString("title"));
+        result.put("status", updates != null && updates.length > 0 && updates[0] != null && !updates[0].isBlank() ? updates[0] : channelData.optString("title"));
         result.put("updated_at", "");
-        result.put("url", "https://www.twitch.tv/" + channelData.getString("broadcaster_login"));
+        result.put("url", "https://www.twitch.tv/" + channelData.optString("broadcaster_login"));
         result.put("video_banner", "");
-        result.put("views", userData.getLong("view_count"));
+        result.put("views", userData.optLong("view_count"));
 
         return result;
     }
@@ -198,8 +198,8 @@ public class TwitchAPIv5 {
         if (!game.isEmpty()) {
             JSONObject g = SearchGame(game);
 
-            if (g.getBoolean("_success")) {
-                if (g.getInt("_http") == 200) {
+            if (g.optBoolean("_success")) {
+                if (g.optInt("_http") == 200) {
                     JSONArray a = g.getJSONArray("games");
 
                     if (a.length() > 0) {
@@ -208,10 +208,10 @@ public class TwitchAPIv5 {
                         for (int i = 0; i < a.length() && !found; i++) {
                             JSONObject o = a.getJSONObject(i);
 
-                            gn = "" + o.getLong("_id");
-                            gnn = o.getString("name");
+                            gn = "" + o.optLong("_id");
+                            gnn = o.optString("name");
 
-                            if (o.getString("name").equalsIgnoreCase(game)) {
+                            if (o.optString("name").equalsIgnoreCase(game)) {
                                 found = true;
                             }
                         }
@@ -219,8 +219,8 @@ public class TwitchAPIv5 {
                         if (!found) {
                             JSONObject o = a.getJSONObject(0);
 
-                            gn = "" + o.getLong("_id");
-                            gnn = o.getString("name");
+                            gn = "" + o.optLong("_id");
+                            gnn = o.optString("name");
                         }
                     }
                 }
@@ -229,7 +229,7 @@ public class TwitchAPIv5 {
 
         JSONObject result = Helix.instance().updateChannelInformation(this.getIDFromChannel(channel), gn, null, status, delay);
 
-        if (result.has("_http") && result.getInt("_http") == 204) {
+        if (result.has("_http") && result.optInt("_http") == 204) {
             return this.GetChannel2(channel, new String[]{status, gnn});
         } else {
             return result;
@@ -260,7 +260,7 @@ public class TwitchAPIv5 {
 
         for (int i = 0; i < gameData.getJSONArray("data").length(); i++) {
             JSONObject data = gameData.getJSONArray("data").getJSONObject(i);
-            String logo = data.getString("box_art_url");
+            String logo = data.optString("box_art_url");
 
             JSONObject boxart = new JSONObject();
             boxart.put("template", logo);
@@ -275,11 +275,11 @@ public class TwitchAPIv5 {
             logos.put("small", logo.replaceAll("\\{width\\}", "60").replaceAll("\\{height\\}", "36"));
 
             JSONObject gameo = new JSONObject();
-            gameo.put("_id", Long.parseLong(data.getString("id")));
+            gameo.put("_id", Long.parseLong(data.optString("id")));
             gameo.put("box", boxart);
             gameo.put("giantbomb_id", 0);
             gameo.put("logo", logos);
-            gameo.put("name", data.getString("name"));
+            gameo.put("name", data.optString("name"));
 
             games.put(gameo);
         }
@@ -342,19 +342,19 @@ public class TwitchAPIv5 {
         this.setupResult(result, followData, "follows");
         JSONArray follows = new JSONArray();
 
-        result.put("_total", followData.getInt("total"));
+        result.put("_total", followData.optInt("total"));
         result.put("_cursor", followData.getJSONObject("pagination").optString("cursor", ""));
 
         for (int i = 0; i < followData.getJSONArray("data").length(); i++) {
             JSONObject data = followData.getJSONArray("data").getJSONObject(i);
             JSONObject follow = new JSONObject();
-            follow.put("created_at", data.getString("followed_at"));
+            follow.put("created_at", data.optString("followed_at"));
             follow.put("notifications", false);
 
             JSONObject user = new JSONObject();
-            user.put("display_name", data.getString("from_name"));
-            user.put("_id", data.getString("from_id"));
-            user.put("name", data.getString("from_login"));
+            user.put("display_name", data.optString("from_name"));
+            user.put("_id", data.optString("from_id"));
+            user.put("name", data.optString("from_login"));
             user.put("type", "user");
             user.put("bio", "");
             user.put("created_at", "");
@@ -410,20 +410,20 @@ public class TwitchAPIv5 {
             return result;
         }
 
-        result.put("_total", subscriptionData.getInt("total"));
+        result.put("_total", subscriptionData.optInt("total"));
 
         for (int i = 0; i < subscriptionData.getJSONArray("data").length(); i++) {
             JSONObject data = subscriptionData.getJSONArray("data").getJSONObject(i);
             JSONObject subscription = new JSONObject();
             subscription.put("_id", "");
             subscription.put("created_at", now);
-            subscription.put("sub_plan", data.get("tier"));
-            subscription.put("sub_plan_name", data.get("plan_name"));
+            subscription.put("sub_plan", data.opt("tier"));
+            subscription.put("sub_plan_name", data.opt("plan_name"));
 
             JSONObject user = new JSONObject();
-            user.put("display_name", data.getString("user_name"));
-            user.put("_id", data.getString("user_id"));
-            user.put("name", data.getString("user_login"));
+            user.put("display_name", data.optString("user_name"));
+            user.put("_id", data.optString("user_id"));
+            user.put("name", data.optString("user_login"));
             user.put("type", "user");
             user.put("bio", "");
             user.put("created_at", "");
@@ -499,7 +499,7 @@ public class TwitchAPIv5 {
             JSONObject udata = null;
 
             for (int b = 0; b < userData.getJSONArray("data").length(); b++) {
-                if (userData.getJSONArray("data").getJSONObject(i).getString("id").equals(data.getString("user_id"))) {
+                if (userData.getJSONArray("data").getJSONObject(i).optString("id").equals(data.optString("user_id"))) {
                     udata = userData.getJSONArray("data").getJSONObject(i);
                     break;
                 }
@@ -510,34 +510,34 @@ public class TwitchAPIv5 {
             }
 
             JSONObject stream = new JSONObject();
-            stream.put("_id", Long.parseLong(data.getString("id")));
+            stream.put("_id", Long.parseLong(data.optString("id")));
             stream.put("average_fps", 0);
-            stream.put("created_at", data.getString("started_at"));
+            stream.put("created_at", data.optString("started_at"));
             stream.put("delay", 0);
-            stream.put("game", data.getString("game_name"));
+            stream.put("game", data.optString("game_name"));
             stream.put("is_playlist", false);
             stream.put("video_height", 0);
-            stream.put("viewers", data.getInt("viewer_count"));
+            stream.put("viewers", data.optInt("viewer_count"));
 
             JSONObject channel = new JSONObject();
-            channel.put("_id", Long.parseLong(udata.getString("id")));
-            channel.put("broadcaster_language", data.getString("language"));
-            channel.put("created_at", udata.getString("created_at"));
-            channel.put("display_name", udata.getString("display_name"));
+            channel.put("_id", Long.parseLong(udata.optString("id")));
+            channel.put("broadcaster_language", data.optString("language"));
+            channel.put("created_at", udata.optString("created_at"));
+            channel.put("display_name", udata.optString("display_name"));
             channel.put("followers", 0);
-            channel.put("game", data.getString("game_name"));
-            channel.put("language", data.getString("language"));
+            channel.put("game", data.optString("game_name"));
+            channel.put("language", data.optString("language"));
             channel.put("logo", udata.optString("profile_image_url"));
-            channel.put("mature", data.getBoolean("is_mature"));
-            channel.put("name", udata.getString("login"));
-            channel.put("partner", udata.getString("broadcaster_type").equals("partner"));
+            channel.put("mature", data.optBoolean("is_mature"));
+            channel.put("name", udata.optString("login"));
+            channel.put("partner", udata.optString("broadcaster_type").equals("partner"));
             channel.put("profile_banner", "");
             channel.put("profile_banner_background_color", "");
-            channel.put("status", data.getString("title"));
+            channel.put("status", data.optString("title"));
             channel.put("updated_at", "");
-            channel.put("url", "https://www.twitch.tv/" + udata.getString("login"));
+            channel.put("url", "https://www.twitch.tv/" + udata.optString("login"));
             channel.put("video_banner", udata.optString("offline_image_url"));
-            channel.put("views", udata.getInt("view_count"));
+            channel.put("views", udata.optInt("view_count"));
 
             JSONObject preview = new JSONObject();
             String img = data.optString("thumbnail_url", "");
@@ -600,13 +600,13 @@ public class TwitchAPIv5 {
             JSONObject data = userData.getJSONArray("data").getJSONObject(i);
             JSONObject user = new JSONObject();
 
-            user.put("_id", data.getString("id"));
-            user.put("bio", data.getString("description"));
-            user.put("created_at", data.getString("created_at"));
-            user.put("display_name", data.getString("display_name"));
-            user.put("logo", data.getString("profile_image_url"));
-            user.put("name", data.getString("login"));
-            user.put("type", data.getString("type"));
+            user.put("_id", data.optString("id"));
+            user.put("bio", data.optString("description"));
+            user.put("created_at", data.optString("created_at"));
+            user.put("display_name", data.optString("display_name"));
+            user.put("logo", data.optString("profile_image_url"));
+            user.put("name", data.optString("login"));
+            user.put("type", data.optString("type"));
             user.put("updated_at", "");
 
             users.put(user);
@@ -650,7 +650,7 @@ public class TwitchAPIv5 {
      *
      * @param channel
      * @param length (30, 60, 90, 120, 150, 180)
-     * @return jsonObj.getInt("_http") == 422 if length is invalid or the channel is currently ineligible to run a commercial due to restrictions
+     * @return jsonObj.optInt("_http") == 422 if length is invalid or the channel is currently ineligible to run a commercial due to restrictions
      * listed in the method description
      */
     public JSONObject RunCommercial(String channel, int length) throws JSONException {
@@ -663,7 +663,7 @@ public class TwitchAPIv5 {
             this.setupResult(commercialData, commercialData, null);
         }
 
-        if (commercialData.has("error") || (commercialData.has("message") && !commercialData.getString("message").isBlank())) {
+        if (commercialData.has("error") || (commercialData.has("message") && !commercialData.optString("message").isBlank())) {
             commercialData.put("_http", 422);
         }
 
@@ -697,7 +697,7 @@ public class TwitchAPIv5 {
         JSONObject result = new JSONObject();
         this.setupResult(result, followData, null);
 
-        if (followData != null && !followData.has("error") && followData.has("total") && followData.getInt("total") == 1) {
+        if (followData != null && !followData.has("error") && followData.has("total") && followData.optInt("total") == 1) {
             result = this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0);
             this.setupResult(result, followData, null);
         } else {
@@ -728,7 +728,7 @@ public class TwitchAPIv5 {
 
         JSONArray arr = globalEmoteData.getJSONArray("data");
 
-        if (channelEmoteData != null && !channelEmoteData.has("error") && channelEmoteData.getInt("_http") == 200) {
+        if (channelEmoteData != null && !channelEmoteData.has("error") && channelEmoteData.optInt("_http") == 200) {
             channelEmoteData.getJSONArray("data").forEach(obj -> {
                 arr.put(obj);
             });
@@ -739,19 +739,19 @@ public class TwitchAPIv5 {
         for (int i = 0; i < arr.length(); i++) {
             JSONObject data = arr.getJSONObject(i);
             JSONObject emoticon = new JSONObject();
-            emoticon.put("id", Long.parseLong(data.getString("id")));
-            emoticon.put("regex", data.getString("name"));
+            emoticon.put("id", Long.parseLong(data.optString("id")));
+            emoticon.put("regex", data.optString("name"));
 
             JSONObject images = new JSONObject();
             if (data.has("emote_set_id")) {
-                images.put("emoticon_set", Long.parseLong(data.getString("emote_set_id")));
+                images.put("emoticon_set", Long.parseLong(data.optString("emote_set_id")));
             } else {
                 images.put("emoticon_set", 0);
             }
 
             images.put("height", 28);
             images.put("width", 25);
-            images.put("url", data.getJSONObject("images").getString("url_1x"));
+            images.put("url", data.getJSONObject("images").optString("url_1x"));
 
             emoticon.put("images", images);
             emoticons.put(emoticon);
@@ -781,7 +781,7 @@ public class TwitchAPIv5 {
         for (int i = 0; i < cheerData.getJSONArray("data").length(); i++) {
             JSONObject data = cheerData.getJSONArray("data").getJSONObject(i);
             JSONObject action = new JSONObject();
-            action.put("prefix", data.getString("prefix"));
+            action.put("prefix", data.optString("prefix"));
             action.put("tiers", data.getJSONArray("tiers"));
 
             JSONArray backgrounds = new JSONArray();
@@ -790,13 +790,13 @@ public class TwitchAPIv5 {
             });
 
             JSONArray states = new JSONArray();
-            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.getString(0)).keySet().forEach(s -> {
+            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.optString(0)).keySet().forEach(s -> {
                 states.put(s);
             });
 
             JSONArray scales = new JSONArray();
-            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.getString(0))
-                    .getJSONObject(states.getString(0)).keySet().forEach(s -> {
+            data.getJSONArray("tiers").getJSONObject(0).getJSONObject("images").getJSONObject(backgrounds.optString(0))
+                    .getJSONObject(states.optString(0)).keySet().forEach(s -> {
                 scales.put(s);
             });
 
@@ -828,7 +828,7 @@ public class TwitchAPIv5 {
                 jsonArray = jsonInput.getJSONArray("actions");
                 emoteList = new String[jsonArray.length()];
                 for (int idx = 0; idx < jsonArray.length(); idx++) {
-                    emoteList[idx] = "\\b" + jsonArray.getJSONObject(idx).getString("prefix") + "\\d+\\b";
+                    emoteList[idx] = "\\b" + jsonArray.getJSONObject(idx).optString("prefix") + "\\d+\\b";
                 }
                 cheerEmotes = String.join("|", emoteList);
             }
@@ -854,9 +854,9 @@ public class TwitchAPIv5 {
                 jsonArray = jsonInput.getJSONArray("videos");
                 if (jsonArray.length() > 0) {
                     jsonOutput.object().key("videos").array().object();
-                    jsonOutput.key("url").value(jsonArray.getJSONObject(0).getString("url"));
-                    jsonOutput.key("published_at").value(jsonArray.getJSONObject(0).getString("published_at"));
-                    jsonOutput.key("length").value(jsonArray.getJSONObject(0).getInt("length"));
+                    jsonOutput.key("url").value(jsonArray.getJSONObject(0).optString("url"));
+                    jsonOutput.key("published_at").value(jsonArray.getJSONObject(0).optString("published_at"));
+                    jsonOutput.key("length").value(jsonArray.getJSONObject(0).optInt("length"));
                     jsonOutput.endObject().endArray().endObject();
                     com.gmt2001.Console.debug.println("TwitchAPIv5::GetChannelVODs: " + jsonOutput.toString());
                     if (jsonOutput.toString() == null) {
@@ -875,9 +875,9 @@ public class TwitchAPIv5 {
                     jsonOutput.object().key("videos").array();
                     for (int idx = 0; idx < jsonArray.length(); idx++) {
                         jsonOutput.object();
-                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
-                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).getString("published_at"));
-                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
+                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).optString("url"));
+                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).optString("published_at"));
+                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).optInt("length"));
                         jsonOutput.endObject();
                     }
                     jsonOutput.endArray().endObject();
@@ -898,9 +898,9 @@ public class TwitchAPIv5 {
                     jsonOutput.object().key("videos").array();
                     for (int idx = 0; idx < jsonArray.length(); idx++) {
                         jsonOutput.object();
-                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).getString("url"));
-                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).getString("published_at"));
-                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).getInt("length"));
+                        jsonOutput.key("url").value(jsonArray.getJSONObject(idx).optString("url"));
+                        jsonOutput.key("published_at").value(jsonArray.getJSONObject(idx).optString("published_at"));
+                        jsonOutput.key("length").value(jsonArray.getJSONObject(idx).optInt("length"));
                         jsonOutput.endObject();
                     }
                     jsonOutput.endArray().endObject();
@@ -969,28 +969,28 @@ public class TwitchAPIv5 {
             JSONObject data = vodData.getJSONArray("data").getJSONObject(i);
             JSONObject video = new JSONObject();
 
-            video.put("_id", "v" + data.getString("id"));
+            video.put("_id", "v" + data.optString("id"));
             video.put("broadcast_id", data.optString("stream_id", null));
-            video.put("broadcast_type", data.getString("type"));
-            video.put("created_at", data.getString("created_at"));
-            video.put("description", data.getString("description"));
-            video.put("description_html", data.getString("description") + "<br>");
+            video.put("broadcast_type", data.optString("type"));
+            video.put("created_at", data.optString("created_at"));
+            video.put("description", data.optString("description"));
+            video.put("description_html", data.optString("description") + "<br>");
             video.put("game", "");
-            video.put("language", data.getString("language"));
+            video.put("language", data.optString("language"));
             video.put("length", this.durationToLength(data.optString("duration")));
-            video.put("published_at", data.getString("published_at"));
+            video.put("published_at", data.optString("published_at"));
             video.put("status", "recorded");
             video.put("tag_list", "");
-            video.put("title", data.getString("title"));
-            video.put("url", data.getString("url"));
-            video.put("viewable", data.getString("viewable"));
+            video.put("title", data.optString("title"));
+            video.put("url", data.optString("url"));
+            video.put("viewable", data.optString("viewable"));
             video.put("viewable_at", "");
-            video.put("views", data.getInt("view_count"));
+            video.put("views", data.optInt("view_count"));
 
             JSONObject channel = new JSONObject();
-            channel.put("_id", data.getString("user_id"));
-            channel.put("display_name", data.getString("user_name"));
-            channel.put("name", data.getString("user_login"));
+            channel.put("_id", data.optString("user_id"));
+            channel.put("display_name", data.optString("user_name"));
+            channel.put("name", data.optString("user_login"));
 
             JSONObject fps = new JSONObject();
             fps.put("chunked", 60.0);
@@ -1037,12 +1037,12 @@ public class TwitchAPIv5 {
         user_login.add(channel);
         JSONObject userData = Helix.instance().getUsersAsync(null, user_login).block();
 
-        if (userData == null || !userData.getBoolean("_success") || userData.has("error") || userData.isNull("data")
+        if (userData == null || !userData.optBoolean("_success") || userData.has("error") || userData.isNull("data")
                 || userData.getJSONArray("data").length() == 0) {
             return "ERROR";
         }
 
-        return userData.getJSONArray("data").getJSONObject(0).getString("created_at");
+        return userData.getJSONArray("data").getJSONObject(0).optString("created_at");
     }
 
     /**
@@ -1067,15 +1067,15 @@ public class TwitchAPIv5 {
             JSONObject data = teamsData.getJSONArray("data").getJSONObject(i);
             JSONObject team = new JSONObject();
 
-            team.put("_id", Long.parseLong(data.getString("id")));
+            team.put("_id", Long.parseLong(data.optString("id")));
             team.put("background", data.optString("background_image_url"));
             team.put("banner", data.optString("banner"));
-            team.put("created_at", data.getString("created_at"));
-            team.put("display_name", data.getString("team_display_name"));
-            team.put("info", data.getString("info"));
+            team.put("created_at", data.optString("created_at"));
+            team.put("display_name", data.optString("team_display_name"));
+            team.put("info", data.optString("info"));
             team.put("logo", data.optString("thumbnail_url"));
-            team.put("name", data.getString("team_name"));
-            team.put("updated_at", data.getString("updated_at"));
+            team.put("name", data.optString("team_name"));
+            team.put("updated_at", data.optString("updated_at"));
 
             teams.put(team);
         }
@@ -1102,15 +1102,15 @@ public class TwitchAPIv5 {
 
         teamsData = teamsData.getJSONArray("data").getJSONObject(0);
 
-        result.put("_id", Long.parseLong(teamsData.getString("id")));
+        result.put("_id", Long.parseLong(teamsData.optString("id")));
         result.put("background", teamsData.optString("background_image_url"));
         result.put("banner", teamsData.optString("banner"));
-        result.put("created_at", teamsData.getString("created_at"));
-        result.put("display_name", teamsData.getString("team_display_name"));
-        result.put("info", teamsData.getString("info"));
+        result.put("created_at", teamsData.optString("created_at"));
+        result.put("display_name", teamsData.optString("team_display_name"));
+        result.put("info", teamsData.optString("info"));
         result.put("logo", teamsData.optString("thumbnail_url"));
-        result.put("name", teamsData.getString("team_name"));
-        result.put("updated_at", teamsData.getString("updated_at"));
+        result.put("name", teamsData.optString("team_name"));
+        result.put("updated_at", teamsData.optString("updated_at"));
 
         JSONArray users = new JSONArray();
 
@@ -1118,22 +1118,22 @@ public class TwitchAPIv5 {
             JSONObject userData = teamsData.getJSONArray("users").getJSONObject(i);
             JSONObject user = new JSONObject();
 
-            user.put("_id", Long.parseLong(userData.getString("user_id")));
+            user.put("_id", Long.parseLong(userData.optString("user_id")));
             user.put("broadcaster_language", "");
             user.put("created_at", "");
-            user.put("display_name", userData.getString("user_name"));
+            user.put("display_name", userData.optString("user_name"));
             user.put("followers", 0);
             user.put("game", "");
             user.put("language", "");
             user.put("logo", "");
             user.put("mature", false);
-            user.put("name", userData.getString("user_login"));
+            user.put("name", userData.optString("user_login"));
             user.put("partner", false);
             user.put("profile_banner", "");
             user.put("profile_banner_background_color", "");
             user.put("status", "");
             user.put("updated_at", "");
-            user.put("url", "https://www.twitch.tv/" + userData.getString("user_login"));
+            user.put("url", "https://www.twitch.tv/" + userData.optString("user_login"));
             user.put("video_banner", "");
             user.put("views", 0);
 
@@ -1184,35 +1184,35 @@ public class TwitchAPIv5 {
             JSONObject data = clipsData.getJSONArray("data").getJSONObject(i);
             JSONObject clip = new JSONObject();
 
-            clip.put("slug", data.getString("id"));
+            clip.put("slug", data.optString("id"));
             clip.put("tracking_id", "");
-            clip.put("url", data.getString("url"));
-            clip.put("embed_url", data.getString("embed_url"));
-            clip.put("embed_html", "<iframe src='" + data.getString("embed_url") + "' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>");
-            clip.put("game", "game_id:" + data.getString("game_id"));
-            clip.put("language", data.getString("language"));
-            clip.put("title", data.getString("title"));
-            clip.put("views", data.getInt("view_count"));
-            clip.put("duration", data.getFloat("duration"));
-            clip.put("created_at", data.getString("created_at"));
+            clip.put("url", data.optString("url"));
+            clip.put("embed_url", data.optString("embed_url"));
+            clip.put("embed_html", "<iframe src='" + data.optString("embed_url") + "' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>");
+            clip.put("game", "game_id:" + data.optString("game_id"));
+            clip.put("language", data.optString("language"));
+            clip.put("title", data.optString("title"));
+            clip.put("views", data.optInt("view_count"));
+            clip.put("duration", data.optFloat("duration"));
+            clip.put("created_at", data.optString("created_at"));
 
             JSONObject broadcaster = new JSONObject();
-            broadcaster.put("id", data.getString("broadcaster_id"));
-            broadcaster.put("name", data.getString("broadcaster_name"));
-            broadcaster.put("display_name", data.getString("broadcaster_name"));
-            broadcaster.put("channel_url", "https://www.twitch.tv/" + data.getString("broadcaster_name"));
+            broadcaster.put("id", data.optString("broadcaster_id"));
+            broadcaster.put("name", data.optString("broadcaster_name"));
+            broadcaster.put("display_name", data.optString("broadcaster_name"));
+            broadcaster.put("channel_url", "https://www.twitch.tv/" + data.optString("broadcaster_name"));
             broadcaster.put("logo", "");
 
             JSONObject curator = new JSONObject();
-            curator.put("id", data.getString("creator_id"));
-            curator.put("name", data.getString("creator_name"));
-            curator.put("display_name", data.getString("creator_name"));
-            curator.put("channel_url", "https://www.twitch.tv/" + data.getString("creator_name"));
+            curator.put("id", data.optString("creator_id"));
+            curator.put("name", data.optString("creator_name"));
+            curator.put("display_name", data.optString("creator_name"));
+            curator.put("channel_url", "https://www.twitch.tv/" + data.optString("creator_name"));
             curator.put("logo", "");
 
             JSONObject vod = new JSONObject();
-            vod.put("id", data.getString("video_id"));
-            vod.put("url", "https://www.twitch.tv/videos/" + data.getString("video_id"));
+            vod.put("id", data.optString("video_id"));
+            vod.put("url", "https://www.twitch.tv/videos/" + data.optString("video_id"));
 
             JSONObject thumbnails = new JSONObject();
             thumbnails.put("medium", data.optString("thumbnail_url"));
@@ -1242,9 +1242,9 @@ public class TwitchAPIv5 {
     private int PopulateFollowedTable(JSONArray followsArray, DataStore dataStore) throws JSONException {
         int insertCtr = 0;
         for (int idx = 0; idx < followsArray.length(); idx++) {
-            if (dataStore.exists("time", followsArray.getJSONObject(idx).getString("from_name"))) {
+            if (dataStore.exists("time", followsArray.getJSONObject(idx).optString("from_name"))) {
                 insertCtr++;
-                dataStore.set("followed_fixtable", followsArray.getJSONObject(idx).getString("from_name"), "true");
+                dataStore.set("followed_fixtable", followsArray.getJSONObject(idx).optString("from_name"), "true");
             }
         }
         return insertCtr;
@@ -1278,11 +1278,11 @@ public class TwitchAPIv5 {
 
             insertCtr += PopulateFollowedTable(jsonInput.getJSONArray("data"), dataStore);
 
-            if (!jsonInput.has("pagination") || !jsonInput.getJSONObject("pagination").has("cursor") || jsonInput.getJSONObject("pagination").getString("cursor").isBlank()) {
+            if (!jsonInput.has("pagination") || !jsonInput.getJSONObject("pagination").has("cursor") || jsonInput.getJSONObject("pagination").optString("cursor").isBlank()) {
                 break;
             }
 
-            after = jsonInput.getJSONObject("pagination").getString("cursor");
+            after = jsonInput.getJSONObject("pagination").optString("cursor");
 
             /* Be kind to Twitch during this process. */
             try {
@@ -1314,7 +1314,7 @@ public class TwitchAPIv5 {
             com.gmt2001.Console.err.println("Failed to pull follower count for FixFollowedTable");
             return;
         }
-        int followerCount = jsonInput.getInt("total");
+        int followerCount = jsonInput.optInt("total");
         if (followerCount > 10000 && !force) {
             com.gmt2001.Console.out.println("Follower count is above 10,000 (" + followerCount + "). Not executing. You may force this.");
             return;
