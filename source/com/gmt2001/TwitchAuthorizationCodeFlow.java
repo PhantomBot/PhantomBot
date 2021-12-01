@@ -267,6 +267,7 @@ public class TwitchAuthorizationCodeFlow {
                     }
 
                     newTransaction.commit();
+                    PhantomBot.instance().reconnect();
 
                     if (qsd.parameters().get("type").get(0).equals("bot")) {
                         com.gmt2001.Console.debug.println("Saved oauth=" + PhantomBot.instance().getProperties().getProperty("oauth") + " refresh=" + PhantomBot.instance().getProperties().getProperty("refresh") + " oauthexpires=" + PhantomBot.instance().getProperties().getProperty("oauthexpires"));
