@@ -16,14 +16,23 @@
  */
 package tv.phantombot;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -33,6 +42,10 @@ import java.util.function.Supplier;
 public class CaselessProperties extends Properties {
 
     public static final long serialVersionUID = 1L;
+    private static final int TRANSACTION_LIFETIME_MS = 15000;
+    private final List<Transaction> transactions = new CopyOnWriteArrayList<>();
+    private final Object lock = new Object();
+    private final Timer timer = new Timer();
 
     @Override
     public Object put(Object key, Object value) {
@@ -210,5 +223,130 @@ public class CaselessProperties extends Properties {
     @Override
     public synchronized Enumeration<Object> keys() {
         return Collections.enumeration(new TreeSet<>(super.keySet()));
+    }
+
+    public Transaction startTransaction() {
+        return this.startTransaction(Transaction.PRIORITY_NORMAL);
+    }
+
+    public Transaction startTransaction(int priority) {
+        return new Transaction(this, priority);
+    }
+
+    public void store() {
+        this.store(true);
+    }
+
+    public void store(boolean reload) {
+        try {
+            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
+                this.store(outputStream, "PhantomBot Configuration File");
+            }
+
+            if (reload && PhantomBot.instance() != null) {
+                com.gmt2001.Console.debug.println("reloading properties");
+                PhantomBot.instance().reloadProperties();
+            }
+        } catch (NullPointerException | IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    private void commit(Transaction t) {
+        synchronized (this.lock) {
+            Map<String, String> newValues = new HashMap<>();
+
+            t.getNewValues().forEach((k, v) -> {
+                if (transactions.stream().noneMatch(ot -> ot.getPriority() > t.getPriority() && ot.getNewValues().containsKey(k))) {
+                    newValues.put(k, v);
+                }
+            });
+
+            newValues.forEach((k, v) -> {
+                this.setProperty(k, v);
+            });
+
+            this.store();
+
+            this.timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    transactions.forEach(ot -> {
+                        Calendar c = Calendar.getInstance();
+                        c.add(Calendar.MILLISECOND, -TRANSACTION_LIFETIME_MS);
+                        if (c.getTime().before(ot.getCommitTime())) {
+                            transactions.remove(ot);
+                        }
+                    });
+                }
+            }, TRANSACTION_LIFETIME_MS);
+
+            this.transactions.add(t);
+        }
+    }
+
+    public class Transaction {
+
+        public static final int PRIORITY_NONE = 0;
+        public static final int PRIORITY_LOW = 25;
+        public static final int PRIORITY_NORMAL = 50;
+        public static final int PRIORITY_HIGH = 75;
+        public static final int PRIORITY_MAX = 100;
+        private final int priority;
+        private final Map<String, String> newValues = new HashMap<>();
+        private boolean isCommitted = false;
+        private final CaselessProperties parent;
+        private Date commitTime;
+
+        private Transaction(CaselessProperties parent, int priority) {
+            this.parent = parent;
+            this.priority = Math.min(Math.max(priority, PRIORITY_NONE), PRIORITY_MAX);
+        }
+
+        private Map<String, String> getNewValues() {
+            return this.newValues;
+        }
+
+        public int getPriority() {
+            return this.priority;
+        }
+
+        public void setProperty(String key, String value) {
+            if (isCommitted) {
+                throw new IllegalStateException("committed");
+            }
+
+            this.newValues.put(key, value);
+        }
+
+        public void setProperty(String key, int value) {
+            this.setProperty(key, Integer.toString(value));
+        }
+
+        public void setProperty(String key, long value) {
+            this.setProperty(key, Long.toString(value));
+        }
+
+        public void setProperty(String key, double value) {
+            this.setProperty(key, Double.toString(value));
+        }
+
+        public void setProperty(String key, boolean value) {
+            this.setProperty(key, value ? "true" : "false");
+        }
+
+        public boolean isCommitted() {
+            return this.isCommitted;
+        }
+
+        public Date getCommitTime() {
+            return this.commitTime;
+        }
+
+        public void commit() {
+            this.isCommitted = true;
+            this.commitTime = new Date();
+            parent.commit(this);
+        }
     }
 }

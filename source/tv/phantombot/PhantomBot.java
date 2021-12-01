@@ -627,38 +627,22 @@ public final class PhantomBot implements Listener {
         return this.appflow;
     }
 
-    public void saveProperties() {
-        CaselessProperties outputProperties = new CaselessProperties() {
-            @Override
-            public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<>(super.keySet()));
-            }
-        };
-
-        try {
-            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                outputProperties.putAll(this.pbProperties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-            }
-        } catch (NullPointerException | IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
     public void reloadProperties() {
-        this.pbProperties = ConfigurationManager.getConfiguration();
         this.clientId = this.pbProperties.getProperty("clientid", "");
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
         Helix.instance().setOAuth(this.apiOAuth);
         if (this.session != null) {
             this.session.setOAuth(this.oauth);
+            this.session.reconnect();
         }
         if (this.wsHostIRC != null) {
             this.wsHostIRC.setOAuth(this.apiOAuth);
+            this.wsHostIRC.reconnect();
         }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(this.apiOAuth);
+            this.pubSubEdge.reconnect(true);
         }
     }
 
@@ -1116,7 +1100,7 @@ public final class PhantomBot implements Listener {
         print("Closing the database...");
         dataStore.dispose();
 
-        this.saveProperties();
+        this.getProperties().store(false);
 
         try {
             RollbarProvider.instance().close();

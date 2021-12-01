@@ -43,6 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -553,12 +555,10 @@ public class RollbarProvider implements AutoCloseable {
         }
 
         if (id == null || id.isBlank()) {
+            Transaction transaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_NORMAL);
             id = RollbarProvider.generateId();
-
-            if (PhantomBot.instance() != null) {
-                PhantomBot.instance().getProperties().put("rollbarid", id);
-                PhantomBot.instance().saveProperties();
-            }
+            transaction.setProperty("rollbarid", id);
+            transaction.commit();
         }
 
         return id;

@@ -19,24 +19,21 @@ package com.gmt2001;
 import io.netty.handler.codec.http.QueryStringEncoder;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.ZoneOffset;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.api.TwitchValidate;
 
@@ -119,6 +116,7 @@ public class TwitchClientCredentialsFlow {
         }
 
         boolean changed = false;
+        Transaction transaction = properties.startTransaction(Transaction.PRIORITY_NORMAL);
         JSONObject result = TwitchClientCredentialsFlow.tryGetAppToken(properties.getProperty("clientid"), properties.getProperty("clientsecret"));
 
         if (result.has("error")) {
@@ -126,35 +124,19 @@ public class TwitchClientCredentialsFlow {
         } else {
             Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
             c.add(Calendar.SECOND, result.getInt("expires_in"));
-            properties.setProperty("apptoken", result.getString("access_token"));
-            properties.setProperty("apptokenexpires", c.getTimeInMillis() + "");
+            transaction.setProperty("apptoken", result.getString("access_token"));
+            transaction.setProperty("apptokenexpires", c.getTimeInMillis() + "");
 
             com.gmt2001.Console.out.println("Refreshed the app token");
             changed = true;
         }
 
         if (changed) {
-            CaselessProperties outputProperties = new CaselessProperties() {
-                @Override
-                public synchronized Enumeration<Object> keys() {
-                    return Collections.enumeration(new TreeSet<>(super.keySet()));
-                }
-            };
 
-            try {
-                try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                    outputProperties.putAll(properties);
-                    outputProperties.store(outputStream, "PhantomBot Configuration File");
-                }
+            transaction.commit();
 
-                if (PhantomBot.instance() != null) {
-                    com.gmt2001.Console.debug.println("reloading properties");
-                    PhantomBot.instance().reloadProperties();
-
-                    TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
-                }
-            } catch (NullPointerException | IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+            if (PhantomBot.instance() != null) {
+                TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
             }
         }
 

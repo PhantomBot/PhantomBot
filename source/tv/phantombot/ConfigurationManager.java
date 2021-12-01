@@ -150,7 +150,7 @@ public class ConfigurationManager {
 
         /* Check to see if anything changed */
         if (changed) {
-            saveChanges(startProperties, BOTLOGIN_TXT_LOCATION);
+            startProperties.store(false);
         }
 
         // fresh setup indicator should not be saved
@@ -211,26 +211,6 @@ public class ConfigurationManager {
             changed = true;
         }
         return changed;
-    }
-
-    private static void saveChanges(CaselessProperties properties, String saveFileDestination) {
-        CaselessProperties outputProperties = new CaselessProperties() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<>(super.keySet()));
-            }
-        };
-
-        try {
-            try (FileOutputStream outputStream = new FileOutputStream(saveFileDestination)) {
-                outputProperties.putAll(properties);
-                outputProperties.store(outputStream, "PhantomBot Configuration File");
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
     }
 
     /**
