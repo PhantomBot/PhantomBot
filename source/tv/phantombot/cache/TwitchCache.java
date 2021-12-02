@@ -40,6 +40,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
+import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
 
 /**
@@ -57,10 +58,11 @@ public class TwitchCache implements Runnable {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     /* Cached data */
-    private Boolean isOnline = false;
-    private Boolean isOnlinePS = false;
-    private Boolean forcedGameTitleUpdate = false;
-    private Boolean forcedStreamTitleUpdate = false;
+    private boolean isOnline = false;
+    private boolean isOnlinePS = false;
+    private boolean gotOnlineFromPS = false;
+    private boolean forcedGameTitleUpdate = false;
+    private boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
@@ -228,9 +230,9 @@ public class TwitchCache implements Runnable {
      * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
     private void updateCache() throws Exception {
-        Boolean success = true;
-        Boolean isOnlinen;
-        Boolean sentTwitchOnlineEvent = false;
+        boolean success = true;
+        boolean isOnlinen;
+        boolean sentTwitchOnlineEvent = false;
         String gameTitlen;
         String streamTitlen;
         String previewLinkn;
@@ -252,7 +254,9 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    //EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    if (!this.gotOnlineFromPS) {
+                        EventBus.instance().postAsync(new TwitchOnlineEvent());
+                    }
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
                     this.isOnline = false;
@@ -416,7 +420,11 @@ public class TwitchCache implements Runnable {
     /**
      * Returns if the channel is online or not.
      */
-    public Boolean isStreamOnline() {
+    public boolean isStreamOnline() {
+        if (!this.gotOnlineFromPS) {
+            return this.isOnline;
+        }
+
         return this.isOnlinePS;
     }
 
@@ -424,7 +432,7 @@ public class TwitchCache implements Runnable {
      * Returns a String representation of true/false to indicate if the stream is online or not.
      */
     public String isStreamOnlineString() {
-        if (this.isOnlinePS) {
+        if (this.isStreamOnline()) {
             return "true";
         }
         return "false";
@@ -550,11 +558,13 @@ public class TwitchCache implements Runnable {
 
     public void goOnline() {
         this.isOnlinePS = true;
+        this.gotOnlineFromPS = true;
         this.streamUptimeSeconds = 0L;
     }
 
     public void goOffline() {
         this.isOnlinePS = false;
+        this.gotOnlineFromPS = true;
         this.viewerCountPS = 0;
     }
 

@@ -627,6 +627,18 @@ public final class PhantomBot implements Listener {
         return this.appflow;
     }
 
+    public void reconnect() {
+        if (this.session != null) {
+            this.session.reconnect();
+        }
+        if (this.wsHostIRC != null) {
+            this.wsHostIRC.reconnect();
+        }
+        if (this.pubSubEdge != null) {
+            this.pubSubEdge.reconnect(true);
+        }
+    }
+
     public void reloadProperties() {
         this.clientId = this.pbProperties.getProperty("clientid", "");
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
@@ -634,15 +646,12 @@ public final class PhantomBot implements Listener {
         Helix.instance().setOAuth(this.apiOAuth);
         if (this.session != null) {
             this.session.setOAuth(this.oauth);
-            this.session.reconnect();
         }
         if (this.wsHostIRC != null) {
             this.wsHostIRC.setOAuth(this.apiOAuth);
-            this.wsHostIRC.reconnect();
         }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(this.apiOAuth);
-            this.pubSubEdge.reconnect(true);
         }
     }
 

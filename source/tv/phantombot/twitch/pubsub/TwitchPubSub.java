@@ -244,9 +244,9 @@ public class TwitchPubSub {
          * Creates a connection with the PubSub websocket.
          *
          * @param {boolean} reconnect Changes the console log message from connection to reconnecting.
-         * @return {Boolean}
+         * @return {boolean}
          */
-        public Boolean connectWSS(Boolean reconnect) {
+        public boolean connectWSS(boolean reconnect) {
             if (!reconnect) {
                 com.gmt2001.Console.debug.println("Connecting to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
             } else {

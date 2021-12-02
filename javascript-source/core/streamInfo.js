@@ -108,7 +108,7 @@
      */
     function isOnline(channelName) {
         if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
-            return $.twitchcache.isStreamOnlineString().equals('true');
+            return $.twitchcache.isStreamOnline();
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
         }
@@ -277,7 +277,7 @@
      */
     function getStreamStartedAt(channelName) {
         if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
-            if ($.twitchcache.getStreamOnlineString === 'false') {
+            if ($.jsString($.twitchcache.isStreamOnlineString()) === 'false') {
                 return 'Stream is offline';
             }
             createdAtDate = new Date($.twitchcache.getStreamCreatedAt() + '');

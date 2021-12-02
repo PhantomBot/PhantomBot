@@ -84,7 +84,7 @@
      * @function getFormatedUptime
      */
     function getFormatedUptime() {
-        var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60),
+        var streamUptimeMinutes = parseInt($.twitchcache.getStreamUptimeSeconds() / 60),
                 hours = parseInt(streamUptimeMinutes / 60),
                 minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
                 timestamp = hours + ':' + minutes;
@@ -97,14 +97,14 @@
      */
     function updateStreamData() {
         saveObject('panelData', 'stream', {
-            'views': $.twitchcache.getViews() + '',
+            'views': $.twitchcache.getViews(),
             'followers': $.getFollows($.channelName),
-            'viewers': $.getViewers($.channelName),
-            'title': $.getStatus($.channelName),
-            'isLive': $.isOnline($.channelName),
-            'game': $.getGame($.channelName),
+            'viewers': $.twitchcache.getViewerCount(),
+            'title': $.twitchcache.getStreamStatus(),
+            'isLive': $.twitchcache.isStreamOnline(),
+            'game': $.twitchcache.getGameTitle(),
             'uptime': getFormatedUptime(),
-            'chatters': $.users.length,
+            'chatters': $.users.length
         });
     }
 

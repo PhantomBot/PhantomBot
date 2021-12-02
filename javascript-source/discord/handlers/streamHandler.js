@@ -57,7 +57,7 @@
      * @return {String}
      */
     function getTrimmedGameName() {
-        var game = $.getGame($.channelName) + '';
+        var game = $.jsString($.twitchcache.getGameTitle());
 
         return (game.length > 15 ? game.substr(0, 15) + '...' : game);
     }
@@ -83,7 +83,7 @@
                 $.discord.removeGame();
             }
 
-            if (!$.isOnline($.channelName) && offlineToggle === true) {
+            if (!$.twitchcache.isStreamOnline() && offlineToggle === true) {
                 var keys = $.inidb.GetKeyList('discordStreamStats', ''),
                     chatters = [],
                     viewers = [],
@@ -139,7 +139,7 @@
                 if (s.indexOf('@') !== -1) {
                     msg = $.discord.say(channelName, s);
                     if (deleteMessageToggle) {
-                        offlineMessages.push(msg)
+                        offlineMessages.push(msg);
                     }
                 }
 
@@ -171,7 +171,7 @@
     $.bind('twitchOnline', function(event) {
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
         setTimeout(function() {
-            if ($.isOnline($.channelName) && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
+            if ($.twitchcache.isStreamOnline() && ($.systemTime() - $.getIniDbNumber('discordSettings', 'lastOnlineEvent', 0) >= timeout)) {
                 // Remove old stats, if any.
                 $.inidb.RemoveFile('discordStreamStats');
 
@@ -203,7 +203,7 @@
                         .withThumbnail($.twitchcache.getLogoLink())
                         .withTitle(sanitizeTitle(s))
                         .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
-                        .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
+                        .appendField($.lang.get('discord.streamhandler.common.title'), $.twitchcache.getStreamStatus(), false)
                         .withUrl('https://twitch.tv/' + $.channelName)
                         .withTimestamp(Date.now())
                         .withFooterText('Twitch')
@@ -245,8 +245,8 @@
             .withThumbnail($.twitchcache.getLogoLink())
             .withTitle(sanitizeTitle(s))
             .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
-            .appendField($.lang.get('discord.streamhandler.common.title'), $.getStatus($.channelName), false)
-            .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getStreamUptime($.channelName).toString(), false)
+            .appendField($.lang.get('discord.streamhandler.common.title'), $.twitchcache.getStreamStatus(), false)
+            .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getTimeString($.twitchcache.getStreamUptimeSeconds()), false)
             .withUrl('https://twitch.tv/' + $.channelName)
             .withTimestamp(Date.now())
             .withFooterText('Twitch')
