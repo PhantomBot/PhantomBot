@@ -45,13 +45,13 @@ RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf
 
 RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
-    && mkdir "${DATADIR}/logs" \
     && mkdir "${DATADIR}/scripts" \
     && mkdir "${DATADIR}/scripts/custom" \
     && mkdir "${DATADIR}/scripts/discord" \
     && mkdir "${DATADIR}/scripts/lang" \
     && mv "./addons" "${DATADIR}/" \
     && mv "./config" "${DATADIR}/" \
+    && mv "./logs" "${DATADIR}/" \
     && mv "./scripts/custom" "${DATADIR}/scripts/custom/" \
     && mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/" \
     && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
