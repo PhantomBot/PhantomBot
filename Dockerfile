@@ -70,7 +70,7 @@ USER root
 RUN groupadd -r phantombot -g 900 \
     && useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
 
-RUN mkdir -p "${BASEDIR}" "${DATADIR}"
+RUN mkdir -p "${BASEDIR}" "${DATADIR}" && chown phantombot:phantombot "${BASEDIR}" && chown phantombot:phantombot "${DATADIR}"
 
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
