@@ -19,13 +19,14 @@
 FROM adoptopenjdk:11-jdk-hotspot-bionic as builder
 
 ARG PROJECT_NAME=PhantomBot
+ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
 ARG ANT_ARGS=
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN mkdir -p "${BUILDDIR}" \
+RUN mkdir -p "${BUILDDIR}" "${DATADIR}" \
     && apt-get update -q \
     && apt-get install -yqq ant \
     && apt-get clean \
@@ -39,6 +40,22 @@ COPY . "${BUILDDIR}"
 RUN cd "${BUILDDIR}" \
     && ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar
 
+RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
+    && ls | grep java-runtime | xargs --no-run-if-empty rm -rf \
+    && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf
+
+RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
+    && mkdir "${DATADIR}/logs" \
+    && mkdir "${DATADIR}/scripts" \
+    && mkdir "${DATADIR}/scripts/custom" \
+    && mkdir "${DATADIR}/scripts/discord" \
+    && mkdir "${DATADIR}/scripts/lang" \
+    && mv "./addons" "${DATADIR}/" \
+    && mv "./config" "${DATADIR}/" \
+    && mv "./scripts/custom" "${DATADIR}/scripts/custom/" \
+    && mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/" \
+    && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/" \
+
 # Application container
 FROM adoptopenjdk:11-jre-hotspot-bionic
 
@@ -47,14 +64,15 @@ ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
 ARG DATADIR=${BASEDIR}_data
-ARG TARGETPLATFORM
 
 USER root
 
 RUN groupadd -r phantombot -g 900 \
     && useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
 
-RUN mkdir -p "${BASEDIR}" "${DATADIR}" "${BASEDIR}/logs"
+RUN mkdir -p "${BASEDIR}" "${DATADIR}"
+
+COPY --from=builder "${DATADIR}/." "${DATADIR}/"
 
 COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
 
@@ -64,20 +82,6 @@ RUN chown -R -H -L phantombot:phantombot "${BASEDIR}" \
 USER phantombot:phantombot
 
 RUN cd "${BASEDIR}" \
-    && rm -rf \
-    && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi \
-    && if [ "${TARGETPLATFORM}" = "linux/arm64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/java-runtime-linux ${BASEDIR}/launch.bat ; fi \
-    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then rm -rf ${BASEDIR}/java-runtime ${BASEDIR}/java-runtime-macos ${BASEDIR}/launch.bat ; fi \
-    && mkdir "${DATADIR}/scripts" \
-    && mkdir "${DATADIR}/scripts/custom" \
-    && mkdir "${DATADIR}/scripts/discord" \
-    && mkdir "${DATADIR}/scripts/lang" \
-    && mv "${BASEDIR}/addons" "${DATADIR}/" \
-    && mv "${BASEDIR}/config" "${DATADIR}/" \
-    && mv "${BASEDIR}/logs" "${DATADIR}/" \
-    && mv "${BASEDIR}/scripts/custom" "${DATADIR}/scripts/custom/" \
-    && mv "${BASEDIR}/scripts/discord/custom" "${DATADIR}/scripts/discord/" \
-    && mv "${BASEDIR}/scripts/lang/custom" "${DATADIR}/scripts/lang/" \
     && mkdir "${DATADIR}/dbbackup" \
     && ln -s "${DATADIR}/addons" \
     && ln -s "${DATADIR}/config" \
@@ -86,8 +90,7 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
     && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
-    && chmod u+x ${BASEDIR}/launch-service.sh \
-    && if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then chmod u+x ${BASEDIR}/java-runtime-linux/bin/java ; fi
+    && chmod u+x ${BASEDIR}/launch-docker.sh
 
 VOLUME "${DATADIR}"
 
@@ -95,4 +98,4 @@ WORKDIR "${BASEDIR}"
 
 EXPOSE 25000
 
-CMD ["bash", "launch-service.sh"]
+CMD ["bash", "launch-docker.sh"]
