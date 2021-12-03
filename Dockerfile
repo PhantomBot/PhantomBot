@@ -54,7 +54,7 @@ RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && mv "./config" "${DATADIR}/" \
     && mv "./scripts/custom" "${DATADIR}/scripts/custom/" \
     && mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/" \
-    && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/" \
+    && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
 
 # Application container
 FROM adoptopenjdk:11-jre-hotspot-bionic
