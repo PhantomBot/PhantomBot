@@ -171,7 +171,7 @@ public class Script {
         }
 
         context = ctxFactory.enterContext();
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("rhino_es6", false)) {
+        if (PhantomBot.getEnableRhinoES6()) {
             context.setLanguageVersion(Context.VERSION_ES6);
         }
 

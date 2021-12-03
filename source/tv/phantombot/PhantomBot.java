@@ -192,6 +192,7 @@ public final class PhantomBot implements Listener {
     private static Boolean enableDebugging = false;
     private static Boolean enableDebuggingLogOnly = false;
     private static Boolean enableRhinoDebugger = false;
+    private static boolean enableRhinoES6 = false;
     private static String timeZone = "GMT";
     private static Boolean twitchTcpNodelay = true;
     private static Boolean isInExitState = false;
@@ -1299,6 +1300,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.setSilentScriptsLoad(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_SILENTSCRIPTSLOAD, false));
         /* Check to enable Rhino Debugger */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
+        PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", false));
     }
 
     private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
@@ -1306,6 +1308,13 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
         }
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
+    }
+
+    private static void setEnableRhinoES6(boolean enableRhinoES6) {
+        if (enableRhinoES6) {
+            com.gmt2001.Console.out.println("Rhino ECMAScript6 support enabled.");
+        }
+        PhantomBot.enableRhinoES6 = enableRhinoES6;
     }
 
     private static void setReloadScripts(Boolean reloadScripts) {
@@ -1593,6 +1602,10 @@ public final class PhantomBot implements Listener {
 
     public static Boolean getEnableRhinoDebugger() {
         return enableRhinoDebugger;
+    }
+
+    public static boolean getEnableRhinoES6() {
+        return enableRhinoES6;
     }
 
     public static String getTimeZone() {
