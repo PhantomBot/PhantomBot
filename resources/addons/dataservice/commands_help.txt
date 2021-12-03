@@ -1,9 +1,0 @@
-# These lines are comments and ignored.
-#
-# Place help for your custom commands for the Data Render Service.
-#
-# Format -- do not use !command_name, just use command_name:
-# command_name, description of the command
-#
-# Example:
-# weather, Display the weather for a zip code or city. !weather 12345 or !weather london
