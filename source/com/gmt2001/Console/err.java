@@ -63,7 +63,7 @@ public final class err {
         System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
     }
 
-    public static void println(Object o, Boolean logOnly) {
+    public static void println(Object o, boolean logOnly) {
         String stackInfo;
         StackTraceElement st = debug.findCaller();
 

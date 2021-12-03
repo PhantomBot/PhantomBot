@@ -38,7 +38,7 @@ public class ImgDownload {
      *
      * @param   String  HTTP URL to download from.
      * @param   String  The filename to save the remote image as.
-     * @return  String  Returns 'true' or 'false'.  As Rhino does not like Boolean, this is a String.
+     * @return  String  Returns 'true' or 'false'.  As Rhino does not like boolean, this is a String.
      */
     public static String downloadHTTPTo(String urlString, String location) {
         try {
@@ -75,7 +75,7 @@ public class ImgDownload {
      *
      * @param   String  HTTP URL to download from.
      * @param   String  The filename to save the remote image as.
-     * @return  String  Returns 'true' or 'false'.  As Rhino does not like Boolean, this is a String.
+     * @return  String  Returns 'true' or 'false'.  As Rhino does not like boolean, this is a String.
      */
     public static String downloadHTTP(String urlString, String filename) {
         return downloadHTTPTo(urlString, "./addons/downloadHTTP/" + filename);

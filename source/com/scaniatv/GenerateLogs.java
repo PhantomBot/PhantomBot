@@ -137,8 +137,8 @@ public class GenerateLogs {
     /*
      * Method to get the current date of log files.
      *
-     * @param  {Boolean} isGMT
-     * @param  {Boolean} minusDay
+     * @param  {boolean} isGMT
+     * @param  {boolean} minusDay
      * @return {String}
      */
     private static String getDate(boolean isGMT, boolean minusDay) {

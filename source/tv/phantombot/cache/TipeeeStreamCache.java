@@ -37,8 +37,8 @@ public class TipeeeStreamCache implements Runnable {
     private Map<String, String> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
-    private Boolean firstUpdate = true;
-    private Boolean killed = false;
+    private boolean firstUpdate = true;
+    private boolean killed = false;
     private int numfail = 0;
 
     /**
@@ -74,9 +74,9 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Checks if the donation has been cached.
      *
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public Boolean exists(String donationID) {
+    public boolean exists(String donationID) {
         return cache.containsKey(donationID);
     }
 

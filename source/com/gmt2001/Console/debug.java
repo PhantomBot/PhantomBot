@@ -79,7 +79,7 @@ public final class debug {
         println(o, false);
     }
 
-    public static void println(Object o, Boolean force) {
+    public static void println(Object o, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
             StackTraceElement st = findCaller();
@@ -96,7 +96,7 @@ public final class debug {
     public static void logln(Object o) {
         logln(o, false);
     }
-    public static void logln(Object o, Boolean force) {
+    public static void logln(Object o, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
             StackTraceElement st = findCaller();

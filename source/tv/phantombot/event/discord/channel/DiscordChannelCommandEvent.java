@@ -54,7 +54,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
      */
     private String[] parse() {
         List<String> tempArgs = new LinkedList<>();
-        Boolean hasQuote = false;
+        boolean hasQuote = false;
         String tempString = "";
 
         for (char c : arguments.toCharArray()) {
