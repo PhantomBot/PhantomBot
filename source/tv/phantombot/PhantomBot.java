@@ -49,14 +49,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -113,7 +110,6 @@ public final class PhantomBot implements Listener {
     private String ownerName;
     private String oauth;
     private String apiOAuth;
-    private String clientId;
     private static Double messageLimit;
     private static Double whisperLimit;
     private TwitchAuthorizationCodeFlow authflow;
@@ -466,9 +462,6 @@ public final class PhantomBot implements Listener {
         /* Set the whisper limit for session.java to use. -- Currently Not Used -- */
         PhantomBot.whisperLimit = this.pbProperties.getPropertyAsDouble("whisperlimit60", 60.0);
 
-        /* Set the client id for the twitch api to use */
-        this.clientId = this.pbProperties.getProperty("clientid", "");
-
         /* Set any DB backup options. */
         this.backupDBAuto = this.pbProperties.getPropertyAsBoolean("backupdbauto", this.pbProperties.getPropertyAsBoolean("backupsqliteauto", true));
         this.backupDBHourFrequency = this.pbProperties.getPropertyAsInt("backupdbhourfrequency", this.pbProperties.getPropertyAsInt("backupsqlitehourfrequency", 24));
@@ -640,7 +633,6 @@ public final class PhantomBot implements Listener {
     }
 
     public void reloadProperties() {
-        this.clientId = this.pbProperties.getProperty("clientid", "");
         this.apiOAuth = this.pbProperties.getProperty("apioauth", "");
         this.oauth = this.pbProperties.getProperty("oauth");
         Helix.instance().setOAuth(this.apiOAuth);

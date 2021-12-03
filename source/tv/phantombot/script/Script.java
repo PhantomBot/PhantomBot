@@ -45,7 +45,7 @@ public class Script {
     private int fileNotFoundCount = 0;
     private static ScriptableObject scope;
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
     public Script(File file) {
         this.file = file;
         this.lastModified = file.lastModified();
@@ -56,7 +56,7 @@ public class Script {
     }
 
     public static String callMethod(String method, String arg) {
-        Object[] obj = new Object[] {arg};
+        Object[] obj = new Object[]{arg};
 
         return ScriptableObject.callMethod(global, method, obj).toString();
     }
@@ -152,10 +152,10 @@ public class Script {
             @Override
             protected boolean hasFeature(Context cx, int featureIndex) {
                 switch (featureIndex) {
-                case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
-                    return true;
-                default:
-                    return super.hasFeature(cx, featureIndex);
+                    case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
+                        return true;
+                    default:
+                        return super.hasFeature(cx, featureIndex);
                 }
             }
         };
@@ -171,6 +171,10 @@ public class Script {
         }
 
         context = ctxFactory.enterContext();
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("rhino_es6", false)) {
+            context.setLanguageVersion(Context.VERSION_ES6);
+        }
+
         if (!PhantomBot.getEnableRhinoDebugger()) {
             context.setOptimizationLevel(9);
         }
@@ -181,7 +185,7 @@ public class Script {
         scope.defineProperty("$script", this, 0);
 
         /* Configure debugger. */
-        if (PhantomBot.getEnableRhinoDebugger()) {
+        if (PhantomBot.getEnableRhinoDebugger() && debugger != null) {
             if (file.getName().endsWith("init.js")) {
                 debugger.setBreakOnEnter(false);
                 debugger.setScope(scope);
