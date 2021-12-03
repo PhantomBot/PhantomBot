@@ -89,7 +89,7 @@ public class ScriptEventManager implements Listener {
      * Method to see if an event exists, this is used from init.js.
      *
      * @param {String} eventName
-     * @return {Boolean}
+     * @return {boolean}
      */
     public boolean hasEvent(String eventName) {
         return events.containsKey((WordUtils.capitalize(eventName) + "Event"));

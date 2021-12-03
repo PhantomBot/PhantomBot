@@ -59,7 +59,7 @@ public final class warn {
         System.out.println("[" + logTimestamp.log() + "] [WARN] " + stackInfo + o.toString());
     }
 
-    public static void println(Object o, Boolean logOnly) {
+    public static void println(Object o, boolean logOnly) {
         String stackInfo;
         StackTraceElement st = debug.findCaller();
 

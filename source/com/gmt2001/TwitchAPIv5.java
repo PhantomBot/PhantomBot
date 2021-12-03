@@ -1306,7 +1306,7 @@ public class TwitchAPIv5 {
      * @param dataStore Copy of database object
      * @param force Force the run even if the number of followers is too high
      */
-    public void FixFollowedTable(String channel, DataStore dataStore, Boolean force) throws JSONException {
+    public void FixFollowedTable(String channel, DataStore dataStore, boolean force) throws JSONException {
 
         /* Determine number of followers to determine if this should not execute unless forced. */
         JSONObject jsonInput = Helix.instance().getUsersFollows(null, this.getIDFromChannel(channel), 1, null);

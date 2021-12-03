@@ -148,7 +148,7 @@ public class ViewerListCache implements Runnable {
      * Method to check if a user is in the cache.
      *
      * @param {String} username
-     * @return {Boolean}
+     * @return {boolean}
      */
     public boolean hasUser(String username) {
         return (!this.cache.isEmpty() ? this.cache.contains(username) : true);

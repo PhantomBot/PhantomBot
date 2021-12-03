@@ -98,7 +98,7 @@ public class Script {
     }
 
     @SuppressWarnings("rawtypes")
-    public void reload(Boolean silent) throws IOException {
+    public void reload(boolean silent) throws IOException {
         if (killed) {
             return;
         }

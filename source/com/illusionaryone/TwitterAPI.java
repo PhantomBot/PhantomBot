@@ -132,9 +132,9 @@ public class TwitterAPI {
      * captured and reported to the error logs.  If an error does occur, accessToken is set to null
      * so that other methods know not to try to interact with Twitter.
      *
-     * @return  Boolean  Returns true if authentication was successful else false.
+     * @return  boolean  Returns true if authentication was successful else false.
      */
-    public Boolean authenticate() {
+    public boolean authenticate() {
         com.gmt2001.Console.debug.println("Attempting to Authenticate");
         try {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();

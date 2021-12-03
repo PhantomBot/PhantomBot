@@ -123,9 +123,9 @@ public final class PhantomBot implements Listener {
     private String youtubeOAuth;
     private String youtubeOAuthThro;
     private String youtubeKey;
-    private Boolean webEnabled;
-    private Boolean musicEnabled;
-    private Boolean useHttps;
+    private boolean webEnabled;
+    private boolean musicEnabled;
+    private boolean useHttps;
     private int basePort;
     private String bindIP;
 
@@ -187,27 +187,27 @@ public final class PhantomBot implements Listener {
 
     /* PhantomBot Information */
     private static PhantomBot instance;
-    private static Boolean reloadScripts = false;
-    private static Boolean silentScriptsLoad = false;
-    private static Boolean enableDebugging = false;
-    private static Boolean enableDebuggingLogOnly = false;
-    private static Boolean enableRhinoDebugger = false;
+    private static boolean reloadScripts = false;
+    private static boolean silentScriptsLoad = false;
+    private static boolean enableDebugging = false;
+    private static boolean enableDebuggingLogOnly = false;
+    private static boolean enableRhinoDebugger = false;
     private static boolean enableRhinoES6 = false;
     private static String timeZone = "GMT";
-    private static Boolean twitchTcpNodelay = true;
-    private static Boolean isInExitState = false;
-    private Boolean isExiting = false;
-    private Boolean interactive;
+    private static boolean twitchTcpNodelay = true;
+    private static boolean isInExitState = false;
+    private boolean isExiting = false;
+    private boolean interactive;
 
     /* Other Information */
-    private Boolean newSetup = false;
+    private boolean newSetup = false;
     private TwitchSession session;
     private SecureRandom random;
-    private Boolean joined = false;
+    private boolean joined = false;
     private TwitchWSHostIRC wsHostIRC;
     private TwitchPubSub pubSubEdge;
     private CaselessProperties pbProperties;
-    private Boolean backupDBAuto = false;
+    private boolean backupDBAuto = false;
     private int backupDBHourFrequency = 0;
     private int backupDBKeepDays = 0;
 
@@ -600,7 +600,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {boolean}
      */
-    public Boolean isNightly() {
+    public boolean isNightly() {
         return RepoVersion.getNightlyBuild();
     }
 
@@ -609,7 +609,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {boolean}
      */
-    public Boolean isPrerelease() {
+    public boolean isPrerelease() {
         return RepoVersion.getPrereleaseBuild();
     }
 
@@ -662,7 +662,7 @@ public final class PhantomBot implements Listener {
      *
      * @param {boolean} debug
      */
-    public static void setDebugging(Boolean debug) {
+    public static void setDebugging(boolean debug) {
         if (debug) {
             com.gmt2001.Console.out.println("Debug Mode Enabled");
         }
@@ -674,7 +674,7 @@ public final class PhantomBot implements Listener {
      *
      * @param {boolean} debug
      */
-    public static void setDebuggingLogOnly(Boolean debug) {
+    public static void setDebuggingLogOnly(boolean debug) {
         if (debug) {
             com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
         }
@@ -709,7 +709,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {boolean} exit
      */
-    public Boolean isExiting() {
+    public boolean isExiting() {
         return this.isExiting;
     }
 
@@ -727,7 +727,7 @@ public final class PhantomBot implements Listener {
      *
      * @return {boolean}
      */
-    public Boolean hasDiscordToken() {
+    public boolean hasDiscordToken() {
         return this.discordToken.isEmpty();
     }
 
@@ -1300,10 +1300,11 @@ public final class PhantomBot implements Listener {
         PhantomBot.setSilentScriptsLoad(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_SILENTSCRIPTSLOAD, false));
         /* Check to enable Rhino Debugger */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
+
         PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", false));
     }
 
-    private static void setEnableRhinoDebugger(Boolean enableRhinoDebugger) {
+    private static void setEnableRhinoDebugger(boolean enableRhinoDebugger) {
         if (enableRhinoDebugger) {
             com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
         }
@@ -1317,7 +1318,7 @@ public final class PhantomBot implements Listener {
         PhantomBot.enableRhinoES6 = enableRhinoES6;
     }
 
-    private static void setReloadScripts(Boolean reloadScripts) {
+    private static void setReloadScripts(boolean reloadScripts) {
         if (reloadScripts) {
             com.gmt2001.Console.out.println("Enabling Script Reloading");
         }
@@ -1325,7 +1326,7 @@ public final class PhantomBot implements Listener {
 
     }
 
-    private static void setSilentScriptsLoad(Boolean silentScriptsLoad) {
+    private static void setSilentScriptsLoad(boolean silentScriptsLoad) {
         if (silentScriptsLoad) {
             com.gmt2001.Console.out.println("Enabling Silent Script Load");
         }
@@ -1584,23 +1585,23 @@ public final class PhantomBot implements Listener {
         System.exit(EXIT_STATUS_OK);
     }
 
-    public static Boolean getReloadScripts() {
+    public static boolean getReloadScripts() {
         return reloadScripts;
     }
 
-    public static Boolean getSilentScriptsLoad() {
+    public static boolean getSilentScriptsLoad() {
         return silentScriptsLoad;
     }
 
-    public static Boolean getEnableDebugging() {
+    public static boolean getEnableDebugging() {
         return enableDebugging;
     }
 
-    public static Boolean getEnableDebuggingLogOnly() {
+    public static boolean getEnableDebuggingLogOnly() {
         return enableDebuggingLogOnly;
     }
 
-    public static Boolean getEnableRhinoDebugger() {
+    public static boolean getEnableRhinoDebugger() {
         return enableRhinoDebugger;
     }
 
@@ -1612,11 +1613,11 @@ public final class PhantomBot implements Listener {
         return timeZone;
     }
 
-    public static Boolean getTwitchTcpNodelay() {
+    public static boolean getTwitchTcpNodelay() {
         return twitchTcpNodelay;
     }
 
-    public static Boolean isInExitState() {
+    public static boolean isInExitState() {
         return isInExitState;
     }
 }

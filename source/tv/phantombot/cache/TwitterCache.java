@@ -125,11 +125,11 @@ public class TwitterCache implements Runnable {
      * sends events to chat when appropriate.
      */
     private void updateCache() throws Exception {
-        Boolean poll_retweets = false;
-        Boolean poll_mentions = false;
-        Boolean poll_hometimeline = false;
-        Boolean poll_usertimeline = false;
-        Boolean reward_retweets = false;
+        boolean poll_retweets = false;
+        boolean poll_mentions = false;
+        boolean poll_hometimeline = false;
+        boolean poll_usertimeline = false;
+        boolean reward_retweets = false;
 
         long presentTime = 0L;
         long last_retweetTime = 0L;
@@ -362,9 +362,9 @@ public class TwitterCache implements Runnable {
      * Checks the database for a boolean string and returns true/false as such.
      *
      * @param   String   Database key to inspect.
-     * @return  Boolean  True if database value is stored as 'true' else false.
+     * @return  boolean  True if database value is stored as 'true' else false.
      */
-    private Boolean getDBBoolean(String dbKey) {
+    private boolean getDBBoolean(String dbKey) {
         String dbData = PhantomBot.instance().getDataStore().GetString("twitter", "", dbKey);
         if (dbData == null) {
             return false;
@@ -379,11 +379,11 @@ public class TwitterCache implements Runnable {
      * Checks the database for data and returns a long.
      *
      * @param   String   Database key to inspect.
-     * @param   Boolean  Determines if polling is active or not.
+     * @param   boolean  Determines if polling is active or not.
      * @return  long     0 if not polling; defaultVal if no value in database; defaultVal
      *                   if database value is less than defaultVal; else database value.
      */
-    private long getDBLong(String dbKey, Boolean doPoll, long defaultVal) {
+    private long getDBLong(String dbKey, boolean doPoll, long defaultVal) {
         if (!doPoll) {
             return 0L;
         }
