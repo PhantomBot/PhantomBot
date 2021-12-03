@@ -72,12 +72,9 @@ RUN groupadd -r phantombot -g 900 \
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}"
 
-COPY --from=builder "${DATADIR}/." "${DATADIR}/"
+COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
-COPY --from=builder "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
-
-RUN chown -R -H -L phantombot:phantombot "${BASEDIR}" \
-    && chown -R -H -L phantombot:phantombot "${DATADIR}"
+COPY --from=builder --chown=phantombot:phantombot "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
 
 USER phantombot:phantombot
 
