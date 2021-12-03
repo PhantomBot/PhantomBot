@@ -93,6 +93,7 @@ public class Script {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
                 com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
             }
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -130,6 +131,7 @@ public class Script {
                 String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
                 com.gmt2001.Console.err.println("Failed to reload module: " + path + ": " + ex.getMessage());
             }
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -197,10 +199,13 @@ public class Script {
         try {
             context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (FileNotFoundException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             throw new IOException("File not found. This could be a caching issue, will retry.");
         } catch (EvaluatorException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             throw new IOException("JavaScript Error: " + ex.getMessage());
         } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             throw new IOException(ex.getMessage());
         }
     }
