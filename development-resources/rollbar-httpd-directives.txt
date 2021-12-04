@@ -27,5 +27,54 @@
     LogFormat "%h %l %u %t %v:%p \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" (%{RBResp}n)" rollbar
     CustomLog logs/access_log rollbar
 
-# Also create a file called "429.txt" with the contents of the following line (Without the #)
-# {"err":1,"message":"too many requests"}
+# Also create a file called "429.txt" with the contents of the following line
+{"err":1,"message":"too many requests"}
+
+# Make sure to reload httpd
+
+
+
+# Optional Fail2Ban Configuration to block users sending DDoS levels of traffic
+# Only identifies and bans users who are receiving rate-limit 429 response and not respecting it
+# Requires the custom LogFormat above
+
+# Create file /etc/fail2ban/filter.d/apache-rollbar.conf
+# Fail2Ban Apache rollbar
+
+[INCLUDES]
+
+before = apache-common.conf
+
+[Definition]
+
+failregex = ^<HOST> .* \[\] .* ".* HTTP/1\.[01]" 429 \d+ ".*" ".*" (.*)$
+
+ignoreregex =
+
+
+
+# Add following lines to /etc/fail2ban/jail.local
+# Change enabled to true on the rules you want to enable
+# Edit rules to your liking
+
+# Drops all connections from anyone making 60 requests per 2.5 minutes and getting 429 rate-limit for 25 minutes
+[apache-rollbar-short]
+enabled = false
+filter = apache-rollbar
+action = iptables-allports[]
+logpath = /var/log/httpd/access_log
+maxretry = 60
+findtime = 150
+bantime = 1500
+
+# Drops all connections from anyone making 104 requests per 2.5 minutes and getting 429 rate-limit for 1 day (after their short ban expires)
+[apache-rollbar-long]
+enabled = false
+filter = apache-rollbar
+action = iptables-allports[]
+logpath = /var/log/httpd/access_log
+maxretry = 2500
+findtime = 3600
+bantime = 86400
+
+# Make sure to reload fail2ban
