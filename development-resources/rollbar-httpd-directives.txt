@@ -1,6 +1,7 @@
 # It is strongly recommended to add the following directive block into the Apache httpd directives for rollbar.php
 # Place this block inside the <VirtualHost><Directory> tags for the directory containing the website files
 # This block rate-limits inbound requests to 5 per 2.5 minutes per IP address
+# ModSecurity and mod_rewrite are required for this
         <Files "rollbar.php">
             # Init vars and grab the IP
             SecAction id:1,initcol:ip=%{REMOTE_ADDR},pass,nolog
@@ -19,6 +20,12 @@
             # Condition matches: Serve 429.txt instead, don't process anymore Rewrite directives after this
             RewriteRule ^/rollbar.php(.*) /429.txt [L]
         </Files>
+
+
+# Add this to the bottom of the <VirtualHost> tag to log which filter fired in the access_log (No filter means ModSecurity rate-limiting or not rollbar.php)
+# If value in parenthesis is "rb", the item was submitted to Rollbar and the HTTP code listed in the log is the result
+    LogFormat "%h %l %u %t %v:%p \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" (%{RBResp}n)" rollbar
+    CustomLog logs/access_log rollbar
 
 # Also create a file called "429.txt" with the contents of the following line (Without the #)
 # {"err":1,"message":"too many requests"}

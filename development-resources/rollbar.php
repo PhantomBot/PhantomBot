@@ -30,25 +30,26 @@ function dofilter($data) {
     return filter_var($data, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_BACKTICK);
 }
 
-function doexit($code, $message) {
+function doexit($code, $message, $filternm) {
     http_response_code($code);
     echo json_encode(array('err' => 1, 'message' => $message));
+    apache_note('RBResp', $filternm);
     exit();
 }
 
 if (!array_key_exists('x-rollbar-access-token', $headers) || dofilter($headers['x-rollbar-access-token']) != $client_token) {
-    doexit(403, 'access denied');
+    doexit(403, 'access denied', 'token');
 }
 
 $data = file_get_contents('php://input');
 $item = json_decode($data, true);
 
 if (!array_key_exists('trace', $item['data']['body']) && !array_key_exists('trace_chain', $item['data']['body'])) {
-    doexit(409, 'only trace,trace_chain accepted');
+    doexit(409, 'only trace,trace_chain accepted', 'not_trace');
 }
 
 if (!in_array($item['data']['environment'], $allowed_environments)) {
-    doexit(409, 'environment not allowed');
+    doexit(409, 'environment not allowed', 'env');
 }
 
 if (array_key_exists('trace_chain', $item['data']['body'])) {
@@ -63,7 +64,7 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
 
 $lastframe = count($trace['frames']) - 1;
 
-foreach ($filters as $filter) {
+foreach ($filters as $i => $filter) {
     $checked = false;
     if (array_key_exists('exception', $filter)) {
         if (array_key_exists('class', $filter['exception'])) {
@@ -109,7 +110,7 @@ foreach ($filters as $filter) {
         continue;
     }
 
-    doexit(409, 'filtered');
+    doexit(409, 'filtered', 'filter_' . $i);
 }
 
 $item['access_token'] = $rollbar_token;
@@ -127,6 +128,7 @@ $response = curl_exec($c);
 
 http_response_code(curl_getinfo($c, CURLINFO_RESPONSE_CODE));
 echo $response;
+apache_note('RBResp', 'rb');
 
 curl_close($c);
 ?>
