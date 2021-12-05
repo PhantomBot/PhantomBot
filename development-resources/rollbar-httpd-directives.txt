@@ -1,6 +1,7 @@
 # It is strongly recommended to add the following directive block into the Apache httpd directives for rollbar.php
 # Place this block inside the <VirtualHost><Directory> tags for the directory containing the website files
 # This block rate-limits inbound requests to 5 per 2.5 minutes per IP address
+# ModSecurity and mod_rewrite are required for this
         <Files "rollbar.php">
             # Init vars and grab the IP
             SecAction id:1,initcol:ip=%{REMOTE_ADDR},pass,nolog
@@ -20,5 +21,60 @@
             RewriteRule ^/rollbar.php(.*) /429.txt [L]
         </Files>
 
-# Also create a file called "429.txt" with the contents of the following line (Without the #)
-# {"err":1,"message":"too many requests"}
+
+# Add this to the bottom of the <VirtualHost> tag to log which filter fired in the access_log (No filter means ModSecurity rate-limiting or not rollbar.php)
+# If value in parenthesis is "rb", the item was submitted to Rollbar and the HTTP code listed in the log is the result
+    LogFormat "%h %l %u %t %v:%p \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" (%{RBResp}n)" rollbar
+    CustomLog logs/access_log rollbar
+
+# Also create a file called "429.txt" with the contents of the following line
+{"err":1,"message":"too many requests"}
+
+# Make sure to reload httpd
+
+
+
+# Optional Fail2Ban Configuration to block users sending DDoS levels of traffic
+# Only identifies and bans users who are receiving rate-limit 429 response and not respecting it
+# Requires the custom LogFormat above
+
+# Create file /etc/fail2ban/filter.d/apache-rollbar.conf
+# Fail2Ban Apache rollbar
+
+[INCLUDES]
+
+before = apache-common.conf
+
+[Definition]
+
+failregex = ^<HOST> .* \[\] .* ".* HTTP/1\.[01]" 429 \d+ ".*" ".*" (.*)$
+
+ignoreregex =
+
+
+
+# Add following lines to /etc/fail2ban/jail.local
+# Change enabled to true on the rules you want to enable
+# Edit rules to your liking
+
+# Drops all connections from anyone making 60 requests per 2.5 minutes and getting 429 rate-limit for 25 minutes
+[apache-rollbar-short]
+enabled = false
+filter = apache-rollbar
+action = iptables-allports[]
+logpath = /var/log/httpd/access_log
+maxretry = 60
+findtime = 150
+bantime = 1500
+
+# Drops all connections from anyone making 104 requests per 2.5 minutes and getting 429 rate-limit for 1 day (after their short ban expires)
+[apache-rollbar-long]
+enabled = false
+filter = apache-rollbar
+action = iptables-allports[]
+logpath = /var/log/httpd/access_log
+maxretry = 2500
+findtime = 3600
+bantime = 86400
+
+# Make sure to reload fail2ban
