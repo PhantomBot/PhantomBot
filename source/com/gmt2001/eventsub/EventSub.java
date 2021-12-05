@@ -40,6 +40,7 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -50,8 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.GZIPInputStream;
@@ -63,6 +62,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -74,14 +74,8 @@ import tv.phantombot.event.EventBus;
 public final class EventSub implements HttpRequestHandler {
 
     private EventSub() {
-        this.getSubscriptions(true);
-        this.t = new Timer();
-        this.t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                cleanupDuplicates();
-            }
-        }, CLEANUP_INTERVAL, CLEANUP_INTERVAL);
+        Mono.delay(Duration.ofSeconds(5), Schedulers.boundedElastic()).doOnNext(l -> this.getSubscriptions(true)).subscribe();
+        Flux.interval(Duration.ofMillis(CLEANUP_INTERVAL), Schedulers.boundedElastic()).doOnNext(l -> this.cleanupDuplicates()).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
     }
 
     private static final EventSub INSTANCE = new EventSub();
@@ -96,7 +90,6 @@ public final class EventSub implements HttpRequestHandler {
     private final ConcurrentMap<String, Date> handledMessages = new ConcurrentHashMap<>();
     private List<EventSubSubscription> subscriptions = Collections.emptyList();
     private Date lastSubscriptionRetrieval;
-    private final Timer t;
 
     public static EventSub instance() {
         return EventSub.INSTANCE;
@@ -250,7 +243,7 @@ public final class EventSub implements HttpRequestHandler {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to get data [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
-        });
+        }).publishOn(Schedulers.boundedElastic());
     }
 
     /**
@@ -300,7 +293,7 @@ public final class EventSub implements HttpRequestHandler {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
-        });
+        }).publishOn(Schedulers.boundedElastic());
     }
 
     Mono<EventSubSubscription> createSubscription(EventSubSubscription proposedSubscription) {
@@ -342,7 +335,7 @@ public final class EventSub implements HttpRequestHandler {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
-        });
+        }).publishOn(Schedulers.boundedElastic());
     }
 
     static EventSubSubscription JSONToEventSubSubscription(JSONObject subscription) {
