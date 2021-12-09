@@ -94,7 +94,7 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL)/'
+            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERROR)/'
         )
     ),
     array(
