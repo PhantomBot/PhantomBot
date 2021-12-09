@@ -84,6 +84,11 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*setAutoCommit*'
         )
     ),
