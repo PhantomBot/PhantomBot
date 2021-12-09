@@ -79,6 +79,11 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*setAutoCommit*'
         )
     ),

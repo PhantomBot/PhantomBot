@@ -156,6 +156,9 @@ public class RollbarProvider implements AutoCloseable {
                                         && error.getMessage().contains("Unauthorized")) {
                                     return true;
                                 }
+                                if (error.getClass().equals(com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException.class)) {
+                                    return true;
+                                }
 
                                 if (error.getMessage().contains("setAutoCommit")) {
                                     return true;
