@@ -280,6 +280,10 @@ public class RollbarProvider implements AutoCloseable {
                                 if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Stream closed")) {
                                     return true;
                                 }
+
+                                if (error.getMessage().contains("Address already in use")) {
+                                    return true;
+                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)

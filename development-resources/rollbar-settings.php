@@ -225,6 +225,11 @@ $filters = array(
             'class' => 'java.io.IOException',
             'message' => 'Stream closed'
         )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Address already in use*'
+        )
     )
 );
 
