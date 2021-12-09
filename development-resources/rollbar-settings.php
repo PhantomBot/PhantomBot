@@ -99,6 +99,12 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'java.sql.SQLException',
+            'message' => 'Incorrect string value: \'\\xF0*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => 'opening db*'
         )
     ),
@@ -208,12 +214,6 @@ $filters = array(
     )
 );
 
-//Custom Filters
-array_push($filters,
-    array(
-    )
-);
-
 $allowed_environments = array(
     'stable',
     'stable_docker',
@@ -221,5 +221,8 @@ $allowed_environments = array(
     'nightly_build_docker',
     'edge_build'
 );
+
+//Put custom filters in rollbar-settings-extra.php in the provided array_push
+@include_once('rollbar-settings-extra.php');
 
 ?>

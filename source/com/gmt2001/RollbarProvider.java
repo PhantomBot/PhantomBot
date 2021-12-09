@@ -169,6 +169,10 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.sql.SQLException.class) && error.getMessage().startsWith("Incorrect string value: '\\xF0*")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
                                     return true;
                                 }
