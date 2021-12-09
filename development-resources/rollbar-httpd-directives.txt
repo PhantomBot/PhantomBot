@@ -57,21 +57,25 @@ ignoreregex =
 # Change enabled to true on the rules you want to enable
 # Edit rules to your liking
 
-# Drops all connections from anyone making 60 requests per 2.5 minutes and getting 429 rate-limit for 25 minutes
+# Drops all http connections from anyone making 60 requests per 2.5 minutes and getting 429 rate-limit for 25 minutes
 [apache-rollbar-short]
-enabled = false
+enabled = true
 filter = apache-rollbar
-action = iptables-allports[]
+banaction = iptables-multiport
+port = http,https
+protocol = tcp
 logpath = /var/log/httpd/access_log
 maxretry = 60
 findtime = 150
 bantime = 1500
 
-# Drops all connections from anyone making 104 requests per 2.5 minutes and getting 429 rate-limit for 1 day (after their short ban expires)
+# Drops all http connections from anyone making 104 requests per 2.5 minutes and getting 429 rate-limit for 1 day (after their short ban expires)
 [apache-rollbar-long]
-enabled = false
+enabled = true
 filter = apache-rollbar
-action = iptables-allports[]
+banaction = iptables-multiport
+port = http,https
+protocol = tcp
 logpath = /var/log/httpd/access_log
 maxretry = 2500
 findtime = 3600
