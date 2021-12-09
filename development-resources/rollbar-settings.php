@@ -89,6 +89,11 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'message' => '*Timeout while waiting for a free database connection*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*setAutoCommit*'
         )
     ),

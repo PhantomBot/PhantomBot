@@ -165,6 +165,10 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().contains("Timeout while waiting for a free database connection")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("setAutoCommit")) {
                                     return true;
                                 }
