@@ -99,8 +99,7 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'java.sql.SQLException',
-            'message' => 'Incorrect string value: \'\\xF0*'
+            'message' => '*Incorrect string value: \'\\xF0*'
         )
     ),
     array(
