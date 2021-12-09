@@ -1,6 +1,6 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
-/*
+ /*
  * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.cache;
 
 import com.gmt2001.BTTVAPIv3;
@@ -36,6 +35,7 @@ public class EmotesCache implements Runnable {
     private static final long LOOP_SLEEP_EMOTES_DISABLED = 60L;
     private static final long LOOP_SLEEP_EMOTES_ENABLED = 60L * 60L;
     private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
+
     public static EmotesCache instance(String channel) {
         EmotesCache instance = instances.get(channel);
         if (instance == null) {
@@ -88,16 +88,12 @@ public class EmotesCache implements Runnable {
 
         while (!killed) {
             try {
-                try {
-                    if (new Date().after(timeoutExpire)) {
-                        this.updateCache();
-                    }
-                } catch (Exception ex) {
-                    checkLastFail();
-                    com.gmt2001.Console.debug.println("EmotesCache.run: Failed to update emotes: " + ex.getMessage());
+                if (new Date().after(timeoutExpire)) {
+                    this.updateCache();
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                checkLastFail();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {
@@ -117,13 +113,13 @@ public class EmotesCache implements Runnable {
                 return true;
             } else if (jsonResult.getInt("_http") != 404 || (jsonResult.getInt("_http") == 404 && !ignore404)) {
                 try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req=" +
-                                        jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   " +
-                                        (jsonResult.has("message") && !jsonResult.isNull("message") ? "message=" +
-                                         jsonResult.getString("message") : "content=" + jsonResult.getString("_content")) +
-                                        "Emotes Type=" + emoteType);
+                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req="
+                            + jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   "
+                            + (jsonResult.has("message") && !jsonResult.isNull("message") ? "message="
+                            + jsonResult.getString("message") : "content=" + jsonResult.getString("_content"))
+                            + "Emotes Type=" + emoteType);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Failed to update emotes (" + emoteType + "): " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         } else {
@@ -163,14 +159,9 @@ public class EmotesCache implements Runnable {
         com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
 
         /**
-         * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes.
-         * twitchJsonResult = TwitchAPIv5.instance().GetEmotes();
-         * if (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) {
-         *    com.gmt2001.Console.err.println("Failed to get Twitch Emotes");
-         *    return;
-         * }
+         * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes. twitchJsonResult = TwitchAPIv5.instance().GetEmotes(); if
+         * (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) { com.gmt2001.Console.err.println("Failed to get Twitch Emotes"); return; }
          */
-
         bttvJsonResult = BTTVAPIv3.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Emotes");

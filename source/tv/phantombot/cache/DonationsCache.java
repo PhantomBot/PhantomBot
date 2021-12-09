@@ -78,16 +78,12 @@ public class DonationsCache implements Runnable {
 
         while (!this.killed) {
             try {
-                try {
-                    if (new Date().after(this.timeoutExpire)) {
-                        this.updateCache();
-                    }
-                } catch (Exception ex) {
-                    checkLastFail();
-                    com.gmt2001.Console.debug.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                if (new Date().after(this.timeoutExpire)) {
+                    this.updateCache();
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                checkLastFail();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {
@@ -122,7 +118,7 @@ public class DonationsCache implements Runnable {
                         com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
                         PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
                     } else {
-                        com.gmt2001.Console.err.println("Donations.updateCache: Failed to update donations: " + ex.getMessage());
+                        com.gmt2001.Console.err.printStackTrace(ex);
                     }
                     this.kill();
                 }
@@ -133,7 +129,7 @@ public class DonationsCache implements Runnable {
             } catch (Exception ex) {
                 if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
                     checkLastFail();
-                    com.gmt2001.Console.warn.println("DonationsCache.run: Failed to update donations: " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }

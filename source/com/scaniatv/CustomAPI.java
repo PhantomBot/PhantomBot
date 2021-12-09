@@ -62,7 +62,7 @@ public class CustomAPI {
                 throw new JSONException(data.httpCode + ": " + data.exception);
             }
         } catch (JSONException ex) {
-            com.gmt2001.Console.err.println("Failed to get JSON data from API: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
         return new JSONObject("{}");
     }

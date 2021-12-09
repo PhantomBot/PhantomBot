@@ -113,29 +113,29 @@ public class FrankerZAPIv1 {
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (NullPointerException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (MalformedURLException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (SocketTimeoutException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.println("FrankerZAPIv1::readJsonFromUrl::Exception: " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }

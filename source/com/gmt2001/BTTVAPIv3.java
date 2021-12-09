@@ -110,14 +110,14 @@ public class BTTVAPIv3 {
         } catch (IOException | NullPointerException | JSONException ex) {
             // Generate the return object.
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, ex.getClass().getSimpleName(), ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.println("BTTVAPIv3::readJsonFromUrl::Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.println("BTTVAPIv3::readJsonFromUrl::Exception: " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }

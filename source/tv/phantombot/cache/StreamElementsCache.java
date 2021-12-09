@@ -119,16 +119,12 @@ public class StreamElementsCache implements Runnable {
 
         while (!killed) {
             try {
-                try {
-                    if (new Date().after(timeoutExpire)) {
-                        this.updateCache();
-                    }
-                } catch (Exception ex) {
-                    checkLastFail();
-                    com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to update donations: " + ex.getMessage());
+                if (new Date().after(timeoutExpire)) {
+                    this.updateCache();
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("StreamElementsCache.run: Failed to update donations: " + ex.getMessage());
+                checkLastFail();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {

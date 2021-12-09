@@ -55,9 +55,7 @@ public class MySQLStore extends DataStore {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
-            com.gmt2001.Console.err.println(ex.getMessage());
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println(ex.getMessage());
+            ex.printStackTrace(System.err);
         }
 
         MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
@@ -94,7 +92,7 @@ public class MySQLStore extends DataStore {
         try (Connection connection = DriverManager.getConnection(db, user, pass)) {
             return true;
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.println("Failure to Connect to MySQL: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         return false;

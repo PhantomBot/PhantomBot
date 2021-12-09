@@ -333,7 +333,7 @@ public final class EventSub implements HttpRequestHandler {
                 }
             } catch (IOException | JSONException ex) {
                 emitter.error(ex);
-                com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("Failed to create subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
         }).publishOn(Schedulers.boundedElastic());
     }
@@ -493,7 +493,7 @@ public final class EventSub implements HttpRequestHandler {
                     i.close();
                 } catch (IOException ex) {
                     fillJSONObject(j, false, type.name(), post, EventSub.BASE + queryString, 0, "IOException", ex.getMessage(), content);
-                    com.gmt2001.Console.err.println("IOException: " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }

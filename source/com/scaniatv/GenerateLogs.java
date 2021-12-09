@@ -93,7 +93,7 @@ public class GenerateLogs {
                 }
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to read log file: [" + file + "] [IOException] " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -122,7 +122,7 @@ public class GenerateLogs {
             bufferedWriter.write(data);
             bufferedWriter.flush();
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to write log file: [" + file + "] [IOException] " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (bufferedWriter != null) {
                 try {

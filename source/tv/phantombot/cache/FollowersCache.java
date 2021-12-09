@@ -83,17 +83,12 @@ public class FollowersCache implements Runnable {
 
         while (!killed) {
             try {
-                try {
-                    if (new Date().after(timeoutExpire)) {
-                        updateCache();
-                    }
-                } catch (Exception ex) {
-                    checkLastFail();
-                    com.gmt2001.Console.debug.println("FollowersCache.run: Failed to update followers: " + ex.getMessage());
-                    com.gmt2001.Console.debug.printStackTrace(ex);
+                if (new Date().after(timeoutExpire)) {
+                    updateCache();
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("FollowersCache.run: Failed to update followers [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+                checkLastFail();
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {

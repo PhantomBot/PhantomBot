@@ -150,8 +150,7 @@ public class TwitchCache implements Runnable {
             try {
                 this.updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.debug.println("TwitchCache::run: " + ex.getMessage());
-                com.gmt2001.Console.debug.printStackTrace(ex);
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             if (doUpdateClips) {
@@ -298,8 +297,7 @@ public class TwitchCache implements Runnable {
                 }
             }
         } catch (JSONException ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
-            com.gmt2001.Console.debug.printStackTrace(ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
             success = false;
         }
 
@@ -399,8 +397,7 @@ public class TwitchCache implements Runnable {
                 }
             }
         } catch (IOException | JSONException ex) {
-            com.gmt2001.Console.err.println("TwitchCache::updateCache: " + ex.getMessage());
-            com.gmt2001.Console.debug.printStackTrace(ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
             success = false;
         }
 

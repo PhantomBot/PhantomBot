@@ -139,30 +139,30 @@ public class YouTubeAPIv3 {
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
             if (!urlAddress.startsWith("https://www.youtube.com/oembed")) {
-                com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         } catch (NullPointerException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (MalformedURLException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (SocketTimeoutException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (IOException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } finally {
             if (inputStream != null)
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
                     fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.println("Exception: " + ex.getMessage());
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
         }
         com.gmt2001.Console.debug.logln(jsonResult.toString().replaceAll(apikey, "xxx"));
@@ -200,8 +200,8 @@ public class YouTubeAPIv3 {
 
                     String a = j.getString("title");
                     return new String[] { q, a, "" };
-                } catch (Exception e) {
-                    com.gmt2001.Console.debug.println("Exception: " + e.getMessage());
+                } catch (JSONException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
 
                     return new String[] { "", "", "" };
                 }
