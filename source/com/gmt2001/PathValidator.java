@@ -63,50 +63,75 @@ public final class PathValidator {
     }
 
     public static boolean isValidPathShared(String pathToFile) {
+        return isValidPathSharedInternal(pathToFile, true);
+    }
+
+    private static boolean isValidPathSharedInternal(String pathToFile, boolean dbg) {
         boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_SHARED);
 
-        if (!retval) {
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared");
+        if (!retval && dbg) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
         }
 
         return retval;
     }
 
     public static boolean isValidPathScript(String pathToFile) {
-        boolean retval = isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_SCRIPT);
+        return isValidPathScriptInternal(pathToFile, true);
+    }
 
-        if (!retval) {
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Script");
+    private static boolean isValidPathScriptInternal(String pathToFile, boolean dbg) {
+        boolean retval = isValidPathSharedInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_SCRIPT);
+
+        if (!retval && dbg) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Script Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
         }
 
         return retval;
     }
 
     public static boolean isValidPathWeb(String pathToFile) {
-        boolean retval = isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_NOAUTH);
+        return isValidPathWebInternal(pathToFile, true);
+    }
 
-        if (!retval) {
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_NoAuth");
+    private static boolean isValidPathWebInternal(String pathToFile, boolean dbg) {
+        boolean retval = isValidPathSharedInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_NOAUTH);
+
+        if (!retval && dbg) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_NoAuth Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
         }
 
         return retval;
     }
 
     public static boolean isValidPathWebAuth(String pathToFile) {
-        boolean retval = isValidPathWeb(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_AUTH);
+        return isValidPathWebAuthInternal(pathToFile, true);
+    }
 
-        if (!retval) {
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_Auth");
+    private static boolean isValidPathWebAuthInternal(String pathToFile, boolean dbg) {
+        boolean retval = isValidPathWebInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_AUTH);
+
+        if (!retval && dbg) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_Auth Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
         }
 
         return retval;
     }
 
     public static boolean isValidPathLang(String pathToFile) {
+        return isValidPathLangInternal(pathToFile, true);
+    }
+
+    private static boolean isValidPathLangInternal(String pathToFile, boolean dbg) {
         boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_LANG);
 
-        if (!retval) {
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared");
+        if (!retval && dbg) {
+            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Lang Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
         }
 
         return retval;
