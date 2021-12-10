@@ -892,17 +892,17 @@
         /*
          * @transformer playsound
          * @formula (playsound hook:str) plays a sound hook on the alerts overlay
-         * @formula (playsound hook:str, volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
+         * @formula (playsound hook:str|volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
          * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
-         * @example Caster: !addcom !evil Played sound evil (playsound evillaugh, 0.5)
+         * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
          */
         function playsound(args) {
-            if ((match = args.match(/^\s([a-zA-Z0-9_]+)([ ,.0-9_]{0,5})$/))) {
+            if ((match = args.match(/^\s([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
                 if (!$.audioHookExists(match[1])) {
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return {result: $.lang.get('customcommands.playsound.404', match[1])};
                 }
-                $.alertspollssocket.triggerAudioPanel(match[1], match[2] !== undefined ? match[2] : -1);
+                $.alertspollssocket.triggerAudioPanel(match[1], match[3] !== undefined ? match[3] : -1);
                 return {result: '', cache: false};
             }
         }
