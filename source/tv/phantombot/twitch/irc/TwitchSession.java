@@ -24,7 +24,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 
 public class TwitchSession extends MessageQueue {
-    private static TwitchSession instance;
+
     private final String botName;
     private final String channelName;
     private String oAuth;
@@ -36,37 +36,28 @@ public class TwitchSession extends MessageQueue {
     private long nextBackoff = 1000L;
 
     /**
-     * Method that return this instance.
-     *
-     * @param  {String} channelName
-     * @param  {String} botName
-     * @param  {String} oAuth
-     * @return {TwitchSession}
-     */
-    public static TwitchSession instance(String channelName, String botName, String oAuth) {
-        if (instance == null) {
-            instance = new TwitchSession(channelName, botName, oAuth);
-        }
-        return instance;
-    }
-
-    private static TwitchSession instance() {
-        return instance;
-    }
-
-    /**
      * Class constructor.
      *
-     * @param  {String} channelName
-     * @param  {String} botName
-     * @param  {String} oAuth
+     * @param {String} channelName
+     * @param {String} botName
+     * @param {String} oAuth
      */
-    private TwitchSession(String channelName, String botName, String oAuth) {
+    public TwitchSession(String channelName, String botName, String oAuth) {
         super(channelName);
 
         this.channelName = channelName;
         this.botName = botName;
         this.oAuth = oAuth;
+    }
+
+    private TwitchSession(String channelName, String botName, String oAuth, long lastReconnect, long nextBackoff) {
+        super(channelName);
+
+        this.channelName = channelName;
+        this.botName = botName;
+        this.oAuth = oAuth;
+        this.lastReconnect = lastReconnect;
+        this.nextBackoff = nextBackoff;
     }
 
     /**
@@ -100,7 +91,7 @@ public class TwitchSession extends MessageQueue {
     public void sendRaw(String message) {
         try {
             this.twitchWSIRC.send(message);
-        } catch (NotYetConnectedException  ex) {
+        } catch (NotYetConnectedException ex) {
             com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
         } catch (WebsocketNotConnectedException ex) {
             reconnect();
@@ -123,7 +114,7 @@ public class TwitchSession extends MessageQueue {
      * Method that will do the moderation check of the bot.
      */
     public void getModerationStatus() {
-       send(".mods");
+        send(".mods");
     }
 
     /**
@@ -158,7 +149,7 @@ public class TwitchSession extends MessageQueue {
         lock.lock();
         try {
             new Thread(() -> {
-                TwitchSession.instance().doReconnect();
+                this.doReconnect();
             }).start();
         } finally {
             lock.unlock();
@@ -181,7 +172,8 @@ public class TwitchSession extends MessageQueue {
                 lastReconnect = now;
                 nextBackoff = Math.min(MAX_BACKOFF, nextBackoff * 2L);
 
-                this.twitchWSIRC.reconnectBlocking();
+                this.close();
+                PhantomBot.instance().setSession(new TwitchSession(this.channelName, this.botName, this.oAuth, this.lastReconnect, this.nextBackoff).connect());
 
                 // Should be connected now.
                 this.setAllowSendMessages(true);

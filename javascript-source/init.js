@@ -478,7 +478,7 @@
                     isMod = $.isModv3(sender, event.getTags());
 
             if (isReady === false && command.equalsIgnoreCase($.botName) && args[0].equalsIgnoreCase('moderate')) {
-                $.session.getModerationStatus();
+                Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
             }
 
             // Check if the command exists or if the module is disabled.

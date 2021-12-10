@@ -380,9 +380,9 @@
      */
     function timeoutUserFor(username, time, reason, tags) {
         if (time == 0) {
-            $.session.sayNow('.delete ' + tags.get('id')); // Cannot send a reason/time with this.
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.delete ' + tags.get('id')); // Cannot send a reason/time with this.
         } else {
-            $.session.sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
         }
     }
 
@@ -393,7 +393,7 @@
      * @param {string} reason
      */
     function banUser(username, reason) {
-        $.session.sayNow('.ban ' + username + ' ' + reason);
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.ban ' + username + ' ' + reason);
     }
 
     /**
@@ -430,7 +430,7 @@
      */
     function sendMessage(username, message, filter) {
         if (filter == false && messageTime < $.systemTime() && $.getMessageWrites() < 7) {
-            $.session.sayNow('@' + username + ', ' + message + ' ' + warning);
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }
     }
@@ -1131,7 +1131,7 @@
 
             // if the user got a warning/timeout, unban him, and remove him from the warning/timeout list.
             if (timeouts[action] !== undefined) {
-                $.session.sayNow('.unban ' + action);
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.unban ' + action);
                 delete timeouts[action];
             }
 

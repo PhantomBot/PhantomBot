@@ -586,11 +586,11 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println();
         } else {
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
-            this.session = TwitchSession.instance(this.channelName, this.botName, this.oauth).connect();
+            this.session = new TwitchSession(this.channelName, this.botName, this.oauth).connect();
 
             /* Start a host checking instance. */
             if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
-                this.wsHostIRC = TwitchWSHostIRC.instance(this.channelName, this.apiOAuth, EventBus.instance());
+                this.wsHostIRC = new TwitchWSHostIRC(this.channelName, this.apiOAuth);
             }
         }
     }
@@ -1052,6 +1052,14 @@ public final class PhantomBot implements Listener {
             this.getSession().close();
         }
 
+        if (this.wsHostIRC != null) {
+            this.wsHostIRC.shutdown();
+        }
+
+        if (this.pubSubEdge != null) {
+            this.pubSubEdge.shutdown();
+        }
+
         /* Shutdown all caches */
         if (followersCache != null) {
             print("Terminating the Twitch channel follower cache...");
@@ -1121,7 +1129,10 @@ public final class PhantomBot implements Listener {
     @Handler
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
         /* Check if the bot already joined once. */
+        this.session.getModerationStatus();
+
         if (joined) {
+            com.gmt2001.Console.debug.println("ircJoinComplete::joined::" + this.channelName);
             return;
         }
 
@@ -1134,7 +1145,7 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.debug.println("StartPubSub=" + (this.apiOAuth.length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) ? "t" : "f"));
         /* Start a pubsub instance here. */
         if (this.apiOAuth.length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions"))) {
-            this.pubSubEdge = TwitchPubSub.instance(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.apiOAuth);
+            this.pubSubEdge = new TwitchPubSub(this.channelName, TwitchAPIv5.instance().getChannelId(this.channelName), TwitchAPIv5.instance().getChannelId(this.botName), this.apiOAuth);
         }
 
         /* Load the caches for each channels */
@@ -1163,7 +1174,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
-        Script.global.defineProperty("session", this.session, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
     }
 
@@ -1620,5 +1630,17 @@ public final class PhantomBot implements Listener {
 
     public static boolean isInExitState() {
         return isInExitState;
+    }
+
+    public void setPubSub(TwitchPubSub pubSub) {
+        this.pubSubEdge = pubSub;
+    }
+
+    public void setHostIRC(TwitchWSHostIRC hostIrc) {
+        this.wsHostIRC = hostIrc;
+    }
+
+    public void setSession(TwitchSession session) {
+        this.session = session;
     }
 }
