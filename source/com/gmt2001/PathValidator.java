@@ -63,23 +63,53 @@ public final class PathValidator {
     }
 
     public static boolean isValidPathShared(String pathToFile) {
-        return isValidPathInternal(pathToFile, VALID_PATHS_SHARED);
+        boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_SHARED);
+
+        if (!retval) {
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared");
+        }
+
+        return retval;
     }
 
     public static boolean isValidPathScript(String pathToFile) {
-        return isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_SCRIPT);
+        boolean retval = isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_SCRIPT);
+
+        if (!retval) {
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Script");
+        }
+
+        return retval;
     }
 
     public static boolean isValidPathWeb(String pathToFile) {
-        return isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_NOAUTH);
+        boolean retval = isValidPathShared(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_NOAUTH);
+
+        if (!retval) {
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_NoAuth");
+        }
+
+        return retval;
     }
 
     public static boolean isValidPathWebAuth(String pathToFile) {
-        return isValidPathWeb(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_AUTH);
+        boolean retval = isValidPathWeb(pathToFile) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_AUTH);
+
+        if (!retval) {
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_Auth");
+        }
+
+        return retval;
     }
 
     public static boolean isValidPathLang(String pathToFile) {
-        return isValidPathInternal(pathToFile, VALID_PATHS_LANG);
+        boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_LANG);
+
+        if (!retval) {
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared");
+        }
+
+        return retval;
     }
 
     private static boolean isValidPathInternal(String pathToFile, String[] validPaths) {
