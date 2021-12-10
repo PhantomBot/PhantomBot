@@ -16,6 +16,7 @@
  */
 package tv.phantombot.httpserver;
 
+import com.gmt2001.PathValidator;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -29,7 +30,6 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.json.JSONStringer;
@@ -98,14 +98,14 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         try {
             Path p = Paths.get(".", path);
 
-            if (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
+            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;
             }
 
             if (HttpServerPageHandler.checkFilePermissions(ctx, req, p, true)) {
-                if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
+                if (Files.isDirectory(p)) {
                     HttpServerPageHandler.listDirectory(ctx, req, p);
                 } else {
                     com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "

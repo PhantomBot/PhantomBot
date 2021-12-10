@@ -24,16 +24,7 @@
     var JFile = java.io.File,
         JFileInputStream = java.io.FileInputStream,
         JFileOutputStream = java.io.FileOutputStream,
-        Paths = Packages.java.nio.file.Paths,
-        executionPath = Packages.tv.phantombot.PhantomBot.GetExecutionPath(),
-        fileHandles = [],
-        validPaths = [
-            './addons',
-            './config/audio-hooks',
-            './config/gif-alerts',
-            './logs',
-            './scripts'
-        ];
+        fileHandles = [];
 
     /**
      * @function readFile
@@ -319,15 +310,7 @@
     }
 
     function invalidLocation(path) {
-        var p = Paths.get(path);
-
-        for (var x in validPaths) {
-            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, validPaths[x]))) {
-                return false;
-            }
-        }
-
-       return true;
+        return Packages.com.gmt2001.PathValidator.isValidPathScript($.javaString(path));
     }
 
     /** Export functions to API */

@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver;
 
+import com.gmt2001.PathValidator;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -37,7 +38,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -313,20 +313,13 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * and passed the same tests. {@code false} otherwise
      */
     public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {
-        try {
-            if (!Files.exists(p, LinkOption.NOFOLLOW_LINKS)) {
-                com.gmt2001.Console.debug.println("404: " + p.toString());
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
-                return false;
-            } else if (Files.isHidden(p) || Files.isSymbolicLink(p) || !Files.isReadable(p) || (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS) && !directoryAllowed)) {
-                com.gmt2001.Console.debug.println("403: " + p.toString());
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
-                return false;
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500: " + p.toString());
-            com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+        if (!Files.exists(p)) {
+            com.gmt2001.Console.debug.println("404: " + p.toString());
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
+            return false;
+        } else if (!PathValidator.isValidPathWebAuth(p.toString()) || (Files.isDirectory(p) && !directoryAllowed)) {
+            com.gmt2001.Console.debug.println("403: " + p.toString());
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
             return false;
         }
 

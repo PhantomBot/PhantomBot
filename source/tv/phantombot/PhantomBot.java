@@ -650,11 +650,12 @@ public final class PhantomBot implements Listener {
 
     public static String GetExecutionPath() {
         try {
-            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toString();
-        } catch (URISyntaxException ex) {
+            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toAbsolutePath().toRealPath().toString();
+        } catch (IOException | URISyntaxException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return "";
         }
+
+        return ".";
     }
 
     /**
