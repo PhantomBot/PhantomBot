@@ -310,7 +310,7 @@
     }
 
     function invalidLocation(path) {
-        return Packages.com.gmt2001.PathValidator.isValidPathScript($.javaString(path));
+        return !Packages.com.gmt2001.PathValidator.isValidPathScript($.javaString(path));
     }
 
     /** Export functions to API */
