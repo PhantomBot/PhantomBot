@@ -18,7 +18,6 @@ package com.gmt2001;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import tv.phantombot.PhantomBot;
@@ -135,32 +134,39 @@ public final class PathValidator {
 
     private static boolean isValidPathInternal(String pathToFile, String[] validPaths) {
         try {
-            Path p = Paths.get(pathToFile).toAbsolutePath();
             String executionPath = PhantomBot.GetExecutionPath();
+            Path p = Paths.get(executionPath, pathToFile).toAbsolutePath();
 
+            boolean useReal = true;
             if (!Files.exists(p)) {
-                return false;
+                if (p.compareTo(Paths.get(executionPath).toAbsolutePath()) <= 0) {
+                    return false;
+                }
+
+                if (!isValidPathInternal(p.getParent().toString(), validPaths)) {
+                    return false;
+                }
+
+                useReal = false;
             }
 
-            p = p.toRealPath();
+            if (useReal) {
+                p = p.toRealPath();
+            } else {
+                p = p.normalize();
+            }
 
-            if (Files.isHidden(p) || !Files.isReadable(p)) {
+            if (Files.exists(p) && (Files.isHidden(p) || !Files.isReadable(p))) {
                 return false;
             }
 
             for (String vp : validPaths) {
-                try {
-                    if (p.startsWith(Paths.get(executionPath, vp).toAbsolutePath().toRealPath())) {
-                        return true;
-                    }
-                } catch (NoSuchFileException ex) {
+                if (p.startsWith(Paths.get(executionPath, vp).toAbsolutePath().normalize())) {
+                    return true;
                 }
 
-                try {
-                    if (RepoVersion.isDocker() && p.startsWith(Paths.get(getDockerPath(), vp).toAbsolutePath().toRealPath())) {
-                        return true;
-                    }
-                } catch (NoSuchFileException ex) {
+                if (RepoVersion.isDocker() && p.startsWith(Paths.get(getDockerPath(), vp).toAbsolutePath().normalize())) {
+                    return true;
                 }
             }
         } catch (IOException ex) {

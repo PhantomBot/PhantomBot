@@ -1048,8 +1048,8 @@ public final class PhantomBot implements Listener {
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
-        if (PhantomBot.instance().getSession() != null) {
-            PhantomBot.instance().getSession().close();
+        if (this.getSession() != null) {
+            this.getSession().close();
         }
 
         /* Shutdown all caches */
