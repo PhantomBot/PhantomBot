@@ -260,6 +260,10 @@ $(function () {
             audio = new Audio(audioFile);
             // Set the volume.
             audio.volume = getOptionSetting('audio-hook-volume', '1');
+
+            if (json.hasOwnProperty("audio_panel_volume") && json.audio_panel_volume >= 0.0) {
+                audio.volume = json.audio_panel_volume;
+            }
             // Add an event handler.
             $(audio).on('ended', function () {
                 audio.currentTime = 0;
