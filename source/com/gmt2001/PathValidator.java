@@ -18,6 +18,7 @@ package com.gmt2001;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import tv.phantombot.PhantomBot;
@@ -70,8 +71,7 @@ public final class PathValidator {
         boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_SHARED);
 
         if (!retval && dbg) {
-            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Shared");
         }
 
         return retval;
@@ -85,8 +85,7 @@ public final class PathValidator {
         boolean retval = isValidPathSharedInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_SCRIPT);
 
         if (!retval && dbg) {
-            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Script Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Script");
         }
 
         return retval;
@@ -100,8 +99,7 @@ public final class PathValidator {
         boolean retval = isValidPathSharedInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_NOAUTH);
 
         if (!retval && dbg) {
-            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_NoAuth Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_NoAuth");
         }
 
         return retval;
@@ -115,8 +113,7 @@ public final class PathValidator {
         boolean retval = isValidPathWebInternal(pathToFile, false) || isValidPathInternal(pathToFile, VALID_PATHS_WEB_AUTH);
 
         if (!retval && dbg) {
-            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_Auth Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Web_Auth");
         }
 
         return retval;
@@ -130,8 +127,7 @@ public final class PathValidator {
         boolean retval = isValidPathInternal(pathToFile, VALID_PATHS_LANG);
 
         if (!retval && dbg) {
-            StackTraceElement st = com.gmt2001.Console.debug.findCaller("com.gmt2001.PathValidator");
-            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Lang Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
+            com.gmt2001.Console.debug.println("Rejected path [" + pathToFile + "] on validator Lang");
         }
 
         return retval;
@@ -139,16 +135,32 @@ public final class PathValidator {
 
     private static boolean isValidPathInternal(String pathToFile, String[] validPaths) {
         try {
-            Path p = Paths.get(pathToFile).toAbsolutePath().toRealPath();
+            Path p = Paths.get(pathToFile).toAbsolutePath();
             String executionPath = PhantomBot.GetExecutionPath();
 
-            if (!Files.exists(p) || Files.isHidden(p) || !Files.isReadable(p)) {
+            if (!Files.exists(p)) {
+                return false;
+            }
+
+            p = p.toRealPath();
+
+            if (Files.isHidden(p) || !Files.isReadable(p)) {
                 return false;
             }
 
             for (String vp : validPaths) {
-                if (p.startsWith(Paths.get(executionPath, vp)) || (RepoVersion.isDocker() && p.startsWith(Paths.get(getDockerPath(), vp)))) {
-                    return true;
+                try {
+                    if (p.startsWith(Paths.get(executionPath, vp).toAbsolutePath().toRealPath())) {
+                        return true;
+                    }
+                } catch (NoSuchFileException ex) {
+                }
+
+                try {
+                    if (RepoVersion.isDocker() && p.startsWith(Paths.get(getDockerPath(), vp).toAbsolutePath().toRealPath())) {
+                        return true;
+                    }
+                } catch (NoSuchFileException ex) {
                 }
             }
         } catch (IOException ex) {
