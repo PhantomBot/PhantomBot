@@ -588,6 +588,16 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
+         * @consolecommand reconnect - Reconnects to RMI, Host TMI, and PubSub.
+         */
+        if (message.equalsIgnoreCase("reconnect")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI, Host TMI, and PubSub reconnect");
+
+            PhantomBot.instance().reconnect();
+            return;
+        }
+
+        /**
          * @consolecommand debugon - Enables debug mode.
          */
         if (message.equalsIgnoreCase("debugon")) {

@@ -50,11 +50,13 @@ import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.chat.utils.SubscriberBulkGifter;
 
 // Create an interface that is used to create event handling methods.
-interface TwitchWSIRCCommand{
+interface TwitchWSIRCCommand {
+
     void exec(String message, String username, Map<String, String> tags);
 }
 
 public class TwitchWSIRCParser implements Runnable {
+
     // The user login sent in the anonymous sub gift event from Twitch.
     // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
     private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
@@ -77,16 +79,16 @@ public class TwitchWSIRCParser implements Runnable {
         } else {
             instance.setWebSocket(webSocket);
         }
-        
+
         return instance;
     }
-    
+
     /**
      * Class constructor.
      *
      * @param {WebSocket} webSocket
-     * @param {String}    channelName
-     * @param {TwitchSession}   session
+     * @param {String} channelName
+     * @param {TwitchSession} session
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
@@ -125,7 +127,7 @@ public class TwitchWSIRCParser implements Runnable {
         this.runThread = new Thread(this);
         this.runThread.start();
     }
-    
+
     private void setWebSocket(WebSocket webSocket) {
         this.webSocket = webSocket;
     }
@@ -317,7 +319,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void parseCommand(String message, String username, Map<String, String> tags) {
         String command = message.substring(1);
@@ -335,18 +337,15 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * ----------------------------------------------------------------------
-     * Event Handling Methods. The below methods are all referenced from the
-     * parserMap object.
-     * ----------------------------------------------------------------------
+     * ---------------------------------------------------------------------- Event Handling Methods. The below methods are all referenced from the
+     * parserMap object. ----------------------------------------------------------------------
      */
-
     /**
      * Handles the 001 event from IRC.
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onChannelJoined(String message, String username, Map<String, String> tags) {
         // Request our tags
@@ -369,7 +368,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onPrivMsg(String message, String username, Map<String, String> tags) {
         // Check to see if the user is using a ACTION in the channel (/me).
@@ -431,7 +430,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onClearChat(String message, String username, Map<String, String> tags) {
         String duration = "";
@@ -456,7 +455,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onWhisper(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -470,7 +469,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onJoin(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -484,7 +483,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onPart(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -498,9 +497,32 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
+        if (tags.containsKey("msg-id")) {
+            switch (tags.get("msg-id")) {
+                case "msg_banned":
+                case "msg_bad_characters":
+                case "msg_channel_blocked":
+                case "msg_channel_suspended":
+                case "msg_facebook":
+                case "msg_followersonly_followed":
+                case "msg_ratelimit":
+                case "msg_rejected":
+                case "msg_rejected_mandatory":
+                case "msg_verified_email":
+                case "msg_requires_verified_phone_number":
+                case "no_permission":
+                case "tos_ban":
+                case "whisper_banned":
+                case "whisper_banned_recipient":
+                case "whisper_restricted":
+                case "whisper_restricted_recipient":
+                    com.gmt2001.Console.err.println(tags.get("msg-id") + ": " + message);
+                    break;
+            }
+        }
         switch (message) {
             case "Login authentication failed":
                 com.gmt2001.Console.out.println();
@@ -528,7 +550,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onUserNotice(String message, String username, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
@@ -577,7 +599,7 @@ public class TwitchWSIRCParser implements Runnable {
      *
      * @param {String} message
      * @param {String} username
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     private void onUserState(String message, String username, Map<String, String> tags) {
         username = session.getBotName();

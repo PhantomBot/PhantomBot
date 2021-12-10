@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord.util;
 
+import com.gmt2001.PathValidator;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -43,7 +44,6 @@ import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.rest.util.Color;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -71,13 +71,6 @@ import tv.phantombot.discord.DiscordAPI;
 public class DiscordUtil {
 
     private static final int MAX_ITERATION = 5;
-    private static final String[] VALID_PATHS = new String[]{
-        "./addons",
-        "./config/audio-hooks",
-        "./config/gif-alerts",
-        "./logs",
-        "./scripts"
-    };
 
     public DiscordUtil() {
     }
@@ -98,16 +91,7 @@ public class DiscordUtil {
     }
 
     public boolean isValidFilePath(String fileLocation) {
-        Path p = Paths.get(fileLocation);
-        String executionPath = PhantomBot.GetExecutionPath();
-
-        for (String vp : VALID_PATHS) {
-            if (p.toAbsolutePath().startsWith(Paths.get(executionPath, vp))) {
-                return true;
-            }
-        }
-
-        return false;
+        return PathValidator.isValidPathShared(fileLocation);
     }
 
     @Deprecated

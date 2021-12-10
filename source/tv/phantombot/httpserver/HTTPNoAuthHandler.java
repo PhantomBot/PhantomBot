@@ -16,6 +16,7 @@
  */
 package tv.phantombot.httpserver;
 
+import com.gmt2001.PathValidator;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -31,7 +32,6 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -170,12 +170,12 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             Path p = Paths.get(start, path);
 
-            if (path.endsWith("/") || Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)) {
+            if (path.endsWith("/") || Files.isDirectory(p)) {
                 path = path + "/index.html";
                 p = Paths.get(start, path);
             }
 
-            if ((!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
+            if (!PathValidator.isValidPathWeb(p.toString()) || (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
                     && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./addons"))
                     && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
                     && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))

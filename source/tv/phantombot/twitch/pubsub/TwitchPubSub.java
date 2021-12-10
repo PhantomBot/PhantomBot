@@ -65,40 +65,16 @@ public class TwitchPubSub {
 
     private static final long BACKOFF_RESET_MS = 300000L;
     private static final int BACKOFF_MAX = 20;
-    private static final Map<String, TwitchPubSub> instances = new ConcurrentHashMap<>();
     private final Map<String, String> messageCache = new ConcurrentHashMap<>();
     private final Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
     private final String channel;
+    private final int channelId;
+    private final int botId;
+    private String oAuth;
     private TwitchPubSubWS twitchPubSubWS;
-    private boolean reconnecting = false;
     private ReentrantLock lock = new ReentrantLock();
     private long lastConnectAttempt = 0L;
-    private ExponentialBackoff backoff = new ExponentialBackoff(1000, 120000);
-
-    /**
-     * This starts the PubSub instance.
-     *
-     * @param {string} channel Name of the channel to start the instance on. As of right now you can onyl start one instance.
-     * @param {int} channelId The channel user id.
-     * @param {int} botId The bot user id.
-     * @param {string} oauth The bots tmi oauth token.
-     */
-    public static TwitchPubSub instance(String channel, int channelId, int botId, String oAuth) {
-        TwitchPubSub instance = instances.get(channel);
-
-        if (instance == null) {
-            instance = new TwitchPubSub(channel, channelId, botId, oAuth);
-            instances.put(channel, instance);
-        }
-
-        return instance;
-    }
-
-    private static TwitchPubSub instance(String channel) {
-        TwitchPubSub instance = instances.get(channel);
-
-        return instance;
-    }
+    private ExponentialBackoff backoff;
 
     /**
      * Constructor for the PubSub class.
@@ -108,8 +84,31 @@ public class TwitchPubSub {
      * @param {int} botId The bot user id.
      * @param {string} oauth The bots tmi oauth token.
      */
-    private TwitchPubSub(String channel, int channelId, int botId, String oAuth) {
+    public TwitchPubSub(String channel, int channelId, int botId, String oAuth) {
         this.channel = channel;
+        this.backoff = new ExponentialBackoff(1000, 120000);
+        this.channelId = channelId;
+        this.botId = botId;
+        this.oAuth = oAuth;
+
+        try {
+            this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
+            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
+            if (!this.twitchPubSubWS.connectWSS(false)) {
+                throw new Exception("Failed to connect to PubSub.");
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("TwitchPubSub connection error: " + ex.getMessage());
+            PhantomBot.exitError();
+        }
+    }
+
+    public TwitchPubSub(String channel, int channelId, int botId, String oAuth, ExponentialBackoff backoff) {
+        this.channel = channel;
+        this.backoff = backoff;
+        this.channelId = channelId;
+        this.botId = botId;
+        this.oAuth = oAuth;
 
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, channelId, botId, oAuth);
@@ -125,6 +124,7 @@ public class TwitchPubSub {
 
     public void setOAuth(String oAuth) {
         this.twitchPubSubWS.setOAuth(oAuth);
+        this.oAuth = oAuth;
     }
 
     /**
@@ -159,10 +159,12 @@ public class TwitchPubSub {
                     }
 
                     this.backoff.BackoffAsync(() -> {
-                        TwitchPubSub.instance(channel).doReconnect();
+                        this.shutdown();
+                        PhantomBot.instance().setPubSub(new TwitchPubSub(this.channel, this.channelId, this.botId, this.oAuth, this.backoff));
                     });
                 } else {
-                    TwitchPubSub.instance(channel).doReconnect();
+                    this.shutdown();
+                    PhantomBot.instance().setPubSub(new TwitchPubSub(this.channel, this.channelId, this.botId, this.oAuth, this.backoff));
                 }
             }).start();
         } finally {
@@ -170,20 +172,8 @@ public class TwitchPubSub {
         }
     }
 
-    public void doReconnect() {
-        if (reconnecting) {
-            return;
-        }
-
-        try {
-            reconnecting = true;
-            this.lastConnectAttempt = Calendar.getInstance().getTimeInMillis();
-            this.twitchPubSubWS.reconnectBlocking();
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            reconnecting = false;
-        }
+    public void shutdown() {
+        this.twitchPubSubWS.close(1000, "bye");
     }
 
     /**
@@ -231,13 +221,6 @@ public class TwitchPubSub {
 
         public void setOAuth(String oAuth) {
             this.oAuth = oAuth;
-        }
-
-        /**
-         * Closes this class.
-         */
-        public void delete() {
-            close();
         }
 
         /**
@@ -471,8 +454,10 @@ public class TwitchPubSub {
                 return;
             }
 
-            com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying soon...");
-            this.twitchPubSub.reconnect(false);
+            if (!reason.equals("bye")) {
+                com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying soon...");
+                this.twitchPubSub.reconnect(false);
+            }
         }
 
         /**

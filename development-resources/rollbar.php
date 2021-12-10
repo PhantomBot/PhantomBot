@@ -92,14 +92,14 @@ foreach ($filters as $i => $filter) {
         if ($frameno < 0) {
             if (array_key_exists('class_name', $filter['frame'])) {
                 $checked = true;
-                if (!contains($trace['frame'][$frameno]['class_name'], $filter['frame']['class_name'])) {
+                if (!contains($trace['frames'][$frameno]['class_name'], $filter['frame']['class_name'])) {
                     continue;
                 }
             }
 
             if (array_key_exists('method', $filter['frame'])) {
                 $checked = true;
-                if (!contains($trace['frame'][$frameno]['method'], $filter['frame']['method'])) {
+                if (!contains($trace['frames'][$frameno]['method'], $filter['frame']['method'])) {
                     continue;
                 }
             }
@@ -113,7 +113,41 @@ foreach ($filters as $i => $filter) {
     doexit(409, 'filtered', 'filter_' . $i);
 }
 
+$ctx = hash_init('sha1');
+
+hash_update($ctx, $item['data']['code_version']);
+hash_update($ctx, $item['data']['environment']);
+hash_update($ctx, $item['data']['level']);
+hash_update($ctx, $item['data']['title']);
+
+if (array_key_exists('trace_chain', $item['data']['body'])) {
+    foreach($item['data']['body']['trace_chain'] as $v) {
+        hash_update($ctx, $v['exception']['class']);
+        hash_update($ctx, $v['exception']['description']);
+        hash_update($ctx, $v['exception']['message']);
+
+        foreach($v['frames'] as $f) {
+            hash_update($ctx, $f['class_name']);
+            hash_update($ctx, $f['filename']);
+            hash_update($ctx, $f['lineno']);
+            hash_update($ctx, $f['method']);
+        }
+    }
+} else {
+    hash_update($ctx, $item['data']['body']['trace']['exception']['class']);
+    hash_update($ctx, $item['data']['body']['trace']['exception']['description']);
+    hash_update($ctx, $item['data']['body']['trace']['exception']['message']);
+
+    foreach($item['data']['body']['trace']['frames'] as $f) {
+        hash_update($ctx, $f['class_name']);
+        hash_update($ctx, $f['filename']);
+        hash_update($ctx, $f['lineno']);
+        hash_update($ctx, $f['method']);
+    }
+}
+
 $item['access_token'] = $rollbar_token;
+$item['data']['fingerprint'] = hash_final($ctx);
 
 $c = curl_init();
 

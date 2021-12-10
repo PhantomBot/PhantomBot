@@ -72,8 +72,7 @@ public class ViewerListCache implements Runnable {
             try {
                 this.updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.debug.println("ViewerListCache::run: " + ex.getMessage());
-                com.gmt2001.Console.debug.printStackTrace(ex);
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {
@@ -140,7 +139,7 @@ public class ViewerListCache implements Runnable {
                 com.gmt2001.Console.debug.println("Failed to update viewers cache: " + object);
             }
         } catch (JSONException ex) {
-            com.gmt2001.Console.debug.println("ViewerListCache::updateCache: Failed to update: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

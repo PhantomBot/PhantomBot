@@ -169,10 +169,8 @@ public class Logger implements Runnable {
                                 break;
                         }
                     }
-                } catch (FileNotFoundException | SecurityException ex) {
+                } catch (FileNotFoundException | SecurityException | NullPointerException ex) {
                     ex.printStackTrace(System.err);
-                } catch (NullPointerException ex) {
-                    com.gmt2001.Console.err.println("Failed to log [NullPointerException]: " + ex.getMessage());
                 }
             } else {
                 try {
@@ -216,14 +214,14 @@ public class Logger implements Runnable {
     }
 
     private Logger() {
-        this.queue = new ConcurrentLinkedQueue<LogItem>();
+        this.queue = new ConcurrentLinkedQueue<>();
     }
 
     public void log(LogType t, String s) {
         try {
             this.queue.add(new LogItem(t, s));
         } catch (IllegalStateException ex) {
-            com.gmt2001.Console.err.println("Failed to add item to the log queue [IllegalStateException]: " + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
     }
 

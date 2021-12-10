@@ -63,7 +63,7 @@
      * @function getMessageWrites
      */
     function getMessageWrites() {
-        return parseInt($.session.getWrites());
+        return parseInt(Packages.tv.phantombot.PhantomBot.instance().getSession().getWrites());
     }
 
     /**
@@ -167,14 +167,14 @@
         }
 
         if (respond && !action) {
-            $.session.say(message);
+            Packages.tv.phantombot.PhantomBot.instance().getSession().say(message);
         } else {
             if (respond && action) {
                 // If the message is a Twitch command, remove the /me.
                 if (message.startsWith('.') || message.startsWith('/')) {
-                    $.session.say(message);
+                    Packages.tv.phantombot.PhantomBot.instance().getSession().say(message);
                 } else {
-                    $.session.say('/me ' + message);
+                    Packages.tv.phantombot.PhantomBot.instance().getSession().say('/me ' + message);
                 }
             }
             if (!respond) {

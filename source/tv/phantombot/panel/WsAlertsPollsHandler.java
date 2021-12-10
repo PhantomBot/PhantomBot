@@ -130,6 +130,17 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         }
     }
 
+    public void triggerAudioPanel(String audioHook, float volume) {
+        try {
+            com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("audio_panel_hook").value(audioHook).key("audio_panel_volume").value(volume).endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     public void alertImage(String imageInfo) {
         try {
             com.gmt2001.Console.debug.println("alertImage: " + imageInfo);

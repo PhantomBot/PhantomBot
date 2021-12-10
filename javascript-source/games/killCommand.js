@@ -69,7 +69,7 @@
             $.say(lang);
             if (!$.isMod(sender) && jailTimeout > 0) {
                 setTimeout(function() {
-                    $.session.say('.timeout ' + sender + ' ' + jailTimeout);
+                    Packages.tv.phantombot.PhantomBot.instance().getSession().say('.timeout ' + sender + ' ' + jailTimeout);
                 }, 1500);
             }
         } else {

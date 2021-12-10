@@ -54,7 +54,7 @@
      * @param {string} username
      */
     function timeoutUserR(username) {
-        $.session.say('.timeout ' + username + ' ' + timeoutTime);
+        Packages.tv.phantombot.PhantomBot.instance().getSession().say('.timeout ' + username + ' ' + timeoutTime);
     };
 
     /**

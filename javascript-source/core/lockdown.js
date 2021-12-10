@@ -28,7 +28,7 @@
      */
     $.bind('ircChannelMessage', function(event) {
         if (state.alphaFilter && $.test(event.getMessage(), alphaFilter)) {
-            $.session.sayNow('.timeout ' + event.getSender() + ' 1s Message blocked by lockdown alpha filter');
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + event.getSender() + ' 1s Message blocked by lockdown alpha filter');
         }
     });
 
@@ -41,23 +41,23 @@
 
         if (command.equalsIgnoreCase('lockdown')) {
             if (args.length === 0 && !state.lockdown) {
-                $.session.sayNow('.clear');
-                $.session.sayNow('.subscribers');
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.clear');
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.subscribers');
                 state.lockdown = true;
-                $.session.sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
                 
                 setTimeout(function() {
-                    $.session.sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
+                    Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
                 }, 5e3);
                 
                 state.timer = setInterval(function() {
-                    $.session.sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
+                    Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/me === LOCKDOWN ENABLED === Chat has been placed into subscribers-only mode due to a moderator initiating chat lockdown. To end lockdown, a moderator must say: !lockdown end');
                 }, 300e3);
             } else if(args.length > 0 && args[0].equalsIgnoreCase('help')) {
                 $.say('Lockdown Module >> !lockdown - Locks down chat using clearchat and sub-only mode. Ongoing message every 5 minutes >> !lockdown end - Ends a lockdown >> !lockdown alphafilter - Toggles restricting allowed characters in chat');
             } else if(args.length > 0 && args[0].equalsIgnoreCase('end') && state.lockdown) {
-                $.session.sayNow('/me === LOCKDOWN ENDED === The lockdown is now lifting. Please behave everyone. A moderator may start another lockdown by saying: !lockdown');
-                $.session.sayNow('.subscribersoff');
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/me === LOCKDOWN ENDED === The lockdown is now lifting. Please behave everyone. A moderator may start another lockdown by saying: !lockdown');
+                Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.subscribersoff');
                 state.lockdown = false;
                 clearInterval(state.timer);
             } else if(args.length > 0 && args[0].equalsIgnoreCase('alphafilter')) {

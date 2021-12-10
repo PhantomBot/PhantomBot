@@ -79,6 +79,21 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Timeout while waiting for a free database connection*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*setAutoCommit*'
         )
     ),
@@ -94,7 +109,12 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL)/'
+            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERROR)/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Incorrect string value: \'\\xF0*'
         )
     ),
     array(
@@ -205,12 +225,11 @@ $filters = array(
             'class' => 'java.io.IOException',
             'message' => 'Stream closed'
         )
-    )
-);
-
-//Custom Filters
-array_push($filters,
+    ),
     array(
+        'exception' => array(
+            'message' => '*Address already in use*'
+        )
     )
 );
 
@@ -221,5 +240,8 @@ $allowed_environments = array(
     'nightly_build_docker',
     'edge_build'
 );
+
+//Put custom filters in rollbar-settings-extra.php in the provided array_push
+@include_once('rollbar-settings-extra.php');
 
 ?>

@@ -50,7 +50,7 @@
              * @commandpath botName moderate - Forces the bot to detect its moderator status.
              */
             if (action.equalsIgnoreCase('moderate')) {
-                $.session.getModerationStatus();
+                Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
             }
 
             /*
@@ -332,7 +332,7 @@
          */
         if (command.equalsIgnoreCase('reconnect')) {
             if ($.isBot(sender)) {
-                $.session.reconnect();
+                Packages.tv.phantombot.PhantomBot.instance().getSession().reconnect();
             }
         }
 

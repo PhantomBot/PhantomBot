@@ -1,6 +1,6 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
-/*
+ /*
  * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,10 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
+ /*
  * @author illusionaryone
  */
-
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitterAPI;
@@ -38,9 +37,8 @@ import twitter4j.Status;
 /**
  * TwitterCache Class
  *
- * This class is responsible for calling the Twitter API within specified amounts of time, taking
- * that data and updating the local database with certain information and passing information
- * on the event bus to trigger events in chat.
+ * This class is responsible for calling the Twitter API within specified amounts of time, taking that data and updating the local database with
+ * certain information and passing information on the event bus to trigger events in chat.
  */
 public class TwitterCache implements Runnable {
 
@@ -52,8 +50,8 @@ public class TwitterCache implements Runnable {
     /**
      * Creates an instance for a channel.
      *
-     * @param   channel       Name of the Twitch Channel for which this instance is created.
-     * @return  TwitterCache  The new TwitterCache instance object.
+     * @param channel Name of the Twitch Channel for which this instance is created.
+     * @return TwitterCache The new TwitterCache instance object.
      */
     public static TwitterCache instance(String channel) {
         TwitterCache instance = instances.get(channel);
@@ -68,7 +66,7 @@ public class TwitterCache implements Runnable {
     /**
      * Constructor for TwitterCache object.
      *
-     * @param  channel  Name of the Twitch Channel for which this object is created.
+     * @param channel Name of the Twitch Channel for which this object is created.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitterCache(String channel) {
@@ -86,9 +84,8 @@ public class TwitterCache implements Runnable {
     }
 
     /**
-     * Thread run instance.  This is the main loop for the thread that is created to manage
-     * retrieving data from the Twitter API.  This loop runs every 15 seconds, calling the
-     * method to update data from Twitter.  That method checks against limits.
+     * Thread run instance. This is the main loop for the thread that is created to manage retrieving data from the Twitter API. This loop runs every
+     * 15 seconds, calling the method to update data from Twitter. That method checks against limits.
      */
     @Override
     @SuppressWarnings("SleepWhileInLoop")
@@ -103,13 +100,9 @@ public class TwitterCache implements Runnable {
 
         while (!killed) {
             try {
-                try {
-                    this.updateCache();
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
-                }
+                this.updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitterCache::run: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
             try {
@@ -121,8 +114,7 @@ public class TwitterCache implements Runnable {
     }
 
     /**
-     * Polls the Twitter API and updates the database cache with information.  This method also
-     * sends events to chat when appropriate.
+     * Polls the Twitter API and updates the database cache with information. This method also sends events to chat when appropriate.
      */
     private void updateCache() throws Exception {
         boolean poll_retweets = false;
@@ -199,9 +191,9 @@ public class TwitterCache implements Runnable {
     /**
      * Handles retweets with the Twitter API.
      *
-     * @param  long     The last time this API was polled.
-     * @param  long     The delay to occur between polls.
-     * @param  long     The present time stamp in seconds.
+     * @param long The last time this API was polled.
+     * @param long The delay to occur between polls.
+     * @param long The present time stamp in seconds.
      */
     private void handleRetweets(long lastTime, long delay, long presentTime) {
         if (presentTime - lastTime < delay) {
@@ -210,7 +202,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastpoll_retweets", presentTime);
 
         long lastID = getDBLong("lastid_retweets", true, 0L);
-        List<Status>statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
+        List<Status> statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
 
         if (statuses == null) {
             return;
@@ -228,14 +220,12 @@ public class TwitterCache implements Runnable {
     }
 
     /**
-     * Handles retweet rewards with the Twitter API.  Due to the getRetweets() API call only
-     * allowing 75 calls in 15 minutes, this call will run only once every five minutes and
-     * is not configurable in the bot.  Since we pull all retweets every 5 minutes, and that
-     * can return a maximum of 20; this means that we will reach 60 calls maximum in 15
-     * minutes, which is below the threshold.
+     * Handles retweet rewards with the Twitter API. Due to the getRetweets() API call only allowing 75 calls in 15 minutes, this call will run only
+     * once every five minutes and is not configurable in the bot. Since we pull all retweets every 5 minutes, and that can return a maximum of 20;
+     * this means that we will reach 60 calls maximum in 15 minutes, which is below the threshold.
      *
-     * @param  long  The last time this API was polled.
-     * @param  long  The present time stamp in seconds.
+     * @param long The last time this API was polled.
+     * @param long The present time stamp in seconds.
      */
     private void handleRetweetRewards(long lastTime, long presentTime) {
         if (presentTime - lastTime < 300) {
@@ -244,7 +234,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastpoll_retweets_reward", presentTime);
 
         long lastID = getDBLong("lastid_retweets_reward", true, 0L);
-        List<Status>statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
+        List<Status> statuses = TwitterAPI.instance().getRetweetsOfMe(lastID);
 
         if (statuses == null) {
             return;
@@ -256,7 +246,7 @@ public class TwitterCache implements Runnable {
          */
         ArrayList<String> userNameList = new ArrayList<String>();
         for (Status status : statuses) {
-            List<Status>retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
+            List<Status> retweetStatuses = TwitterAPI.instance().getRetweets(status.getId());
             if (retweetStatuses != null) {
                 for (Status retweetStatus : retweetStatuses) {
                     userNameList.add(retweetStatus.getUser().getScreenName());
@@ -276,9 +266,9 @@ public class TwitterCache implements Runnable {
     /**
      * Handles mentions with the Twitter API.
      *
-     * @param  long  The last time this API was polled.
-     * @param  long  The delay to occur between polls.
-     * @param  long  The present time stamp in seconds.
+     * @param long The last time this API was polled.
+     * @param long The delay to occur between polls.
+     * @param long The present time stamp in seconds.
      */
     private void handleMentions(long lastTime, long delay, long presentTime) {
         if (presentTime - lastTime < delay) {
@@ -287,7 +277,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastpoll_mentions", presentTime);
 
         long lastID = getDBLong("lastid_mentions", true, 0L);
-        List<Status>statuses = TwitterAPI.instance().getMentions(lastID);
+        List<Status> statuses = TwitterAPI.instance().getMentions(lastID);
 
         if (statuses == null) {
             return;
@@ -305,9 +295,9 @@ public class TwitterCache implements Runnable {
     /**
      * Handles the home timeline with the Twitter API.
      *
-     * @param  long  The last time this API was polled.
-     * @param  long  The delay to occur between polls.
-     * @param  long  The present time stamp in seconds.
+     * @param long The last time this API was polled.
+     * @param long The delay to occur between polls.
+     * @param long The present time stamp in seconds.
      */
     private void handleHomeTimeline(long lastTime, long delay, long presentTime) {
         if (presentTime - lastTime < delay) {
@@ -316,7 +306,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastpoll_hometimeline", presentTime);
 
         long lastID = getDBLong("lastid_hometimeline", true, 0L);
-        List<Status>statuses = TwitterAPI.instance().getHomeTimeline(lastID);
+        List<Status> statuses = TwitterAPI.instance().getHomeTimeline(lastID);
 
         if (statuses == null) {
             return;
@@ -333,9 +323,9 @@ public class TwitterCache implements Runnable {
     /**
      * Handles the user timeline with the Twitter API.
      *
-     * @param  long  The last time this API was polled.
-     * @param  long  The delay to occur between polls.
-     * @param  long  The present time stamp in seconds.
+     * @param long The last time this API was polled.
+     * @param long The delay to occur between polls.
+     * @param long The present time stamp in seconds.
      */
     private void handleUserTimeline(long lastTime, long delay, long presentTime) {
         if (presentTime - lastTime < delay) {
@@ -344,7 +334,7 @@ public class TwitterCache implements Runnable {
         updateDBLong("lastpoll_usertimeline", presentTime);
 
         long lastID = getDBLong("lastid_usertimeline", true, 0L);
-        List<Status>statuses = TwitterAPI.instance().getUserTimeline(lastID);
+        List<Status> statuses = TwitterAPI.instance().getUserTimeline(lastID);
 
         if (statuses == null) {
             return;
@@ -361,8 +351,8 @@ public class TwitterCache implements Runnable {
     /**
      * Checks the database for a boolean string and returns true/false as such.
      *
-     * @param   String   Database key to inspect.
-     * @return  boolean  True if database value is stored as 'true' else false.
+     * @param String Database key to inspect.
+     * @return boolean True if database value is stored as 'true' else false.
      */
     private boolean getDBBoolean(String dbKey) {
         String dbData = PhantomBot.instance().getDataStore().GetString("twitter", "", dbKey);
@@ -378,10 +368,9 @@ public class TwitterCache implements Runnable {
     /**
      * Checks the database for data and returns a long.
      *
-     * @param   String   Database key to inspect.
-     * @param   boolean  Determines if polling is active or not.
-     * @return  long     0 if not polling; defaultVal if no value in database; defaultVal
-     *                   if database value is less than defaultVal; else database value.
+     * @param String Database key to inspect.
+     * @param boolean Determines if polling is active or not.
+     * @return long 0 if not polling; defaultVal if no value in database; defaultVal if database value is less than defaultVal; else database value.
      */
     private long getDBLong(String dbKey, boolean doPoll, long defaultVal) {
         if (!doPoll) {
@@ -402,8 +391,8 @@ public class TwitterCache implements Runnable {
     /**
      * Places a long into the database.
      *
-     * @param  String  Database key to insert into.
-     * @param  long    Value to update into the database.
+     * @param String Database key to insert into.
+     * @param long Value to update into the database.
      */
     private void updateDBLong(String dbKey, long dbValue) {
         PhantomBot.instance().getDataStore().SetString("twitter", "", dbKey, Long.toString(dbValue));
@@ -412,8 +401,8 @@ public class TwitterCache implements Runnable {
     /**
      * Places a string into the database.
      *
-     * @param  String  Database key to insert into.
-     * @param  String  Value to update into the database.
+     * @param String Database key to insert into.
+     * @param String Value to update into the database.
      */
     private void updateDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("twitter", "", dbKey, dbValue);

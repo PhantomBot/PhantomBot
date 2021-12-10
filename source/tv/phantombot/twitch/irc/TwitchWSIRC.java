@@ -178,7 +178,7 @@ public class TwitchWSIRC extends WebSocketClient {
      */
     @Override
     public void onError(Exception ex) {
-        com.gmt2001.Console.debug.println("Twitch WS-IRC Exception [" + ex.getClass().getSimpleName() + "]: " + ex);
+        com.gmt2001.Console.err.printStackTrace(ex);
     }
 
     /**

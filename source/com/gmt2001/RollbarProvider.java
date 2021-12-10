@@ -157,6 +157,18 @@ public class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Timeout while waiting for a free database connection")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("setAutoCommit")) {
                                     return true;
                                 }
@@ -166,6 +178,10 @@ public class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().contains("attempt to write a readonly database")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Incorrect string value: '\\xF0*")) {
                                     return true;
                                 }
 
@@ -190,6 +206,10 @@ public class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().startsWith("[SQLITE_PROTOCOL]")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("[SQLITE_IOERROR]")) {
                                     return true;
                                 }
 
@@ -258,6 +278,10 @@ public class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Stream closed")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Address already in use")) {
                                     return true;
                                 }
                             }
