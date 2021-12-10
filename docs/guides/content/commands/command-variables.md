@@ -742,11 +742,17 @@ Defined in script: _./javascript-source/core/commandTags.js_
 **Formulas:**
 
 - `(playsound hook:str)` - plays a sound hook on the alerts overlay
+- `(playsound hook:str|volume:float)` - plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
 
 
 **Example:**
 ```text
 Caster: !addcom !good Played sound goodgood (playsound goodgood)
+```
+
+**Example:**
+```text
+Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
