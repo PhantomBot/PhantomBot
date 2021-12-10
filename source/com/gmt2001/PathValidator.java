@@ -135,7 +135,7 @@ public final class PathValidator {
     private static boolean isValidPathInternal(String pathToFile, String[] validPaths) {
         try {
             String executionPath = PhantomBot.GetExecutionPath();
-            Path p = Paths.get(executionPath, pathToFile).toAbsolutePath();
+            Path p = Paths.get(pathToFile).toAbsolutePath();
 
             boolean useReal = true;
             if (!Files.exists(p)) {
