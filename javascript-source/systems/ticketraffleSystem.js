@@ -276,7 +276,7 @@
             bonus = tickets * regTMulti;
         }
 
-        return Math.round(tickets - bonus);
+        return Math.round(bonus - tickets);
     }
 
     /**
