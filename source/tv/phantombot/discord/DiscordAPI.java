@@ -270,11 +270,15 @@ public class DiscordAPI extends DiscordUtil {
      */
     private void setGuildAndShard(List<GuildCreateEvent> events) {
         // PhantomBot only works in one server, so throw an error if there's multiple.
-        if (events.size() > 1) {
-            com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
+        if (events.size() != 1) {
+            if (events.isEmpty()) {
+                com.gmt2001.Console.err.println("Discord bot account not connected to any servers. Now disconnecting from Discord...");
+            } else {
+                com.gmt2001.Console.err.println("Discord bot account connected to multiple servers. Now disconnecting from Discord...");
+            }
             DiscordAPI.gateway.logout();
             reconnectState = ConnectionState.CANNOT_RECONNECT;
-        } else {
+        } else if (events.size() == 1) {
             DiscordAPI.guild = events.get(0).getGuild();
         }
     }
@@ -427,11 +431,15 @@ public class DiscordAPI extends DiscordUtil {
         }
 
         public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {
-            if (event.getCurrent().getChannelId().get() == null) {
+            if (event.getCurrent().getChannelId().isEmpty()) {
                 event.getCurrent().getUser().doOnSuccess(user -> {
-                    event.getOld().get().getChannel().doOnSuccess(channel -> {
-                        EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user, channel));
-                    }).subscribe();
+                    if (event.getOld().isPresent()) {
+                        event.getOld().get().getChannel().doOnSuccess(channel -> {
+                            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user, channel));
+                        }).subscribe();
+                    } else {
+                        EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user));
+                    }
                 }).subscribe();
             } else {
                 event.getCurrent().getUser().doOnSuccess(user -> {

@@ -96,7 +96,7 @@ public class DiscordUtil {
 
     @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
-        return sendMessageAsync(channel, message).block();
+        return sendMessageAsync(channel, message).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message) {
@@ -147,7 +147,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessage(String channelName, String message) {
-        return sendMessageAsync(channelName, message).block();
+        return sendMessageAsync(channelName, message).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendMessageAsync(String channelName, String message) {
@@ -230,7 +230,7 @@ public class DiscordUtil {
 
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channel, embed).block();
+        return sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
@@ -278,7 +278,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channelName, embed).block();
+        return sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(String channelName, Consumer<? super EmbedCreateSpec> embed) {
@@ -295,7 +295,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
-        return sendMessageEmbedAsync(channel, color, message).block();
+        return sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, String color, String message) {
@@ -316,12 +316,12 @@ public class DiscordUtil {
     public Message sendMessageEmbed(String channelName, String color, String message) {
         return sendMessageEmbedAsync(channelName, ebd
                 -> ebd.setColor(getColor(color)).setDescription(message)
-        ).block();
+        ).onErrorReturn(null).block();
     }
 
     @Deprecated
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
-        return sendFileAsync(channel, message, fileLocation).block();
+        return sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation) {
@@ -397,7 +397,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String message, String fileLocation) {
-        return sendFileAsync(channelName, message, fileLocation).block();
+        return sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
     }
 
     public Mono<Message> sendFileAsync(String channelName, String message, String fileLocation) {
@@ -424,7 +424,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String fileLocation) {
-        return sendFileAsync(channelName, "", fileLocation).block();
+        return sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
     }
 
     /**
@@ -520,7 +520,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannel(String channelName) {
-        return getChannelAsync(channelName).block();
+        return getChannelAsync(channelName).onErrorReturn(null).block();
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
@@ -537,7 +537,7 @@ public class DiscordUtil {
     @Deprecated
     public Map<String, Map<String, String>> getAllChannelInfo() {
         HashMap<String, Map<String, String>> data = new HashMap<>();
-        getAllChannelInfoAsync(data).blockLast(Duration.ofSeconds(5L));
+        getAllChannelInfoAsync(data).onErrorReturn(null).blockLast(Duration.ofSeconds(5L));
         return data;
     }
 
@@ -615,7 +615,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannelByID(String channelId) {
-        return getChannelByIDAsync(channelId).block();
+        return getChannelByIDAsync(channelId).onErrorReturn(null).block();
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
@@ -629,7 +629,7 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUser(String userName) {
-        return getUserAsync(userName).block();
+        return getUserAsync(userName).onErrorReturn(null).block();
     }
 
     /**
@@ -661,7 +661,7 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserById(long userId) {
-        return getUserByIdAsync(userId).block();
+        return getUserByIdAsync(userId).onErrorReturn(null).block();
     }
 
     /**
@@ -681,7 +681,7 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserWithDiscriminator(String userName, String discriminator) {
-        return getUserWithDiscriminatorAsync(userName, discriminator).block();
+        return getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
     }
 
     /**
@@ -703,7 +703,7 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRole(String roleName) {
-        return getRoleAsync(roleName).block();
+        return getRoleAsync(roleName).onErrorReturn(null).block();
     }
 
     /**
@@ -736,7 +736,7 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRoleByID(String id) {
-        return getRoleByIDAsync(id).block();
+        return getRoleByIDAsync(id).onErrorReturn(null).block();
     }
 
     /**
@@ -762,7 +762,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getRoleObjects(String... roles) {
-        return getRoleObjectsAsync(roles).block();
+        return getRoleObjectsAsync(roles).onErrorReturn(null).block();
     }
 
     public Mono<Role[]> getRoleObjectsAsync(String... roles) {
@@ -779,7 +779,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(User user) {
-        return getUserRolesAsync(user).block();
+        return getUserRolesAsync(user).onErrorReturn(null).block();
     }
 
     public Mono<Role[]> getUserRolesAsync(User user) {
@@ -794,7 +794,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(String userId) {
-        return getUserRolesAsync(userId).block();
+        return getUserRolesAsync(userId).onErrorReturn(null).block();
     }
 
     public Mono<Role[]> getUserRolesAsync(String userId) {
@@ -871,9 +871,9 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         com.gmt2001.Console.debug.println(userName + " > " + roleName);
-        getRoleAsync(roleName).subscribe(role -> {
+        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
             com.gmt2001.Console.debug.println(role);
-            getUserAsync(userName).subscribe(user -> {
+            getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
                 com.gmt2001.Console.debug.println(user);
                 addRole(role, user);
             });
@@ -887,7 +887,7 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(String roleName, User user) {
-        getRoleAsync(roleName).subscribe(role -> addRole(role, user));
+        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> addRole(role, user));
     }
 
     /**
@@ -919,7 +919,7 @@ public class DiscordUtil {
      * @param userName
      */
     public void removeRole(String roleName, String userName) {
-        getRoleAsync(roleName).subscribe(role -> getUserAsync(userName).subscribe(user -> removeRole(role, user)));
+        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> getUserAsync(userName).onErrorReturn(null).subscribe(user -> removeRole(role, user)));
     }
 
     /**
@@ -964,7 +964,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<Role> getGuildRoles() {
-        return getGuildRolesAsync().block();
+        return getGuildRolesAsync().onErrorReturn(null).block();
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
@@ -981,7 +981,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(User user) {
-        return isAdministratorAsync(user).block();
+        return isAdministratorAsync(user).onErrorReturn(null).block();
     }
 
     public Mono<Boolean> isAdministratorAsync(User user) {
@@ -989,7 +989,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user object was null");
         }
 
-        return user.asMember(DiscordAPI.getGuild().getId()).onErrorReturn(null).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
+        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
     }
 
     /**
@@ -1000,7 +1000,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(String userName) {
-        return isAdministratorAsync(userName).block();
+        return isAdministratorAsync(userName).onErrorReturn(null).block();
     }
 
     public Mono<Boolean> isAdministratorAsync(String userName) {
@@ -1040,7 +1040,7 @@ public class DiscordUtil {
      * @param amount
      */
     public void bulkDelete(String channelName, int amount) {
-        getChannelAsync(channelName).subscribe(channel -> bulkDelete(channel, amount));
+        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDelete(channel, amount));
     }
 
     /**
@@ -1070,7 +1070,7 @@ public class DiscordUtil {
      * @param messages
      */
     public void bulkDeleteMessages(String channelName, Message... messages) {
-        getChannelAsync(channelName).subscribe(channel -> bulkDeleteMessages(channel, messages));
+        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDeleteMessages(channel, messages));
     }
 
     /**
@@ -1140,7 +1140,7 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<User> getUsers() {
-        return getUsersAsync().block();
+        return getUsersAsync().onErrorReturn(null).block();
     }
 
     public Mono<List<User>> getUsersAsync() {
@@ -1196,7 +1196,7 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getMessageById(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
         if (channel != null) {
             return channel.getMessageById(Snowflake.of(messageId)).block();
         }
@@ -1232,7 +1232,7 @@ public class DiscordUtil {
      * @return {List<Message>}
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
         List<Message> messageList = new ArrayList<>();
         if (channel != null) {
             channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
@@ -1247,7 +1247,7 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getLastMessage(String channelName) {
-        GuildMessageChannel channel = getChannelAsync(channelName).block();
+        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
         if (channel != null) {
             return channel.getLastMessage().block();
         }

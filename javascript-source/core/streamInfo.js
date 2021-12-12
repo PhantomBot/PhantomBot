@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+(function () {
     var currentGame = null;
     var count = 1;
     var gamesPlayed;
@@ -23,7 +23,7 @@
     /**
      * @event twitchOnline
      */
-    $.bind('twitchOnline', function(event) {
+    $.bind('twitchOnline', function (event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             var uptime = getStreamUptimeSeconds($.channelName);
             $.inidb.set('panelstats', 'gameCount', 1);
@@ -38,7 +38,7 @@
     /**
      * @event twitchOffline
      */
-    $.bind('twitchOffline', function(event) {
+    $.bind('twitchOffline', function (event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             $.inidb.set('panelstats', 'playTimeStart', 0);
             $.inidb.set('panelstats', 'playTimeReset', 0);
@@ -51,7 +51,7 @@
     /**
      * @event twitchGameChange
      */
-    $.bind('twitchGameChange', function(event) {
+    $.bind('twitchGameChange', function (event) {
         var uptime = getStreamUptimeSeconds($.channelName);
 
         if ($.isOnline($.channelName)) {
@@ -77,7 +77,7 @@
     function getGamesPlayed() {
         if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
             var games = $.inidb.get('streamInfo', 'gamesPlayed'),
-                string = games.split('=').join(', ');
+                    string = games.split('=').join(', ');
 
             return string;
         }
@@ -90,7 +90,7 @@
      */
     function getPlayTime() {
         var playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
-            time;
+                time;
 
         if (playTime) {
             time = ($.systemTime() - playTime);
@@ -188,9 +188,9 @@
             return $.twitchcache.getStreamUptimeSeconds();
         } else {
             var stream = $.twitch.GetStream(channelName),
-                now = new Date(),
-                createdAtDate,
-                time;
+                    now = new Date(),
+                    createdAtDate,
+                    time;
 
             if (stream.isNull('stream')) {
                 return 0;
@@ -219,9 +219,9 @@
             if (uptime === 0) {
                 $.consoleLn("Fallback uptime");
                 var stream = $.twitch.GetStream(channelName),
-                    now = new Date(),
-                    createdAtDate,
-                    time;
+                        now = new Date(),
+                        createdAtDate,
+                        time;
 
                 if (stream.isNull('stream')) {
                     return '';
@@ -234,9 +234,9 @@
             return $.getTimeString(uptime);
         } else {
             var stream = $.twitch.GetStream(channelName),
-                now = new Date(),
-                createdAtDate,
-                time;
+                    now = new Date(),
+                    createdAtDate,
+                    time;
 
             if (stream.isNull('stream')) {
                 return '';
@@ -259,8 +259,8 @@
      */
     function getStreamDownTime() {
         var now = $.systemTime(),
-            down = $.inidb.get('streamInfo', 'downtime'),
-            time;
+                down = $.inidb.get('streamInfo', 'downtime'),
+                time;
 
         if (down > 0) {
             time = (now - down);
@@ -284,7 +284,7 @@
             return $.dateToString(createdAtDate);
         } else {
             var stream = $.twitch.GetStream(channelName),
-                createdAtDate;
+                    createdAtDate;
 
             if (stream.isNull('stream')) {
                 return 0;
@@ -348,8 +348,8 @@
         }
 
         var date = new Date(user.getString('created_at')),
-            dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
-            dateFinal = dateFormat.format(date);
+                dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
+                dateFinal = dateFormat.format(date);
 
         return dateFinal;
     }
@@ -372,9 +372,9 @@
         }
 
         var date = new Date(user.getString('created_at')),
-            dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
-            dateFinal = dateFormat.format(date),
-            days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
+                dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
+                dateFinal = dateFormat.format(date),
+                days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -397,9 +397,9 @@
         }
 
         var date = new Date(channelData.getString('created_at')),
-            dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
-            dateFinal = dateFormat.format(date),
-            days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
+                dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
+                dateFinal = dateFormat.format(date),
+                days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
 
         if (days > 0) {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
@@ -432,7 +432,11 @@
      * @param {boolean} silent
      */
     function updateGame(channelName, game, sender, silent) {
-        var http = $.twitch.UpdateChannel(channelName, '', game);
+        try {
+            var http = $.twitch.UpdateChannel(channelName, '', game);
+        } catch (e) {
+            $.log.error('Failed to change the game. Twitch does not recognize it.');
+        }
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') == 200) {

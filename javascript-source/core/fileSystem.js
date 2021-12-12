@@ -20,11 +20,11 @@
  *
  * Export general file management to th $ API
  */
-(function() {
+(function () {
     var JFile = java.io.File,
-        JFileInputStream = java.io.FileInputStream,
-        JFileOutputStream = java.io.FileOutputStream,
-        fileHandles = [];
+            JFileInputStream = java.io.FileInputStream,
+            JFileOutputStream = java.io.FileOutputStream,
+            fileHandles = [];
 
     /**
      * @function readFile
@@ -46,7 +46,7 @@
 
         try {
             var fis = new JFileInputStream(path),
-                scan = new java.util.Scanner(fis);
+                    scan = new java.util.Scanner(fis);
             for (var i = 0; scan.hasNextLine(); ++i) {
                 lines[i] = scan.nextLine();
             }
@@ -64,7 +64,7 @@
      * @returns {boolean}
      */
     function mkDir(path) {
-        if (invalidLocation(path)){
+        if (invalidLocation(path)) {
             $.consoleLn('Blocked mkDir() target outside of validPaths:' + path);
             return false;
         }
@@ -81,7 +81,7 @@
      */
     function moveFile(file, path) {
         var fileO = new JFile(file),
-            pathO = new JFile(path);
+                pathO = new JFile(path);
 
         if (invalidLocation(file) || invalidLocation(path)) {
             $.consoleLn('Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
@@ -112,8 +112,8 @@
 
         try {
             var fos = new JFileOutputStream(path, append),
-                ps = new java.io.PrintStream(fos),
-                l = array.length;
+                    ps = new java.io.PrintStream(fos),
+                    l = array.length;
             for (var i = 0; i < l; ++i) {
                 ps.println(array[i]);
             }
@@ -128,13 +128,22 @@
      */
     function closeOpenFiles() {
         var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
-            date = dateFormat.format(new java.util.Date());
+                date = dateFormat.format(new java.util.Date());
+
+        var newFileHandles = [];
 
         for (var key in fileHandles) {
             if (!fileHandles[key].startDate.equals(date)) {
                 fileHandles[key].fos.close();
-                delete fileHandles[key];
+            } else {
+                newFileHandles[key] = fileHandles[key];
             }
+        }
+
+        fileHandles = [];
+
+        for (var key in newFileHandles) {
+            fileHandles.push(newFileHandles[key]);
         }
     }
 
@@ -147,11 +156,11 @@
      */
     function writeToFile(line, path, append) {
         var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
-            date = dateFormat.format(new java.util.Date()),
-            fos,
-            ps;
+                date = dateFormat.format(new java.util.Date()),
+                fos,
+                ps;
 
-        if (invalidLocation(path)){
+        if (invalidLocation(path)) {
             $.consoleLn('Blocked writeToFile() target outside of validPaths:' + path);
             return;
         }
@@ -257,7 +266,7 @@
 
         try {
             var f = new JFile(directory),
-                ret = [];
+                    ret = [];
             if (f.isDirectory()) {
                 var files = f.list();
                 for (var i = 0; i < files.length; i++) {
