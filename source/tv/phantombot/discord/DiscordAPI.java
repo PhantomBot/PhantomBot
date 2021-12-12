@@ -427,11 +427,15 @@ public class DiscordAPI extends DiscordUtil {
         }
 
         public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {
-            if (event.getCurrent().getChannelId().get() == null) {
+            if (event.getCurrent().getChannelId().isEmpty()) {
                 event.getCurrent().getUser().doOnSuccess(user -> {
-                    event.getOld().get().getChannel().doOnSuccess(channel -> {
-                        EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user, channel));
-                    }).subscribe();
+                    if (event.getOld().isPresent()) {
+                        event.getOld().get().getChannel().doOnSuccess(channel -> {
+                            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user, channel));
+                        }).subscribe();
+                    } else {
+                        EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user));
+                    }
                 }).subscribe();
             } else {
                 event.getCurrent().getUser().doOnSuccess(user -> {
