@@ -14,8 +14,9 @@
 ### Getting and Setup Bot token
 
 1. In the *Keys and tokens* Tab, *Regenerate* your *Access token & access token secret* and **_Save_** them securly.
-2. Open file `BotName\config\botlogin.txt`
-3. Create several lines 
+2. Stop the bot
+3. Open file `BotName\config\botlogin.txt`
+4. Create several lines 
 
 	``` 
 	 twitterUser=Twitter Account
@@ -25,8 +26,8 @@
 	 twitter_secret_token=Access token secret
 	 ```
 
-4. Replace the Text **_after the =_** respectively to the Value of your *Keys and Tokens from Twitter* 
-5. Change *Twitter Account* to *your* Twitter Name
-6. Save file and start/restart bot
+5. Replace the Text **_after the =_** respectively to the Value of your *Keys and Tokens from Twitter* 
+6. Change *Twitter Account* to *your* Twitter Name
+7. Save file and start the bot
 
 You can now Enable and Configure your Twitter Settings under *Alerts* and *Discord -> Alerts* respectively.

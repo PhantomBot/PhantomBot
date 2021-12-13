@@ -15,8 +15,9 @@
 ### Getting and Setup Bot token
 
 1. You will now see your API Key under *API Keys*, click *Copy* beside the _Key_ and paste code to safe location.
-2. Open file `BotName\config\botlogin.txt`
-3. Create a line `youtubekey=KEY` (replace *KEY* with what you saved in the first paragraph)
-4. Save file and start/restart bot
+2. Stop the bot
+3. Open file `BotName\config\botlogin.txt`
+4. Create a line `youtubekey=KEY` (replace *KEY* with what you saved in the first paragraph)
+5. Save file and start the bot
 
 You can now enable the Youtube Player Module under *Settings* -> *Modules*
