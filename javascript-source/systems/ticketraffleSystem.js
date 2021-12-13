@@ -156,6 +156,7 @@
 
         raffleStatus = false;
         clearInterval(interval);
+        clearInterval(saveStateInterval);
         $.inidb.set('traffleSettings', 'isActive', 'false');
         saveState();
 
