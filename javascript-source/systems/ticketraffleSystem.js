@@ -153,8 +153,6 @@
             return;
         }
 
-        clear();
-
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         $.log.event(user + ' closed a ticket raffle.');
     }
