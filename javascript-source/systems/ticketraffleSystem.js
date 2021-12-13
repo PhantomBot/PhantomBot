@@ -153,6 +153,11 @@
             return;
         }
 
+        raffleStatus = false;
+        clearInterval(interval);
+        $.inidb.set('traffleSettings', 'isActive', 'false');
+        saveState();
+
         $.say($.lang.get('ticketrafflesystem.raffle.closed'));
         $.log.event(user + ' closed a ticket raffle.');
     }
