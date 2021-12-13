@@ -118,9 +118,9 @@
         totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
         followers = bools[0];
         raffleStatus = bools[1];
-        $.inidb.set('traffleSettings', 'isActive', 'true');
 
         if (raffleStatus === true) {
+            $.inidb.set('traffleSettings', 'isActive', 'true');
             if (followers) {
                 a = $.lang.get('ticketrafflesystem.msg.need.to.be.follwing');
             }
