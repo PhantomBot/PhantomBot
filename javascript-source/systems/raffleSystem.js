@@ -191,6 +191,7 @@
         status = bools[3];
 
         if (status === true) {
+            $.inidb.set('raffleSettings', 'isActive', 'true');
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
                 $.say($.lang.get('rafflesystem.open.keyword-exists', keyword));
                 close();

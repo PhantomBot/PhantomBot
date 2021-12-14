@@ -11,10 +11,11 @@
 
 ### Getting and Setup Bot token
 
-1. In the *TOKEN* under the nickname, click *Copy* and paste code to safe location.
-2. Open file `BotName\config\botlogin.txt`
-3. Create a line `discord_token=TOKEN` (replace *TOKEN* with what you saved in the first paragraph)
-4. Save file and start/restart bot
+1. Stop the bot
+2. In the *TOKEN* under the nickname, click *Copy* and paste code to safe location.
+3. Open file `BotName\config\botlogin.txt`
+4. Create a line `discord_token=TOKEN` (replace *TOKEN* with what you saved in the first paragraph)
+5. Save file and start the bot
 
 The Discord button will appear in the control panel on the left tab.
 

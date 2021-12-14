@@ -133,10 +133,12 @@
         var newFileHandles = [];
 
         for (var key in fileHandles) {
-            if (!fileHandles[key].startDate.equals(date)) {
-                fileHandles[key].fos.close();
-            } else {
-                newFileHandles[key] = fileHandles[key];
+            if (fileHandles[key] !== undefined && fileHandles[key] !== null) {
+                if (!fileHandles[key].startDate.equals(date)) {
+                    fileHandles[key].fos.close();
+                } else {
+                    newFileHandles[key] = fileHandles[key];
+                }
             }
         }
 
