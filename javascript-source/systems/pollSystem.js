@@ -161,6 +161,9 @@
         poll.callback = saywinner;
 
         if (poll.pollRunning) {
+            $.inidb.set('pollPanel', 'title', poll.question);
+            $.inidb.set('pollPanel', 'options', poll.options.join(','));
+            $.inidb.set('pollPanel', 'isActive', 'true');
             if (poll.time > 0) {
                 var timeleft = poll.time - ($.systemTime() - poll.startTime);
                 timeout = setTimeout(function () {
@@ -421,8 +424,8 @@
     /**
      * @event Shutdown
      */
-    $.bind('Shutdown', function() {
-       saveState();
+    $.bind('Shutdown', function () {
+        saveState();
     });
 
     /** Export functions to API */
