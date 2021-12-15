@@ -126,11 +126,24 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
         hash_update($ctx, $v['exception']['description']);
         hash_update($ctx, $v['exception']['message']);
 
-        foreach($v['frames'] as $f) {
-            hash_update($ctx, $f['class_name']);
-            hash_update($ctx, $f['filename']);
-            hash_update($ctx, $f['lineno']);
-            hash_update($ctx, $f['method']);
+        $last = -1;
+        foreach($v['frames'] as $k => $f) {
+            if (in_array($f['class_name'], $packages)) {
+                $last = $k;
+            } else {
+                foreach ($files as $file) {
+                    if (contains($f['filename'], $file)) {
+                        $last = $k;
+                    }
+                }
+            }
+        }
+        
+        if ($last >= 0) {
+            hash_update($ctx, $v['frames'][$last]['class_name']);
+            hash_update($ctx, $v['frames'][$last]['filename']);
+            hash_update($ctx, $v['frames'][$last]['lineno']);
+            hash_update($ctx, $v['frames'][$last]['method']);
         }
     }
 } else {
@@ -138,11 +151,24 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
     hash_update($ctx, $item['data']['body']['trace']['exception']['description']);
     hash_update($ctx, $item['data']['body']['trace']['exception']['message']);
 
+    $last = -1;
     foreach($item['data']['body']['trace']['frames'] as $f) {
-        hash_update($ctx, $f['class_name']);
-        hash_update($ctx, $f['filename']);
-        hash_update($ctx, $f['lineno']);
-        hash_update($ctx, $f['method']);
+        if (in_array($f['class_name'], $packages)) {
+            $last = $k;
+        } else {
+            foreach ($files as $file) {
+                if (contains($f['filename'], $file)) {
+                    $last = $k;
+                }
+            }
+        }
+    }
+        
+    if ($last >= 0) {
+        hash_update($ctx, $item['data']['body']['trace']['frames'][$last]['class_name']);
+        hash_update($ctx, $item['data']['body']['trace']['frames'][$last]['filename']);
+        hash_update($ctx, $item['data']['body']['trace']['frames'][$last]['lineno']);
+        hash_update($ctx, $item['data']['body']['trace']['frames'][$last]['method']);
     }
 }
 
