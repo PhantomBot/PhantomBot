@@ -118,7 +118,7 @@ $ctx = hash_init('sha1');
 hash_update($ctx, $item['data']['code_version']);
 hash_update($ctx, $item['data']['environment']);
 hash_update($ctx, $item['data']['level']);
-if (array_key_exists('title', $item['data']) {
+if (array_key_exists('title', $item['data'])) {
     hash_update($ctx, $item['data']['title']);
 }
 
