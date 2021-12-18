@@ -273,7 +273,7 @@
     }
 
     function calcBonus(user, event, tickets) {
-        var bonus = 1;
+        var bonus = tickets;
 
         if (event.getTags().containsKey('subscriber') && event.getTags().get('subscriber').equals('1')) {
             bonus = tickets * subTMulti;
