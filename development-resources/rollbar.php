@@ -118,7 +118,9 @@ $ctx = hash_init('sha1');
 hash_update($ctx, $item['data']['code_version']);
 hash_update($ctx, $item['data']['environment']);
 hash_update($ctx, $item['data']['level']);
-hash_update($ctx, $item['data']['title']);
+if (array_key_exists('title', $item['data']) {
+    hash_update($ctx, $item['data']['title']);
+}
 
 if (array_key_exists('trace_chain', $item['data']['body'])) {
     foreach($item['data']['body']['trace_chain'] as $v) {
@@ -152,7 +154,7 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
     hash_update($ctx, $item['data']['body']['trace']['exception']['message']);
 
     $last = -1;
-    foreach($item['data']['body']['trace']['frames'] as $f) {
+    foreach($item['data']['body']['trace']['frames'] as $k => $f) {
         if (in_array($f['class_name'], $packages)) {
             $last = $k;
         } else {
