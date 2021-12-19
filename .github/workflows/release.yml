@@ -60,7 +60,7 @@ jobs:
         echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
         echo ${GITHUB_SHA:0:7}
         echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
-        echo ${REPONAME} | awk '{print tolower($0)}
+        echo ${REPONAME} | awk '{print tolower($0)}'
         echo "##[set-output name=ghcrrepo;]$(echo ${REPONAME} | awk '{print tolower($0)}')"
     - name: Check Docker Credentials
       id: check_docker_credentials
