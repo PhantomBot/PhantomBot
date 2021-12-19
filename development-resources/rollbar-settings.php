@@ -74,7 +74,7 @@ $filters = array(
     array(
         'exception' => array(
             'class' => 'discord4j.rest.http.client.ClientException',
-            'message' => 'regex:/401(.*)Unauthorized/'
+            'message' => 'regex:/(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)/'
         )
     ),
     array(
@@ -109,7 +109,7 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERROR)/'
+            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB)/'
         )
     ),
     array(
@@ -229,6 +229,116 @@ $filters = array(
     array(
         'exception' => array(
             'message' => '*Address already in use*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'com.mysql.jdbc.MysqlDataTruncation'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Connection reset*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Socket closed*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Connection timed out*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*connection failing*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*apioauth is required*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*getCommunities*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '[TimeoutException]'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Network is unreachable*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.SocketException',
+            'message' => 'Software caused connection abort: recv failed'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.SocketException',
+            'message' => 'Connection timed out (Read failed)'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.SocketException',
+            'message' => 'Unexpected end of file from server'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Too many open files'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*UnknownHostException*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Host unreachable*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*An existing connection was forcibly closed by the remote host'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*Received close_notify during handshake'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'twitter4j.TwitterException',
+            'message' => '401:Authentication credentials*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => 'regex:/Failed to get donations.*404.*Not found/'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.lang.IllegalArgumentException',
+            'message' => 'Invalid token*'
+        )
+    ),
+    array(
+        'exception' => array(
+            'message' => '*java.base does not export sun.security.x509*'
         )
     )
 );

@@ -42,7 +42,7 @@ Please refer to platform-specific installation documentation.
 ### Docker
 PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
 * [DockerHub](https://hub.docker.com/r/gmt2001/phantombot-stable)
-* [GHCR](https://github.com/orgs/PhantomBot/pkgs/container/PhantomBot)
+* [GHCR](https://github.com/PhantomBot/PhantomBot/pkgs/container/phantombot)
 * [Docker Compose File](https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml)
 
 ## Upgrading PhantomBot
