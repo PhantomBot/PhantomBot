@@ -47,13 +47,21 @@ jobs:
       branch: ${{ steps.build_env.outputs.branch }}
       version: ${{ steps.build_env.outputs.version }}
       revision: ${{ steps.build_env.outputs.revision }}
+      ghcrrepo: ${{ steps.build_env.outputs.ghcrrepo }}
     steps:
     - name: Get Revision Variables
       id: build_env
+      env:
+        REPONAME: ${{ github.repository }}
       run: |
+        echo ${GITHUB_REF:10}
         echo "##[set-output name=branch;]$(echo ${GITHUB_REF:10})"
+        echo ${GITHUB_REF:11}
         echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
+        echo ${GITHUB_SHA:0:7}
         echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
+        echo ${REPONAME} | awk '{print tolower($0)}
+        echo "##[set-output name=ghcrrepo;]$(echo ${REPONAME} | awk '{print tolower($0)}')"
     - name: Check Docker Credentials
       id: check_docker_credentials
       env:
@@ -309,8 +317,8 @@ jobs:
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
           ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}"
         tags: |
-          ghcr.io/${{ github.repository }}:${{ needs.workflowvars.outputs.version }}
-          ghcr.io/${{ github.repository }}:latest
+          ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:${{ needs.workflowvars.outputs.version }}
+          ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
       uses: rollbar/github-deploy-action@2.1.1
