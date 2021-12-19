@@ -302,7 +302,7 @@ jobs:
         push: true
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
-          ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}"
+          ANT_ARGS=-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
         tags: |
           ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:${{ needs.workflowvars.outputs.version }}
           ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:latest
