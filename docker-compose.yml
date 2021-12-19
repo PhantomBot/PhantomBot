@@ -19,7 +19,7 @@ version: '3'
 services:
   phantombot:
     container_name: phantombot
-    image: ghcr.io/PhantomBot/PhantomBot
+    image: ghcr.io/phantombot/phantombot
     ports:
       - "25000:25000"
     restart: always
