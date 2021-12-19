@@ -1259,9 +1259,20 @@ $(function () {
 
     helpers.getBotHost = function () {
         var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
-        var botport = window.localStorage.getItem('botport') || 25000;
+        var botport = window.localStorage.getItem('botport') || '25000';
 
-        return bothostname.length > 0 ? bothostname + (botport !== 80 && botport !== 443 ? ':' + botport : '') : '!missing';
+        return bothostname.length > 0 ? bothostname + (botport !== '80' && botport !== '443' ? ':' + botport : '') : '!missing';
+    };
+
+    helpers.shouldUseHttpsPrefix = function () {
+        var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
+        var botport = window.localStorage.getItem('botport') || '25000';
+
+        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null;
+    };
+
+    helpers.getBotSchemePath = function () {
+        return 'http' + (helpers.shouldUseHttpsPrefix() ? 's' : '') + '://' + helpers.getBotHost();
     };
 
     helpers.getUserLogo = function () {
