@@ -315,7 +315,7 @@ jobs:
         push: true
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
-          ANT_ARGS="-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}"
+          ANT_ARGS=-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
         tags: |
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:${{ needs.workflowvars.outputs.version }}
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest
