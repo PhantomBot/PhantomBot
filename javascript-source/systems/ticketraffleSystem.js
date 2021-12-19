@@ -265,7 +265,7 @@
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.get('ticketsList', user.toLowerCase());
+        return $.inidb.GetInteger('ticketsList', '', user.toLowerCase());
     }
 
     function userGetsBonus(user, event) {
