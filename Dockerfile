@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM adoptopenjdk:11-jdk-hotspot-bionic as builder
+FROM eclipse-temurin:11-jdk-focal as builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
@@ -57,7 +57,7 @@ RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
 
 # Application container
-FROM adoptopenjdk:11-jre-hotspot-bionic
+FROM eclipse-temurin:11-jre-focal
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
