@@ -57,7 +57,7 @@ RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
 
 # Application container
-FROM eclipse-temurin:11-jre-focal
+FROM eclipse-temurin:11-jre-focal as publish
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
