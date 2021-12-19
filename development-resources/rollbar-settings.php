@@ -1,10 +1,10 @@
 <?php
 
 //require_once('rollbar-log.php');
-$rollbar_url = 'https://api.rollbar.com/api/1/item/';
+$rollbar_url = 'https://api.rollbar.com/api/1/item/'; //URL to POST reprots to if they pass filtering
 $rollbar_token = ''; //API Token for Rollbar
 $client_token = ''; //Access Token for clients to submit to this script
-$reverse = false;
+$reverse = false; //If true, the stack trace order is reversed before filtering and submitting
 
 /*
  * Filter format
@@ -233,12 +233,26 @@ $filters = array(
     )
 );
 
+// Only environment values below will be allowed
 $allowed_environments = array(
     'stable',
     'stable_docker',
     'nightly_build',
     'nightly_build_docker',
     'edge_build'
+);
+
+//Packages to use for the fingerprint
+$packages = array(
+    'tv.phantombot',
+    'com.gmt2001',
+    'com.illusionaryone',
+    'com.scaniatv'
+);
+
+//Files to use for the fingerprint
+$files = array(
+    '*.js'
 );
 
 //Put custom filters in rollbar-settings-extra.php in the provided array_push

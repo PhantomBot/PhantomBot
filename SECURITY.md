@@ -11,6 +11,8 @@
 
 Report vulnerabilities on our Discord. Please just simply state that you have discovered a security vulnerability, as well as a brief, generic description of the vulnerability, if it is safe to do so.
 
+We also accept submissions via email: **security** /A\T/ phantombot // hopto \\ org
+
 We will try our best to reach out to you quickly, confirm the issue, reproduce it, and work on a fix.
 
 If you are able to contribute a fix yourself, we would appreciate it, but it is not required.

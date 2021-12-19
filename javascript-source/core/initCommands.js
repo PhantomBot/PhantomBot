@@ -17,6 +17,7 @@
 
 (function() {
     var bot = $.botName.toLowerCase();
+    var sentReady = false;
 
     /*
      * @event command
@@ -370,7 +371,8 @@
         $.registerChatSubcommand(bot, 'moderate', 2);
 
         // Say the connected message.
-        if ($.inidb.exists('settings', 'connectedMsg')) {
+        if (!sentReady && $.inidb.exists('settings', 'connectedMsg')) {
+            sentReady = true;
             $.say($.inidb.get('settings', 'connectedMsg'));
         }
     });

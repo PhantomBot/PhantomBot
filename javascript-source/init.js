@@ -456,12 +456,12 @@
             if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('O')) {
                 if (event.getAdd().toString().equals('true')) {
                     if (isReady === false) {
+                        isReady = true;
                         // Bot is now ready.
                         consoleLn($.botName + ' ready!');
                         // Call the initReady event.
                         callHook('initReady', null, false);
                     }
-                    isReady = true;
                 }
             }
         });

@@ -18,15 +18,17 @@
 version: '3'
 services:
   phantombot:
-    container_name: phantombot-nightly
-    image: gmt2001/phantombot-nightly:latest
+    container_name: phantombot
+    image: ghcr.io/PhantomBot/PhantomBot
     ports:
       - "25000:25000"
     restart: always
     volumes:
       - PhantomBot_data:/opt/PhantomBot_data
     environment:
-      # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix
+      # ------ Override any botlogin.txt variable here, with the PHANTOMBOT_ prefix.
+      # ------ Note that after first run, you should edit the container to remove these variables
+      # ------ so that the bot works properly with features such as automatically refreshing OAuth.
       # Twitch bot user (Required)
       PHANTOMBOT_USER: ""
       # Twitch bot user OAuth token (https://phantombot.github.io/PhantomBot/oauth/) (Required)

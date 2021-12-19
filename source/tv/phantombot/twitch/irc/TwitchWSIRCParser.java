@@ -247,6 +247,7 @@ public class TwitchWSIRCParser implements Runnable {
         String username = "";
         String message = "";
         String event;
+        int offset = 0;
 
         if (rawMessage.startsWith("PONG")) {
             client.gotPong();
@@ -277,36 +278,32 @@ public class TwitchWSIRCParser implements Runnable {
                 }
             }
 
-            messageParts[0] = messageParts[1];
-
-            if (messageParts.length > 2) {
-                messageParts[1] = messageParts[2];
-            }
+            offset++;
         }
 
         // Cut leading space.
-        if (messageParts[0].startsWith(" ")) {
-            messageParts[0] = messageParts[0].substring(1);
+        if (messageParts[0 + offset].startsWith(" ")) {
+            messageParts[0 + offset] = messageParts[0 + offset].substring(1);
         }
 
         // Cut leading space, trailing junk character, and assign message.
-        if (messageParts.length > 1) {
-            if (messageParts[1].startsWith(" ")) {
-                messageParts[1] = messageParts[1].substring(1);
+        if (messageParts.length > 1 + offset) {
+            if (messageParts[1 + offset].startsWith(" ")) {
+                messageParts[1 + offset] = messageParts[1 + offset].substring(1);
             }
-            message = messageParts[1];
+            message = messageParts[1 + offset];
             if (message.length() > 1) {
                 message = message.substring(0, message.length() - 1);
             }
         }
 
         // Get username if present.
-        if (messageParts[0].contains("!")) {
-            username = messageParts[0].substring(messageParts[0].indexOf("!") + 1, messageParts[0].indexOf("@"));
+        if (messageParts[0 + offset].contains("!")) {
+            username = messageParts[0 + offset].substring(messageParts[0 + offset].indexOf("!") + 1, messageParts[0 + offset].indexOf("@"));
         }
 
         // Get the event code.
-        event = messageParts[0].split(" ")[1];
+        event = messageParts[0 + offset].split(" ")[1];
 
         // Execute the event parser if a parser exists.
         if (parserMap.containsKey(event)) {

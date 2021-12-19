@@ -12,6 +12,7 @@
 Additional functionality is enabled through the use of third-party modules.
 
 * [Get PhantomBot](https://phantombot.github.io/PhantomBot/ "PhantomBot Guides and OAuth")
+* [Security Policy](https://github.com/PhantomBot/PhantomBot/blob/master/SECURITY.md)
 
 ## How can I follow along/contribute?
 
@@ -25,7 +26,7 @@ Additional functionality is enabled through the use of third-party modules.
 PhantomBot requires the following software to be installed:
 
 ARM (Raspberry Pi) or x86 (32-bit) architectures
-* [OpenJDK 11](https://openjdk.java.net/)
+* [Adoptium Temurin 11] (https://adoptium.net/) or [OpenJDK 11](https://openjdk.java.net/)
 
 x86_64 (64-bit) architectures
 * No pre-requisites
@@ -38,6 +39,12 @@ Please refer to platform-specific installation documentation.
   * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
 * [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
 
+### Docker
+PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
+* [DockerHub](https://hub.docker.com/r/gmt2001/phantombot-stable)
+* [GHCR](https://github.com/orgs/PhantomBot/pkgs/container/PhantomBot)
+* [Docker Compose File](https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml)
+
 ## Upgrading PhantomBot
 
 Detailed upgrade instructions are listed on our [documentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
@@ -48,8 +55,6 @@ PhantomBot is licensed under the [**GNU General Public License v3 (GPL-3)**](htt
 
 ## Rollbar Exception Reporting
 :information_source: ***Notice:*** As of Phantombot Nightly Build 49687f9 (July 4, 2021) and PhantomBot v3.5.0, we now use [Rollbar](https://rollbar.com) to automatically report exceptions to the dev team.
-
-NOTE: This is ***not*** included in stable builds until v3.5.0
 
 OAuth tokens, Client IDs, and API Secrets are **NOT** sent. All information is kept private.
 

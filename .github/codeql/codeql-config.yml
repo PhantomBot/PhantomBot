@@ -5,3 +5,4 @@ paths-ignore:
   - resources/web/panel/vendors
   - docs/common/js/jquery-ui
   - docs/panel/vendors
+  - docs/panel-stable/vendors
