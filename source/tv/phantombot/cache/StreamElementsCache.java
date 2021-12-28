@@ -16,7 +16,6 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.datastore.DataStore;
 import com.scaniatv.StreamElementsAPIv2;
 import java.util.Calendar;
 import java.util.Date;
