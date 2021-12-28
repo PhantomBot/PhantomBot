@@ -64,7 +64,7 @@ public final class LangFileUpdater {
     public static String getCustomLang(String langFile) throws JSONException {
         String stringArray;
 
-        if (PathValidator.isValidPathLang(langFile)) {
+        if (PathValidator.isValidPathLang(CUSTOM_LANG_ROOT + langFile)) {
             stringArray = convertLangMapToJSONArray(
                     getCustomAndDefaultLangMap(
                             getLang(DEFAULT_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_")),
