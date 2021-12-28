@@ -26,6 +26,16 @@ function contains($haystack, $needle) {
     }
 }
 
+function str_includes_array_value($needle, $haystack) {
+    foreach ($haystack as $v) {
+        if (strpos($needle, $v) !== false) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 function dofilter($data) {
     return filter_var($data, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_BACKTICK);
 }
@@ -130,7 +140,7 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
 
         $last = -1;
         foreach($v['frames'] as $k => $f) {
-            if (in_array($f['class_name'], $packages)) {
+            if (str_includes_array_value($f['class_name'], $packages)) {
                 $last = $k;
             } else {
                 foreach ($files as $file) {
@@ -155,7 +165,7 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
 
     $last = -1;
     foreach($item['data']['body']['trace']['frames'] as $k => $f) {
-        if (in_array($f['class_name'], $packages)) {
+        if (str_includes_array_value($f['class_name'], $packages)) {
             $last = $k;
         } else {
             foreach ($files as $file) {
