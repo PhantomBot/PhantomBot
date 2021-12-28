@@ -21,6 +21,7 @@ import com.rollbar.api.payload.data.Level;
 import com.rollbar.api.payload.data.Person;
 import com.rollbar.api.payload.data.Server;
 import com.rollbar.api.payload.data.body.BodyContent;
+import com.rollbar.api.payload.data.body.Frame;
 import com.rollbar.api.payload.data.body.Trace;
 import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
@@ -60,6 +61,7 @@ public class RollbarProvider implements AutoCloseable {
     private static final int REPEAT_INTERVAL_MINUTES = 180;
     private static final long REPEAT_CHECK_INTERVAL = 1800000L;
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
+    private static final List<String> FINGERPRINT_FILE_REGEX = Collections.unmodifiableList(Arrays.asList("(.*).js"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
             "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
             "rollbarid", "twitch_tcp_nodelay", "usehttps", "user", "useeventsub", "userollbar", "webenable", "whisperlimit60", "wsdebug"));
@@ -311,24 +313,56 @@ public class RollbarProvider implements AutoCloseable {
                                             md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
                                             md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
                                             md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
-                                            t.getFrames().stream().forEachOrdered(f -> {
+                                            int last = -1;
+                                            for (int i = 0; i < t.getFrames().size(); i++) {
+                                                Frame f = t.getFrames().get(i);
+                                                for (String p : APP_PACKAGES) {
+                                                    if (f.getClassName().contains(p)) {
+                                                        last = i;
+                                                    }
+                                                }
+                                                for (String p : FINGERPRINT_FILE_REGEX) {
+                                                    if (f.getFilename().matches(p)) {
+                                                        last = i;
+                                                    }
+                                                }
+                                            }
+
+                                            if (last >= 0) {
+                                                Frame f = t.getFrames().get(last);
                                                 md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
                                                 md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
                                                 md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
                                                 md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
-                                            });
+                                            }
                                         });
                                     } else if (bc instanceof Trace) {
                                         Trace t = (Trace) bc;
                                         md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
-                                        t.getFrames().stream().forEachOrdered(f -> {
+                                        int last = -1;
+                                        for (int i = 0; i < t.getFrames().size(); i++) {
+                                            Frame f = t.getFrames().get(i);
+                                            for (String p : APP_PACKAGES) {
+                                                if (f.getClassName().contains(p)) {
+                                                    last = i;
+                                                }
+                                            }
+                                            for (String p : FINGERPRINT_FILE_REGEX) {
+                                                if (f.getFilename().matches(p)) {
+                                                    last = i;
+                                                }
+                                            }
+                                        }
+
+                                        if (last >= 0) {
+                                            Frame f = t.getFrames().get(last);
                                             md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
                                             md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
                                             md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
                                             md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
-                                        });
+                                        }
                                     }
 
                                     String digest = Hex.encodeHexString(md.digest());
