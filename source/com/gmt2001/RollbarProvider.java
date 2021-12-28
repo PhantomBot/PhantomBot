@@ -445,6 +445,19 @@ public class RollbarProvider implements AutoCloseable {
         return RollbarProvider.INSTANCE;
     }
 
+    public static Map<String, Object> localsToCustom(String[] names, Object[] values) {
+        Map<String, Object> custom = new HashMap<>();
+        Map<String, Object> locals = new HashMap<>();
+
+        for (int i = 0; i < Math.min(names.length, values.length); i++) {
+            locals.put(names[i], values[i]);
+        }
+
+        custom.put("__locals", locals);
+
+        return custom;
+    }
+
     public Rollbar getRollbar() {
         return this.rollbar;
     }

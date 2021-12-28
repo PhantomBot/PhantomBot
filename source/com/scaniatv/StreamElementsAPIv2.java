@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.scaniatv;
 
+import com.gmt2001.RollbarProvider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class StreamElementsAPIv2 {
         if (instance == null) {
             instance = new StreamElementsAPIv2();
         }
-        
+
         return instance;
     }
 
@@ -120,7 +120,7 @@ public class StreamElementsAPIv2 {
             fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
         } catch (JSONException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.printStackTrace(ex, RollbarProvider.localsToCustom(new String[]{"urlAddress", "ex.Class", "ex.getMessage", "jsonText"}, new Object[]{urlAddress, "JSONException", ex.getMessage(), jsonText}));
         } catch (NullPointerException ex) {
             fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
             com.gmt2001.Console.err.printStackTrace(ex);
