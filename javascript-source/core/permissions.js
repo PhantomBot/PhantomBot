@@ -109,7 +109,7 @@
         var exists = false;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
+            if ($.equalsIgnoreCase(list[i], value)) {
                 exists = true;
                 break;
             }
