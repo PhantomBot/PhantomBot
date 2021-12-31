@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.5.0.6" />
+    <property name="version" value="3.5.0.7" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.5.0" />
+    <property name="webpanel.version" value="1.5.1" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -101,14 +101,14 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml"
                  uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
-    
+
     <target name="init">
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
         <mkdir dir="${dist}" />
         <mkdir dir="${version.folder}" />
     </target>
-    
+
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:retrieve sync="true"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
@@ -122,19 +122,19 @@
             <arg value="resources/licenses/tv.phantombot-phantombot-default.html"/>
         </exec>
     </target>
-    
+
     <target depends="init-ivy" name="ivy-cleancache">
         <ivy:cleancache/>
     </target>
-    
+
     <target name="clearlib">
         <delete>
             <fileset dir="${reference}" includes="**/*.jar" />
         </delete>
     </target>
-    
+
     <target depends="clearlib,ivy-cleancache,ivy-retrieve" name="ivy-clean-retrieve" />
-    
+
     <target depends="ivy-retrieve" name="classpaths">
         <path id="reference.class.path">
             <fileset dir="${reference}">
@@ -143,7 +143,7 @@
                 <exclude name="*javadoc.jar"/>
             </fileset>
         </path>
-        
+
         <pathconvert property="mf.classpath" pathsep=" ">
             <path refid="reference.class.path" />
             <mapper>
