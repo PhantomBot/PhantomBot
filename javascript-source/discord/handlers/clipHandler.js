@@ -19,16 +19,16 @@
  * Script  : clipHandler.js
  * Purpose : Configures the automatic display of clips in chat and captures the events from Twitch.
  */
-(function() {
+(function () {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'clipsToggle', false),
-        message = $.getSetIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!'),
-        channelName = $.getSetIniDbString('discordSettings', 'clipsChannel', ''),
-        announce = false;
+            message = $.getSetIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!'),
+            channelName = $.getSetIniDbString('discordSettings', 'clipsChannel', ''),
+            announce = false;
 
     /**
      * @event webPanelSocketUpdate
      */
-    $.bind('webPanelSocketUpdate', function(event) {
+    $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/clipHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'clipsToggle', false);
             message = $.getIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!');
@@ -39,16 +39,20 @@
     /*
      * @event twitchClip
      */
-	$.bind('twitchClip', function(event) {
+    $.bind('twitchClip', function (event) {
         var creator = event.getCreator(),
-            url = event.getClipURL(),
-            title = event.getClipTitle(),
-            clipThumbnail = event.getThumbnailObject().getString("medium"),
-            s = message;
+                url = event.getClipURL(),
+                title = event.getClipTitle(),
+                clipThumbnail = event.getThumbnailObject().getString("medium"),
+                s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
-        if (announce === false || toggle === false) {
+        if (announce === false || toggle === false || url === undefined || url === null) {
             return;
+        }
+
+        if (clipThumbnail === undefined || clipThumbnail === null) {
+            clipThumbnail = $.twitchcache.getLogoLink();
         }
 
         if (s.match(/\(name\)/g)) {
@@ -71,29 +75,29 @@
             $.discord.say(channelName, s);
         } else {
             $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                        .withColor(100, 65, 164)
-                        .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/clip-embed-icon.png')
-                        .withTitle($.lang.get('discord.cliphandler.clip.embedtitle'))
-                        .appendDescription(s)
-                        .withUrl(url)
-                        .withImage(clipThumbnail)
-                        .withTimestamp(Date.now())
-                        .withFooterText('Twitch')
-                        .withFooterIcon($.twitchcache.getLogoLink()).build());
+                    .withColor(100, 65, 164)
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/clip-embed-icon.png')
+                    .withTitle($.lang.get('discord.cliphandler.clip.embedtitle'))
+                    .appendDescription(s)
+                    .withUrl(url)
+                    .withImage(clipThumbnail)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitch')
+                    .withFooterIcon($.twitchcache.getLogoLink()).build());
         }
     });
 
     /*
      * @event command
      */
-    $.bind('discordChannelCommand', function(event) {
+    $.bind('discordChannelCommand', function (event) {
         var sender = event.getSender(),
-            channel = event.getDiscordChannel(),
-            command = event.getCommand(),
-            mention = event.getMention(),
-            args = event.getArgs(),
-            argsString = event.getArguments(),
-            action = args[0];
+                channel = event.getDiscordChannel(),
+                command = event.getCommand(),
+                mention = event.getMention(),
+                args = event.getArgs(),
+                argsString = event.getArguments(),
+                action = args[0];
 
         /*
          * @discordcommandpath clipstoggle - Toggles the clips announcements.
@@ -152,7 +156,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipstoggle', 1);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipsmessage', 1);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipschannel', 1);
