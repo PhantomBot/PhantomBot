@@ -31,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
@@ -87,6 +88,7 @@ public final class LangFileUpdater {
     public static void updateCustomLang(String stringArray, String langFile, JSONStringer jso) throws JSONException {
         final StringBuilder sb = new StringBuilder();
         final JSONArray array = new JSONArray(stringArray);
+        boolean success = true;
 
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
@@ -107,6 +109,7 @@ public final class LangFileUpdater {
                         .key("title").value("Forbidden")
                         .key("detail").value("Outside acceptable path")
                         .endObject().endArray().endObject();
+                success = false;
                 throw new AccessDeniedException(langFile, null, "Outside acceptable path");
             }
 
@@ -130,6 +133,7 @@ public final class LangFileUpdater {
                     HashMap<String, Script> scripts = ScriptManager.getScripts();
                     String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
 
+                    final List<String> errors = new ArrayList<>();
                     scripts.values().forEach((script -> {
                         String path = script.getFile().toPath().toString();
 
@@ -138,16 +142,23 @@ public final class LangFileUpdater {
                                 try {
                                     script.reload();
                                 } catch (IOException ex) {
-                                    jso.object().key("errors").array().object()
-                                            .key("status").value("500")
-                                            .key("title").value("Internal Server Error")
-                                            .key("detail").value("IOException: " + ex.getMessage())
-                                            .endObject().endArray().endObject();
+                                    errors.add(ex.getMessage());
                                     com.gmt2001.Console.err.printStackTrace(ex);
                                 }
                             }
                         }
                     }));
+
+                    if (errors.size() > 0) {
+                        jso.object().key("errors").array();
+                        errors.forEach(msg -> jso.object()
+                                .key("status").value("500")
+                                .key("title").value("Internal Server Error")
+                                .key("detail").value("IOException: " + msg)
+                                .endObject());
+                        jso.endArray().endObject();
+                        success = false;
+                    }
                 }
             }
         } catch (IOException ex) {
@@ -156,8 +167,11 @@ public final class LangFileUpdater {
                     .key("title").value("Internal Server Error")
                     .key("detail").value("IOException: " + ex.getMessage())
                     .endObject().endArray().endObject();
+            success = false;
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        jso.object().key("success").value(success).endObject();
     }
 
     /**
