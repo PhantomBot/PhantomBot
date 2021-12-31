@@ -66,12 +66,12 @@
         function randomInt(args) {
             if (!args) {
                 return {
-                    result: String($.randRange(1, 100)),
+                    result: $.jsString($.randRange(1, 100)),
                     cache: false
                 };
             } else if ((match = args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
                 return {
-                    result: String($.randRange(parseInt(match[1]), parseInt(match[2]))),
+                    result: $.jsString($.randRange(parseInt(match[1]), parseInt(match[2]))),
                     cache: false
                 };
             }
@@ -92,11 +92,11 @@
             return function (args, event) {
                 var arg = event.getArgs()[n - 1];
                 if (!args) {
-                    return {result: arg !== undefined ? String(arg) : ''};
+                    return {result: arg !== undefined ? $.jsString(arg) : ''};
                 } else if ((match = args.match(/^([=\|])(.*)$/))) {
                     if (arg !== undefined) {
                         return {
-                            result: String(arg),
+                            result: $.jsString(arg),
                             cache: true
                         };
                     }
@@ -120,7 +120,7 @@
         function atSender(args, event) {
             if (!args) {
                 return {
-                    result: String($.userPrefix(event.getSender(), true)),
+                    result: $.jsString($.userPrefix(event.getSender(), true)),
                     cache: true
                 };
             }
@@ -179,7 +179,7 @@
          */
         function baresender(args, event) {
             if (!args) {
-                return {result: String(event.getSender())};
+                return {result: $.jsString(event.getSender())};
             }
         }
 
@@ -190,7 +190,7 @@
         function channelname(args) {
             if (!args) {
                 return {
-                    result: String($.username.resolve($.channelName)),
+                    result: $.jsString($.username.resolve($.channelName)),
                     cache: true
                 };
             }
@@ -254,7 +254,7 @@
                 temp = [];
                 for (i in keys) {
                     if (!keys[i].includes(' ')) {
-                        temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
+                        temp.push('!' + keys[i] + ': ' + $.getPoints$.jsString($.inidb.get('pricecom', keys[i])));
                     }
                 }
                 $.paginateArray(temp, 'NULL' + prefix, ', ', true, event.getSender());
@@ -272,7 +272,7 @@
         function count(args, event) {
             if (!args) {
                 $.inidb.incr('commandCount', event.getCommand(), 1);
-                return {result: String($.inidb.get('commandCount', event.getCommand()))};
+                return {result: $.jsString($.inidb.get('commandCount', event.getCommand()))};
             }
         }
 
@@ -293,7 +293,7 @@
                 }
                 temp -= Date.parse($.getLocalTime());
                 return {
-                    result: String($.getCountString(temp / 1000, false)),
+                    result: $.jsString($.getCount$.jsString(temp / 1000, false)),
                     cache: true
                 };
             }
@@ -316,7 +316,7 @@
                 }
                 temp = Date.parse($.getLocalTime()) - temp;
                 return {
-                    result: String($.getCountString(temp / 1000, true)),
+                    result: $.jsString($.getCount$.jsString(temp / 1000, true)),
                     cache: true
                 };
             }
@@ -332,7 +332,7 @@
         function currenttime(args) {
             if ((match = args.match(/^ (.+), (.*)$/))) {
                 return {
-                    result: String($.getCurrentLocalTimeString(match[2], match[1])),
+                    result: $.jsString($.getCurrentLocalTime$.jsString(match[2], match[1])),
                     cache: true
                 };
             }
@@ -352,7 +352,7 @@
             if ((match = args.match(/^\s(.+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
-                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
+                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.Get$.jsString('commandtoken', '', cmd));
                 }
 
                 flag = false;
@@ -368,7 +368,7 @@
                     return {result: $.lang.get('customcommands.customapi.404', cmd)};
                 }
                 return {
-                    result: String(getCustomAPIValue(encodeURI(match[1]))),
+                    result: $.jsString(getCustomAPIValue(encodeURI(match[1]))),
                     cache: false
                 };
             }
@@ -398,7 +398,7 @@
             if ((match = args.match(/^ (\S+) (.+)$/))) {
                 cmd = event.getCommand();
                 if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
-                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
+                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.Get$.jsString('commandtoken', '', cmd));
                 }
 
                 flag = false;
@@ -474,7 +474,7 @@
                 }
 
                 return {
-                    result: String(result),
+                    result: $.jsString(result),
                     cache: false
                 };
             }
@@ -488,7 +488,7 @@
         function downtime(args) {
             if (!args) {
                 return {
-                    result: String($.getStreamDownTime()),
+                    result: $.jsString($.getStreamDownTime()),
                     cache: true
                 };
             }
@@ -503,7 +503,7 @@
          */
         function echo(args, event) {
             if (!args) {
-                return {result: event.getArguments() ? String(event.getArguments()) : ''};
+                return {result: event.getArguments() ? $.jsString(event.getArguments()) : ''};
             }
         }
 
@@ -552,10 +552,10 @@
                 user = (match[1] || '').replace(/^@/, '');
                 channel = (match[2] || '').replace(/^@/, '');
                 if (user.length === 0) {
-                    user = String(event.getSender());
+                    user = $.jsString(event.getSender());
                 }
                 if (channel.length === 0) {
-                    channel = String($.channelName);
+                    channel = $.jsString($.channelName);
                 }
                 $.getFollowAge(event.getSender(), user, channel);
                 return {cancel: true};
@@ -576,13 +576,13 @@
                 user = (match[1] || '').replace(/^@/, '');
                 channel = (match[2] || '').replace(/^@/, '');
                 if (user.length === 0) {
-                    user = String(event.getSender());
+                    user = $.jsString(event.getSender());
                 }
                 if (channel.length === 0) {
-                    channel = String($.channelName);
+                    channel = $.jsString($.channelName);
                 }
                 return {
-                    result: String($.getFollowDate(event.getSender(), user, channel)),
+                    result: $.jsString($.getFollowDate(event.getSender(), user, channel)),
                     cache: true
                 };
             }
@@ -599,7 +599,7 @@
         function follows(args) {
             if (!args) {
                 return {
-                    result: String($.getFollows($.channelName)),
+                    result: $.jsString($.getFollows($.channelName)),
                     cache: true
                 };
             }
@@ -616,7 +616,7 @@
         function game(args) {
             if (!args) {
                 return {
-                    result: String($.getGame($.channelName)),
+                    result: $.jsString($.getGame($.channelName)),
                     cache: true
                 };
             }
@@ -703,7 +703,7 @@
                     return {cancel: true};
                 }
                 return {
-                    result: String($.getGamesPlayed()),
+                    result: $.jsString($.getGamesPlayed()),
                     cache: true
                 };
             }
@@ -759,10 +759,10 @@
             if ((match = args.match(/^(?: (.*))?$/))) {
                 user = (match[1] || '').replace(/^@/, '');
                 if (user.length === 0) {
-                    user = String(event.getSender());
+                    user = $.jsString(event.getSender());
                 }
                 return {
-                    result: String($.getUserTime(user) / 3600),
+                    result: $.jsString($.getUserTime(user) / 3600),
                     cache: true
                 };
             }
@@ -779,10 +779,10 @@
             if ((match = args.match(/^(?: (.*))?$/))) {
                 user = (match[1] || '').replace(/^@/, '');
                 if (user.length === 0) {
-                    user = String(event.getSender());
+                    user = $.jsString(event.getSender());
                 }
                 return {
-                    result: String(Math.round($.getUserTime(user) / 360) / 10),
+                    result: $.jsString(Math.round($.getUserTime(user) / 360) / 10),
                     cache: true
                 };
             }
@@ -805,7 +805,7 @@
                         keywordInfo["count"] = 1;
                     }
                     $.inidb.set('keywords', keyword, JSON.stringify(keywordInfo));
-                    return {result: String(keywordInfo["count"])};
+                    return {result: $.jsString(keywordInfo["count"])};
                 } else {
                     return {result: $.lang.get('customcommands.keyword.404', keyword)};
                 }
@@ -821,7 +821,7 @@
             if (!args) {
                 if ($.inidb.exists('donations', 'last_donation_message')) {
                     return {
-                        result: String($.inidb.get('donations', 'last_donation_message')),
+                        result: $.jsString($.inidb.get('donations', 'last_donation_message')),
                         cache: true
                     };
                 } else {
@@ -883,7 +883,7 @@
                     temp = 0;
                 }
                 return {
-                    result: String($.getPointsString(temp)),
+                    result: $.jsString($.getPoints$.jsString(temp)),
                     cache: true
                 };
             }
@@ -923,7 +923,7 @@
                     return {cancel: true};
                 }
                 return {
-                    result: String($.getPlayTime() || ''),
+                    result: $.jsString($.getPlayTime() || ''),
                     cache: true
                 }
             }
@@ -938,7 +938,7 @@
          */
         function pointname(args) {
             if (!args) {
-                return {result: String($.pointNameMultiple)};
+                return {result: $.jsString($.pointNameMultiple)};
             }
         }
 
@@ -956,13 +956,13 @@
         function pointtouser(args, event) {
             temp = '';
             if (event.getArgs().length > 0) {
-                temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+                temp = $.js$.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
             }
             if (temp.length === 0) {
                 temp = event.getSender();
             }
             return {
-                result: String($.username.resolve(temp)) + ' -> ',
+                result: $.jsString($.username.resolve(temp)) + ' -> ',
                 cache: true
             };
         }
@@ -978,10 +978,10 @@
                 var user;
                 user = (match[1] || '').replace(/^@/, '');
                 if (user.length === 0) {
-                    user = String(event.getSender());
+                    user = $.jsString(event.getSender());
                 }
                 return {
-                    result: String($.getUserPoints(user)),
+                    result: $.jsString($.getUserPoints(user)),
                     cache: true
                 };
             }
@@ -1008,7 +1008,7 @@
                     temp = 0;
                 }
                 return {
-                    result: String($.getPointsString(temp)),
+                    result: $.jsString($.getPoints$.jsString(temp)),
                     cache: true
                 };
             }
@@ -1031,11 +1031,11 @@
                     }
 
                     return {
-                        result: String(name),
+                        result: $.jsString(name),
                         cache: false
                     };
                 } catch (ex) {
-                    return {result: String($.username.resolve($.botName))};
+                    return {result: $.jsString($.username.resolve($.botName))};
                 }
             }
         }
@@ -1051,11 +1051,11 @@
             if (!args) {
                 try {
                     return {
-                        result: String($.resolveRank($.randElement($.users))),
+                        result: $.jsString($.resolveRank($.randElement($.users))),
                         cache: false
                     };
                 } catch (ex) {
-                    return {result: String($.resolveRank($.botName))};
+                    return {result: $.jsString($.resolveRank($.botName))};
                 }
             }
         }
@@ -1080,7 +1080,7 @@
                     };
                 }
                 return {
-                    result: String($.readFile(fileName)[0] || ''),
+                    result: $.jsString($.readFile(fileName)[0] || ''),
                     cache: true
                 };
             }
@@ -1099,7 +1099,7 @@
                     return {result: $.lang.get('customcommands.file.404', fileName)};
                 }
                 temp = $.readFile(fileName);
-                return {result: String($.randElement(temp) || ''), cache: false};
+                return {result: $.jsString($.randElement(temp) || ''), cache: false};
             }
         }
 
@@ -1145,7 +1145,7 @@
         function sender(args, event) {
             if (!args) {
                 return {
-                    result: String($.username.resolve(event.getSender())),
+                    result: $.jsString($.username.resolve(event.getSender())),
                     cache: true
                 };
             }
@@ -1162,7 +1162,7 @@
         function senderrank(args, event) {
             if (!args) {
                 return {
-                    result: String($.resolveRank(event.getSender())),
+                    result: $.jsString($.resolveRank(event.getSender())),
                     cache: true
                 };
             }
@@ -1176,7 +1176,7 @@
         function senderrankonly(args, event) {
             if (!args) {
                 return {
-                    result: String($.getRank(event.getSender())),
+                    result: $.jsString($.getRank(event.getSender())),
                     cache: true
                 };
             }
@@ -1193,7 +1193,7 @@
         function status(args) {
             if (!args) {
                 return {
-                    result: String($.getStatus($.channelName)),
+                    result: $.jsString($.getStatus($.channelName)),
                     cache: true
                 };
             }
@@ -1211,7 +1211,7 @@
         function subscribers(args) {
             if (!args) {
                 return {
-                    result: String($.getSubscriberCount() + ' '),
+                    result: $.jsString($.getSubscriberCount() + ' '),
                     cache: true
                 };
             }
@@ -1232,7 +1232,7 @@
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
                         return {
-                            result: String(teamMember.get('followers')),
+                            result: $.jsString(teamMember.get('followers')),
                             cache: true
                         };
                     } else {
@@ -1265,7 +1265,7 @@
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
                         return {
-                            result: String(teamMember.getString('game')),
+                            result: $.jsString(teamMember.get$.jsString('game')),
                             cache: true
                         };
                     } else {
@@ -1298,7 +1298,7 @@
                     teamMember = teamObj.getTeamMember(match[2]);
                     if (teamMember != null) {
                         return {
-                            result: String(teamMember.getString('url')),
+                            result: $.jsString(teamMember.get$.jsString('url')),
                             cache: true
                         };
                     } else {
@@ -1328,7 +1328,7 @@
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {
-                        result: String(teamObj.getTotalMembers()),
+                        result: $.jsString(teamObj.getTotalMembers()),
                         cache: true
                     };
                 } else {
@@ -1352,7 +1352,7 @@
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {
-                        result: String(teamObj.getName()),
+                        result: $.jsString(teamObj.getName()),
                         cache: true
                     };
                 } else {
@@ -1375,7 +1375,7 @@
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {
-                        result: String(teamObj.getRandomMember()),
+                        result: $.jsString(teamObj.getRandomMember()),
                         cache: false
                     };
                 } else {
@@ -1399,7 +1399,7 @@
                 teamObj = $.twitchteamscache.getTeam(match[1]);
                 if (teamObj != null) {
                     return {
-                        result: String(teamObj.getUrl()),
+                        result: $.jsString(teamObj.getUrl()),
                         cache: true
                     };
                 } else {
@@ -1435,7 +1435,7 @@
                     };
                 } else {
                     return {
-                        result: $.lang.get('streamcommand.title.online', status, String($.getStreamUptime($.channelName))),
+                        result: $.lang.get('streamcommand.title.online', status, $.jsString($.getStreamUptime($.channelName))),
                         cache: true
                     };
                 }
@@ -1456,13 +1456,13 @@
         function touser(args, event) {
             temp = '';
             if (event.getArgs().length > 0) {
-                temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+                temp = $.js$.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
             }
             if (temp.length === 0) {
                 temp = event.getSender();
             }
             return {
-                result: String($.username.resolve(temp)),
+                result: $.jsString($.username.resolve(temp)),
                 cache: true
             };
         }
@@ -1546,7 +1546,7 @@
         function viewers(args) {
             if (!args) {
                 return {
-                    result: String($.getViewers($.channelName) + ' '),
+                    result: $.jsString($.getViewers($.channelName) + ' '),
                     cache: true
                 };
             }
@@ -1560,7 +1560,7 @@
         function views(args) {
             if (!args) {
                 return {
-                    result: String($.twitchcache.getViews()),
+                    result: $.jsString($.twitchcache.getViews()),
                     cache: true
                 };
             }
@@ -1651,7 +1651,7 @@
             'writefile': writefile
         };
         for (i = 1; i <= 9; i++) {
-            transformers[String(i)] = buildArgs(i);
+            transformers[$.jsString(i)] = buildArgs(i);
         }
 
         return transformers;
