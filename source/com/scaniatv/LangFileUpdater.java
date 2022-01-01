@@ -31,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
@@ -67,8 +68,8 @@ public final class LangFileUpdater {
         if (PathValidator.isValidPathLang(CUSTOM_LANG_ROOT + langFile)) {
             stringArray = convertLangMapToJSONArray(
                     getCustomAndDefaultLangMap(
-                            getLang(DEFAULT_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_")),
-                            getLang(CUSTOM_LANG_ROOT + langFile.replaceAll("\\.\\.", "").replaceAll("%", "_"))
+                            getLang(DEFAULT_LANG_ROOT + sanitizePath(langFile)),
+                            getLang(CUSTOM_LANG_ROOT + sanitizePath(langFile))
                     )
             );
         } else {
@@ -84,9 +85,10 @@ public final class LangFileUpdater {
      * @param stringArray
      * @param langFile
      */
-    public static void updateCustomLang(String stringArray, String langFile) throws JSONException {
+    public static void updateCustomLang(String stringArray, String langFile, JSONStringer jso) throws JSONException {
         final StringBuilder sb = new StringBuilder();
         final JSONArray array = new JSONArray(stringArray);
+        boolean success = true;
 
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
@@ -99,22 +101,23 @@ public final class LangFileUpdater {
         }
 
         try {
-            langFile = CUSTOM_LANG_ROOT + langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
+            langFile = CUSTOM_LANG_ROOT + sanitizePath(langFile);
 
             if (!PathValidator.isValidPathLang(langFile)) {
+                jso.object().key("errors").array().object()
+                        .key("status").value("403")
+                        .key("title").value("Forbidden")
+                        .key("detail").value("Outside acceptable path")
+                        .endObject().endArray().endObject();
+                success = false;
                 throw new AccessDeniedException(langFile, null, "Outside acceptable path");
             }
 
-            File file = new File(langFile);
-            boolean exists = true;
-
-            // Make sure the folder exists.
-            if (!file.getParentFile().isDirectory()) {
-                file.getParentFile().mkdirs();
-            }
+            Files.createDirectories(Paths.get(langFile).getParent());
 
             // This is used if we need to load the script or not.
-            if (!file.exists()) {
+            boolean exists = true;
+            if (!Files.exists(Paths.get(langFile))) {
                 exists = false;
             }
 
@@ -122,6 +125,7 @@ public final class LangFileUpdater {
             Files.write(Paths.get(langFile), sb.toString().getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
             // If the script doesn't exist, load it.
+            File file = new File(langFile);
             if (!exists) {
                 ScriptManager.loadScript(file);
             } else {
@@ -129,6 +133,7 @@ public final class LangFileUpdater {
                     HashMap<String, Script> scripts = ScriptManager.getScripts();
                     String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
 
+                    final List<String> errors = new ArrayList<>();
                     scripts.values().forEach((script -> {
                         String path = script.getFile().toPath().toString();
 
@@ -137,16 +142,36 @@ public final class LangFileUpdater {
                                 try {
                                     script.reload();
                                 } catch (IOException ex) {
+                                    errors.add(ex.getMessage());
                                     com.gmt2001.Console.err.printStackTrace(ex);
                                 }
                             }
                         }
                     }));
+
+                    if (errors.size() > 0) {
+                        jso.object().key("errors").array();
+                        errors.forEach(msg -> jso.object()
+                                .key("status").value("500")
+                                .key("title").value("Internal Server Error")
+                                .key("detail").value("IOException: " + msg)
+                                .endObject());
+                        jso.endArray().endObject();
+                        success = false;
+                    }
                 }
             }
         } catch (IOException ex) {
+            jso.object().key("errors").array().object()
+                    .key("status").value("500")
+                    .key("title").value("Internal Server Error")
+                    .key("detail").value("IOException: " + ex.getMessage())
+                    .endObject().endArray().endObject();
+            success = false;
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        jso.object().key("success").value(success).endObject();
     }
 
     /**
@@ -157,6 +182,10 @@ public final class LangFileUpdater {
      */
     private static String sanitizeResponse(String response) {
         return response.replaceAll("'", "\\\\'");
+    }
+
+    private static String sanitizePath(String path) {
+        return path.replaceAll("%", "_");
     }
 
     /**
@@ -188,7 +217,7 @@ public final class LangFileUpdater {
     private static String getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
 
-        langFile = langFile.replaceAll("\\\\", "/").replaceAll("\\.\\.", "").replaceAll("%", "_");
+        langFile = sanitizePath(langFile);
 
         if (PathValidator.isValidPathLang(langFile)) {
             if (new File(langFile).exists()) {

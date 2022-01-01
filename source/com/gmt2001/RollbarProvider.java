@@ -318,12 +318,12 @@ public class RollbarProvider implements AutoCloseable {
                                             for (int i = 0; i < t.getFrames().size(); i++) {
                                                 Frame f = t.getFrames().get(i);
                                                 for (String p : APP_PACKAGES) {
-                                                    if (f.getClassName().contains(p)) {
+                                                    if (f.getClassName() != null && f.getClassName().contains(p)) {
                                                         last = i;
                                                     }
                                                 }
                                                 for (String p : FINGERPRINT_FILE_REGEX) {
-                                                    if (f.getFilename().matches(p)) {
+                                                    if (f.getFilename() != null && f.getFilename().matches(p)) {
                                                         last = i;
                                                     }
                                                 }
@@ -346,12 +346,12 @@ public class RollbarProvider implements AutoCloseable {
                                         for (int i = 0; i < t.getFrames().size(); i++) {
                                             Frame f = t.getFrames().get(i);
                                             for (String p : APP_PACKAGES) {
-                                                if (f.getClassName().contains(p)) {
+                                                if (f.getClassName() != null && f.getClassName().contains(p)) {
                                                     last = i;
                                                 }
                                             }
                                             for (String p : FINGERPRINT_FILE_REGEX) {
-                                                if (f.getFilename().matches(p)) {
+                                                if (f.getFilename() != null && f.getFilename().matches(p)) {
                                                     last = i;
                                                 }
                                             }

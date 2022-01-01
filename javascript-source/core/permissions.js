@@ -23,19 +23,19 @@
  * Provide an usergroups API
  * Use the $ API
  */
-(function() {
+(function () {
     var userGroups = [],
-        modeOUsers = [],
-        subUsers = new java.util.concurrent.CopyOnWriteArrayList(),
-        vipUsers = [],
-        modListUsers = [],
-        users = [],
-        moderatorsCache = [],
-        botList = [],
-        lastJoinPart = $.systemTime(),
-        firstRun = true,
-        isUpdatingUsers = false,
-        _isSwappedSubscriberVIP = false;
+            modeOUsers = [],
+            subUsers = new java.util.concurrent.CopyOnWriteArrayList(),
+            vipUsers = [],
+            modListUsers = [],
+            users = [],
+            moderatorsCache = [],
+            botList = [],
+            lastJoinPart = $.systemTime(),
+            firstRun = true,
+            isUpdatingUsers = false,
+            _isSwappedSubscriberVIP = false;
 
     /**
      * @function cleanTwitchBots
@@ -109,7 +109,7 @@
         var exists = false;
 
         for (var i = 0; i < list.length; i++) {
-            if (list[i] !== undefined && list[i].equalsIgnoreCase(value)) {
+            if ($.equalsIgnoreCase(list[i], value)) {
                 exists = true;
                 break;
             }
@@ -118,7 +118,7 @@
         return exists;
     }
 
-     /**
+    /**
      * @function updateUsersObject
      * @param {Array} list
      *
@@ -388,7 +388,7 @@
     function getGroupIdByName(groupName) {
         var i;
         for (i = 0; i < userGroups.length; i++) {
-            if (userGroups[i].equalsIgnoreCase(groupName.toLowerCase())) {
+            if (userGroups[i].equalsIgnoreCase(groupName.toLowerCase()) || userGroups[i].substring(0, userGroups[i].length() - 1).equalsIgnoreCase(groupName.toLowerCase())) {
                 return i;
             }
         }
@@ -430,7 +430,7 @@
      */
     function reloadGroups() {
         var groupKeys = $.inidb.GetKeyList('groups', ''),
-            i;
+                i;
 
         userGroups = [];
         for (i in groupKeys) {
@@ -515,7 +515,7 @@
      */
     function loadModeratorsCache() {
         var keys = $.inidb.GetKeyList('group', ''),
-            i;
+                i;
 
         for (i in keys) {
             if (parseInt($.inidb.get('group', keys[i])) <= 2) {
@@ -558,9 +558,9 @@
 
     function getGroupList() {
         var keys = $.inidb.GetKeyList('groups', ''),
-            groups = [],
-            temp = [],
-            i;
+                groups = [],
+                temp = [],
+                i;
 
         for (i in keys) {
             groups.push({
@@ -684,15 +684,15 @@
      *
      * @info Event that is sent when a large amount of people join/leave. This is done on a new thread.
      */
-    $.bind('ircChannelUsersUpdate', function(event) {
-        setTimeout(function() {
+    $.bind('ircChannelUsersUpdate', function (event) {
+        setTimeout(function () {
             // Don't allow other events to add or remove users.
             isUpdatingUsers = true;
 
             var joins = event.getJoins(),
-                parts = event.getParts(),
-                values = [],
-                now = $.systemTime();
+                    parts = event.getParts(),
+                    values = [],
+                    now = $.systemTime();
 
             // Handle parts
             for (var i = 0; i < parts.length; i++) {
@@ -736,7 +736,7 @@
     /**
      * @event ircChannelJoin
      */
-    $.bind('ircChannelJoin', function(event) {
+    $.bind('ircChannelJoin', function (event) {
         var username = event.getUser().toLowerCase();
 
         if (isTwitchBot(username)) {
@@ -757,7 +757,7 @@
     /**
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function(event) {
+    $.bind('ircChannelMessage', function (event) {
         var username = event.getSender().toLowerCase();
 
         if (isTwitchBot(username)) {
@@ -776,9 +776,9 @@
     /**
      * @event ircChannelLeave
      */
-    $.bind('ircChannelLeave', function(event) {
+    $.bind('ircChannelLeave', function (event) {
         var username = event.getUser().toLowerCase(),
-            i;
+                i;
 
         if (!isUpdatingUsers) {
             i = getKeyIndex(users, username);
@@ -794,9 +794,9 @@
     /**
      * @event ircChannelUserMode
      */
-    $.bind('ircChannelUserMode', function(event) {
+    $.bind('ircChannelUserMode', function (event) {
         var username = event.getUser().toLowerCase(),
-            i;
+                i;
 
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
@@ -852,16 +852,16 @@
     /**
      * @event ircPrivateMessage
      */
-    $.bind('ircPrivateMessage', function(event) {
+    $.bind('ircPrivateMessage', function (event) {
         var sender = event.getSender().toLowerCase(),
-            message = event.getMessage().toLowerCase().trim(),
-            modMessageStart = 'the moderators of this channel are: ',
-            vipMessageStart = 'vips for this channel are: ',
-            novipMessageStart = 'this channel does not have any vips',
-            keys = $.inidb.GetKeyList('group', ''),
-            subsTxtList = [],
-            spl,
-            i;
+                message = event.getMessage().toLowerCase().trim(),
+                modMessageStart = 'the moderators of this channel are: ',
+                vipMessageStart = 'vips for this channel are: ',
+                novipMessageStart = 'this channel does not have any vips',
+                keys = $.inidb.GetKeyList('group', ''),
+                subsTxtList = [],
+                spl,
+                i;
 
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.indexOf(modMessageStart) > -1) {
@@ -925,11 +925,11 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            command = event.getCommand(),
-            args = event.getArgs();
-            actionValue = args[0];
+                command = event.getCommand(),
+                args = event.getArgs();
+        actionValue = args[0];
 
         /*
          * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
@@ -1024,7 +1024,7 @@
             }
 
             var username = $.user.sanitize(args[0]),
-                groupId = parseInt(args[1]);
+                    groupId = parseInt(args[1]);
 
             if (!$.user.isKnown(username)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', username));
@@ -1069,8 +1069,8 @@
          */
         if (command.equalsIgnoreCase('permissionpoints')) {
             var groupId,
-                channelStatus,
-                points;
+                    channelStatus,
+                    points;
 
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
@@ -1085,10 +1085,10 @@
 
             if (!args[1]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', getGroupNameById(groupId),
-                    ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
-                    $.pointNameMultiple,
-                    ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
-                    $.pointNameMultiple));
+                        ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
+                        $.pointNameMultiple,
+                        ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+                        $.pointNameMultiple));
                 return;
             }
 
@@ -1101,12 +1101,12 @@
             if (!args[2]) {
                 if (channelStatus.equalsIgnoreCase('online')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', getGroupNameById(groupId),
-                        ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
-                        $.pointNameMultiple));
+                            ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
+                            $.pointNameMultiple));
                 } else if (channelStatus.equalsIgnoreCase('offline')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', getGroupNameById(groupId),
-                        ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
-                        $.pointNameMultiple));
+                            ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+                            $.pointNameMultiple));
                 }
                 return;
             }
@@ -1135,7 +1135,7 @@
          */
         if (command.equalsIgnoreCase('swapsubscribervip')) {
             swapSubscriberVIP();
-            if (isSwappedSubscriberVIP()){
+            if (isSwappedSubscriberVIP()) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.swapsubscribervip.swapped'));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.swapsubscribervip.normal'));
@@ -1153,7 +1153,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./core/permissions.js', 'permission', 1);
         $.registerChatCommand('./core/permissions.js', 'permissions', 1);
         $.registerChatCommand('./core/permissions.js', 'permissionlist', 1);

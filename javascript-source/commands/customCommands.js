@@ -502,6 +502,11 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
+                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                        group = 5;
+                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                        group = 3;
+                    }
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + ' ' + subAction, $.getGroupNameById(group)));
@@ -635,9 +640,9 @@
          */
         if (command.equalsIgnoreCase('commands')) {
             var cmds = $.inidb.GetKeyList('command', ''),
-                aliases = $.inidb.GetKeyList('aliases', ''),
-                externalCommands = $.inidb.GetKeyList('externalCommands', ''),
-                cmdList = [];
+                    aliases = $.inidb.GetKeyList('aliases', ''),
+                    externalCommands = $.inidb.GetKeyList('externalCommands', ''),
+                    cmdList = [];
 
             for (idx in cmds) {
                 if (!$.inidb.exists('disabledCommands', cmds[idx])
@@ -921,12 +926,12 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        var handleExtraCooldown = function(commandLower, extra) {
+        var handleExtraCooldown = function (commandLower, extra) {
             if (extra.cooldown != null) {
                 $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
             }
         };
-        var handleExtraDisabled = function(commandLower, extra) {
+        var handleExtraDisabled = function (commandLower, extra) {
             if (extra.disabled != null) {
                 if (extra.disabled) {
                     $.tempUnRegisterChatCommand(commandLower);
@@ -938,10 +943,10 @@
 
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             var args = event.getArgs(),
-                eventName = args[0] + '',
-                command = args[1] + '',
-                commandLower = command.toLowerCase() + '',
-                extra = args[3] == null ? {} : JSON.parse(args[3]);
+                    eventName = args[0] + '',
+                    command = args[1] + '',
+                    commandLower = command.toLowerCase() + '',
+                    extra = args[3] == null ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 if (customCommands[commandLower] !== undefined) {
                     delete customCommands[commandLower];

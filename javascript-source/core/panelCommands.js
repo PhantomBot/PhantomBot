@@ -19,12 +19,12 @@
  * This script is used to reload variables from scripts when you edit stuff on the panel. Only the bot can use these, and you can't disable them
  */
 
-(function() {
-    $.bind('command', function(event) {
+(function () {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0];
 
 
         /* reloads the betting vars */
@@ -84,34 +84,64 @@
                 return;
             }
 
-            if (args.length == 2) {
-                var group = args[1];
+            action = action.replace('!', '').toLowerCase();
+            var group = 7;
 
-                if (isNaN(parseInt(group))) {
+            if (args.length === 2) {
+                group = args[1];
+
+                if (!$.commandExists(action)) {
+                    return;
+                } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
+                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                        group = 5;
+                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                        group = 3;
+                    }
                 }
 
+                $.logCustomCommand({
+                    'set.perm.command': '!' + action,
+                    'set.perm.group': $.getGroupNameById(group),
+                    'sender': sender,
+                });
+
                 var list = $.inidb.GetKeyList('aliases', ''),
-                    i;
+                        i;
+
                 for (i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
                         $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
                         $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
                     }
                 }
+
                 $.inidb.set('permcom', action, group);
                 $.updateCommandGroup(action, group);
-                return;
-            }
-
-            var subcommand = args[1],
+            } else {
+                var subAction = args[1];
                 group = args[2];
-            if (isNaN(parseInt(group))) {
-                group = $.getGroupIdByName(group);
-            }
 
-            $.inidb.set('permcom', action + ' ' + subcommand, group);
-            $.updateSubcommandGroup(action, subcommand, group);
+                if (!$.subCommandExists(action, subAction)) {
+                    return;
+                } else if (isNaN(parseInt(group))) {
+                    group = $.getGroupIdByName(group);
+                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                        group = 5;
+                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                        group = 3;
+                    }
+                }
+
+                $.logCustomCommand({
+                    'set.perm.command': '!' + action + ' ' + subAction,
+                    'set.perm.group': $.getGroupNameById(group),
+                    'sender': sender,
+                });
+                $.inidb.set('permcom', action + ' ' + subAction, group);
+                $.updateSubcommandGroup(action, subAction, group);
+            }
             return;
         }
 
@@ -489,9 +519,9 @@
         }
     });
 
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         /* 10 second delay here because I don't want these commands to be registered first. */
-        setTimeout(function() {
+        setTimeout(function () {
             $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', 30);
             $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', 30);
             $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', 30);

@@ -337,7 +337,7 @@ public class WsPanelHandler implements WsFrameHandler {
         } else if (query.equalsIgnoreCase("saveLang")) {
             jsonObject.key("results").array();
             if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
-                LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"));
+                LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"), jsonObject);
             } else {
                 jsonObject.object().key("errors").array().object()
                         .key("status").value("403")

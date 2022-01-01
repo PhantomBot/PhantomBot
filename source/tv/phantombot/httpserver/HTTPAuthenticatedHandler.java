@@ -32,6 +32,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import tv.phantombot.PhantomBot;
 
@@ -377,10 +379,25 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
     }
 
     private void putLang(ChannelHandlerContext ctx, FullHttpRequest req) {
-        LangFileUpdater.updateCustomLang(req.content().toString(Charset.forName("UTF-8")), req.headers().get("lang-path"));
+        JSONStringer jso = new JSONStringer();
+        LangFileUpdater.updateCustomLang(req.content().toString(Charset.forName("UTF-8")), req.headers().get("lang-path"), jso);
 
-        com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(Charset.forName("UTF-8")), "plain"));
+        JSONObject j;
+        try {
+            j = new JSONObject(jso.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.debug.println("500" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, "Unable to Check Success.".getBytes(Charset.forName("UTF-8")), "plain"));
+            com.gmt2001.Console.err.logStackTrace(ex);
+            return;
+        }
+        if (j.getBoolean("success")) {
+            com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(Charset.forName("UTF-8")), "plain"));
+        } else {
+            com.gmt2001.Console.debug.println("500" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, j.getJSONArray("errors").getJSONObject(0).getString("detail").getBytes(Charset.forName("UTF-8")), "plain"));
+        }
     }
 
 }
