@@ -331,8 +331,8 @@ public class TwitchAuthorizationCodeFlow {
                     String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
                     if (!r.startsWith("{")) {
                         r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
-                        com.gmt2001.Console.debug.println(r);
                     }
+                    com.gmt2001.Console.debug.println(r);
                     return new JSONObject(r);
                 }
             } else {
@@ -340,8 +340,8 @@ public class TwitchAuthorizationCodeFlow {
                     String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
                     if (!r.startsWith("{")) {
                         r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
-                        com.gmt2001.Console.debug.println(r);
                     }
+                    com.gmt2001.Console.debug.println(r);
                     JSONObject j = new JSONObject(r);
                     if (!j.has("error")) {
                         if (j.has("status")) {
