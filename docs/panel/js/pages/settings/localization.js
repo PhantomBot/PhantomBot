@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$(function() {
+$(function () {
     var currentLang = '';
 
     // Load file button
@@ -28,7 +28,7 @@ $(function() {
                     .append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', e)), function () {
                 currentLang = $('#file-to-load').find(':selected').text();
                 socket.doRemote('loadLang', 'loadLang', {
-                    'lang-path': $('#file-to-load').find(':selected').text()
+                    'lang-path': currentLang
                 }, function (e) {
                     loadLang(JSON.parse(e[0].langFile));
                     // Alert the user.
@@ -44,17 +44,17 @@ $(function() {
     });
 
     // Add line button.
-    $('#add-line-button').on('click', function() {
+    $('#add-line-button').on('click', function () {
         helpers.getModal('add-lang', 'Add Lang Entry', 'Add', $('<form/>', {
             'role': 'form'
         })
-        // ID for the lang.
-        .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', 'module.name.id'))
-        // Resonse for the lang.
-        .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', 'Response example!')), function() {
+                // ID for the lang.
+                .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', 'module.name.id'))
+                // Resonse for the lang.
+                .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', 'Response example!')), function () {
             const table = $('#langTable').DataTable(),
-                langId = $('#lang-id'),
-                langRes = $('#lang-response');
+                    langId = $('#lang-id'),
+                    langRes = $('#lang-response');
 
             switch (false) {
                 case helpers.handleInputString(langId):
@@ -98,9 +98,9 @@ $(function() {
     });
 
     // Save button
-    $('#save-button').on('click', function() {
+    $('#save-button').on('click', function () {
         const datas = $('#langTable').DataTable().rows().data(),
-            dataObj = [];
+                dataObj = [];
 
         for (let i = 0; i < datas.length; i++) {
             if (typeof datas[i] === 'object') {
@@ -115,10 +115,10 @@ $(function() {
         }
 
         socket.doRemote('saveLang', 'saveLang', {
-            'lang-path': $('#file-to-load').find(':selected').text(),
+            'lang-path': currentLang,
             'content': JSON.stringify(dataObj)
         }, function (e) {
-            if (!e[0].errors) {
+            if (e.length === 0 || e[0].errors === undefined) {
                 toastr.success('Successfully saved the lang!');
             } else {
                 toaster.error(e[0].errors[0].status + ' ' + e[0].errors[0].title + '<br>' + e[0].errors[0].detail, 'Failed to save the lang');
@@ -175,42 +175,42 @@ $(function() {
             'paging': false,
             'data': tableData,
             'columnDefs': [
-                { 'className': 'default-table', 'orderable': false, 'targets': 2 },
-                { 'width': '25%', 'targets': 0 }
+                {'className': 'default-table', 'orderable': false, 'targets': 2},
+                {'width': '25%', 'targets': 0}
             ],
             'columns': [
-                { 'title': 'Lang ID' },
-                { 'title': 'Response' },
-                { 'title': 'Actions' }
+                {'title': 'Lang ID'},
+                {'title': 'Response'},
+                {'title': 'Actions'}
             ]
         });
 
         // On delete button.
-        table.on('click', '.btn-danger', function() {
+        table.on('click', '.btn-danger', function () {
             const row = $(this).parents('tr'),
-                id = $(this).data('id');
+                    id = $(this).data('id');
 
             // Ask the user if he wants to delete the lang.
             helpers.getConfirmDeleteModal('lang_modal_remove', 'Are you sure you want to remove this lang entry?', true,
-                'The land entry has been successfully removed!', function() { // Callback if the user clicks delete.
-                // Remove the table row.
-                table.row(row).remove().draw(false);
-            });
+                    'The land entry has been successfully removed!', function () { // Callback if the user clicks delete.
+                        // Remove the table row.
+                        table.row(row).remove().draw(false);
+                    });
         });
 
         // On edit button.
-        table.on('click', '.btn-warning', function() {
+        table.on('click', '.btn-warning', function () {
             const t = $(this);
 
             helpers.getModal('edit-lang', 'Edit Lang Entry', 'Edit', $('<form/>', {
                 'role': 'form'
             })
-            // ID for the lang.
-            .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', '', t.data('id'), 'The ID of this lang.'))
-            // Resonse for the lang.
-            .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', '', t.data('response').replace(/\\'/g, '\''), 'The response of this lang.')), function() {
+                    // ID for the lang.
+                    .append(helpers.getInputGroup('lang-id', 'text', 'Lang ID', '', t.data('id'), 'The ID of this lang.'))
+                    // Resonse for the lang.
+                    .append(helpers.getTextAreaGroup('lang-response', 'text', 'Response', '', t.data('response').replace(/\\'/g, '\''), 'The response of this lang.')), function () {
                 let id = $('#lang-id'),
-                    response = $('#lang-response');
+                        response = $('#lang-response');
 
                 switch (false) {
                     case helpers.handleInputString(id):
