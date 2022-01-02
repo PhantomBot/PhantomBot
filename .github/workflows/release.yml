@@ -44,6 +44,7 @@ jobs:
     outputs:
       dockermissing: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
       rollbarmissing: ${{ steps.check_rollbar_credentials.outputs.missingsecrets }}
+      servermissing: ${{ steps.check_server_credentials.outputs.missingsecrets }}
       branch: ${{ steps.build_env.outputs.branch }}
       version: ${{ steps.build_env.outputs.version }}
       revision: ${{ steps.build_env.outputs.revision }}
@@ -89,6 +90,22 @@ jobs:
       run: |
         if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
           echo "Missing Rollbar Access Token"
+          echo "##[set-output name=missingsecrets;]$(echo yes)"
+        else
+          echo "All secrets present"
+          echo "##[set-output name=missingsecrets;]$(echo no)"
+        fi
+    - name: Check Rollbar Passthrough Server Credentials
+      id: check_server_credentials
+      env:
+        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
+        URL: ${{ secrets.SERVER_URL }}
+      run: |
+        if [ "${ACCESS_TOKEN}" == "" ]; then
+          echo "Missing Access Token"
+          echo "##[set-output name=missingsecrets;]$(echo yes)"
+        elif [ "${URL}" == "" ]; then
+          echo "Missing URL"
           echo "##[set-output name=missingsecrets;]$(echo yes)"
         else
           echo "All secrets present"
@@ -245,6 +262,14 @@ jobs:
         ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
         ROLLBAR_USERNAME: ${{ github.actor }}
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Update Allowed Rollbar Versions
+      if: ${{ contains(needs.workflowvars.outputs.servermissing, 'no') && success() }}
+      env:
+        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
+        URL: ${{ secrets.SERVER_URL }}
+        VERSION: ${{ needs.workflowvars.outputs.version }}
+      run: |
+        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"stable\",\"version\":\"$VERSION\"}"
   docker:
     name: Docker build on ubuntu-latest with JDK 11
     runs-on: ubuntu-latest
@@ -341,3 +366,11 @@ jobs:
         ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_WRITE_TOKEN }}
         ROLLBAR_USERNAME: ${{ github.actor }}
         DEPLOY_ID: ${{ steps.rollbar_deploy.outputs.deploy_id }}
+    - name: Update Allowed Rollbar Versions
+      if: ${{ contains(needs.workflowvars.outputs.servermissing, 'no') && success() }}
+      env:
+        ACCESS_TOKEN: ${{ secrets.SERVER_TOKEN }}
+        URL: ${{ secrets.SERVER_URL }}
+        VERSION: ${{ needs.workflowvars.outputs.version }}
+      run: |
+        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"stable_docker\",\"version\":\"$VERSION\"}"
