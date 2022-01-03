@@ -385,10 +385,12 @@
      * @param {string} groupName
      * @returns {Number}
      */
-    function getGroupIdByName(groupName) {
-        var i;
+    function getGroupIdByName(ingroupName) {
+        var groupName = $.javaString(ingroupName);
+        var i, userGroupName;
         for (i = 0; i < userGroups.length; i++) {
-            if (userGroups[i].equalsIgnoreCase(groupName.toLowerCase()) || userGroups[i].substring(0, userGroups[i].length() - 1).equalsIgnoreCase(groupName.toLowerCase())) {
+            userGroupName = $.javaString(userGroups[i]);
+            if (userGroupName.equalsIgnoreCase(groupName.toLowerCase()) || userGroupName.substring(0, userGroupName.length() - 1).equalsIgnoreCase(groupName.toLowerCase())) {
                 return i;
             }
         }
