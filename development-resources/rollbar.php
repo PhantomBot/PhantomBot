@@ -63,7 +63,7 @@ if (!in_array($item['data']['environment'], $allowed_environments)) {
 }
 
 if (file_exists('rollbar-allowed-versions.json')) {
-    $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'));
+    $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'), true);
     if (!in_array($item['data']['code_version'], $allowed_versions[$item['data']['environment']])) {
         doexit(409, 'version not allowed', 'ver');
     }

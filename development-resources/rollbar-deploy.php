@@ -29,7 +29,7 @@ $data = file_get_contents('php://input');
 $item = json_decode($data, true);
 
 if (file_exists('rollbar-allowed-versions.json')) {
-    $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'));
+    $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'), true);
 } else {
     $allowed_versions = array();
 }
