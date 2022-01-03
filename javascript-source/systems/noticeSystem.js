@@ -21,14 +21,14 @@
  * Will say a message or a command every x amount of minutes.
  */
 
-(function() {
+(function () {
     var noticeGroups = [],
-        selectedGroup = null,
-        noticeTimoutIds = [],
-        noticeLock = new java.util.concurrent.locks.ReentrantLock,
-        messageCounts = [],
-        lastNoticesSent = [],
-        lastTimeNoticesSent = [];
+            selectedGroup = null,
+            noticeTimoutIds = [],
+            noticeLock = new java.util.concurrent.locks.ReentrantLock,
+            messageCounts = [],
+            lastNoticesSent = [],
+            lastTimeNoticesSent = [];
     loadNotices();
 
     /**
@@ -37,12 +37,12 @@
     function loadNotices() {
         noticeLock.lock();
         var keys = $.inidb.GetKeyList('notices', '').sort(),
-            inconsistent = false,
-            i,
-            messages,
-            disabled,
-            intervalMin,
-            intervalMax;
+                inconsistent = false,
+                i,
+                messages,
+                disabled,
+                intervalMin,
+                intervalMax;
 
         noticeGroups = [];
         noticeTimoutIds = [];
@@ -113,11 +113,11 @@
         stopNoticeTimer(idx);
 
         var minTime = noticeGroups[idx].intervalMin,
-            maxTime = noticeGroups[idx].intervalMax,
-            now = $.systemTime(),
-            rnd = Math.random(),
-            lastSent = lastTimeNoticesSent[idx],
-            time = (minTime + (maxTime - minTime) * rnd) * 6e4;
+                maxTime = noticeGroups[idx].intervalMax,
+                now = $.systemTime(),
+                rnd = Math.random(),
+                lastSent = lastTimeNoticesSent[idx],
+                time = (minTime + (maxTime - minTime) * rnd) * 6e4;
         if (!retryCall && lastSent + time <= now) {
             if (trySendNotice(idx)) {
                 startNoticeTimer(idx);
@@ -174,12 +174,12 @@
     function trySendNotice(idx) {
         noticeLock.lock();
         var timer = noticeGroups[idx],
-            messageCount = messageCounts[idx],
-            res = false;
+                messageCount = messageCounts[idx],
+                res = false;
         if (timer.noticeToggle
                 && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                 && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)
-                && (timer.noticeOfflineToggle && !$.isOnline($.channelName)) || $.isOnline($.channelName)) {
+                && (timer.noticeOfflineToggle || $.isOnline($.channelName))) {
             res = sendNotice(idx);
         }
         noticeLock.unlock();
@@ -210,14 +210,14 @@
 
         noticeLock.lock();
         var EventBus = Packages.tv.phantombot.event.EventBus,
-            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
-            i,
-            timer = noticeGroups[groupIdx],
-            notices = timer.messages,
-            disabled = timer.disabled,
-            tmp,
-            randOptions = [],
-            notice = null;
+                CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
+                i,
+                timer = noticeGroups[groupIdx],
+                notices = timer.messages,
+                disabled = timer.disabled,
+                tmp,
+                randOptions = [],
+                notice = null;
 
         if (notices.length === 0) {
             noticeLock.unlock();
@@ -240,7 +240,9 @@
                 }
             }
             if (randOptions.length > 1) {
-                randOptions = randOptions.filter(function (opt) { return opt[0] !== lastNoticesSent[groupIdx]; });
+                randOptions = randOptions.filter(function (opt) {
+                    return opt[0] !== lastNoticesSent[groupIdx];
+                });
             }
             if (randOptions.length > 0) {
                 tmp = Math.floor(Math.random() * randOptions.length);
@@ -304,7 +306,7 @@
     /**
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function(event) {
+    $.bind('ircChannelMessage', function (event) {
         noticeLock.lock();
         for (var i = 0; i < noticeGroups.length; i++) {
             messageCounts[i]++;
@@ -340,21 +342,21 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argsString = event.getArguments().trim(),
-            args = event.getArgs(),
-            i,
-            idx,
-            length,
-            message,
-            minInterval,
-            maxInterval,
-            list,
-            disabled,
-            nameOfRemovedGroup,
-            action = args[0];
+                command = event.getCommand(),
+                argsString = event.getArguments().trim(),
+                args = event.getArgs(),
+                i,
+                idx,
+                length,
+                message,
+                minInterval,
+                maxInterval,
+                list,
+                disabled,
+                nameOfRemovedGroup,
+                action = args[0];
 
         /**
          * @commandpath notice - Base command for managing notices
@@ -548,13 +550,13 @@
                 noticeLock.lock();
                 length = noticeGroups[selectedGroup].messages.slice(0, idx).length;
                 noticeGroups[selectedGroup].messages =
-                    noticeGroups[selectedGroup].messages.slice(0, idx).concat(
+                        noticeGroups[selectedGroup].messages.slice(0, idx).concat(
                         [argsString], noticeGroups[selectedGroup].messages.slice(idx)
-                    );
+                        );
                 noticeGroups[selectedGroup].disabled =
-                    noticeGroups[selectedGroup].disabled.slice(0, idx).concat(
+                        noticeGroups[selectedGroup].disabled.slice(0, idx).concat(
                         [false], noticeGroups[selectedGroup].disabled.slice(idx)
-                    );
+                        );
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
                 noticeLock.unlock();
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-insert-success', length, formatGroupName(selectedGroup)));
@@ -629,10 +631,10 @@
                 noticeLock.lock();
                 if (noticeGroups.length > 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config',
-                        formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
-                        noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
-                        noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
-                        noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
+                            formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
+                            noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
+                            noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
+                            noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                 }
@@ -845,7 +847,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
         startNoticeTimers();
     });
@@ -856,9 +858,9 @@
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./systems/noticeSystem.js')) {
             var args = event.getArgs(),
-                eventName = args[0] + '',
-                groupIdx = parseInt(args[1]),
-                tmp;
+                    eventName = args[0] + '',
+                    groupIdx = parseInt(args[1]),
+                    tmp;
             if (eventName === 'appendGroup') {
                 var params = {};
                 try {

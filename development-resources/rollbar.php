@@ -62,6 +62,13 @@ if (!in_array($item['data']['environment'], $allowed_environments)) {
     doexit(409, 'environment not allowed', 'env');
 }
 
+if (file_exists('rollbar-allowed-versions.json')) {
+    $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'), true);
+    if (!in_array($item['data']['code_version'], $allowed_versions[$item['data']['environment']])) {
+        doexit(409, 'version not allowed', 'ver');
+    }
+}
+
 if (array_key_exists('trace_chain', $item['data']['body'])) {
     if ($reverse) {
         $item['data']['body']['trace_chain'] = array_reverse($item['data']['body']['trace_chain']);

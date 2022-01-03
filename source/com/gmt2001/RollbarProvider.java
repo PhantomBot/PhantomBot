@@ -20,7 +20,6 @@ import com.rollbar.api.payload.data.Data;
 import com.rollbar.api.payload.data.Level;
 import com.rollbar.api.payload.data.Person;
 import com.rollbar.api.payload.data.Server;
-import com.rollbar.api.payload.data.body.Body;
 import com.rollbar.api.payload.data.body.BodyContent;
 import com.rollbar.api.payload.data.body.Frame;
 import com.rollbar.api.payload.data.body.Trace;
@@ -388,35 +387,7 @@ public class RollbarProvider implements AutoCloseable {
 
                             return false;
                         }
-                    }).transformer((Data data) -> {
-                try {
-                    Data.Builder builder = new Data.Builder(data);
-                    if (data.getCustom() != null && data.getCustom().containsKey("__locals")) {
-                        Map<String, Object> custom = data.getCustom();
-                        Map<String, Object> locals = (Map<String, Object>) custom.remove("__locals");
-                        builder.custom(custom);
-                        BodyContent bc = data.getBody().getContents();
-                        if (bc instanceof TraceChain) {
-                            TraceChain tc = (TraceChain) bc;
-                            List<Trace> traces = tc.getTraces();
-                            List<Frame> frames = traces.get(0).getFrames();
-                            frames.set(0, new Frame.Builder(frames.get(0)).locals(locals).build());
-                            traces.set(0, new Trace.Builder(traces.get(0)).frames(frames).build());
-
-                            builder.body(new Body.Builder(data.getBody()).bodyContent(new TraceChain.Builder(tc).traces(traces).build()).build());
-                        } else if (bc instanceof Trace) {
-                            Trace t1 = (Trace) bc;
-                            List<Frame> frames = t1.getFrames();
-                            frames.set(0, new Frame.Builder(frames.get(0)).locals(locals).build());
-                            builder.body(new Body.Builder(data.getBody()).bodyContent(new Trace.Builder(t1).frames(frames).build()).build());
-                        }
-                    }
-                    return builder.build();
-                } catch (Exception e) {
-                    com.gmt2001.Console.debug.printOrLogStackTrace(e);
-                }
-                return data;
-            }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
+                    }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
 
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override

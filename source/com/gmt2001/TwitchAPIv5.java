@@ -698,15 +698,9 @@ public class TwitchAPIv5 {
         this.setupResult(result, followData, null);
 
         if (followData != null && !followData.has("error") && followData.has("total") && followData.optInt("total") == 1) {
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
-                com.gmt2001.Console.debug.println(this.translateFollowData(followData).toString(4));
-            } else {
-                com.gmt2001.Console.debug.println(user + " is following " + channel);
-            }
             result = this.translateFollowData(followData).getJSONArray("follows").getJSONObject(0);
             this.setupResult(result, followData, null);
         } else {
-            com.gmt2001.Console.debug.println(user + " is not following " + channel);
             result.put("_http", 404);
             result.put("error", "Not Found");
             result.put("message", user + " is not following " + channel);
