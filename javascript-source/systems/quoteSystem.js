@@ -23,7 +23,10 @@
 (function() {
 
     var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
+    baseFileOutputPath = $.getSetIniDbString('ytSettings', 'baseFileOutputPath', './addons/youtubePlayer/'),
+        isExporting = false;
         isDeleting = false;
+
 
     /**
      * @function updateQuote
@@ -127,6 +130,38 @@
         }
     }
 
+    function exportQuotes() {
+        $.log.error('Attempting to export');
+        if (isExporting) {
+            return;
+        }
+        $.log.error('Starting to export');
+        isExporting = true;
+        var csv = "ID,Quote,Game,User,Date"
+        var i = 0;
+        while (true) {
+            quote = getQuote(i)
+            if(quote.length <= 0)
+            break;
+            csv = csv + i + "," + quote[1].replace("\"").replace(",","") + ","
+            + $.resolveRank(quote[0]) + ","
+            + (quote.length == 5 ? quote[3].replace("\"").replace(",","") : "Some Game") + ","
+            +  $.getLocalTimeString('dd-MM-yyyy', parseInt(quote[2]))
+            i++;
+        }
+        isExporting = false;
+        $.log.error('Ending the export');
+        var writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(baseFileOutputPath + 'quotes.csv'), 'UTF-8');
+        try {
+            writer.write(csv);
+        } catch (ex) {
+            $.log.error('Failed to update quotes file: ' + ex.toString());
+        } finally {
+            writer.close();
+        }
+        $.log.error('wrote the export');
+    }
+
     /**
      * @event command
      */
@@ -199,6 +234,7 @@
                 quote = args.splice(0).join(' ');
                 $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
+                exportQuotes();
                 return;
             } else {
                 if (args.length < 2) {
@@ -215,6 +251,7 @@
                 var username = useTwitchNames ? $.username.resolve(target) : target;
                 $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
+                exportQuotes();
                 return;
             }
         }
@@ -232,6 +269,7 @@
 
             quote = args.splice(0).join(' ');
             saveQuote(String($.username.resolve(sender)), quote);
+            exportQuotes();
         }
 
         /**
@@ -252,6 +290,7 @@
             }
 
             $.log.event(sender + ' removed quote with id: ' + args[0]);
+            exportQuotes();
         }
 
         /**
@@ -265,6 +304,7 @@
             var newCount;
 
             if ((newCount = deleteQuote(args[0])) >= 0) {} else {}
+            exportQuotes();
         }
 
         /**
