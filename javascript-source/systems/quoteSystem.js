@@ -131,26 +131,23 @@
     }
 
     function exportQuotes() {
-        $.log.error('Attempting to export');
         if (isExporting) {
             return;
         }
-        $.log.error('Starting to export');
         isExporting = true;
-        var csv = "ID,Quote,Game,User,Date"
+        var csv = "ID,Quote,User,Game,Date\r\n"
         var i = 0;
         while (true) {
             quote = getQuote(i)
             if(quote.length <= 0)
-            break;
-            csv = csv + i + "," + quote[1].replace("\"").replace(",","") + ","
+                break;
+            csv = csv + i + ",\"" + quote[1].replace("\"").replace(",","") + "\","
             + $.resolveRank(quote[0]) + ","
             + (quote.length == 5 ? quote[3].replace("\"").replace(",","") : "Some Game") + ","
-            +  $.getLocalTimeString('dd-MM-yyyy', parseInt(quote[2]))
+            +  $.getLocalTimeString('dd-MM-yyyy', parseInt(quote[2])) + "\r\n"
             i++;
         }
         isExporting = false;
-        $.log.error('Ending the export');
         var writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(baseFileOutputPath + 'quotes.csv'), 'UTF-8');
         try {
             writer.write(csv);
@@ -159,7 +156,6 @@
         } finally {
             writer.close();
         }
-        $.log.error('wrote the export');
     }
 
     /**
