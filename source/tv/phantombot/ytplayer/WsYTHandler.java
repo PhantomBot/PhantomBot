@@ -259,6 +259,7 @@ public class WsYTHandler implements WsFrameHandler {
                         EventBus.instance().postAsync(new YTPlayerStealSongEvent());
                     }
                     break;
+                //case "sr":
                 case "songrequest":
                     if (jso.has("search")) {
                         String dataString = jso.getString("search");

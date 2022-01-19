@@ -27,6 +27,7 @@
         announceInChat = $.getSetIniDbBoolean('ytSettings', 'announceInChat', false),
         activePlaylistname = $.getSetIniDbString('ytSettings', 'activePlaylistname', 'default'),
         baseFileOutputPath = $.getSetIniDbString('ytSettings', 'baseFileOutputPath', './addons/youtubePlayer/'),
+        //baseFileOutputPath = "C:\\nginx\\html\\"
         songRequestsEnabled = $.getSetIniDbBoolean('ytSettings', 'songRequestsEnabled', true),
         songRequestsMaxParallel = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxParallel', 1),
         songRequestsMaxSecondsforVideo = $.getSetIniDbNumber('ytSettings', 'songRequestsMaxSecondsforVideo', (8 * 60)),
@@ -333,7 +334,7 @@
             playListDbId = playlistDbPrefix + playlistName,
             defaultPlaylist = [], // @type { Integer[] }
             defaultPlaylistReadOnly = [], // @type { Integer[] }
-            requests = new java.util.concurrent.ConcurrentLinkedQueue, // @type { YoutubeVideo[] }
+            requests = new java.util.concurrent.CopyOnWriteArrayList, // @type { YoutubeVideo[] }
             requestFailReason = '';
 
         this.playlistName = playlistName;
@@ -587,6 +588,7 @@
         this.jumpToSong = function(playlistPosition) {
             playlistPosition--;
 
+
             if (!requests.isEmpty()) {
                 if (currentPlaylist.getRequestAtIndex(playlistPosition) == null) {
                     return false;
@@ -624,6 +626,34 @@
             voteArray = [];
             return true;
         };
+
+        this.moveLastSongToFirstSong = function(requestOwner) {
+            if (!requests.isEmpty()) {
+                var index = this.findLastSongByOwner(requestOwner);
+                if(index > 0) {
+                    var anotherLastSong = requests.get(index);
+                    var lastSongRemoved = requests.remove(anotherLastSong);
+                    requests.add(0, new YoutubeVideo(anotherLastSong.getVideoId(), requestOwner));
+                    $.say(anotherLastSong.getVideoTitle()  + ' moved to priority');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        this.findLastSongByOwner = function(requestOwner) {
+            var lastIndex = -1
+            if(!requests.isEmpty()) {
+                requestsArray = requests.toArray();
+                for(var i in requestsArray) {
+                    songOwner = requestsArray[i].getOwner();
+                    if(songOwner.toLowerCase() == requestOwner.toLowerCase()) {
+                        lastIndex = i;
+                    }
+                }
+            }
+            return lastIndex;
+        }
 
         /**
          * @function findSongByTitle
@@ -725,7 +755,7 @@
                 previousVideo = currentVideo;
 
                 if (!requests.isEmpty()) {
-                    currentVideo = requests.poll();
+                    currentVideo = requests.remove(0);
                     exception = false;
                 } else {
                     if (defaultPlaylist.length == 0) {
@@ -751,6 +781,7 @@
             this.updateCurrentSongFile(currentVideo);
 
             if (announceInChat) {
+                $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
                 $.say($.lang.get('ytplayer.announce.nextsong', currentVideo.getVideoTitle(), currentVideo.getOwner()));
             }
             skipCount = 0;
@@ -861,6 +892,19 @@
         };
 
         /**
+         * @function shuffleRequests
+         */
+        this.shuffleRequests = function() {
+            var requestsSize = requests.size();
+            for (var i = 0; i < requestsSize; i++) {
+                var index = Math.floor(Math.random() * requestsSize);
+                var a = requests.get(index);
+                requests.set(index, requests.get(i));
+                requests.set(i, a);
+            }
+        }
+
+        /**
          * @function senderReachedRequestMax
          * @param {string} sender
          * @returns {boolean}
@@ -897,6 +941,29 @@
                 writer.close();
             }
         };
+
+        this.updateSongQueueList = function(currentRequests) {
+            var i, csv = "Title,Requested By,Duration,URL\r\n"
+            for (i in currentRequests) {
+                csv = csv + currentRequests[i].getVideoTitle().replace("\"","").replace(",","") +
+                      "," +
+                      currentRequests[i].getOwner() +
+                      "," +
+                      currentRequests[i].getVideoLengthMMSS() +
+                      "," +
+                      currentRequests[i].getVideoLink() +
+                      "\r\n"
+            }
+
+            var writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(baseFileOutputPath + 'songlist.csv'), 'UTF-8');
+            try {
+                writer.write(csv);
+            } catch (ex) {
+                $.log.error('Failed to update song queue file: ' + ex.toString());
+            } finally {
+                writer.close();
+            }
+        }
 
         /**
          * @function videoExistsInPlaylist
@@ -1066,6 +1133,7 @@
                         "requester": youtubeObject.getOwner() + ''
                     });
                 }
+                currentPlaylist.updateSongQueueList(requestList);
                 client.sendJSONToAll(JSON.stringify(jsonList));
             }
         };
@@ -1324,7 +1392,6 @@
             pActions,
             action,
             actionArgs;
-
         /**
          * Used by the panel
          */
@@ -1932,7 +1999,7 @@
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
          */
-        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
+        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong') || command.equalsIgnoreCase('sr')) {
             if ($.getIniDbBoolean('ytpBlacklist', sender, false)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklisted'));
                 return;
@@ -1950,6 +2017,33 @@
                 connectedPlayerClient.pushSongList();
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()));
+            }
+        }
+
+        if (command.equalsIgnoreCase('shufflesongs')) {
+            currentPlaylist.shuffleRequests();
+            $.say($.whisperPrefix(sender) + 'Song requests shuffled');
+            connectedPlayerClient.pushSongList();
+        }
+
+        if (command.equalsIgnoreCase('pause')) {
+            if (!connectedPlayerClient) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
+                return;
+            }
+            connectedPlayerClient.togglePause();
+            return;
+        }
+
+        if (command.equalsIgnoreCase('movepriority')) {
+            if (args.length == 0 ){
+                $.log.error("Args were empty");
+                return;
+            }
+
+            if(currentPlaylist.moveLastSongToFirstSong(event.getArguments())) {
+                connectedPlayerClient.pushSongList();
+
             }
         }
 
@@ -2090,11 +2184,15 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'sr');
         $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'currentsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
+        $.registerChatCommand('./systems/youtubePlayer.js', 'shufflesongs', 2);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'movepriority', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'pause', 1);
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
