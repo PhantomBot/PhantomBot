@@ -240,6 +240,12 @@
             return videoTitle;
         };
 
+        this.decodeHtmlCharCodes = function(str) {
+          return str.replace(/(&#(\d+);)/g, function(match, capture, charCode) {
+            return String.fromCharCode(charCode);
+          });
+        }
+
         /** START CONTRUCTOR YoutubeVideo() */
 
         if (!searchQuery) {
@@ -295,7 +301,7 @@
 
             videoId = data[0];
             videoTitle = data[1];
-
+            videoTitle = this.decodeHtmlCharCodes(new String(videoTitle));
             if (videoTitle.equalsIgnoreCase('video marked private') || videoTitle.equalsIgnoreCase('no search results found')) {
                 throw videoTitle;
             }
@@ -923,6 +929,21 @@
             }
             return (currentRequestCount >= songRequestsMaxParallel);
         };
+
+        this.getSenderRequestsCount = function(sender) {
+                    var currentRequestCount = 0,
+                        requestsArray = requests.toArray(),
+                        i;
+
+                    sender = sender.toLowerCase();
+
+                    for (i in requestsArray) {
+                        if (requestsArray[i].getOwner() == sender) {
+                            ++currentRequestCount;
+                        }
+                    }
+                    return currentRequestCount;
+                };
 
         /**
          * @function updateCurrentSongFile
@@ -2013,7 +2034,8 @@
 
             var request = currentPlaylist.requestSong(event.getArguments(), sender);
             if (request != null) {
-                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), request.getVideoId()));
+                var requestCount = currentPlaylist.getSenderRequestsCount(sender);
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.success', request.getVideoTitle(), currentPlaylist.getRequestsCount(), request.getVideoId(), requestCount));
                 connectedPlayerClient.pushSongList();
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.failed', currentPlaylist.getRequestFailReason()));

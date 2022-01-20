@@ -74,7 +74,7 @@ $.lang.register('ytplayer.command.findsong.failed', 'Cannot find song with a tit
 $.lang.register('ytplayer.command.findsong.usage', 'usage: !$1 [search string]. Searches song requests if any exist, else current playlist, for first match.');
 
 $.lang.register('ytplayer.command.songrequest.usage', 'Usage: !songrequest [YouTube ID | YouTube link | search string]');
-$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3)');
+$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3 Total Queued: $4)');
 $.lang.register('ytplayer.command.songrequest.failed', 'Failed adding song to queue: $1');
 
 $.lang.register('ytplayer.command.previoussong', 'Previous song was [$1] requested by $2 from $3');

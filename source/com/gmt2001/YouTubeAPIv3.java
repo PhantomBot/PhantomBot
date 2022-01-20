@@ -39,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.StringUtils;
 
 /**
  * Communicates with YouTube via the version 3 API
@@ -198,7 +199,7 @@ public class YouTubeAPIv3 {
                 try {
                     com.gmt2001.Console.debug.println("URL Check Success");
 
-                    String a = j.getString("title");
+                    String a =  StringUtils.unescapeHtml3(j.getString("title"));
                     return new String[] { q, a, "" };
                 } catch (JSONException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
