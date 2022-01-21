@@ -138,7 +138,7 @@
         var csv = "ID,Quote,User,Game,Date\r\n"
         var i = 0;
         while (true) {
-            quote = getQuote(i)
+            quote = getQuote(i.toString());
             if(quote.length <= 0)
                 break;
             csv = csv + i + ",\"" + quote[1].replace("\"").replace(",","") + "\","
