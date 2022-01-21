@@ -200,11 +200,11 @@
          * @function getVideoInfo
          * Sets the member values for embeddable and license.
          */
-        this.getVideoInfo = function() {
-            var videoInfo = $.youtube.GetVideoInfo(videoId);
-            license = videoInfo[0];
-            embeddable = videoInfo[1];
-        }
+//        this.getVideoInfo = function() {
+//            var videoInfo = $.youtube.GetVideoInfo(videoId);
+//            license = videoInfo[0];
+//            embeddable = videoInfo[1];
+//        }
 
         /**
          * @function getVideoLengthMMSS
@@ -315,13 +315,13 @@
             $.inidb.set('ytcache', videoId, jsonString);
         }
 
-        this.getVideoInfo();
-        if (license == 0 && playCCOnly) {
-            throw 'Video is not licensed as Creative Commons (ID: ' + videoId + ')';
-        }
-        if (embeddable == 0) {
-            throw 'This video is not allowed to be embedded (ID: ' + videoId + ')';
-        }
+//        this.getVideoInfo();
+//        if (license == 0 && playCCOnly) {
+//            throw 'Video is not licensed as Creative Commons (ID: ' + videoId + ')';
+//        }
+//        if (embeddable == 0) {
+//            throw 'This video is not allowed to be embedded (ID: ' + videoId + ')';
+//        }
 
         /** END CONTRUCTOR YoutubeVideo() */
     }

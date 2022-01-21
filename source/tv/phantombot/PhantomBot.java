@@ -103,7 +103,6 @@ import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
 public final class PhantomBot implements Listener {
-
     /* Bot Information */
     private String botName;
     private String channelName;
@@ -123,6 +122,8 @@ public final class PhantomBot implements Listener {
     private String youtubeOAuth;
     private String youtubeOAuthThro;
     private String youtubeKey;
+    private String youtubeKey2;
+    private String youtubeKey3;
     private boolean webEnabled;
     private boolean musicEnabled;
     private boolean useHttps;
@@ -330,7 +331,7 @@ public final class PhantomBot implements Listener {
      * Check to see if YouTube Key is configured.
      */
     public boolean isYouTubeKeyEmpty() {
-        return youtubeKey.isEmpty();
+        return false;
     }
 
     /**
@@ -385,6 +386,8 @@ public final class PhantomBot implements Listener {
         this.youtubeOAuth = this.pbProperties.getProperty("ytauth");
         this.youtubeOAuthThro = this.pbProperties.getProperty("ytauthro");
         this.youtubeKey = this.pbProperties.getProperty("youtubekey", "");
+        this.youtubeKey2 = this.pbProperties.getProperty("youtubekey2", "");
+        this.youtubeKey3 = this.pbProperties.getProperty("youtubekey3", "");
         this.basePort = this.pbProperties.getPropertyAsInt("baseport", 25000);
         this.bindIP = this.pbProperties.getProperty("bindIP", "");
         this.webOAuth = this.pbProperties.getProperty("webauth");
@@ -541,6 +544,8 @@ public final class PhantomBot implements Listener {
         /* Set the YouTube API Key if provided. */
         if (!this.youtubeKey.isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(this.youtubeKey);
+            YouTubeAPIv3.instance().SetAPIKey2(this.youtubeKey2);
+            YouTubeAPIv3.instance().SetAPIKey3(this.youtubeKey3);
         }
 
         /* Set the TipeeeStream oauth key. */

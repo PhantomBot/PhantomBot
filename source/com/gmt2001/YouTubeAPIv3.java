@@ -16,11 +16,7 @@
  */
 package com.gmt2001;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -50,6 +46,10 @@ public class YouTubeAPIv3 {
 
     private static YouTubeAPIv3 instance;
     private String apikey = "";
+    private String apikey2 = "";
+    private String apikey3 = "";
+
+    int lastApiKey = 1;
 
     private enum request_type {
 
@@ -174,6 +174,14 @@ public class YouTubeAPIv3 {
         this.apikey = apikey;
     }
 
+    public void SetAPIKey2(String apikey) {
+        this.apikey2 = apikey;
+    }
+
+    public void SetAPIKey3(String apikey) {
+        this.apikey3 = apikey;
+    }
+
     public String[] SearchForVideo(String q) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + q + "]");
 
@@ -210,7 +218,7 @@ public class YouTubeAPIv3 {
         } else {
             q = URLEncoder.encode(q, Charset.forName("UTF-8"));
 
-            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
+            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + this.GetApiKey() + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {
                 updateQuota(100L);
                 if (j2.getInt("_http") == 200) {
@@ -253,10 +261,32 @@ public class YouTubeAPIv3 {
         return new String[] { "", "", "" };
     }
 
+    public String GetApiKey() {
+        if (lastApiKey == 4) {
+            lastApiKey = 1;
+        }
+        String apiKey = "";
+        switch (lastApiKey) {
+            case 1:
+                apiKey = this.apikey;
+                break;
+            case 2:
+                apiKey = this.apikey2;
+                break;
+            case 3:
+                apiKey = this.apikey3;
+                break;
+            default:
+                apiKey = this.apikey;
+        }
+        this.lastApiKey++;
+        return apiKey;
+    }
+
     public int[] GetVideoLength(String id) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
-        JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
+        JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + this.GetApiKey() + "&part=contentDetails");
         if (j.getBoolean("_success")) {
             if (j.getInt("_http") == 200) {
                 updateQuota(3L);
@@ -307,7 +337,7 @@ public class YouTubeAPIv3 {
         int licenseRetval = 0;
         int embedRetval = 0;
 
-        JSONObject jsonObject = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=status");
+        JSONObject jsonObject = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + this.GetApiKey() + "&part=status");
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {
