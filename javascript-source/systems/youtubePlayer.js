@@ -200,11 +200,11 @@
          * @function getVideoInfo
          * Sets the member values for embeddable and license.
          */
-//        this.getVideoInfo = function() {
-//            var videoInfo = $.youtube.GetVideoInfo(videoId);
-//            license = videoInfo[0];
-//            embeddable = videoInfo[1];
-//        }
+        this.getVideoInfo = function() {
+            var videoInfo = $.youtube.GetVideoInfo(videoId);
+            license = videoInfo[0];
+            embeddable = videoInfo[1];
+        }
 
         /**
          * @function getVideoLengthMMSS

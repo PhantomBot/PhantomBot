@@ -253,7 +253,11 @@ public class YouTubeAPIv3 {
                     return new String[] { "", "", "" };
                 }
             }
-        } else {
+        }else {
+            com.gmt2001.Console.debug.println("Search API Fail: Returned Failure");
+
+            return new String[] { "", "", "" };
+        }/* else {
             q = URLEncoder.encode(q, Charset.forName("UTF-8"));
 
             JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + this.GetApiKey() + "&type=video&part=snippet&maxResults=1");
@@ -287,12 +291,8 @@ public class YouTubeAPIv3 {
 
                     return new String[] { "", "", "" };
                 }
-            } else {
-                com.gmt2001.Console.debug.println("Search API Fail: Returned Failure");
-
-                return new String[] { "", "", "" };
-            }
-        }
+            }*/
+        //}
 
         com.gmt2001.Console.debug.println("URL Check Fatal Error");
 
