@@ -142,15 +142,12 @@
         var keylist = $.inidb.GetKeysByOrderValue('points'),
         rank = 1,
         i;
-        $.log.error('Getting Points');
         for(i in keylist) {
             if(keylist[i].equals(username)) {
-                $.log.error('Found Points');
                 return rank;
             }
             rank++;
         }
-        $.log.error('Did not find points')
         return rank;
      }
 
@@ -401,6 +398,14 @@
 
         if (s.match(/\(time\)/)) {
             s = $.replace(s, '(time)', $.getUserTimeString(username));
+        }
+
+        if (s.match(/\(messagesrank\)/)) {
+            s = $.replace(s, '(messagesrank)', $.getUserMessagesRank(username));
+        }
+
+        if (s.match(/\(messages\)/)) {
+            s = $.replace(s, '(messages)', $.getUserMessages(username));
         }
 
         if (s.match(/\(rank\)/)) {

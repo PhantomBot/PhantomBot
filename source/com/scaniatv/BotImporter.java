@@ -22,12 +22,13 @@
 package com.scaniatv;
 
 import com.gmt2001.datastore.DataStore;
+import tv.phantombot.PhantomBot;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import tv.phantombot.PhantomBot;
 
 public class BotImporter {
     /*
@@ -129,4 +130,48 @@ public class BotImporter {
             }
         }
     }
+    public static void ImportWordCount(String fileName) {
+        DataStore db = PhantomBot.instance().getDataStore();
+        BufferedReader bufferedReader = null;
+        List<String> users = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
+        String brLine;
+
+        com.gmt2001.Console.out.println("Importing AnkhBot points and time...");
+
+        try {
+            // Create a new reader.
+            bufferedReader = new BufferedReader(new FileReader(fileName));
+
+            // Skip the first line.
+            bufferedReader.readLine();
+
+            long d = System.currentTimeMillis();
+            while ((brLine = bufferedReader.readLine()) != null) {
+                String[] spl = brLine.split(",");
+
+                users.add(spl[0].toLowerCase());
+                messages.add(spl[5]);
+                com.gmt2001.Console.out.println("Imported: " + spl[0] + " - Messages: " + spl[5]);
+            }
+            com.gmt2001.Console.out.println("Saving data...");
+
+            db.SetBatchString("messagecounter", "", users.toArray(new String[users.size()]), messages.toArray(new String[messages.size()]));
+
+            com.gmt2001.Console.out.println("Importing done! " + (System.currentTimeMillis() - d) + "ms");
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.println("Failed to convert points and time from WordCount [IOException] " + ex.getMessage());
+        } catch (NumberFormatException ex) {
+            com.gmt2001.Console.err.println("Failed to convert points and time from WordCount [Exception] " + ex.getMessage());
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }
+    }
+
 }

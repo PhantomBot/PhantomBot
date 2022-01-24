@@ -256,6 +256,17 @@ public class ConsoleEventHandler implements Listener {
             return;
         }
 
+        if (message.equalsIgnoreCase("ImportWordCount")) {
+            com.gmt2001.Console.out.println("[CONSOLE] Executing ImportWordCount");
+            if (argument == null) {
+                com.gmt2001.Console.out.println("You must specify the file name you want to convert.");
+                return;
+            }
+
+            BotImporter.ImportWordCount(arguments);
+            return;
+        }
+
         /**
          * @consolecommand backupdb - Creates a backup of the current database.
          */
