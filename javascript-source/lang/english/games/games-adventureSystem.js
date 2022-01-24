@@ -97,5 +97,6 @@ $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors) run away. Le
 
 $.lang.register('adventuresystem.stories.custom.1.title', 'Pastie Heist');
 $.lang.register('adventuresystem.stories.custom.1.chapter.1', 'The Fin Fam superp64TFF gets ready to steal some pasties from Charlie! SHARK ');
-$.lang.register('adventuresystem.stories.custom.1.chapter.2', 'Look out! Charlie SHARK captured (caught)');
-$.lang.register('adventuresystem.stories.custom.1.chapter.3', '(survivors) superp64TFF managed to sneak past Charlie sharkS and grab some of those precious pasties!');
+$.lang.register('adventuresystem.stories.custom.1.chapter.2', 'Everyone sharpens their beaks, brushes their feathers, and gets ready to sneak past Charlie!');
+$.lang.register('adventuresystem.stories.custom.1.chapter.3', 'Look out! Charlie SHARK captured (caught)');
+$.lang.register('adventuresystem.stories.custom.1.chapter.4', '(survivors) superp64TFF managed to sneak past Charlie sharkS and grab some of those precious pasties!');

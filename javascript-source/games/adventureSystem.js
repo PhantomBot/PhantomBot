@@ -399,6 +399,11 @@
             actionArg1 = args[1],
             actionArg2 = args[2];
 
+        if (command.equalsIgnoreCase('heisttop')) {
+            top5();
+            return;
+        }
+
         /**
          * @commandpath adventure - Adventure command for starting, checking or setting options
          * @commandpath adventure [amount] - Start/join an adventure
@@ -527,6 +532,7 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
+        $.registerChatCommand('./games/adventureSystem.js', 'heisttop', 7);
         $.registerChatSubcommand('adventure', 'set', 1);
         $.registerChatSubcommand('adventure', 'top5', 3);
 

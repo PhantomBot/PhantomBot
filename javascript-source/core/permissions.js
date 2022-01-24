@@ -46,6 +46,7 @@
         for (var i in twitchBots) {
             $.inidb.del('points', twitchBots[i].toLowerCase());
             $.inidb.del('time', twitchBots[i].toLowerCase());
+            $.inidb.del('messagecounter', twitchBots[i].toLowerCase())
         }
     }
 

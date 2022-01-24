@@ -8,7 +8,9 @@
               if(keylist[i].equals(username)) {
                   return rank;
               }
-              rank++;
+              if (!$.isBot(keylist[i]) && !$.isOwner(keylist[i])) {
+                rank++;
+              }
           }
           return rank;
       }
