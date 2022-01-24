@@ -134,6 +134,27 @@
     };
 
     /**
+     * @function getUserPoints
+     * @param {string} username
+     * @returns {*}
+     */
+     function getUserPointsRank(username) {
+        var keylist = $.inidb.GetKeysByOrderValue('points'),
+        rank = 1,
+        i;
+        $.log.error('Getting Points');
+        for(i in keylist) {
+            if(keylist[i].equals(username)) {
+                $.log.error('Found Points');
+                return rank;
+            }
+            rank++;
+        }
+        $.log.error('Did not find points')
+        return rank;
+     }
+
+    /**
      * @function getPointsString
      * @export $
      * @param {Number} points
@@ -367,7 +388,11 @@
         }
 
         if (s.match(/\(points\)/)) {
-            s = $.replace(s, '(points)', String(getUserPoints(username)));
+            s = $.replace(s, '(points)', String(getUserPoints(username)).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        }
+
+        if (s.match(/\(pointsrank\)/)) {
+            s = $.replace(s, '(pointsrank)', String(getUserPointsRank(username)));
         }
 
         if (s.match(/\(pointsname\)/)) {
