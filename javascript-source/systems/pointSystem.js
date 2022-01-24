@@ -161,8 +161,15 @@
         if (parseInt(points) === 1) {
             return points + ' ' + pointNameSingle;
         }
-        return points + ' ' + pointNameMultiple;
+        return String(points).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + pointNameMultiple;
     };
+
+    function getPointsAsString(points) {
+            if (parseInt(points) === 1) {
+                return String(points);
+            }
+            return String(points).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        };
 
     /**
      * @function runPointsPayout
@@ -878,6 +885,7 @@
     $.getUserPoints = getUserPoints;
     $.getPointsString = getPointsString;
     $.getPointsMessage = getPointsMessage;
+    $.getPointsAsString = getPointsAsString;
     $.updateSettings = updateSettings;
     $.setTempBonus = setTempBonus;
     $.giveAll = giveAll;

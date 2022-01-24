@@ -68,6 +68,41 @@
     }
 
     /*
+         * @function getTop5
+         *
+         * @param {string} iniName
+         * @returns {Array}
+         */
+        function getTopN(iniName,amount) {
+            var keys = $.inidb.GetKeysByNumberOrderValue(iniName, '', 'DESC', amount + 5, 0),
+                list = [],
+                i,
+                ctr = 0;
+
+            for (i in keys) {
+                if (!$.isBot(keys[i]) && !$.isOwner(keys[i])) {
+                    if (ctr++ == (iniName.equals('points') ? amount : amount)) {
+                        break;
+                    }
+                    list.push({
+                        username: keys[i],
+                        value: $.inidb.get(iniName, keys[i])
+                    });
+                }
+            }
+
+            list.sort(function(a, b) {
+                return (b.value - a.value);
+            });
+
+            if (iniName.equals('points')) {
+                return list.slice(0, amountPoints);
+            } else {
+                return list.slice(0, amountTime);
+            }
+        }
+
+    /*
      * @event command
      */
     $.bind('command', function(event) {
@@ -79,20 +114,37 @@
         /**
          * @commandpath top - Display the top people with the most points
          */
-        if (command.equalsIgnoreCase('top')) {
+        if (command.equalsIgnoreCase('top5')) {
             if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 return;
             }
 
-            var temp = getTop5('points'),
+            var temp = getTopN('points',5),
                 top = [],
                 i;
 
             for (i in temp) {
-                top.push((parseInt(i) + 1) + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getPointsString(temp[i].value));
+                top.push((parseInt(i) + 1) + '. ' + temp[i].username + ' ' + $.getPointsAsString(temp[i].value));
             }
 
-            $.say($.lang.get('top5.default', amountPoints, $.pointNameMultiple, top.join(', ')));
+            $.say($.lang.get('top5.default', 5, $.pointNameMultiple, top.join(', ')));
+            return;
+        }
+
+        if (command.equalsIgnoreCase('top10')) {
+            if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+                return;
+            }
+
+            var temp = getTopN('points',10),
+                top = [],
+                i;
+
+            for (i in temp) {
+                top.push((parseInt(i) + 1) + '. ' + temp[i].username + ' '+ $.getPointsAsString(temp[i].value));
+            }
+
+            $.say($.lang.get('top5.default', 10, $.pointNameMultiple, top.join(', ')));
             return;
         }
 
@@ -105,7 +157,7 @@
                 i;
 
             for (i in temp) {
-                top.push((parseInt(i) + 1) + '. ' + $.resolveRank(temp[i].username) + ' ' + $.getTimeString(temp[i].value, true));
+                top.push((parseInt(i) + 1) + '. ' + temp[i].username + ' ' + $.getTimeString(temp[i].value, true));
             }
 
             $.say($.lang.get('top5.default', amountTime, 'time', top.join(', ')));
@@ -165,7 +217,8 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/topCommand.js', 'top', 7);
+        $.registerChatCommand('./commands/topCommand.js', 'top5', 7);
+        $.registerChatCommand('./commands/topCommand.js', 'top10', 7);
         $.registerChatCommand('./commands/topCommand.js', 'toptime', 7);
         $.registerChatCommand('./commands/topCommand.js', 'topamount', 1);
         $.registerChatCommand('./commands/topCommand.js', 'toptimeamount', 1);
