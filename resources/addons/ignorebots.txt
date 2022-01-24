@@ -38,3 +38,7 @@ stayhealthybot
 decafsmurf
 lanfusion
 foxyboynet
+drinking_buddy_bot
+super_waffle_bot
+streamelements
+streamcaptainbot
