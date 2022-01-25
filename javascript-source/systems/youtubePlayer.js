@@ -2065,7 +2065,12 @@
 
             if(currentPlaylist.moveLastSongToFirstSong(event.getArguments())) {
                 connectedPlayerClient.pushSongList();
+            }
+        }
 
+        if(command.equalsIgnoreCase('priority')) {
+            if(currentPlaylist.moveLastSongToFirstSong(sender)) {
+                connectedPlayerClient.pushSongList();
             }
         }
 
@@ -2214,6 +2219,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'shufflesongs', 2);
         $.registerChatCommand('./systems/youtubePlayer.js', 'movepriority', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'priority', 7);
         $.registerChatCommand('./systems/youtubePlayer.js', 'pause', 1);
 
         $.registerChatSubcommand('skipsong', 'vote', 7);

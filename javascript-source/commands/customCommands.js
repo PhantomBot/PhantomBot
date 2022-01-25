@@ -639,39 +639,41 @@
          * @commandpath commands - Provides a list of all available custom commands.
          */
         if (command.equalsIgnoreCase('commands')) {
-            var cmds = $.inidb.GetKeyList('command', ''),
-                    aliases = $.inidb.GetKeyList('aliases', ''),
-                    externalCommands = $.inidb.GetKeyList('externalCommands', ''),
-                    cmdList = [];
+            $.say('For list of commands: https://superpenguintv.com/stream-commands/');
 
-            for (idx in cmds) {
-                if (!$.inidb.exists('disabledCommands', cmds[idx])
-                        && !$.inidb.exists('hiddenCommands', cmds[idx])
-                        && permCom(sender, cmds[idx], '') === 0) {
-                    cmdList.push('!' + cmds[idx]);
-                }
-            }
-
-            for (idx in aliases) {
-                var aliasCmd = $.inidb.get('aliases', aliases[idx]);
-
-                if (!$.inidb.exists('disabledCommands', aliases[idx])
-                        && !$.inidb.exists('hiddenCommands', aliases[idx])
-                        && permCom(sender, aliasCmd, '') === 0) {
-                    cmdList.push('!' + aliases[idx]);
-                }
-            }
-
-            for (idx in externalCommands) {
-                cmdList.push('!' + externalCommands[idx]);
-            }
-
-            if (cmdList.length > 0) {
-                $.paginateArray(cmdList, 'customcommands.cmds', ', ', true, sender);
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
-            }
-            return;
+//            var cmds = $.inidb.GetKeyList('command', ''),
+//                    aliases = $.inidb.GetKeyList('aliases', ''),
+//                    externalCommands = $.inidb.GetKeyList('externalCommands', ''),
+//                    cmdList = [];
+//
+//            for (idx in cmds) {
+//                if (!$.inidb.exists('disabledCommands', cmds[idx])
+//                        && !$.inidb.exists('hiddenCommands', cmds[idx])
+//                        && permCom(sender, cmds[idx], '') === 0) {
+//                    cmdList.push('!' + cmds[idx]);
+//                }
+//            }
+//
+//            for (idx in aliases) {
+//                var aliasCmd = $.inidb.get('aliases', aliases[idx]);
+//
+//                if (!$.inidb.exists('disabledCommands', aliases[idx])
+//                        && !$.inidb.exists('hiddenCommands', aliases[idx])
+//                        && permCom(sender, aliasCmd, '') === 0) {
+//                    cmdList.push('!' + aliases[idx]);
+//                }
+//            }
+//
+//            for (idx in externalCommands) {
+//                cmdList.push('!' + externalCommands[idx]);
+//            }
+//
+//            if (cmdList.length > 0) {
+//                $.paginateArray(cmdList, 'customcommands.cmds', ', ', true, sender);
+//            } else {
+//                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.404.no.commands'));
+//            }
+//            return;
         }
 
         /*
