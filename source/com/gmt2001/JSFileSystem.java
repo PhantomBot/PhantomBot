@@ -141,7 +141,7 @@ public class JSFileSystem {
         List<String> files = CreateStringList();
 
         if (IsDirectory(path)) {
-            try (Stream<Path> fileStream = Files.find(Paths.get(path), 0, (p, a) -> p.getFileName().toString().contains(needle))) {
+            try (Stream<Path> fileStream = Files.find(Paths.get(path), 1, (p, a) -> p.getFileName().toString().contains(needle) && !p.getFileName().toString().equals("."))) {
                 fileStream.forEach(p -> files.add(p.getFileName().toString()));
             }
         }
