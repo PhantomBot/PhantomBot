@@ -269,7 +269,7 @@ jobs:
         URL: ${{ secrets.SERVER_URL }}
         VERSION: ${{ needs.workflowvars.outputs.version }}
       run: |
-        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"stable\",\"version\":\"$VERSION\"}"
+        curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"stable\",\"version\":\"$VERSION\"}"
   docker:
     name: Docker build on ubuntu-latest with JDK 11
     runs-on: ubuntu-latest
@@ -373,4 +373,4 @@ jobs:
         URL: ${{ secrets.SERVER_URL }}
         VERSION: ${{ needs.workflowvars.outputs.version }}
       run: |
-        curl -X POST $URL -H "X-ACCESS-TOKEN: $ACCESS_TOKEN" -d "{\"type\":\"stable_docker\",\"version\":\"$VERSION\"}"
+        curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"stable_docker\",\"version\":\"$VERSION\"}"
