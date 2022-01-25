@@ -34,9 +34,9 @@ if (file_exists('rollbar-allowed-versions.json')) {
     $allowed_versions = array();
 }
 
-foreach($maxver as $v) {
-    if (!array_key_exists($v, $allowed_versions)) {
-        $allowed_versions[$v] = array();
+foreach($maxver as $k => $v) {
+    if (!array_key_exists($k, $allowed_versions)) {
+        $allowed_versions[$k] = array();
     }
 }
 

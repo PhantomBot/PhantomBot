@@ -21,11 +21,6 @@
  * Export general file management to th $ API
  */
 (function () {
-    var JFile = java.io.File,
-            JFileInputStream = java.io.FileInputStream,
-            JFileOutputStream = java.io.FileOutputStream,
-            fileHandles = [];
-
     /**
      * @function readFile
      * @export $
@@ -45,12 +40,10 @@
         }
 
         try {
-            var fis = new JFileInputStream(path),
-                    scan = new java.util.Scanner(fis);
-            for (var i = 0; scan.hasNextLine(); ++i) {
-                lines[i] = scan.nextLine();
+            var jlines = Packages.com.gmt2001.JSFileSystem.ReadFileAsLines($.javaString(path));
+            for (var i = 0; i < jlines.size(); ++i) {
+                lines.push($.jsString(jlines.get(i)));
             }
-            fis.close();
         } catch (e) {
             $.log.error('Failed to open \'' + path + '\': ' + e);
         }
@@ -69,8 +62,7 @@
             return false;
         }
 
-        var dir = new JFile(path);
-        return dir.mkdir();
+        return Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString(path));
     }
 
     /**
@@ -80,20 +72,15 @@
      * @param {string} path
      */
     function moveFile(file, path) {
-        var fileO = new JFile(file),
-                pathO = new JFile(path);
-
         if (invalidLocation(file) || invalidLocation(path)) {
             $.consoleLn('Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
             return;
         }
 
-        if ((fileO != null && pathO != null) || (file != "" && path != "")) {
-            try {
-                org.apache.commons.io.FileUtils.moveFileToDirectory(fileO, pathO, true);
-            } catch (ex) {
-                $.log.error("moveFile(" + file + ", " + path + ") failed: " + ex);
-            }
+        try {
+            Packages.com.gmt2001.JSFileSystem.MoveFileToDirectory($.javaString(file), $.javaString(path));
+        } catch (ex) {
+            $.log.error("moveFile(" + file + ", " + path + ") failed: " + ex);
         }
     }
 
@@ -111,41 +98,13 @@
         }
 
         try {
-            var fos = new JFileOutputStream(path, append),
-                    ps = new java.io.PrintStream(fos),
-                    l = array.length;
-            for (var i = 0; i < l; ++i) {
-                ps.println(array[i]);
+            var lines = new Packages.com.gmt2001.JSFileSystem.CreateStringList();
+            for (var i = 0; i < array.length; ++i) {
+                lines.add($.javaString(array[i]));
             }
-            fos.close();
+            Packages.com.gmt2001.JSFileSystem.WriteLinesToFile($.javaString(path), lines, append);
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
-        }
-    }
-
-    /**
-     * @function closeOpenFiles
-     */
-    function closeOpenFiles() {
-        var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
-                date = dateFormat.format(new java.util.Date());
-
-        var newFileHandles = [];
-
-        for (var key in fileHandles) {
-            if (fileHandles[key] !== undefined && fileHandles[key] !== null) {
-                if (!fileHandles[key].startDate.equals(date)) {
-                    fileHandles[key].fos.close();
-                } else {
-                    newFileHandles[key] = fileHandles[key];
-                }
-            }
-        }
-
-        fileHandles = [];
-
-        for (var key in newFileHandles) {
-            fileHandles.push(newFileHandles[key]);
         }
     }
 
@@ -157,34 +116,13 @@
      * @param {boolean} append
      */
     function writeToFile(line, path, append) {
-        var dateFormat = new java.text.SimpleDateFormat('MM-dd-yyyy'),
-                date = dateFormat.format(new java.util.Date()),
-                fos,
-                ps;
-
         if (invalidLocation(path)) {
             $.consoleLn('Blocked writeToFile() target outside of validPaths:' + path);
             return;
         }
 
-        closeOpenFiles();
-
-        if (fileHandles[path] !== undefined && append) {
-            fos = fileHandles[path].fos;
-            ps = fileHandles[path].ps;
-        } else {
-            fos = new JFileOutputStream(path, append);
-            ps = new java.io.PrintStream(fos);
-            fileHandles[path] = {
-                fos: fos,
-                ps: ps,
-                startDate: date
-            };
-        }
-
         try {
-            ps.println(line);
-            fos.flush();
+            Packages.com.gmt2001.JSFileSystem.WriteLineToFile($.javaString(path), $.javaString(line), append);
         } catch (e) {
             $.log.error('Failed to write to \'' + path + '\': ' + e);
         }
@@ -202,8 +140,7 @@
         }
 
         try {
-            var fos = new JFileOutputStream(path, true);
-            fos.close();
+            Packages.com.gmt2001.JSFileSystem.TouchFile($.javaString(path));
         } catch (e) {
             $.log.error('Failed to touch \'' + path + '\': ' + e);
         }
@@ -222,12 +159,7 @@
         }
 
         try {
-            var f = new JFile(path);
-            if (now) {
-                f['delete']();
-            } else {
-                f.deleteOnExit();
-            }
+            Packages.com.gmt2001.JSFileSystem.DeleteFile($.javaString(path));
         } catch (e) {
             $.log.error('Failed to delete \'' + path + '\': ' + e);
         }
@@ -245,12 +177,7 @@
             return false;
         }
 
-        try {
-            var f = new JFile(path);
-            return f.exists();
-        } catch (e) {
-            return false;
-        }
+        return Packages.com.gmt2001.JSFileSystem.FileExists($.javaString(path));
     }
 
     /**
@@ -267,17 +194,12 @@
         }
 
         try {
-            var f = new JFile(directory),
-                    ret = [];
-            if (f.isDirectory()) {
-                var files = f.list();
-                for (var i = 0; i < files.length; i++) {
-                    if (files[i].indexOf(pattern) != -1) {
-                        ret.push(files[i]);
-                    }
-                }
-                return ret;
+            var ret = [];
+            var files = Packages.com.gmt2001.JSFileSystem.FindFilesInDirectory($.javaString(directory), $.javaString(pattern));
+            for (var i = 0; i < files.size(); i++) {
+                ret.push($.jsString(files.get(i)));
             }
+            return ret;
         } catch (e) {
             $.log.error('Failed to search in \'' + directory + '\': ' + e);
         }
@@ -296,12 +218,7 @@
             return false;
         }
 
-        try {
-            var f = new JFile(path);
-            return f.isDirectory();
-        } catch (e) {
-            return false;
-        }
+        return Packages.com.gmt2001.JSFileSystem.IsDirectory($.javaString(path));
     }
 
     /**
@@ -316,8 +233,7 @@
             return 0;
         }
 
-        var fileO = new JFile(file);
-        return fileO.length();
+        return Packages.com.gmt2001.JSFileSystem.GetFileSize($.javaString(file));
     }
 
     function invalidLocation(path) {
