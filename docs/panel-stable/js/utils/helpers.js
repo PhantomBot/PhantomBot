@@ -921,16 +921,24 @@ $(function () {
         return helpers.getModuleStatus(id, toggle, swit);
     };
 
-    helpers.isSwappedSubscriberVIP = async function () {
-        let done = false;
-        let result;
-        socket.getDBValue('helpers_isSwappedSubscriberVIP', 'settings', 'isSwappedSubscriberVIP', function (e) {
-            result = e.settings === '1';
-            done = true;
-        });
-        await helpers.promisePoll(() => done);
-        return result;
+    let _isSwappedSubscriberVIP = false;
+    helpers.isSwappedSubscriberVIP = function () {
+        return _isSwappedSubscriberVIP;
     };
+
+    let checkSwappedSubscriberVIP = function () {
+        socket.getDBValue('helpers_isSwappedSubscriberVIP', 'settings', 'isSwappedSubscriberVIP', function (e) {
+            _isSwappedSubscriberVIP = e.settings === '1';
+        });
+    };
+
+    setTimeout(function () {
+        checkSwappedSubscriberVIP();
+    }, 5e3);
+
+    setInterval(function () {
+        checkSwappedSubscriberVIP();
+    }, 30e3);
 
     /*
      * @function Gets the group ID by its name.

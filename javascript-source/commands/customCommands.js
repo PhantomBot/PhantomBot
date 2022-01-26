@@ -468,6 +468,7 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
+                    var groupname = $.getGroupNameById(group);
                     if ($.isSwappedSubscriberVIP() && group == 3) {
                         group = 5;
                     } else if ($.isSwappedSubscriberVIP() && group == 5) {
@@ -475,10 +476,10 @@
                     }
                 }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, $.getGroupNameById(group)));
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action, groupname));
                 $.logCustomCommand({
                     'set.perm.command': '!' + action,
-                    'set.perm.group': $.getGroupNameById(group),
+                    'set.perm.group': groupname,
                     'sender': sender,
                 });
 
@@ -502,6 +503,7 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
+                    var groupname = $.getGroupNameById(group);
                     if ($.isSwappedSubscriberVIP() && group == 3) {
                         group = 5;
                     } else if ($.isSwappedSubscriberVIP() && group == 5) {
@@ -509,10 +511,10 @@
                     }
                 }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + ' ' + subAction, $.getGroupNameById(group)));
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.success', action + ' ' + subAction, groupname));
                 $.logCustomCommand({
                     'set.perm.command': '!' + action + ' ' + subAction,
-                    'set.perm.group': $.getGroupNameById(group),
+                    'set.perm.group': groupname,
                     'sender': sender,
                 });
                 $.inidb.set('permcom', action + ' ' + subAction, group);
