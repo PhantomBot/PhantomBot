@@ -180,7 +180,8 @@
     function calculateResult() {
         var i;
         for (i in currentAdventure.users) {
-            if ($.randRange(0, 20) > 5) {
+            var ranValue = $.randRange(0, 100);
+            if (ranValue > 48) {
                 currentAdventure.survivors.push(currentAdventure.users[i]);
             } else {
                 currentAdventure.caught.push(currentAdventure.users[i]);

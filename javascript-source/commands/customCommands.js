@@ -84,9 +84,9 @@
                 break;
             case 3:
                 if ($.isSwappedSubscriberVIP()) {
-                    allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
-                } else {
                     allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
+                } else {
+                    allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
                 }
                 break;
             case 4:
@@ -94,9 +94,9 @@
                 break;
             case 5:
                 if ($.isSwappedSubscriberVIP()) {
-                    allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
-                } else {
                     allowed = $.isVIP(username, tags) || $.isModv3(username, tags);
+                } else {
+                    allowed = $.isSubv3(username, tags) || $.isModv3(username, tags);
                 }
                 break;
             case 6:
