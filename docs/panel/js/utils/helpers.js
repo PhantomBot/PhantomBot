@@ -931,7 +931,10 @@ $(function () {
             _isSwappedSubscriberVIP = e.settings === '1';
         });
     };
-    checkSwappedSubscriberVIP();
+
+    setTimeout(function () {
+        checkSwappedSubscriberVIP();
+    }, 5e3);
 
     setInterval(function () {
         checkSwappedSubscriberVIP();
