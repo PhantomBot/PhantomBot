@@ -145,6 +145,40 @@
         $.say($.lang.get('adventuresystem.top5', top5.join(', ')));
     };
 
+    function bottom5() {
+            var payoutsKeys = $.inidb.GetKeyList('adventurePayouts', ''),
+                temp = [],
+                counter = 1,
+                bottom5 = [],
+                i;
+
+            if (payoutsKeys.length == 0) {
+                $.say($.lang.get('adventuresystem.top5.empty'));
+            }
+
+            for (i in payoutsKeys) {
+                if (payoutsKeys[i].equalsIgnoreCase($.ownerName) || payoutsKeys[i].equalsIgnoreCase($.botName)) {
+                    continue;
+                }
+                temp.push({
+                    username: payoutsKeys[i],
+                    amount: parseInt($.inidb.get('adventurePayouts', payoutsKeys[i])),
+                });
+            }
+
+            temp.sort(function(a, b) {
+                return (a.amount > b.amount ? 1 : -1);
+            });
+
+            for (i in temp) {
+                if (counter <= 5) {
+                    bottom5.push(counter + '. ' + temp[i].username + ': ' + $.getPointsString(temp[i].amount));
+                    counter++;
+                }
+            }
+            $.say($.lang.get('adventuresystem.bottom5', bottom5.join(', ')));
+        };
+
     /**
      * @function checkUserAlreadyJoined
      * @param {string} username
@@ -342,7 +376,7 @@
      * @function endHeist
      */
     function endHeist() {
-        var i, pay, username, maxlength = 0;
+        var i, pay, username, maxlength = 0, bet = 0;
         var temp = [];
 
         for (i in currentAdventure.survivors) {
@@ -352,10 +386,17 @@
             $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
         }
 
+        for (i in currentAdventure.caught) {
+            bet = currentAdventure.caught[i].bet;
+            $.inidb.decr('adventurePayouts',  currentAdventure.caught[i].username, bet);
+        }
+
         for (i in currentAdventure.survivors) {
             username = currentAdventure.survivors[i].username;
+            bet = currentAdventure.survivors[i].bet;
+            pay = parseInt($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username));
             maxlength += username.length();
-            temp.push($.username.resolve(username) + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
+            temp.push($.username.resolve(username) + ' (' + $.getPointsString(bet + pay) + ')');
         }
 
         if (temp.length == 0) {
@@ -402,6 +443,11 @@
 
         if (command.equalsIgnoreCase('heisttop')) {
             top5();
+            return;
+        }
+
+        if (command.equalsIgnoreCase('heistbottom')) {
+            bottom5();
             return;
         }
 
@@ -534,6 +580,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
         $.registerChatCommand('./games/adventureSystem.js', 'heisttop', 7);
+        $.registerChatCommand('./games/adventureSystem.js', 'heistbottom', 7);
         $.registerChatSubcommand('adventure', 'set', 1);
         $.registerChatSubcommand('adventure', 'top5', 3);
 
