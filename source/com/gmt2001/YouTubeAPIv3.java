@@ -232,7 +232,6 @@ public class YouTubeAPIv3 {
         }
 
         q = GetBody(request_type.GET, "https://beta.decapi.me/youtube/videoid?search=" + q);
-        com.gmt2001.Console.err.println(q);
         JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
@@ -243,8 +242,6 @@ public class YouTubeAPIv3 {
 
             if (j.getInt("_http") == 200) {
                 try {
-                    com.gmt2001.Console.err.println("URL Check Success");
-
                     String a =  StringUtils.unescapeHtml3(j.getString("title"));
                     return new String[] { q, a, "" };
                 } catch (JSONException ex) {
