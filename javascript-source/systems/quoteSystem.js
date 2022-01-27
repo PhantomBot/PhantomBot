@@ -141,7 +141,7 @@
             quote = getQuote(i.toString());
             if(quote.length <= 0)
                 break;
-            csv = csv + i + ",\"" + quote[1].replace("\"").replace(",","") + "\","
+            csv = csv + i + ",\"" + quote[1].replace(new RegExp('"','g'), "''")+ "\","
             + $.resolveRank(quote[0]) + ","
             + (quote.length == 5 ? quote[3].replace("\"").replace(",","") : "Some Game") + ","
             +  $.getLocalTimeString('MM-dd-yyyy', parseInt(quote[2])) + "\r\n"

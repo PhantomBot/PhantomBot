@@ -966,7 +966,7 @@
         this.updateSongQueueList = function(currentRequests) {
             var i, csv = "Title,Requested By,Duration,URL\r\n"
             for (i in currentRequests) {
-                csv = csv + currentRequests[i].getVideoTitle().replace("\"","").replace(",","") +
+                csv = csv + '"' + currentRequests[i].getVideoTitle().replace(new RegExp('"','g'),'') + '"' +
                       "," +
                       currentRequests[i].getOwner() +
                       "," +
