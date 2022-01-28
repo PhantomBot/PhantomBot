@@ -85,6 +85,7 @@
                command == 'adventure' ||
                command == 'vote' ||
                command == 'joinqueue' ||
+               command == 'ffa' ||
                command == $.raffleCommand;
     }
 
@@ -101,7 +102,7 @@
         var cooldown = cooldowns[command];
 
         if (isSpecial(command)) {
-            if (command == 'adventure' && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
+            if ((command == 'adventure' || command == 'ffa') && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
                 return defaultCooldowns[command];
             } else {
                 return 0;
