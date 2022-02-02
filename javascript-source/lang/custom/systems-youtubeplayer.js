@@ -1,0 +1,1 @@
+$.lang.register('ytplayer.command.nextsong.single', 'Next Song: $1 requested by $2');

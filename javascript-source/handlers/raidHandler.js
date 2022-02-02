@@ -132,10 +132,10 @@
             message = $.replace(message, '(url)', 'https://twitch.tv/' + username);
         }
 
-        // Spam the message, if needed.
-        for (var i = 0; i < raidOutSpam; i++) {
-            $.say(message);
-        }
+//        // Spam the message, if needed.
+//        for (var i = 0; i < raidOutSpam; i++) {
+//            $.say(message);
+//        }
 
         // Use the .raid command.
         $.say('.raid ' + username);

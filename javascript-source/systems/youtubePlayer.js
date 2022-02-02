@@ -2138,7 +2138,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.404'));
                     return;
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', currentPlaylist.getRequestAtIndex(0).getVideoTitle()));
+                    $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', currentPlaylist.getRequestAtIndex(0).getVideoTitle(), currentPlaylist.getRequestAtIndex(0).getOwner()));
                     return;
                 }
             } else {
