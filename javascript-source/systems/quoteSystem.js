@@ -165,6 +165,7 @@
         var sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
+            action = args[0],
             quote,
             quoteStr;
 
@@ -307,6 +308,22 @@
          * @commandpath quote [quoteId] - Announce a quote by its Id, omit the id parameter to get a random quote
          */
         if (command.equalsIgnoreCase('quote')) {
+
+            if (action.toLowerCase() == "add") {
+                if (quoteMode) {
+                    if (args.length < 2) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
+                        return;
+                    }
+                    quote = args.splice(1).join(' ');
+                    $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+                    $.log.event(sender + ' added a quote "' + quote + '".');
+                    exportQuotes();
+                    return;
+                }
+                return;
+            }
+
             quote = getQuote(args[0]);
             if (quote.length > 0) {
                 quoteStr = ($.inidb.exists('settings', 'quoteMessage') ? $.inidb.get('settings', 'quoteMessage') : $.lang.get('quotesystem.get.success'));
@@ -390,5 +407,6 @@
         $.registerChatCommand('./systems/quoteSystem.js', 'quote');
         $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
         $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', 1);
+        $.registerChatSubcommand('quote', 'add', 2);
     });
 })();
