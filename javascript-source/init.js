@@ -538,7 +538,11 @@
             }
 
             if (oncooldown) {
-                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, $.coolDown.getSecs(sender, command, isMod)), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                var cooldownSeconds = $.coolDown.getSecs(sender, command, isMod);
+                var cooldownDate = new Date(null);
+                cooldownDate.setSeconds(cooldownSeconds);
+                var cooldownDateString = cooldownDate.toISOString().substr(11,8);
+                $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg', command, cooldownDateString), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
                 consoleDebug('Command !' + command + ' was not sent due to it being on cooldown.');
                 return;
             }

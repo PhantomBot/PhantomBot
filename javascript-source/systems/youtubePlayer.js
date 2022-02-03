@@ -647,6 +647,21 @@
             return false;
         }
 
+        this.findFirstSongByOwner = function(requestOwner) {
+            var index = -1;
+            if(!requests.isEmpty()) {
+                requestsArray = requests.toArray();
+                for(var i in requestsArray) {
+                    songOwner = requestsArray[i].getOwner();
+                    if(songOwner.toLowerCase() == requestOwner.toLowerCase()) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+
         this.findLastSongByOwner = function(requestOwner) {
             var lastIndex = -1
             if(!requests.isEmpty()) {
@@ -2074,6 +2089,21 @@
             }
         }
 
+        if(command.equalsIgnoreCase('songqueue')) {
+            var firstSongIndex = currentPlaylist.findFirstSongByOwner(sender);
+            if(firstSongIndex < 0) {
+                $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songqueue.none'));
+                return;
+            }
+
+            var lastSongIndex = currentPlaylist.findLastSongByOwner(sender);
+
+            var requestCount = currentPlaylist.getSenderRequestsCount(sender);
+            var nextSong = currentPlaylist.getRequestAtIndex(firstSongIndex);
+            var lastSong = currentPlaylist.getRequestAtIndex(lastSongIndex);
+            $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songqueue.next', requestCount, nextSong.getVideoTitle(), lastSong.getVideoTitle()));
+        }
+
         /**
          * @commandpath wrongsong - Removes the last requested song from the user
          * @commandpath wrongsong user [username] - Removes the last requested song from a specific user
@@ -2221,6 +2251,7 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'movepriority', 1);
         $.registerChatCommand('./systems/youtubePlayer.js', 'priority', 7);
         $.registerChatCommand('./systems/youtubePlayer.js', 'pause', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'songqueue', 7);
 
         $.registerChatSubcommand('skipsong', 'vote', 7);
         $.registerChatSubcommand('wrongsong', 'user', 2);
