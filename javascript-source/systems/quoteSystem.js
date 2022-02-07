@@ -309,7 +309,7 @@
          */
         if (command.equalsIgnoreCase('quote')) {
 
-            if (action.toLowerCase() == "add") {
+            if (action && action.toLowerCase() == "add") {
                 if (quoteMode) {
                     if (args.length < 2) {
                         $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));

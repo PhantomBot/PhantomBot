@@ -328,6 +328,11 @@
                 message = massGiftSubMessage;
 
         if (massGiftSubWelcomeToggle === true && announce === true) {
+
+            if (message.match(/\(ticketsamount\)/g)) {
+                message = $.replace(message, '(ticketsamount)', amount*500);
+            }
+
             if (message.match(/\(name\)/g)) {
                 message = $.replace(message, '(name)', gifter);
             }
@@ -441,6 +446,10 @@
                 message = massAnonGiftSubMessage;
 
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
+            if (message.match(/\(ticketsamount\)/g)) {
+                message = $.replace(message, '(ticketsamount)', amount*500);
+            }
+
             if (message.match(/\(name\)/g)) {
                 message = $.replace(message, '(name)', gifter);
             }
