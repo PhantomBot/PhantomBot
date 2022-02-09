@@ -16,11 +16,12 @@
  */
 package tv.phantombot.event.command;
 
+import tv.phantombot.event.Event;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import tv.phantombot.event.Event;
 
 public class CommandEvent extends Event {
     private final String sender;
@@ -28,6 +29,7 @@ public class CommandEvent extends Event {
     private final String arguments;
     private final Map<String, String> tags;
     private final String[] args;
+    private final boolean whisper;
 
     /**
      * Class constructor for this event without tags. Always send tags if you can.
@@ -43,6 +45,16 @@ public class CommandEvent extends Event {
         this.arguments = arguments;
         this.args = parse();
         this.tags = new HashMap<String, String>();
+        this.whisper = false;
+    }
+
+    public CommandEvent(String sender, String command, String arguments, boolean whisper) {
+        this.sender = sender;
+        this.command = command;
+        this.arguments = arguments;
+        this.args = parse();
+        this.tags = new HashMap<String, String>();
+        this.whisper = whisper;
     }
 
     /**
@@ -59,6 +71,16 @@ public class CommandEvent extends Event {
         this.arguments = arguments;
         this.args = parse();
         this.tags = (tags == null ? new HashMap<String, String>() : tags);
+        this.whisper = false;
+    }
+
+    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, boolean whisper) {
+        this.sender = sender;
+        this.command = command;
+        this.arguments = arguments;
+        this.args = parse();
+        this.tags = (tags == null ? new HashMap<String, String>() : tags);
+        this.whisper = whisper;
     }
 
     /**
@@ -135,6 +157,8 @@ public class CommandEvent extends Event {
     public Map<String, String> getTags() {
         return this.tags;
     }
+
+    public boolean isWhisper() { return this.whisper;}
 
     /**
      * Method that returns this object as a string.

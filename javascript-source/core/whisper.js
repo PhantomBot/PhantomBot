@@ -88,7 +88,7 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && $.userExists(sender)) {
+        if (message.startsWith('!')) {
             message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');
@@ -98,7 +98,7 @@
                 command = message;
             }
 
-            ScriptEventManager.instance().onEvent(new CommandEvent(sender, command, arguments));
+            ScriptEventManager.instance().onEvent(new CommandEvent(sender, command, arguments, true));
             $.log.file('whispers', '' + sender + ': ' + message);
         }
     });
