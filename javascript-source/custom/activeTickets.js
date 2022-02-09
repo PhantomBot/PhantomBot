@@ -12,7 +12,6 @@
                 return;
             }
             var activeUsers = $.getActiveUsers();
-            $.log.error(activeUsers);
             $.streamelements.AddTicketsToUsers(activeUsers,parseInt(action));
             $.say($.lang.get('activetickets.command.addactive', activeUsers.length))
         }
