@@ -1006,6 +1006,7 @@ public final class PhantomBot implements Listener {
             Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
             Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
             Script.global.defineProperty("moderation", Moderation.instance(), 0);
+            Script.global.defineProperty("streamelements", StreamElementsAPIv2.instance(), 0);
         }
 
         /* open a new thread for when the bot is exiting */

@@ -17,18 +17,16 @@
 package com.scaniatv;
 
 import com.gmt2001.RollbarProvider;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import javax.net.ssl.HttpsURLConnection;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /*
  * @author ScaniaTV
@@ -85,6 +83,61 @@ public class StreamElementsAPIv2 {
         jsonObject.put("_exception", exception);
         jsonObject.put("_exceptionMessage", exceptionMessage);
         jsonObject.put("_content", jsonContent);
+    }
+
+    private static String sendJsonToUrl(String urlAddress, String requestJSON) throws JSONException {
+        HttpsURLConnection connection = null;
+        InputStream is = null;
+
+        try {
+            URL url = new URL(urlAddress);
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.addRequestProperty("Authorization", "Bearer " + jwtToken);
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            //connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+            //Send request
+            System.out.println(requestJSON);
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+            wr.writeBytes(requestJSON);
+            wr.close();
+
+            //Get Response
+
+            try {
+                is = connection.getInputStream();
+            } catch (IOException ioe) {
+                int statusCode = connection.getResponseCode();
+                if (statusCode != 200) {
+                    is = connection.getErrorStream();
+                }
+            }
+
+            assert is != null;
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            return response.toString();
+
+        } catch (Exception e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return "";
     }
 
     /*
@@ -184,5 +237,20 @@ public class StreamElementsAPIv2 {
      */
     public JSONObject GetDonations() throws JSONException {
         return readJsonFromUrl(url + "/tips/" + this.id + "?limit=" + this.pullLimit);
+    }
+
+    public String AddTicketsToUsers(String[] users, int amount) {
+        JSONObject dataToSend = new JSONObject();
+        dataToSend.put("mode", "add");
+        JSONArray userArray = new JSONArray();
+        for (String user : users) {
+            JSONObject userObj = new JSONObject();
+            userObj.put("username", user);
+            userObj.put("current", amount);
+            userArray.put(userObj);
+        }
+        dataToSend.put("users", userArray);
+
+        return sendJsonToUrl(url + "/points/" + this.id, dataToSend.toString(0));
     }
 }
