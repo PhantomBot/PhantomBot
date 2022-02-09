@@ -32,7 +32,7 @@
 
         var awardPoints = firstStarting - (firstViewers.length * firstDecrement);
         firstViewers.push(sender);
-        //$.streamelements.AddTicketsToUsers([sender],awardPoints);
+        $.streamelements.AddTicketsToUsers([sender],awardPoints);
         $.say($.whisperPrefix(sender) + $.lang.get('first.reward', firstViewers.length, awardPoints));
     }
 
@@ -53,7 +53,7 @@
 
         var awardPoints = firstStarting - (secondViewers.length * secondDecrement);
         secondViewers.push(sender);
-        //$.streamelements.AddTicketsToUsers([sender],awardPoints);
+        $.streamelements.AddTicketsToUsers([sender],awardPoints);
         $.say($.whisperPrefix(sender) + $.lang.get('first.reward', secondViewers.length, awardPoints));
     }
 
