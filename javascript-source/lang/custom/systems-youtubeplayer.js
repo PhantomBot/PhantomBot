@@ -1,1 +1,2 @@
 $.lang.register('ytplayer.command.nextsong.single', 'Next Song: $1 requested by $2');
+$.lang.register('ytplayer.command.songrequest.success', 'Your song "$1" has been added to the queue (Position: $2 ID: $3 Total Queued: $4). Type !wrongsong if this was the incorrect song.');
