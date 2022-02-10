@@ -26,6 +26,10 @@
         return $.customAPI.get(url).content;
     }
 
+    function getCustomAPITextValue(url) {
+        return $.customAPI.getAsText(url).content;
+    }
+
     /*
      * @function unescapeTags
      * @export $
@@ -369,6 +373,32 @@
                 }
                 return {
                     result: String(getCustomAPIValue(encodeURI(match[1]))),
+                    cache: false
+                };
+            }
+        }
+
+        function customapitext(args, event) {
+            if ((match = args.match(/^\s(.+)$/))) {
+                cmd = event.getCommand();
+                if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
+                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
+                }
+
+                flag = false;
+                match[1] = match[1].replace(/\$([1-9])/g, function (m) {
+                    i = parseInt(m[1]);
+                    if (!event.getArgs()[i - 1]) {
+                        flag = true;
+                        return m[0];
+                    }
+                    return event.getArgs()[i - 1];
+                });
+                if (flag) {
+                    return {result: $.lang.get('customcommands.customapi.404', cmd)};
+                }
+                return {
+                    result: String(getCustomAPITextValue(encodeURI(match[1]))),
                     cache: false
                 };
             }
@@ -1598,6 +1628,7 @@
             'currenttime': currenttime,
             'customapi': customapi,
             'customapijson': customapijson,
+            'customapitext':customapitext,
             'downtime': downtime,
             'echo': echo,
             'encodeurl': encodeurl,

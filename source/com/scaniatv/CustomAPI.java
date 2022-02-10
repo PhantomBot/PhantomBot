@@ -20,9 +20,10 @@ package com.scaniatv;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
-import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class CustomAPI {
     private static CustomAPI instance;
@@ -75,6 +76,10 @@ public class CustomAPI {
      */
     public HttpResponse get(String url) {
         return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
+    }
+
+    public HttpResponse getAsText(String url) {
+        return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>(){{put("Accept","text/plain");}});
     }
 
     /*
