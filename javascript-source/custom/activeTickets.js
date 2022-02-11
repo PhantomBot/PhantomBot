@@ -1,4 +1,12 @@
 (function() {
+
+    function addActiveTickets(amount) {
+        var activeUsers = $.getActiveUsers();
+        $.say($.lang.get('activetickets.command.startsending', amount, activeUsers.length))
+        $.streamelements.AddTicketsToUsers(activeUsers,parseInt(amount));
+        $.say($.lang.get('activetickets.command.addactive', activeUsers.length))
+    }
+
     $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
             command = event.getCommand(),
@@ -11,13 +19,14 @@
             if(!action) {
                 return;
             }
-            var activeUsers = $.getActiveUsers();
-            $.streamelements.AddTicketsToUsers(activeUsers,parseInt(action));
-            $.say($.lang.get('activetickets.command.addactive', activeUsers.length))
+
+            addActiveTickets(action);
         }
     });
 
     $.bind('initReady', function() {
         $.registerChatCommand('./custom/activeTickets.js', 'addactive', 1)
     });
+
+    $.addActiveTickets = addActiveTickets;
 })();

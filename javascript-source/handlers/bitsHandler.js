@@ -59,7 +59,10 @@
         if (s.match(/\(amount\)/g)) {
             s = $.replace(s, '(amount)', bits);
         }
-
+        if (message.match(/\(ticketsamount\)/g)) {
+            $.addActiveTickets(amount);
+            message = $.replace(message, '(ticketsamount)', '');
+        }
         if (s.match(/\(message\)/g)) {
             s = $.replace(s, '(message)', ircMessage);
             if (emoteRegexStr.length() > 0) {
