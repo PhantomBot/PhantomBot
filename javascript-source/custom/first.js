@@ -51,10 +51,10 @@
             return;
         }
 
-        var awardPoints = firstStarting - (secondViewers.length * secondDecrement);
+        var awardPoints = secondStarting - (secondViewers.length * secondDecrement);
         secondViewers.push(sender);
         $.streamelements.AddTicketsToUsers([sender],awardPoints);
-        $.say($.whisperPrefix(sender) + $.lang.get('first.reward', secondViewers.length, awardPoints));
+        $.say($.whisperPrefix(sender) + $.lang.get('first.reward', secondViewers.length, awardPoints) + ' Check on !twitter to get bonus!');
     }
 
     function registerFirst(newCommand) {

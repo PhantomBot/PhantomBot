@@ -57,7 +57,7 @@
             }
             winners.push(winner);
         }
-        eachAmount = winAmount / winnerCount;
+        eachAmount = parseInt(winAmount / winnerCount);
         $.say($.lang.get('raffle.winners', winners.join(', '), 'waffle', eachAmount, 'superp64Waffle'))
         $.streamelements.AddTicketsToUsers(winners,eachAmount);
         currentState = -1;
