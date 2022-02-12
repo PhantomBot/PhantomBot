@@ -86,6 +86,8 @@
                command == 'vote' ||
                command == 'joinqueue' ||
                command == 'ffa' ||
+               command == 'pancake' ||
+               command == 'waffle' ||
                command == $.firstCommand ||
                command == $.secondCommand ||
                command == $.raffleCommand;
