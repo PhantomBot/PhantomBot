@@ -127,6 +127,10 @@
         <ivy:cleancache/>
     </target>
 
+    <target depends="init-ivy" name="ivy-list-updates">
+        <ivy:checkdepsupdate/>
+    </target>
+
     <target name="clearlib">
         <delete>
             <fileset dir="${reference}" includes="**/*.jar" />
