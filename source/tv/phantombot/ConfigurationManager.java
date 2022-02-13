@@ -29,6 +29,8 @@ public class ConfigurationManager {
     private static final String PANEL_STANDARD_PASSWORD = "panel";
     private static final String OUAUTH_PREFIX = "oauth:";
 
+    public static final String PROP_ENVOVERRIDE = "ENVOVERRIDE";
+
     public static final String PROP_BASEPORT = "baseport";
     public static final String PROP_USEHTTPS = "usehttps";
     public static final String PROP_WEBENABLE = "webenable";
@@ -92,14 +94,21 @@ public class ConfigurationManager {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
         /* Load up the bot info from the environment */
+        String prefix = "PHANTOMBOT_";
+        boolean envOverrides = System.getenv().containsKey(prefix + PROP_ENVOVERRIDE)
+                && (System.getenv(prefix + PROP_ENVOVERRIDE).equalsIgnoreCase("true") || System.getenv(prefix + PROP_ENVOVERRIDE).equals("1"));
         System.getenv().entrySet().forEach((v) -> {
-            String prefix = "PHANTOMBOT_";
             String key = v.getKey().toUpperCase();
             String value = v.getValue();
-            if (key.startsWith(prefix) && prefix.length() < key.length()) {
+            if (key.startsWith(prefix) && prefix.length() < key.length() && !key.equals(prefix + PROP_ENVOVERRIDE)) {
                 key = key.substring(prefix.length()).toLowerCase();
-                startProperties.setProperty(key, value);
+                if (envOverrides) {
+                    startProperties.setProperty(key, value);
+                } else {
+                    startProperties.putIfAbsent(key, value);
+                }
             }
         });
 
@@ -157,7 +166,7 @@ public class ConfigurationManager {
 
     private static boolean generateDefaultValues(CaselessProperties startProperties) {
         boolean changed = false;
-        
+
         changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "true", "Enabled Rollbar");
 
         /* Check to see if there's a webOauth set */
