@@ -28,11 +28,11 @@
 /**
  * Anything you modify or remove in this script is at your own risk with Twitter.
  */
-(function() {
+(function () {
     var randPrev = 0,
-        onlinePostDelay = 480 * 6e4, // 8 hour cooldown
-        gameChangeDelay = 60 * 6e4, // 1 hour cooldown
-        interval;
+            onlinePostDelay = 480 * 6e4, // 8 hour cooldown
+            gameChangeDelay = 60 * 6e4, // 1 hour cooldown
+            interval;
 
     /* Set default values for all configuration items. */
     $.getSetIniDbString('twitter', 'message_online', 'Starting up a stream (twitchurl)');
@@ -60,7 +60,7 @@
     /**
      * @event twitter
      */
-    $.bind('twitter', function(event) {
+    $.bind('twitter', function (event) {
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
@@ -74,7 +74,7 @@
     /**
      * @event twitterRetweet
      */
-    $.bind('twitterRetweet', function(event) {
+    $.bind('twitterRetweet', function (event) {
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
@@ -85,14 +85,14 @@
         }
 
         var userNameArray = event.getUserNameArray(),
-            i,
-            twitterUserName,
-            rewardNameArray = [],
-            lastRetweet,
-            userName,
-            reward = $.getIniDbNumber('twitter', 'reward_points'),
-            cooldown = $.getIniDbFloat('twitter', 'reward_cooldown') * 3.6e6,
-            now = $.systemTime();
+                i,
+                twitterUserName,
+                rewardNameArray = [],
+                lastRetweet,
+                userName,
+                reward = $.getIniDbNumber('twitter', 'reward_points'),
+                cooldown = $.getIniDbFloat('twitter', 'reward_cooldown') * 3.6e6,
+                now = $.systemTime();
 
         for (i in userNameArray) {
             twitterUserName = userNameArray[i].toLowerCase();
@@ -117,10 +117,10 @@
     /**
      * @event twitchOnline
      */
-    $.bind('twitchOnline', function(event) {
+    $.bind('twitchOnline', function (event) {
         var randNum,
-            now = $.systemTime(),
-            message = $.getIniDbString('twitter', 'message_online');
+                now = $.systemTime(),
+                message = $.getIniDbString('twitter', 'message_online');
 
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
@@ -141,9 +141,9 @@
     /**
      * @event twitchGameChange
      */
-    $.bind('twitchGameChange', function(event) {
+    $.bind('twitchGameChange', function (event) {
         var now = $.systemTime(),
-            message = $.getIniDbString('twitter', 'message_gamechange');
+                message = $.getIniDbString('twitter', 'message_gamechange');
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
@@ -156,9 +156,9 @@
             if (now > $.getIniDbNumber('twitter', 'last_gamechange', 0) + gameChangeDelay) {
                 $.inidb.set('twitter', 'last_gamechange', now + gameChangeDelay);
                 var randNum,
-                    uptimeSec = $.getStreamUptimeSeconds($.channelName),
-                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
-                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+                        uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                        hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                        min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
 
                 do {
                     randNum = $.randRange(1, 9999);
@@ -172,17 +172,17 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            commandArg = args[0],
-            subCommandArg = args[1],
-            setCommandArg = args[2],
-            setCommandVal = args[3],
-            setCommandList = ['mentions', 'retweets', 'hometimeline', 'usertimeline'],
-            setRewardCommandList = ['toggle', 'points', 'cooldown', 'announce'],
-            minVal;
+                command = event.getCommand(),
+                args = event.getArgs(),
+                commandArg = args[0],
+                subCommandArg = args[1],
+                setCommandArg = args[2],
+                setCommandVal = args[3],
+                setCommandList = ['mentions', 'retweets', 'hometimeline', 'usertimeline'],
+                setRewardCommandList = ['toggle', 'points', 'cooldown', 'announce'],
+                minVal;
 
         /**
          * @commandpath twitter - Twitter base command
@@ -542,15 +542,15 @@
             if (($.systemTime() - lastUpdateTime) >= ($.getIniDbNumber('twitter', 'postdelay_update', 180) * 6e4)) { // 3 hour cooldown
                 var DownloadHTTP = Packages.com.illusionaryone.ImgDownload;
                 var success = DownloadHTTP.downloadHTTP($.twitchcache.getPreviewLink(), 'twitch-preview.jpg'),
-                    uptimeSec = $.getStreamUptimeSeconds($.channelName),
-                    hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
-                    min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
+                        uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                        hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
+                        min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
 
                 $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
 
                 if (success.equals('true')) {
                     $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace(/\(enter\)/g, '\r\n').replace('(uptime)', hrs + ':' + min),
-                        './addons/downloadHTTP/twitch-preview.jpg');
+                            './addons/downloadHTTP/twitch-preview.jpg', 'TWEET_IMAGE');
                 } else {
                     $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
                 }
@@ -559,14 +559,14 @@
         }
     }
 
-    interval = setInterval(function() {
+    interval = setInterval(function () {
         checkAutoUpdate();
     }, 8e4);
 
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
         $.registerChatSubcommand('twitter', 'set', 1);
         $.registerChatSubcommand('twitter', 'post', 1);

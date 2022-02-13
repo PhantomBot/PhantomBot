@@ -1,6 +1,6 @@
 /* astyle --style=java --indent=spaces=4 */
 
-/*
+ /*
  * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,41 +18,30 @@
  */
 package com.illusionaryone;
 
-import java.io.File;
+import io.github.redouane59.twitter.TwitterClient;
+import io.github.redouane59.twitter.dto.endpoints.AdditionalParameters;
+import io.github.redouane59.twitter.dto.endpoints.AdditionalParameters.AdditionalParametersBuilder;
+import io.github.redouane59.twitter.dto.tweet.MediaCategory;
+import io.github.redouane59.twitter.dto.tweet.Tweet;
+import io.github.redouane59.twitter.dto.tweet.TweetList;
+import io.github.redouane59.twitter.dto.tweet.TweetParameters;
+import io.github.redouane59.twitter.dto.tweet.TweetParameters.Media;
+import io.github.redouane59.twitter.dto.tweet.TweetType;
+import io.github.redouane59.twitter.dto.tweet.TweetV2.TweetData;
+import io.github.redouane59.twitter.dto.tweet.UploadMediaResponse;
+import io.github.redouane59.twitter.dto.user.UserList;
+import io.github.redouane59.twitter.dto.user.UserV2;
+import io.github.redouane59.twitter.signature.TwitterCredentials;
+import java.math.BigInteger;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
-
-/*
- * API services provided by:
- * Twitter4J (http://twitter4j.org/)
- *
- * Copyright 2007 Yusuke Yamamoto
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * Distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+import java.util.stream.Collectors;
 
 /*
  * @author illusionaryone
  */
-
 public class TwitterAPI {
 
     private static TwitterAPI instance;
@@ -61,8 +50,9 @@ public class TwitterAPI {
     private String oauthAccessSecret;
     private String consumerKey;
     private String consumerSecret;
-    private AccessToken accessToken = null;
-    private Twitter twitter = null;
+    private String userId;
+    private boolean hasAccessToken = false;
+    private final TwitterClient twitter = new TwitterClient();
 
     /*
      * Instance method for Twitter API.
@@ -71,7 +61,7 @@ public class TwitterAPI {
         if (instance == null) {
             instance = new TwitterAPI();
         }
-        
+
         return instance;
     }
 
@@ -137,21 +127,20 @@ public class TwitterAPI {
     public boolean authenticate() {
         com.gmt2001.Console.debug.println("Attempting to Authenticate");
         try {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.setOAuthConsumerKey(consumerKey);
-            configurationBuilder.setOAuthConsumerSecret(consumerSecret);
-            configurationBuilder.setOAuthAccessToken(oauthAccessToken);
-            configurationBuilder.setOAuthAccessTokenSecret(oauthAccessSecret);
+            this.twitter.setTwitterCredentials(TwitterCredentials.builder().accessToken(this.oauthAccessToken).accessTokenSecret(this.oauthAccessSecret)
+                    .apiKey(this.consumerKey).apiSecretKey(this.consumerSecret).build());
 
-            TwitterFactory twitterFactory = new TwitterFactory(configurationBuilder.build());
-            twitter = twitterFactory.getInstance();
-
-            accessToken = twitter.getOAuthAccessToken();
-            com.gmt2001.Console.out.println("Authenticated with Twitter API");
-            return true;
-        } catch (TwitterException ex) {
+            this.userId = this.twitter.getUserIdFromAccessToken();
+            this.hasAccessToken = !this.userId.isBlank();
+            if (this.hasAccessToken) {
+                com.gmt2001.Console.out.println("Authenticated with Twitter API");
+            } else {
+                com.gmt2001.Console.out.println("Failed to authenticate with Twitter API");
+            }
+            return this.hasAccessToken;
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            accessToken = null;
+            this.hasAccessToken = false;
             return false;
         }
     }
@@ -164,18 +153,23 @@ public class TwitterAPI {
      * @return  String        'true' on success and 'false' on failure
      */
     public String updateStatus(String statusString) {
-        if (accessToken == null) {
+        if (!this.hasAccessToken) {
             return "false";
         }
 
         try {
-            Status status = twitter.updateStatus(statusString.replaceAll("@", "").replaceAll("#", ""));
-            com.gmt2001.Console.debug.println("Success");
-            return "true";
-        } catch (TwitterException ex) {
+            Tweet t = this.twitter.postTweet(statusString.replaceAll("@", "").replaceAll("#", ""));
+            if (t != null && !t.getId().isBlank()) {
+                com.gmt2001.Console.debug.println("Success");
+                return "true";
+            } else {
+                com.gmt2001.Console.debug.println("Fail");
+            }
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return "false";
         }
+
+        return "false";
     }
 
     /*
@@ -185,21 +179,32 @@ public class TwitterAPI {
      * @param   filename      The filename to read as media and post to Twitter.
      * @return  String        'true' on success and 'false' on failure
      */
-    public String updateStatus(String statusString, String filename) {
-        if (accessToken == null) {
+    public String updateStatus(String statusString, String filename, String mediaType) {
+        if (!this.hasAccessToken) {
             return "false";
         }
 
         try {
-            StatusUpdate statusUpdate = new StatusUpdate(statusString.replaceAll("@", "").replaceAll("#", ""));
-            statusUpdate.setMedia(new File(filename));
-            Status status = twitter.updateStatus(statusUpdate);
-            com.gmt2001.Console.debug.println("Success");
-            return "true";
-        } catch (TwitterException ex) {
+            UploadMediaResponse umr = this.twitter.uploadMedia(Paths.get(filename).toFile(), MediaCategory.valueOf(mediaType));
+            if (umr != null && umr.getMediaId().length() > 0) {
+                List<String> mediaIds = new ArrayList<>();
+                mediaIds.add(umr.getMediaId());
+                TweetParameters tp = TweetParameters.builder().text(statusString.replaceAll("@", "").replaceAll("#", "")).media(Media.builder().mediaIds(mediaIds).build()).build();
+                Tweet t = this.twitter.postTweet(tp);
+                if (t != null && !t.getId().isBlank()) {
+                    com.gmt2001.Console.debug.println("Success");
+                    return "true";
+                } else {
+                    com.gmt2001.Console.debug.println("Fail");
+                }
+            } else {
+                com.gmt2001.Console.debug.println("Media Fail");
+            }
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return "false";
         }
+
+        return "false";
     }
 
     /*
@@ -207,32 +212,28 @@ public class TwitterAPI {
      *
      * @return  List<status>  List of Status objects on success, null on failure.
      */
-    public List<Status> getUserTimeline(long sinceId) {
-        if (accessToken == null) {
+    public List<TweetData> getUserTimeline(String sinceId) {
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            if (sinceId != 0L) {
-                Paging paging = new Paging(sinceId);
-                List<Status> statuses = twitter.getUserTimeline(paging);
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
-            } else {
-                List<Status> statuses = twitter.getUserTimeline();
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
+            AdditionalParametersBuilder ap = AdditionalParameters.builder().maxResults(15);
+            if (sinceId != null && sinceId.isBlank()) {
+                ap.sinceId(sinceId);
             }
-        } catch (TwitterException ex) {
+            TweetList statuses = this.twitter.getUserTimeline(this.userId, ap.build());
+            if (statuses.getData().isEmpty()) {
+                return null;
+            }
+            return statuses.getData().stream().filter(t -> t.getTweetType() != TweetType.RETWEETED).collect(Collectors.toList());
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
@@ -241,23 +242,28 @@ public class TwitterAPI {
      *
      * @return  String  Most recent status of the user requested.
      */
-    public String getUserTimeline(String username) {
-        if (accessToken == null) {
+    public String getOtherUserTimeline(String username) {
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            List<Status> statuses = twitter.getUserTimeline(username);
-            if (statuses.isEmpty()) {
-                return null;
+            UserV2 user = this.twitter.getUserFromUserName(username);
+
+            if (user != null && !user.getId().isBlank()) {
+                TweetList statuses = this.twitter.getUserTimeline(user.getId());
+                if (statuses.getData().isEmpty()) {
+                    return null;
+                }
+                return statuses.getData().get(0).getText();
             }
-            return statuses.get(0).getText();
-        } catch (TwitterException ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
@@ -267,32 +273,46 @@ public class TwitterAPI {
      *
      * @return  List<Status>  List of Status objects on success, null on failure.
      */
-    public List<Status> getHomeTimeline(long sinceId) {
-        if (accessToken == null) {
+    public List<TweetData> getHomeTimeline(String sinceId) {
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            if (sinceId != 0L) {
-                Paging paging = new Paging(sinceId);
-                List<Status> statuses = twitter.getHomeTimeline(paging);
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
-            } else {
-                List<Status> statuses = twitter.getHomeTimeline();
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
+            UserList following = this.twitter.getFollowing(this.userId);
+
+            if (following != null && !following.getData().isEmpty()) {
+                List<TweetData> alltweets = new ArrayList<>();
+
+                AdditionalParameters ap = AdditionalParameters.builder().maxResults(sinceId != null && sinceId.isBlank() ? 15 : 30)
+                        .startTime(LocalDateTime.now().minusDays(1)).build();
+                TweetList statuses = this.twitter.getUserTimeline(this.userId, ap);
+                alltweets.addAll(statuses.getData());
+
+                BigInteger sinceIdBI = sinceId != null && !sinceId.isBlank() ? new BigInteger(sinceId) : null;
+                following.getData().forEach(u -> {
+                    if (!u.getId().isBlank()) {
+                        List<TweetData> statusesF = this.twitter.getUserTimeline(u.getId(), ap).getData();
+                        if (sinceId != null && !sinceId.isBlank() && sinceIdBI != null) {
+                            statusesF = statusesF.stream().filter(t -> new BigInteger(t.getId()).compareTo(sinceIdBI) > 0).collect(Collectors.toList());
+                        }
+                        alltweets.addAll(statusesF);
+                    }
+                });
+
+                alltweets.sort((TweetData a, TweetData b) -> {
+                    return -a.getCreatedAt().compareTo(b.getCreatedAt());
+                });
+
+                return alltweets;
             }
-        } catch (TwitterException ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
@@ -301,32 +321,57 @@ public class TwitterAPI {
      * @param   long          The last ID that was pulled from Twitter for retweets.
      * @return  List<Status>  List of Status objects on success, null on failure.
      */
-    public List<Status> getRetweetsOfMe(long sinceId) {
-        if (accessToken == null) {
+    public List<TweetData> getRetweetsOfMe(String sinceId) {
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            if (sinceId != 0L) {
-                Paging paging = new Paging(sinceId);
-                List<Status> statuses = twitter.getRetweetsOfMe(paging);
-                if (statuses.isEmpty()) {
-                    return null;
+            UserList following = this.twitter.getFollowing(this.userId);
+
+            if (following != null && !following.getData().isEmpty()) {
+                List<TweetData> alltweets = new ArrayList<>();
+
+                AdditionalParameters ap = AdditionalParameters.builder().maxResults(sinceId != null && sinceId.isBlank() ? 15 : 30)
+                        .startTime(LocalDateTime.now().minusDays(1)).build();
+
+                BigInteger sinceIdBI = sinceId != null && !sinceId.isBlank() ? new BigInteger(sinceId) : null;
+                following.getData().forEach(u -> {
+                    if (!u.getId().isBlank()) {
+                        TweetList statusesF = this.twitter.getUserTimeline(u.getId(), ap);
+                        List<TweetData> statusesFF = statusesF.getData().stream().filter(t -> t.getTweetType() == TweetType.RETWEETED).collect(Collectors.toList());
+                        if (sinceId != null && !sinceId.isBlank() && sinceIdBI != null) {
+                            statusesFF = statusesFF.stream().filter(t -> new BigInteger(t.getId()).compareTo(sinceIdBI) > 0).collect(Collectors.toList());
+                        }
+                        if (!statusesFF.isEmpty()) {
+                            alltweets.addAll(statusesFF);
+                        }
+                    }
+                });
+
+                alltweets.sort((TweetData a, TweetData b) -> {
+                    return -a.getCreatedAt().compareTo(b.getCreatedAt());
+                });
+
+                List<String> tweetids = alltweets.stream().map(t -> t.getReferencedTweets().stream().filter(rt -> rt.getType() == TweetType.RETWEETED).findFirst().get().getId()).collect(Collectors.toList());
+
+                TweetList statuses = this.twitter.getTweets(tweetids);
+
+                List<String> allretweets = new ArrayList<>();
+
+                if (statuses != null && !statuses.getData().isEmpty()) {
+                    allretweets.addAll(statuses.getData().stream().filter(t -> t.getAuthorId().equals(this.userId)).map(t -> t.getId()).collect(Collectors.toList()));
                 }
-                return statuses;
-            } else {
-                List<Status> statuses = twitter.getRetweetsOfMe();
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
+
+                return alltweets.stream().filter(t -> allretweets.contains(t.getReferencedTweets().stream().filter(rt -> rt.getType() == TweetType.RETWEETED).findFirst().get().getId())).collect(Collectors.toList());
             }
-        } catch (TwitterException ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
@@ -335,23 +380,43 @@ public class TwitterAPI {
      * @param  long          The ID of a Tweet to retrieve data for.
      * @return List<status>  List of Status objects on success, null on failure.
      */
-    public List<Status> getRetweets(long statusId) {
-        if (accessToken == null) {
+    public List<TweetData> getRetweets(String statusId) {
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            List<Status> statuses = twitter.getRetweets(statusId);
-            if (statuses.isEmpty()) {
-                return null;
+            UserList following = this.twitter.getFollowing(this.userId);
+
+            if (following != null && !following.getData().isEmpty()) {
+                List<TweetData> alltweets = new ArrayList<>();
+
+                AdditionalParameters ap = AdditionalParameters.builder().maxResults(15)
+                        .startTime(LocalDateTime.now().minusDays(1)).build();
+
+                following.getData().forEach(u -> {
+                    if (!u.getId().isBlank()) {
+                        TweetList statusesF = this.twitter.getUserTimeline(u.getId(), ap);
+                        List<TweetData> statusesFF = statusesF.getData().stream().filter(t -> t.getTweetType() == TweetType.RETWEETED).collect(Collectors.toList());
+                        if (!statusesFF.isEmpty()) {
+                            alltweets.addAll(statusesFF);
+                        }
+                    }
+                });
+
+                alltweets.sort((TweetData a, TweetData b) -> {
+                    return -a.getCreatedAt().compareTo(b.getCreatedAt());
+                });
+
+                return alltweets.stream().filter(t -> t.getReferencedTweets().stream().filter(rt -> rt.getType() == TweetType.RETWEETED).findFirst().get().getId().equals(statusId)).collect(Collectors.toList());
             }
-            return statuses;
-        } catch (TwitterException ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
@@ -360,42 +425,43 @@ public class TwitterAPI {
      * @param  long           The last ID was was pulled from Twitter for mentions.
      * @return  List<Status>  List of Status objects on success, null on failure.
      */
-    public List<Status> getMentions(long sinceId) {
-        if (accessToken == null) {
+    public List<TweetData> getMentions(String sinceId) {
+        if (!this.hasAccessToken) {
+            com.gmt2001.Console.debug.println("Access Token is NULL");
+            return null;
+        }
+
+        if (!this.hasAccessToken) {
             com.gmt2001.Console.debug.println("Access Token is NULL");
             return null;
         }
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            if (sinceId != 0L) {
-                Paging paging = new Paging(sinceId);
-                List<Status> statuses = twitter.getMentionsTimeline(paging);
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
-            } else {
-                List<Status> statuses = twitter.getMentionsTimeline();
-                if (statuses.isEmpty()) {
-                    return null;
-                }
-                return statuses;
+            AdditionalParametersBuilder ap = AdditionalParameters.builder().maxResults(15);
+            if (sinceId != null && sinceId.isBlank()) {
+                ap.sinceId(sinceId);
             }
-        } catch (TwitterException ex) {
+            TweetList statuses = this.twitter.getUserMentions(this.userId, ap.build());
+            if (statuses.getData().isEmpty()) {
+                return null;
+            }
+            return statuses.getData().stream().filter(t -> t.getTweetType() != TweetType.RETWEETED).collect(Collectors.toList());
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            return null;
         }
+
+        return null;
     }
 
     /*
      * Given a status, creates the URL for that status.
      *
      * @param   long    Twitter status ID.
-     * @return  String  URL in the format of https://twitter.com/<username>/status/<id>
+     * @return  String  URL in the format of https://this.twitter.com/<username>/status/<id>
      */
-    public String getTwitterURLFromId(long id) {
-        return new String("https://twitter.com/" + username + "/status/" + Long.toString(id));
+    public String getTwitterURLFromId(String id) {
+        return "https://this.twitter.com/" + this.username + "/status/" + id;
     }
 
     /*
