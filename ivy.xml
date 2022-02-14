@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <dependencies>
         <dependency org="com.discord4j" name="discord4j-core" rev="3.1.5"/>
         <dependency org="com.h2database" name="h2" rev="1.4.200"/>
-        <dependency org="com.rollbar" name="rollbar-java" rev="1.7.8"/>
+        <dependency org="com.rollbar" name="rollbar-java" rev="1.8.1"/>
         <dependency org="commons-codec" name="commons-codec" rev="1.9"/>
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
         <dependency org="io.netty" name="netty-codec-http" rev="4.1.60.Final"/>
@@ -49,9 +49,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="org.apache.commons" name="commons-text" rev="1.9"/>
         <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.4.0"/>
         <dependency org="org.json" name="json" rev="20200518"/>
-        <dependency org="org.mozilla" name="rhino" rev="1.7.14-RC1"/>
+        <dependency org="org.mozilla" name="rhino" rev="1.7.14"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
-        <dependency org="org.twitter4j" name="twitter4j-core" rev="4.0.4"/>
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.31.1"/>
+        <dependency org="io.github.redouane59.twitter" name="twittered" rev="2.15" />
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.36.0.3"/>
     </dependencies>
 </ivy-module>

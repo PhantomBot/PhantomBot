@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.5.0.11" />
+    <property name="version" value="3.5.1" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.5.1" />
+    <property name="webpanel.version" value="1.5.2" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -125,6 +125,10 @@
 
     <target depends="init-ivy" name="ivy-cleancache">
         <ivy:cleancache/>
+    </target>
+
+    <target depends="init-ivy" name="ivy-list-updates">
+        <ivy:checkdepsupdate/>
     </target>
 
     <target name="clearlib">
