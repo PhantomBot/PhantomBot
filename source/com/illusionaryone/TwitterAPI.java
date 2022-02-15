@@ -52,7 +52,7 @@ public class TwitterAPI {
     private String consumerSecret;
     private String userId;
     private boolean hasAccessToken = false;
-    private final TwitterClient twitter = new TwitterClient();
+    private final TwitterClient twitter = new TwitterClient(TwitterCredentials.builder().build());
 
     /*
      * Instance method for Twitter API.
