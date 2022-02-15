@@ -44,7 +44,7 @@ if (!array_key_exists($item['type'], $allowed_versions)) {
     doexit(400, 'environment not allowed', 'env');
 }
 
-if (!in_array($item['version'], $allowed_versions[$item['type']])) {
+if (strlen($item['version']) > 0 && !in_array($item['version'], $allowed_versions[$item['type']])) {
     array_push($allowed_versions[$item['type']], $item['version']);
     while (count($allowed_versions[$item['type']]) > $maxver[$item['type']]) {
         array_shift($allowed_versions[$item['type']]);
