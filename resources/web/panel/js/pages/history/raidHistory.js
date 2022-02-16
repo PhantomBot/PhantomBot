@@ -82,7 +82,8 @@ $(function() {
 				helpers.getDefaultIfNullOrUndefined(json.totalRaids, '1'),
 				helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0'),
 				parseInt(json.lastRaidTime),
-				getNumberOfOutgoingRaids(results[i].key)
+				getNumberOfOutgoingRaids(results[i].key),
+				helpers.getDefaultIfNullOrUndefined(json.online, 'false'),
 			]);
 		}
         incoming_raids = raids;
@@ -108,7 +109,8 @@ $(function() {
 				{ 'title': 'Total Raids' },
 				{ 'title': 'Total Viewers' },
 				{ 'visible': false },
-				{'title': 'Outgoing Raids'}
+				{'title': 'Outgoing Raids'},
+				{'title': 'Is Online'}
 			]
 		});
 	});
