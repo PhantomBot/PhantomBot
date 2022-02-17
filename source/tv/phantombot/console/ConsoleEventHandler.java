@@ -19,7 +19,6 @@ package tv.phantombot.console;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.datastore.DataStore;
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
 import java.text.SimpleDateFormat;
@@ -91,8 +90,6 @@ public class ConsoleEventHandler implements Listener {
         String arguments = "";
         // Split arguments of the message string.
         String[] argument = null;
-        // Set the datastore.
-        DataStore dataStore = PhantomBot.instance().getDataStore();
 
         // If the message is null, or empty ignore everything below.
         if (message == null || message.isEmpty()) {
@@ -137,8 +134,8 @@ public class ConsoleEventHandler implements Listener {
          * @consolecommand checkytquota - This command checks the quota points used by YouTube.
          */
         if (message.equalsIgnoreCase("checkytquota")) {
-            String ytQuotaDate = dataStore.GetString("youtubePlayer", "", "quotaDate");
-            String ytQuotaPoints = dataStore.GetString("youtubePlayer", "", "quotaPoints");
+            String ytQuotaDate = PhantomBot.instance().getDataStore().GetString("youtubePlayer", "", "quotaDate");
+            String ytQuotaPoints = PhantomBot.instance().getDataStore().GetString("youtubePlayer", "", "quotaPoints");
 
             if (ytQuotaDate == null || ytQuotaPoints == null) {
                 com.gmt2001.Console.out.println("No YouTube Quota Data Found.");
@@ -157,7 +154,7 @@ public class ConsoleEventHandler implements Listener {
             // Top headers of the CSV file.
             String[] headers = new String[]{"Username", "Seconds", "Points"};
             // All points keys.
-            String[] keys = dataStore.GetKeyList("points", "");
+            String[] keys = PhantomBot.instance().getDataStore().GetKeyList("points", "");
             // Array to store our values.
             List<String[]> values = new ArrayList<>();
 
@@ -165,8 +162,8 @@ public class ConsoleEventHandler implements Listener {
             for (String key : keys) {
                 String[] str = new String[3];
                 str[0] = key;
-                str[1] = (dataStore.exists("time", key) ? dataStore.get("time", key) : "0");
-                str[2] = dataStore.get("points", key);
+                str[1] = (PhantomBot.instance().getDataStore().exists("time", key) ? PhantomBot.instance().getDataStore().get("time", key) : "0");
+                str[2] = PhantomBot.instance().getDataStore().get("points", key);
                 values.add(str);
             }
 
@@ -185,14 +182,14 @@ public class ConsoleEventHandler implements Listener {
             // Headers of the CSV file.
             String[] headers = new String[]{"Command", "Permission", "Module"};
             // All commands.
-            String[] keys = dataStore.GetKeyList("permcom", "");
+            String[] keys = PhantomBot.instance().getDataStore().GetKeyList("permcom", "");
             // Array to store commands.
             List<String[]> values = new ArrayList<>();
 
             for (String key : keys) {
                 String[] str = new String[3];
                 str[0] = ("!" + key);
-                str[1] = dataStore.get("groups", dataStore.get("permcom", key));
+                str[1] = PhantomBot.instance().getDataStore().get("groups", PhantomBot.instance().getDataStore().get("permcom", key));
                 str[2] = Script.callMethod("getCommandScript", key.contains(" ") ? key.substring(0, key.indexOf(" ")) : key);
                 // If the module is disabled, return.
                 if (str[2].contains("Undefined")) {
@@ -265,7 +262,7 @@ public class ConsoleEventHandler implements Listener {
             datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
             String timestamp = datefmt.format(new Date());
 
-            dataStore.backupDB("phantombot.manual.backup." + timestamp + ".db");
+            PhantomBot.instance().getDataStore().backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
         }
 
@@ -274,7 +271,7 @@ public class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("fixfollowedtable")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing fixfollowedtable");
-            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), dataStore, false);
+            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), PhantomBot.instance().getDataStore(), false);
             return;
         }
 
@@ -283,7 +280,7 @@ public class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("fixfollowedtable-force")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing fixfollowedtable-force");
-            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), dataStore, true);
+            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), PhantomBot.instance().getDataStore(), true);
             return;
         }
 
@@ -653,7 +650,7 @@ public class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("save")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing save");
 
-            dataStore.SaveAll(true);
+            PhantomBot.instance().getDataStore().SaveAll(true);
             return;
         }
 
@@ -904,7 +901,7 @@ public class ConsoleEventHandler implements Listener {
         if (changed) {
             transaction.commit();
 
-            dataStore.SaveAll(true);
+            PhantomBot.instance().getDataStore().SaveAll(true);
 
             com.gmt2001.Console.out.println("");
             com.gmt2001.Console.out.println("Changes have been saved, now exiting PhantomBot.");
