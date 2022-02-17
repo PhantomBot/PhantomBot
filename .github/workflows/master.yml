@@ -45,6 +45,7 @@ jobs:
         message: 'Updated the remote panel'
   updatejlink:
     name: Update JLink Builds
+    concurrency: updatejlink
     if: github.repository == 'PhantomBot/PhantomBot'
     strategy:
       matrix:
