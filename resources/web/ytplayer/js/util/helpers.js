@@ -242,7 +242,7 @@ $(function() {
     helpers.getPlayerSize = () => {
         let size = localStorage.getItem('phantombot_ytplayer_size');
 
-        return (size === null ? 'Default' : size[0].toUpperCase() + size.substr(1));
+        return (size === null ? 'Default' : size[0].toUpperCase() + size.slice(1));
     };
 
     /*

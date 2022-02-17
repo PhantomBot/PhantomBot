@@ -329,7 +329,7 @@
             var silent = false;
             if (action.startsWith('silent@')) {
                 silent = true;
-                action = action.substr(7);
+                action = action.slice(7);
             }
 
             if (!$.commandExists(action)) {

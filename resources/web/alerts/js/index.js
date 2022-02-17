@@ -42,12 +42,12 @@ $(function () {
      */
     function getQueryMap() {
         let queryString = window.location.search, // Query string that starts with ?
-                queryParts = queryString.substr(1).split('&'), // Split at each &, which is a new query.
+                queryParts = queryString.slice(1).split('&'), // Split at each &, which is a new query.
                 queryMap = new Map(); // Create a new map for save our keys and values.
 
         for (let i = 0; i < queryParts.length; i++) {
-            let key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
-                    value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
+            let key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
+                    value = queryParts[i].slice(queryParts[i].indexOf('=') + 1);
 
             if (key.length > 0 && value.length > 0) {
                 queryMap.set(key, value);
@@ -356,7 +356,7 @@ $(function () {
                 });
             }
 
-            let audioPath = getAudioFile(gifFile.substr(0, gifFile.indexOf('.')), defaultPath);
+            let audioPath = getAudioFile(gifFile.slice(0, gifFile.indexOf('.')), defaultPath);
 
             if (audioPath.length > 0 && gifFile.substring(gifFile.lastIndexOf('.') + 1) !== audioPath.substring(audioPath.lastIndexOf('.') + 1)) {
                 hasAudio = true;
