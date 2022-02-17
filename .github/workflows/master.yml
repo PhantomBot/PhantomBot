@@ -45,9 +45,9 @@ jobs:
         message: 'Updated the remote panel'
   updatejlink:
     name: Update JLink Builds
-    concurrency: updatejlink
     if: github.repository == 'PhantomBot/PhantomBot'
     strategy:
+      max-parallel: 1
       matrix:
         include:
           - os: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
         JDK: ${{ steps.setup-java.outputs.path }}
       run: |
         cd resources
-        del /Q /F $FOLDER
+        del /Q $FOLDER
         cd ..
         cd development-resources
         cmd /C $SCRIPT
