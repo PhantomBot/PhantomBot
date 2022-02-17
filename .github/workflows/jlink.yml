@@ -1,0 +1,71 @@
+name: Build JLink Binaries
+
+on:
+  workflow_dispatch:
+
+jobs:
+  updatejlink:
+    name: Update JLink Builds
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          - os: ubuntu-latest
+            osname: Linux
+            script: jlink-jdk-linux.sh
+            folder: java-runtime-linux
+            java-distribution: 'temurin'
+            java-version: 11
+          - os: windows-latest
+            osname: Windows
+            script: jlink-jdk.bat
+            folder: java-runtime
+            java-distribution: 'temurin'
+            java-version: 11
+          - os: macos-latest
+            osname: macOS
+            script: jlink-jdk-macos.sh
+            folder: java-runtime-macos
+            java-distribution: 'temurin'
+            java-version: 11
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+    - name: Set up JDK
+      id: setup-java
+      uses: actions/setup-java@v2
+      with:
+        distribution: ${{ matrix.java-distribution }}
+        java-version: ${{ matrix.java-version }}
+    - name: Run JLink (Windows)
+      if: matrix.os == 'windows-latest'
+      env:
+        FOLDER: ${{ matrix.folder }}
+        SCRIPT: ${{ matrix.script }}
+        JDK: ${{ steps.setup-java.outputs.path }}
+      run: |
+        cd resources
+        Remove-Item -Force -Recurse $env:FOLDER
+        cd ..
+        cd development-resources
+        cmd /C $env:SCRIPT
+    - name: Run JLink (Non-Windows)
+      if: matrix.os != 'windows-latest'
+      env:
+        FOLDER: ${{ matrix.folder }}
+        SCRIPT: ${{ matrix.script }}
+        JDK: ${{ steps.setup-java.outputs.path }}
+      run: |
+        cd resources
+        rm -rfv $FOLDER
+        cd ..
+        cd development-resources
+        chmod +x $SCRIPT
+        /bin/bash $SCRIPT
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v7
+      with:
+        message: ${{ format('Updated the {0} Java binaries', matrix.osname) }}
