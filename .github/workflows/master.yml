@@ -86,10 +86,10 @@ jobs:
         JDK: ${{ steps.setup-java.outputs.path }}
       run: |
         cd resources
-        del /Q $FOLDER
+        del /Q %FOLDER%
         cd ..
         cd development-resources
-        cmd /C $SCRIPT
+        cmd /C %SCRIPT%
     - name: Run JLink (Non-Windows)
       if: matrix.os != 'windows-latest'
       env:
