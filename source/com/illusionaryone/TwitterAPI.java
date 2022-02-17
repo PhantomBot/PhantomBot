@@ -52,7 +52,7 @@ public class TwitterAPI {
     private String consumerSecret;
     private String userId;
     private boolean hasAccessToken = false;
-    private final TwitterClient twitter = new TwitterClient(TwitterCredentials.builder().build());
+    private TwitterClient twitter;
 
     /*
      * Instance method for Twitter API.
@@ -117,6 +117,37 @@ public class TwitterAPI {
         this.consumerSecret = consumerSecret;
     }
 
+    public TwitterClient getClient() {
+        return this.getClient(false);
+    }
+
+    public synchronized TwitterClient getClient(boolean forceCreate) {
+        if (this.twitter != null && !forceCreate) {
+            return this.twitter;
+        }
+
+        if (this.consumerKey == null || this.consumerKey.isBlank()) {
+            throw new IllegalStateException("missing consumer key");
+        }
+
+        if (this.consumerSecret == null || this.consumerSecret.isBlank()) {
+            throw new IllegalStateException("missing consumer secret");
+        }
+
+        if (this.oauthAccessToken == null || this.oauthAccessToken.isBlank()) {
+            throw new IllegalStateException("missing oauth access token");
+        }
+
+        if (this.oauthAccessSecret == null || this.oauthAccessSecret.isBlank()) {
+            throw new IllegalStateException("missing oauth access secret");
+        }
+
+        this.twitter = new TwitterClient(TwitterCredentials.builder().accessToken(this.oauthAccessToken).accessTokenSecret(this.oauthAccessSecret)
+                .apiKey(this.consumerKey).apiSecretKey(this.consumerSecret).build());
+
+        return this.twitter;
+    }
+
     /*
      * Authenticates with Twitter using the OAuth method.  Twitter may throw an exception which is
      * captured and reported to the error logs.  If an error does occur, accessToken is set to null
@@ -127,10 +158,7 @@ public class TwitterAPI {
     public boolean authenticate() {
         com.gmt2001.Console.debug.println("Attempting to Authenticate");
         try {
-            this.twitter.setTwitterCredentials(TwitterCredentials.builder().accessToken(this.oauthAccessToken).accessTokenSecret(this.oauthAccessSecret)
-                    .apiKey(this.consumerKey).apiSecretKey(this.consumerSecret).build());
-
-            this.userId = this.twitter.getUserIdFromAccessToken();
+            this.userId = this.getClient(true).getUserIdFromAccessToken();
             this.hasAccessToken = !this.userId.isBlank();
             if (this.hasAccessToken) {
                 com.gmt2001.Console.out.println("Authenticated with Twitter API");
@@ -158,7 +186,7 @@ public class TwitterAPI {
         }
 
         try {
-            Tweet t = this.twitter.postTweet(statusString.replaceAll("@", "").replaceAll("#", ""));
+            Tweet t = this.getClient().postTweet(statusString.replaceAll("@", "").replaceAll("#", ""));
             if (t != null && !t.getId().isBlank()) {
                 com.gmt2001.Console.debug.println("Success");
                 return "true";
@@ -185,12 +213,12 @@ public class TwitterAPI {
         }
 
         try {
-            UploadMediaResponse umr = this.twitter.uploadMedia(Paths.get(filename).toFile(), MediaCategory.valueOf(mediaType));
+            UploadMediaResponse umr = this.getClient().uploadMedia(Paths.get(filename).toFile(), MediaCategory.valueOf(mediaType));
             if (umr != null && umr.getMediaId().length() > 0) {
                 List<String> mediaIds = new ArrayList<>();
                 mediaIds.add(umr.getMediaId());
                 TweetParameters tp = TweetParameters.builder().text(statusString.replaceAll("@", "").replaceAll("#", "")).media(Media.builder().mediaIds(mediaIds).build()).build();
-                Tweet t = this.twitter.postTweet(tp);
+                Tweet t = this.getClient().postTweet(tp);
                 if (t != null && !t.getId().isBlank()) {
                     com.gmt2001.Console.debug.println("Success");
                     return "true";
@@ -224,7 +252,7 @@ public class TwitterAPI {
             if (sinceId != null && sinceId.isBlank()) {
                 ap.sinceId(sinceId);
             }
-            TweetList statuses = this.twitter.getUserTimeline(this.userId, ap.build());
+            TweetList statuses = this.getClient().getUserTimeline(this.userId, ap.build());
             if (statuses.getData().isEmpty()) {
                 return null;
             }
@@ -250,10 +278,10 @@ public class TwitterAPI {
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            UserV2 user = this.twitter.getUserFromUserName(username);
+            UserV2 user = this.getClient().getUserFromUserName(username);
 
             if (user != null && !user.getId().isBlank()) {
-                TweetList statuses = this.twitter.getUserTimeline(user.getId());
+                TweetList statuses = this.getClient().getUserTimeline(user.getId());
                 if (statuses.getData().isEmpty()) {
                     return null;
                 }
@@ -281,20 +309,20 @@ public class TwitterAPI {
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            UserList following = this.twitter.getFollowing(this.userId);
+            UserList following = this.getClient().getFollowing(this.userId);
 
             if (following != null && !following.getData().isEmpty()) {
                 List<TweetData> alltweets = new ArrayList<>();
 
                 AdditionalParameters ap = AdditionalParameters.builder().maxResults(sinceId != null && sinceId.isBlank() ? 15 : 30)
                         .startTime(LocalDateTime.now().minusDays(1)).build();
-                TweetList statuses = this.twitter.getUserTimeline(this.userId, ap);
+                TweetList statuses = this.getClient().getUserTimeline(this.userId, ap);
                 alltweets.addAll(statuses.getData());
 
                 BigInteger sinceIdBI = sinceId != null && !sinceId.isBlank() ? new BigInteger(sinceId) : null;
                 following.getData().forEach(u -> {
                     if (!u.getId().isBlank()) {
-                        List<TweetData> statusesF = this.twitter.getUserTimeline(u.getId(), ap).getData();
+                        List<TweetData> statusesF = this.getClient().getUserTimeline(u.getId(), ap).getData();
                         if (sinceId != null && !sinceId.isBlank() && sinceIdBI != null) {
                             statusesF = statusesF.stream().filter(t -> new BigInteger(t.getId()).compareTo(sinceIdBI) > 0).collect(Collectors.toList());
                         }
@@ -329,7 +357,7 @@ public class TwitterAPI {
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            UserList following = this.twitter.getFollowing(this.userId);
+            UserList following = this.getClient().getFollowing(this.userId);
 
             if (following != null && !following.getData().isEmpty()) {
                 List<TweetData> alltweets = new ArrayList<>();
@@ -340,7 +368,7 @@ public class TwitterAPI {
                 BigInteger sinceIdBI = sinceId != null && !sinceId.isBlank() ? new BigInteger(sinceId) : null;
                 following.getData().forEach(u -> {
                     if (!u.getId().isBlank()) {
-                        TweetList statusesF = this.twitter.getUserTimeline(u.getId(), ap);
+                        TweetList statusesF = this.getClient().getUserTimeline(u.getId(), ap);
                         List<TweetData> statusesFF = statusesF.getData().stream().filter(t -> t.getTweetType() == TweetType.RETWEETED).collect(Collectors.toList());
                         if (sinceId != null && !sinceId.isBlank() && sinceIdBI != null) {
                             statusesFF = statusesFF.stream().filter(t -> new BigInteger(t.getId()).compareTo(sinceIdBI) > 0).collect(Collectors.toList());
@@ -357,7 +385,7 @@ public class TwitterAPI {
 
                 List<String> tweetids = alltweets.stream().map(t -> t.getReferencedTweets().stream().filter(rt -> rt.getType() == TweetType.RETWEETED).findFirst().get().getId()).collect(Collectors.toList());
 
-                TweetList statuses = this.twitter.getTweets(tweetids);
+                TweetList statuses = this.getClient().getTweets(tweetids);
 
                 List<String> allretweets = new ArrayList<>();
 
@@ -388,7 +416,7 @@ public class TwitterAPI {
 
         try {
             com.gmt2001.Console.debug.println("Polling Data");
-            UserList following = this.twitter.getFollowing(this.userId);
+            UserList following = this.getClient().getFollowing(this.userId);
 
             if (following != null && !following.getData().isEmpty()) {
                 List<TweetData> alltweets = new ArrayList<>();
@@ -398,7 +426,7 @@ public class TwitterAPI {
 
                 following.getData().forEach(u -> {
                     if (!u.getId().isBlank()) {
-                        TweetList statusesF = this.twitter.getUserTimeline(u.getId(), ap);
+                        TweetList statusesF = this.getClient().getUserTimeline(u.getId(), ap);
                         List<TweetData> statusesFF = statusesF.getData().stream().filter(t -> t.getTweetType() == TweetType.RETWEETED).collect(Collectors.toList());
                         if (!statusesFF.isEmpty()) {
                             alltweets.addAll(statusesFF);
@@ -442,7 +470,7 @@ public class TwitterAPI {
             if (sinceId != null && sinceId.isBlank()) {
                 ap.sinceId(sinceId);
             }
-            TweetList statuses = this.twitter.getUserMentions(this.userId, ap.build());
+            TweetList statuses = this.getClient().getUserMentions(this.userId, ap.build());
             if (statuses.getData().isEmpty()) {
                 return null;
             }
@@ -458,10 +486,10 @@ public class TwitterAPI {
      * Given a status, creates the URL for that status.
      *
      * @param   long    Twitter status ID.
-     * @return  String  URL in the format of https://this.twitter.com/<username>/status/<id>
+     * @return  String  URL in the format of https://twitter.com/<username>/status/<id>
      */
     public String getTwitterURLFromId(String id) {
-        return "https://this.twitter.com/" + this.username + "/status/" + id;
+        return "https://twitter.com/" + this.username + "/status/" + id;
     }
 
     /*
