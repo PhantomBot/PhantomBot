@@ -1,6 +1,6 @@
 #!/bin/bash
 #  
-# Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
 #  
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,4 @@
 
 # This script is designed for use on Ubuntu 18.04 LTS
 
-cd $(dirname $(readlink -f $0))
-
-JDK="/usr/lib/jvm/jdk-11.0.11/bin"
-${JDK}/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument --output ../resources/java-runtime-linux
+${JDK}/bin/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument --output ../resources/java-runtime-linux
