@@ -5,6 +5,7 @@ on:
       - 'master'
     paths-ignore:
       - 'docs/**'
+      - 'resources/java-runtime**'
 jobs:
   parsecommandtags:
     name: Parse Command Tags on ubuntu-latest with Python 3.x
