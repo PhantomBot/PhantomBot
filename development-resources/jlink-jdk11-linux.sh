@@ -21,4 +21,4 @@
 cd $(dirname $(readlink -f $0))
 
 JDK="/usr/lib/jvm/jdk-11.0.11/bin"
-${JDK}/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent --output ../resources/java-runtime-linux
+${JDK}/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument --output ../resources/java-runtime-linux
