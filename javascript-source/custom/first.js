@@ -63,6 +63,7 @@
             $.registerChatCommand('./custom/first.js', newCommand, 7);
             firstCommand = newCommand;
             $.inidb.set('first', 'first', newCommand);
+            $.say('First command registered');
         }
     }
 
@@ -72,6 +73,7 @@
             $.registerChatCommand('./custom/first.js', newCommand, 7);
             secondCommand = newCommand;
             $.inidb.set('first', 'second', newCommand);
+            $.say('Second command registered');
         }
     }
 

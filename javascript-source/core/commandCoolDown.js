@@ -106,6 +106,9 @@
         var cooldown = cooldowns[command];
 
         if (isSpecial(command)) {
+            if(command == $.firstCommand || command == $.secondCommand) {
+                return 0;
+            }
             if ((command == 'adventure' || command == 'ffa') && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
                 return defaultCooldowns[command];
             } else {

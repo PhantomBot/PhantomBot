@@ -37,7 +37,7 @@ $(function() {
 
             raids.push([
                 results[i].key,
-                new Date(parseInt(json.lastRaidTime)).toLocaleString(),
+                new Date(parseInt(json.lastRaidTime)).toLocaleDateString('en-GB').split('/').reverse().join('-'),
                 helpers.getDefaultIfNullOrUndefined(json.lastRaidViewers, '0'),
                 helpers.getDefaultIfNullOrUndefined(json.totalRaids, '1'),
                 helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0'),
@@ -77,7 +77,7 @@ $(function() {
 
 			raids.push([
 				results[i].key,
-				new Date(parseInt(json.lastRaidTime)).toLocaleString(),
+				new Date(parseInt(json.lastRaidTime)).toLocaleDateString('en-GB').split('/').reverse().join('-'),
 				helpers.getDefaultIfNullOrUndefined(json.lastRaidViewers, '0'),
 				helpers.getDefaultIfNullOrUndefined(json.totalRaids, '1'),
 				helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0'),
@@ -100,8 +100,9 @@ $(function() {
 			'autoWidth': false,
 			'data': raids,
 			'columnDefs': [
-    			{ 'width': '20%', 'targets': 0 }
+    			{ 'width': '20%', 'targets': 0 },
     		],
+    		'order': [[ 7, 'desc' ]],
 			'columns': [
 				{ 'title': 'Username' },
 				{ 'title': 'Last Raid', 'orderData': [5] },
