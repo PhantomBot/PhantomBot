@@ -1,6 +1,6 @@
 @echo off
 REM  
-REM Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+REM Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
 REM  
 REM This program is free software: you can redistribute it and/or modify
 REM it under the terms of the GNU General Public License as published by
@@ -17,7 +17,5 @@ REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
 REM
 
 setlocal enableextensions enabledelayedexpansion
-SET JDK="C:\Program Files\Java\jdk-11.0.11\bin"
-%JDK%\jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent --output ..\resources\java-runtime
+%JDK%\bin\jlink.exe --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.httpserver,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument --output ..\resources\java-runtime
 endlocal
-pause
