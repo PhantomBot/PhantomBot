@@ -910,7 +910,15 @@ public class ConsoleEventHandler implements Listener {
             return;
         }
 
+        String botname;
+
+        if (PhantomBot.instance() != null && PhantomBot.instance().getBotName() != null) {
+            botname = PhantomBot.instance().getBotName();
+        } else {
+            botname = "__NOINSTANCE";
+        }
+
         // Handle any other commands.
-        PhantomBot.instance().handleCommand(PhantomBot.instance().getBotName(), event.getMessage());
+        PhantomBot.instance().handleCommand(botname, event.getMessage());
     }
 }
