@@ -367,7 +367,7 @@ $(function () {
 
     // Handle custom command run.
     $('#custom-command-run').on('select2:select', function (e) {
-        socket.sendCommand('send_command', e.params.data.text.substr(1), function () {
+        socket.sendCommand('send_command', e.params.data.text.slice(1), function () {
             // Alert user.
             toastr.success('Successfully ran command ' + e.params.data.text);
             // Clear input.

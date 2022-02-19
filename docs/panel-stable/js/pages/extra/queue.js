@@ -57,7 +57,7 @@ $(run = function () {
 
                 const trim = function (username) {
                     if (username.length > 15) {
-                        return username.substr(0, 15) + '...';
+                        return username.slice(0, 15) + '...';
                     } else {
                         return username;
                     }
