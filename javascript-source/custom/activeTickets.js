@@ -1,11 +1,39 @@
 (function() {
+    var ticketsToGiveOut = 0,
+        lastTicketsAdded = $.systemTime(),
+        delay = 1000;
 
     function addActiveTickets(amount) {
         var activeUsers = $.getActiveUsers();
-        $.say($.lang.get('activetickets.command.startsending', amount, activeUsers.length))
-        $.streamelements.AddTicketsToUsers(activeUsers,parseInt(amount));
-        $.say($.lang.get('activetickets.command.addactive', activeUsers.length))
+        ticketsToGiveOut += parseInt(amount);
+        lastTicketsAdded = $.systemTime();
     }
+
+    function runActivePayout() {
+        if(ticketsToGiveOut == 0) {
+            return;
+        }
+        var currentTime = $.systemTime();
+        var timeToCheck = parseInt(lastTicketsAdded);
+        var timeDiff = currentTime - timeToCheck;
+        if(timeDiff <= 5000) {
+            return;
+        }
+
+        var amountToGive = ticketsToGiveOut;
+        ticketsToGiveOut = 0;
+
+        var activeUsers = $.getActiveUsers();
+
+        var pointsString = String(amountToGive).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        $.say($.lang.get('activetickets.command.startsending', pointsString, activeUsers.length));
+        $.streamelements.AddTicketsToUsers(activeUsers,parseInt(amountToGive));
+    }
+
+    var interval = setInterval(function() {
+        runActivePayout();
+    }, delay)
+
 
     $.bind('command', function(event) {
         var sender = event.getSender().toLowerCase(),
@@ -23,6 +51,7 @@
             addActiveTickets(action);
         }
     });
+
 
     $.bind('initReady', function() {
         $.registerChatCommand('./custom/activeTickets.js', 'addactive', 1)
