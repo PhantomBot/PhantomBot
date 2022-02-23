@@ -63,7 +63,7 @@ $(function() {
 
                     for (let i = 0; i < results.length; i++) {
                         if (results[i].indexOf('ytPlaylist_') !== -1) {
-                            playlists.push(results[i].substr(results[i].indexOf('_') + 1, results[i].length));
+                            playlists.push(results[i].slice(results[i].indexOf('_') + 1));
                         }
                     }
 
@@ -530,7 +530,7 @@ $(function() {
 
             for (let i = 0; i < results.length; i++) {
                 if (results[i].indexOf('ytPlaylist_') !== -1) {
-                    playlists.push(results[i].substr(results[i].indexOf('_') + 1, results[i].length));
+                    playlists.push(results[i].slice(results[i].indexOf('_') + 1));
                 }
             }
 

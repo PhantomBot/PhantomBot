@@ -196,7 +196,7 @@
 
             // Replace last comma with ", and".
             if (timeString.indexOf(',') !== -1) {
-                timeString = (timeString.substr(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.substr(timeString.lastIndexOf(',') + 2));
+                timeString = (timeString.slice(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.slice(timeString.lastIndexOf(',') + 2));
             }
             return timeString;
         }
@@ -259,7 +259,7 @@
 
         // Replace last comma with ", and".
         if (timeString.indexOf(',') !== -1) {
-            timeString = (timeString.substr(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.substr(timeString.lastIndexOf(',') + 2));
+            timeString = (timeString.slice(0, timeString.lastIndexOf(',')) + $.lang.get('common.time.and') + timeString.slice(timeString.lastIndexOf(',') + 2));
         }
         return timeString;
     }

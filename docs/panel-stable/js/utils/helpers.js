@@ -1168,8 +1168,8 @@ $(function () {
 
                 let html = '';
                 if (version.startsWith("nightly-")) {
-                    html = 'Nightly build ' + version.substr(8) + ' of PhantomBot is now availabel to download! <br>' +
-                            'You can grab your own copy of nightly build ' + version.substr(8) + ' of PhantomBot ' +
+                    html = 'Nightly build ' + version.slice(8) + ' of PhantomBot is now availabel to download! <br>' +
+                            'You can grab your own copy of nightly build ' + version.slice(8) + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
@@ -1270,7 +1270,7 @@ $(function () {
     };
 
     helpers.parseHashmap = function () {
-        var hash = window.location.hash.substr(1);
+        var hash = window.location.hash.slice(1);
         var kvs = hash.split('&');
         var hashmap = [];
         var spl;

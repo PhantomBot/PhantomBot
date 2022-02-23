@@ -252,7 +252,7 @@
                 }
 
                 var queryString = window.location.hash, // Query string that starts with ?
-                        queryParts = queryString.substr(1).split(/#|&/), // Split at each &, which is a new query.
+                        queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
                         queryMap = new Map(), // Create a new map for save our keys and values.
                         baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
                         clientID = '26zr06lmku74srltt7qprwbotaxm91',
@@ -260,8 +260,8 @@
                         state;
 
                 for (var i = 0; i < queryParts.length; i++) {
-                    var key = queryParts[i].substr(0, queryParts[i].indexOf('=')),
-                            value = queryParts[i].substr(queryParts[i].indexOf('=') + 1, queryParts[i].length);
+                    var key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
+                            value = queryParts[i].slice(queryParts[i].indexOf('=') + 1);
 
                     if (key.length > 0 && value.length > 0) {
                         queryMap.set(key.toLowerCase(), value);

@@ -359,7 +359,7 @@
                 }
 
                 function parseHashMap() {
-                    var hash = window.location.hash.substr(1);
+                    var hash = window.location.hash.slice(1);
                     var kvs = hash.split('&');
                     var spl;
 

@@ -2218,7 +2218,7 @@
                     if (currentPlaylist.getRequestAtIndex(minRange) == null) {
                         break;
                     }
-                    displayString += "[(#" + showRange + ") " + currentPlaylist.getRequestAtIndex(minRange).getVideoTitle().substr(0, 20) + "] ";
+                    displayString += "[(#" + showRange + ") " + currentPlaylist.getRequestAtIndex(minRange).getVideoTitle().slice(0, 20) + "] ";
                     minRange++;
                 }
                 if (displayString.equals('')) {
