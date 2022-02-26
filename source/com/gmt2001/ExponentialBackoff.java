@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Handles backoff timing using an exponentially increasing duration strategy.
  *
  * @author gmt2001
  */
 public class ExponentialBackoff {
 
-    private static final int MIN_STEPS = 10;
     private final long minIntervalMS;
     private final long maxIntervalMS;
-    private long lastIntervalMS = 0L;
-    private int lastIntervalIterations = 0;
-    private int uniqueIterations = 0;
+    private long lastIntervalMS;
     private int totalIterations = 0;
+    private boolean isNextIntervalDetermined = false;
 
     /**
      *
@@ -42,6 +41,7 @@ public class ExponentialBackoff {
     public ExponentialBackoff(long minIntervalMS, long maxIntervalMS) {
         this.minIntervalMS = minIntervalMS;
         this.maxIntervalMS = maxIntervalMS;
+        this.lastIntervalMS = this.minIntervalMS;
     }
 
     /**
@@ -51,6 +51,7 @@ public class ExponentialBackoff {
         try {
             this.determineNextInterval();
             this.totalIterations++;
+            this.isNextIntervalDetermined = false;
             Thread.sleep(this.lastIntervalMS);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
@@ -65,6 +66,7 @@ public class ExponentialBackoff {
     public void BackoffAsync(Runnable command) {
         this.determineNextInterval();
         this.totalIterations++;
+        this.isNextIntervalDetermined = false;
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.schedule(command, this.lastIntervalMS, TimeUnit.MILLISECONDS);
     }
@@ -73,50 +75,43 @@ public class ExponentialBackoff {
      * Resets the backoff to use the minimum values on the next call
      */
     public void Reset() {
-        this.lastIntervalIterations = 0;
-        this.lastIntervalMS = 0L;
-        this.uniqueIterations = 0;
+        this.lastIntervalMS = this.minIntervalMS;
         this.totalIterations = 0;
+        this.isNextIntervalDetermined = false;
+    }
+
+    /**
+     * Determines and returns the next interval to backoff for
+     *
+     * @return The next interval that will be used when Backoff() or BackoffAsync(command) is called, in milliseconds
+     */
+    public long GetNextInterval() {
+        this.determineNextInterval();
+        return this.lastIntervalMS;
     }
 
     /**
      * Returns the total number of times the backoff has been used since the last reset
+     *
      * @return
      */
     public int GetTotalIterations() {
         return this.totalIterations;
     }
 
-    private void determineNextInterval() {
-        long nextInterval;
-
-        if (this.lastIntervalIterations == 1) {
-            this.uniqueIterations++;
+    /**
+     * Determines the next interval to backoff for and stores it in this.lastIntervalMS
+     */
+    private synchronized void determineNextInterval() {
+        if (this.isNextIntervalDetermined) {
+            return;
         }
 
-        int numSteps = (int) Math.ceil((this.maxIntervalMS - this.minIntervalMS) / (this.minIntervalMS * 1.0));
-        if (numSteps < MIN_STEPS) {
-            int stepDiv = (int) Math.floor((MIN_STEPS - numSteps) / (numSteps - 1));
+        long nextInterval = this.lastIntervalMS * this.lastIntervalMS;
 
-            if (this.lastIntervalIterations < stepDiv) {
-                nextInterval = this.lastIntervalMS;
-            } else {
-                nextInterval = this.lastIntervalMS + (this.minIntervalMS * this.uniqueIterations);
-                this.lastIntervalIterations = 0;
-            }
-        } else {
-            nextInterval = this.lastIntervalMS + (this.minIntervalMS * this.uniqueIterations);
-        }
+        nextInterval = Math.min(nextInterval, this.maxIntervalMS);
 
-        if (this.lastIntervalMS < this.minIntervalMS) {
-            nextInterval = this.minIntervalMS;
-        }
-
-        if (this.lastIntervalMS >= this.maxIntervalMS) {
-            nextInterval = this.maxIntervalMS;
-        }
-
-        this.lastIntervalIterations++;
         this.lastIntervalMS = nextInterval;
+        this.isNextIntervalDetermined = true;
     }
 }

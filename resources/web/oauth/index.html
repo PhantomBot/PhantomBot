@@ -112,7 +112,7 @@
                             <br />
                             <div id="instructions">
                                 <ol>
-                                    <li>Create a new Twitch Application, if not already created<br />
+                                    <li>Create a new Twitch Application, if not already created. It does not matter which Twitch account is used for this step<br />
                                         <ol>
                                             <li>Go to <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> and login</li>
                                             <li>Click <i>Your Console</i> in the top-right corner</li>
@@ -145,7 +145,7 @@
                                         </ol>
                                     </li>
                                     <li>
-                                        Click here to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
+                                        Click the disk icon at the end of this line to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
                                     </li>
                                     <li>
                                         Re-authorize the bot <span id="auththebroadcaster">and broadcaster </span>using the buttons below
@@ -180,11 +180,11 @@
                                     <br />
                                     <div style="padding-left: 25px;">
                                         <ul>
-                                            <li id="connectbotinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.                                      
+                                            <li id="connectbotinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Bot</div> - make sure before you click the button that you are logged into your bot's Twitch account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.
                                                 <ul><li>This is the account the bot will show up as in chat, and the account the bot will speak as.</li></ul>
                                             </li>
                                             <li id="connectbroadcasterinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.
-                                                <ul><li>This is the account of the broadcaster, whose channel the bot will participate in.</li></ul>
+                                                <ul><li>This is the account of the broadcaster, whose channel the bot will participate in and will be used to authorize API requests.</li></ul>
                                             </li>
                                         </ul>
                                     </div>
@@ -237,349 +237,349 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
         <script>
-                    'use strict';
-                    $(function () {
-                        var scopesBot = {
-                            "channel_editor": {
-                                "desc": "Write channel metadata (game, status, etc).",
-                                "tooltip": "Used start/end raids and hosting."
-                            },
-                            "channel:manage:broadcast": {
-                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
-                                "tooltip": "Used by custom scripts to start raids."
-                            },
-                            "channel:moderate": {
-                                "desc": "Perform moderation actions in a channel.",
-                                "tooltip": "Used to perform moderation actions (purge, timeout, ban)."
-                            },
-                            "chat:edit": {
-                                "desc": "Send live Stream Chat and Rooms messages.",
-                                "tooltip": "Used to send responses in chat."
-                            },
-                            "chat:read": {
-                                "desc": "View live Stream Chat and Rooms messages.",
-                                "tooltip": "Used to login to chat and read messages."
-                            },
-                            "whispers:edit": {
-                                "desc": "Send whisper messages.",
-                                "tooltip": "Used to send whispers from the bot."
-                            },
-                            "whispers:read": {
-                                "desc": "View your whisper messages.",
-                                "tooltip": "Used to receive whispers to the bot."
-                            }
-                        };
+            'use strict';
+            $(function () {
+            var scopesBot = {
+            "channel_editor": {
+            "desc": "Write channel metadata (game, status, etc).",
+            "tooltip": "Used start/end raids and hosting."
+            },
+            "channel:manage:broadcast": {
+            "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
+            "tooltip": "Used by custom scripts to start raids."
+            },
+            "channel:moderate": {
+            "desc": "Perform moderation actions in a channel.",
+            "tooltip": "Used to perform moderation actions (purge, timeout, ban)."
+            },
+            "chat:edit": {
+            "desc": "Send live Stream Chat and Rooms messages.",
+            "tooltip": "Used to send responses in chat."
+            },
+            "chat:read": {
+            "desc": "View live Stream Chat and Rooms messages.",
+            "tooltip": "Used to login to chat and read messages."
+            },
+            "whispers:edit": {
+            "desc": "Send whisper messages.",
+            "tooltip": "Used to send whispers from the bot."
+            },
+            "whispers:read": {
+            "desc": "View your whisper messages.",
+            "tooltip": "Used to receive whispers to the bot."
+            }
+            };
 
-                        var scopesBroadcaster = {
-                            "bits:read": {
-                                "desc": "Read access to bits cheers in your channel.",
-                                "tooltip": "Used by EventSub to subscribe to bits notifications."
-                            },
-                            "channel:manage:broadcast": {
-                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
-                                "tooltip": "Used to change the title/game."
-                            },
-                            "channel:edit:commercial": {
-                                "desc": "Run commercials on a channel.",
-                                "tooltip": "Used to run commercials."
-                            },
-                            "channel:moderate": {
-                                "desc": "Perform moderation actions in a channel.",
-                                "tooltip": "Used to watch for moderation actions in PubSub."
-                            },
-                            "channel:read:hype_train": {
-                                "desc": "[Helix] Fetch information about current/past hype trains",
-                                "tooltip": "Used to watch for hype train notifications in EventSub"
-                            },
-                            "channel:read:polls": {
-                                "desc": "[Helix] Fetch information about current/past polls",
-                                "tooltip": "Used to watch for Twitch poll notifications in EventSub"
-                            },
-                            "channel:read:predictions": {
-                                "desc": "[Helix] Fetch information about current/past predictions",
-                                "tooltip": "Used to watch for Twitch prediction notifications in EventSub"
-                            },
-                            "channel:read:redemptions": {
-                                "desc": "View your channel points custom reward redemptions.",
-                                "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub."
-                            },
-                            "channel:read:subscriptions": {
-                                "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel.",
-                                "tooltip": "Used to watch for new subscribers that haven't shared with chat."
-                            },
-                            "chat:read": {
-                                "desc": "View live Stream Chat and Rooms messages.",
-                                "tooltip": "Used by the second chat connection to watch for host notifications."
-                            },
-                            "moderation:read": {
-                                "desc": "[Helix] Read the list of channel moderators",
-                                "tooltip": "Used to watch for moderator add/remove events in EventSub"
-                            }
-                        };
+            var scopesBroadcaster = {
+            "bits:read": {
+            "desc": "Read access to bits cheers in your channel.",
+            "tooltip": "Used by EventSub to subscribe to bits notifications."
+            },
+            "channel:manage:broadcast": {
+            "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
+            "tooltip": "Used to change the title/game."
+            },
+            "channel:edit:commercial": {
+            "desc": "Run commercials on a channel.",
+            "tooltip": "Used to run commercials."
+            },
+            "channel:moderate": {
+            "desc": "Perform moderation actions in a channel.",
+            "tooltip": "Used to watch for moderation actions in PubSub."
+            },
+            "channel:read:hype_train": {
+            "desc": "Fetch information about current/past hype trains",
+            "tooltip": "Used to watch for hype train notifications in EventSub"
+            },
+            "channel:read:polls": {
+            "desc": "Fetch information about current/past polls",
+            "tooltip": "Used to watch for Twitch poll notifications in EventSub"
+            },
+            "channel:read:predictions": {
+            "desc": "Fetch information about current/past predictions",
+            "tooltip": "Used to watch for Twitch prediction notifications in EventSub"
+            },
+            "channel:read:redemptions": {
+            "desc": "View your channel points custom reward redemptions.",
+            "tooltip": "Used to watch for redemption of custom Channel Points rewards in PubSub."
+            },
+            "channel:read:subscriptions": {
+            "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel.",
+            "tooltip": "Used to watch for new subscribers that haven't shared with chat."
+            },
+            "chat:read": {
+            "desc": "View live Stream Chat and Rooms messages.",
+            "tooltip": "Used by the second chat connection to watch for host notifications."
+            },
+            "moderation:read": {
+            "desc": "Read the list of channel moderators",
+            "tooltip": "Used to watch for moderator add/remove events in EventSub"
+            }
+            };
 
-                        function addScopeItem(type, scope, description) {
-                            $('#scopes-' + type).append(
-                                    $('<li/>', {
-                                        'html': $('<div/>', {
-                                            'class': 'text-bold',
-                                            'style': 'display: inline;',
-                                            'text': scope
-                                        })
-                                    }).append(' - ' + description.desc + ' ')
-                                    .append($('<i/>', {
-                                        'class': 'fas fa-question-circle',
-                                        'aria-hidden': 'true',
-                                        'data-toggle': 'tooltip',
-                                        'title': description.tooltip
-                                    }))
-                                    );
-                        }
+            function addScopeItem(type, scope, description) {
+            $('#scopes-' + type).append(
+            $('<li/>', {
+            'html': $('<div/>', {
+            'class': 'text-bold',
+            'style': 'display: inline;',
+            'text': scope
+            })
+            }).append(' - ' + description.desc + ' ')
+            .append($('<i/>', {
+            'class': 'fas fa-question-circle',
+            'aria-hidden': 'true',
+            'data-toggle': 'tooltip',
+            'title': description.tooltip
+            }))
+            );
+            }
 
-                        var x;
-                        for (x in scopesBot) {
-                            addScopeItem('bot', x, scopesBot[x]);
-                        }
+            var x;
+            for (x in scopesBot) {
+            addScopeItem('bot', x, scopesBot[x]);
+            }
 
-                        for (x in scopesBroadcaster) {
-                            addScopeItem('broadcaster', x, scopesBroadcaster[x]);
-                        }
+            for (x in scopesBroadcaster) {
+            addScopeItem('broadcaster', x, scopesBroadcaster[x]);
+            }
 
-                        var queryString = window.location.search, // Query string that starts with ?
-                                queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
-                                queryMap = new Map(), // Create a new map for save our keys and values.
-                                baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
-                                redirectURI = (window.location.origin + window.location.pathname),
-                                redirectURIBroadcaster = redirectURI + "broadcaster",
-                                broadcaster = "",
-                                clientID,
-                                state;
+            var queryString = window.location.search, // Query string that starts with ?
+            queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
+            queryMap = new Map(), // Create a new map for save our keys and values.
+            baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
+            redirectURI = (window.location.origin + window.location.pathname),
+            redirectURIBroadcaster = redirectURI + "broadcaster",
+            broadcaster = "",
+            clientID,
+            state;
 
-                        if (redirectURI.includes("/broadcaster")) {
-                            broadcaster = "/broadcaster";
-                        }
+            if (redirectURI.includes("/broadcaster")) {
+            broadcaster = "/broadcaster";
+            }
 
-                        for (var i = 0; i < queryParts.length; i++) {
-                            var key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
-                                    value = queryParts[i].slice(queryParts[i].indexOf('=') + 1);
+            for (var i = 0; i < queryParts.length; i++) {
+            var key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
+            value = queryParts[i].slice(queryParts[i].indexOf('=') + 1);
 
-                            if (key.length > 0 && value.length > 0) {
-                                queryMap.set(key.toLowerCase(), value);
-                            }
-                        }
+            if (key.length > 0 && value.length > 0) {
+            queryMap.set(key.toLowerCase(), value);
+            }
+            }
 
-                        $('#selfurl').val(redirectURI);
-                        $('#selfurlbroadcaster').val(redirectURIBroadcaster);
-                        $('#selfurlbroadcastervisit').val(redirectURIBroadcaster);
+            $('#selfurl').val(redirectURI);
+            $('#selfurlbroadcaster').val(redirectURIBroadcaster);
+            $('#selfurlbroadcastervisit').val(redirectURIBroadcaster);
 
-                        $('#saveclient').click(function () {
-                            $('#success-box').addClass('hide');
-                            $('#error-box').addClass('hide');
-                            $('#success-error-br').addClass('hide');
-                            $.ajax({
-                                cache: false,
-                                dataType: 'text',
-                                url: '/oauth/saveidsecret',
-                                method: 'PUT',
-                                data: {
-                                    clientid: $('#clientid').val(),
-                                    clientsecret: $('#clientsecret').val()
-                                },
-                                success: function (data) {
-                                    if (data === 'false') {
-                                        $('#error-box').removeClass('hide');
-                                        $('#success-error-br').removeClass('hide');
-                                        $('#error-box').html('Failed to save Client ID and Client Secret: invalid input');
-                                    } else if (data === 'true') {
-                                        $('#error-box').removeClass('hide');
-                                        $('#success-error-br').removeClass('hide');
-                                        $('#error-box').html('Failed to save Client ID and Client Secret: writing botlogin.txt failed');
-                                    } else {
-                                        clientID = data;
-                                        $('#success-box').removeClass('hide');
-                                        $('#success-error-br').removeClass('hide');
-                                        $('#success-box').html('Saved the Client ID and Client Secret');
-                                        $('#connect').removeClass('hide');
-                                    }
-                                },
-                                error: function (err) {
-                                    $('#error-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText + '!!');
-                                }
-                            });
-                        });
-                        $('#saveclient').css('cursor', 'pointer');
+            $('#saveclient').click(function () {
+            $('#success-box').addClass('hide');
+            $('#error-box').addClass('hide');
+            $('#success-error-br').addClass('hide');
+            $.ajax({
+            cache: false,
+            dataType: 'text',
+            url: '/oauth/saveidsecret',
+            method: 'PUT',
+            data: {
+            clientid: $('#clientid').val(),
+            clientsecret: $('#clientsecret').val()
+            },
+            success: function (data) {
+            if (data === 'false') {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to save Client ID and Client Secret: invalid input');
+            } else if (data === 'true') {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to save Client ID and Client Secret: writing botlogin.txt failed');
+            } else {
+            clientID = data;
+            $('#success-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#success-box').html('Saved the Client ID and Client Secret');
+            $('#connect').removeClass('hide');
+            }
+            },
+            error: function (err) {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText + '!!');
+            }
+            });
+            });
+            $('#saveclient').css('cursor', 'pointer');
 
-                        $('#resetbroadcastertoken').click(function () {
-                            $('#success-box').addClass('hide');
-                            $('#error-box').addClass('hide');
-                            $('#success-error-br').addClass('hide');
-                            $.ajax({
-                                cache: false,
-                                dataType: 'text',
-                                url: '/oauth/resetbroadcastertoken',
-                                method: 'GET',
-                                success: function (data) {
-                                    $('#success-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#success-box').html('Generated a new broadcaster token');
-                                    $('#broadcastertoken').val(data);
-                                },
-                                error: function (err) {
-                                    $('#error-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to generate a broadcaster password: ' + err.statusText + ' ' + err.responseText + '!!');
-                                }
-                            });
-                        });
-                        $('#resetbroadcastertoken').css('cursor', 'pointer');
+            $('#resetbroadcastertoken').click(function () {
+            $('#success-box').addClass('hide');
+            $('#error-box').addClass('hide');
+            $('#success-error-br').addClass('hide');
+            $.ajax({
+            cache: false,
+            dataType: 'text',
+            url: '/oauth/resetbroadcastertoken',
+            method: 'GET',
+            success: function (data) {
+            $('#success-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#success-box').html('Generated a new broadcaster token');
+            $('#broadcastertoken').val(data);
+            },
+            error: function (err) {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to generate a broadcaster password: ' + err.statusText + ' ' + err.responseText + '!!');
+            }
+            });
+            });
+            $('#resetbroadcastertoken').css('cursor', 'pointer');
 
-                        if (queryMap.size > 0) {
-                            if (queryMap.has('code') && queryMap.has('state')) {
-                                // Get the state.
-                                state = window.sessionStorage.getItem('state');
+            if (queryMap.size > 0) {
+            if (queryMap.has('code') && queryMap.has('state')) {
+            // Get the state.
+            state = window.sessionStorage.getItem('state');
 
-                                if (queryMap.get('state') === state) {
-                                    $('#info-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
-                                    $.ajax({
-                                        cache: false,
-                                        dataType: 'text',
-                                        url: '/oauth' + broadcaster + '/authorize',
-                                        method: 'POST',
-                                        data: {
-                                            code: queryMap.get('code'),
-                                            type: window.sessionStorage.getItem('statetype'),
-                                            redirect_uri: redirectURI
-                                        },
-                                        success: function (data) {
-                                            $('#info-box').addClass('hide');
-                                            if (data.startsWith('false')) {
-                                                $('#error-box').removeClass('hide');
-                                                $('#success-error-br').removeClass('hide');
-                                                $('#error-box').html('Failed to authorize and save the ' + window.sessionStorage.getItem('statetype') + ' token: ' + data.substring(6));
-                                            } else if (data === 'true') {
-                                                $('#error-box').removeClass('hide');
-                                                $('#success-error-br').removeClass('hide');
-                                                $('#error-box').html('Failed to save the ' + window.sessionStorage.getItem('statetype') + ' token: writing botlogin.txt failed');
-                                            } else {
-                                                clientID = data;
-                                                $('#success-box').removeClass('hide');
-                                                $('#success-error-br').removeClass('hide');
-                                                $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('statetype') + ' token');
-                                            }
-                                            window.sessionStorage.removeItem('statetype');
-                                        },
-                                        error: function (err) {
-                                            $('#info-box').addClass('hide');
-                                            $('#error-box').removeClass('hide');
-                                            $('#success-error-br').removeClass('hide');
-                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText + '!!');
-                                            window.sessionStorage.removeItem('statetype');
-                                        }
-                                    });
+            if (queryMap.get('state') === state) {
+            $('#info-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
+            $.ajax({
+            cache: false,
+            dataType: 'text',
+            url: '/oauth' + broadcaster + '/authorize',
+            method: 'POST',
+            data: {
+            code: queryMap.get('code'),
+            type: window.sessionStorage.getItem('statetype'),
+            redirect_uri: redirectURI
+            },
+            success: function (data) {
+            $('#info-box').addClass('hide');
+            if (data.startsWith('false')) {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to authorize and save the ' + window.sessionStorage.getItem('statetype') + ' token: ' + data.substring(6));
+            } else if (data === 'true') {
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to save the ' + window.sessionStorage.getItem('statetype') + ' token: writing botlogin.txt failed');
+            } else {
+            clientID = data;
+            $('#success-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#success-box').html('Authorized and saved the ' + window.sessionStorage.getItem('statetype') + ' token');
+            }
+            window.sessionStorage.removeItem('statetype');
+            },
+            error: function (err) {
+            $('#info-box').addClass('hide');
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText + '!!');
+            window.sessionStorage.removeItem('statetype');
+            }
+            });
 
-                                    // Remove the state.
-                                    window.sessionStorage.removeItem('state');
-                                }
-                            }
-                        }
-                        // Generates the state.
-                        function generateState(type) {
-                            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                                    state = '';
+            // Remove the state.
+            window.sessionStorage.removeItem('state');
+            }
+            }
+            }
+            // Generates the state.
+            function generateState(type) {
+            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+            state = '';
 
-                            for (var i = 0; i < 40; i++) {
-                                state += possible.charAt(Math.floor(Math.random() * possible.length));
-                            }
+            for (var i = 0; i < 40; i++) {
+            state += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
 
-                            // Save the state.
-                            window.sessionStorage.setItem('state', state);
-                            window.sessionStorage.setItem('statetype', type);
+            // Save the state.
+            window.sessionStorage.setItem('state', state);
+            window.sessionStorage.setItem('statetype', type);
 
-                            return state;
-                        }
+            return state;
+            }
 
-                        // Connect with Twitch button bot.
-                        $('#connect-bot').on('click', function () {
-                            var scopes = '';
-                            for (var x in scopesBot) {
-                                if (scopes.length > 0) {
-                                    scopes = scopes + '+';
-                                }
+            // Connect with Twitch button bot.
+            $('#connect-bot').on('click', function () {
+            var scopes = '';
+            for (var x in scopesBot) {
+            if (scopes.length > 0) {
+            scopes = scopes + '+';
+            }
 
-                                scopes = scopes + x;
-                            }
+            scopes = scopes + x;
+            }
 
-                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
-                        });
+            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
+            });
 
-                        // Connect with Twitch button caster.
-                        $('#connect-caster').on('click', function () {
-                            var scopes = '';
-                            for (var x in scopesBroadcaster) {
-                                if (scopes.length > 0) {
-                                    scopes = scopes + '+';
-                                }
+            // Connect with Twitch button caster.
+            $('#connect-caster').on('click', function () {
+            var scopes = '';
+            for (var x in scopesBroadcaster) {
+            if (scopes.length > 0) {
+            scopes = scopes + '+';
+            }
 
-                                scopes = scopes + x;
-                            }
+            scopes = scopes + x;
+            }
 
-                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
-                        });
+            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+            });
 
-                        $('input[type=radio][name=authmode]').change(function () {
-                            if (this.value === 'separate') {
-                                $('#connectone').addClass('hide');
-                                $('#connectplural').addClass('hide');
-                                $('#auththebroadcaster').addClass('hide');
-                                $('#connectbroadcasterinstruction').addClass('hide');
-                                $('#connectbroadcasterscope').addClass('hide');
-                                $('#connect-caster').addClass('hide');
-                                $('#broadcasteroauthinstructions').removeClass('hide');
-                            } else {
-                                $('#connectone').removeClass('hide');
-                                $('#connectplural').removeClass('hide');
-                                $('#auththebroadcaster').removeClass('hide');
-                                $('#connectbroadcasterinstruction').removeClass('hide');
-                                $('#connectbroadcasterscope').removeClass('hide');
-                                $('#connect-caster').removeClass('hide');
-                                $('#broadcasteroauthinstructions').addClass('hide');
-                            }
-                        });
+            $('input[type=radio][name=authmode]').change(function () {
+            if (this.value === 'separate') {
+            $('#connectone').addClass('hide');
+            $('#connectplural').addClass('hide');
+            $('#auththebroadcaster').addClass('hide');
+            $('#connectbroadcasterinstruction').addClass('hide');
+            $('#connectbroadcasterscope').addClass('hide');
+            $('#connect-caster').addClass('hide');
+            $('#broadcasteroauthinstructions').removeClass('hide');
+            } else {
+            $('#connectone').removeClass('hide');
+            $('#connectplural').removeClass('hide');
+            $('#auththebroadcaster').removeClass('hide');
+            $('#connectbroadcasterinstruction').removeClass('hide');
+            $('#connectbroadcasterscope').removeClass('hide');
+            $('#connect-caster').removeClass('hide');
+            $('#broadcasteroauthinstructions').addClass('hide');
+            }
+            });
 
-                        $.ajax({
-                            cache: false,
-                            dataType: 'text',
-                            url: '/oauth' + broadcaster + '/checkidsecret',
-                            success: function (data) {
-                                if (data !== 'false') {
-                                    $('#clientid').val(data);
-                                    clientID = data;
-                                    $("#clientsecret")[0].placeholder = " -- Hidden -- ";
-                                    $('#secretmsg').removeClass('hide');
-                                    $('#connect').removeClass('hide');
-                                } else if (redirectURI.includes("/broadcaster")) {
-                                    $('#info-box').addClass('hide');
-                                    $('#error-box').removeClass('hide');
-                                    $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Client ID and Secret are not setup. Please ask the bot owner to set this up.');
-                                }
-                            }
-                        });
+            $.ajax({
+            cache: false,
+            dataType: 'text',
+            url: '/oauth' + broadcaster + '/checkidsecret',
+            success: function (data) {
+            if (data !== 'false') {
+            $('#clientid').val(data);
+            clientID = data;
+            $("#clientsecret")[0].placeholder = " -- Hidden -- ";
+            $('#secretmsg').removeClass('hide');
+            $('#connect').removeClass('hide');
+            } else if (redirectURI.includes("/broadcaster")) {
+            $('#info-box').addClass('hide');
+            $('#error-box').removeClass('hide');
+            $('#success-error-br').removeClass('hide');
+            $('#error-box').html('Client ID and Secret are not setup. Please ask the bot owner to set this up.');
+            }
+            }
+            });
 
-                        if (redirectURI.includes("/broadcaster")) {
-                            $('#instructions').addClass('hide');
-                            $('#connectone').addClass('hide');
-                            $('#connectplural').addClass('hide');
-                            $('#connectbotinstruction').addClass('hide');
-                            $('#connectbotscope').addClass('hide');
-                            $('#connect-bot').addClass('hide');
-                        }
+            if (redirectURI.includes("/broadcaster")) {
+            $('#instructions').addClass('hide');
+            $('#connectone').addClass('hide');
+            $('#connectplural').addClass('hide');
+            $('#connectbotinstruction').addClass('hide');
+            $('#connectbotscope').addClass('hide');
+            $('#connect-bot').addClass('hide');
+            }
 
-                        $('[data-toggle="tooltip"]').tooltip();
-                    });
+            $('[data-toggle="tooltip"]').tooltip();
+            });
         </script>
     </body>
 </html>

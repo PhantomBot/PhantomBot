@@ -587,6 +587,7 @@ public final class PhantomBot implements Listener {
         } else {
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
             this.session = new TwitchSession(this.channelName, this.botName, this.oauth).connect();
+            this.session.doSubscribe();
 
             /* Start a host checking instance. */
             if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
