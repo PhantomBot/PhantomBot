@@ -299,7 +299,7 @@ public class ConfigurationManager {
             // Twitch oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("2. You will now need a OAuth token for the bot to be able to chat.\r\n");
+                com.gmt2001.Console.out.print("2. You will now need a temporary OAuth token for the bot to be able to chat.\r\n");
                 com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into the bot's Twitch account.\r\n");
                 com.gmt2001.Console.out.print("If you're not logged in as the bot, please go to https://twitch.tv/ and login as the bot.\r\n");
                 com.gmt2001.Console.out.print("Get the bot's OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
@@ -311,13 +311,18 @@ public class ConfigurationManager {
             // api oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. You will now need your channel OAuth token for the bot to be able to change your title and game.\r\n");
-                com.gmt2001.Console.out.print("Please note, this OAuth token needs to be generated while you're logged in into your caster account.\r\n");
-                com.gmt2001.Console.out.print("If you're not logged in as the caster, please go to https://twitch.tv/ and login as the caster.\r\n");
-                com.gmt2001.Console.out.print("Get the your OAuth token here: https://phantombot.github.io/PhantomBot/oauth/\r\n");
-                com.gmt2001.Console.out.print("Please enter your OAuth token: ");
+                com.gmt2001.Console.out.print("3. After this setup is completed, you will need to setup automatically refreshing OAuth tokens.\r\n");
+                com.gmt2001.Console.out.print("You will also setup channel OAuth token for the bot to be able to change your title and game.\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Please note the BOT token is for the account that will show up in chat.\r\n");
+                com.gmt2001.Console.out.print("Please note the CASTER token is for the broadcaster's account for API requests.\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("The link to the setup page is here: http://127.0.0.1:25000/oauth/\r\n");
+                com.gmt2001.Console.out.print("Or go to the equivilent URL if your bot is hosted remotely\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Please note, you must complete this setup first before accessing this page\r\n");
 
-                startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());
+                startProperties.setProperty(PROP_OAUTH, startProperties.getProperty(PROP_OAUTH, ""));
             } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
 
             // Channel name.
@@ -346,9 +351,13 @@ public class ConfigurationManager {
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("PhantomBot will launch in 10 seconds.\r\n");
-            com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/panel \r\n");
-            com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following ports: \r\n");
-            com.gmt2001.Console.out.print("25000, 25003, and 25004. You have to change 'localhost' to your server ip to access the panel. \r\n");
+            com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/ \r\n");
+            com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following port: \r\n");
+            com.gmt2001.Console.out.print("25000. You have to change 'localhost' to your server ip to access the panel. \r\n");
+            com.gmt2001.Console.out.print("\r\n");
+            com.gmt2001.Console.out.print("You can now setup the automatically refreshing OAuth tokens system, you will need the\r\n");
+            com.gmt2001.Console.out.print("web panel username and password you set above to access the page.\r\n");
+            com.gmt2001.Console.out.print("\r\n");
 
             Thread.sleep(10000);
 
