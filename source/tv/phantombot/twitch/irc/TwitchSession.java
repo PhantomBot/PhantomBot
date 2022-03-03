@@ -33,7 +33,7 @@ public class TwitchSession extends MessageQueue {
     private String oAuth;
     private TwitchWSIRC twitchWSIRC;
     private final ReentrantLock reconnectLock = new ReentrantLock();
-    private final ExponentialBackoff backoff = new ExponentialBackoff(5L, 300000L);
+    private final ExponentialBackoff backoff = new ExponentialBackoff(5000L, 900000L);
 
     /**
      * Class constructor.

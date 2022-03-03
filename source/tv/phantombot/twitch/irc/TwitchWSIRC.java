@@ -160,9 +160,8 @@ public class TwitchWSIRC extends WebSocketClient {
     public void onClose(int code, String reason, boolean remote) {
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
-            com.gmt2001.Console.out.println("Lost connection to Twitch WS-IRC. Reconnecting...");
-            com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ", true);
-            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]", true);
+            com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
+            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
 
             connecting = true;
             this.session.reconnect();
