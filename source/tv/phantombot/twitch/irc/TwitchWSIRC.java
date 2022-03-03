@@ -116,6 +116,7 @@ public class TwitchWSIRC extends WebSocketClient {
             // Set the socket.
             this.setSocketFactory(sslSocketFactory);
             // Connect.
+            this.setConnectionLostTimeout(30);
             connecting = true;
             this.connect();
             return true;

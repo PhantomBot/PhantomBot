@@ -237,6 +237,7 @@ public class TwitchPubSub {
             }
 
             try {
+                this.setConnectionLostTimeout(30);
                 connect();
                 return true;
             } catch (Exception ex) {
