@@ -21,12 +21,12 @@
  */
 package tv.phantombot.twitch.irc.host;
 
+import com.gmt2001.ExponentialBackoff;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
@@ -35,6 +35,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -47,11 +48,8 @@ public class TwitchWSHostIRC {
     private final String channelName;
     private String oAuth;
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
-    private final ReentrantLock lock = new ReentrantLock();
-    private final ReentrantLock lock2 = new ReentrantLock();
-    private static final long MAX_BACKOFF = 300000L;
-    private long lastReconnect;
-    private long nextBackoff = 1000L;
+    private final ReentrantLock reconnectLock = new ReentrantLock();
+    private final ExponentialBackoff backoff = new ExponentialBackoff(5000L, 900000L);
 
     /**
      * Constructor for TwitchWSHostIRC object.
@@ -64,36 +62,7 @@ public class TwitchWSHostIRC {
         this.channelName = channelName;
         this.oAuth = oAuth;
 
-        try {
-            twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
-            if (!twitchWSHostIRCWS.connectWSS()) {
-                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
-                PhantomBot.exitError();
-            }
-        } catch (URISyntaxException ex) {
-            com.gmt2001.Console.debug.printStackTrace(ex);
-            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
-            PhantomBot.exitError();
-        }
-    }
-
-    private TwitchWSHostIRC(String channelName, String oAuth, long lastReconnect, long nextBackoff) {
-        this.channelName = channelName;
-        this.oAuth = oAuth;
-        this.lastReconnect = lastReconnect;
-        this.nextBackoff = nextBackoff;
-
-        try {
-            twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
-            if (!twitchWSHostIRCWS.connectWSS()) {
-                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed. Exiting PhantomBot");
-                PhantomBot.exitError();
-            }
-        } catch (URISyntaxException ex) {
-            com.gmt2001.Console.debug.printStackTrace(ex);
-            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed. Exiting PhantomBot.");
-            PhantomBot.exitError();
-        }
+        this.connect();
     }
 
     public void setOAuth(String oAuth) {
@@ -118,6 +87,18 @@ public class TwitchWSHostIRC {
         return this.oAuth;
     }
 
+    private void connect() {
+        try {
+            this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(twitchIRCWSS));
+            if (!this.twitchWSHostIRCWS.connectWSS()) {
+                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed");
+            }
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed");
+        }
+    }
+
     /**
      * Exposes the connected status of the object.
      *
@@ -131,45 +112,36 @@ public class TwitchWSHostIRC {
      * Performs logic to attempt to reconnect to Twitch WS-IRC for Host Data.
      */
     public void reconnect() {
-        if (lock.isLocked() || PhantomBot.instance().isExiting()) {
+        if (PhantomBot.instance().isExiting()) {
             return;
         }
 
-        lock.lock();
-        try {
-            new Thread(() -> {
-                this.doReconnect();
-            }).start();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void doReconnect() {
-        if (lock2.tryLock()) {
+        if (this.reconnectLock.tryLock()) {
             try {
-                long now = System.currentTimeMillis();
-
-                if (lastReconnect + (MAX_BACKOFF * 2) < now) {
-                    nextBackoff = 1000L;
-                } else {
-                    Thread.sleep(nextBackoff);
-                }
-
-                lastReconnect = now;
-                nextBackoff = Math.min(MAX_BACKOFF, nextBackoff * 2L);
+                com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
+                com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
+                this.backoff.Backoff();
 
                 this.shutdown();
-                PhantomBot.instance().setHostIRC(new TwitchWSHostIRC(this.channelName, this.oAuth, this.lastReconnect, this.nextBackoff));
+                Thread.sleep(500);
+                this.connect();
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             } finally {
-                lock2.unlock();
+                this.reconnectLock.unlock();
             }
         }
     }
 
     public void shutdown() {
+        this.twitchWSHostIRCWS.send("QUIT");
+
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException ex) {
+        }
+        // Close connection.
         this.twitchWSHostIRCWS.close(1000, "bye");
     }
 
@@ -186,11 +158,9 @@ public class TwitchWSHostIRC {
         private final String oAuth;
         private Pattern hostPattern = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you for up to (\\d+) viewers");
         private Pattern hostPatternNoViewers = Pattern.compile("PRIVMSG \\w+ :(\\w+) is now hosting you.");
-        private long lastPing = 0L;
-        private boolean sentPing = false;
-
-        private int sendPingWaitTime = Integer.parseInt(System.getProperty("ircsendpingwait", "480000"));
-        private int pingWaitTime = Integer.parseInt(System.getProperty("ircpingwait", "600000"));
+        private long lastPong = System.currentTimeMillis();
+        private long lastPing = 0l;
+        private boolean connecting = true;
 
         /**
          * Constructor for TwitchWSIRC object.
@@ -211,33 +181,37 @@ public class TwitchWSHostIRC {
             this.uri = uri;
             this.twitchWSHostIRC = twitchWSHostIRC;
 
-            /* Lowest value for sendPingWaitTime is 3 minutes. This is based on research that shows that Azure Cloud Services
-             * drop TCP connections without activity for 4 minutes.
-             */
-            if (sendPingWaitTime < 180000) {
-                sendPingWaitTime = 180000;
-            }
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                Thread.currentThread().setName("tv.phantombot.twitch.irc.host.TwitchWSHostIRC::pingTimer");
 
-            /* Lowest value for pingWaitTime is 6 minutes. This is based on Twitch indicating that they will send a PING
-             * around every 5 minutes.  This provides a minute of padding.
-             */
-            if (pingWaitTime < 360000) {
-                pingWaitTime = 360000;
-            }
+                if (this.getReadyState() != ReadyState.OPEN) {
+                    return;
+                }
 
-            /* Force a spread of two minutes between sendPingWaitTime and pingWaitTime. */
-            if (pingWaitTime - sendPingWaitTime <= 60000) {
-                pingWaitTime = sendPingWaitTime + 120000;
-            }
+                if (this.connecting) {
+                    lastPing = System.currentTimeMillis();
+                    lastPong = System.currentTimeMillis();
+                    this.connecting = false;
+                    return;
+                }
 
-            try {
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, null, null);
-                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-                this.setSocketFactory(sslSocketFactory);
-            } catch (KeyManagementException | NoSuchAlgorithmException ex) {
-                com.gmt2001.Console.err.println(ex.getMessage());
-            }
+                // if we sent a ping longer than 3 minutes ago, send another one.
+                if (System.currentTimeMillis() > (lastPing + 180000)) {
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host).");
+                    lastPing = System.currentTimeMillis();
+                    this.send("PING");
+
+                    // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
+                } else if (System.currentTimeMillis() > (lastPong + 210000)) {
+                    com.gmt2001.Console.out.println("Closing our connection with Twitch (Host) since no PONG got sent back.");
+                    com.gmt2001.Console.warn.println("Closing our connection with Twitch (Host) since no PONG got sent back.", true);
+                    this.close();
+                }
+            }, 10, 30, TimeUnit.SECONDS);
+        }
+
+        synchronized void gotPong() {
+            lastPong = System.currentTimeMillis();
         }
 
         /**
@@ -251,6 +225,7 @@ public class TwitchWSHostIRC {
                 super.send(message);
             } catch (Exception ex) {
                 com.gmt2001.Console.out.println("Failed to send message: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
@@ -270,13 +245,25 @@ public class TwitchWSHostIRC {
          */
         public boolean connectWSS() {
             try {
-                com.gmt2001.Console.debug.println("Connecting to Host IRC...");
-                connect();
+                com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
+                // Get our context.
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                // Init the context.
+                sslContext.init(null, null, null);
+                // Get a socket factory.
+                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                // Set TCP no delay.
+                this.setTcpNoDelay(PhantomBot.getTwitchTcpNodelay());
+                // Set the socket.
+                this.setSocketFactory(sslSocketFactory);
+                // Connect.
+                this.setConnectionLostTimeout(30);
+                this.connect();
                 return true;
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println(ex.getMessage());
-                return false;
+            } catch (KeyManagementException | NoSuchAlgorithmException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
+            return false;
         }
 
         /**
@@ -286,9 +273,9 @@ public class TwitchWSHostIRC {
          */
         @Override
         public void onOpen(ServerHandshake handshakedata) {
+            com.gmt2001.Console.out.println("Connected to " + this.login + "@" + this.uri.getHost() + " (SSL, Host)");
             send("PASS " + oAuth);
             send("NICK " + login);
-            com.gmt2001.Console.debug.println("Authing to Host IRC...");
         }
 
         /**
@@ -300,12 +287,15 @@ public class TwitchWSHostIRC {
          */
         @Override
         public void onClose(int code, String reason, boolean remote) {
-            if (!badOauth && !reason.equals("bye")) {
-                com.gmt2001.Console.out.println("Lost connection to Twitch Host Data Feed, retrying in 10 seconds");
-                com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
-                twitchWSHostIRC.reconnect();
+            // Reconnect if the bot isn't shutting down.
+            if (!reason.equals("bye")) {
+                com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
+                com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+
+                connecting = true;
+                this.twitchWSHostIRC.reconnect();
             } else {
-                com.gmt2001.Console.debug.println("Closed connection to Host IRC...");
+                com.gmt2001.Console.out.println("Connection to Twitch (Host) WS-IRC was closed...");
             }
         }
 
@@ -317,17 +307,12 @@ public class TwitchWSHostIRC {
         @Override
         public void onMessage(String message) {
             if (message.startsWith("PING")) {
-                com.gmt2001.Console.debug.println("Got a PING from Twitch Host Data Feed");
-                sentPing = false;
-                lastPing = System.currentTimeMillis();
-                sendPong();
+                send("PONG");
                 return;
             }
 
-            if (message.startsWith(":tmi.twitch.tv PONG")) {
-                com.gmt2001.Console.debug.println("Got a PONG from Twitch Host Data Feed");
-                sentPing = false;
-                lastPing = System.currentTimeMillis();
+            if (message.startsWith("PONG")) {
+                this.gotPong();
                 return;
             }
 
@@ -336,8 +321,6 @@ public class TwitchWSHostIRC {
                 if (message.contains("002 " + channelName + " :")) {
                     connected = true;
                     com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
-                    lastPing = System.currentTimeMillis();
-                    checkPingTime();
 
                     // All caches wait 20 seconds, so wait 20 seconds here too.
                     try {
@@ -396,37 +379,8 @@ public class TwitchWSHostIRC {
         @Override
         public void onError(Exception ex) {
             if (!ex.toString().contains("ArrayIndexOutOfBoundsException")) {
-                com.gmt2001.Console.debug.println("Twitch WS-IRC (Host Data) Exception: " + ex);
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }
-
-        /**
-         * Sends a PONG response to Twitch in reply to PING.
-         */
-        private void sendPong() {
-            send("PONG :tmi.twitch.tv");
-        }
-
-        /**
-         * Timer for checking to ensure that PINGs are received on a timely basis from Twitch and if not a reconnection is requested, this also
-         * attempts to send a PING after a period of time.
-         */
-        private void checkPingTime() {
-            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.scheduleAtFixedRate(() -> {
-                Thread.currentThread().setName("tv.phantombot.twitchwsirc.TwitchWSHostIRC::checkPingTime");
-
-                if (System.currentTimeMillis() - lastPing >= sendPingWaitTime && !sentPing) {
-                    com.gmt2001.Console.debug.println("Sending a PING to Twitch (Host Data) to Verify Connection");
-                    sentPing = true;
-                    send("PING :tmi.twitch.tv");
-                }
-
-                if (System.currentTimeMillis() - lastPing >= pingWaitTime) {
-                    com.gmt2001.Console.debug.println("PING not Detected from Twitch (Host Data) - Forcing Reconnect (Timeout is " + pingWaitTime + "ms)");
-                    close();
-                }
-            }, 1, 1, TimeUnit.MINUTES);
         }
     }
 }
