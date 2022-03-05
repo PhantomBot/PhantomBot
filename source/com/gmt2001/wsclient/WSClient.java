@@ -20,7 +20,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.ssl.SslContext;
@@ -130,7 +130,7 @@ public class WSClient {
 
             Bootstrap b = new Bootstrap();
             b.group(this.group)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(NioSocketChannel.class)
                     .handler(new WSClientInitializer(this));
 
             this.channel = b.connect(this.host, this.port).sync().channel();
