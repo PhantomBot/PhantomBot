@@ -22,7 +22,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -231,7 +230,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     }
 
     @Override
-    public void handshakeComplete(ChannelHandlerContext ctx, WebSocketServerProtocolHandler.HandshakeComplete hc) {
+    public void handshakeComplete(ChannelHandlerContext ctx) {
         this.onOpen();
     }
 }
