@@ -65,7 +65,7 @@ public class WSClient {
     /**
      * The {@link Channel} for the session
      */
-    private final Channel channel;
+    private Channel channel = null;
     /**
      * The client's {@link EventLoopGroup}
      */
@@ -78,9 +78,8 @@ public class WSClient {
      * @param handler An object implementing {@link WsClientFrameHandler} which will receive frames
      * @throws SSLException Failed to create the {@link SslContext}
      * @throws IllegalArgumentException URI scheme is not ws or wss
-     * @throws java.lang.InterruptedException The connection process was interrupted
      */
-    public WSClient(URI uri, WsClientFrameHandler handler) throws SSLException, IllegalArgumentException, InterruptedException {
+    public WSClient(URI uri, WsClientFrameHandler handler) throws SSLException, IllegalArgumentException {
         try {
             this.uri = uri;
 
@@ -110,6 +109,24 @@ public class WSClient {
             } else {
                 this.sslCtx = null;
             }
+        } catch (IllegalArgumentException | SSLException ex) {
+            group.shutdownGracefully();
+            throw ex;
+        }
+    }
+
+    /**
+     * Connects to the server
+     *
+     * @return true if the socket has connected and is starting the handshake; false otherwise
+     * @throws InterruptedException The connection process was interrupted
+     * @throws IllegalStateException Attempting to use a closed client
+     */
+    public boolean connect() throws InterruptedException, IllegalStateException {
+        try {
+            if (this.channel != null) {
+                throw new IllegalStateException("Reusing a closed client");
+            }
 
             Bootstrap b = new Bootstrap();
             b.group(this.group)
@@ -117,10 +134,12 @@ public class WSClient {
                     .handler(new WSClientInitializer(this));
 
             this.channel = b.connect(this.host, this.port).sync().channel();
-        } catch (IllegalArgumentException | InterruptedException | SSLException ex) {
+        } catch (InterruptedException | IllegalStateException ex) {
             group.shutdownGracefully();
             throw ex;
         }
+
+        return this.channel != null;
     }
 
     /**

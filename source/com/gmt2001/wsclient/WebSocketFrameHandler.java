@@ -82,6 +82,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                 this.connected = false;
             });
             this.connected = true;
+            this.client.handler.handshakeComplete(ctx, hc);
         }
     }
 

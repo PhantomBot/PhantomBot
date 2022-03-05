@@ -18,6 +18,7 @@ package com.gmt2001.wsclient;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 
 /**
  * Represents a handler for WebSocket client frames
@@ -33,4 +34,12 @@ public interface WsClientFrameHandler {
      * @param frame The {@link WebSocketFrame} to process
      */
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
+
+    /**
+     * Handles the handshake complete event
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param hc The {@link WebSocketServerProtocolHandler.HandshakeComplete} event
+     */
+    public void handshakeComplete(ChannelHandlerContext ctx, WebSocketServerProtocolHandler.HandshakeComplete hc);
 }
