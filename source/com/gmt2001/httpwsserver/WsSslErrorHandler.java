@@ -50,13 +50,13 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         QueryStringDecoder qsd = new QueryStringDecoder(ctx.channel().attr(ATTR_URI).get());
-            for (String u : ALLOWNONSSLPATHS) {
-                if (qsd.path().startsWith(u)) {
-                    ReferenceCountUtil.retain(frame);
-                    ctx.fireChannelRead(frame);
-                    return;
-                }
+        for (String u : ALLOWNONSSLPATHS) {
+            if (qsd.path().startsWith(u)) {
+                ReferenceCountUtil.retain(frame);
+                ctx.fireChannelRead(frame);
+                return;
             }
+        }
     }
 
     /**

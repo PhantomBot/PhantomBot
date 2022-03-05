@@ -102,6 +102,7 @@ public final class HTTPWSServer {
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     * @param botName The bot name to use for the DN of the self-signed certificate
      * @return An initialized {@link HTTPWSServer}
      */
     public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
@@ -121,6 +122,7 @@ public final class HTTPWSServer {
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     * @param botName The bot name to use for the DN of the self-signed certificate
      */
     private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
         try {
@@ -212,7 +214,7 @@ public final class HTTPWSServer {
 
             ks.setKeyEntry("phantombot", kp.getPrivate(), "pbselfsign".toCharArray(), new Certificate[]{cert});
 
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
+            try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
                 ks.store(outputStream, "pbselfsign".toCharArray());
             }
 
@@ -236,7 +238,7 @@ public final class HTTPWSServer {
      * @throws UnrecoverableKeyException
      */
     private void reloadSslContext() throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
-        try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+        try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
             ks.load(inputStream, this.sslPass.toCharArray());
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");

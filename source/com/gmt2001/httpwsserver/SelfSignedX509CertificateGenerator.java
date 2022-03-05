@@ -32,15 +32,15 @@ import java.util.Date;
 
 /**
  * Generates a SelfSigned X.509 Certificate
- * 
- * Taken from https://stackoverflow.com/questions/1615871/creating-an-x509-certificate-in-java-without-bouncycastle
- * Original code and modifications by: Mike B, vbence, and Clark Hobbie
+ *
+ * Taken from https://stackoverflow.com/questions/1615871/creating-an-x509-certificate-in-java-without-bouncycastle Original code and modifications
+ * by: Mike B, vbence, and Clark Hobbie
  *
  * @author gmt2001
  */
- @SuppressWarnings("sunapi")
+@SuppressWarnings("sunapi")
 final class SelfSignedX509CertificateGenerator {
-    
+
     static final int RECOMMENDED_KEY_SIZE = 2048;
     static final String RECOMMENDED_SIG_ALGO = "SHA512withRSA";
     static final int RECOMMENDED_VALIDITY_DAYS = 60;
@@ -59,7 +59,7 @@ final class SelfSignedX509CertificateGenerator {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      * @throws NoSuchProviderException
-     * @throws SignatureException 
+     * @throws SignatureException
      */
     static X509Certificate generateCertificate(String dn, KeyPair pair, int days, String algorithm)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
@@ -89,23 +89,23 @@ final class SelfSignedX509CertificateGenerator {
         cert.sign(privkey, algorithm);
         return cert;
     }
-    
+
     /**
      * Generate a DN string with just the CN
-     * 
+     *
      * @param commonName the Common Name
      * @return the formatted string
      */
     static String generateDistinguishedName(String commonName) {
         return "CN=" + commonName.replace('=', '-').replace(',', '-');
     }
-    
+
     /**
      * Generate a Key Pair
-     * 
+     *
      * @param keySize the key size, in bits
      * @return the generated key pair
-     * @throws NoSuchAlgorithmException 
+     * @throws NoSuchAlgorithmException
      */
     static KeyPair generateKeyPair(int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
