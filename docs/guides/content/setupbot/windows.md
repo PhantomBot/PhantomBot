@@ -31,7 +31,6 @@ During the initial startup we need some details. These are:
 
 - Bot Account Name - We do not recommend using your streaming account.
 - Bot OAuth Token
-- Caster OAuth Token
 - Which channel to join.
 
 You should know your bot account name already. So that should be easy. Next up is getting the Bot OAuth Token.
@@ -43,16 +42,6 @@ To get the Bot OAuth token, make sure you are logged in to twitch with the **acc
 https://phantombot.github.io/PhantomBot/oauth/
 
 Click `Connect with Twitch Bot`, then click `Authorize`, and copy the code to a safe location. The code should look something like this:
-
-`123abc`
-
-#### Caster OAuth Token
-
-To get the Caster OAuth token, make sure you are logged in to Twitch with **your own account** This token allows the bot to change your stream title and game, or pull other useful information. When you’re logged in, go to the following url:
-
-https://phantombot.github.io/PhantomBot/oauth/
-
-Click `Connect with Twitch Broadcaster`, then click `Authorize`, and copy the code to a safe location. The code should look something like this:
 
 `123abc`
 
@@ -76,6 +65,18 @@ After it has started, it will walk you through all the steps that require inform
 After going through all the steps, a whole lot of text will scroll by, and you should see the following:
 
 `BotName ready!`
+
+#### Automatically Refreshing OAuth
+
+You should now setup Automatically Refreshing OAuth tokens so your chat token does not expire.
+
+This also lets you connect the broadcaster account so the Twitch API works.
+
+Go to your panel on the bots webserver. If you installed the bot on the same machine you are currently using, the link is usually http://localhost:25000/
+
+If the bot is on a different computer, replace the IP/URL as neccessary.
+
+Click on the **OAuth Setup** link and follow the instructions to authorize your tokens.
 
 #### [ERROR] BotName is not detected as a moderator
 

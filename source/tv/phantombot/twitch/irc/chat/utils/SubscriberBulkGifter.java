@@ -17,58 +17,62 @@
 package tv.phantombot.twitch.irc.chat.utils;
 
 public class SubscriberBulkGifter {
+
     private final String username;
     private final int totalSubscriptionsGifted;
     private final boolean isAnonymous;
     private int currentSubscriptionsGifted = 0;
-    
+
     /**
      * Class constructor.
-     * 
+     *
      * @param username
-     * @param totalSubscriptionsGifted 
+     * @param totalSubscriptionsGifted
      */
     public SubscriberBulkGifter(String username, int totalSubscriptionsGifted, boolean isAnonymous) {
         this.username = username;
         this.totalSubscriptionsGifted = totalSubscriptionsGifted;
         this.isAnonymous = isAnonymous;
     }
-    
+
     /**
      * Method that gets what user sent the subscription.
-     * @return 
+     *
+     * @return
      */
     public String getUsername() {
         return username;
     }
-    
+
     /**
      * Method that gets the subscription number of which the user bought.
-     * @return 
+     *
+     * @return
      */
     public int getSubscritpionsGifted() {
         return totalSubscriptionsGifted;
     }
-    
+
     /**
      * Method that gets how many subs has gone through twitch.
-     * @return 
+     *
+     * @return
      */
     public int getCurrentSubscriptionGifted() {
         return currentSubscriptionsGifted;
     }
-    
+
     /**
      * Method that increases the total subs that went through.
      */
     public void increaseCurrentSubscriptionGifted() {
         currentSubscriptionsGifted++;
     }
-    
+
     /**
      * Method that returns if this was by anonymous.
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isAnonymous() {
         return isAnonymous;

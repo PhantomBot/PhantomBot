@@ -68,7 +68,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * Handles incoming WebSocket frames and passes them to the appropriate {@link WsFrameHandler}
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param req The {@link WebSocketFrame} containing the request frame
+     * @param frame The {@link WebSocketFrame} containing the request frame
      * @throws Exception Passes any thrown exceptions up the stack
      */
     @Override
@@ -187,7 +187,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     /**
      * Creates and prepares a Close {@link WebSocketFrame} for transmission
      *
-     * @param content The {@link WebSocketCloseStatus} to send
+     * @param status The {@link WebSocketCloseStatus} to send
      * @return A {@link WebSocketFrame} that is ready to transmit
      */
     public static WebSocketFrame prepareCloseWebSocketFrame(WebSocketCloseStatus status) {
@@ -197,7 +197,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     /**
      * Creates and prepares a Close {@link WebSocketFrame} for transmission
      *
-     * @param content The close status code to send
+     * @param status The close status code to send
      * @param reason The reason string to send
      * @return A {@link WebSocketFrame} that is ready to transmit
      */
