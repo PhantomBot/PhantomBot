@@ -33,7 +33,7 @@ First switch to your botuser:
 
 Then run this:
 
-`kill $(pgrep -f PhantomBot)``
+`kill $(pgrep -f PhantomBot)`
 
 or if you have it, use:
 
