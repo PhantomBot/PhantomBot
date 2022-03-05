@@ -37,7 +37,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Class constructor.
      *
-     * @param {String} channelName
+     * @param channelName
      */
     protected MessageQueue(String channelName) {
         this.channelName = channelName;
@@ -49,7 +49,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Method that sets if we are allowed to send messages.
      *
-     * @param {boolean} isAllowedToSend
+     * @param isAllowedToSend
      */
     public synchronized void setAllowSendMessages(boolean isAllowedToSend) {
         this.isAllowedToSend = isAllowedToSend;
@@ -58,7 +58,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Method that says if we are allowed to send messages.
      *
-     * @return {boolean} isAllowedToSend
+     * @return isAllowedToSend
      */
     public boolean getAllowSendMessages() {
         return this.isAllowedToSend;
@@ -67,7 +67,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Method that returns the amount of messages we've sent in 30 seconds.
      *
-     * @return {int} writes
+     * @return writes
      */
     public int getWrites() {
         return this.writes;
@@ -76,7 +76,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Attempts to enqueue a message, timing out after 5 seconds.
      *
-     * @param {String} message
+     * @param message
      */
     public void say(String message) {
         message = message.replace('\r', ' ');
@@ -92,7 +92,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     /**
      * Attempts to enqueue a message until success.
      *
-     * @param {String} message
+     * @param message
      */
     public void sayNow(String message) {
         message = message.replace('\r', ' ');

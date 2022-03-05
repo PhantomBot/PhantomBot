@@ -21,7 +21,6 @@ import java.net.URI;
 import java.nio.channels.NotYetConnectedException;
 import java.util.Date;
 import java.util.concurrent.locks.ReentrantLock;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.chat.utils.Message;
@@ -38,9 +37,9 @@ public class TwitchSession extends MessageQueue {
     /**
      * Class constructor.
      *
-     * @param {String} channelName
-     * @param {String} botName
-     * @param {String} oAuth
+     * @param channelName
+     * @param botName
+     * @param oAuth
      */
     public TwitchSession(String channelName, String botName, String oAuth) {
         super(channelName);
@@ -55,7 +54,7 @@ public class TwitchSession extends MessageQueue {
     /**
      * Method that returns the channel name
      *
-     * @return {String} channelName
+     * @return channelName
      */
     public String getChannelName() {
         return this.channelName;
@@ -69,7 +68,7 @@ public class TwitchSession extends MessageQueue {
     /**
      * Method that returns the bot name.
      *
-     * @return {String} botName
+     * @return botName
      */
     public String getBotName() {
         return this.botName;
@@ -78,7 +77,7 @@ public class TwitchSession extends MessageQueue {
     /**
      * Method that sends a raw message to the socket.
      *
-     * @param {String} message
+     * @param message
      */
     public void sendRaw(String message) {
         this.sendRaw(message, false);
@@ -99,14 +98,6 @@ public class TwitchSession extends MessageQueue {
                 }
             }
             com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
-        } catch (WebsocketNotConnectedException ex) {
-            if (!isretry) {
-                com.gmt2001.Console.warn.println("Tried to send message after connection to Twitch dropped, trying to reconnect...");
-                this.reconnect();
-                this.sendRaw(message, true);
-                return;
-            }
-            com.gmt2001.Console.err.println("Failed to send message to Twitch [WebsocketNotConnectedException]: " + ex.getMessage());
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
@@ -115,7 +106,7 @@ public class TwitchSession extends MessageQueue {
     /**
      * Method that sends channel message.
      *
-     * @param {String} message
+     * @param message
      */
     public void send(String message) {
         this.sendRaw("PRIVMSG #" + this.getChannelName() + " :" + message);
@@ -135,7 +126,7 @@ public class TwitchSession extends MessageQueue {
         // Connect to Twitch.
         try {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.botName, this.oAuth, this);
-            if (!this.twitchWSIRC.connectWSS(false)) {
+            if (!this.twitchWSIRC.connectWSS()) {
                 throw new Exception("Error when connecting to Twitch.");
             }
         } catch (Exception ex) {

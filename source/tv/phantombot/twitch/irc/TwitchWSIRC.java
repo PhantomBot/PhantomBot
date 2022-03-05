@@ -16,22 +16,22 @@
  */
 package tv.phantombot.twitch.irc;
 
+import com.gmt2001.wsclient.WSClient;
+import com.gmt2001.wsclient.WsClientFrameHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import java.net.URI;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_6455;
-import org.java_websocket.enums.ReadyState;
-import org.java_websocket.handshake.ServerHandshake;
-import tv.phantombot.PhantomBot;
+import javax.net.ssl.SSLException;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 
-public class TwitchWSIRC extends WebSocketClient {
+public class TwitchWSIRC implements WsClientFrameHandler {
 
     private final TwitchSession session;
     private final String botName;
@@ -41,130 +41,129 @@ public class TwitchWSIRC extends WebSocketClient {
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
     private boolean connecting = true;
+    private final URI uri;
+    private final WSClient client;
+    private final ExecutorService ircParseExecutorService = Executors.newCachedThreadPool();
 
     /**
-     * Class constructor.
+     * Constructor
      *
-     * @param {URI} uri
-     * @param {String} channelName
-     * @param {String} botName
-     * @param {String} oAuth
+     * @param uri The URI to connect to
+     * @param channelName The channel to join
+     * @param botName The username to login as
+     * @param oAuth The OAuth token to authenticate the login
+     * @param session The {@link TwitchSession} that controls the IRC session
      */
     public TwitchWSIRC(URI uri, String channelName, String botName, String oAuth, TwitchSession session) {
-        super(uri, new Draft_6455());
-
         this.uri = uri;
         this.channelName = channelName;
         this.botName = botName;
         this.oAuth = oAuth;
         this.session = session;
+        WSClient nclient = null;
+        try {
+            nclient = new WSClient(uri, this);
+        } catch (IllegalArgumentException | SSLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.client = nclient;
+        }
 
         // Create a new ping timer that runs every 30 seconds.
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-            if (this.getReadyState() != ReadyState.OPEN) {
+            if (!this.client.connected()) {
                 return;
             }
 
             if (this.connecting) {
-                lastPing = System.currentTimeMillis();
-                lastPong = System.currentTimeMillis();
+                this.lastPing = System.currentTimeMillis();
+                this.lastPong = System.currentTimeMillis();
                 this.connecting = false;
                 return;
             }
 
             // if we sent a ping longer than 3 minutes ago, send another one.
-            if (System.currentTimeMillis() > (lastPing + 180000)) {
+            if (System.currentTimeMillis() > (this.lastPing + 180000)) {
                 com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
-                lastPing = System.currentTimeMillis();
-                this.send("PING");
+                this.lastPing = System.currentTimeMillis();
+                this.client.send("PING");
 
                 // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
-            } else if (System.currentTimeMillis() > (lastPong + 210000)) {
+            } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
                 com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
                 com.gmt2001.Console.warn.println("Closing our connection with Twitch since no PONG got sent back.", true);
-                this.close();
+                this.client.close();
             }
         }, 10, 30, TimeUnit.SECONDS);
     }
 
+    /**
+     * Changes the OAuth token for the next, and future, connect attempts
+     *
+     * @param oAuth The new OAuth token
+     */
     public void setOAuth(String oAuth) {
         this.oAuth = oAuth;
     }
 
     /**
-     * Method that sets sockets and connects to Twitch.
+     * Connects to Twitch
      *
-     * @param {boolean} reconnect
+     * @return true if the socket has connected and is starting the handshake; false otherwise
      */
-    public boolean connectWSS(boolean reconnect) {
+    public boolean connectWSS() {
         try {
-            if (reconnect) {
-                com.gmt2001.Console.out.println("Reconnecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
-            } else {
-                com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
-            }
-            // Get our context.
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            // Init the context.
-            sslContext.init(null, null, null);
-            // Get a socket factory.
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            // Set TCP no delay.
-            this.setTcpNoDelay(PhantomBot.getTwitchTcpNodelay());
-            // Set the socket.
-            this.setSocketFactory(sslSocketFactory);
-            // Connect.
-            this.setConnectionLostTimeout(30);
-            connecting = true;
-            this.connect();
-            return true;
-        } catch (KeyManagementException | NoSuchAlgorithmException ex) {
+            com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            this.connecting = true;
+            return this.client.connect();
+        } catch (IllegalStateException | InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+            return false;
         }
-        return false;
-    }
-
-    synchronized void gotPong() {
-        lastPong = System.currentTimeMillis();
     }
 
     /**
-     * Callback that is called when we open a connect to Twitch.
-     *
-     * @param {ServerHandshake} handshakedata
+     * Updates the last pong timer
      */
-    @Override
-    public void onOpen(ServerHandshake handshakedata) {
+    synchronized void gotPong() {
+        this.lastPong = System.currentTimeMillis();
+    }
+
+    /**
+     * Callback when the socket is fully connected and ready to send/receive messages
+     *
+     * Performs login and preps the parser
+     */
+    private void onOpen() {
         com.gmt2001.Console.out.println("Connected to " + this.botName + "@" + this.uri.getHost() + " (SSL)");
 
-        this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.getConnection(), channelName, session);
+        this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.client, this.channelName, this.session);
 
         // Send the oauth
-        this.send("PASS " + oAuth);
+        this.client.send("PASS " + oAuth);
         // Send the bot name.
-        this.send("NICK " + botName);
+        this.client.send("NICK " + botName);
 
         // Send an event saying that we are connected to Twitch.
-        EventBus.instance().postAsync(new IrcConnectCompleteEvent(session));
+        EventBus.instance().postAsync(new IrcConnectCompleteEvent(this.session));
     }
 
     /**
-     * Callback that is called when the connection with Twitch is lost.
+     * Callback that is called when the connection with Twitch is lost
      *
-     * @param {int} code
-     * @param {String} reason
-     * @param {boolean} remote
+     * @param code The close status code
+     * @param reason The close reason message
      */
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
+    private void onClose(int code, String reason) {
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
             com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
-            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "] Remote Hangup [" + remote + "]");
+            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-            connecting = true;
+            this.connecting = true;
             this.session.reconnect();
         } else {
             com.gmt2001.Console.out.println("Connection to Twitch WS-IRC was closed...");
@@ -172,32 +171,56 @@ public class TwitchWSIRC extends WebSocketClient {
     }
 
     /**
-     * Callback that is called when we get an error from the socket.
+     * Callback that is called when we get a message from Twitch
      *
-     * @param {Exception} ex
+     * Automatically sends PONG in response to a PING, then queues the message to be parsed on the thread pool
+     *
+     * @param message The message
      */
-    @Override
-    public void onError(Exception ex) {
-        com.gmt2001.Console.err.printStackTrace(ex);
+    private void onMessage(String message) {
+        if (message.startsWith("PING")) {
+            this.client.send("PONG");
+        }
+
+        ircParseExecutorService.submit(() -> {
+            Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC.onMessage::parseData");
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+            this.twitchWSIRCParser.parseData(message, this);
+        });
     }
 
     /**
-     * Callback that is called when we get a message from Twitch.
+     * Sends the message
      *
-     * @param {String} message
+     * @param message The message to send
      */
-    @Override
-    public void onMessage(String message) {
-        if (message.startsWith("PING")) {
-            send("PONG");
-        }
+    public void send(String message) {
+        this.client.send(message);
+    }
 
-        try {
-            new Thread(() -> {
-                twitchWSIRCParser.parseData(message, this);
-            }).start();
-        } catch (Exception ex) {
-            twitchWSIRCParser.parseData(message, this);
+    /**
+     * Closes the socket
+     *
+     * @param status The close status code to send
+     * @param reason The close reason to send
+     */
+    public void close(int status, String reason) {
+        this.client.close(status, reason);
+    }
+
+    @Override
+    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+        if (frame instanceof TextWebSocketFrame) {
+            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
+            this.onMessage(tframe.text());
+        } else if (frame instanceof CloseWebSocketFrame) {
+            CloseWebSocketFrame cframe = (CloseWebSocketFrame) frame;
+            this.onClose(cframe.statusCode(), cframe.reasonText());
         }
+    }
+
+    @Override
+    public void handshakeComplete(ChannelHandlerContext ctx, WebSocketServerProtocolHandler.HandshakeComplete hc) {
+        this.onOpen();
     }
 }

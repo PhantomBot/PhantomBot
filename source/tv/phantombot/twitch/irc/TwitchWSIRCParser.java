@@ -16,15 +16,16 @@
  */
 package tv.phantombot.twitch.irc;
 
+import com.gmt2001.wsclient.WSClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
-import org.java_websocket.WebSocket;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.SubmissionPublisher;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.event.EventBus;
@@ -55,7 +56,7 @@ interface TwitchWSIRCCommand {
     void exec(String message, String username, Map<String, String> tags);
 }
 
-public class TwitchWSIRCParser implements Runnable {
+public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> implements Flow.Processor<Map<String, String>, Map<String, String>> {
 
     // The user login sent in the anonymous sub gift event from Twitch.
     // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
@@ -67,32 +68,38 @@ public class TwitchWSIRCParser implements Runnable {
     private final UsernameCache usernameCache = UsernameCache.instance();
     private final EventBus eventBus = EventBus.instance();
     private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
-    private final BlockingDeque<Map<String, String>> giftedSubscriptionEvents = new LinkedBlockingDeque<>();
-    private WebSocket webSocket;
+    private WSClient client;
     private final TwitchSession session;
     private final String channelName;
-    private final Thread runThread;
+    private Subscription subscription;
 
-    public static synchronized TwitchWSIRCParser instance(WebSocket webSocket, String channelName, TwitchSession session) {
+    /**
+     * Constructor
+     *
+     * @param client The {@link WSClient} running the socket session
+     * @param channelName The currently connected channel
+     * @param session The {@link TwitchSession} that controls the IRC session
+     * @return A configured instance
+     */
+    public static synchronized TwitchWSIRCParser instance(WSClient client, String channelName, TwitchSession session) {
         if (instance == null) {
-            instance = new TwitchWSIRCParser(webSocket, channelName, session);
+            instance = new TwitchWSIRCParser(client, channelName, session);
         } else {
-            instance.setWebSocket(webSocket);
+            instance.setClient(client);
         }
 
         return instance;
     }
 
     /**
-     * Class constructor.
+     * Constructor
      *
-     * @param {WebSocket} webSocket
-     * @param {String} channelName
-     * @param {TwitchSession} session
+     * @param client The {@link WSClient} running the socket session
+     * @param channelName The currently connected channel
+     * @param session The {@link TwitchSession} that controls the IRC session
      */
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private TwitchWSIRCParser(WebSocket webSocket, String channelName, TwitchSession session) {
-        this.webSocket = webSocket;
+    private TwitchWSIRCParser(WSClient client, String channelName, TwitchSession session) {
+        this.client = client;
         this.channelName = channelName;
         this.session = session;
 
@@ -122,49 +129,34 @@ public class TwitchWSIRCParser implements Runnable {
 
         // USERNOTICE event from Twitch.
         parserMap.put("USERNOTICE", (TwitchWSIRCCommand) this::onUserNotice);
-
-        // Start a new thread for events.
-        this.runThread = new Thread(this);
-        this.runThread.start();
-    }
-
-    private void setWebSocket(WebSocket webSocket) {
-        this.webSocket = webSocket;
     }
 
     /**
-     * Method which is on a new thread that keeps track of gifted subscribers.
-     */
-    @Override
-    public void run() {
-        while (!PhantomBot.isInExitState()) {
-            try {
-                Map<String, String> tags = giftedSubscriptionEvents.take();
-
-                if (bulkSubscriberGifters.containsKey(tags.get("login"))) {
-                    SubscriberBulkGifter gifter = bulkSubscriberGifters.get(tags.get("login"));
-                    if (gifter.getCurrentSubscriptionGifted() < gifter.getSubscritpionsGifted()) {
-                        gifter.increaseCurrentSubscriptionGifted();
-                    } else {
-                        bulkSubscriberGifters.remove(tags.get("login"));
-                    }
-                } else {
-                    if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                        scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
-                    } else {
-                        scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan")));
-                    }
-                }
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-    }
-
-    /**
-     * Method that splits messages with new lines then parses them.
+     * Changes the attached {@link WSClient}
      *
-     * @param {String} rawMessage
+     * @param client The new {@link WSClient}
+     */
+    private void setClient(WSClient client) {
+        this.client = client;
+    }
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        this.subscription = subscription;
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onError(Throwable thrwbl) {
+        com.gmt2001.Console.err.printStackTrace(thrwbl);
+        com.gmt2001.Console.err.println("GiftSubTracker threw an exception and is being disconnected...");
+    }
+
+    /**
+     * Method that splits messages with new lines then parses them
+     *
+     * @param rawMessage The untouched message to parse
+     * @param client The {@link TwitchWSIRC} client for this session
      */
     public void parseData(String rawMessage, TwitchWSIRC client) {
         try {
@@ -184,14 +176,13 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Method that parses raw badges.
+     * Method that parses raw badges
      *
-     * @param rawBadges
-     * @return
+     * @param rawBadges The raw badges tag to parse
+     * @return A Map of the badges and their states
      */
     private Map<String, String> parseBadges(String rawBadges) {
-        // A user cannot have more than 4 badges, acording to Twitch.
-        Map<String, String> badges = new HashMap<>(4);
+        Map<String, String> badges = new HashMap<>();
 
         // Add default values.
         badges.put("user-type", "");
@@ -201,7 +192,7 @@ public class TwitchWSIRCParser implements Runnable {
         badges.put("vip", "0");
 
         if (rawBadges.length() > 0) {
-            String badgeParts[] = rawBadges.split(",", 4);
+            String badgeParts[] = rawBadges.split(",");
 
             for (String badge : badgeParts) {
                 // Remove the `/1` from the badge.
@@ -237,9 +228,10 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Method that parses a single line message.
+     * Method that parses a single line message
      *
-     * @param {String} rawMessage
+     * @param rawMessage The untouched message to parse
+     * @param client The {@link TwitchWSIRC} client for this session
      */
     private void parseLine(String rawMessage, TwitchWSIRC client) {
         Map<String, String> tags = new HashMap<>();
@@ -312,11 +304,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Method that handles parsing commands.
+     * Method that handles parsing commands
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void parseCommand(String message, String username, Map<String, String> tags) {
         String command = message.substring(1);
@@ -338,20 +330,20 @@ public class TwitchWSIRCParser implements Runnable {
      * parserMap object. ----------------------------------------------------------------------
      */
     /**
-     * Handles the 001 event from IRC.
+     * Handles the 001 event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onChannelJoined(String message, String username, Map<String, String> tags) {
         // Request our tags
-        webSocket.send("CAP REQ :twitch.tv/membership");
-        webSocket.send("CAP REQ :twitch.tv/commands");
-        webSocket.send("CAP REQ :twitch.tv/tags");
+        client.send("CAP REQ :twitch.tv/membership");
+        client.send("CAP REQ :twitch.tv/commands");
+        client.send("CAP REQ :twitch.tv/tags");
 
         // Join the channel.
-        webSocket.send("JOIN #" + channelName);
+        client.send("JOIN #" + channelName);
 
         // Log in the console that web joined.
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
@@ -361,11 +353,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the PRIVMSG event from IRC.
+     * Handles the PRIVMSG event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onPrivMsg(String message, String username, Map<String, String> tags) {
         // Check to see if the user is using a ACTION in the channel (/me).
@@ -423,11 +415,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the CLEARCHAT event from IRC.
+     * Handles the CLEARCHAT event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onClearChat(String message, String username, Map<String, String> tags) {
         String duration = "";
@@ -448,11 +440,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the WHISPER event from IRC.
+     * Handles the WHISPER event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onWhisper(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -462,11 +454,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the JOIN event from IRC.
+     * Handles the JOIN event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onJoin(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -476,11 +468,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the PART event from IRC.
+     * Handles the PART event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onPart(String message, String username, Map<String, String> tags) {
         // Post the event.
@@ -490,11 +482,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the NOTICE event from IRC.
+     * Handles the NOTICE event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onNotice(String message, String username, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
@@ -543,11 +535,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the USERNOTICE event from IRC.
+     * Handles the USERNOTICE event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onUserNotice(String message, String username, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
@@ -560,11 +552,11 @@ public class TwitchWSIRCParser implements Runnable {
                     scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months"), message));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
-                giftedSubscriptionEvents.add(tags);
+                this.submit(tags);
             } else if (tags.get("msg-id").equalsIgnoreCase("anonsubgift")) {
                 // Not in use by Twitch as of right now, 2019-01-03, leaving code there though.
                 // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
-                giftedSubscriptionEvents.add(tags);
+                this.submit(tags);
             } else if (tags.get("msg-id").equalsIgnoreCase("giftpaidupgrade")) {
                 // Not in use yet, no examples either.
                 // This will be when a user gifts a sub to a user that already is subscribed.
@@ -592,11 +584,11 @@ public class TwitchWSIRCParser implements Runnable {
     }
 
     /**
-     * Handles the USERSTATE event from IRC.
+     * Handles the USERSTATE event from IRC
      *
-     * @param {String} message
-     * @param {String} username
-     * @param {Map} tags
+     * @param message The parsed message
+     * @param username The parsed sender username
+     * @param tags The tags attached to the message
      */
     private void onUserState(String message, String username, Map<String, String> tags) {
         username = session.getBotName();
@@ -646,5 +638,33 @@ public class TwitchWSIRCParser implements Runnable {
                 }
             }
         }
+    }
+
+    @Override
+    public void onNext(Map<String, String> item) {
+        try {
+            if (bulkSubscriberGifters.containsKey(item.get("login"))) {
+                SubscriberBulkGifter gifter = bulkSubscriberGifters.get(item.get("login"));
+                if (gifter.getCurrentSubscriptionGifted() < gifter.getSubscritpionsGifted()) {
+                    gifter.increaseCurrentSubscriptionGifted();
+                } else {
+                    bulkSubscriberGifters.remove(item.get("login"));
+                }
+            } else {
+                if (item.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
+                    scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan")));
+                } else {
+                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan")));
+                }
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onComplete() {
+        this.close();
     }
 }

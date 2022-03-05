@@ -33,8 +33,7 @@ public interface WsAuthenticationHandler {
     public static final AttributeKey<Boolean> ATTR_AUTHENTICATED = AttributeKey.valueOf("authenticated");
 
     /**
-     * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been
-     * authenticated
+     * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been authenticated
      *
      * When returning {@code false}, this method MUST also send an {@code Authentication Required} frame back to the client
      *

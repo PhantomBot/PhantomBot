@@ -17,6 +17,7 @@
 package tv.phantombot.twitch.irc.chat.utils;
 
 public class Message {
+
     private final String message;
     private final boolean hasPriority;
 
