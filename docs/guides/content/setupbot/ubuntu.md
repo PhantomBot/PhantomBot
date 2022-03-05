@@ -61,6 +61,18 @@ After the bot is configured you can press the following keys and follow the rest
 
 `Ctrl + C`
 
+#### Automatically Refreshing OAuth
+
+You should now setup Automatically Refreshing OAuth tokens so your chat token does not expire.
+
+This also lets you connect the broadcaster account so the Twitch API works.
+
+Go to your panel on the bots webserver. If you installed the bot on the same machine you are currently using, the link is usually http://localhost:25000/
+
+If the bot is on a different computer, replace the IP/URL as neccessary.
+
+Click on the **OAuth Setup** link and follow the instructions to authorize your tokens.
+
 ### 4. Setting up a systemd Unit
 
 Create a new file called phantombot.service. I use nano, but you can also use vi to write files.

@@ -41,6 +41,18 @@ And now your bot should be connected to your channel! You can find a list of com
 
 9. Type `exit` and hit Enter in the bot console to shut it down gracefully.
 
+#### Automatically Refreshing OAuth
+
+You should now setup Automatically Refreshing OAuth tokens so your chat token does not expire.
+
+This also lets you connect the broadcaster account so the Twitch API works.
+
+Go to your panel on the bots webserver. If you installed the bot on the same machine you are currently using, the link is usually http://localhost:25000/
+
+If the bot is on a different computer, replace the IP/URL as neccessary.
+
+Click on the **OAuth Setup** link and follow the instructions to authorize your tokens.
+
 ### Launch PhantomBot faster
 
 - go to Documents/PhantomBot -> right-click launch.sh -> “Open With” -> “Other…” -> search for Terminal and select it -> check “Always Open With” -> hit “Open” (Note: Enable All Applications might have to be selected rather than Enable Recommended Applications)
