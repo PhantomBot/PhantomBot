@@ -20,8 +20,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
@@ -64,7 +64,7 @@ class WSClientInitializer extends ChannelInitializer<SocketChannel> {
             pipeline.addLast("sslhandler", this.client.sslCtx.newHandler(ch.alloc(), this.client.host, this.client.port));
         }
 
-        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new HttpClientCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(WebSocketClientCompressionHandler.INSTANCE);
         pipeline.addLast(new WebSocketClientProtocolHandler(WebSocketClientHandshakerFactory.newHandshaker(this.client.uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())));
