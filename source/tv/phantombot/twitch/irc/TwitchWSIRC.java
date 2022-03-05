@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 
@@ -205,6 +206,9 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      * @param message The message to send
      */
     public void send(String message) {
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+            com.gmt2001.Console.debug.println("<" + message);
+        }
         this.client.send(message);
     }
 

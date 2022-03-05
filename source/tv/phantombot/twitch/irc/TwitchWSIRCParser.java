@@ -251,7 +251,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
-            com.gmt2001.Console.debug.println(rawMessage);
+            com.gmt2001.Console.debug.println(">" + rawMessage);
         }
 
         // Get tags from the messages.
