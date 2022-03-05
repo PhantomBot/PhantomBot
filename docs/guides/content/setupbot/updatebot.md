@@ -33,7 +33,7 @@ First switch to your botuser:
 
 Then run this:
 
-`kill $(pgrep -f PhantomBot)``
+`kill $(pgrep -f PhantomBot)`
 
 or if you have it, use:
 
@@ -62,7 +62,7 @@ Get the latest PhantomBot release:
 
 `wget https://github.com/PhantomBot/PhantomBot/releases/download/vX.X.X/PhantomBot-X.X.X.zip`
 
-Replace the X with the current release version like PhantomBot-2.3.5.zip!
+Replace the X with the current release version. For example, if the latest version ([found here, on Github](https://github.com/PhantomBot/PhantomBot/releases)) is 3.5.1, change the `/vX.X.X/PhantomBot-X.X.X.zip` to `/v3.5.1/PhantomBot-3.5.1.zip`.
 
 After the download has finished, we have to unzip the files.
 
