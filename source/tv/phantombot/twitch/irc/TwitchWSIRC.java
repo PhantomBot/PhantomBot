@@ -126,6 +126,17 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     }
 
     /**
+     * Indicates if the socket is fully connected and ready to send/receive frames
+     *
+     * NOTE: Does not indicate authentication status
+     *
+     * @return true if connected; false otherwise
+     */
+    public boolean connected() {
+        return this.client.connected();
+    }
+
+    /**
      * Updates the last pong timer
      */
     synchronized void gotPong() {

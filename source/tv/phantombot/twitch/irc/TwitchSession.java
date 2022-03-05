@@ -85,8 +85,19 @@ public class TwitchSession extends MessageQueue {
 
     private void sendRaw(String message, boolean isretry) {
         try {
-            this.twitchWSIRC.send(message);
-            this.backoff.Reset();
+            if (this.twitchWSIRC.connected()) {
+                this.twitchWSIRC.send(message);
+                this.backoff.Reset();
+            } else {
+                if (!isretry) {
+                    try {
+                        com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
+                        Thread.sleep(5000);
+                        this.sendRaw(message, true);
+                    } catch (InterruptedException ex2) {
+                    }
+                }
+            }
         } catch (NotYetConnectedException ex) {
             if (!isretry) {
                 try {
