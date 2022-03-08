@@ -32,6 +32,7 @@ public class ExponentialBackoff {
     private long lastIntervalMS;
     private int totalIterations = 0;
     private boolean isNextIntervalDetermined = false;
+    private boolean isBackingOff = false;
 
     /**
      *
@@ -49,12 +50,15 @@ public class ExponentialBackoff {
      */
     public void Backoff() {
         try {
+            this.setIsBackingOff(true);
             this.determineNextInterval();
             this.totalIterations++;
             this.isNextIntervalDetermined = false;
             Thread.sleep(this.lastIntervalMS);
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
+        } finally {
+            this.setIsBackingOff(false);
         }
     }
 
@@ -64,11 +68,15 @@ public class ExponentialBackoff {
      * @param command The Runnable to callback
      */
     public void BackoffAsync(Runnable command) {
+        this.setIsBackingOff(true);
         this.determineNextInterval();
         this.totalIterations++;
         this.isNextIntervalDetermined = false;
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.schedule(command, this.lastIntervalMS, TimeUnit.MILLISECONDS);
+        service.schedule(() -> {
+            this.setIsBackingOff(false);
+            command.run();
+        }, this.lastIntervalMS, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -78,6 +86,15 @@ public class ExponentialBackoff {
         this.lastIntervalMS = this.minIntervalMS;
         this.totalIterations = 0;
         this.isNextIntervalDetermined = false;
+    }
+
+    /**
+     * Returns whether a backoff is currently in progress
+     *
+     * @return true if a backoff is executing; false otherwise
+     */
+    public synchronized boolean GetIsBackingOff() {
+        return this.isBackingOff;
     }
 
     /**
@@ -93,7 +110,7 @@ public class ExponentialBackoff {
     /**
      * Returns the total number of times the backoff has been used since the last reset
      *
-     * @return
+     * @return The total
      */
     public int GetTotalIterations() {
         return this.totalIterations;
@@ -113,5 +130,14 @@ public class ExponentialBackoff {
 
         this.lastIntervalMS = nextInterval;
         this.isNextIntervalDetermined = true;
+    }
+
+    /**
+     * Set this.isBackingOff
+     *
+     * @param isBackingOff The new value
+     */
+    private synchronized void setIsBackingOff(boolean isBackingOff) {
+        this.isBackingOff = isBackingOff;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,9 +154,9 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.client, this.channelName, this.session);
 
         // Send the oauth
-        this.client.send("PASS " + oAuth);
+        this.client.send("PASS " + this.oAuth);
         // Send the bot name.
-        this.client.send("NICK " + botName);
+        this.client.send("NICK " + this.botName);
 
         // Send an event saying that we are connected to Twitch.
         EventBus.instance().postAsync(new IrcConnectCompleteEvent(this.session));
