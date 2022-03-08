@@ -18,10 +18,10 @@ package tv.phantombot;
 
 public class RepoVersion {
 
-    private static final String phantomBotVersion = "3.5.2";
-    private static final String repoVersion = "6562a447";
-    private static final String buildType = "custom";
-    private static final String panelVersion = "1.5.3";
+    private static final String phantomBotVersion = "@phantombot.version@";
+    private static final String repoVersion = "@repository.version@";
+    private static final String buildType = "@buildtype@";
+    private static final String panelVersion = "@webpanel.version@";
     private static final boolean isDocker = false;
 
     private RepoVersion() {
