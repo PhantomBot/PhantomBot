@@ -56,8 +56,8 @@ import tv.phantombot.twitch.api.TwitchValidate;
 public class RollbarProvider implements AutoCloseable {
 
     private static final RollbarProvider INSTANCE = new RollbarProvider();
-    private static final String ACCESS_TOKEN = "notoken";
-    private static final String ENDPOINT = "";
+    private static final String ACCESS_TOKEN = "@access.token@";
+    private static final String ENDPOINT = "@endpoint@";
     private static final int REPEAT_INTERVAL_MINUTES = 180;
     private static final long REPEAT_CHECK_INTERVAL = 1800000L;
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
