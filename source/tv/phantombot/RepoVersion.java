@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ package tv.phantombot;
 
 public class RepoVersion {
 
-    private static final String phantomBotVersion = "@phantombot.version@";
-    private static final String repoVersion = "@repository.version@";
-    private static final String buildType = "@buildtype@";
-    private static final String panelVersion = "@webpanel.version@";
+    private static final String phantomBotVersion = "3.5.2";
+    private static final String repoVersion = "6562a447";
+    private static final String buildType = "custom";
+    private static final String panelVersion = "1.5.3";
     private static final boolean isDocker = false;
 
     private RepoVersion() {
