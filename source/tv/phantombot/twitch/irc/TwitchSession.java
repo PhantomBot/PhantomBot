@@ -161,12 +161,11 @@ public class TwitchSession extends MessageQueue {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.quitIRC();
                     com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
                     com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.Backoff();
 
-                    this.quitIRC();
-                    Thread.sleep(500);
                     this.connect();
                     Thread.sleep(500);
                     // Should be connected now.
