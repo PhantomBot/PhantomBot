@@ -132,6 +132,8 @@ public class TwitchSession extends MessageQueue {
 
     /**
      * Method that creates a connection with Twitch.
+     *
+     * @return
      */
     public TwitchSession connect() {
         // Connect to Twitch.
@@ -158,16 +160,18 @@ public class TwitchSession extends MessageQueue {
 
         if (this.reconnectLock.tryLock()) {
             try {
-                com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
-                com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
-                this.backoff.Backoff();
+                if (!this.backoff.GetIsBackingOff()) {
+                    com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
+                    com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
+                    this.backoff.Backoff();
 
-                this.quitIRC();
-                Thread.sleep(500);
-                this.connect();
-                Thread.sleep(500);
-                // Should be connected now.
-                this.setAllowSendMessages(true);
+                    this.quitIRC();
+                    Thread.sleep(500);
+                    this.connect();
+                    Thread.sleep(500);
+                    // Should be connected now.
+                    this.setAllowSendMessages(true);
+                }
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             } finally {
