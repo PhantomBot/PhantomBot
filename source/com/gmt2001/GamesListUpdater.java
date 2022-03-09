@@ -82,6 +82,10 @@ public class GamesListUpdater {
         JSONObject jso = new JSONObject(response.content);
         int myVersion = PhantomBot.instance().getDataStore().GetInteger("settings", "", "gamesList-version");
 
+        if (!Files.exists(Paths.get("./web/panel/js/utils/gamesList.txt"))) {
+            myVersion = 0;
+        }
+
         if (myVersion >= jso.getInt("version")) {
             com.gmt2001.Console.debug.println("Skipping update, currently up-to-date...");
             return;
