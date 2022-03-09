@@ -31,7 +31,7 @@ public class ExponentialBackoff {
     private final long maxIntervalMS;
     private long lastIntervalMS;
     private int totalIterations = 0;
-    private boolean isNextIntervalDetermined = false;
+    private boolean isNextIntervalDetermined = true;
     private boolean isBackingOff = false;
 
     /**
@@ -50,16 +50,25 @@ public class ExponentialBackoff {
      */
     public void Backoff() {
         try {
+            com.gmt2001.Console.debug.println("Backoff() called by: " + com.gmt2001.Console.debug.findCaller("com.gmt2001.ExponentialBackoff"));
             this.setIsBackingOff(true);
+            com.gmt2001.Console.debug.println("Locked backoff...");
             this.determineNextInterval();
+            com.gmt2001.Console.debug.println("Interval calculated as " + this.lastIntervalMS + "...");
             this.totalIterations++;
-            this.isNextIntervalDetermined = false;
+            com.gmt2001.Console.debug.println("Sleeping...");
             Thread.sleep(this.lastIntervalMS);
+            com.gmt2001.Console.debug.println("Awake...");
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
         } finally {
             this.setIsBackingOff(false);
+            com.gmt2001.Console.debug.println("Unlocked backoff...");
+            this.setIsNextIntervalDetermined(false);
+            com.gmt2001.Console.debug.println("Unlocked calculation...");
         }
+
+        com.gmt2001.Console.debug.println("Returning control...");
     }
 
     /**
@@ -68,14 +77,22 @@ public class ExponentialBackoff {
      * @param command The Runnable to callback
      */
     public void BackoffAsync(Runnable command) {
+        com.gmt2001.Console.debug.println("BackoffAsync() called by: " + com.gmt2001.Console.debug.findCaller("com.gmt2001.ExponentialBackoff"));
         this.setIsBackingOff(true);
+        com.gmt2001.Console.debug.println("Locked backoff...");
         this.determineNextInterval();
+        com.gmt2001.Console.debug.println("Interval calculated as " + this.lastIntervalMS + "...");
         this.totalIterations++;
-        this.isNextIntervalDetermined = false;
+        com.gmt2001.Console.debug.println("Scheduling...");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.schedule(() -> {
             this.setIsBackingOff(false);
+            com.gmt2001.Console.debug.println("Unlocked backoff...");
+            this.setIsNextIntervalDetermined(false);
+            com.gmt2001.Console.debug.println("Unlocked calculation...");
             command.run();
+            com.gmt2001.Console.debug.println("Callback completed...");
+            com.gmt2001.Console.debug.println("Returning control...");
         }, this.lastIntervalMS, TimeUnit.MILLISECONDS);
     }
 
@@ -85,7 +102,7 @@ public class ExponentialBackoff {
     public void Reset() {
         this.lastIntervalMS = this.minIntervalMS;
         this.totalIterations = 0;
-        this.isNextIntervalDetermined = false;
+        this.setIsNextIntervalDetermined(true);
     }
 
     /**
@@ -124,12 +141,16 @@ public class ExponentialBackoff {
             return;
         }
 
+        com.gmt2001.Console.debug.println("Calculating a new interval, previous was " + this.lastIntervalMS + "...");
         long nextInterval = this.lastIntervalMS * this.lastIntervalMS;
+        com.gmt2001.Console.debug.println("Candidate value is " + nextInterval + "...");
 
         nextInterval = Math.min(nextInterval, this.maxIntervalMS);
+        com.gmt2001.Console.debug.println("Min value is " + nextInterval + "...");
 
         this.lastIntervalMS = nextInterval;
         this.isNextIntervalDetermined = true;
+        com.gmt2001.Console.debug.println("Calculation complete...");
     }
 
     /**
@@ -139,5 +160,12 @@ public class ExponentialBackoff {
      */
     private synchronized void setIsBackingOff(boolean isBackingOff) {
         this.isBackingOff = isBackingOff;
+    }
+
+    /**
+     * Reset this.isNextIntervalDetermined
+     */
+    private synchronized void setIsNextIntervalDetermined(boolean isNextIntervalDetermined) {
+        this.isNextIntervalDetermined = isNextIntervalDetermined;
     }
 }

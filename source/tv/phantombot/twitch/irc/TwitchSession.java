@@ -164,15 +164,17 @@ public class TwitchSession extends MessageQueue {
                     this.quitIRC();
                     com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
                     com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
-                    this.backoff.Backoff();
-
-                    this.connect();
-                    Thread.sleep(500);
-                    // Should be connected now.
-                    this.setAllowSendMessages(true);
+                    this.backoff.BackoffAsync(() -> {
+                        try {
+                            this.connect();
+                            Thread.sleep(500);
+                            // Should be connected now.
+                            this.setAllowSendMessages(true);
+                        } catch (InterruptedException ex) {
+                            com.gmt2001.Console.err.printStackTrace(ex);
+                        }
+                    });
                 }
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
             } finally {
                 this.reconnectLock.unlock();
             }
