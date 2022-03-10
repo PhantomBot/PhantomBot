@@ -95,7 +95,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
                 com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
                 com.gmt2001.Console.warn.println("Closing our connection with Twitch since no PONG got sent back.", true);
-                this.client.close();
+                this.session.reconnect();
             }
         }, 10, 30, TimeUnit.SECONDS);
     }
