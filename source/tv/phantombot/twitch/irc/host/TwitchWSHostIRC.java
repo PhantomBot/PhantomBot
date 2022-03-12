@@ -49,6 +49,7 @@ public class TwitchWSHostIRC {
     private TwitchWSHostIRCWS twitchWSHostIRCWS;
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(5000L, 900000L);
+    private boolean lastConnectSuccess = false;
 
     /**
      * Constructor for TwitchWSHostIRC object.
@@ -89,9 +90,13 @@ public class TwitchWSHostIRC {
         try {
             this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(this.twitchIRCWSS));
             if (!this.twitchWSHostIRCWS.connectWSS()) {
+                this.lastConnectSuccess = false;
                 com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed");
+            } else {
+                this.lastConnectSuccess = true;
             }
         } catch (URISyntaxException ex) {
+            this.lastConnectSuccess = false;
             com.gmt2001.Console.err.printStackTrace(ex);
             com.gmt2001.Console.err.println("TwitchWSHostIRC URI Failed");
         }
@@ -122,6 +127,9 @@ public class TwitchWSHostIRC {
                     com.gmt2001.Console.warn.println("Delaying next reconnect (Host) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         this.connect();
+                        if (!this.lastConnectSuccess) {
+                            Executors.newSingleThreadScheduledExecutor().schedule(() -> this.reconnect(), 500, TimeUnit.MILLISECONDS);
+                        }
                     });
                 }
             } finally {

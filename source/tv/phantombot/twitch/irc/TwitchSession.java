@@ -18,8 +18,11 @@ package tv.phantombot.twitch.irc;
 
 import com.gmt2001.ExponentialBackoff;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -33,6 +36,7 @@ public class TwitchSession extends MessageQueue {
     private TwitchWSIRC twitchWSIRC;
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(5000L, 900000L);
+    private boolean lastConnectSuccess = false;
 
     /**
      * Class constructor.
@@ -140,10 +144,15 @@ public class TwitchSession extends MessageQueue {
         try {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.botName, this.oAuth, this);
             if (!this.twitchWSIRC.connectWSS()) {
-                throw new Exception("Error when connecting to Twitch.");
+                this.lastConnectSuccess = false;
+                com.gmt2001.Console.err.println("Error when connecting to Twitch.");
+            } else {
+                this.lastConnectSuccess = true;
             }
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Failed to create a new TwitchWSIRC instance: " + ex.getMessage());
+        } catch (URISyntaxException ex) {
+            this.lastConnectSuccess = false;
+            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed");
         }
         return this;
     }
@@ -168,10 +177,14 @@ public class TwitchSession extends MessageQueue {
                         try {
                             this.connect();
                             Thread.sleep(500);
-                            // Should be connected now.
-                            this.setAllowSendMessages(true);
                         } catch (InterruptedException ex) {
                             com.gmt2001.Console.err.printStackTrace(ex);
+                        } finally {
+                            if (this.lastConnectSuccess) {
+                                this.setAllowSendMessages(true);
+                            } else {
+                                Executors.newSingleThreadScheduledExecutor().schedule(() -> this.reconnect(), 500, TimeUnit.MILLISECONDS);
+                            }
                         }
                     });
                 }
