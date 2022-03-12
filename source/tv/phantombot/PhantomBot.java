@@ -16,6 +16,7 @@
  */
 package tv.phantombot;
 
+import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.RollbarProvider;
@@ -215,6 +216,8 @@ public final class PhantomBot implements Listener {
     // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
     private static final int EXIT_STATUS_OK = 0;
     private static final int EXIT_STATUS_ERROR = 1;
+
+    private ExponentialBackoff initChatBackoff = new ExponentialBackoff(5000L, 900000L);
 
     /**
      * PhantomBot Instance.
@@ -520,15 +523,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Set the oauth key in the Twitch api and perform a validation. */
-        if (!this.apiOAuth.isEmpty()) {
-            Helix.instance().setOAuth(this.apiOAuth);
-            TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
-        }
-
-        /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
-
-        TwitchValidate.instance().checkOAuthInconsistencies(this.botName);
+        this.validateOAuth();
 
         if (pbProperties.getPropertyAsBoolean("useeventsub", false)) {
             TwitchValidate.instance().validateApp(pbProperties.getProperty("apptoken"), "APP (EventSub)");
@@ -579,20 +574,43 @@ public final class PhantomBot implements Listener {
             }
         }
 
+        this.initChat();
+    }
+
+    public void validateOAuth() {
+        if (!this.apiOAuth.isEmpty()) {
+            Helix.instance().setOAuth(this.apiOAuth);
+            TwitchValidate.instance().validateAPI(this.apiOAuth, "API (apioauth)");
+        }
+
+        /* Validate the chat OAUTH token. */
+        TwitchValidate.instance().validateChat(this.oauth, "CHAT (oauth)");
+
+        TwitchValidate.instance().checkOAuthInconsistencies(this.botName);
+    }
+
+    private void initChat() {
+        this.validateOAuth();
         if (!TwitchValidate.instance().isChatValid()) {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
             com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
             com.gmt2001.Console.warn.println("The default URL is http://localhost:25000/oauth/");
-            com.gmt2001.Console.warn.println("Please restart the bot after setting up OAuth");
             com.gmt2001.Console.warn.println();
-        } else {
+            if (!this.initChatBackoff.GetIsBackingOff()) {
+                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn.println();
+                this.initChatBackoff.BackoffAsync(() -> {
+                    this.initChat();
+                });
+            }
+        } else if (this.session == null) {
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
             this.session = new TwitchSession(this.channelName, this.botName, this.oauth).connect();
             this.session.doSubscribe();
 
             /* Start a host checking instance. */
-            if (apiOAuth.length() > 0 && checkModuleEnabled("./handlers/hostHandler.js")) {
+            if (!apiOAuth.isBlank()) {
                 this.wsHostIRC = new TwitchWSHostIRC(this.channelName, this.apiOAuth);
             }
         }

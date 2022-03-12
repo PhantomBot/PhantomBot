@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class TwitchPubSub {
     private TwitchPubSubWS twitchPubSubWS;
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 120000L);
+    private boolean lastConnectSuccess = false;
 
     /**
      * Constructor for the PubSub class.
@@ -96,11 +98,15 @@ public class TwitchPubSub {
         try {
             this.twitchPubSubWS = new TwitchPubSubWS(new URI("wss://pubsub-edge.twitch.tv"), this, this.channelId, this.botId, this.oAuth);
             if (!this.twitchPubSubWS.connectWSS()) {
-                throw new Exception("Failed to connect to PubSub.");
+                this.lastConnectSuccess = false;
+                com.gmt2001.Console.err.println("Failed to connect to PubSub.");
+            } else {
+                this.lastConnectSuccess = true;
             }
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.println("TwitchPubSub connection error: " + ex.getMessage());
-            PhantomBot.exitError();
+        } catch (URISyntaxException ex) {
+            this.lastConnectSuccess = false;
+            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.println("TwitchPubSub URI Failed");
         }
     }
 
@@ -131,6 +137,9 @@ public class TwitchPubSub {
                     com.gmt2001.Console.warn.println("Delaying next reconnect (PubSub) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         this.connect();
+                        if (!this.lastConnectSuccess) {
+                            Executors.newSingleThreadScheduledExecutor().schedule(() -> this.reconnect(), 500, TimeUnit.MILLISECONDS);
+                        }
                     });
                 }
             } finally {
