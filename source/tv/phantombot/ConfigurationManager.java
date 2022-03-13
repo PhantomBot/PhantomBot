@@ -76,7 +76,7 @@ public class ConfigurationManager {
         /* Load up the bot info from the bot login file */
         try {
             if (new File(BOTLOGIN_TXT_LOCATION).exists()) {
-                try (FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
+                try ( FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
                     startProperties.load(inputStream);
                 }
             } else {
@@ -322,7 +322,7 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Please note, you must complete this setup first before accessing this page\r\n");
 
-                startProperties.setProperty(PROP_OAUTH, startProperties.getProperty(PROP_OAUTH, ""));
+                startProperties.setProperty(PROP_API_OAUTH, startProperties.getProperty(PROP_OAUTH, "null"));
             } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
 
             // Channel name.
