@@ -524,6 +524,7 @@ $(function () {
             helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
 
             if (e.data === 'PING') {
+                helpers.log('Sending PONG', helpers.LOG_TYPE.DEBUG);
                 webSocket.send('PONG');
                 return;
             }
@@ -538,6 +539,7 @@ $(function () {
                 } else {
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
+                        helpers.log('Found reconnect auth', helpers.LOG_TYPE.DEBUG);
                         return;
                     } else {
                         helpers.isAuth = true;
@@ -549,6 +551,7 @@ $(function () {
                         query: 'panelSettings'
                     });
                 }
+                helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 return;
             }
 
@@ -563,17 +566,20 @@ $(function () {
 
             // Make sure this isn't a version request.
             if (message.versionresult !== undefined) {
+                helpers.log('Got version result...', helpers.LOG_TYPE.DEBUG);
                 // Call the callback.
                 callbacks[message.versionresult].func(message);
                 // Delete the callback.
                 delete callbacks[message.versionresult];
+                helpers.log('Callback complete', helpers.LOG_TYPE.DEBUG);
             } else {
-
+                helpers.log('Looking for callbacks and listeners for ' + message.query_id + '...', helpers.LOG_TYPE.DEBUG);
                 // Handle callbacks.
                 let callback = callbacks[message.query_id],
                         listener = listeners[message.query_id];
 
                 if (callback !== undefined) {
+                    helpers.log('Found callback...', helpers.LOG_TYPE.DEBUG);
                     // Add our data to the callback array.
                     if (!callback.isUpdate) {
                         if (callback.isArray) {
@@ -587,6 +593,7 @@ $(function () {
 
                     // If we got all the data, run the callback.
                     if (--callback.await === 0) {
+                        helpers.log('Running callback...', helpers.LOG_TYPE.DEBUG);
                         // Run the function and send the query data with it.
                         callback.func(callback.queryData);
                         // Log this.
@@ -610,8 +617,10 @@ $(function () {
                         helpers.log('Awaiting for data (' + callback.await + ' left) before calling callback with id: ' + message.query_id, helpers.LOG_TYPE.DEBUG);
                     }
                 } else if (listener !== undefined) {
+                    helpers.log('Found listener...', helpers.LOG_TYPE.DEBUG);
                     // Call the listener.
                     listener(message.results);
+                    helpers.log('Listener complete', helpers.LOG_TYPE.DEBUG);
                 }
             }
         } catch (ex) {
