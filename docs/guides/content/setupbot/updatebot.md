@@ -75,14 +75,13 @@ To make future updates a bit easier, we have to rename the PhantomBot folder.
 Copy your `config` folder to your new folder **(VERY IMPORTANT)**:
 
 `cp -R ./phantombot-old/config/ ./phantombot/` **(v2.3.9 or newer)**
+
+Copy additional folders containing customizations (optional):
+
+`cp -R ./phantombot-old/scripts/custom/ ./phantombot/scripts/` **(v2.3.9 or newer)**
 `cp -R ./phantombot-old/scripts/lang/custom/ ./phantombot/scripts/lang/` **(v2.3.9 or newer)**
 
-**Do not copy your database or botlogin into the config folder, the bot will do this for you.**
-`cp ./phantombot-old/phantombot.db ./phantombot/` **(v2.3.8 or older)**
-`cp ./phantombot-old/phantombot.db-journal ./phantombot/` **(v2.3.8 or older)**
-`cp ./phantombot-old/botlogin.txt ./phantombot/` **(v2.3.8 or older)**
-
-The last thing we need to do is to assign the right privileges to make the launch.sh and launch-service.sh files executable.
+The last thing we need to do is to assign the right privileges to make the launch.sh, launch-service.sh, and the included java runtime files executable.
 
 `cd phantombot`
 `sudo chmod u+x launch-service.sh launch.sh ./java-runtime-linux/bin/java`
