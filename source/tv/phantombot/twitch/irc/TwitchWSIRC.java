@@ -89,7 +89,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             if (System.currentTimeMillis() > (this.lastPing + 180000)) {
                 com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
                 this.lastPing = System.currentTimeMillis();
-                this.client.send("PING");
+                this.send("PING");
 
                 // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
             } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
@@ -156,7 +156,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         // Send the oauth
         this.client.send("PASS " + this.oAuth);
         // Send the bot name.
-        this.client.send("NICK " + this.botName);
+        this.send("NICK " + this.botName);
 
         // Send an event saying that we are connected to Twitch.
         EventBus.instance().postAsync(new IrcConnectCompleteEvent(this.session));
@@ -190,7 +190,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      */
     private void onMessage(String message) {
         if (message.startsWith("PING")) {
-            this.client.send("PONG");
+            this.send("PONG");
         }
 
         ircParseExecutorService.submit(() -> {
