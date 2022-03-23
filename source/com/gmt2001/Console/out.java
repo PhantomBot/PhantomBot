@@ -41,6 +41,9 @@ public final class out {
     }
 
     public static void println(Object o) {
+        if (PhantomBot.getEnableDebugging()) {
+            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
+        }
         System.out.println("[" + logTimestamp.log() + "] " + o);
     }
 }

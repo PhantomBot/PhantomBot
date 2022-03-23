@@ -132,6 +132,18 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     }
 
     /**
+     * Sends the message
+     *
+     * @param message The message to send
+     */
+    private void send(String message) {
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+            com.gmt2001.Console.debug.println("<" + message);
+        }
+        this.client.send(message);
+    }
+
+    /**
      * Changes the attached {@link WSClient}
      *
      * @param client The new {@link WSClient}
@@ -241,6 +253,10 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         String event;
         int offset = 0;
 
+        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+            com.gmt2001.Console.debug.println(">" + rawMessage);
+        }
+
         if (rawMessage.startsWith("PONG")) {
             client.gotPong();
             return;
@@ -248,10 +264,6 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
         if (rawMessage.startsWith("PING")) {
             return;
-        }
-
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
-            com.gmt2001.Console.debug.println(">" + rawMessage);
         }
 
         // Get tags from the messages.
@@ -338,12 +350,12 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      */
     private void onChannelJoined(String message, String username, Map<String, String> tags) {
         // Request our tags
-        client.send("CAP REQ :twitch.tv/membership");
-        client.send("CAP REQ :twitch.tv/commands");
-        client.send("CAP REQ :twitch.tv/tags");
+        this.send("CAP REQ :twitch.tv/membership");
+        this.send("CAP REQ :twitch.tv/commands");
+        this.send("CAP REQ :twitch.tv/tags");
 
         // Join the channel.
-        client.send("JOIN #" + channelName);
+        this.send("JOIN #" + channelName);
 
         // Log in the console that web joined.
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");

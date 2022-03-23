@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 $(function () {
-    var webSocket = getWebSocket(),
+    let webSocket = getWebSocket(),
             queryMap = getQueryMap(),
             isPlaying = false,
             isDebug = localStorage.getItem('phantombot_alerts_debug') === 'true' || false;
-    queue = [];
+    let queue = [];
 
     /*
      * @function Gets a new instance of the websocket.
@@ -78,7 +78,7 @@ $(function () {
 
         // Refresh the page.
         window.location.reload();
-    }
+    };
 
     /*
      * @function Checks if the query map has the option, if not, returns default.
@@ -129,6 +129,8 @@ $(function () {
             $('.main-alert').append('<br />supportsAudioType(' + type + '): ' + ret);
         }
 
+        printDebug('supportsAudioType(' + type + '): ' + ret);
+
         return ret;
     }
 
@@ -153,6 +155,8 @@ $(function () {
         if (getOptionSetting('show-debug', 'false') === 'true') {
             $('.main-alert').append('<br />supportsVideoType(' + type + '): ' + ret);
         }
+
+        printDebug('supportsVideoType(' + type + '): ' + ret);
 
         return ret;
     }
@@ -345,7 +349,7 @@ $(function () {
                 htmlObj.prop('volume', gifVolume);
                 isVideo = true;
 
-                if (!supportsVideoType(gifFile.substring(gifFile.lastIndexOf('.') + 1)) !== '') {
+                if (supportsVideoType(gifFile.substring(gifFile.lastIndexOf('.') + 1)) === '') {
                     printDebug('Video format was not supported by the browser!', true);
                 }
             } else {
@@ -363,7 +367,7 @@ $(function () {
                 audio = new Audio(audioPath);
             }
 
-            // p obeject to hold custom gif alert text and style
+            // p object to hold custom gif alert text and style
             textObj = $('<p/>', {
                 'style': gifCss
             }).text(gifText);
@@ -460,7 +464,7 @@ $(function () {
                     if (message.authresult === 'true') {
                         printDebug('Successfully authenticated with the socket.', true);
                         // Handle this.
-                        handleBrowserInteraction()
+                        handleBrowserInteraction();
                     } else {
                         printDebug('Failed to authenticate with the socket.', true);
                     }
