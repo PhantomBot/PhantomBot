@@ -1309,9 +1309,6 @@ public final class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
 
-        // Move user files.
-        moveUserConfig();
-
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 11) {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 11 or later.");
             PhantomBot.exitError();
@@ -1531,58 +1528,6 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
             }
         }, 0, backupDBHourFrequency, TimeUnit.HOURS);
-    }
-
-    /**
-     * Method that moves the db and botlogin into a new folder (config)
-     */
-    private static void moveUserConfig() {
-        // Check if the config folder exists.
-        if (!new File("./config/").isDirectory()) {
-            new File("./config/").mkdir();
-        }
-
-        // Move the db and login file. If one of these doesn't exist it means this is a new bot.
-        if (!new File("phantombot.db").exists() || !new File("botlogin.txt").exists()) {
-            return;
-        }
-
-        com.gmt2001.Console.out.println("Moving the phantombot.db and botlogin.txt files into ./config");
-
-        try {
-            Files.move(Paths.get("botlogin.txt"), Paths.get("./config/botlogin.txt"));
-            Files.move(Paths.get("phantombot.db"), Paths.get("./config/phantombot.db"));
-
-            try {
-                new File("phantombot.db").delete();
-                new File("botlogin.txt").delete();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Failed to delete files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to move files [phantombot.db] [botlogin.txt] [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        }
-
-        // Move audio hooks and alerts. These two files should always exists.
-        if (!new File("./web/panel/js/ion-sound/sounds").exists() || !new File("./web/alerts/data").exists()) {
-            return;
-        }
-
-        com.gmt2001.Console.out.println("Moving alerts and audio hooks into ./config");
-
-        try {
-            Files.move(Paths.get("./web/panel/js/ion-sound/sounds"), Paths.get("./config/audio-hooks"));
-            Files.move(Paths.get("./web/alerts/data"), Paths.get("./config/gif-alerts"));
-
-            try {
-                FileUtils.deleteDirectory(new File("./web/panel/js/ion-sound/sounds"));
-                FileUtils.deleteDirectory(new File("./web/alerts/data"));
-            } catch (IOException ex) {
-                com.gmt2001.Console.err.println("Failed to delete old audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-            }
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Failed to move audio hooks and alerts [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        }
     }
 
     /**
