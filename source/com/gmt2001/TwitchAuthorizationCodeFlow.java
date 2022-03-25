@@ -124,7 +124,7 @@ public class TwitchAuthorizationCodeFlow {
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
-                this.refreshTransaction.setProperty("oauth", result.getString("access_token"));
+                this.refreshTransaction.setProperty("oauth", "oauth:" + result.getString("access_token"));
                 this.refreshTransaction.setProperty("refresh", result.getString("refresh_token"));
                 this.refreshTransaction.setProperty("oauthexpires", c.getTimeInMillis() + "");
 
@@ -150,7 +150,7 @@ public class TwitchAuthorizationCodeFlow {
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
-                this.refreshTransaction.setProperty("apioauth", result.getString("access_token"));
+                this.refreshTransaction.setProperty("apioauth", "oauth:" + result.getString("access_token"));
                 this.refreshTransaction.setProperty("apirefresh", result.getString("refresh_token"));
                 this.refreshTransaction.setProperty("apiexpires", c.getTimeInMillis() + "");
 
@@ -252,7 +252,7 @@ public class TwitchAuthorizationCodeFlow {
                     newTransaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_HIGH);
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                     c.add(Calendar.SECOND, result.getInt("expires_in"));
-                    newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", result.getString("access_token"));
+                    newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", "oauth:" + result.getString("access_token"));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "oauth" : "api") + "expires", c.getTimeInMillis() + "");
 
@@ -319,7 +319,7 @@ public class TwitchAuthorizationCodeFlow {
 
             connection.connect();
 
-            try (BufferedOutputStream stream = new BufferedOutputStream(connection.getOutputStream())) {
+            try ( BufferedOutputStream stream = new BufferedOutputStream(connection.getOutputStream())) {
                 stream.write("".getBytes());
                 stream.flush();
             }
@@ -327,7 +327,7 @@ public class TwitchAuthorizationCodeFlow {
             com.gmt2001.Console.debug.println(connection.getResponseCode());
 
             if (connection.getResponseCode() == 200) {
-                try (InputStream inStream = connection.getInputStream()) {
+                try ( InputStream inStream = connection.getInputStream()) {
                     String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
                     if (!r.startsWith("{")) {
                         r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
@@ -336,7 +336,7 @@ public class TwitchAuthorizationCodeFlow {
                     return new JSONObject(r);
                 }
             } else {
-                try (InputStream inStream = connection.getErrorStream()) {
+                try ( InputStream inStream = connection.getErrorStream()) {
                     String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
                     if (!r.startsWith("{")) {
                         r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
