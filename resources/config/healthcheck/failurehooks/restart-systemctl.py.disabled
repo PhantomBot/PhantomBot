@@ -1,0 +1,34 @@
+#
+# Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+#
+# Example hook to restart the bot using systemctl on Ubuntu or other Linux/Unix distros
+#
+# To enable this hook, rename to: restart-systemctl.py
+#
+# Also ensure the setting for servicename is correct below
+#
+
+from subprocess import run
+
+
+# Set this to the name of the PhantomBot service
+servicename = "phantombot.service"
+
+
+locals = locals()
+
+print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
+
+run("systemctl restart " + servicename, shell=True, check=True)
