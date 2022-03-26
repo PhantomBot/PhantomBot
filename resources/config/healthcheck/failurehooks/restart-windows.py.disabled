@@ -1,0 +1,39 @@
+#
+# Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+#
+# Example hook to restart the bot using net on Windows
+#
+# To enable this hook, rename to: restart-windows.py
+# On Windows you may need to enable the Show File Extensions option to do this
+#
+# Also ensure the setting for servicename is correct below
+#
+
+from subprocess import run
+from time import sleep
+
+
+# Set this to the name of the PhantomBot service
+# (Open Computer Management, go to Services, right-click on the service, open Properties, and use the "Service name" value in the dialog)
+servicename = "PhantomBotService"
+
+
+locals = locals()
+
+print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
+
+run("net stop " + servicename, shell=True, check=True)
+sleep(2)
+run("net start " + servicename, shell=True, check=True)
