@@ -12,6 +12,16 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#
+# Requires Python 3.8+
+# Requires running (from this healthcheck folder): pip install --no-cache-dir -r requirements.txt
+#
+# Can be run via cron
+# Will output errors to STDERR, which cron will normally automatically email to the root account via Linux Account Mail
+#
+# Add python scripts into the appropriate hook directories to take automatic actions
+#
+
 from inspect import getframeinfo, currentframe
 import os
 from pathlib import Path
