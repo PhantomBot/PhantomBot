@@ -49,7 +49,7 @@ public class GitHubAPIv3 {
         if (instance == null) {
             instance = new GitHubAPIv3();
         }
-        
+
         return instance;
     }
 
@@ -74,8 +74,8 @@ public class GitHubAPIv3 {
      * as needed.
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-                                       String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) throws JSONException {
+            String url, int responseCode, String exception,
+            String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -100,8 +100,8 @@ public class GitHubAPIv3 {
             urlConn.setRequestMethod("GET");
             urlConn.addRequestProperty("Content-Type", "application/json");
             urlConn.addRequestProperty("Accept", "application/vnd.github.v3+json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                       "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
+                    + "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
             urlConn.connect();
 
             if (urlConn.getResponseCode() == 200) {
@@ -140,14 +140,14 @@ public class GitHubAPIv3 {
         } finally {
             if (inputStream != null)
                 try {
-                    inputStream.close();
-                } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
+                inputStream.close();
+            } catch (IOException ex) {
+                fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
-        return(jsonResult);
+        return (jsonResult);
     }
 
     /*
@@ -190,7 +190,7 @@ public class GitHubAPIv3 {
         String os = PhantomBot.getOsSuffix();
 
         JSONArray assetsArray = jsonObject.getJSONArray("assets");
-        Pattern p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
         int i;
         boolean found = false;
         for (i = 0; i < assetsArray.length(); i++) {
@@ -201,7 +201,7 @@ public class GitHubAPIv3 {
         }
 
         if (!found) {
-            p = Pattern.compile(".*PhantomBot-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip", Pattern.CASE_INSENSITIVE);
+            p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+\\.zip", Pattern.CASE_INSENSITIVE);
             for (i = 0; i < assetsArray.length(); i++) {
                 if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
                     break;
@@ -209,7 +209,7 @@ public class GitHubAPIv3 {
             }
         }
 
-        return new String[] { tagName, assetsArray.getJSONObject(i).getString("browser_download_url") };
+        return new String[]{tagName, assetsArray.getJSONObject(i).getString("browser_download_url")};
     }
 
 }
