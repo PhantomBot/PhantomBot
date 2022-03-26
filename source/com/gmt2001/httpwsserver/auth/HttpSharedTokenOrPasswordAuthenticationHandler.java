@@ -61,6 +61,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      * Constructor
      *
      * @param token The authorization token that grants access
+     * @param password The password that also grants access
      */
     public HttpSharedTokenOrPasswordAuthenticationHandler(String token, String password) {
         this.token = token;
@@ -71,7 +72,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      * Checks if the given {@link FullHttpRequest} has the correct header with valid credentials
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param frame The {@link FullHttpRequest} to check
+     * @param req The {@link FullHttpRequest} to check
      * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with
      * {@code 401 Unauthorized} and then close the channel
      */

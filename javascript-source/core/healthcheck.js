@@ -16,9 +16,9 @@
  */
 
 /**
- * Alive check script
+ * Health check script
  * 
- * Saves the last time selected message types were received as an indicator that the TMI connection is alive
+ * Saves the last time selected message types were received as an indicator that the TMI connection is alive and the bot is working
  */
 (function() {
     /**
@@ -28,7 +28,7 @@
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd()) {
                 if (event.getUser().equalsIgnoreCase($.botName)) {
-                    $.writeToFile($.systemTime(), './addons/alivecheck.txt', false);
+                    $.writeToFile($.systemTime(), './addons/healthcheck.txt', false);
                 }
             }
         }
