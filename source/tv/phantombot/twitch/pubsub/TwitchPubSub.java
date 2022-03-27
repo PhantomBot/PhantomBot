@@ -71,7 +71,7 @@ public class TwitchPubSub {
     private String oAuth;
     private TwitchPubSubWS twitchPubSubWS;
     private final ReentrantLock reconnectLock = new ReentrantLock();
-    private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 120000L);
+    private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 900000L);
     private boolean lastConnectSuccess = false;
 
     /**

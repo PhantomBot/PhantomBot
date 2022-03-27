@@ -142,7 +142,7 @@ public class ExponentialBackoff {
         }
 
         com.gmt2001.Console.debug.println("Calculating a new interval, previous was " + this.lastIntervalMS + "...");
-        long nextInterval = this.lastIntervalMS * this.lastIntervalMS;
+        long nextInterval = this.lastIntervalMS * 2;
         com.gmt2001.Console.debug.println("Candidate value is " + nextInterval + "...");
 
         nextInterval = Math.min(nextInterval, this.maxIntervalMS);
