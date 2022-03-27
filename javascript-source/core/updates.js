@@ -27,14 +27,15 @@
 /**
  * PhantomBot v3.5.0
  */
-(function() {
+(function () {
     var modules,
-        versions,
-        sounds,
-        i;
+            versions,
+            sounds,
+            i;
 
     /** New setup */
-    if ($.changed == true && $.changed != null && $.changed != undefined && !$.inidb.exists('updates', 'installedNewBot') && $.inidb.get('updates', 'installedNewBot') != 'true') {
+    if ($.changed !== undefined && $.changed !== null && $.changed === true
+            && (!$.inidb.exists('updates', 'installedNewBot') || $.inidb.get('updates', 'installedNewBot') !== 'true')) {
         $.consoleLn('');
         $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
 
@@ -131,16 +132,16 @@
     }
 
     /* version 3.3.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') !== 'true') {
         $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
 
         $.consoleLn('Updating keywords...');
         var keys = $.inidb.GetKeyList('keywords', ''),
-            newKeywords = [],
-            key,
-            json,
-            i,
-            strippedKeys = {};
+                newKeywords = [],
+                key,
+                json,
+                i,
+                strippedKeys = {};
 
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
@@ -153,9 +154,9 @@
                 json.isCaseSensitive = false;
             }
             if (strippedKeys.hasOwnProperty(key)) {
-                throw 'Could not update keywords list. The keyword "' +  key +
-                      '" exists both as regex and as plain keyword. ' +
-                      "Please resolve the conflict and restart phantombot.";
+                throw 'Could not update keywords list. The keyword "' + key +
+                        '" exists both as regex and as plain keyword. ' +
+                        "Please resolve the conflict and restart phantombot.";
             }
             strippedKeys[key] = true;
             newKeywords.push({
@@ -175,7 +176,7 @@
     }
 
     /* version 3.3.6 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.6') || $.inidb.get('updates', 'installedv3.3.6') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv3.3.6') || $.inidb.get('updates', 'installedv3.3.6') !== 'true') {
         $.consoleLn('Starting PhantomBot update 3.3.6 updates...');
 
         $.inidb.set('modules', './systems/welcomeSystem.js', 'false');
@@ -185,13 +186,13 @@
     }
 
     /* version 3.4.1 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.1') || $.inidb.get('updates', 'installedv3.4.1') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv3.4.1') || $.inidb.get('updates', 'installedv3.4.1') !== 'true') {
         $.consoleLn('Starting PhantomBot update 3.4.1 updates...');
 
         var keys = $.inidb.GetKeyList('keywords', ''),
-        i,
-        coolkey,
-        json;
+                i,
+                coolkey,
+                json;
 
         for (i = 0; i < keys.length; i++) {
             json = JSON.parse($.inidb.get('keywords', keys[i]));
@@ -212,22 +213,22 @@
     }
 
     /* version 3.4.8 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') !== 'true') {
         $.consoleLn('Starting PhantomBot update 3.4.8 updates...');
 
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
             $.consoleLn('Updating timers...');
             var noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
-                noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
-                noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
-                noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
-                noticeKeys = $.inidb.GetKeyList('notices', ''),
-                noticeIdx,
-                notice,
-                notices = [],
-                disabled = [],
-                disabledKey,
-                noticeTimer;
+                    noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
+                    noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
+                    noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
+                    noticeKeys = $.inidb.GetKeyList('notices', ''),
+                    noticeIdx,
+                    notice,
+                    notices = [],
+                    disabled = [],
+                    disabledKey,
+                    noticeTimer;
 
             noticeKeys.sort();
 
@@ -241,7 +242,7 @@
                     notices.push($.jsString(notice));
                     disabledKey = noticeKeys[noticeIdx] + '_disabled';
                     if ($.inidb.exists('notices', disabledKey)) {
-                        disabled.push($.inidb.GetBoolean('notices', '',disabledKey));
+                        disabled.push($.inidb.GetBoolean('notices', '', disabledKey));
                     } else {
                         disabled.push(false);
                     }
@@ -272,77 +273,26 @@
     }
 
     /* version 3.5.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') != 'true') {
+    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') !== 'true') {
         $.consoleLn('Starting PhantomBot update 3.5.0 updates...');
 
         // Remove org.mozilla.javascript entries in phantombot_time
         var keys = $.inidb.GetKeyList('time', ''),
-        i;
+                i;
+
+        $.consoleLn('Checking ' + keys.length + ' time entries for bad keys...');
 
         for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
-                $.inidb.RemoveKey('time', '', keys[i]);
+            var key = $.javaString(keys[i]);
+            if (key === null || key === undefined || key.startsWith('org.mozilla.javascript')) {
+                $.inidb.RemoveKey('time', '', key);
+            }
+            if (i % 100 === 0) {
+                $.consoleLn('Still checking time entries ' + i + '/' + keys.length + '...');
             }
         }
 
         $.consoleLn('PhantomBot update 3.5.0 completed!');
         $.inidb.set('updates', 'installedv3.5.0', 'true');
-    }
-
-    /**
-     * @function getTableContents
-     * @param {string} tableName
-     * @returns {Array}
-     */
-    function getTableContents(tableName) {
-        var contents = [],
-            keyList = $.inidb.GetKeyList(tableName, ''),
-            temp,
-            i;
-
-        for (i in keyList) {
-
-            // Handle Exceptions per table
-            switch (tableName) {
-                // Ignore rows with less than 600 seconds (10 minutes)
-                case 'time':
-                    temp = parseInt($.inidb.get(tableName, keyList[i]));
-                    if (temp >= 600) {
-                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    }
-                    break;
-
-                    // Ignore rows with less than 10 points
-                case 'points':
-                    temp = parseInt($.inidb.get(tableName, keyList[i]));
-                    if (temp >= 10) {
-                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    }
-                    break;
-
-                    // Put the rows in by default
-                default:
-                    contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    break;
-            }
-        }
-
-        return contents;
-    }
-
-    /**
-     * @function setTableContents
-     * @param {string} tableName
-     * @param {Array} contents
-     */
-    function restoreTableContents(tableName, contents) {
-        var i;
-
-
-        for (i in contents) {
-            $.inidb.set(tableName, i, contents[i]);
-        }
-
-        $.inidb.SaveAll(true);
     }
 })();
