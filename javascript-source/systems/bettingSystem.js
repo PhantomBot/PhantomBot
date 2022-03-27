@@ -459,7 +459,7 @@
                  * @commandpath bet [amount] [option] - Bets on that option.
                  */
             } else {
-                var option = args.splice(1).join(' ').toLowerCase().trim()
+                var option = args.splice(1).join(' ').toLowerCase().trim();
                 if(option.length === 0) {
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
                     return; 
@@ -474,7 +474,7 @@
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
                     return; 
                 } else {
-                    points = action
+                    points = parseInt(action)
                 }
 
                 vote(sender, points, option);

@@ -89,7 +89,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('gambling.usage'));
                 return;
             } else {
-                points = parseInt(action)
+                points = parseInt(action);
             }
 
             gamble(sender, points);

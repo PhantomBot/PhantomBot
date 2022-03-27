@@ -88,7 +88,7 @@
          */
         if (command.equalsIgnoreCase('gamble')) {
             var twitchName = $.discord.resolveTwitchName(event.getSenderId());
-            if (twitchName == null) {
+            if (twitchName === null) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 return;
             }
