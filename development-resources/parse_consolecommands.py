@@ -83,9 +83,9 @@ lines.append("<!-- tocstop -->" + '\n')
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')
-lines.append("Parameters enclosed in square brackets `[ ]` are required when using the command" + '\n'
+lines.append("Parameters enclosed in square brackets `[ ]` are required when using the command" + '\n')
 lines.append('\n')
-lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n'
+lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
 
 for command in commands:
