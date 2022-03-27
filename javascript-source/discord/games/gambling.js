@@ -87,16 +87,25 @@
          * @discordcommandpath gamble [amount] - Gamble your points.
          */
         if (command.equalsIgnoreCase('gamble')) {
-            if (isNaN(parseInt(action))) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.usage'));
-            } else {
-                var twitchName = $.discord.resolveTwitchName(event.getSenderId());
-                if (twitchName !== null) {
-                    gamble(channel, twitchName, mention, sender, parseInt(action));
-                } else {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
-                }
+            var twitchName = $.discord.resolveTwitchName(event.getSenderId());
+            if (twitchName == null) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
             }
+
+            var points;
+            if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
+                points = $.getUserPoints(sender);
+            } else if ($.equalsIgnoreCase(action, "half")){
+                points = Math.floor($.getUserPoints(sender)/2);
+            } else if (isNaN(parseInt(action))) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.usage'));
+                return;
+            } else {
+                points = parseInt(action);
+            }
+            
+            gamble(channel, twitchName, mention, sender, points);
+
         }
 
         if (command.equalsIgnoreCase('gambling')) {

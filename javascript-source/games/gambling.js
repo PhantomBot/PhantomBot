@@ -80,12 +80,20 @@
          * @commandpath gamble [amount] - Gamble your points.
          */
         if (command.equalsIgnoreCase('gamble')) {
-            if (!parseInt(action)) {
+            var points;
+            if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
+                points = $.getUserPoints(sender);
+            } else if ($.equalsIgnoreCase(action, "half")){
+                points = Math.floor($.getUserPoints(sender)/2);
+            } else if (isNan(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('gambling.usage'));
                 return;
+            } else {
+                points = parseInt(action)
             }
 
-            gamble(sender, parseInt(action));
+            gamble(sender, points);
+
         }
 
         /**

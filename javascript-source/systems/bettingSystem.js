@@ -316,9 +316,6 @@
         if (bet.status === false || bet.opened === false) {
             // $.say($.whisperPrefix(sender) + 'There\'s no bet opened.');
             return;
-        } else if (isNaN(parseInt(amount)) || option.length === 0) {
-            message(sender, $.lang.get('bettingsystem.bet.usage'));
-            return;
         } else if (amount < 1) {
             message(sender, $.lang.get('bettingsystem.bet.error.neg', $.pointNameMultiple));
             return;
@@ -462,7 +459,26 @@
                  * @commandpath bet [amount] [option] - Bets on that option.
                  */
             } else {
-                vote(sender, args[0], args.splice(1).join(' ').toLowerCase().trim());
+                var option = args.splice(1).join(' ').toLowerCase().trim()
+                if(option.length === 0) {
+                    message(sender, $.lang.get('bettingsystem.bet.usage'));
+                    return; 
+                }
+
+                var points;
+                if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
+                    points = $.getUserPoints(sender);
+                } else if ($.equalsIgnoreCase(action, "half")){
+                    points = Math.floor($.getUserPoints(sender)/2);
+                } else if (isNaN(parseInt(action))) {
+                    message(sender, $.lang.get('bettingsystem.bet.usage'));
+                    return; 
+                } else {
+                    points = action
+                }
+
+                vote(sender, points, option);
+
             }
         }
     });

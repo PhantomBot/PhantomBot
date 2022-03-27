@@ -27,7 +27,7 @@ $.lang.register('bettingsystem.close.success.winners', 'A total of $1 players wo
 $.lang.register('bettingsystem.save.format', 'Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4, Points Won: $5.');
 $.lang.register('bettingsystem.results', 'Current bet: Title: "$1", Options: "$2", Total Points: $3, Total Entries: $4');
 $.lang.register('bettingsystem.global.usage', 'Usage: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');
-$.lang.register('bettingsystem.bet.usage', 'Usage: !bet [amount] [option]');
+$.lang.register('bettingsystem.bet.usage', 'Usage: !bet [amount / all / half] [option]');
 $.lang.register('bettingsystem.bet.error.neg', 'You cannot bet negative $1!');
 $.lang.register('bettingsystem.bet.error.min', 'The minimum bet you can place is $1.');
 $.lang.register('bettingsystem.bet.error.max', 'The maximum bet you can place is $1.');

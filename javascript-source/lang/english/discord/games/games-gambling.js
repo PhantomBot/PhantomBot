@@ -20,7 +20,7 @@ $.lang.register('discord.gambling.error.max', 'You\'re only allowed to gamble a 
 $.lang.register('discord.gambling.error.min', 'You\'re only allowed to gamble a minimum of $1.');
 $.lang.register('discord.gambling.lost', '$1 rolled $2 and lost $3. $5'); // Use $4 for the points the user has remaining
 $.lang.register('discord.gambling.won', '$1 rolled $2 and won $3! $5'); // Use $4 for the points the user has remaining
-$.lang.register('discord.gambling.usage', 'Usage: !gamble [amount]');
+$.lang.register('discord.gambling.usage', 'Usage: !gamble [amount / all / half]');
 $.lang.register('discord.gambling.set.max.usage', 'Usage: !gambling setmax [amount]');
 $.lang.register('discord.gambling.set.max', 'Set max gambling to $1!');
 $.lang.register('discord.gambling.set.min.usage', 'Usage: !gambling setmin [amount]');
