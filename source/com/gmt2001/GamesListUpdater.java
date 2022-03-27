@@ -112,7 +112,7 @@ public class GamesListUpdater {
             com.gmt2001.Console.debug.println("Current version is " + myVersion + ", updating to version " + nextVersion + "...");
 
             JSONArray indexesToUpdate;
-            if (jso.getJSONObject("index_changes").has("" + nextVersion)) {
+            if (!force && jso.getJSONObject("index_changes").has("" + nextVersion)) {
                 com.gmt2001.Console.debug.println("Found changelist for version " + nextVersion);
                 indexesToUpdate = jso.getJSONObject("index_changes").getJSONArray("" + nextVersion);
             } else {
@@ -126,6 +126,8 @@ public class GamesListUpdater {
             for (int i = 0; i < indexesToUpdate.length(); i++) {
                 UpdateFromIndex(data, indexesToUpdate.getInt(i));
             }
+
+            UpdateFromIndex(data, -1);
 
             if (jso.getJSONObject("deletes").has("" + nextVersion)) {
                 com.gmt2001.Console.debug.println("Found deletes for version " + nextVersion + ", processing...");
