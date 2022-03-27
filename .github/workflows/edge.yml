@@ -68,27 +68,27 @@ jobs:
         mkdir dist/$FOLDERARMBSDOTHER
         rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh
     - name: Upload Artifact (Full)
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ format('PhantomBot-{0}', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}', steps.build_env.outputs.branch) }}
     - name: Upload Artifact (Linux)
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ format('PhantomBot-{0}-lin', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}-lin', steps.build_env.outputs.branch) }}
     - name: Upload Artifact (Windows)
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ format('PhantomBot-{0}-win', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}-win', steps.build_env.outputs.branch) }}
     - name: Upload Artifact (macOS)
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ format('PhantomBot-{0}-mac', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}-mac', steps.build_env.outputs.branch) }}
     - name: Upload Artifact (ARM)
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ format('PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other', steps.build_env.outputs.branch) }}
