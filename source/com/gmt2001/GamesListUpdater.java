@@ -64,7 +64,7 @@ public class GamesListUpdater {
 
         com.gmt2001.Console.debug.println("Last Update: " + cal.toString());
 
-        if (cal.getTime().after(new Date())) {
+        if (!force && cal.getTime().after(new Date())) {
             com.gmt2001.Console.debug.println("Skipping update, interval has not expired...");
             return;
         }
@@ -106,7 +106,7 @@ public class GamesListUpdater {
 
         com.gmt2001.Console.debug.println("Executing updates to reach version " + jso.getInt("version") + "...");
 
-        boolean fullUpdate = false;
+        boolean fullUpdate = force;
         while (myVersion < jso.getInt("version")) {
             int nextVersion = myVersion + 1;
             com.gmt2001.Console.debug.println("Current version is " + myVersion + ", updating to version " + nextVersion + "...");
