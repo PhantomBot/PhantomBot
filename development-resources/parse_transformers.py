@@ -282,14 +282,15 @@ for subdir, dirs, files in os.walk("./javascript-source"):
 
 lines = []
 
-with open(md_path, encoding="utf8") as md_file:
-    oldlines = [line.rstrip('\n') for line in md_file]
-
-for line in oldlines:
-    lines.append(line + '\n')
-    if "<!-- tocstop -->" in line:
-        break
-
+lines.append("## Custom Commands Tag Guideline:" + '\n')
+lines.append('\n')
+lines.append("**These command variables can be used in any  custom command.**" + '\n')
+lines.append('\n')
+lines.append("&nbsp;" + '\n')
+lines.append('\n')
+lines.append("<!-- toc -->" + '\n')
+lines.append('\n')
+lines.append("<!-- tocstop -->" + '\n')
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')

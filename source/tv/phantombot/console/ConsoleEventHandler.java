@@ -184,7 +184,7 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand createcmdlist - Creates a list of all commands with their permissions.
+         * @consolecommand createcmdlist - Creates a list of all commands with their permissions as a CSV.
          */
         if (message.equalsIgnoreCase("createcmdlist")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing createcmdlist.");
