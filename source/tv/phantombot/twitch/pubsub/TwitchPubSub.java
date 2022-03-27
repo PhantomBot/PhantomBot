@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.net.ssl.SSLException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +75,7 @@ public class TwitchPubSub {
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 900000L);
     private boolean lastConnectSuccess = false;
+    private final Pattern escapePattern = Pattern.compile("(\\[^btnfru\"\\'/])");
 
     /**
      * Constructor for the PubSub class.
@@ -481,17 +484,25 @@ public class TwitchPubSub {
         }
 
         /**
-         * Fixes any literal line breaks that were inserted into one of the JSON values.
+         * Fixes any literal line breaks or bad escapes that were inserted into one of the JSON values.
          *
          * @param message The message to fix.
          * @return The fixed message.
          */
-        private String fixLineBreaks(String message) {
+        private String fixLineBreaksEscapes(String message) {
             StringBuilder sb = new StringBuilder();
             String[] parts = message.replaceAll("\r", "").split("\n");
 
             for (String s : parts) {
-                sb.append(s);
+                Matcher m = escapePattern.matcher(s);
+                int start = 0;
+                while (m.find(start)) {
+                    start = m.start() + 2;
+                    m.appendReplacement(sb, "\\\\");
+                    String g = m.group();
+                    sb.append(g.substring(g.length() - 1));
+                }
+                m.appendTail(sb);
                 sb.append("\\n");
             }
 
@@ -505,7 +516,7 @@ public class TwitchPubSub {
          */
         private void onMessage(String message) {
             try {
-                JSONObject messageObj = new JSONObject(this.fixLineBreaks(message));
+                JSONObject messageObj = new JSONObject(this.fixLineBreaksEscapes(message));
 
                 com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
