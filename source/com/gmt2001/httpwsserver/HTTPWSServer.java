@@ -184,27 +184,42 @@ public final class HTTPWSServer {
         return this.sslEnabled || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
-    private void generateAutoSsl() {
+    protected void generateAutoSsl() {
         this.generateAutoSsl(PhantomBot.instance().getBotName());
+    }
+
+    protected void generateAutoSsl(boolean forceNew) {
+        this.generateAutoSsl(PhantomBot.instance().getBotName(), forceNew);
+    }
+
+    protected void generateAutoSsl(String botName) {
+        this.generateAutoSsl(botName, false);
     }
 
     /**
      * Manages generation of the AutoSsl certificate
+     *
+     * @param botName The bot name to use in the certificates DN
+     * @param forceNew If true, forces a brand new key pair to be generated
      */
-    private void generateAutoSsl(String botName) {
+    protected void generateAutoSsl(String botName, boolean forceNew) {
         try {
-            KeyPair kp;
-            Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
-            if (key instanceof PrivateKey) {
-                // Get certificate of public key
-                Certificate cert = ks.getCertificate("phantombot");
+            KeyPair kp = null;
+            if (!forceNew) {
+                Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
+                if (key instanceof PrivateKey) {
+                    // Get certificate of public key
+                    Certificate cert = ks.getCertificate("phantombot");
 
-                // Get public key
-                PublicKey publicKey = cert.getPublicKey();
+                    // Get public key
+                    PublicKey publicKey = cert.getPublicKey();
 
-                // Return a key pair
-                kp = new KeyPair(publicKey, (PrivateKey) key);
-            } else {
+                    // Return a key pair
+                    kp = new KeyPair(publicKey, (PrivateKey) key);
+                }
+            }
+
+            if (kp == null) {
                 kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
             }
 
