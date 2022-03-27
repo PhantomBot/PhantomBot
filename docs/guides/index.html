@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <!--
     Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
@@ -11,8 +13,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<!DOCTYPE html>
 
 <html>
     <head>
@@ -159,11 +159,12 @@
         <script>
             'use strict';
             $(function () {
-                var lastPage = 'null';
+                let lastPage = 'null';
                 window.renderdata = '';
                 const { Remarkable, linkify, utils } = window.remarkable;
-                var hashmap = [];
-                var md = new Remarkable('full', {
+                let hashmap = [];
+                let headers = {};
+                let md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
                     xhtmlOut: false, // Use '/' to close single tags (<br />)
                     breaks: false, // Convert '\n' in paragraphs into <br>
@@ -199,7 +200,8 @@
                 md.use(window.iframify);
                 md.use(function(md) {
                     md.renderer.rules.heading_open = function(tokens, idx) {
-                        return '<h' + tokens[idx].hLevel + ' id=' + slugify(tokens[idx + 1].content) + '>';
+                        updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content);
+                        return '<h' + tokens[idx].hLevel + ' id=' + slugifyHeader() + '>';
                     };
                     md.renderer.rules.heading_close = function(tokens, idx) {
                         return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
@@ -208,8 +210,8 @@
                 md.use(function(md) {
                     let footnoterefs = {};
                     md.renderer.rules.footnote_ref = function(tokens, idx) {
-                        var n = Number(tokens[idx].id + 1).toString();
-                        var id = 'fnref' + n;
+                        let n = Number(tokens[idx].id + 1).toString();
+                        let id = 'fnref' + n;
                         if (tokens[idx].subId > 0) {
                             id += ':' + tokens[idx].subId;
                         }
@@ -220,18 +222,46 @@
                         return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
                     };
                     md.renderer.rules.footnote_anchor = function(tokens, idx) {
-                        var n = Number(tokens[idx].id + 1).toString();
+                        let n = Number(tokens[idx].id + 1).toString();
                         if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
                             return '';
                         }
-                        var id = 'fnref' + n;
+                        let id = 'fnref' + n;
                         if (tokens[idx].subId > 0) {
                             id += ':' + tokens[idx].subId;
                         }
                         return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
                     };
                 });
-                
+
+                function updateHeaders(hLevel, content) {
+                    let newHeaders = {};
+                    for (let x in headers) {
+                        if (x < hLevel) {
+                            newHeaders[x] = headers[x];
+                        }
+                    }
+
+                    newHeaders[hLevel] = slugify(content);
+                    headers = newHeaders;
+                }
+
+                function slugifyHeader() {
+                    let slug = "";
+
+                    for (let i = 1; i < 6; i++) {
+                        if (headers[i] !== undefined && headers[i] !== null) {
+                            if (slug.length > 0) {
+                                slug = slug + "_";
+                            }
+
+                            slug = slug + headers[i];
+                        }
+                    }
+
+                    return slug;
+                }
+
                 function slugify(content) {
                     content = content.replace(/youtube/ig, 'you-tube').replace(/vimeo/ig, 'vim-eo').replace(/vine/ig, 'vi-ne');
                     content = content.replace(/videopress/ig, 'video-press').replace(/wistia/ig, 'wis-tia');
@@ -245,11 +275,11 @@
                         'global': false,
                         'async': false,
                         'success': function (data) {
-                            for (var x in data.subfolders) {
+                            for (let x in data.subfolders) {
                                 addMenuFolder(path, tree, x, data.subfolders[x]);
                                 loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
                             }
-                            for (var x in data.pages) {
+                            for (let x in data.pages) {
                                 addMenuItem(path, tree, x, data.pages[x]);
                             }
                         }
@@ -257,7 +287,7 @@
                 }
 
                 function addMenuItem(path, tree, file, title) {
-                    var elm = $('<li/>', {
+                    let elm = $('<li/>', {
                         'html': $('<a/>', {
                             'href': '#',
                             'onclick': 'window.loadGuide(\'' + path + file + '\');'
@@ -296,7 +326,7 @@
                 }
 
                 function setActiveRecursive(path, removing) {
-                    var folder = path.substring(0, path.lastIndexOf('-'));
+                    let folder = path.substring(0, path.lastIndexOf('-'));
 
                     if (folder.includes('-')) {
                         if (removing) {
@@ -317,14 +347,16 @@
                                 data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
                                 data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
                                 data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
+                                headers = {};
                                 data = window.markdownToc.insert(data, {
                                     filter: function(str, ele, arr) {
                                         ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
                                         return true;
                                     },
                                     linkify: function(token, anchor, slug, opts) {
+                                        updateHeaders(token.lvl, token.content);
                                         let newhash = 'guide=' + path;
-                                        slug = slugify(token.content);
+                                        slug = slugifyHeader();
                                         for (let x in hashmap) {
                                             if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
                                                 if (newhash.length > 0) {
@@ -345,6 +377,7 @@
                                 data = data.replace(/<!-- notoc # -->/ig, '#').replace(/<!-- notoc ## -->/ig, '##').replace(/<!-- notoc ### -->/ig, '###');
                                 data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
                                 window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
+                                headers = {};
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
@@ -359,13 +392,13 @@
                 }
 
                 function parseHashMap() {
-                    var hash = window.location.hash.slice(1);
-                    var kvs = hash.split('&');
-                    var spl;
+                    let hash = window.location.hash.slice(1);
+                    let kvs = hash.split('&');
+                    let spl;
 
                     hashmap = [];
 
-                    for (var i = 0; i < kvs.length; i++) {
+                    for (let i = 0; i < kvs.length; i++) {
                         spl = kvs[i].split('=', 2);
                         hashmap[spl[0]] = spl[1];
                     }
@@ -426,7 +459,7 @@
                 });
 
                 $(window).scroll(function() {
-                    var height = $(window).scrollTop();
+                    let height = $(window).scrollTop();
                     if (height > 100) {
                         $('#back2Top').fadeIn();
                     } else {
