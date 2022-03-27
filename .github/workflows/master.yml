@@ -24,7 +24,7 @@ jobs:
     - name: Execute Script
       run: python3 development-resources/parse_transformers.py
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v7
+      uses: EndBug/add-and-commit@v9
       with:
         message: 'Updated the custom command tags guide'
   parseconsolecommands:
@@ -45,7 +45,7 @@ jobs:
     - name: Execute Script
       run: python3 development-resources/parse_consolecommands.py
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v7
+      uses: EndBug/add-and-commit@v9
       with:
         message: 'Updated the console commands guide'
   updateremotepanel:
@@ -62,6 +62,6 @@ jobs:
         rsync -rv --delete-during --progress resources/web/panel docs
         rsync -rv --delete-during --progress resources/web/common docs
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v7
+      uses: EndBug/add-and-commit@v9
       with:
         message: 'Updated the remote panel'

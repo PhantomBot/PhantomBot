@@ -66,6 +66,6 @@ jobs:
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v7
+      uses: EndBug/add-and-commit@v9
       with:
         message: ${{ format('Updated the {0} Java binaries', matrix.osname) }}
