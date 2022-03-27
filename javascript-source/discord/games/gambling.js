@@ -90,6 +90,7 @@
             var twitchName = $.discord.resolveTwitchName(event.getSenderId());
             if (twitchName == null) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
+                return;
             }
 
             var points;
@@ -105,7 +106,7 @@
             }
             
             gamble(channel, twitchName, mention, sender, points);
-
+            return;
         }
 
         if (command.equalsIgnoreCase('gambling')) {

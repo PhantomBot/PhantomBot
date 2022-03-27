@@ -93,7 +93,7 @@
             }
 
             gamble(sender, points);
-
+            return;
         }
 
         /**

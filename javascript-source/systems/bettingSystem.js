@@ -478,7 +478,7 @@
                 }
 
                 vote(sender, points, option);
-
+                return;
             }
         }
     });
