@@ -80,6 +80,7 @@ USER phantombot:phantombot
 
 RUN cd "${BASEDIR}" \
     && mkdir "${DATADIR}/dbbackup" \
+    && mkdir "${DATADIR}/gameslist" \
     && ln -s "${DATADIR}/addons" \
     && ln -s "${DATADIR}/config" \
     && ln -s "${DATADIR}/dbbackup" \
@@ -87,7 +88,9 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom" \
     && ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom" \
     && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
-    && chmod u+x ${BASEDIR}/launch-docker.sh
+    && touch "${DATADIR}/gameslist/gamesList.txt" \
+    && ln -s "${DATADIR}/gameslist/gamesList.txt" "${BASEDIR}/web/panel/js/utils/gamesList.txt" \
+    && chmod u+x "${BASEDIR}/launch-docker.sh"
 
 VOLUME "${DATADIR}"
 

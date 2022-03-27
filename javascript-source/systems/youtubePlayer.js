@@ -357,20 +357,21 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.importpl.file.start'));
                     importedList = $.readFile("./addons/youtubePlayer/" + fileName);
                     for (var i = 0; i < importedList.length; i++) {
-                        if (importedList[i].contains('&list')) {
+                        var item = $.jsString(importedList[i]);
+                        if (item.includes('&list')) {
                             playlistFailCount++;
                             continue;
-                        } else if (spaceMacther.test(importedList[i]) || importedList[i].isEmpty()) { // match for spaces or an empty line.
+                        } else if (spaceMacther.test(item) || item.trim().length === 0) { // match for spaces or an empty line.
                             failCount++;
                             continue;
                         }
 
                         try {
-                            var youtubeVideo = new YoutubeVideo(importedList[i], 'importPlaylistFile');
+                            var youtubeVideo = new YoutubeVideo(item, 'importPlaylistFile');
                             $.inidb.set(playlistDbPrefix + listName, importCount, youtubeVideo.getVideoId());
                             importCount++;
                         } catch (ex) {
-                            $.log.error("importPlaylistFile::skipped [" + importedList[i] + "]: " + ex);
+                            $.log.error("importPlaylistFile::skipped [" + item + "]: " + ex);
                             failCount++;
                         }
                     }

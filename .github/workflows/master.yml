@@ -27,6 +27,27 @@ jobs:
       uses: EndBug/add-and-commit@v7
       with:
         message: 'Updated the custom command tags guide'
+  parseconsolecommands:
+    name: Parse Console Commands on ubuntu-latest with Python 3.x
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    needs: parsecommandtags
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+    - name: Execute Script
+      run: python3 development-resources/parse_consolecommands.py
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v7
+      with:
+        message: 'Updated the console commands guide'
   updateremotepanel:
     name: Update Remote Panel
     if: github.repository == 'PhantomBot/PhantomBot'

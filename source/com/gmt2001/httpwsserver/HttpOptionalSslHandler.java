@@ -41,4 +41,17 @@ public class HttpOptionalSslHandler extends OptionalSslHandler {
         context.pipeline().addBefore("wshandler", "wssslerror", new WsSslErrorHandler());
         return null;
     }
+
+    /**
+     * Handles exceptions that are thrown up the stack
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param cause The exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause.getMessage().contains("no cipher suites in common")) {
+            HTTPWSServer.instance().generateAutoSsl(true);
+        }
+    }
 }

@@ -301,13 +301,18 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
             }
         }
 
+        String[] prefixcommand = messageParts[0 + offset].split(" ");
+        int eventindex = prefixcommand.length - 1;
+
         // Get username if present.
-        if (messageParts[0 + offset].contains("!")) {
-            username = messageParts[0 + offset].substring(messageParts[0 + offset].indexOf("!") + 1, messageParts[0 + offset].indexOf("@"));
+        if (prefixcommand.length > 1 && prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
+            username = prefixcommand[0].substring(prefixcommand[0].indexOf("!") + 1, prefixcommand[0].indexOf("@"));
+        } else if (prefixcommand.length > 1) {
+            username = prefixcommand[0];
         }
 
         // Get the event code.
-        event = messageParts[0 + offset].split(" ")[1];
+        event = prefixcommand[eventindex];
 
         // Execute the event parser if a parser exists.
         if (parserMap.containsKey(event)) {
