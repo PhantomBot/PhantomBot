@@ -248,7 +248,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     private void parseLine(String rawMessage, TwitchWSIRC client) {
         Map<String, String> tags = new HashMap<>();
         String messageParts[] = rawMessage.split(" :", 3);
-        String username;
+        String username = "";
         String message = "";
         String event;
         int offset = 0;
@@ -302,16 +302,17 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         String[] prefixcommand = messageParts[0 + offset].split(" ");
+        int eventindex = prefixcommand.length - 1;
 
         // Get username if present.
-        if (prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
+        if (prefixcommand.length > 1 && prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
             username = prefixcommand[0].substring(prefixcommand[0].indexOf("!") + 1, prefixcommand[0].indexOf("@"));
-        } else {
+        } else if (prefixcommand.length > 1) {
             username = prefixcommand[0];
         }
 
         // Get the event code.
-        event = prefixcommand[1];
+        event = prefixcommand[eventindex];
 
         // Execute the event parser if a parser exists.
         if (parserMap.containsKey(event)) {
