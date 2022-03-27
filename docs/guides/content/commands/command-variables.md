@@ -12,11 +12,11 @@
 
 ## Global Command Tags
 
-[^raw]: **Raw:** If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped
+[^raw]: **Raw:** If _Yes_, this tag does not escape it's output, which may lead to new tags being returned which will then be processed by the appropriate transformers. If _Sometimes_, then some return conditions may return escaped. If _no_, then output is always escaped and tags returned in the output of this transformer will not be parsed unless it is inside an `(unescape)` tag
 
 [^cached]: **Cached:** If _Yes_, the results of this tag, with the exact arguments presented, are temporarily cached and will not be re-processed for the rest of the current command, speeding up execution if the tag is used multiple times. The cache is cleared after every command execution
 
-[^cancels]: If _Yes_, this tag will cancel execution of the command, but may still send output through chat, ignoring any formatting in the command. If _Sometimes_, then some return conditions may cancel execution of the command
+[^cancels]: **Cancels:** If _Yes_, this tag will immediately cancel further parsing and execution of the current command, though the tag itself may still send a message to chat. If _Sometimes_, then some return conditions may cancel execution of the command
 
 ### randomInt
 
@@ -1359,7 +1359,7 @@ _Indicates whether the hooks in each script use transformers that are global, lo
 
 Defined in script: _./javascript-source/commands/customCommands.js_
 
-#### command
+#### Hook: command
 
 Global&nbsp;&nbsp; | Local
 -------|-------
