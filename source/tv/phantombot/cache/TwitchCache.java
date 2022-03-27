@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +58,7 @@ public class TwitchCache implements Runnable {
     private final Thread updateThread;
     private boolean killed = false;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private final ReentrantLock updateCacheLock = new ReentrantLock();
 
     /* Cached data */
     private boolean isOnline = false;
@@ -148,7 +151,13 @@ public class TwitchCache implements Runnable {
 
         while (!killed) {
             try {
-                this.updateCache();
+                if(this.updateCacheLock.tryLock()){
+                    try {
+                        this.updateCache();
+                    } finally {
+                        this.updateCacheLock.unlock();
+                    }
+                }
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -173,7 +182,7 @@ public class TwitchCache implements Runnable {
     }
 
     /**
-     * Polls the Clips endppint, trying to find the most recent clip. Note that because Twitch reports by the viewcount, and has a limit of 100 clips,
+     * Polls the Clips endpoint, trying to find the most recent clip. Note that because Twitch reports by the viewcount, and has a limit of 100 clips,
      * it is possible to miss the most recent clip until it has views.
      *
      * We do not throw an exception because this is not a critical function unlike the gathering of data via the updateCache() method.
@@ -253,9 +262,7 @@ public class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    if (!this.gotOnlineFromPS) {
-                        EventBus.instance().postAsync(new TwitchOnlineEvent());
-                    }
+                    EventBus.instance().postAsync(new TwitchOnlineEvent());
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
                     this.isOnline = false;
@@ -558,6 +565,18 @@ public class TwitchCache implements Runnable {
         this.isOnlinePS = true;
         this.gotOnlineFromPS = true;
         this.streamUptimeSeconds = 0L;
+
+        try {
+            if(this.updateCacheLock.tryLock()){
+                try {
+                    this.updateCache();
+                } finally {
+                    this.updateCacheLock.unlock();
+                }
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     public void goOffline() {

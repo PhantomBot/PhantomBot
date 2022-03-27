@@ -363,7 +363,6 @@ public class TwitchPubSub {
                         switch (messageObj.getString("type")) {
                             case "stream-up":
                                 if (chanid == this.channelId) {
-                                    EventBus.instance().postAsync(new TwitchOnlineEvent());
                                     TwitchCache.instance(PhantomBot.instance().getChannelName()).goOnline();
                                 }
                                 EventBus.instance().postAsync(new PubSubStreamUpEvent(chanid, srvtime, messageObj.getInt("play_delay")));
