@@ -474,7 +474,7 @@
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
                     return; 
                 } else {
-                    points = parseInt(action)
+                    points = parseInt(action);
                 }
 
                 vote(sender, points, option);
