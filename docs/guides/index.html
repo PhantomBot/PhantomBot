@@ -343,6 +343,7 @@
                     Pace.track(function(){
                         $.ajax(window.location.origin + window.location.pathname + path + '.md', {
                             'dataType': 'text',
+                            'cache': false,
                             'success': function (data) {
                                 data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
                                 data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
