@@ -358,7 +358,7 @@
                     importedList = $.readFile("./addons/youtubePlayer/" + fileName);
                     for (var i = 0; i < importedList.length; i++) {
                         var item = $.jsString(importedList[i]);
-                        if (item.contains('&list')) {
+                        if (item.includes('&list')) {
                             playlistFailCount++;
                             continue;
                         } else if (spaceMacther.test(item) || item.trim().length === 0) { // match for spaces or an empty line.
