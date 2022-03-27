@@ -481,13 +481,31 @@ public class TwitchPubSub {
         }
 
         /**
+         * Fixes any literal line breaks that were inserted into one of the JSON values.
+         *
+         * @param message The message to fix.
+         * @return The fixed message.
+         */
+        private String fixLineBreaks(String message) {
+            StringBuilder sb = new StringBuilder();
+            String[] parts = message.replaceAll("\r", "").split("\n");
+
+            for (String s : parts) {
+                sb.append(s);
+                sb.append("\\n");
+            }
+
+            return sb.substring(0, sb.length() - 2);
+        }
+
+        /**
          * Handles the event of when we get messages from the socket.
          *
          * @param message Message the socket sent.
          */
         private void onMessage(String message) {
             try {
-                JSONObject messageObj = new JSONObject(message);
+                JSONObject messageObj = new JSONObject(this.fixLineBreaks(message));
 
                 com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
