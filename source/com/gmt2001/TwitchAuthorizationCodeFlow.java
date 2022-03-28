@@ -49,7 +49,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
 public class TwitchAuthorizationCodeFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
-    private static final String USER_AGENT = "PhantomBot/2020";
+    private static final String USER_AGENT = "PhantomBot/2022";
     private static final long REFRESH_INTERVAL = 900000L;
     private static final int DEFAULT_EXPIRE_TIME = 900000;
     private Timer t = null;
@@ -57,12 +57,16 @@ public class TwitchAuthorizationCodeFlow {
     private static Transaction newTransaction = null;
 
     public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
-        startup(clientid, clientsecret);
+        this.startup(clientid, clientsecret);
     }
 
     public boolean refresh(CaselessProperties properties) {
+        return this.refresh(properties, true, true);
+    }
+
+    public boolean refresh(CaselessProperties properties, boolean shouldRefreshBot, boolean shouldRefreshAPI) {
         this.refreshTransaction = properties.startTransaction(Transaction.PRIORITY_NORMAL);
-        return refreshTokens(properties, true, true);
+        return this.refreshTokens(properties, shouldRefreshBot, shouldRefreshAPI);
     }
 
     public boolean checkAndRefreshTokens(CaselessProperties properties) {
@@ -86,18 +90,18 @@ public class TwitchAuthorizationCodeFlow {
 
         com.gmt2001.Console.debug.println("bot=" + (bot ? "t" : "f") + "; api=" + (api ? "t" : "f"));
 
-        return refreshTokens(properties, bot, api);
+        return this.refreshTokens(properties, bot, api);
     }
 
     private boolean refreshTokens(CaselessProperties properties, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
-            boolean botchanged = refreshBotOAuth(properties);
+            boolean botchanged = this.refreshBotOAuth(properties);
             changed = changed || botchanged;
         }
 
         if (api) {
-            boolean apichanged = refreshAPIOAuth(properties);
+            boolean apichanged = this.refreshAPIOAuth(properties);
             changed = changed || apichanged;
         }
 
@@ -174,8 +178,8 @@ public class TwitchAuthorizationCodeFlow {
 
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
-            t = new Timer();
-            t.scheduleAtFixedRate(new TimerTask() {
+            this.t = new Timer();
+            this.t.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     if (PhantomBot.instance() != null) {
