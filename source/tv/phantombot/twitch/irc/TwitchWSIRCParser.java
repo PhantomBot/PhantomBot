@@ -302,7 +302,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         String[] prefixcommand = messageParts[0 + offset].split(" ");
-        int eventindex = prefixcommand.length - 1;
+        int eventindex = prefixcommand.length > 1 ? 1 : 0;
 
         // Get username if present.
         if (prefixcommand.length > 1 && prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
