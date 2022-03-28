@@ -595,7 +595,7 @@ public class Helix {
 
         String userIds = null;
 
-        if (user_id != null && user_id.size() > 0) {
+        if (user_id != null && !user_id.isEmpty()) {
             userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
         }
 
@@ -662,25 +662,25 @@ public class Helix {
 
         String userIds = null;
 
-        if (user_id != null && user_id.size() > 0) {
+        if (user_id != null && !user_id.isEmpty()) {
             userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
         }
 
         String userLogins = null;
 
-        if (user_login != null && user_login.size() > 0) {
+        if (user_login != null && !user_login.isEmpty()) {
             userLogins = user_login.stream().limit(100).collect(Collectors.joining("&user_login="));
         }
 
         String gameIds = null;
 
-        if (game_id != null && game_id.size() > 0) {
+        if (game_id != null && !game_id.isEmpty()) {
             gameIds = game_id.stream().limit(100).collect(Collectors.joining("&game_id="));
         }
 
         String languages = null;
 
-        if (language != null && language.size() > 0) {
+        if (language != null && !language.isEmpty()) {
             languages = language.stream().limit(100).collect(Collectors.joining("&language="));
         }
 
@@ -719,19 +719,19 @@ public class Helix {
     public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
         String userIds = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             userIds = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
         String userLogins = null;
 
-        if (login != null && login.size() > 0) {
+        if (login != null && !login.isEmpty()) {
             userLogins = login.stream().limit(100 - (id != null ? id.stream().count() : 0)).collect(Collectors.joining("&login="));
         }
 
         boolean both = false;
 
-        if (id != null && id.size() > 0 && id.size() < 100 && login != null && login.size() > 0) {
+        if (id != null && !id.isEmpty() && id.size() < 100 && login != null && !login.isEmpty()) {
             both = true;
         }
 
@@ -974,7 +974,7 @@ public class Helix {
 
         String ids = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
@@ -1149,7 +1149,7 @@ public class Helix {
 
         String ids = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 

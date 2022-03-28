@@ -558,6 +558,7 @@ public class TwitchPubSub {
                             return;
                         }
                     }
+                    backoff.Reset();
                 } else if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                     return;
