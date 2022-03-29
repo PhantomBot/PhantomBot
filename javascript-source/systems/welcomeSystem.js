@@ -44,6 +44,9 @@
         if ($.equalsIgnoreCase(sender, $.botName)) {
             return;
         }
+        if ($.isTwitchBot(sender.toLowerCase())) {
+			return;
+		}
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
             var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
                 firstTimeChatter = lastUserMessage === undefined,
