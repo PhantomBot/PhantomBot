@@ -144,7 +144,7 @@
                 isGlobal = true;
                 if (cooldown.globalTime > $.systemTime()) {
                     maxCoolDown = getTimeDif(cooldown.globalTime);
-                } else {
+                } else if(cooldown.userTimes[username] === undefined || (cooldown.userTimes[username] !== undefined && cooldown.userTimes[username] < $.systemTime())){ //Only set a cooldown timer if the user can actually use the command
                     set(command, useDefault, cooldown.globalSec, undefined);
                 } 
             }
@@ -261,11 +261,12 @@
     /*
      * @function handleCoolCom
      *
+     * @param {String}  sender
      * @param {String}  command
      * @param {String}  first
      * @param {String}  second
      */
-    function handleCoolCom(command, first, second) {
+    function handleCoolCom(sender, command, first, second) {
         var action1 = first.split("="),
             type1   = action1[0],
             secsG   = Operation.UnChanged,
@@ -330,7 +331,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }
-            handleCoolCom(action, subAction, actionArgs);
+            handleCoolCom(sender, action, subAction, actionArgs);
             return;
         }
 
