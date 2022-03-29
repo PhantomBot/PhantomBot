@@ -31,19 +31,41 @@
 
     $.raffleCommand = null;
 
+    const   Type = {
+                User: 'user',
+                Global: 'global',
+            },
+            Operation = {
+                UnSet: -1,
+                UnChanged: 0,
+            };
+
     /*
      * @class Cooldown
-     *
      * @param {String}  command
-     * @param {Number}  seconds
-     * @param {Boolean} isGlobal
+     * @param {Number}  globalSec
+     * @param {Number}  userSec
      */
-    function Cooldown(command, seconds, isGlobal) {
-        this.isGlobal = isGlobal;
-        this.command = command;
-        this.seconds = seconds;
-        this.cooldowns = [];
-        this.time = 0;
+    function Cooldown(command, globalSec, userSec) {
+            this.command = command;
+            this.globalSec = globalSec;
+            this.userSec = userSec;
+            this.userTimes = [];
+            this.globalTime = 0; 
+    }
+
+    /*
+     * @function Stringify
+     * @param {String}  command
+     * 
+     * @return {JSON String}
+     */ 
+    function toJSONString(command) {
+        return JSON.stringify({
+            command: String(command.command),
+            globalSec: command.globalSec,
+            userSec: command.userSec
+        });
     }
 
     /*
@@ -56,8 +78,7 @@
 
         for (i in commands) {
             json = JSON.parse($.inidb.get('cooldown', commands[i]));
-
-            cooldowns[commands[i]] = new Cooldown(json.command, json.seconds, json.isGlobal.toString().equals('true'));
+            cooldowns[commands[i]] = new Cooldown(json.command, json.globalSec, json.userSec);
         }
     }
 
@@ -95,75 +116,68 @@
      * @param  {String}  command
      * @param  {String}  username
      * @param  {Boolean} isMod
-     * @return {Number}
+     * @return {[Number, bool]}
      */
     function get(command, username, isMod) {
-        var cooldown = cooldowns[command];
+        var isGlobal = false,
+            maxCoolDown = 0;
+            
+
+        if(canIgnore(username, isMod)) {
+            return [maxCoolDown, isGlobal];
+        }
 
         if (isSpecial(command)) {
-            if (command == 'adventure' && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
-                return defaultCooldowns[command];
-            } else {
-                return 0;
+            if (command.equalsIgnoreCase('adventure') && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
+                maxCoolDown = getTimeDif(defaultCooldowns[command]);
+                return [maxCoolDown, isGlobal];
             }
-        } else {
-            if (cooldown !== undefined && cooldown.seconds > 0) {
-                if (cooldown.isGlobal) {
-                    if (cooldown.time > $.systemTime()) {
-                        return (canIgnore(username, isMod) ? 0 : cooldown.time);
-                    } else {
-                        return set(command, true, cooldown.seconds, isMod);
-                    }
-                } else {
-                    if (cooldown.cooldowns[username] !== undefined && cooldown.cooldowns[username] > $.systemTime()) {
-                        return (canIgnore(username, isMod) ? 0 : cooldown.cooldowns[username]);
-                    } else {
-                        return set(command, true, cooldown.seconds, isMod, username);
-                    }
-                }
-            } else {
-                if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
-                    return (canIgnore(username, isMod) ? 0 : defaultCooldowns[command]);
-                } else {
-                    return set(command, false, defaultCooldownTime, isMod);
-                }
-            }
-        }
-    }
-
-    /*
-     * @function getSecs
-     *
-     * @export $.coolDown
-     * @param  {String}  command
-     * @param  {String}  username
-     * @return {Number}
-     */
-    function getSecs(username, command, isMod) {
-        var cooldown = cooldowns[command];
-
-        if (cooldown !== undefined && cooldown.seconds > 0) {
-            if (cooldown.isGlobal) {
-                if (cooldown.time > $.systemTime()) {
-                    return (cooldown.time - $.systemTime() > 1000 ? Math.ceil(((cooldown.time - $.systemTime()) / 1000)) : 1);
-                } else {
-                    return set(command, true, cooldown.seconds, isMod);
-                }
-            } else {
-                if (cooldown.cooldowns[username] !== undefined && cooldown.cooldowns[username] > $.systemTime()) {
-                    return (cooldown.cooldowns[username] - $.systemTime() > 1000 ? Math.ceil(((cooldown.cooldowns[username] - $.systemTime()) / 1000)) : 1);
-                }
-            }
-        } else {
-            if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
-                return (defaultCooldowns[command] - $.systemTime() > 1000 ? Math.ceil(((defaultCooldowns[command] - $.systemTime()) / 1000)) : 1);
-            } else {
-                return set(command, false, defaultCooldownTime, isMod);
-            }
+            return [maxCoolDown, isGlobal];
         }
 
-        return 0;
+        var cooldown = cooldowns[command],
+            useDefault = false;
+            
+        if (cooldown !== undefined) {
+            
+            if (cooldown.globalSec !== Operation.UnSet) {
+                isGlobal = true;
+                if (cooldown.globalTime > $.systemTime()) {
+                    maxCoolDown = getTimeDif(cooldown.globalTime);
+                } else {
+                    set(command, useDefault, cooldown.globalSec, undefined);
+                } 
+            }
+
+            if (cooldown.userSec !== Operation.UnSet) {
+                if (cooldown.userTimes[username] !== undefined && cooldown.userTimes[username] > $.systemTime()) {
+                    userCoolDown = getTimeDif(cooldown.userTimes[username]);
+                    if(userCoolDown > maxCoolDown) {
+                        isGlobal = false;
+                        maxCoolDown = userCoolDown;
+                    }
+                } else if (maxCoolDown === 0){ //Global cooldown got set ... also set user cooldown or only per-user cooldown is activated
+                    set(command, useDefault, cooldown.userSec, username);
+                }
+            }
+            return [maxCoolDown, isGlobal];
+        }
+
+
+        if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
+            maxCoolDown = getTimeDif(defaultCooldowns[command]);
+        } else {
+            useDefault  = true;
+            set(command, useDefault, defaultCooldownTime, undefined);
+        }
+
+        return [maxCoolDown, isGlobal];
     }
+
+    function getTimeDif(cooldownSec) {
+        return (cooldownSec - $.systemTime() > 1000 ? Math.ceil(((cooldownSec - $.systemTime()) / 1000)) : 1);
+    }
+
 
     function exists(command) {
         return defaultCooldowns[command] !== undefined || cooldowns[command] !== undefined;
@@ -174,25 +188,23 @@
      *
      * @export $.coolDown
      * @param  {String}  command
-     * @param  {Boolean} hasCooldown
-     * @param  {Number}  seconds
-     * @param  {Boolean} isMod
+     * @param  {Boolean} useDefault
+     * @param  {Number}  duration
      * @param  {String}  username
-     * @return {Number}
      */
-    function set(command, hasCooldown, seconds, isMod, username) {
-        seconds = (seconds > 0 ? ((parseInt(seconds) * 1e3) + $.systemTime()) : 0);
+    function set(command, useDefault, duration, username) {
+        finishTime = (duration > 0 ? ((parseInt(duration) * 1e3) + $.systemTime()) : 0);
 
-        if (hasCooldown) {
-            if (username === undefined) {
-                cooldowns[command].time = seconds;
-            } else {
-                cooldowns[command].cooldowns[username] = seconds;
-            }
-        } else {
-            defaultCooldowns[command] = seconds;
+        if (useDefault) {
+            defaultCooldowns[command] = finishTime;
+            return;
         }
-        return 0;
+
+        if (username === undefined) {
+            cooldowns[command].globalTime = finishTime;
+        } else {
+            cooldowns[command].userTimes[username] = finishTime;
+        }
     }
 
     /*
@@ -203,28 +215,21 @@
      * @param {Number}  seconds
      * @param {Boolean} isGlobal
      */
-    function add(command, seconds, isGlobal) {
-    	// Make sure we have the right type.
-    	if (typeof seconds !== 'number') {
-    		seconds = (parseInt(seconds + ''));
-    	}
-
+    function add(command, globalSec, userSec) {
         if (cooldowns[command] === undefined) {
-            cooldowns[command] = new Cooldown(command, seconds, isGlobal);
-            $.inidb.set('cooldown', command, JSON.stringify({
-                command: String(command),
-                seconds: String(seconds),
-                isGlobal: String(isGlobal)
-            }));
+            cooldowns[command] = new Cooldown(command, 
+                                             (globalSec === Operation.UnChanged ? Operation.UnSet : globalSec), 
+                                             (userSec === Operation.UnChanged ? Operation.UnSet : userSec));
         } else {
-            cooldowns[command].isGlobal = isGlobal;
-            cooldowns[command].seconds = seconds;
-            $.inidb.set('cooldown', command, JSON.stringify({
-                command: String(command),
-                seconds: String(seconds),
-                isGlobal: String(isGlobal)
-            }));
+            if (globalSec !== Operation.UnChanged) {
+                cooldowns[command].globalSec = globalSec;
+            }
+            if (userSec !== Operation.UnChanged) {
+                cooldowns[command].userSec = userSec;
+            }
         }
+
+        $.inidb.set('cooldown', command, toJSONString(cooldowns[command]));
     }
 
     /*
@@ -248,7 +253,61 @@
      */
     function clear(command) {
         if (cooldowns[command] !== undefined) {
-            cooldowns[command].time = 0;
+            cooldowns[command].globalTime = 0;
+            cooldowns[command].userTimes = [];
+        }
+    }
+
+    /*
+     * @function handleCoolCom
+     *
+     * @param {String}  command
+     * @param {String}  first
+     * @param {String}  second
+     */
+    function handleCoolCom(command, first, second) {
+        var action1 = first.split("="),
+            type1   = action1[0],
+            secsG   = Operation.UnChanged,
+            secsU   = Operation.UnChanged;
+
+        if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
+            type1 = Type.Global;
+            secsG = ParseInt(type1);
+        } else if (!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User) || isNaN(parseInt(action1[1]))) {
+            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
+            return;
+        } else {
+            secsG = type1.equalsIgnoreCase(Type.Global) ? parseInt(action1[1]) : secsG;
+            secsU = type1.equalsIgnoreCase(Type.User) ? parseInt(action1[1]) : secsU;
+        }
+
+        
+        if (second !== undefined){
+            var action2 = second.split("="),
+                type2   = action2[0];
+
+            if (!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
+                return;
+            } else {
+                secsG = type2.equalsIgnoreCase(Type.Global) ? parseInt(action2[1]) : secsG;
+                secsU = type2.equalsIgnoreCase(Type.User) ? parseInt(action2[1]) : secsU;
+            }
+        }
+
+        if (secsG === Operation.UnSet && secsU === Operation.UnSet) {
+            remove(command);
+        } else {
+            add(command, secsG, secsU);
+            clear(command);
+        }     
+
+        if(action2 !== undefined) {
+            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo', command, secsG, secsU));
+        } else {
+            messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
+            $.say($.whisperPrefix(sender) + $.lang.get(messageType, command, (secsG === Operation.UnChanged ? secsU : secsG)));
         }
     }
 
@@ -264,26 +323,14 @@
             actionArgs = args[2];
 
         /*
-         * @commandpath coolcom [command] [seconds] [type (global / user)] - Sets a cooldown for a command, default is global. Using -1 for the seconds removes the cooldown.
+         * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
          */
         if (command.equalsIgnoreCase('coolcom')) {
-            if (action === undefined || isNaN(parseInt(subAction))) {
+            if(action === undefined || subAction === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }
-
-            actionArgs = (actionArgs !== undefined && actionArgs == 'user' ? false : true);
-            action = action.replace('!', '').toLowerCase();
-            subAction = parseInt(subAction);
-
-            if (subAction > -1) {
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.set', action, subAction));
-                add(action, subAction, actionArgs);
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', action));
-                remove(action);
-            }
-            clear(command);
+            handleCoolCom(action, subAction, actionArgs);
             return;
         }
 
@@ -340,7 +387,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
             if (event.getArgs()[0] == 'add') {
-                add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3].equals('true'));
+                add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3]);
             } else if (event.getArgs()[0] == 'update') {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
@@ -357,7 +404,6 @@
         get: get,
         exists: exists,
         set: set,
-        add: add,
-        getSecs: getSecs
+        add: add
     };
 })();

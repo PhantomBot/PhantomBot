@@ -295,4 +295,40 @@
         $.consoleLn('PhantomBot update 3.5.0 completed!');
         $.inidb.set('updates', 'installedv3.5.0', 'true');
     }
+
+    /* version 3.6.0 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.0')) {
+        $.consoleLn('Starting PhantomBot update 3.6.0 updates...');
+
+        // Convert cooldowns to separate global and user cooldowns
+        var cooldowns = $.inidb.GetKeyList('cooldown', ''),
+                json;
+
+
+        for (i in cooldowns) {
+            json = JSON.parse($.inidb.get('cooldown', cooldowns[i]));
+
+            var globalSec,
+                userSec,
+                curSec = parseInt(json.seconds);
+
+            if (json.isGlobal.toString().equals('true')) {
+                globalSec = curSec;
+                userSec = -1;
+            } else {
+                globalSec = -1;
+                userSec = curSec;
+            }
+
+            $.inidb.set('cooldown', cooldowns[i], JSON.stringify({
+                command: String(json.command),
+                globalSec: globalSec,
+                userSec: userSec
+            }));
+        }
+
+        $.consoleLn('PhantomBot update 3.6.0 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', 'true');
+    }
+
 })();
