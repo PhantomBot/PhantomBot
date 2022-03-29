@@ -764,8 +764,11 @@
         if (str === null || str === undefined) {
             return null;
         }
-
-        return new Packages.java.lang.String(str);
+        try {
+            return new Packages.java.lang.String(str);
+        } catch (e) {
+            return null;
+        }
     }
 
     function jsString(str) {
@@ -773,7 +776,11 @@
             return null;
         }
 
-        return String(str + '');
+        try {
+            return String(str + '');
+        } catch (e) {
+            return null;
+        }
     }
 
     /** Export functions to API */
