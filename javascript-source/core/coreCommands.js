@@ -39,7 +39,7 @@
                     streamerGame = $.getGame(streamer),
                     streamerURL = 'https://twitch.tv/' + streamer;
 
-            if (streamerGame == null || streamerGame.length === 0) {
+            if (streamerGame == null || streamerGame.length === 0 || streamerGame == "") {
                 $.say($.lang.get('corecommands.shoutout.no.game', streamerDisplay, streamerURL));
                 return;
             }
