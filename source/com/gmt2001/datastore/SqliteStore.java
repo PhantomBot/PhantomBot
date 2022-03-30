@@ -41,7 +41,7 @@ import org.sqlite.javax.SQLiteConnectionPoolDataSource;
  *
  * @author gmt2001
  */
-public class SqliteStore extends DataStore {
+public final class SqliteStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;
     private static SqliteStore instance;

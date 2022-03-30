@@ -184,15 +184,15 @@ public final class HTTPWSServer {
         return this.sslEnabled || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
-    protected void generateAutoSsl() {
+    void generateAutoSsl() {
         this.generateAutoSsl(PhantomBot.instance().getBotName());
     }
 
-    protected void generateAutoSsl(boolean forceNew) {
+    void generateAutoSsl(boolean forceNew) {
         this.generateAutoSsl(PhantomBot.instance().getBotName(), forceNew);
     }
 
-    protected void generateAutoSsl(String botName) {
+    void generateAutoSsl(String botName) {
         this.generateAutoSsl(botName, false);
     }
 
@@ -202,7 +202,7 @@ public final class HTTPWSServer {
      * @param botName The bot name to use in the certificates DN
      * @param forceNew If true, forces a brand new key pair to be generated
      */
-    protected void generateAutoSsl(String botName, boolean forceNew) {
+    void generateAutoSsl(String botName, boolean forceNew) {
         try {
             KeyPair kp = null;
             if (!forceNew) {
