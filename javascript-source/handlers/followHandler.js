@@ -29,6 +29,10 @@
  */
 
 function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
+    alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, false)
+}
+
+function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
     if (announceFollows === true && followToggle === true) {
         if (s.match(/\(name\)/)) {
             s = $.replace(s, '(name)', $.username.resolve(follower));
@@ -44,7 +48,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
 
         followQueue.add(s);
 
-        if (followReward > 0) {
+        if (followReward > 0 && !replay) {
             $.inidb.incr('points', follower, followReward);
         }
 
@@ -202,8 +206,8 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
             if (action === undefined) {
                 return;
             }
-            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue);
-        }
+            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue, true);
+        } 
     });
 
     /*

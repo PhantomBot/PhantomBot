@@ -457,18 +457,22 @@ public class TwitchAPIv5 {
 
         JSONObject result = new JSONObject();
         this.setupResult(result, streamData, null);
-        if (streamData == null || streamData.has("error") || !streamData.has("streams") || streamData.getJSONArray("streams").length() == 0) {
+        if (streamData == null || streamData.has("error") || !streamData.has("streams")) {
             result.put("_success", false);
             return result;
         }
 
-        result.put("stream", streamData.getJSONArray("streams").getJSONObject(0));
+        if (streamData.getJSONArray("streams").length() == 0) {
+            result.put("stream", (String) null);
+        } else {
+            result.put("stream", streamData.getJSONArray("streams").getJSONObject(0));
+        }
 
         return result;
     }
 
     /**
-     * Gets a streams object array. Each channel id should be seperated with a comma.
+     * Gets a streams object array. Each channel id should be separated with a comma.
      *
      * @param channels
      * @return

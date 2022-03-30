@@ -235,9 +235,9 @@ public abstract class DataStore {
     }
 
     public boolean GetBoolean(String fName, String section, String key) {
-        int ival = GetInteger(fName, section, key);
+        String val = GetString(fName, section, key);
 
-        return ival == 1;
+        return val != null && (val.equals("1") || val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes"));
     }
 
     public void SetBoolean(String fName, String section, String key, boolean value) {

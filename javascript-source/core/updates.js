@@ -34,8 +34,7 @@
             i;
 
     /** New setup */
-    if ($.changed !== undefined && $.changed !== null && $.changed === true
-            && (!$.inidb.exists('updates', 'installedNewBot') || $.inidb.get('updates', 'installedNewBot') !== 'true')) {
+    if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
         $.consoleLn('');
         $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
 
@@ -126,13 +125,13 @@
         modules = "";
         versions = "";
         $.changed = false;
-        $.inidb.set('updates', 'installedNewBot', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
         $.consoleLn('Initializing complete!');
         $.consoleLn('');
     }
 
     /* version 3.3.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') !== 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.0')) {
         $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
 
         $.consoleLn('Updating keywords...');
@@ -172,21 +171,21 @@
         }
 
         $.consoleLn('PhantomBot update 3.3.0 completed!');
-        $.inidb.set('updates', 'installedv3.3.0', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.3.0', true);
     }
 
     /* version 3.3.6 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.6') || $.inidb.get('updates', 'installedv3.3.6') !== 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.6')) {
         $.consoleLn('Starting PhantomBot update 3.3.6 updates...');
 
         $.inidb.set('modules', './systems/welcomeSystem.js', 'false');
 
         $.consoleLn('PhantomBot update 3.3.6 completed!');
-        $.inidb.set('updates', 'installedv3.3.6', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.3.6', true);
     }
 
     /* version 3.4.1 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.1') || $.inidb.get('updates', 'installedv3.4.1') !== 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.1')) {
         $.consoleLn('Starting PhantomBot update 3.4.1 updates...');
 
         var keys = $.inidb.GetKeyList('keywords', ''),
@@ -209,11 +208,11 @@
         }
 
         $.consoleLn('PhantomBot update 3.4.1 completed!');
-        $.inidb.set('updates', 'installedv3.4.1', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.4.1', true);
     }
 
     /* version 3.4.8 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') !== 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.8')) {
         $.consoleLn('Starting PhantomBot update 3.4.8 updates...');
 
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
@@ -269,11 +268,11 @@
 
 
         $.consoleLn('PhantomBot update 3.4.8 completed!');
-        $.inidb.set('updates', 'installedv3.4.8', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.4.8', true);
     }
 
     /* version 3.5.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') !== 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.5.0')) {
         $.consoleLn('Starting PhantomBot update 3.5.0 updates...');
 
         // Remove org.mozilla.javascript entries in phantombot_time
@@ -293,7 +292,7 @@
         }
 
         $.consoleLn('PhantomBot update 3.5.0 completed!');
-        $.inidb.set('updates', 'installedv3.5.0', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.5.0', true);
     }
 
     /* version 3.6.0 updates */

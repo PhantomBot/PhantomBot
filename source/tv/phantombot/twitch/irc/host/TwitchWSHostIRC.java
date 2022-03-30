@@ -327,6 +327,7 @@ public class TwitchWSHostIRC {
 
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                         EventBus.instance().postAsync(new TwitchHostsInitializedEvent());
+                        backoff.Reset();
                     }, 20, TimeUnit.SECONDS);
                 } else {
                     this.connected = false;
