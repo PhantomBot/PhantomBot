@@ -542,12 +542,12 @@
 
             [cooldownDuration, isGlobalCooldown] = $.coolDown.get(cooldownCommand, sender, isMod);
 
-            if (cooldownDuration > 0) {
+            if (cooldownDuration > 0 && $.getIniDbBoolean('settings', 'coolDownMsgEnabled')) {
                 if (isGlobalCooldown) {
-                    $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.global', command, cooldownDuration), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                    $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.global', command, cooldownDuration), true);
                     consoleDebug('Command ! ' + command + ' was not sent due to it being on a global cooldown.');
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.user', command, cooldownDuration), $.getIniDbBoolean('settings', 'coolDownMsgEnabled', false));
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.user', command, cooldownDuration));
                     consoleDebug('Command ! ' + command + ' was not sent due to it being on cooldown for user ' + sender + '.');
                 }
                 return;

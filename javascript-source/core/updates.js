@@ -301,7 +301,8 @@
 
         // Convert cooldowns to separate global and user cooldowns
         var cooldowns = $.inidb.GetKeyList('cooldown', ''),
-                json;
+                json,
+                i;
 
 
         for (i in cooldowns) {
@@ -327,7 +328,7 @@
         }
 
         $.consoleLn('PhantomBot update 3.6.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
     }
 
 })();
