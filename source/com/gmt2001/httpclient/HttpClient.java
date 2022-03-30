@@ -210,50 +210,138 @@ public final class HttpClient {
         return request(HttpMethod.PUT, url, requestHeaders, requestBody);
     }
 
+    /**
+     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PUT with the default headers
+     *
+     * @param url The URL to request
+     * @param putData A map of put data
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse put(HttpUrl url, Map<String, String> putData) {
         return put(url, urlencodePost(putData));
     }
 
+    /**
+     * Shortcut to URL-encode a map of put data then submit it as a PUT with the specified headers
+     *
+     * @param url The URL to request
+     * @param requestHeaders The headers to send
+     * @param putData A map of put data
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse put(HttpUrl url, HttpHeaders requestHeaders, Map<String, String> putData) {
         return put(url, requestHeaders, urlencodePost(putData));
     }
 
+    /**
+     * Shortcut to stringify a JSONObject and submit it as a PUT with the default headers
+     *
+     * @param url The URL to send
+     * @param json The JSON object to send
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse put(HttpUrl url, JSONObject json) {
         return put(url, createHeaders(true, true), json);
     }
 
+    /**
+     * Shortcut to stringify a JSONObject and submit it as a PUT with the specified headers
+     *
+     * @param url The URL to send
+     * @param requestHeaders The headers to send
+     * @param json The JSON object to send
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse put(HttpUrl url, HttpHeaders requestHeaders, JSONObject json) {
         return put(url, requestHeaders, json.toString());
     }
 
+    /**
+     * Shortcut to perform a form-urlencoded PATCH with the default headers
+     *
+     * @param url The URL to send
+     * @param requestBody The request body
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, String requestBody) {
         return patch(url, createHeaders(true, false), requestBody);
     }
 
+    /**
+     * Shortcut to perform a PATCH with the specified headers
+     *
+     * @param url The URL to request
+     * @param requestHeaders The headers to send
+     * @param requestBody The request body
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, HttpHeaders requestHeaders, String requestBody) {
         return request(HttpMethod.PATCH, url, requestHeaders, requestBody);
     }
 
+    /**
+     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PATCH with the default headers
+     *
+     * @param url The URL to request
+     * @param patchData A map of patch data
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, Map<String, String> patchData) {
         return patch(url, urlencodePost(patchData));
     }
 
+    /**
+     * Shortcut to URL-encode a map of patch data then submit it as a PATCH with the specified headers
+     *
+     * @param url The URL to request
+     * @param requestHeaders The headers to send
+     * @param patchData A map of patch data
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, HttpHeaders requestHeaders, Map<String, String> patchData) {
         return patch(url, requestHeaders, urlencodePost(patchData));
     }
 
+    /**
+     * Shortcut to stringify a JSONObject and submit it as a PATCH with the default headers
+     *
+     * @param url The URL to send
+     * @param json The JSON object to send
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, JSONObject json) {
         return patch(url, createHeaders(true, true), json);
     }
 
+    /**
+     * Shortcut to stringify a JSONObject and submit it as a PATCH with the specified headers
+     *
+     * @param url The URL to send
+     * @param requestHeaders The headers to send
+     * @param json The JSON object to send
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse patch(HttpUrl url, HttpHeaders requestHeaders, JSONObject json) {
         return patch(url, requestHeaders, json.toString());
     }
 
+    /**
+     * Shortcut to perform a DELETE with the default headers
+     *
+     * @param url The URL to request
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse delete(HttpUrl url) {
         return delete(url, createHeaders());
     }
 
+    /**
+     * Shortcut to perform a DELETE with the specified headers
+     *
+     * @param url The URL to request
+     * @param requestHeaders The headers to send
+     * @return A HttpClientResponse with the results
+     */
     public static HttpClientResponse delete(HttpUrl url, HttpHeaders requestHeaders) {
         return request(HttpMethod.DELETE, url, requestHeaders, null);
     }
@@ -269,14 +357,13 @@ public final class HttpClient {
         postData.forEach((k, v) -> {
             if (k != null) {
                 if (sb.length() > 0) {
-                    sb.append("&");
+                    sb.append('&');
                 }
 
                 sb.append(URLEncoder.encode(k, Charset.forName("UTF-8")));
 
                 if (v != null) {
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(v, Charset.forName("UTF-8")));
+                    sb.append('=').append(URLEncoder.encode(v, Charset.forName("UTF-8")));
                 }
             }
         });

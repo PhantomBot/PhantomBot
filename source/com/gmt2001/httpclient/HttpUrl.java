@@ -306,19 +306,16 @@ public final class HttpUrl {
     public String build() {
         if (this.builtUri == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(this.scheme);
-            sb.append("://");
+            sb.append(this.scheme).append("://");
 
             if (this.userInfo != null && !this.userInfo.isBlank()) {
-                sb.append(this.userInfo);
-                sb.append("@");
+                sb.append(this.userInfo).append('@');
             }
 
             sb.append(this.host);
 
             if (this.port > 0 && this.port <= 65535) {
-                sb.append(":");
-                sb.append(this.port);
+                sb.append(':').append(this.port);
             }
 
             if (this.path != null && !this.path.isBlank()) {
@@ -326,7 +323,7 @@ public final class HttpUrl {
             }
 
             if (!this.query.isEmpty()) {
-                sb.append("?");
+                sb.append('?');
 
                 int len = sb.length();
                 this.query.forEach((k, v) -> {
@@ -338,8 +335,7 @@ public final class HttpUrl {
                         sb.append(URLEncoder.encode(k, Charset.forName("UTF-8")));
 
                         if (v != null) {
-                            sb.append("=");
-                            sb.append(URLEncoder.encode(v, Charset.forName("UTF-8")));
+                            sb.append('=').append(URLEncoder.encode(v, Charset.forName("UTF-8")));
                         }
                     }
                 });
