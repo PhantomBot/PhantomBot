@@ -187,7 +187,7 @@
     }
 
     /**
-     * @function say
+     * @function sayWithTimeout
      * @export $
      * @param {string} message
      * @param {boolean} run

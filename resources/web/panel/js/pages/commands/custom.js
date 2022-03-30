@@ -179,7 +179,7 @@ $(function () {
                     tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'hiddenCommands'],
                     keys: [command, command, command, command, command, command, command]
                 }, function (e) {
-                    let cooldownJson = (e.cooldown === null ? {isGlobal: 'true', seconds: 0} : JSON.parse(e.cooldown));
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
 
                     let tokenButton = '';
 
@@ -217,20 +217,20 @@ $(function () {
                                 })
                                         // Append input box for the command cost.
                                         .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
-                                                'Cost in points that will be taken from the user when running the command.'))
+                                            'Cost in points that will be taken from the user when running the command.'))
                                         // Append input box for the command reward.
                                         .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
-                                                'Reward in points the user will be given when running the command.'))
-                                        // Append input box for the command cooldown.
-                                        .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '5', cooldownJson.seconds,
-                                                'Cooldown of the command in seconds.')
-                                                // Append checkbox for if the cooldown is global or per-user.
-                                                .append(helpers.getCheckBox('command-cooldown-global', cooldownJson.isGlobal === 'true', 'Global',
-                                                        'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                                            'Reward in points the user will be given when running the command.'))
+                                        // Append input box for the global command cooldown.
+                                        .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                                            'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
+                                        // Append input box for per-user cooldown.
+                                        .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                                            'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                                         .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Disabled',
-                                                'If checked, the command cannot be used in chat.'))
+                                            'If checked, the command cannot be used in chat.'))
                                         .append(helpers.getCheckBox('command-hidden', e.hiddenCommands != null, 'Hidden',
-                                                'If checked, the command will not be listed when !command is called.'))
+                                            'If checked, the command will not be listed when !command is called.'))
                                         // Callback function to be called once we hit the save button on the modal.
                             })), function () {
                         let commandName = $('#command-name'),
@@ -238,8 +238,8 @@ $(function () {
                                 commandPermission = $('#command-permission'),
                                 commandCost = $('#command-cost'),
                                 commandReward = $('#command-reward'),
-                                commandCooldown = $('#command-cooldown'),
-                                commandCooldownGlobal = $('#command-cooldown-global').is(':checked'),
+                                commandCooldownGlobal = $('#command-cooldown-global'),
+                                commandCooldownUser = $('#command-cooldown-user'),
                                 commandDisabled = $('#command-disabled').is(':checked'),
                                 commandHidden = $('#command-hidden').is(':checked');
 
@@ -252,7 +252,8 @@ $(function () {
                             case helpers.handleInputString(commandResponse):
                             case helpers.handleInputNumber(commandCost):
                             case helpers.handleInputNumber(commandReward):
-                            case helpers.handleInputNumber(commandCooldown):
+                            case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                            case helpers.handleInputNumber(commandCooldownUser, -1):
                                 break;
                             default:
                                 // Save command information here and close the modal.
@@ -268,7 +269,7 @@ $(function () {
                                             commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                    ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function () {
+                                            ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
                                                 // Update command permission.
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
@@ -334,20 +335,20 @@ $(function () {
                     })
                             // Append input box for the command cost.
                             .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
-                                    'Cost in points that will be taken from the user when running the command.'))
+                                'Cost in points that will be taken from the user when running the command.'))
                             // Append input box for the command reward.
                             .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
-                                    'Reward in points the user will be given when running the command.'))
-                            // Append input box for the command cooldown.
-                            .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '0', '5',
-                                    'Cooldown of the command in seconds.')
-                                    // Append checkbox for if the cooldown is global or per-user.
-                                    .append(helpers.getCheckBox('command-cooldown-global', true, 'Global',
-                                            'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                                'Reward in points the user will be given when running the command.'))
+                            // Append input box for the global command cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                                'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.')
+                            // Append input box for per-user cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                                'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.')))
                             .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
-                                    'If checked, the command cannot be used in chat.'))
+                                'If checked, the command cannot be used in chat.'))
                             .append(helpers.getCheckBox('command-hidden', false, 'Hidden',
-                                    'If checked, the command will not be listed when !command is called.'))
+                                'If checked, the command will not be listed when !command is called.'))
                 })), function () {
             // Callback function to be called once we hit the save button on the modal.
             let commandName = $('#command-name'),
@@ -355,8 +356,8 @@ $(function () {
                     commandPermission = $('#command-permission'),
                     commandCost = $('#command-cost'),
                     commandReward = $('#command-reward'),
-                    commandCooldown = $('#command-cooldown'),
-                    commandCooldownGlobal = $('#command-cooldown-global').is(':checked'),
+                    commandCooldownGlobal = $('#command-cooldown-global'),
+                    commandCooldownUser = $('#command-cooldown-user'),
                     commandDisabled = $('#command-disabled').is(':checked'),
                     commandHidden = $('#command-hidden').is(':checked');
 
@@ -369,7 +370,8 @@ $(function () {
                 case helpers.handleInputString(commandResponse):
                 case helpers.handleInputNumber(commandCost):
                 case helpers.handleInputNumber(commandReward):
-                case helpers.handleInputNumber(commandCooldown):
+                case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                case helpers.handleInputNumber(commandCooldownUser, -1):
                     break;
                 default:
                     // Make sure the command doesn't exist already.
@@ -389,10 +391,10 @@ $(function () {
                             updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function () {
                                 // Register the custom command with the cache.
                                 socket.wsEvent('custom_command_add_ws', './commands/customCommands.js', null,
-                                        ['add', commandName.val(), commandResponse.val()], function () {
+                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
-                                            ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function () {
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
                                         // Reload the table.
                                         loadCustomCommands();
                                         // Close the modal.
