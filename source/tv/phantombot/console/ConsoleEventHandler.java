@@ -635,7 +635,7 @@ public class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand dumplogs - Prints the latest logs to the console.
+         * @consolecommand printlogs - Prints the latest logs to the console.
          */
         if (message.equalsIgnoreCase("printlogs")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing printlogs");
