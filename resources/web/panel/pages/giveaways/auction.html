@@ -74,9 +74,26 @@
                                     data-toggle="tooltip" title="How long the auction should be opened for. 0 is until manually closed."/>
                             </div>
 
+                            <!-- Extension Time -->
+                            <div class="form-group">
+                                <label for="auction-extTime">Extension Time (Seconds)</label>
+                                <input type="number" min="0" class="form-control" id="auction-extTime" value="15"
+                                    data-toggle="tooltip" title="The duration at which the auction gets extended if a user bids in the last 10 seconds."/>
+                            </div>
+
+                            <!-- Extension Time -->
+                            <div class="pretty p-icon">
+                                <input type="checkbox" id="auction-isPoints" checked="true"
+                                    data-toggle="tooltip" title="Should the auction use the bots' points-system?"/>
+                                <div class="state p-default">
+                                    <i class="icon fa fa-check"></i>
+                                    <label>Use Points</label>
+                                </div>
+                            </div>
+
                             <!-- Show results -->
                             <div class="form-group" style="padding-top: 50px; text-align: center;">
-                                <p style="font-size: 25px;"><b>Top Bidder:</b> <span style="font-size: 20px;" id="auction-top-bidder">PhantomBot</span>
+                                <p style="font-size: 25px;"><b>Top Bidder:</b> <span style="font-size: 20px;" id="auction-top-bidder">No bid received</span>
                                     <b><span style="margin-left: 10%;">Points:</span></b> <span style="font-size: 20px;" id="auction-points">0</span></p>
                             </div>
                         </div>
