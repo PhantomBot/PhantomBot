@@ -83,6 +83,7 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.jvm.ShutdownEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
@@ -667,6 +668,8 @@ public final class PhantomBot implements Listener {
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(this.apiOAuth);
         }
+
+        EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
 
     public static String GetExecutionPath() {

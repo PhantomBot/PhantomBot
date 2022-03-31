@@ -16,186 +16,38 @@
  */
 package com.gmt2001;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.Listener;
+import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 
-public class Logger implements Runnable {
+public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
 
-    private static final Logger instance = new Logger();
-    private final ConcurrentLinkedQueue<LogItem> queue;
-    private boolean isRunning = false;
-    private boolean disposed = false;
-
-    private FileOutputStream fosCore = null;
-    private FileOutputStream fosError = null;
-    private FileOutputStream fosWarning = null;
-    private FileOutputStream fosDebug = null;
-    private FileOutputStream fosModeration = null;
-    private PrintStream psCore = null;
-    private PrintStream psError = null;
-    private PrintStream psWarning = null;
-    private PrintStream psDebug = null;
-    private PrintStream psModeration = null;
-    private String curLogTimestamp = "";
-
-    @Override
-    @SuppressWarnings("SleepWhileInLoop")
-    public void run() {
-        this.isRunning = true;
-
-        if (!new File("./logs/").exists()) {
-            new File("./logs/").mkdirs();
-        }
-        if (!new File("./logs/core").exists()) {
-            new File("./logs/core/").mkdirs();
-        }
-        if (!new File("./logs/core-error").exists()) {
-            new File("./logs/core-error/").mkdirs();
-        }
-        if (!new File("./logs/core-warnings").exists()) {
-            new File("./logs/core-warnings/").mkdirs();
-        }
-        if (!new File("./logs/core-debug").exists()) {
-            new File("./logs/core-debug/").mkdirs();
-        }
-        if (!new File("./logs/moderation").exists()) {
-            new File("./logs/moderation/").mkdirs();
-        }
-
-        while (!disposed) {
-            if (!queue.isEmpty()) {
-
-                SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
-                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-                String timestamp = datefmt.format(new Date());
-
-                // New date, close all open streams.  Java spec says that closing the PrintStream closes the
-                // underlying streams automatically (FileOutputStream).
-                if (!timestamp.equals(this.curLogTimestamp)) {
-                    if (this.psCore != null) {
-                        this.psCore.close();
-                        this.psCore = null;
-                    }
-                    if (psError != null) {
-                        this.psError.close();
-                        this.psError = null;
-                    }
-                    if (psWarning != null) {
-                        this.psWarning.close();
-                        this.psWarning = null;
-                    }
-                    if (this.psDebug != null) {
-                        this.psDebug.close();
-                        this.psDebug = null;
-                    }
-                    if (this.psModeration != null) {
-                        this.psModeration.close();
-                        this.psModeration = null;
-                    }
-                    this.curLogTimestamp = timestamp;
-                }
-
-                try {
-                    if (!queue.isEmpty()) {
-                        LogItem i = queue.poll();
-
-                        if (i == null) {
-                            return;
-                        }
-
-                        switch (i.t) {
-                            case Output:
-                                if (this.psCore == null) {
-                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                    this.psCore = new PrintStream(this.fosCore);
-                                }
-                                this.psCore.println(i.s);
-                                this.psCore.flush();
-                                break;
-                            case Input:
-                                if (this.psCore == null) {
-                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                    this.psCore = new PrintStream(this.fosCore);
-                                }
-                                this.psCore.println(i.s);
-                                this.psCore.flush();
-                                break;
-                            case Error:
-                                if (this.psError == null) {
-                                    this.fosError = new FileOutputStream("./logs/core-error/" + timestamp + ".txt", true);
-                                    this.psError = new PrintStream(this.fosError);
-                                }
-                                this.psError.println(i.s);
-                                this.psError.flush();
-                                break;
-                            case Debug:
-                                if (this.psDebug == null) {
-                                    this.fosDebug = new FileOutputStream("./logs/core-debug/" + timestamp + ".txt", true);
-                                    this.psDebug = new PrintStream(this.fosDebug);
-                                }
-                                this.psDebug.println(i.s);
-                                this.psDebug.flush();
-                                break;
-                            case Warning:
-                                if (this.psWarning == null) {
-                                    this.fosWarning = new FileOutputStream("./logs/core-warnings/" + timestamp + ".txt", true);
-                                    this.psWarning = new PrintStream(this.fosWarning);
-                                }
-                                this.psWarning.println(i.s);
-                                this.psWarning.flush();
-                                break;
-                            case Moderation:
-                                if (this.psModeration == null) {
-                                    this.fosModeration = new FileOutputStream("./logs/moderation/" + timestamp + ".txt", true);
-                                    this.psModeration = new PrintStream(this.fosModeration);
-                                }
-                                this.psModeration.println(i.s);
-                                this.psModeration.flush();
-                                break;
-                            default:
-                                if (this.psCore == null) {
-                                    this.fosCore = new FileOutputStream("./logs/core/" + timestamp + ".txt", true);
-                                    this.psCore = new PrintStream(this.fosCore);
-                                }
-                                this.psCore.println(i.s);
-                                this.psCore.flush();
-                                break;
-                        }
-                    }
-                } catch (FileNotFoundException | SecurityException | NullPointerException ex) {
-                    ex.printStackTrace(System.err);
-                }
-            } else {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    com.gmt2001.Console.debug.println("Failed to sleep while logging [InterruptedException]: " + ex.getMessage());
-                }
-            }
-        }
-    }
-
-    public void close() {
-        this.disposed = true;
-    }
-
-    private class LogItem {
-
-        public LogType t;
-        public String s;
-
-        public LogItem(LogType t, String s) {
-            this.t = t;
-            this.s = s;
-        }
-    }
+    private static final Logger INSTANCE = new Logger();
+    private Flow.Subscription subscription;
+    private static final SimpleDateFormat logdatefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
+    private static final SimpleDateFormat filedatefmt = new SimpleDateFormat("dd-MM-yyyy");
+    private static final Map<LogType, String> LOG_PATHS = Map.of(
+            LogType.Output, "./logs/core/",
+            LogType.Input, "./logs/core/",
+            LogType.Error, "./logs/core-error/",
+            LogType.Debug, "./logs/core-debug/",
+            LogType.Warning, "./logs/core-warnings/",
+            LogType.Moderation, "./logs/moderation/"
+    );
 
     public enum LogType {
         Output,
@@ -206,28 +58,82 @@ public class Logger implements Runnable {
         Moderation,
     }
 
-    public static Logger instance() {
-        if (!instance.isRunning) {
-            (new Thread(instance, "com.gmt2001.Logger")).start();
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        this.subscription = subscription;
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onNext(LogItem item) {
+        try {
+            Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
+                    StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
-        return instance;
+        this.subscription.request(1);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        com.gmt2001.Console.err.printStackTrace(throwable);
+        com.gmt2001.Console.err.println("Logger threw an exception and is being disconnected...");
+    }
+
+    @Override
+    public void onComplete() {
+        this.close();
+    }
+
+    public final class LogItem {
+
+        public final LogType type;
+        public final List<String> lines;
+
+        private LogItem(LogType type, String lines) {
+            this.type = type;
+            this.lines = Collections.unmodifiableList(lines.lines().toList());
+        }
+
+        private LogItem(LogType type, List<String> lines) {
+            this.type = type;
+            this.lines = Collections.unmodifiableList(lines);
+        }
+    }
+
+    public static Logger instance() {
+        return INSTANCE;
     }
 
     private Logger() {
-        this.queue = new ConcurrentLinkedQueue<>();
+        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+
+        LOG_PATHS.forEach((t, p) -> {
+            try {
+                Files.createDirectories(Paths.get(p));
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        });
     }
 
-    public void log(LogType t, String s) {
-        try {
-            this.queue.add(new LogItem(t, s));
-        } catch (IllegalStateException ex) {
-            ex.printStackTrace(System.err);
-        }
+    @Handler
+    public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
+        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+    }
+
+    public void log(LogType type, String lines) {
+        this.submit(new LogItem(type, lines));
+    }
+
+    public void log(LogType type, List<String> lines) {
+        this.submit(new LogItem(type, lines));
     }
 
     public String logTimestamp() {
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        return datefmt.format(new Date());
+        return logdatefmt.format(new Date());
     }
 }
