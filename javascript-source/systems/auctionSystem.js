@@ -40,7 +40,7 @@
      * @param {bool} state
      */
     function usePoints(state){
-        if (!auction.isActive) { auction.usePoints = state };
+        if (!auction.isActive) { auction.usePoints = state; }
     }
     
     /**
