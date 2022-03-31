@@ -46,6 +46,7 @@ import json
 import os
 from pathlib import Path
 import requests
+import sys
 import time
 
 parser = argparse.ArgumentParser(description="Test PhantomBot to ensure it is running and connected")
