@@ -94,7 +94,7 @@ $(function () {
                 case helpers.handleInputNumber(minBet, 1):
                 case helpers.handleInputNumber(incre, 1):
                 case helpers.handleInputNumber(timer, 0):
-                case helpers.handleInputNumber(extTime, 0):
+                case helpers.handleInputNumber(extTime, 0, 29):
                     break;
                 default:
                     socket.sendCommandSync('auction_command_permisison_update', 'permcomsilent bid ' + helpers.getGroupIdByName(commandLevel, true), function () {

@@ -323,7 +323,7 @@
             }
 
             /**
-             * @commandpath auction setExtensionTime [extension time] - Shows the top bidder in an auction
+             * @commandpath auction setExtensionTime [extension time] - Sets the time being added to the endtimer if a bid is set in the last 10 seconds (maximum value is 29)
              */
              if (action.equalsIgnoreCase('setExtensionTime')) {
                 if(args[1] === undefined || isNaN(parseInt(args[1]))) {
@@ -331,6 +331,9 @@
                     return;
                 }
                 extTime = parseInt(args[1])
+                if (extTime >= 30) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
+                }
                 $.setIniDbNumber('auctionSettings', 'extTime', parseInt(extTime));
                 $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set', extTime));
             }

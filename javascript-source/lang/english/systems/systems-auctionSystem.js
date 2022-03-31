@@ -16,7 +16,7 @@
  */
 
 $.lang.register('auctionsystem.usage', 'Usage: !auction open (increments) (minimum bid) [Optional parameters: (auto close timer) (nopoints)]');
-$.lang.register('auctionsystem.set.usage', 'Usage: !auction set (extension timer)');
+$.lang.register('auctionsystem.set.usage', 'Usage: !auction set (extension timer). A maximum of 29 is allowed');
 $.lang.register('auctionsystem.set', 'Successfully set extension time to $1');
 $.lang.register('auctionsystem.err.opened', 'An auction is already running.');
 $.lang.register('auctionsystem.opened', 'Auction is now opened! You can bid in increments of at least $1. Minimum bid allowed is $2! Start bidding with !bid (amount)');
