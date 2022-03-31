@@ -242,7 +242,7 @@ discordreconnect - Reconnects to Discord.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-reconnect - Reconnects to RMI, Host TMI, and PubSub.
+reconnect - Reconnects to TMI, Host TMI, and PubSub.
 
 &nbsp;
 
@@ -270,11 +270,11 @@ dumplogs - Writes the latest logs to a file.
 
 &nbsp;
 
-### dumplogs
+### printlogs
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-dumplogs - Prints the latest logs to the console.
+printlogs - Prints the latest logs to the console.
 
 &nbsp;
 
