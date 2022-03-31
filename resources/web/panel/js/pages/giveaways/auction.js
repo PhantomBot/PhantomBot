@@ -18,8 +18,8 @@
 // Function that querys all of the data we need.
 $(run = function () {
     socket.getDBValues('auction_module_status_toggle', {
-        tables: ['modules', 'auctionSettings'],
-        keys: ['./systems/auctionSystem.js', 'isActive']
+        tables: ['modules', 'auctionSettings', 'auctionSettings'],
+        keys: ['./systems/auctionSystem.js', 'isActive', 'extTime']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['auctionOptions'], e['./systems/auctionSystem.js'], 'auctionSystemModuleToggle')) {
             // Remove the chat.
@@ -32,6 +32,10 @@ $(run = function () {
             $('#open-or-close-auction').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+        }
+
+        if (e['extTime'] !== undefined) {
+            $('#auction-extTime').val(e['extTime']);
         }
 
         if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
@@ -81,17 +85,21 @@ $(function () {
             const commandLevel = $('#auction-perm').find(':selected').text(),
                     minBet = $('#auction-bet'),
                     incre = $('#auction-inc'),
-                    timer = $('#auction-timer');
+                    timer = $('#auction-timer'),
+                    extTime = $('#auction-extTime'),
+                    isPoints = $('#auction-isPoints').is(':checked');
 
             // Make sure the user entered everything right.
             switch (false) {
                 case helpers.handleInputNumber(minBet, 1):
                 case helpers.handleInputNumber(incre, 1):
                 case helpers.handleInputNumber(timer, 0):
+                case helpers.handleInputNumber(extTime, 0):
                     break;
                 default:
                     socket.sendCommandSync('auction_command_permisison_update', 'permcomsilent bid ' + helpers.getGroupIdByName(commandLevel, true), function () {
-                        socket.sendCommand('auction_open_cmd', 'auction open ' + incre.val() + ' ' + minBet.val() + ' ' + timer.val(), function () {
+                        socket.sendCommand('auction_open_cmd', 'auction setExtensionTime ' + extTime.val(), undefined);
+                        socket.sendCommand('auction_open_cmd', 'auction open ' + incre.val() + ' ' + minBet.val() + ' ' + timer.val() + ' ' + (isPoints ? "" : "nopoints"), function () {
                             // Alert the user.
                             toastr.success('Successfully opened the auction!');
                             // Update the button.
