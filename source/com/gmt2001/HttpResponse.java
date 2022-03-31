@@ -23,6 +23,7 @@ import java.util.HashMap;
  *
  * @author gmt2001
  */
+@Deprecated
 public class HttpResponse {
 
     public RequestType type;
