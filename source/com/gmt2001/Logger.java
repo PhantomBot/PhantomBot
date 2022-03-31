@@ -38,7 +38,7 @@ import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
 
     private static final Logger INSTANCE = new Logger();
-    private Flow.Subscription subscription;
+    private Flow.Subscription subscription = null;
     private static final SimpleDateFormat logdatefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
     private static final SimpleDateFormat filedatefmt = new SimpleDateFormat("dd-MM-yyyy");
     private static final Map<LogType, String> LOG_PATHS = Map.of(
@@ -106,6 +106,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public static Logger instance() {
+        if (INSTANCE.subscription == null) {
+            synchronized (INSTANCE) {
+                INSTANCE.subscribe(INSTANCE);
+            }
+        }
+
         return INSTANCE;
     }
 
