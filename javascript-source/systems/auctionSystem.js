@@ -40,7 +40,7 @@
      * @param {bool} state
      */
     function usePoints(state){
-        if (!auction.isActive) auction.usePoints = state;
+        if (!auction.isActive) { auction.usePoints = state };
     }
     
     /**
@@ -277,9 +277,8 @@
              * @commandpath auction open [increments] [minimum bet] [timer] [nopoints] - Opens an auction; timer is optional; nopoints is optional and starts an auction without affecting the users' points
              */
             if (action.equalsIgnoreCase('open')) {
-                usePoints(args[4] === undefined && !$.equalsIgnoreCase(args[4], 'nopoints')) //Enable Auction without Points
+                usePoints(args[4] === undefined && !$.equalsIgnoreCase(args[4], 'nopoints')); //Enable Auction without Points
                 openAuction(sender, args[1], args[2], args[3]);
-                $.consoleLn("Opened Auction with: " + args[1] + " " + args[2] + " " + args[3] + " " + args[4]);
                 return;
             }
 
@@ -330,7 +329,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                     return;
                 }
-                extTime = parseInt(args[1])
+                extTime = parseInt(args[1]);
                 if (extTime >= 30 || extTime <= 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                 }
