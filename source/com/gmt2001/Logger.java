@@ -67,11 +67,13 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onNext(LogItem item) {
-        try {
-            Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
-                    StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
-        } catch (IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        synchronized (filedatefmt) {
+            try {
+                Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
+                        StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
         this.subscription.request(1);
     }
@@ -108,8 +110,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     private Logger() {
-        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        synchronized (logdatefmt) {
+            logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        }
+        synchronized (filedatefmt) {
+            filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        }
 
         LOG_PATHS.forEach((t, p) -> {
             try {
@@ -122,8 +128,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Handler
     public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
-        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        synchronized (logdatefmt) {
+            logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        }
+        synchronized (filedatefmt) {
+            filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        }
     }
 
     public void log(LogType type, String lines) {
@@ -135,6 +145,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public String logTimestamp() {
-        return logdatefmt.format(new Date());
+        synchronized (logdatefmt) {
+            return logdatefmt.format(new Date());
+        }
     }
 }

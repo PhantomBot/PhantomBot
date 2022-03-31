@@ -17,9 +17,4 @@
 package tv.phantombot.event.jvm;
 
 public class PropertiesReloadedEvent extends JVMEvent {
-    /**
-     * Class constructor
-     */
-    public PropertiesReloadedEvent() {
-    }
 }
