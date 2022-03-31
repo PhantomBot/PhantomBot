@@ -331,7 +331,7 @@
                     return;
                 }
                 extTime = parseInt(args[1])
-                if (extTime >= 30) {
+                if (extTime >= 30 || extTime <= 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                 }
                 $.setIniDbNumber('auctionSettings', 'extTime', parseInt(extTime));
