@@ -31,7 +31,7 @@ import org.h2.jdbcx.JdbcConnectionPool;
  * @author gmt2001
  *
  */
-public class H2Store extends DataStore {
+public final class H2Store extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;
     private static JdbcConnectionPool poolMgr;

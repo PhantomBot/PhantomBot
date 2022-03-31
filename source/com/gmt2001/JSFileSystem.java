@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  *
  * @author gmt2001
  */
-public class JSFileSystem {
+public final class JSFileSystem {
 
     private JSFileSystem() {
     }

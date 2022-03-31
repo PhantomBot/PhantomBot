@@ -18,6 +18,7 @@ package com.gmt2001.Console;
 
 import com.gmt2001.Logger;
 import com.gmt2001.RollbarProvider;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -135,12 +136,16 @@ public final class err {
     public static void logStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught) {
         RollbarProvider.instance().error(e, custom, description, isUncaught);
 
-        Writer trace = new StringWriter();
-        PrintWriter ptrace = new PrintWriter(trace);
+        try ( Writer trace = new StringWriter()) {
+            try ( PrintWriter ptrace = new PrintWriter(trace)) {
 
-        e.printStackTrace(ptrace);
+                e.printStackTrace(ptrace);
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
-        Logger.instance().log(Logger.LogType.Error, "");
+                Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
+                Logger.instance().log(Logger.LogType.Error, "");
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 }

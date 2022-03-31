@@ -16,9 +16,9 @@
  */
 package com.gmt2001.Console;
 
-import static com.gmt2001.Console.err.logStackTrace;
 import com.gmt2001.Logger;
 import com.gmt2001.RollbarProvider;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -93,9 +93,11 @@ public final class debug {
             }
         }
     }
+
     public static void logln(Object o) {
         logln(o, false);
     }
+
     public static void logln(Object o, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo;
@@ -160,13 +162,17 @@ public final class debug {
         if (PhantomBot.getEnableDebugging()) {
             RollbarProvider.instance().debug(e, custom, description);
 
-            Writer trace = new StringWriter();
-            PrintWriter ptrace = new PrintWriter(trace);
+            try ( Writer trace = new StringWriter()) {
+                try ( PrintWriter ptrace = new PrintWriter(trace)) {
 
-            e.printStackTrace(ptrace);
+                    e.printStackTrace(ptrace);
 
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + trace.toString());
-            Logger.instance().log(Logger.LogType.Debug, "");
+                    Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + trace.toString());
+                    Logger.instance().log(Logger.LogType.Debug, "");
+                }
+            } catch (IOException ex) {
+                err.printStackTrace(ex);
+            }
         }
     }
 }

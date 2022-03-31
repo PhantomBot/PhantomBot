@@ -16,16 +16,18 @@
  */
 package com.gmt2001;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import tv.phantombot.PhantomBot;
 
@@ -43,34 +45,22 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        Writer trace = new StringWriter();
-        PrintWriter ptrace = new PrintWriter(trace);
+        try ( Writer trace = new StringWriter()) {
+            try ( PrintWriter ptrace = new PrintWriter(trace)) {
 
-        e.printStackTrace(ptrace);
-        com.gmt2001.Console.err.printStackTrace(e, true);
+                e.printStackTrace(ptrace);
+                com.gmt2001.Console.err.printStackTrace(e, true);
 
-        try {
-            if (!new File ("./logs/stacktraces").exists()) {
-                new File ("./logs/stacktraces/").mkdirs();
-            }
-
-            SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-            String timestamp = datefmt.format(new Date());
-
-            try (FileOutputStream fos = new FileOutputStream("./logs/stacktraces/" + timestamp + ".txt", true)) {
-                PrintStream ps = new PrintStream(fos);
-
-                datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
+                SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
                 datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+                String timestamp = datefmt.format(new Date());
 
-                timestamp = datefmt.format(new Date());
+                Path p = Paths.get("./logs/stacktraces/" + timestamp + ".txt");
+                Files.createDirectories(p.getParent());
 
-                ps.println("[" + timestamp + "] " + trace.toString());
-                ps.println();
+                Files.write(p, List.of("[" + timestamp + "] " + trace.toString()), StandardCharsets.UTF_8, StandardOpenOption.CREATE,
+                        StandardOpenOption.APPEND, StandardOpenOption.WRITE);
             }
-        } catch (FileNotFoundException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *
  * @author gmt2001
  */
-public class MySQLStore extends DataStore {
+public final class MySQLStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;
     private static MySQLStore instance;

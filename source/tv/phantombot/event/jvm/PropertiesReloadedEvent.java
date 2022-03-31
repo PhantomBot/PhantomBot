@@ -14,33 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package tv.phantombot.event.jvm;
 
-import com.gmt2001.HttpRequest.RequestType;
-import java.util.HashMap;
-
-/**
- *
- * @author gmt2001
- */
-@Deprecated
-public class HttpResponse {
-
-    public RequestType type;
-    public String url;
-    public String post;
-    public String content;
-    public HashMap<String, String> headers;
-    public int httpCode;
-    public boolean success;
-    public String exception;
-
-    @Override
-    public String toString() {
-        if (exception != null && !exception.isEmpty()) {
-            return type.name() + " " + url + " {" + post + "} -> EXCEPTION " + exception;
-        }
-
-        return type.name() + " " + url + " {" + post + "} -> " + httpCode + " " + content;
+public class PropertiesReloadedEvent extends JVMEvent {
+    /**
+     * Class constructor
+     */
+    public PropertiesReloadedEvent() {
     }
 }

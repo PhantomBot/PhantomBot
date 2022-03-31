@@ -32,12 +32,12 @@ public interface WsClientFrameHandler {
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to process
      */
-    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
+    void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
 
     /**
      * Handles the handshake complete event
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      */
-    public void handshakeComplete(ChannelHandlerContext ctx);
+    void handshakeComplete(ChannelHandlerContext ctx);
 }

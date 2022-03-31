@@ -53,7 +53,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
  *
  * @author gmt2001
  */
-public class RollbarProvider implements AutoCloseable {
+public final class RollbarProvider implements AutoCloseable {
 
     private static final RollbarProvider INSTANCE = new RollbarProvider();
     private static final String ACCESS_TOKEN = "@access.token@";
@@ -433,7 +433,7 @@ public class RollbarProvider implements AutoCloseable {
         return this.rollbar;
     }
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return this.enabled;
     }
 

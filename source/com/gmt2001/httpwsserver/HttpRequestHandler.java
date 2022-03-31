@@ -32,14 +32,14 @@ public interface HttpRequestHandler {
      *
      * @return {@code this}
      */
-    public HttpRequestHandler register();
+    HttpRequestHandler register();
 
     /**
      * Gets the {@link HttpAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link HttpAuthenticationHandler}
      */
-    public HttpAuthenticationHandler getAuthHandler();
+    HttpAuthenticationHandler getAuthHandler();
 
     /**
      * Handles the HTTP request and sends a response back to the client
@@ -49,5 +49,5 @@ public interface HttpRequestHandler {
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} containing the request
      */
-    public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req);
+    void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req);
 }
