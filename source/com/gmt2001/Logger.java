@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.stream.Collectors;
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.Listener;
@@ -93,7 +94,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
         private LogItem(LogType type, String lines) {
             this.type = type;
-            this.lines = Collections.unmodifiableList(lines.lines().toList());
+            this.lines = Collections.unmodifiableList(lines.lines().collect(Collectors.toList()));
         }
 
         private LogItem(LogType type, List<String> lines) {
