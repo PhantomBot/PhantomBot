@@ -523,6 +523,8 @@ public final class PhantomBot implements Listener {
             dataStore.CreateIndexes();
         }
 
+        EventBus.instance().postAsync(new PropertiesReloadedEvent());
+
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();
 
@@ -1123,9 +1125,6 @@ public final class PhantomBot implements Listener {
             print("Shutting down all web socket/http servers...");
             HTTPWSServer.instance().close();
         }
-
-        print("Closing the logs...");
-        com.gmt2001.Logger.instance().close();
 
         try {
             for (int i = 5; i > 0; i--) {

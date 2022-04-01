@@ -23,10 +23,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.QueryStringEncoder;
 import java.nio.charset.Charset;
 import java.time.ZoneOffset;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -279,29 +280,29 @@ public class TwitchAuthorizationCodeFlow {
     }
 
     private static JSONObject tryAuthorize(String code, String redirect_uri) {
-        QueryStringEncoder qse = new QueryStringEncoder("/token");
-        qse.addParam("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
-        qse.addParam("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
-        qse.addParam("code", code);
-        qse.addParam("grant_type", "authorization_code");
-        qse.addParam("redirect_uri", redirect_uri);
+        Map<String, String> query = new HashMap<>();
+        query.put("client_id", PhantomBot.instance().getProperties().getProperty("clientid"));
+        query.put("client_secret", PhantomBot.instance().getProperties().getProperty("clientsecret"));
+        query.put("code", code);
+        query.put("grant_type", "authorization_code");
+        query.put("redirect_uri", redirect_uri);
 
-        return doRequest(qse);
+        return doRequest("/token", query);
     }
 
     private static JSONObject tryRefresh(String clientid, String clientsecret, String refresh_token) {
-        QueryStringEncoder qse = new QueryStringEncoder("/token");
-        qse.addParam("client_id", clientid);
-        qse.addParam("client_secret", clientsecret);
-        qse.addParam("refresh_token", refresh_token);
-        qse.addParam("grant_type", "refresh_token");
+        Map<String, String> query = new HashMap<>();
+        query.put("client_id", clientid);
+        query.put("client_secret", clientsecret);
+        query.put("refresh_token", refresh_token);
+        query.put("grant_type", "refresh_token");
 
-        return doRequest(qse);
+        return doRequest("/token", query);
     }
 
-    private static JSONObject doRequest(QueryStringEncoder qse) {
+    private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            HttpUrl url = HttpUrl.fromUri(BASE_URL, qse.toString());
+            HttpUrl url = HttpUrl.fromUri(BASE_URL, path).withQuery(query);
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");

@@ -21,9 +21,10 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.QueryStringEncoder;
 import java.time.ZoneOffset;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -157,10 +158,10 @@ public class TwitchClientCredentialsFlow {
     }
 
     private static JSONObject tryGetAppToken(String clientid, String clientsecret) {
-        QueryStringEncoder qse = new QueryStringEncoder("/token");
-        qse.addParam("client_id", clientid);
-        qse.addParam("client_secret", clientsecret);
-        qse.addParam("grant_type", "client_credentials");
+        Map<String, String> query = new HashMap<>();
+        query.put("client_id", clientid);
+        query.put("client_secret", clientsecret);
+        query.put("grant_type", "client_credentials");
 
         String scopes = "";
         for (String s : SCOPES) {
@@ -171,14 +172,14 @@ public class TwitchClientCredentialsFlow {
             scopes += s;
         }
 
-        qse.addParam("scope", scopes);
+        query.put("scope", scopes);
 
-        return TwitchClientCredentialsFlow.doRequest(qse);
+        return doRequest("/token", query);
     }
 
-    private static JSONObject doRequest(QueryStringEncoder qse) {
+    private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            HttpUrl url = HttpUrl.fromUri(BASE_URL, qse.toString());
+            HttpUrl url = HttpUrl.fromUri(BASE_URL, path).withQuery(query);
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");

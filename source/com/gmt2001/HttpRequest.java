@@ -56,7 +56,9 @@ public final class HttpRequest {
         try {
             HttpUrl uri = HttpUrl.fromUri(url);
             HttpHeaders h = HttpClient.createHeaders();
-            headers.forEach(h::add);
+            if (headers != null) {
+                headers.forEach(h::add);
+            }
 
             if (uri.getUserInfo() != null && !uri.getUserInfo().isBlank()) {
                 String basicAuth = "Basic " + new String(new Base64().encode(uri.getUserInfo().getBytes()));
