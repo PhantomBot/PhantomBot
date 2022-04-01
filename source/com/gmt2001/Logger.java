@@ -37,7 +37,6 @@ import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 
 public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
 
-    private static final Logger INSTANCE = new Logger();
     private Flow.Subscription subscription = null;
     private static final SimpleDateFormat logdatefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
     private static final SimpleDateFormat filedatefmt = new SimpleDateFormat("dd-MM-yyyy");
@@ -49,6 +48,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             LogType.Warning, "./logs/core-warnings/",
             LogType.Moderation, "./logs/moderation/"
     );
+    private static final Logger INSTANCE = new Logger();
 
     public enum LogType {
         Output,
@@ -115,14 +115,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         return INSTANCE;
     }
 
-    private Logger() {
-        synchronized (logdatefmt) {
-            logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        }
-        synchronized (filedatefmt) {
-            filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        }
+    private static synchronized void updateTimezones() {
+        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
+    }
 
+    private Logger() {
         LOG_PATHS.forEach((t, p) -> {
             try {
                 Files.createDirectories(Paths.get(p));
@@ -134,12 +132,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Handler
     public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
-        synchronized (logdatefmt) {
-            logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        }
-        synchronized (filedatefmt) {
-            filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        }
+        updateTimezones();
     }
 
     public void log(LogType type, String lines) {

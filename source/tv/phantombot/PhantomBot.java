@@ -523,6 +523,8 @@ public final class PhantomBot implements Listener {
             dataStore.CreateIndexes();
         }
 
+        EventBus.instance().postAsync(new PropertiesReloadedEvent());
+
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();
 
