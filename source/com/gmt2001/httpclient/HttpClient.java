@@ -89,8 +89,8 @@ public final class HttpClient {
 
         try {
             return sender.send(ByteBufFlux.fromString(Mono.just(_requestBody)))
-                    .responseSingle((res, buf) -> buf.asString().map(content -> new HttpClientResponse(null, requestBody, content, url, res))
-                    .defaultIfEmpty(new HttpClientResponse(null, requestBody, "", url, res)))
+                    .responseSingle((res, buf) -> buf.asByteArray().map(content -> new HttpClientResponse(null, requestBody, content, url, res))
+                    .defaultIfEmpty(new HttpClientResponse(null, requestBody, new byte[0], url, res)))
                     .toFuture().get(TIMEOUT_TIME, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             return new HttpClientResponse(ex, false, method, requestBody, null, requestHeaders, null, null, url);
