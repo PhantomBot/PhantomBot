@@ -17,9 +17,4 @@
 package tv.phantombot.event.jvm;
 
 public class ShutdownEvent extends JVMEvent {
-    /**
-     * Class constructor
-     */
-    public ShutdownEvent() {
-    }
 }

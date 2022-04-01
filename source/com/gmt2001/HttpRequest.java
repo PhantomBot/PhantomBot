@@ -24,6 +24,8 @@ import io.netty.handler.codec.http.HttpMethod;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -32,6 +34,7 @@ import org.apache.commons.codec.binary.Base64;
 @Deprecated
 public final class HttpRequest {
 
+    @Deprecated
     public static enum RequestType {
 
         GET, POST, PATCH, PUT, DELETE
@@ -79,5 +82,31 @@ public final class HttpRequest {
         }
 
         return r;
+    }
+
+    /**
+     * Method that adds extra information to our returned object.
+     *
+     * @param obj
+     * @param isSuccess
+     * @param requestType
+     * @param data
+     * @param url
+     * @param responseCode
+     * @param exception
+     * @param exceptionMessage
+     */
+    @Deprecated
+    public static void generateJSONObject(JSONObject obj, boolean isSuccess,
+            String requestType, String data, String url, int responseCode,
+            String exception, String exceptionMessage) throws JSONException {
+
+        obj.put("_success", isSuccess);
+        obj.put("_type", requestType);
+        obj.put("_post", data);
+        obj.put("_url", url);
+        obj.put("_http", responseCode);
+        obj.put("_exception", exception);
+        obj.put("_exceptionMessage", exceptionMessage);
     }
 }

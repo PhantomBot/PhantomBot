@@ -84,6 +84,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     public static synchronized TwitchWSIRCParser instance(WSClient client, String channelName, TwitchSession session) {
         if (instance == null) {
             instance = new TwitchWSIRCParser(client, channelName, session);
+            instance.subscribe(instance);
         } else {
             instance.setClient(client);
         }
