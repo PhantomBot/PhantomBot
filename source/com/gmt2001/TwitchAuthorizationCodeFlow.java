@@ -30,8 +30,8 @@ import java.nio.charset.Charset;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
@@ -52,7 +52,7 @@ public class TwitchAuthorizationCodeFlow {
     private static final String USER_AGENT = "PhantomBot/2022";
     private static final long REFRESH_INTERVAL = 900000L;
     private static final int DEFAULT_EXPIRE_TIME = 900000;
-    private Timer t = null;
+    private boolean timerStarted = false;
     private Transaction refreshTransaction = null;
     private static Transaction newTransaction = null;
 
@@ -171,22 +171,19 @@ public class TwitchAuthorizationCodeFlow {
     }
 
     private synchronized void startup(String clientid, String clientsecret) {
-        if (t != null) {
+        if (timerStarted) {
             com.gmt2001.Console.debug.println("timer exists");
             return;
         }
 
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
-            this.t = new Timer();
-            this.t.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (PhantomBot.instance() != null) {
-                        checkAndRefreshTokens(PhantomBot.instance().getProperties());
-                    }
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                if (PhantomBot.instance() != null) {
+                    checkAndRefreshTokens(PhantomBot.instance().getProperties());
                 }
-            }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+            }, REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+            timerStarted = true;
         } else {
             com.gmt2001.Console.debug.println("not starting");
         }
