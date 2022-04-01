@@ -150,6 +150,20 @@ public final class HttpClientResponse {
     }
 
     /**
+     * Returns the response body as a JSONObject, if it was a valid stringified JSON object, otherwise throws the JSONException that was thrown
+     *
+     * @return
+     * @throws java.lang.Throwable
+     */
+    public JSONObject jsonOrThrow() throws Throwable {
+        if (this.hasJson()) {
+            return this.json;
+        } else {
+            throw this.jsonException;
+        }
+    }
+
+    /**
      * Returns true if the response was JSON and no JSONExceptions were thrown during parsing
      *
      * @return

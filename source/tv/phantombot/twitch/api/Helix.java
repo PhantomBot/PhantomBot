@@ -23,7 +23,6 @@ import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -235,10 +234,10 @@ public class Helix {
                     response.responseHeaders().getInt("Ratelimit-Remaining", 1),
                     response.responseHeaders().getInt("Ratelimit-Reset", (int) (Date.from(Instant.now()).getTime() / 1000)) * 1000);
 
-            returnObject = response.json();
+            returnObject = response.jsonOrThrow();
             // Generate the return object,
             HttpRequest.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IllegalArgumentException | NullPointerException | URISyntaxException | JSONException ex) {
+        } catch (Throwable ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }

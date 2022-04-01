@@ -22,7 +22,6 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -142,10 +141,10 @@ public class TwitchValidate {
             responseCode = response.responseCode().code();
 
             // Parse the data.
-            returnObject = response.json();
+            returnObject = response.jsonOrThrow();
             // Generate the return object,
             HttpRequest.generateJSONObject(returnObject, true, "GET", "", BASE_URL, responseCode, "", "");
-        } catch (NullPointerException | URISyntaxException | JSONException ex) {
+        } catch (Throwable ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, "GET", "", BASE_URL, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }
