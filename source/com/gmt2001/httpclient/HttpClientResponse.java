@@ -67,7 +67,7 @@ public final class HttpClientResponse {
         Throwable jsonExceptionT = null;
 
         try {
-            jsonT = new JSONObject(responseBody);
+            jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
         } catch (JSONException ex) {
             jsonExceptionT = ex;
         }
@@ -105,7 +105,7 @@ public final class HttpClientResponse {
         Throwable jsonExceptionT = null;
 
         try {
-            jsonT = new JSONObject(responseBody);
+            jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
         } catch (JSONException ex) {
             jsonExceptionT = ex;
         }

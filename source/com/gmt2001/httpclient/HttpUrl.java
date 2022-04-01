@@ -98,12 +98,14 @@ public final class HttpUrl {
         u.path = uri.getPath();
         u.querySep = querySep;
 
-        for (String s : uri.getQuery().split(querySep)) {
-            String[] param = s.split("=", 1);
-            if (param.length == 2) {
-                u.query.put(param[0], param[1]);
-            } else {
-                u.query.put(param[0], null);
+        if (uri.getQuery() != null) {
+            for (String s : uri.getQuery().split(querySep)) {
+                String[] param = s.split("=", 2);
+                if (param.length == 2) {
+                    u.query.put(param[0], param[1]);
+                } else {
+                    u.query.put(param[0], null);
+                }
             }
         }
 
