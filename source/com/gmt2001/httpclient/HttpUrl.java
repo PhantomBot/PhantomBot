@@ -58,6 +58,18 @@ public final class HttpUrl {
     }
 
     /**
+     * Starts a new HttpUrl from a string URI
+     *
+     * @param baseUri A base URI to parse
+     * @param endPoint An endpoint to combine with the base URI
+     * @return
+     * @throws URISyntaxException If the given string violates RFC 2396
+     */
+    public static HttpUrl fromUri(String baseUri, String endPoint) throws URISyntaxException {
+        return fromUri(new URI(baseUri + (!baseUri.endsWith("/") && !endPoint.startsWith("/") ? "/" : "") + endPoint));
+    }
+
+    /**
      * Starts a new HttpUrl from a URI
      *
      * @param uri A URI object

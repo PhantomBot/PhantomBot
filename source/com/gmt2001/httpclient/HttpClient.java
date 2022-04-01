@@ -383,18 +383,29 @@ public final class HttpClient {
     /**
      * Creates a new HttpHeaders with some default headers filled in
      *
-     * @param isMutator If true, sets the content type. If isJson is false, sets to application/x-www-form-urlencoded
+     * @param method The method that is going to be requested. If it is a mutator method that can provide a body, the content type may be set
      * @param isJson If true, sets the accept to application/json. If isMutator is true, sets the content type as well
      * @return
      */
-    public static HttpHeaders createHeaders(boolean isMutator, boolean isJson) {
+    public static HttpHeaders createHeaders(HttpMethod method, boolean isJson) {
+        return createHeaders(isMutatorWithBody(method), isJson);
+    }
+
+    /**
+     * Creates a new HttpHeaders with some default headers filled in
+     *
+     * @param isMutatorWithBody If true, sets the content type. If isJson is false, sets to application/x-www-form-urlencoded
+     * @param isJson If true, sets the accept to application/json. If isMutator is true, sets the content type as well
+     * @return
+     */
+    public static HttpHeaders createHeaders(boolean isMutatorWithBody, boolean isJson) {
         HttpHeaders h = new DefaultHttpHeaders();
 
         if (isJson) {
             h.set(HttpHeaderNames.ACCEPT, HttpHeaderValues.APPLICATION_JSON);
         }
 
-        if (isMutator) {
+        if (isMutatorWithBody) {
             if (isJson) {
                 h.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
             } else {
@@ -403,5 +414,15 @@ public final class HttpClient {
         }
 
         return h;
+    }
+
+    /**
+     * Indicates if the provided method is a mutator that can provide a request body
+     *
+     * @param method The method to test
+     * @return
+     */
+    public static boolean isMutatorWithBody(HttpMethod method) {
+        return method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.PATCH;
     }
 }

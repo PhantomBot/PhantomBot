@@ -16,16 +16,17 @@
  */
 package tv.phantombot.twitch.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import javax.net.ssl.HttpsURLConnection;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,17 +38,12 @@ import org.json.JSONObject;
  */
 public class TwitchValidate {
 
-    // The current instance 
+    // The current instance
     private static final TwitchValidate instance = new TwitchValidate();
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://id.twitch.tv/oauth2/validate";
-    // The user agent for our requests to Helix.
-    private static final String USER_AGENT = "PhantomBot/2020";
-    // Our content type, should always be JSON.
-    private static final String CONTENT_TYPE = "application/json";
-    // Timeout which to wait for a response before killing it (5 seconds).
-    private static final int TIMEOUT_TIME = 5000;
     private static final long REFRESH_INTERVAL = 3600000L;
+    private static final long TIMEOUT_TIME = 5000L;
     private final List<String> scopesC = new ArrayList<>();
     private String clientidC = "";
     private String loginC = "";
@@ -69,7 +65,6 @@ public class TwitchValidate {
     public boolean validT = false;
     private Thread validateT = null;
     private ValidateRunnable validaterT = null;
-    private final Timer t;
 
     /**
      * This class constructor.
@@ -77,13 +72,7 @@ public class TwitchValidate {
     private TwitchValidate() {
         // Set the default exception handler thread.
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                doValidations();
-            }
-        }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> this.doValidations(), REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     private void doValidationA() {
@@ -135,49 +124,6 @@ public class TwitchValidate {
     }
 
     /**
-     * Method that gets data from an InputStream.
-     *
-     * @param stream
-     * @return
-     */
-    private String getStringFromInputStream(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder returnString = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            returnString.append(line);
-        }
-
-        return returnString.toString();
-    }
-
-    /**
-     * Method that adds extra information to our returned object.
-     *
-     * @param obj
-     * @param isSuccess
-     * @param requestType
-     * @param data
-     * @param url
-     * @param responseCode
-     * @param exception
-     * @param exceptionMessage
-     */
-    private void generateJSONObject(JSONObject obj, boolean isSuccess,
-            String data, String url, int responseCode,
-            String exception, String exceptionMessage) throws JSONException {
-
-        obj.put("_success", isSuccess);
-        obj.put("_type", "GET");
-        obj.put("_post", data);
-        obj.put("_url", url);
-        obj.put("_http", responseCode);
-        obj.put("_exception", exception);
-        obj.put("_exceptionMessage", exceptionMessage);
-    }
-
-    /**
      * Method that handles data for Validation.
      *
      * @param type
@@ -186,52 +132,22 @@ public class TwitchValidate {
      */
     private JSONObject handleRequest(String oAuthToken) throws JSONException {
         JSONObject returnObject = new JSONObject();
-        InputStream inStream = null;
         int responseCode = 0;
 
         try {
-            // Generate a new URL.
-            URL url = new URL(BASE_URL);
-            // Open the connection over HTTPS.
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            // Add our headers.
-            connection.addRequestProperty("Content-Type", CONTENT_TYPE);
-            connection.addRequestProperty("Authorization", "OAuth " + oAuthToken);
-            connection.addRequestProperty("User-Agent", USER_AGENT);
-            // Add our request method.
-            connection.setRequestMethod("GET");
-            // Set out timeout.
-            connection.setConnectTimeout(TIMEOUT_TIME);
+            HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
+            headers.add("Authorization", "OAuth " + oAuthToken);
+            HttpClientResponse response = HttpClient.request(HttpMethod.GET, HttpUrl.fromUri(BASE_URL), headers, null);
 
-            // Connect!
-            connection.connect();
-
-            // Get our response code.
-            responseCode = connection.getResponseCode();
-
-            // Get our response stream.
-            if (responseCode == 200) {
-                inStream = connection.getInputStream();
-            } else {
-                inStream = connection.getErrorStream();
-            }
+            responseCode = response.responseCode().code();
 
             // Parse the data.
-            returnObject = new JSONObject(getStringFromInputStream(inStream));
+            returnObject = response.json();
             // Generate the return object,
-            generateJSONObject(returnObject, true, "", BASE_URL, responseCode, "", "");
-        } catch (IOException | NullPointerException | JSONException ex) {
+            HttpRequest.generateJSONObject(returnObject, true, "GET", "", BASE_URL, responseCode, "", "");
+        } catch (NullPointerException | URISyntaxException | JSONException ex) {
             // Generate the return object.
-            generateJSONObject(returnObject, false, "", BASE_URL, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException ex) {
-                    // Generate the return object.
-                    generateJSONObject(returnObject, false, "", BASE_URL, responseCode, "IOException", ex.getMessage());
-                }
-            }
+            HttpRequest.generateJSONObject(returnObject, false, "GET", "", BASE_URL, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }
 
         return returnObject;
@@ -240,9 +156,8 @@ public class TwitchValidate {
     /**
      * Method that validates an oAuthToken.
      *
+     * @param oAuthToken
      * @param type
-     * @param BASE_URL
-     * @return
      */
     public void validateAPI(String oAuthToken, String type) {
         try {
@@ -306,12 +221,7 @@ public class TwitchValidate {
             this.validateChat(token, "CHAT (oauth)");
         } else {
             this.validaterC.updateToken(token);
-            this.t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    doValidationC();
-                }
-            }, 1000);
+            Executors.newSingleThreadExecutor().execute(() -> this.doValidationC());
         }
     }
 
@@ -344,12 +254,7 @@ public class TwitchValidate {
             this.validateAPI(token, "API (apioauth)");
         } else {
             this.validaterA.updateToken(token);
-            this.t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    doValidationA();
-                }
-            }, 1000);
+            Executors.newSingleThreadExecutor().execute(() -> this.doValidationA());
         }
     }
 
@@ -382,12 +287,7 @@ public class TwitchValidate {
             this.validateApp(token, "APP (EventSub)");
         } else {
             this.validaterT.updateToken(token);
-            this.t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    doValidationT();
-                }
-            }, 1000);
+            Executors.newSingleThreadExecutor().execute(() -> this.doValidationT());
         }
     }
 
