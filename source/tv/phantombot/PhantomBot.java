@@ -1456,7 +1456,7 @@ public final class PhantomBot implements Listener {
                             }
                         }
                     } else {
-                        String[] newVersionInfo = GitHubAPIv3.instance().CheckNewRelease();
+                        String[] newVersionInfo = GitHubAPIv3.CheckNewRelease();
                         if (newVersionInfo != null) {
                             try {
                                 Thread.sleep(6000);

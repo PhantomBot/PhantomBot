@@ -17,17 +17,12 @@
  */
 package com.illusionaryone;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.charset.Charset;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import java.net.URISyntaxException;
 import java.util.regex.Pattern;
-import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,115 +34,30 @@ import tv.phantombot.RepoVersion;
  *
  * @author illusionaryone
  */
-public class GitHubAPIv3 {
+public final class GitHubAPIv3 {
 
-    private static GitHubAPIv3 instance;
-    private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
-    private static final int iHTTPTimeout = 2 * 1000;
-
-    public static synchronized GitHubAPIv3 instance() {
-        if (instance == null) {
-            instance = new GitHubAPIv3();
-        }
-
-        return instance;
-    }
+    private static final String BASE_URL = "https://api.github.com/repos/PhantomBot/PhantomBot";
 
     private GitHubAPIv3() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    /*
-     * Reads data from a stream.
-     */
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    /*
-     * Populates additional information into a JSON object to be digested
-     * as needed.
-     */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-            String url, int responseCode, String exception,
-            String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
-    @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, boolean isArray) throws JSONException {
-        JSONObject jsonResult = new JSONObject("{}");
-        InputStream inputStream = null;
-        URL urlRaw;
-        HttpsURLConnection urlConn;
-        String jsonText = "";
+    private static JSONObject readJsonFromUrl(String endPoint, boolean isArray) throws JSONException {
+        JSONObject jsonResult = new JSONObject();
 
         try {
-            urlRaw = new URL(urlAddress);
-            urlConn = (HttpsURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.addRequestProperty("Accept", "application/vnd.github.v3+json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
-                    + "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            urlConn.connect();
-
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
-            } else {
-                inputStream = urlConn.getErrorStream();
-            }
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
-            jsonText = readAll(rd);
+            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(BASE_URL, endPoint));
             if (isArray) {
-                jsonResult = new JSONObject("{ \"array\": " + jsonText + " }");
+                jsonResult.put("array", new JSONArray(response.responseBody()));
             } else {
-                jsonResult = new JSONObject(jsonText);
+                jsonResult = response.json();
             }
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
-        } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endPoint, response.responseCode().code(), "", "");
+        } catch (URISyntaxException | JSONException ex) {
+            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endPoint, 0, ex.getClass().getSimpleName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            if (inputStream != null)
-                try {
-                inputStream.close();
-            } catch (IOException ex) {
-                fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
         }
 
-        return (jsonResult);
+        return jsonResult;
     }
 
     /*
@@ -155,8 +65,8 @@ public class GitHubAPIv3 {
      *
      * @return  JSONObject  JSONObject from GitHub
      */
-    public JSONObject GetReleases() throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/releases", true);
+    public static JSONObject GetReleases() throws JSONException {
+        return readJsonFromUrl("/releases", true);
     }
 
     /*
@@ -164,8 +74,8 @@ public class GitHubAPIv3 {
      *
      * @return  JSONObject  JSONObject from GitHub
      */
-    public JSONObject GetLatestRelease() throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/releases/latest", true);
+    public static JSONObject GetLatestRelease() throws JSONException {
+        return readJsonFromUrl("/releases/latest", true);
     }
 
     /*
@@ -173,7 +83,7 @@ public class GitHubAPIv3 {
      *
      * @return  String  null if no new version detected else the version and URL to download the release
      */
-    public String[] CheckNewRelease() throws JSONException {
+    public static String[] CheckNewRelease() throws JSONException {
         JSONObject jsonObject = GetLatestRelease();
         if (!jsonObject.has("tag_name")) {
             return null;
@@ -211,5 +121,4 @@ public class GitHubAPIv3 {
 
         return new String[]{tagName, assetsArray.getJSONObject(i).getString("browser_download_url")};
     }
-
 }

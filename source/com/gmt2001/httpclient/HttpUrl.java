@@ -66,7 +66,7 @@ public final class HttpUrl {
      * @throws URISyntaxException If the given string violates RFC 2396
      */
     public static HttpUrl fromUri(String baseUri, String endPoint) throws URISyntaxException {
-        return fromUri(new URI(baseUri + (!baseUri.endsWith("/") && !endPoint.startsWith("/") ? "/" : "") + endPoint));
+        return fromUri(new URI(baseUri + (!baseUri.endsWith("/") && !endPoint.startsWith("/") && !endPoint.startsWith("?") ? "/" : "") + endPoint));
     }
 
     /**

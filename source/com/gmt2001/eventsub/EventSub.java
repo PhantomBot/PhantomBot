@@ -17,6 +17,9 @@
 package com.gmt2001.eventsub;
 
 import com.gmt2001.Reflect;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -28,15 +31,15 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,9 +56,6 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.zip.GZIPInputStream;
-import javax.net.ssl.HttpsURLConnection;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,7 +80,6 @@ public final class EventSub implements HttpRequestHandler {
 
     private static final EventSub INSTANCE = new EventSub();
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
-    private static final int TIMEOUT = 2 * 1000;
     private static final long CLEANUP_INTERVAL = 120000L;
     private static final int SUBSCRIPTION_RETRIEVE_INTERVAL = 86400;
     private int subscription_total = 0;
@@ -169,11 +168,6 @@ public final class EventSub implements HttpRequestHandler {
         ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
     }
 
-    private enum RequestType {
-
-        GET, POST, DELETE
-    };
-
     /**
      * Gets all EventSub subscriptions from the last API call. Retrieves the list again if it has been a while
      *
@@ -224,7 +218,7 @@ public final class EventSub implements HttpRequestHandler {
     public Flux<EventSubSubscription> getSubscriptionsFromAPI(EventSubSubscription.SubscriptionStatus filter) {
         return Flux.<EventSubSubscription>create(emitter -> {
             try {
-                JSONObject response = this.doRequest(EventSub.RequestType.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
+                JSONObject response = this.doRequest(HttpMethod.GET, filter != null ? "?status=" + filter.name().toLowerCase() : "", "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -239,7 +233,7 @@ public final class EventSub implements HttpRequestHandler {
                     this.subscription_max_cost = response.getInt("max_total_cost");
                     emitter.complete();
                 }
-            } catch (IOException | JSONException ex) {
+            } catch (URISyntaxException | IOException | JSONException ex) {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to get data [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
@@ -282,14 +276,14 @@ public final class EventSub implements HttpRequestHandler {
     public Mono<Void> deleteSubscription(String id) {
         return Mono.<Void>create(emitter -> {
             try {
-                JSONObject response = this.doRequest(EventSub.RequestType.DELETE, "?id=" + id, "");
+                JSONObject response = this.doRequest(HttpMethod.DELETE, "?id=" + id, "");
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
                 } else {
                     emitter.success();
                 }
-            } catch (IOException | JSONException ex) {
+            } catch (URISyntaxException | IOException | JSONException ex) {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
@@ -314,7 +308,7 @@ public final class EventSub implements HttpRequestHandler {
                 request.key("secret").value(proposedSubscription.getTransport().getSecret());
                 request.endObject();
                 request.endObject();
-                JSONObject response = this.doRequest(EventSub.RequestType.POST, "", request.toString());
+                JSONObject response = this.doRequest(HttpMethod.POST, "", request.toString());
 
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
@@ -331,7 +325,7 @@ public final class EventSub implements HttpRequestHandler {
                             new EventSubTransport(subscription.getJSONObject("transport").getString("method"), subscription.getJSONObject("transport").getString("callback"))
                     ));
                 }
-            } catch (IOException | JSONException ex) {
+            } catch (URISyntaxException | IOException | JSONException ex) {
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to create subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
@@ -395,109 +389,18 @@ public final class EventSub implements HttpRequestHandler {
         });
     }
 
-    private JSONObject doRequest(EventSub.RequestType type, String queryString, String post) throws IOException, JSONException {
-        JSONObject response = this.getData(type, queryString, post);
+    private JSONObject doRequest(HttpMethod type, String queryString, String post) throws IOException, JSONException, URISyntaxException {
+        HttpUrl url = HttpUrl.fromUri(BASE, queryString);
+        HttpHeaders headers = HttpClient.createHeaders(type, true);
+        HttpClientResponse response = HttpClient.request(type, url, headers, post);
+        JSONObject jso = response.json();
 
-        if (response.has("error") && response.getInt("status") == 401) {
+        if (jso.has("error") && jso.has("status") && jso.getInt("status") == 401) {
             PhantomBot.instance().getAppFlow().getNewToken();
-            try {
-                Thread.sleep(TIMEOUT);
-            } catch (InterruptedException ex) {
-            }
-            response = getData(type, queryString, post);
+            response = HttpClient.request(type, url, headers, post);
+            jso = response.json();
         }
 
-        return response;
-    }
-
-    private void fillJSONObject(JSONObject jsonObject, boolean success, String type, String post,
-            String url, int responseCode, String exception,
-            String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_post", post);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
-    private JSONObject getData(EventSub.RequestType type, String queryString, String post) throws IOException, JSONException {
-        JSONObject j = new JSONObject("{}");
-        InputStream i = null;
-        String content = "";
-
-        try {
-            URL u = new URL(EventSub.BASE + queryString);
-            HttpsURLConnection c = (HttpsURLConnection) u.openConnection();
-            c.addRequestProperty("Accept", "application/json");
-            c.addRequestProperty("Content-Type", "application/json");
-
-            c.addRequestProperty("Authorization", "Bearer " + PhantomBot.instance().getProperties().getProperty("apptoken"));
-            c.addRequestProperty("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid"));
-
-            c.setRequestMethod(type.name());
-            c.setConnectTimeout(TIMEOUT);
-            c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2021");
-
-            if (!post.isEmpty()) {
-                c.setDoOutput(true);
-            }
-
-            c.connect();
-
-            if (!post.isEmpty()) {
-                try (BufferedOutputStream stream = new BufferedOutputStream(c.getOutputStream())) {
-                    stream.write(post.getBytes());
-                    stream.flush();
-                }
-            }
-
-            if (c.getResponseCode() == 200) {
-                i = c.getInputStream();
-            } else {
-                i = c.getErrorStream();
-            }
-
-            if (c.getResponseCode() == 204 || i == null) {
-                content = "{}";
-            } else {
-                String charset = "utf-8";
-                String ct = c.getContentType();
-                if (ct != null) {
-                    String[] cts = ct.split(" *; *");
-                    for (int idx = 1; idx < cts.length; ++idx) {
-                        String[] val = cts[idx].split("=", 2);
-                        if (val[0].equalsIgnoreCase("charset") && val.length > 1) {
-                            charset = val[1];
-                        }
-                    }
-                }
-
-                if ("gzip".equalsIgnoreCase(c.getContentEncoding())) {
-                    i = new GZIPInputStream(i);
-                }
-
-                content = IOUtils.toString(i, charset);
-            }
-
-            j = new JSONObject(content);
-            fillJSONObject(j, true, type.name(), post, EventSub.BASE + queryString, c.getResponseCode(), "", "", content);
-        } catch (IOException | JSONException ex) {
-            fillJSONObject(j, false, type.name(), post, EventSub.BASE + queryString, 0, ex.getClass().getSimpleName(), ex.getMessage(), content);
-            throw ex;
-        } finally {
-            if (i != null) {
-                try {
-                    i.close();
-                } catch (IOException ex) {
-                    fillJSONObject(j, false, type.name(), post, EventSub.BASE + queryString, 0, "IOException", ex.getMessage(), content);
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            }
-        }
-
-        return j;
+        return jso;
     }
 }

@@ -16,13 +16,16 @@
  */
 package com.gmt2001;
 
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -75,9 +78,15 @@ public final class GamesListUpdater {
 
         PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", new Date().getTime());
 
-        HttpResponse response = HttpRequest.getData(HttpRequest.RequestType.GET, BASE_URL + "index.json", "", new HashMap<>());
+        HttpClientResponse response;
+        try {
+            response = HttpClient.get(HttpUrl.fromUri(BASE_URL, "index.json"));
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return;
+        }
 
-        if (!response.success) {
+        if (!response.isSuccess() || !response.hasJson()) {
             if (force) {
                 com.gmt2001.Console.out.println("Failed to retrive the main index, update failed...");
             }
@@ -86,7 +95,7 @@ public final class GamesListUpdater {
             return;
         }
 
-        JSONObject jso = new JSONObject(response.content);
+        JSONObject jso = response.json();
         int myVersion = PhantomBot.instance().getDataStore().GetInteger("settings", "", "gamesList-version");
 
         if (force || !Files.exists(Paths.get("./web/panel/js/utils/gamesList.txt"))) {
@@ -182,9 +191,15 @@ public final class GamesListUpdater {
     }
 
     private static void UpdateFromIndex(List<String> data, int index, boolean force) {
-        HttpResponse response = HttpRequest.getData(HttpRequest.RequestType.GET, BASE_URL + "data/games" + index + ".json", "", new HashMap<>());
+        HttpClientResponse response;
+        try {
+            response = HttpClient.get(HttpUrl.fromUri(BASE_URL, "data/games" + index + ".json"));
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return;
+        }
 
-        if (!response.success) {
+        if (!response.isSuccess()) {
             if (force) {
                 com.gmt2001.Console.out.println("Failed to retrive index " + index + ", skipping...");
             }
@@ -193,7 +208,7 @@ public final class GamesListUpdater {
             return;
         }
 
-        JSONArray jsa = new JSONArray(response.content);
+        JSONArray jsa = new JSONArray(response.responseBody());
 
         for (int i = 0; i < jsa.length(); i++) {
             com.gmt2001.Console.debug.println("Processing game \"" + jsa.getJSONObject(i).getString("name") + "\"...");
