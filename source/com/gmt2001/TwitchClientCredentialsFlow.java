@@ -16,21 +16,17 @@
  */
 package com.gmt2001;
 
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringEncoder;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.stream.Collectors;
-import javax.net.ssl.HttpsURLConnection;
-import org.json.JSONException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
@@ -45,11 +41,10 @@ import tv.phantombot.twitch.api.TwitchValidate;
 public class TwitchClientCredentialsFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
-    private static final String USER_AGENT = "PhantomBot/2020";
     private static final long REFRESH_INTERVAL = 86400000L;
     private static final String[] SCOPES = {"channel:read:subscriptions", "bits:read", "channel:moderate", "moderation:read",
         "channel:read:redemptions", "channel:read:polls", "channel:read:predictions", "channel:read:hype_train"};
-    private Timer t = null;
+    private boolean timerStarted = false;
 
     /**
      * Constructor
@@ -144,21 +139,18 @@ public class TwitchClientCredentialsFlow {
     }
 
     private synchronized void startup(String clientid, String clientsecret) {
-        if (t != null) {
+        if (this.timerStarted) {
             com.gmt2001.Console.debug.println("Timer exists");
             return;
         }
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
-            this.t = new Timer();
-            this.t.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (PhantomBot.instance() != null) {
-                        checkExpirationAndGetNewToken();
-                    }
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                if (PhantomBot.instance() != null) {
+                    checkExpirationAndGetNewToken();
                 }
-            }, REFRESH_INTERVAL, REFRESH_INTERVAL);
+            }, REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+            this.timerStarted = true;
         } else {
             com.gmt2001.Console.debug.println("not starting");
         }
@@ -186,54 +178,15 @@ public class TwitchClientCredentialsFlow {
 
     private static JSONObject doRequest(QueryStringEncoder qse) {
         try {
-            URL url = new URL(BASE_URL + qse.toString());
+            HttpUrl url = HttpUrl.fromUri(BASE_URL, qse.toString());
+            HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            HttpClientResponse response = HttpClient.post(url, headers, "");
 
-            connection.addRequestProperty("Accept", "application/json");
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.addRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(5000);
-            connection.setDoOutput(true);
+            com.gmt2001.Console.debug.println(response.responseCode());
 
-            connection.connect();
-
-            try (BufferedOutputStream stream = new BufferedOutputStream(connection.getOutputStream())) {
-                stream.write("".getBytes());
-                stream.flush();
-            }
-
-            com.gmt2001.Console.debug.println(connection.getResponseCode());
-
-            if (connection.getResponseCode() == 200) {
-                try (InputStream inStream = connection.getInputStream()) {
-                    String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
-                    if (!r.startsWith("{")) {
-                        r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
-                    }
-                    com.gmt2001.Console.debug.println(r);
-                    return new JSONObject(r);
-                }
-            } else {
-                try (InputStream inStream = connection.getErrorStream()) {
-                    String r = new BufferedReader(new InputStreamReader(inStream)).lines().collect(Collectors.joining("\n"));
-                    if (!r.startsWith("{")) {
-                        r = "{\"error\": \"" + connection.getResponseMessage() + "\",\"message\":\"" + r + "\",\"status\":" + connection.getResponseCode() + "}";
-                    }
-                    com.gmt2001.Console.debug.println(r);
-                    JSONObject j = new JSONObject(r);
-                    if (!j.has("error")) {
-                        if (j.has("status")) {
-                            j.put("error", j.getInt("status"));
-                        } else {
-                            j.put("error", j.getInt("E_UNKWN"));
-                        }
-                    }
-                    return j;
-                }
-            }
-        } catch (IOException | NullPointerException | JSONException ex) {
+            return response.jsonOrThrow();
+        } catch (Throwable ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
             return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
         }
