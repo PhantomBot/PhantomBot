@@ -164,6 +164,8 @@
                 const { Remarkable, linkify, utils } = window.remarkable;
                 let hashmap = [];
                 let headers = {};
+                let firstHeader = null;
+                let pastFirstHeader = false;
                 let md = new Remarkable('full', {
                     html: false, // Enable HTML tags in source
                     xhtmlOut: false, // Use '/' to close single tags (<br />)
@@ -200,7 +202,7 @@
                 md.use(window.iframify);
                 md.use(function(md) {
                     md.renderer.rules.heading_open = function(tokens, idx) {
-                        updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content);
+                        updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content, true);
                         return '<h' + tokens[idx].hLevel + ' id=' + slugifyHeader() + '>';
                     };
                     md.renderer.rules.heading_close = function(tokens, idx) {
@@ -234,7 +236,13 @@
                     };
                 });
 
-                function updateHeaders(hLevel, content) {
+                function updateHeaders(hLevel, content, isNotToc) {
+                    if (isNotToc && !pastFirstHeader && firstHeader !== null && firstHeader[hLevel] !== undefined && firstHeader[hLevel] !== slugify(content)) {
+                        return;
+                    }
+
+                    pastFirstHeader = true;
+                
                     let newHeaders = {};
                     for (let x in headers) {
                         if (x < hLevel) {
@@ -244,6 +252,10 @@
 
                     newHeaders[hLevel] = slugify(content);
                     headers = newHeaders;
+                    
+                    if (firstHeader === null) {
+                        firstHeader[hLevel] = newHeaders[hLevel];
+                    }
                 }
 
                 function slugifyHeader() {
@@ -349,13 +361,14 @@
                                 data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
                                 data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
                                 headers = {};
+                                firstHeader = null;
                                 data = window.markdownToc.insert(data, {
                                     filter: function(str, ele, arr) {
                                         ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
                                         return true;
                                     },
                                     linkify: function(token, anchor, slug, opts) {
-                                        updateHeaders(token.lvl, token.content);
+                                        updateHeaders(token.lvl, token.content, false);
                                         let newhash = 'guide=' + path;
                                         slug = slugifyHeader();
                                         for (let x in hashmap) {
@@ -379,6 +392,7 @@
                                 data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
                                 window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
                                 headers = {};
+                                pastFirstHeader = false;
                                 $('#content-pane').html(md.render(data));
                                 $('#' + lastPage + '-menuitem').removeClass('active');
                                 setActiveRecursive(lastPage, true);
