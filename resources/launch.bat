@@ -17,6 +17,10 @@ REM You should have received a copy of the GNU General Public License
 REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
 REM
 
+REM
+REM PhantomBot Launcher - Windows
+REM
+
 IF /I "%2" == "--df" GOTO :DELTRACK
 :CHECKONE
 IF /I "%1" == "--nowt" GOTO :LAUNCH
