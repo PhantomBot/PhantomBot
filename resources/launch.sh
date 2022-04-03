@@ -117,10 +117,17 @@ fi
 
 if [[ ! -x "${JAVA}" ]]; then
     echo "Java does not have the executable permission"
-    echo "Please run the following command to fix this:"
+    echo "Attempting to fix this. You will be asked to enter your password to activate sudo"
+    echo "If this fails, please run the following command to fix this:"
     echo "   sudo chmod u+x ${JAVA}"
 
-    exit 1
+    sudo chmod u+x ${JAVA}
+
+    if [[ ! -x "${JAVA}" ]]; then
+        echo ""
+        echo "Command failed. Please run the above command to fix the issue"
+        exit 1
+    fi
 fi
 
 ${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBot.jar ${1}
