@@ -103,12 +103,14 @@ $(function () {
             // Commands toggle.
             $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
             // Log channels
-            $('#discord_logs_pubsub').appendChild(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
+            $('#discord_logs_pubsub').append(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
                     'Which channel to post the moderation logs to.', allowedChannelTypes));
 
-            if (discordChannels !== null) {
-                $('#twitch-mod-channel').select2({templateResult: discordChannelTemplate});
-            }
+            refreshChannels(function () {
+                if (discordChannels !== null) {
+                    $('#twitch-mod-channel').select2({templateResult: discordChannelTemplate});
+                }
+            });
         });
     }, 500);
 });
