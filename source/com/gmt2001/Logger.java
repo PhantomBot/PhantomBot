@@ -121,6 +121,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     private Logger() {
+        updateTimezones();
+
         LOG_PATHS.forEach((t, p) -> {
             try {
                 Files.createDirectories(Paths.get(p));

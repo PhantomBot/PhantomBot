@@ -312,10 +312,10 @@ public class WsPanelHandler implements WsFrameHandler {
 
         if (query.equalsIgnoreCase("panelSettings")) {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
-            jsonObject.key("displayName").value(TwitchCache.instance(PhantomBot.instance().getChannelName()).getDisplayName());
+            jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
             jsonObject.key("results").array();
-            try (FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
+            try ( FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
                 ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
                 ByteBuf buf2 = Base64.encode(buf);
                 jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();

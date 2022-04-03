@@ -327,6 +327,10 @@
             }));
         }
 
+        if ($.inidb.exists('settings', 'quoteMessage')) {
+            $.inidb.set('settings', 'quoteMessage', $.inidb.get('settings', 'quoteMessage').replace('(user)', '(userrank)'));
+        }
+
         $.consoleLn('PhantomBot update 3.6.0 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
     }

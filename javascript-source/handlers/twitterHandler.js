@@ -436,7 +436,7 @@
                     return;
                 }
                 var retval = $.twitter.updateStatus(String(args.splice(1).join(' ')).replace(/\(enter\)/g, '\r\n')) + '';
-                if (retval.equals('true')) {
+                if (retval) {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(1).join(' ')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.failed'));

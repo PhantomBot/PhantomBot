@@ -33,6 +33,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +46,8 @@ import javax.net.ssl.SSLException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.event.EventBus;
@@ -363,21 +366,24 @@ public class TwitchPubSub {
                         switch (messageObj.getString("type")) {
                             case "stream-up":
                                 if (chanid == this.channelId) {
-                                    EventBus.instance().postAsync(new TwitchOnlineEvent());
-                                    TwitchCache.instance(PhantomBot.instance().getChannelName()).goOnline();
+                                    Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
+                                        TwitchCache.instance().updateGame();
+                                        EventBus.instance().postAsync(new TwitchOnlineEvent());
+                                        TwitchCache.instance().goOnline();
+                                    });
                                 }
                                 EventBus.instance().postAsync(new PubSubStreamUpEvent(chanid, srvtime, messageObj.getInt("play_delay")));
                                 break;
                             case "stream-down":
                                 if (chanid == this.channelId) {
                                     EventBus.instance().postAsync(new TwitchOfflineEvent());
-                                    TwitchCache.instance(PhantomBot.instance().getChannelName()).goOffline();
+                                    TwitchCache.instance().goOffline();
                                 }
                                 EventBus.instance().postAsync(new PubSubStreamDownEvent(chanid, srvtime));
                                 break;
                             case "viewcount":
                                 if (chanid == this.channelId) {
-                                    TwitchCache.instance(PhantomBot.instance().getChannelName()).updateViewerCount(messageObj.getInt("viewers"));
+                                    TwitchCache.instance().updateViewerCount(messageObj.getInt("viewers"));
                                 }
                                 EventBus.instance().postAsync(new PubSubViewCountEvent(chanid, srvtime, messageObj.getInt("viewers")));
                                 break;
