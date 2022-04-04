@@ -627,11 +627,6 @@
 
             [cooldownDuration, isGlobalCooldown] = $.discord.cooldown.get(cooldownCommand, senderId);
 
-            consoleLn("Username:" + username + " userid: " + senderId + " command: " + command + " cooldown command: " + cooldownCommand);
-            consoleLn("resolved username: " + $.discord.userPrefix(username) +  " resolved userid: " + $.discord.userPrefix(senderId));
-            consoleLn("Duration:" + cooldownDuration + " global: " + isGlobalCooldown + " admin: " + isAdmin);
-            consoleLn("messages enabled: " + $.getIniDbBoolean('discordCooldownSettings', 'coolDownMsgEnabled'));
-
             if (isAdmin === false && cooldownDuration > 0) {
                 if ($.getIniDbBoolean('discordCooldownSettings', 'coolDownMsgEnabled')) {
                     consoleDebug('Discord command ! ' + command + ' was not sent due to it being on cooldown ' + (isGlobalCooldown ? 'globally' : 'for user' + username) + '.');

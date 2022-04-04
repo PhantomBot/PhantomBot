@@ -278,7 +278,7 @@
             actionArgs = args[2];
 
         /*
-         * @commandpath coolcom [command] [seconds] [type (global / user)] - Sets a cooldown for a command, default is global. Using -1 for the seconds removes the cooldown.
+         * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
          */
         if (command.equalsIgnoreCase('coolcom')) {
             if (action === undefined || isNaN(parseInt(subAction))) {
