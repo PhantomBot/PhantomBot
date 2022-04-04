@@ -101,7 +101,7 @@
                 clearInterval(c);
             }, timer * 1000);
         }
-        $.inidb.SetBoolean('auctionSettings', 'isActive', true);
+        $.inidb.SetBoolean('auctionSettings', '', 'isActive', true);
     };
 
     /**
@@ -141,7 +141,7 @@
             resetAuction();
         }, 1000);
 
-        $.inidb.SetBoolean('auctionSettings', 'isActive', false);
+        $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
     };
     
     /**
@@ -252,7 +252,7 @@
         auction.isEnding = false;
         auction.usePoints = true;
         auction.isActive = false;
-        $.inidb.SetBoolean('auctionSettings', 'isActive', false);
+        $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
     };
 
     /**
@@ -359,6 +359,6 @@
         $.registerChatSubcommand('auction', 'lastWinner', 7);
         $.registerChatCommand('./systems/auctionSystem.js', 'bid', 7);
 
-        $.inidb.SetBoolean('auctionSettings', 'isActive', false);
+        $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
     });
 })();
