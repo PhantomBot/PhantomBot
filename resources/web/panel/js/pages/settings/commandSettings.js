@@ -37,7 +37,7 @@ $(run = function() {
         // Set global cooldown.
         $('#global-cooldown').val(e.defaultCooldownTime);
         // Remove discord cooldown or get data.
-        if(e.hasDiscord != 'true') {
+        if(e.hasDiscord !== 'true') {
             $('#cmd-discord-cooldown-messages').parent().parent().remove();
             $('#global-discord-cooldown').parent().remove();
         } else {
@@ -45,7 +45,7 @@ $(run = function() {
                 tables: ['discordCooldownSettings', 'discordCooldownSettings'],
                 keys: ['defaultCooldownTime', 'coolDownMsgEnabled']
                 }, true, function(e) {
-                    $('#cmd-discord-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Yes' : 'No'))
+                    $('#cmd-discord-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Yes' : 'No'));
                     $('#global-discord-cooldown').val(e.defaultCooldownTime);
                 });
         }

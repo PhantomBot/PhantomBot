@@ -328,9 +328,9 @@
      */
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./discord/core/commandCoolDown.js')) {
-            if (event.getArgs()[0] == 'add') {
+            if (event.getArgs()[0] === 'add') {
                 add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3]);
-            } else if (event.getArgs()[0] == 'update') {
+            } else if (event.getArgs()[0] === 'update') {
                 defaultCooldownTime = $.getIniDbNumber('discordCooldownSettings', 'defaultCooldownTime', 5);
             } else {
                 remove(event.getArgs()[1]);
