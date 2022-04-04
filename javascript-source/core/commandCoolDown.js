@@ -42,6 +42,7 @@
 
     /*
      * @class Cooldown
+     *
      * @param {String}  command
      * @param {Number}  globalSec
      * @param {Number}  userSec
@@ -55,9 +56,9 @@
     }
 
     /*
-     * @function Stringify
+     * @function toJSONString
+     *
      * @param {String}  command
-     * 
      * @return {JSON String}
      */ 
     function toJSONString(command) {
@@ -211,8 +212,8 @@
      *
      * @export $.coolDown
      * @param {String}  command
-     * @param {Number}  seconds
-     * @param {Boolean} isGlobal
+     * @param {Number}  globalSec
+     * @param {Number}  userSec
      */
     function add(command, globalSec, userSec) {
         if (cooldowns[command] === undefined) {
@@ -326,7 +327,7 @@
          * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
          */
         if (command.equalsIgnoreCase('coolcom')) {
-            if(action === undefined || subAction === undefined) {
+            if(action === undefined || isNaN(parseInt(undefined))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }

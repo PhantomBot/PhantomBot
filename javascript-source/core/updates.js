@@ -335,4 +335,43 @@
         $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
     }
 
+    /* version 3.6.0 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.0')) {
+        $.consoleLn('Starting PhantomBot update 3.7.0 updates...');
+
+        // Convert cooldowns to separate global and user cooldowns
+        var cooldowns = $.inidb.GetKeyList('discordCooldown', ''),
+                json,
+                i;
+
+
+        for (i in cooldowns) {
+            json = JSON.parse($.inidb.get('discordCooldown', cooldowns[i]));
+
+            var globalSec,
+                userSec,
+                curSec = parseInt(json.seconds);
+
+            if (json.isGlobal.toString().equals('true')) {
+                globalSec = curSec;
+                userSec = -1;
+            } else {
+                globalSec = -1;
+                userSec = curSec;
+            }
+
+            $.inidb.set('discordCooldown', cooldowns[i], JSON.stringify({
+                command: String(json.command),
+                globalSec: globalSec,
+                userSec: userSec
+            }));
+        }
+
+        //Send cooldown messages in discord channel? (default=false)
+        $.inidb.SetBoolean('discordCooldownSettings', '', 'coolDownMsgEnabled', false);
+
+        $.consoleLn('PhantomBot update 3.7.0 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.7.0', true);
+    }
+
 })();
