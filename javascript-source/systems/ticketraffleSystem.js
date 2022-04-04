@@ -196,11 +196,24 @@
         $.log.event('Winner of the ticket raffle was ' + Winner);
     }
 
-    function enterRaffle(user, event, times) {
+    function enterRaffle(user, event, arg) {
         if (!raffleStatus) {
             if (msgToggle) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
             }
+            return;
+        }
+
+        var times;
+
+        if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
+            let possibleBuys = Math.floor($.getUserPoints(user)/cost);
+            times = maxEntries-getTickets(user); //Maximum possible entries that can be bought up to the maxEntries limit
+            times = (times > possibleBuys ? possibleBuys : times);
+        } else if (!isNaN(parseInt(arg))) {
+            times = parseInt(arg);
+        } else {
+            $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
             return;
         }
 
@@ -390,7 +403,7 @@
         }
 
         /**
-         * @commandpath tickets [amount] - Buy tickets to enter the ticket raffle.
+         * @commandpath tickets [amount / max] - Buy tickets to enter the ticket raffle.
          */
         if (command.equalsIgnoreCase('tickets') || command.equalsIgnoreCase('ticket')) {
             if (!action) {
@@ -404,7 +417,8 @@
                 }
                 return;
             }
-            enterRaffle(sender, event, parseInt(action));
+
+            enterRaffle(sender, event, action);
         }
     });
 

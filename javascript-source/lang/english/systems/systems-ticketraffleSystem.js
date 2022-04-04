@@ -32,8 +32,8 @@ $.lang.register('ticketrafflesystem.entered.bonus', '$1 (+ $2 bonus) entries add
 $.lang.register('ticketrafflesystem.usage', 'Usage: !traffle open [max entries] [regulars ticket multiplier (default = 1)] [subscribers ticket multiplier (default = 1)] [cost] [-followers]');
 $.lang.register('ticketrafflesystem.msg.enabled', 'Ticket raffle message\'s have been enabled.');
 $.lang.register('ticketrafflesystem.msg.disabled', 'Ticket raffle message\'s have been disabled.');
-$.lang.register('ticketrafflesystem.ticket.usage', 'Usage: !tickets (amount) - And you currently have $1 tickets.');
-$.lang.register('ticketrafflesystem.ticket.usage.bonus', 'Usage: !tickets (amount) - And you currently have $1 (+ $2 bonus) tickets.');
+$.lang.register('ticketrafflesystem.ticket.usage', 'Usage: !tickets (amount / max) - And you currently have $1 tickets.');
+$.lang.register('ticketrafflesystem.ticket.usage.bonus', 'Usage: !tickets (amount / max) - And you currently have $1 (+ $2 bonus) tickets.');
 $.lang.register('ticketrafflesystem.auto.msginterval.set', 'Message interval set to $1 minutes.');
 $.lang.register('ticketrafflesystem.auto.msg.set', 'Message set to $1.');
 $.lang.register('ticketrafflesystem.auto.msg.usage', 'Usage: !traffle autoannouncemessage [amount in minutes]');
