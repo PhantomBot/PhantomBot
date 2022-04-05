@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.cooldown.coolcom.usage', 'Usage: !coolcom [command] [seconds] [type (global / user)] - Using -1 for the seconds removes the cooldown.');
+$.lang.register('discord.cooldown.coolcom.usage', 'Usage: !coolcom [command] [seconds / global=seconds / user=seconds] [global=seconds / user=seconds] - Using -1 for the seconds removes the cooldown. Only specifying seconds assumes global only if no secondary argument is given!');
 $.lang.register('discord.cooldown.coolcom.set', 'Cooldown for command !$1 has been set to $2 seconds.');
 $.lang.register('discord.cooldown.coolcom.remove', 'Cooldown for command !$1 has been removed.');
 $.lang.register('discord.cooldown.cooldown.usage', 'Usage: !cooldown [setdefault]');
 $.lang.register('discord.cooldown.default.set', 'The default cooldown for commands without one has been set to $1 seconds.');
 $.lang.register('discord.cooldown.default.usage', 'Usage: !cooldown setdefault [seconds] - Set a cooldown for commands that don\'t have one.');
+$.lang.register('discord.cooldown.coolcom.setGlobal', 'Cooldown for command !$1 has globally been set to $2 seconds.');
+$.lang.register('discord.cooldown.coolcom.setUser', 'Cooldown for command !$1 has been set to $2 seconds individually for each user.');
+$.lang.register('discord.cooldown.coolcom.setCombo', 'Cooldown for command !$1 has globally been set to $2 seconds and to $3 seconds individually for each user.');
