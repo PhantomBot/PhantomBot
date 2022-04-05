@@ -327,7 +327,7 @@
          * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
          */
         if (command.equalsIgnoreCase('coolcom')) {
-            if(action === undefined || isNaN(parseInt(undefined))) {
+            if(action === undefined || isNaN(parseInt(subAction))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }

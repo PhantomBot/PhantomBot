@@ -331,14 +331,6 @@
             $.inidb.set('settings', 'quoteMessage', $.inidb.get('settings', 'quoteMessage').replace('(user)', '(userrank)'));
         }
 
-        $.consoleLn('PhantomBot update 3.6.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
-    }
-
-    /* version 3.6.0 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.0')) {
-        $.consoleLn('Starting PhantomBot update 3.7.0 updates...');
-
         // Convert cooldowns to separate global and user cooldowns
         var cooldowns = $.inidb.GetKeyList('discordCooldown', ''),
                 json,
@@ -370,8 +362,7 @@
         //Send cooldown messages in discord channel? (default=false)
         $.inidb.SetBoolean('discordCooldownSettings', '', 'coolDownMsgEnabled', false);
 
-        $.consoleLn('PhantomBot update 3.7.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.7.0', true);
+        $.consoleLn('PhantomBot update 3.6.0 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
     }
-
 })();
