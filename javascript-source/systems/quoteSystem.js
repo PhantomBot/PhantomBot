@@ -278,7 +278,7 @@
                 quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString())).
                 replace('(quote)', quote[1]).
                 replace('(userrank)', $.resolveRank(quote[0])).
-                replace('(user)', $.username.resolve(username)).
+                replace('(user)', $.username.resolve(quote[0])).
                 replace('(game)', (quote.length === 5 ? quote[3] : "Some Game")).
                 replace('(date)', $.getLocalTimeString($.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy'), parseInt(quote[2])));
                 $.say(quoteStr);
