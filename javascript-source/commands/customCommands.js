@@ -928,11 +928,6 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        var handleExtraCooldown = function (commandLower, extra) {
-            if (extra.cooldown != null) {
-                $.coolDown.add(commandLower, parseInt(extra.cooldown.seconds), extra.cooldown.seconds.cooldown);
-            }
-        };
         var handleExtraDisabled = function (commandLower, extra) {
             if (extra.disabled != null) {
                 if (extra.disabled) {
@@ -958,10 +953,8 @@
             } else if (eventName === 'add') {
                 customCommands[commandLower] = args[2];
                 $.registerChatCommand('./commands/customCommands.js', commandLower);
-                handleExtraCooldown(commandLower, extra);
             } else if (eventName === 'edit') {
                 customCommands[commandLower] = args[2];
-                handleExtraCooldown(commandLower, extra);
                 handleExtraDisabled(commandLower, extra);
             } else if (eventName === 'removeAlias') {
                 $.unregisterChatCommand(commandLower);
@@ -969,11 +962,9 @@
             } else if (eventName === 'addAlias') {
                 $.registerChatCommand('./commands/customCommands.js', commandLower);
                 $.registerChatAlias(commandLower);
-                handleExtraCooldown(commandLower, extra);
             } else if (eventName === 'editAlias') {
                 $.registerChatCommand('./commands/customCommands.js', commandLower);
                 $.registerChatAlias(commandLower);
-                handleExtraCooldown(commandLower, extra);
                 handleExtraDisabled(commandLower, extra);
             }
         }
