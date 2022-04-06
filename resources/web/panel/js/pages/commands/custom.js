@@ -391,7 +391,7 @@ $(function () {
                             updateCommandVisibility(commandName.val(), commandDisabled, commandHidden, function () {
                                 // Register the custom command with the cache.
                                 socket.wsEvent('custom_command_add_ws', './commands/customCommands.js', null,
-                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                    ['add', commandName.val(), commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
                                         ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
