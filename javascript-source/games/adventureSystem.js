@@ -367,7 +367,7 @@
 
         clearCurrentAdventure();
         temp = "";
-        $.coolDown.set('adventure', false, coolDown, false);
+        $.coolDown.set('adventure', true, coolDown, undefined);
         if (coolDownAnnounce) {
             setTimeout(function() {
                 $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));

@@ -131,6 +131,7 @@
         if (isSpecial(command)) {
             if (command.equalsIgnoreCase('adventure') && defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
                 maxCoolDown = getTimeDif(defaultCooldowns[command]);
+                isGlobal = true;
             }
             return [maxCoolDown, isGlobal];
         }
