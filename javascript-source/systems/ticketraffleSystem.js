@@ -31,6 +31,7 @@
         a = '',
         saveStateInterval,
         interval,
+        uniqueEntries = [],
         lastWinners;
 
     function reloadTRaffle() {
@@ -106,12 +107,14 @@
     function reopen() {
         if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', '', 'cost') || !$.inidb.HasKey('traffleState', '', 'entries')
                 || !$.inidb.HasKey('traffleState', '', 'subTMulti') || !$.inidb.HasKey('traffleState', '', 'regTMulti') || !$.inidb.HasKey('traffleState', '', 'maxEntries')
-                || !$.inidb.HasKey('traffleState', '', 'bools') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')) {
+                || !$.inidb.HasKey('traffleState', '', 'bools') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')
+                || !$.inidb.HasKey('traffleState', '', 'uniqueEntries')) {
             return;
         }
 
         cost = parseInt($.inidb.get('traffleState', 'cost'));
         entries = JSON.parse($.inidb.get('traffleState', 'entries'));
+        uniqueEntries = JSON.parse($.inidb.get('traffleState', 'uniqueEntries'));
         subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti'));
         regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
         maxEntries = parseInt($.inidb.get('traffleState', 'maxEntries'));
@@ -148,6 +151,7 @@
         $.inidb.set('traffleState', 'bools', JSON.stringify([followers, raffleStatus]));
         $.inidb.set('traffleState', 'totalEntries', totalEntries);
         $.inidb.set('traffleState', 'totalTickets', totalTickets);
+        $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
     }
 
     function closeRaffle() {
@@ -156,7 +160,6 @@
         clearInterval(saveStateInterval);
         $.inidb.SetBoolean('traffleSettings', '', 'isActive', false);
         saveState();
-        $.say($.lang.get('ticketrafflesystem.raffle.closed'));
     }
 
     function clear() {
@@ -177,24 +180,26 @@
     }
 
     function winner(amount) {
-        if (entries.length === 0) {
+        var entriesLen = entries.length;
+        if (entriesLen === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
         }
 
         if (raffleStatus) {
             closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
+            $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
 
-        let i = 0;
-
-        while (i < amount && i < entries.length) {
-            let w = $.randElement(entries);
-
-            if(!lastWinners.includes(w)) {
-                i++;
-                lastWinners.push(w);
-            }
+        // Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
+        // Faster than calling $.randElement() over and over
+        lastWinners = [];
+        
+        var taken = [];
+        while (amount--) {
+            var rnd = Math.floor(Math.random() * entriesLen);
+            lastWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
+            taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
         }
 
         winningMsg();
@@ -206,20 +211,17 @@
 
     function winningMsg() {
         if (lastWinners.length === 1) {
-            let followMsg = ($.user.isFollower(lastWinners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(winner[0]), followMsg));
+            var followMsg = ($.user.isFollower(lastWinners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(lastWinners[0]), followMsg));
             return;
         }
 
-        let msg = $.lang.get('ticketrafflesystem.winner.multiple', lastWinners.join(', '));
+        var msg = $.lang.get('ticketrafflesystem.winner.multiple', lastWinners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
-            let i = msg.substring(0, 500).lastIndexOf(","),
-                msg1 = msg.substring(0, i),
-                msg2 = msg.substring(i+1, msg.length);
-
-            $.say(msg1);
-            $.say(msg2);
+            var i = msg.substring(0, 500).lastIndexOf(",");
+            $.say(msg.substring(0, i));
+            $.say(msg.substring(i+1, msg.length));
         } else {
             $.say(msg);
         }
@@ -236,11 +238,11 @@
         var baseAmount;
 
         if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
-            let possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user)/cost) : maxEntries);
+            var possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user)/cost) : maxEntries);
             baseAmount = maxEntries-getTickets(user); //Maximum possible entries that can be bought up to the maxEntries limit
             baseAmount = (baseAmount > possibleBuys ? possibleBuys : baseAmount);
         } else if (!isNaN(parseInt(arg)) && parseInt(arg) % 1 === 0) {
-            baseAmount = Math.parseInt(arg);
+            baseAmount = parseInt(arg);
         } else {
             $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)));
             return;
@@ -258,7 +260,7 @@
 
         if (getTickets(user) + baseAmount > maxEntries) {
             if (msgToggle) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries));
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, getTickets(user)));
             }
             return;
         }
@@ -293,15 +295,19 @@
         }
     }
 
-    function incr(user, times, amount) {
+    function incr(user, times) {
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
             $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         }
         $.inidb.incr('ticketsList', user.toLowerCase(), times);
 
-        for (var i = 0; i < amount; i++) {
+        for (var i = 0; i < times; i++) {
             entries.push(user);
+        }
+        
+        if (!(uniqueEntries.includes(user))) {
+            uniqueEntries.push(user);
         }
     }
 
@@ -330,14 +336,14 @@
 
     function awardWinners(prize) {
 
-        for (let i = 0; i < lastWinners.length; i++) {
+        for (var i = 0; i < lastWinners.length; i++) {
             $.inidb.incr('points', lastWinners, prize);
         }
 
         if (lastWinners.length > 1) {
-            $.say($.lang.get('ticketrafflesystem.winner.multiple.award'), $.getPointsString(prize));
+            $.say($.lang.get('ticketrafflesystem.winner.multiple.award', $.getPointsString(prize)));
         } else {
-            $.say($.lang.get('ticketrafflesystem.winner.single.award'), $.getPointsString(prize));
+            $.say($.lang.get('ticketrafflesystem.winner.single.award', $.getPointsString(prize)));
         }
     }
 
@@ -369,6 +375,7 @@
                 } else {
                     checkArgs(sender, args[1], args[2], args[3], args[4], args[5]);
                 }
+                return;
             }
 
             /**
@@ -380,7 +387,9 @@
                     return;
                 }
                 closeRaffle();
+                $.say($.lang.get('ticketrafflesystem.raffle.closed'));
                 $.log.event(sender + ' closed a ticket raffle.');
+                return;
             }
 
             /**
@@ -388,7 +397,7 @@
              */
             if (action.equalsIgnoreCase('draw')) {
 
-                let amount = 1;
+                var amount = 1;
                 if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
                     return;
@@ -396,13 +405,20 @@
                 
                 if (args[1] !== undefined) {
                     amount = parseInt(args[1]);
+                } 
+                
+                if (amount > uniqueEntries.length) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
                 }
 
                 winner(amount);
 
                 if(args[2] !== undefined && !isNaN(parseInt(args[1]))) {
+
                     awardWinners(parseInt(args[1]));
                 }
+
+                return;
             }
 
             /**
@@ -418,6 +434,7 @@
                 if (!sender.equalsIgnoreCase($.botName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
+                return;
             }
 
             /**
@@ -433,10 +450,11 @@
                     $.inidb.set('settings', 'tRaffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.msg.enabled'));
                 }
+                return;
             }
 
             /**
-             * @commandpath traffle autoannouncemessage [message] - Sets the auto annouce message for when a raffle is opened
+             * @commandpath traffle autoannouncemessage [message] - Sets the auto announce message for when a raffle is opened
              */
             if (action.equalsIgnoreCase('autoannouncemessage')) {
                 if (!args[1]) {
@@ -448,10 +466,11 @@
                 $.inidb.set('settings', 'traffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msg.set', raffleMessage));
                 $.log.event(sender + ' changed the auto annouce message to ' + raffleMessage);
+                return;
             }
 
             /**
-             * @commandpath traffle autoannounceinterval [minutes] - Sets the auto annouce message interval. Use 0 to disable it
+             * @commandpath traffle autoannounceinterval [minutes] - Sets the auto announce message interval. Use 0 to disable it
              */
             if (action.equalsIgnoreCase('autoannounceinterval')) {
                 if (!parseInt(args[1])) {
@@ -463,6 +482,7 @@
                 $.inidb.set('settings', 'traffleMessageInterval', messageInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msginterval.set', messageInterval));
                 $.log.event(sender + ' changed the auto annouce interval to ' + messageInterval);
+                return;
             }
         }
 
