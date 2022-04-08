@@ -393,7 +393,7 @@
             }
 
             /**
-             * @commandpath traffle draw [amount] [points] - Picks winner(s) for the ticket raffle and optionally awards them with points 
+             * @commandpath traffle draw [amount (default = 1)] [prize points] - Picks winner(s) for the ticket raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
 
@@ -413,7 +413,7 @@
 
                 winner(amount);
 
-                if(args[2] !== undefined && !isNaN(parseInt(args[1]))) {
+                if(args[2] !== undefined && !isNaN(parseInt(args[1])) && parseInt(args[1] !== 0)) {
 
                     awardWinners(parseInt(args[1]));
                 }

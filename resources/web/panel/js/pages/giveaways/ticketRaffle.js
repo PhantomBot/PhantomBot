@@ -93,9 +93,9 @@ $(function () {
     // Open/close raffle button.
     $('#ticket-open-or-close-raffle').on('click', function () {
         if ($(this)[0].innerText.trim() === 'Open') {
-            const cost = $('#ticket-raffle-cost'),
+            const   cost = $('#ticket-raffle-cost'),
                     maxTicket = $('#ticket-raffle-max'),
-                    elegibility = $('#ticket-raffle-perm').val(),
+                    eligibility = $('#ticket-raffle-perm').val(),
                     regLuck = $('#ticket-raffle-reg'),
                     subLuck = $('#ticket-raffle-sub');
 
@@ -107,7 +107,7 @@ $(function () {
                 case helpers.handleInputNumber(subLuck, 1, 10):
                     break;
                 default:
-                    socket.sendCommand('open_traffle_cmd', 'traffle open ' + maxTicket.val() + ' ' + regLuck.val() + ' ' + subLuck.val() + ' ' + cost.val() + ' ' + elegibility, function () {
+                    socket.sendCommand('open_traffle_cmd', 'traffle open ' + maxTicket.val() + ' ' + regLuck.val() + ' ' + subLuck.val() + ' ' + cost.val() + ' ' + eligibility, function () {
                         // Alert the user.
                         toastr.success('Successfully opened the ticket raffle!');
                         // Update the button.
@@ -132,12 +132,22 @@ $(function () {
 
     // Draw raffle button.
     $('#ticket-draw-raffle').on('click', function () {
-        socket.sendCommandSync('draw_rraffle_cmd', 'traffle draw', function () {
-            // Alert the user.
-            toastr.success('Successfully drew a winner!');
-            // Reload to remove the winner.
-            helpers.temp.loadRaffleList();
-        });
+        const   drawAmount = $('#ticket-raffle-draw'),
+                prize = $('#ticket-raffle-prize');
+   
+        switch (false) {
+            case helpers.handleInputNumber(drawAmount, 1):
+            case helpers.handleInputNumber(prize, 0):
+                break;
+            default:
+                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val() , function () {
+                    console.log("Drawing winner with draw command:  " + 'traffle draw ' + drawAmount.val() + ' ' + prize.val());
+                    // Alert the user.
+                    toastr.success('Successfully drew a winner!');
+                    // Reload to remove the winner.
+                    helpers.temp.loadRaffleList();
+                });
+        }
     });
 
     // Reset raffle button.
@@ -147,6 +157,8 @@ $(function () {
         $('#ticket-raffle-cost').val('1');
         $('#ticket-raffle-reg, #ticket-raffle-sub').val('1');
         $('#ticket-raffle-table').find('tr:gt(0)').remove();
+        $('#ticket-raffle-draw').val('1');
+        $('#ticket-raffle-prize').val('0');
 
         $('#ticket-open-or-close-raffle').html($('<i/>', {
             'class': 'fa fa-unlock-alt'
