@@ -22,7 +22,10 @@ $.lang.register('ticketrafflesystem.raffle.opened', 'Ticket raffle is now open! 
 $.lang.register('ticketrafflesystem.err.raffle.not.opened', 'There is no ticket raffle opened.');
 $.lang.register('ticketrafflesystem.raffle.closed', 'The ticket raffle is now closed. Use "!traffle draw" to draw a winner.');
 $.lang.register('ticketrafflesystem.raffle.close.err', 'The ticket raffle ended. No one entered.');
-$.lang.register('ticketrafflesystem.winner', 'The winner of this ticket raffle is: $1! $2');
+$.lang.register('ticketrafflesystem.winner.single', 'The winner of this ticket raffle is: $1! $2');
+$.lang.register('ticketrafflesystem.winner.multiple', 'The winners of this ticket raffle are: $1!');
+$.lang.register('ticketrafflesystem.winner.single.award', 'The winner has been awarded: $1!');
+$.lang.register('ticketrafflesystem.winner.multiple.award', 'The winners have been awarded: $1 each!');
 $.lang.register('ticketrafflesystem.only.buy.amount', 'You can only buy $1 ticket(s)');
 $.lang.register('ticketrafflesystem.limit.hit', 'You\'re only allowed to buy $1 ticket(s)');
 $.lang.register('ticketrafflesystem.err.not.following', 'You need to be following to enter.');

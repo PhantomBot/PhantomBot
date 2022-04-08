@@ -30,7 +30,8 @@
         totalTickets = 0,
         a = '',
         saveStateInterval,
-        interval;
+        interval,
+        lastWinners;
 
     function reloadTRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
@@ -79,6 +80,7 @@
 
     function openRaffle(maxEntries, cost, a, user) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
+        lastWinners = undefined;
         raffleStatus = true;
         $.inidb.RemoveFile('ticketsList');
         $.inidb.RemoveFile('entered');
@@ -174,7 +176,7 @@
         saveState();
     }
 
-    function winner(sender) {
+    function winner(amount) {
         if (entries.length === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
@@ -184,13 +186,43 @@
             closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
         }
 
-        var Winner = $.randElement(entries),
-            isFollowing = $.user.isFollower(Winner.toLowerCase()),
-            followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+        let i = 0;
 
-        $.say($.lang.get('ticketrafflesystem.winner', $.username.resolve(Winner), followMsg));
-        $.inidb.set('traffleresults', 'winner', $.username.resolve(Winner) + ' ' + followMsg);
-        $.log.event('Winner of the ticket raffle was ' + Winner);
+        while (i < amount && i < entries.length) {
+            let w = $.randElement(entries);
+
+            if(!lastWinners.includes(w)) {
+                i++;
+                lastWinners.push(w);
+            }
+        }
+
+        winningMsg();
+
+        
+        $.inidb.set('traffleresults', 'winner', JSON.stringify(lastWinners));
+        $.log.event('Winner of the ticket raffle was ' + lastWinners.join(', '));
+    }
+
+    function winningMsg() {
+        if (lastWinners.length === 1) {
+            let followMsg = ($.user.isFollower(lastWinners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(winner[0]), followMsg));
+            return;
+        }
+
+        let msg = $.lang.get('ticketrafflesystem.winner.multiple', lastWinners.join(', '));
+
+        if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
+            let i = msg.substring(0, 500).lastIndexOf(","),
+                msg1 = msg.substring(0, i),
+                msg2 = msg.substring(i+1, msg.length);
+
+            $.say(msg1);
+            $.say(msg2);
+        } else {
+            $.say(msg);
+        }
     }
 
     function enterRaffle(user, event, arg) {
@@ -210,12 +242,12 @@
         } else if (!isNaN(parseInt(arg)) && parseInt(arg) % 1 === 0) {
             baseAmount = Math.parseInt(arg);
         } else {
-            $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
+            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)));
             return;
         }
 
-        var bonus = calcBonus(user, event, baseAmount);
-        amount = baseAmount + bonus;
+        var bonus = calcBonus(user, event, baseAmount),
+            amount = baseAmount + bonus;
 
         if (baseAmount > maxEntries || baseAmount === 0 || baseAmount < 0) {
             if (msgToggle) {
@@ -252,10 +284,6 @@
 
         incr(user.toLowerCase(), amount);
 
-        for (var i = 0; i < amount; i++) {
-            entries.push(user);
-        }
-
         if (msgToggle) {
             if (userGetsBonus(user, event)) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered.bonus', baseAmount, bonus, getTickets(user), calcBonus(user, event, getTickets(user))));
@@ -264,14 +292,17 @@
             }
         }
     }
-    ;
 
-    function incr(user, times) {
+    function incr(user, times, amount) {
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
             $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
         }
         $.inidb.incr('ticketsList', user.toLowerCase(), times);
+
+        for (var i = 0; i < amount; i++) {
+            entries.push(user);
+        }
     }
 
     function getTickets(user) {
@@ -295,6 +326,19 @@
         }
 
         return Math.round(bonus - tickets);
+    }
+
+    function awardWinners(prize) {
+
+        for (let i = 0; i < lastWinners.length; i++) {
+            $.inidb.incr('points', lastWinners, prize);
+        }
+
+        if (lastWinners.length > 1) {
+            $.say($.lang.get('ticketrafflesystem.winner.multiple.award'), $.getPointsString(prize));
+        } else {
+            $.say($.lang.get('ticketrafflesystem.winner.single.award'), $.getPointsString(prize));
+        }
     }
 
     /**
@@ -340,10 +384,25 @@
             }
 
             /**
-             * @commandpath traffle draw - Picks a winner for the ticket raffle
+             * @commandpath traffle draw [amount] [points] - Picks winner(s) for the ticket raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
-                winner();
+
+                let amount = 1;
+                if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
+                    return;
+                } 
+                
+                if (args[1] !== undefined) {
+                    amount = parseInt(args[1]);
+                }
+
+                winner(amount);
+
+                if(args[2] !== undefined && !isNaN(parseInt(args[1]))) {
+                    awardWinners(parseInt(args[1]));
+                }
             }
 
             /**
