@@ -17,20 +17,13 @@
 
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
-        tables: ['modules', 'traffleSettings'],
-        keys: ['./systems/ticketraffleSystem.js', 'isActive']
+        tables: ['modules', 'traffleSettings', 'traffleState'],
+        keys: ['./systems/ticketraffleSystem.js', 'isActive', 'hasDrawn']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
             // Remove the chat.
             $('#ticket-raffle-chat').find('iframe').remove();
             return;
-        }
-
-        // Update the open button to close if the raffle is active.
-        if (e['isActive'] === 'true') {
-            $('#ticket-open-or-close-raffle').html($('<i/>', {
-                'class': 'fa fa-lock'
-            })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
         /**
@@ -59,6 +52,32 @@ $(run = function () {
             });
         };
 
+        /**
+         * @function Loads the raffle winners.
+         */
+         helpers.temp.loadWinners = function () {
+            socket.getDBValue('get_traffle_list', 'traffleresults', 'winner', function (results) {
+                const table = $('#ticket-raffle-table');
+
+                $('#traffle-list-title').text("Ticket Raffle Winners");
+
+                // Remove current data content.
+                table.find('tr:gt(0)').remove();
+
+                var winners = JSON.parse(results.traffleresults);
+
+                for (let i = 0; i < winners.length; i++) {
+                    const tr = $('<tr/>');
+
+                    tr.append($('<td/>', {
+                        'html': winners[i]
+                    }));
+
+                    table.append(tr);
+                }
+            });
+        };
+
         if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
             // Add Twitch chat.
             $('#ticket-raffle-chat').html($('<iframe/>', {
@@ -79,6 +98,26 @@ $(run = function () {
         helpers.setInterval(function () {
             helpers.temp.loadRaffleList();
         }, 5e3);
+
+        // Update the open button to close if the raffle is active.
+        // For some reason $.inidb.SetBoolean actually saves an integer...
+        if (e['isActive'] === '1') {
+            $('#ticket-open-or-close-raffle').html($('<i/>', {
+                'class': 'fa fa-lock'
+            })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+        }
+
+        // Raffle is over, winners were already drawn
+        if (e['hasDrawn'] === 'true' && e['isActive'] === '0') {
+            helpers.clearTimers();
+            //We're zooming wait till the table is ready
+            $('#ticket-raffle-table').ready(function(){
+                helpers.temp.loadWinners();
+            });
+            $('#ticket-draw-raffle').ready(function(){
+                $('#ticket-draw-raffle').prop('disabled', true);
+            });            
+        }
     });
 });
 
@@ -115,6 +154,14 @@ $(function () {
                             'class': 'fa fa-lock'
                         })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                     });
+
+                $('#traffle-list-title').text("Ticket Raffle List");
+                $('#ticket-draw-raffle').prop('disabled', false);
+
+                // Reset the timer in case we destroyed it after the last draw
+                timers.push(setInterval(function () {
+                    helpers.temp.loadRaffleList();
+                }, 5e3));
             }
         } else {
             socket.sendCommandSync('close_traffle_cmd', 'traffle close', function () {
@@ -141,11 +188,18 @@ $(function () {
                 break;
             default:
                 socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val() , function () {
-                    console.log("Drawing winner with draw command:  " + 'traffle draw ' + drawAmount.val() + ' ' + prize.val());
                     // Alert the user.
                     toastr.success('Successfully drew a winner!');
-                    // Reload to remove the winner.
-                    helpers.temp.loadRaffleList();
+
+                    helpers.clearTimers();
+
+                    $('#ticket-draw-raffle').prop('disabled', true);
+                    $('#ticket-open-or-close-raffle').html($('<i/>', {
+                        'class': 'fa fa-unlock-alt'
+                    })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+
+                    //Show the winners
+                    helpers.temp.loadWinners();
                 });
         }
     });
@@ -163,6 +217,8 @@ $(function () {
         $('#ticket-open-or-close-raffle').html($('<i/>', {
             'class': 'fa fa-unlock-alt'
         })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+
+        $('#traffle-list-title').val("Ticket Raffle List");
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function () {

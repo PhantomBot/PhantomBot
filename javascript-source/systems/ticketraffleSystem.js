@@ -32,7 +32,8 @@
         saveStateInterval,
         interval,
         uniqueEntries = [],
-        lastWinners;
+        lastWinners = [],
+        hasDrawn = false;
 
     function reloadTRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
@@ -81,8 +82,9 @@
 
     function openRaffle(maxEntries, cost, a, user) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
-        lastWinners = undefined;
+        lastWinners = [];
         raffleStatus = true;
+        hasDrawn = false;
         $.inidb.RemoveFile('ticketsList');
         $.inidb.RemoveFile('entered');
         $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
@@ -108,7 +110,7 @@
         if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', '', 'cost') || !$.inidb.HasKey('traffleState', '', 'entries')
                 || !$.inidb.HasKey('traffleState', '', 'subTMulti') || !$.inidb.HasKey('traffleState', '', 'regTMulti') || !$.inidb.HasKey('traffleState', '', 'maxEntries')
                 || !$.inidb.HasKey('traffleState', '', 'bools') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')
-                || !$.inidb.HasKey('traffleState', '', 'uniqueEntries')) {
+                || !$.inidb.HasKey('traffleState', '', 'uniqueEntries') || !$.inidb.HasKey('traffleState', '', 'hasDrawn')) {
             return;
         }
 
@@ -121,6 +123,7 @@
         var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
         totalEntries = parseInt($.inidb.get('traffleState', 'totalEntries'));
         totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
+        hasDrawn = $.inidb.HasKey('traffleState', '', 'uniqueEntries');
         followers = bools[0];
         raffleStatus = bools[1];
 
@@ -152,6 +155,7 @@
         $.inidb.set('traffleState', 'totalEntries', totalEntries);
         $.inidb.set('traffleState', 'totalTickets', totalTickets);
         $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
+        $.inidb.set('traffleState', 'hasDrawn', hasDrawn);
     }
 
     function closeRaffle() {
@@ -168,6 +172,7 @@
 
         raffleStatus = false;
         followers = false;
+        hasDrawn = false;
         maxEntries = 0;
         cost = 0;
         a = '';
@@ -186,6 +191,9 @@
             return;
         }
 
+        hasDrawn = true;
+        $.inidb.set('traffleState', 'hasDrawn', hasDrawn);
+        
         if (raffleStatus) {
             closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
@@ -401,7 +409,12 @@
                 if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
                     return;
-                } 
+                }
+
+                if (hasDrawn) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.already.drawn'));
+                    return;
+                }
                 
                 if (args[1] !== undefined) {
                     amount = parseInt(args[1]);
