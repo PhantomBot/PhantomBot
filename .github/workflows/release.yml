@@ -37,7 +37,6 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         message: 'Updated the remote panel (stable)'
-        branch: master
   workflowvars:
     name: Setup Workflow Vars
     runs-on: ubuntu-latest

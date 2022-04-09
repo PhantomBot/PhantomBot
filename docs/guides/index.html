@@ -237,8 +237,10 @@
                 });
 
                 function updateHeaders(hLevel, content, isNotToc) {
-                    if (isNotToc && !pastFirstHeader && firstHeader !== null && firstHeader[hLevel] !== undefined && firstHeader[hLevel] !== slugify(content)) {
-                        return;
+                    if (isNotToc && !pastFirstHeader && firstHeader !== null) {
+                        if (firstHeader[hLevel] === undefined || firstHeader[hLevel] === null || firstHeader[hLevel] !== slugify(content)) {
+                            return;
+                        }
                     }
 
                     pastFirstHeader = true;
