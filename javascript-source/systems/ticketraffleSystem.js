@@ -345,7 +345,7 @@
     function awardWinners(prize) {
 
         for (var i = 0; i < lastWinners.length; i++) {
-            $.inidb.incr('points', lastWinners, prize);
+            $.inidb.incr('points', lastWinners[i], prize);
         }
 
         if (lastWinners.length > 1) {
@@ -426,9 +426,8 @@
 
                 winner(amount);
 
-                if(args[2] !== undefined && !isNaN(parseInt(args[1])) && parseInt(args[1] !== 0)) {
-
-                    awardWinners(parseInt(args[1]));
+                if(args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                    awardWinners(parseInt(args[2]));
                 }
 
                 return;
