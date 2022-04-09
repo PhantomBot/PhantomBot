@@ -80,7 +80,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onError(Throwable throwable) {
-        com.gmt2001.Console.err.printStackTrace(throwable);
+        com.gmt2001.Console.err.printStackTrace(throwable, false, true);
         com.gmt2001.Console.err.println("Logger threw an exception and is being disconnected...");
     }
 
