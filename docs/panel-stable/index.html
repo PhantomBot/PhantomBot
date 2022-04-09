@@ -405,8 +405,8 @@
                     </li>
 
                     <!-- Third tab -->
-                    <li class="disabled">
-                        <a class="disabled" href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
+                    <li>
+                        <a href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
                     </li>
                 </ul>
 
@@ -414,21 +414,15 @@
                 <div class="tab-content">
                     <!-- First tab. -->
                     <div id="main-side-tab" class="tab-pane active">
-                        <h4 class="control-sidebar-heading">Layout Options</h4>
+                        <h4 class="control-sidebar-heading">Tools</h4>
 
                         <div class="form-group">
                             <div class="control-sidebar-subheading">
-                                <div class="pretty p-icon pull-right" style="margin-right: 0;">
-                                    <input type="checkbox" id="dark-mode-toggle"/>
-                                    <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
-                                        <label></label>
-                                    </div>
-                                </div>
-                                <label for="dark-mode-toggle">Dark Mode</label>
+                                <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Execute</button>
+                                <label for="restart-bot-btn">Restart</label>
                             </div>
 
-                            <p>Activate the panel's dark mode.</p>
+                            <p>Restart the bot.</p>
                         </div>
                     </div>
 
@@ -484,10 +478,21 @@
 
                     <!-- Last tab -->
                     <div id="third-side-tab" class="tab-pane">
-                        <h4 class="control-sidebar-heading">General Settings</h4>
+                        <h4 class="control-sidebar-heading">Layout Options</h4>
 
                         <div class="form-group">
+                            <div class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0;">
+                                    <input type="checkbox" id="dark-mode-toggle"/>
+                                    <div class="state p-default">
+                                        <i class="icon fa fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                <label for="dark-mode-toggle">Dark Mode</label>
+                            </div>
 
+                            <p>Activate the panel's dark mode.</p>
                         </div>
                     </div>
                 </div>

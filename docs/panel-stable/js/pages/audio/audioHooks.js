@@ -197,7 +197,7 @@ $(run = function() {
                     tables: ['audioCommands', 'permcom', 'cooldown', 'pricecom', 'paycom'],
                     keys: [command, command, command, command, command]
                 }, function(e) {
-                    let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
 
                     // Get advance modal from our util functions in /utils/helpers.js
                     helpers.getAdvanceModal('edit-audio-command', 'Edit Audio Command', 'Save', $('<form/>', {
@@ -223,24 +223,25 @@ $(run = function() {
                             // Append input box for the command reward.
                             .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
                                 'Reward in points the user will be given when running the command.'))
-                            // Append input box for the command cooldown.
-                            .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '5', cooldownJson.seconds,
-                                'Cooldown of the command in seconds.')
-                                // Append checkbox for if the cooldown is global or per-user.
-                                .append(helpers.getCheckBox('command-cooldown-global', cooldownJson.isGlobal === 'true', 'Global',
-                                    'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                            // Append input box for the global command cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                                'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
+                            // Append input box for per-user cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                                'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                     })), function() {
                         let commandPermission = $('#command-permission'),
                             commandCost = $('#command-cost'),
                             commandReward = $('#command-reward'),
-                            commandCooldown = $('#command-cooldown'),
-                            commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
+                            commandCooldownGlobal = $('#command-cooldown-global'),
+                            commandCooldownUser = $('#command-cooldown-user');
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
                             case helpers.handleInputNumber(commandCost):
                             case helpers.handleInputNumber(commandReward):
-                            case helpers.handleInputNumber(commandCooldown):
+                            case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                            case helpers.handleInputNumber(commandCooldownUser, -1):
                                 break;
                             default:
                                // Save command information here and close the modal.
@@ -251,7 +252,7 @@ $(run = function() {
                                 }, function() {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('audio_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                        ['add', command, commandCooldown.val(), String(commandCooldownGlobal)], function() {
+                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                         // Update command permission.
                                         socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + command + ' ' +
                                             helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
@@ -401,21 +402,21 @@ $(function() {
                         'Cost in points that will be taken from the user when running the command.'))
                     // Append input box for the command reward.
                     .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
-                    'Reward in points the user will be given when running the command.'))
-                    // Append input box for the command cooldown.
-                    .append(helpers.getInputGroup('command-cooldown', 'number', 'Cooldown (Seconds)', '0', '5',
-                        'Cooldown of the command in seconds.')
-                        // Append checkbox for if the cooldown is global or per-user.
-                        .append(helpers.getCheckBox('command-cooldown-global', true, 'Global',
-                            'If checked the cooldown will be applied to everyone in the channel. When not checked, the cooldown is applied per-user.')))
+                        'Reward in points the user will be given when running the command.'))
+                    // Append input box for the global command cooldown.
+                    .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                        'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
+                    // Append input box for per-user cooldown.
+                    .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                        'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
             })), function() {
                 let commandName = $('#command-name'),
                     commandAudio = $('#command-audio'),
                     commandPermission = $('#command-permission'),
                     commandCost = $('#command-cost'),
                     commandReward = $('#command-reward'),
-                    commandCooldown = $('#command-cooldown'),
-                    commandCooldownGlobal = $('#command-cooldown-global').is(':checked');
+                    commandCooldownGlobal = $('#command-cooldown-global'),
+                    commandCooldownUser = $('#command-cooldown-user');
 
                 // Remove the ! and spaces.
                 commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -425,7 +426,8 @@ $(function() {
                     case helpers.handleInputString(commandName):
                     case helpers.handleInputNumber(commandCost):
                     case helpers.handleInputNumber(commandReward):
-                    case helpers.handleInputNumber(commandCooldown):
+                    case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                    case helpers.handleInputNumber(commandCooldownUser, -1):
                         break;
                     default:
                         if (commandAudio.val() === null) {
@@ -446,7 +448,7 @@ $(function() {
                                     values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text()), commandReward.val(), commandAudio.val()]
                                 }, function() {
                                     socket.wsEvent('audio_command_add_cooldown_ws', './core/commandCoolDown.js', null,
-                                        ['add', commandName.val(), commandCooldown.val(), String(commandCooldownGlobal)], function() {
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                         socket.sendCommandSync('add_audio_command_cmd', 'panelloadaudiohookcmds', function() {
                                             // Reload the table
                                             run();

@@ -63,11 +63,23 @@
                     </div>
 
                     <div class="form-group">
-                        <!-- Permcom toggle. -->
-                        <label for="cmd-cooldown-messages">Enable Cooldown Messages</label>
+                        <!-- Twitch Permcom toggle. -->
+                        <label for="cmd-cooldown-messages">Enable Cooldown Messages on Twitch</label>
                         <div class="dropdown">
                             <select class="form-control" id="cmd-cooldown-messages" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If a message should be said in a chat when a user tries to use a command that's still on cooldown.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Discord Permcom toggle. -->
+                        <label for="cmd-dc-cooldown-messages">Enable Cooldown Messages on Discord</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="cmd-discord-cooldown-messages" style="cursor: pointer;" data-toggle="tooltip"
+                                title="If a message should be said in the channel when a user tries to use a command that's still on cooldown.">
                                 <option>Yes</option>
                                 <option>No</option>
                             </select>
@@ -106,8 +118,13 @@
                 <div class="tab-pane" id="cmd_settings_cooldown">
                     <!-- Logs keep days. -->
                     <div class="form-group">
-                        <label for="global-cooldown">Global Cooldown (Seconds)</label>
+                        <label for="global-cooldown">Global Twitch Cooldown (Seconds)</label>
                         <input type="number" class="form-control" id="global-cooldown" data-toggle="tooltip"
+                            title="Cooldown given to commands that don't have a custom cooldown. Minimum is 5 seconds."/>
+                    </div>
+                    <div class="form-group">
+                        <label for="global-discord-cooldown">Global Discord Cooldown (Seconds)</label>
+                        <input type="number" class="form-control" id="global-discord-cooldown" data-toggle="tooltip"
                             title="Cooldown given to commands that don't have a custom cooldown. Minimum is 5 seconds."/>
                     </div>
                 </div>
