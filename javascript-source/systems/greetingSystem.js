@@ -26,8 +26,7 @@
         defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
         greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)),
         /* 6 Hours */
-        greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
-        lastAutoGreet = $.systemTime();
+        greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
 
     /**
      * @event ircChannelJoin
@@ -176,6 +175,28 @@
             }
 
             /**
+             * @commandpath greeting set [username] [default | message] - Set greetings for a user and use the default or set a message.
+             */
+             if (action.equalsIgnoreCase('set')) {
+                var username = args[1];
+                message = args.splice(2, args.length - 1).join(' ');
+                $.consoleLn("Got set command with args: " + args[1] + "message " + message);
+
+                if (!message || !username ) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.other'));
+                    return;
+                }
+
+                if (message.equalsIgnoreCase('default')) {
+                    $.inidb.set('greeting', username, defaultJoinMessage);
+                } else {
+                    $.inidb.set('greeting', username, message);
+                }
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.success', username, $.inidb.get('greeting', username)));
+                return;
+            }
+
+            /**
              * @commandpath greeting disable - Delete personal greeting and automated greeting at join
              */
             if (action.equalsIgnoreCase('disable')) {
@@ -195,6 +216,7 @@
         $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
         $.registerChatSubcommand('greeting', 'cooldown', 1);
         $.registerChatSubcommand('greeting', 'toggle', 1);
+        $.registerChatSubcommand('greeting', 'set', 2);
         $.registerChatSubcommand('greeting', 'setdefault', 2);
         $.registerChatSubcommand('greeting', 'enable', 6);
         $.registerChatSubcommand('greeting', 'disable', 6);
