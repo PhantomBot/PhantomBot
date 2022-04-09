@@ -75,7 +75,7 @@ public final class GitHubAPIv3 {
      * @return  JSONObject  JSONObject from GitHub
      */
     public static JSONObject GetLatestRelease() throws JSONException {
-        return readJsonFromUrl("/releases/latest", true);
+        return readJsonFromUrl("/releases/latest");
     }
 
     /*
