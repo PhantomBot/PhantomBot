@@ -83,8 +83,8 @@ def getconfigdir(args):
     return path
 
 
-def dofailure(args, type, message):
-    outobj = {"type": type, "message": message, "args": args}
+def dofailure(args, errtype, message):
+    outobj = {"type": errtype, "message": message, "args": args}
     if not args.no_hooks:
         run_hook("failurehooks", locals=outobj)
     if not args.quiet:
