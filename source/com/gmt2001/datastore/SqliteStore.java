@@ -713,7 +713,7 @@ public final class SqliteStore extends DataStore {
                 return false;
             }
 
-            if (section != null) {
+            if (section != null && !section.isEmpty()) {
                 try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
                     statement.setString(1, section);
                     statement.setString(2, key);
