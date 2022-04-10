@@ -644,6 +644,7 @@
             }
 
             if (!$.discord.getCommandChannelAllowed(command, channelName, channelId)) {
+                $.consoleLn('[Discord] Not processing command ' + command + ' due to !channelcom');
                 return;
             }
 

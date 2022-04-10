@@ -40,10 +40,21 @@
              * @commandpath botName disconnect - Removes the bot from your channel.
              */
             if (action.equalsIgnoreCase('disconnect')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect', 'irc-ws.chat.twitch.tv'));
+                $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect'));
 
                 setTimeout(function() {
                     java.lang.System.exit(0);
+                }, 1000);
+            }
+
+            /*
+             * @commandpath botName reconnect - Reconnects the bot to TMI, Host TMI, and PubSub.
+             */
+            if (action.equalsIgnoreCase('reconnect')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect'));
+
+                setTimeout(function() {
+                    Packages.tv.phantombot.PhantomBot.instance().reconnect();
                 }, 1000);
             }
 
@@ -52,6 +63,24 @@
              */
             if (action.equalsIgnoreCase('moderate')) {
                 Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
+            }
+
+            /*
+             * @commandpath botName forceonline - Forces the bot to mark the channel as online.
+             */
+            if (action.equalsIgnoreCase('forceonline')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.forceonline'));
+
+                Packages.tv.phantombot.event.EventBus.instance().postAsync(new Packages.tv.phantombot.event.twitch.online.TwitchOnlineEvent());
+            }
+
+            /*
+             * @commandpath botName forceoffline - Forces the bot to mark the channel as offline.
+             */
+            if (action.equalsIgnoreCase('forceoffline')) {
+                $.say($.whisperPrefix(sender) + $.lang.get('init.forceoffline'));
+
+                Packages.tv.phantombot.event.EventBus.instance().postAsync(new Packages.tv.phantombot.event.twitch.offline.TwitchOfflineEvent());
             }
 
             /*
@@ -333,7 +362,7 @@
          */
         if (command.equalsIgnoreCase('reconnect')) {
             if ($.isBot(sender)) {
-                Packages.tv.phantombot.PhantomBot.instance().getSession().reconnect();
+                Packages.tv.phantombot.PhantomBot.instance().reconnect();
             }
         }
 
@@ -369,6 +398,14 @@
         $.registerChatSubcommand(bot, 'disconnect', 1);
         $.registerChatSubcommand(bot, 'reconnect', 1);
         $.registerChatSubcommand(bot, 'moderate', 2);
+        $.registerChatSubcommand(bot, 'forceonline', 2);
+        $.registerChatSubcommand(bot, 'forceoffline', 2);
+        $.registerChatSubcommand(bot, 'setconnectmessage', 1);
+        $.registerChatSubcommand(bot, 'removeconnectmessage', 1);
+        $.registerChatSubcommand(bot, 'togglepricecommods', 1);
+        $.registerChatSubcommand(bot, 'togglepermcommessage', 1);
+        $.registerChatSubcommand(bot, 'togglepricecommessage', 1);
+        $.registerChatSubcommand(bot, 'togglecooldownmessage', 1);
 
         // Say the connected message.
         if (!sentReady && $.inidb.exists('settings', 'connectedMsg')) {

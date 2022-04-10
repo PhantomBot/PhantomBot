@@ -14,21 +14,28 @@
 
 #
 # Requires Python 3.8+
-# Requires running (from this healthcheck folder): pip install --no-cache-dir -r requirements.txt
+# Requires running once (from this healthcheck folder): pip install --no-cache-dir -r requirements.txt
+#
+# To see all the available command line arguments, run: python3 healthcheck.py --help
 #
 # Can be run via cron or Windows Scheduled Tasks
-# Will output errors to STDERR, which cron will normally automatically email to the root account via Linux Account Mail
+# Will output errors to STDERR, which (on Linux) cron will normally automatically email to the root account via Linux Account Mail
 #
 # Add python scripts into the appropriate hook directories to take automatic actions
 #
-# If allowing hooks to run (the default), failure hooks will receive an object in locals() {"type": "errorIdentifier", "message": "Human-readable error message"}
-# Success hooks do not receive a locals() object
+# If allowing hooks to run (the default), success and failure hooks will receive an object in locals(), defined as:
+## {
+##     "type": "errorIdentifier",
+##     "message": "Human-readable error message"
+##     "args": {
+##          # parseargs output
+##     }
+## }
 #
-# If using the --json argument, the output to STDERR will be the stringified locals() object
-#
-# If using the --show-success argument and the --json argument together, success will output the JSON {"type": "success", "message": "Success, the bot is online"}
+# If using the --json argument, the output to STDOUT (on success, with --show-success) or STDERR (on failure) will be the stringified locals() object
 #
 # The error identifiers for "type" are (in execution order):
+## noservicename - The --is-docker flag was set, but --service-name was missing or empty
 ## noconfig - The botlogin.txt file was not found (it must be located at ../botlogin.txt relative to this script). This may also indicate a permissions issue
 ## noauth - The `webauth=` line was not found or was empty in botlogin.txt
 ## nopresencecode - The HTTP GET request to the /presence endpoint on the bots webserver did not return HTTP 200 OK. For this endpoint, this means the webserver is failing
@@ -39,6 +46,7 @@
 ## nohealthcheck - A ValueError was raised trying to convert the healthcheck.txt timestamp into an integer. A blank or invalid output was probably returned
 ## lastalive - The timestamp from healthcheck.txt is more than 10 seconds old, the health check has failed and the Twitch TMI connection is probably down
 ## exception - An exception was raised, the `message` value will contain the caught exception
+## success - Success, the bot is online
 
 import argparse
 from inspect import getframeinfo, currentframe
@@ -46,15 +54,9 @@ import json
 import os
 from pathlib import Path
 import requests
+import subprocess
 import sys
 import time
-
-parser = argparse.ArgumentParser(description="Test PhantomBot to ensure it is running and connected")
-parser.add_argument("--json", action="store_true", help="Output errors as stringified JSON instead of human-readable text to STDERR")
-parser.add_argument("--show-success", action="store_true", help="Output success messages (or JSON if using --json) to STDOUT")
-parser.add_argument("--no-hooks", action="store_true", help="Disable running hooks")
-parser.add_argument("--quiet", action="store_true", help="Don't print to STDERR on failure, only run hooks (if --no-hooks was not also defined). Also overrides --show-success")
-args = parser.parse_args()
 
 def getscriptdir():
     filename = getframeinfo(currentframe()).filename
@@ -64,8 +66,25 @@ def getscriptdir():
     return path
 
 
-def dofailure(type, message):
-    outobj = {"type": type, "message": message}
+def getconfigdir(args):
+    if not args.config_dir:
+        if not args.is_docker:
+            path = getscriptdir()
+            path = path + "../"
+        else:
+            path = "/opt/PhantomBot_data/config/"
+    else:
+        if not args.is_docker:
+            path = os.path.abspath(args.config_dir)
+        else:
+            path = args.config_dir
+    if not path.endswith("/"):
+        path = path + "/"
+    return path
+
+
+def dofailure(args, errtype, message):
+    outobj = {"type": errtype, "message": message, "args": args}
     if not args.no_hooks:
         run_hook("failurehooks", locals=outobj)
     if not args.quiet:
@@ -76,12 +95,13 @@ def dofailure(type, message):
     sys.exit(1)
 
 
-def dosuccess():
+def dosuccess(args):
+    outobj = {"type": "success", "message": "Success, the bot is online", "args": args}
     if not args.no_hooks:
-        run_hook("successhooks")
+        run_hook("successhooks", locals=outobj)
     if args.show_success and not args.quiet:
         if args.json:
-            json.dump({"type": "success", "message": "Success, the bot is online"}, sys.stdout)
+            json.dump(outobj, sys.stdout)
         else:
             print("Success, the bot is online", file=sys.stdout)
     sys.exit(0)
@@ -105,69 +125,93 @@ def execfile(filepath, globals=None, locals=None):
         exec(compile(file.read(), filepath, 'exec'), globals, locals)
 
 
-try:
-    port = 25000
-    webauth = None
-
-
-    if os.path.exists(getscriptdir() + "../botlogin.txt"):
-        with open(getscriptdir() + "../botlogin.txt") as bot_file:
-            lines = bot_file.read().splitlines()
-            for line in lines:
-                line = line.strip()
-                if line.startswith("webauth="):
-                    webauth = line.split("=", 1)[1]
-                if line.startswith("baseport="):
-                    port = line.split("=", 1)[1]
+def getconfigfile(args):
+    if not args.is_docker:
+        if os.path.exists(getconfigdir(args) + "botlogin.txt"):
+                with open(getconfigdir(args) + "botlogin.txt") as bot_file:
+                    return bot_file.read().splitlines()
+        else:
+            dofailure(args, "noconfig", "Unable to find botlogin.txt")
     else:
-        dofailure("noconfig", "Unable to find botlogin.txt")
+        result = subprocess.run(["docker", "exec", "-it", args.service_name, "cat", getconfigdir(args) + "botlogin.txt"], capture_output=True)
+        if result.returncode != 0:
+            dofailure(args, "noconfig", "Unable to find botlogin.txt (" + result.returncode + ")")
+        else:
+            return result.stdout.splitlines()
 
 
-    if webauth is None:
-        dofailure("noauth", "No webauth in botlogin.txt")
-
-
-    resp = requests.get("http://127.0.0.1:" + port + "/presence", headers = { "User-Agent": "phantombot.healthcheck/2022" })
-    if resp.status_code != 200:
-        dofailure("nopresencecode", "Presence check failed with HTTP " + resp.status_code)
-    elif resp.text.strip() != "PBok":
-        dofailure("nopresence", "Presence check returned an unknown response")
-
-
-    resp = requests.put("http://127.0.0.1:" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".mods" })
-    if resp.status_code != 200:
-        dofailure("noputcode", "Send .mods failed with HTTP " + resp.status_code)
-    elif resp.text.strip() != "event posted":
-        dofailure("noput", "Send .mods returned an unknown response")
-
-
-    time.sleep(5)
-
-
-    resp = requests.get("http://127.0.0.1:" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" })
-    if resp.status_code != 200:
-        dofailure("nohealthcheckcode", "Retrieve health check failed with HTTP " + resp.status_code)
-
-
+def main(args):
     try:
-        lastaliveI = int(resp.text.strip())
-    except:
-        dofailure("nohealthcheck", "Retrieve health check returned a non-integer response")
+        if args.is_docker and not args.service_name:
+            dofailure(args, "noservicename", "Set --is-docker but --service-name is missing or empty")
+        if args.use_https:
+            scheme = "https"
+        else:
+            scheme = "http"
+        if args.ip_hostname:
+            iphostname = args.ip_hostname
+        else:
+            iphostname = "127.0.0.1"
+        port = 25000
+        webauth = None
+        lines = getconfigfile(args)
+        for line in lines:
+            line = line.strip()
+            if line.startswith("webauth="):
+                webauth = line.split("=", 1)[1]
+            if line.startswith("baseport="):
+                port = line.split("=", 1)[1]
+        if webauth is None:
+            dofailure(args, "noauth", "No webauth in botlogin.txt")
+        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/presence", headers = { "User-Agent": "phantombot.healthcheck/2022" })
+        if resp.status_code != 200:
+            dofailure(args, "nopresencecode", "Presence check failed with HTTP " + resp.status_code)
+        elif resp.text.strip() != "PBok":
+            dofailure(args, "nopresence", "Presence check returned an unknown response")
+        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".mods" })
+        if resp.status_code != 200:
+            dofailure(args, "noputcode", "Send .mods failed with HTTP " + resp.status_code)
+        elif resp.text.strip() != "event posted":
+            dofailure(args, "noput", "Send .mods returned an unknown response")
+        time.sleep(5)
+        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" })
+        if resp.status_code != 200:
+            dofailure(args, "nohealthcheckcode", "Retrieve health check failed with HTTP " + resp.status_code)
+        try:
+            lastaliveI = int(resp.text.strip())
+        except:
+            dofailure(args, "nohealthcheck", "Retrieve health check returned a non-integer response")
+        lastaliveS = time.gmtime(lastaliveI / 1000)
+        nowS = time.gmtime()
+        lastalive = time.mktime(lastaliveS)
+        now = time.mktime(nowS)
+        diff = abs(now - lastalive)
+        if diff > 10:
+            dofailure(args, "lastalive", "Last alive timestamp has expired")
+        dosuccess(args)
+    except Exception as e:
+        dofailure(args, "exception", e)
+
+def parseargs():
+    parser = argparse.ArgumentParser(description="Test PhantomBot to ensure it is running and connected")
+    scripts_group = parser.add_argument_group("Scripts/Hooks")
+    scripts_group.add_argument("--is-docker", action="store_true", help="Set to use Docker mode, requires also setting --service-name")
+    scripts_group.add_argument("--service-name", action="store", help="Sets the service name for use by hooks, also sets the container name when using --is-docker")
+    scripts_group.add_argument("--no-hooks", action="store_true", help="Disable running hooks")
+    scripts_group.add_argument("--hook-arg1", action="store", help="A custom argument to pass to hooks")
+    scripts_group.add_argument("--hook-arg2", action="store", help="A custom argument to pass to hooks")
+    scripts_group.add_argument("--hook-arg3", action="store", help="A custom argument to pass to hooks")
+    override_group = parser.add_argument_group("Overrides")
+    override_group.add_argument("--config-dir", action="store", help="Overrides the location of the PhantomBot config directory")
+    override_group.add_argument("--ip-hostname", action="store", help="Overrides the IP address/hostname of the PhantomBot server")
+    override_group.add_argument("--use-https", action="store_true", help="Overrides the HTTP queries to use https")
+    output_group = parser.add_argument_group("Output")
+    output_group.add_argument("--json", action="store_true", help="Output errors as stringified JSON instead of human-readable text to STDERR")
+    output_group.add_argument("--show-success", action="store_true", help="Output success messages (or JSON if using --json) to STDOUT")
+    output_group.add_argument("--quiet", action="store_true", help="Don't print to STDERR on failure, only run hooks (if --no-hooks was not also defined). Also overrides --show-success")
+    return parser.parse_args()
 
 
-    lastaliveS = time.gmtime(lastaliveI / 1000)
-    nowS = time.gmtime()
-
-
-    lastalive = time.mktime(lastaliveS)
-    now = time.mktime(nowS)
-    diff = abs(now - lastalive)
-
-
-    if diff > 10:
-        dofailure("lastalive", "Last alive timestamp has expired")
-
-
-    dosuccess()
-except Exception as e:
-    dofailure("exception", e)
+if __name__ == "__main__":
+    args = parseargs()
+    main(args)
