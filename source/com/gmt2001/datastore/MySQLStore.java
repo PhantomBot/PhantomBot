@@ -87,7 +87,6 @@ public final class MySQLStore extends DataStore {
     }
 
     @Override
-    @SuppressWarnings("try")
     public boolean CanConnect(String db, String user, String pass) {
         try ( Connection connection = DriverManager.getConnection(db, user, pass)) {
             return true;
@@ -245,7 +244,7 @@ public final class MySQLStore extends DataStore {
                 while (rs.next()) {
                     s.add(rs.getString(3).substring(11));
                 }
-                out = s.toArray(new String[0]);
+                out = s.toArray(String[]::new);
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -271,7 +270,7 @@ public final class MySQLStore extends DataStore {
                             s.add(rs.getString("section"));
                         }
 
-                        out = s.toArray(new String[0]);
+                        out = s.toArray(String[]::new);
                     }
                 }
             }
@@ -302,7 +301,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -315,7 +314,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -346,7 +345,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                             }
 
-                            out = s.toArray(new KeyValue[0]);
+                            out = s.toArray(KeyValue[]::new);
                         }
                     }
                 } else {
@@ -359,7 +358,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                             }
 
-                            out = s.toArray(new KeyValue[0]);
+                            out = s.toArray(KeyValue[]::new);
                         }
                     }
                 }
@@ -409,7 +408,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -427,7 +426,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -478,7 +477,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -496,7 +495,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -527,7 +526,7 @@ public final class MySQLStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -540,7 +539,7 @@ public final class MySQLStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -571,7 +570,7 @@ public final class MySQLStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -584,7 +583,7 @@ public final class MySQLStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -619,7 +618,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -633,7 +632,7 @@ public final class MySQLStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
