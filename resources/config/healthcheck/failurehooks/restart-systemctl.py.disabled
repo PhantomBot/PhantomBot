@@ -23,12 +23,15 @@
 from subprocess import run
 
 
-# Set this to the name of the PhantomBot service
+# Set this to the name of the PhantomBot service, or use --service-name when calling healthcheck.py
 servicename = "phantombot.service"
 
 
 locals = locals()
 
+if locals.args.service_name:
+	servicename = locals.args.service_name
+
 print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
 
-run("systemctl restart " + servicename, shell=True, check=True)
+run(["systemctl", "restart", servicename], shell=True, check=True)
