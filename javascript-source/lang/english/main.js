@@ -330,10 +330,11 @@ $.lang.register('init.module.usage.enable', 'Usage: !module enable [module path]
 $.lang.register('init.module.delete.usage', 'Usage: !module delete [module_name] - Deletes entry from DB! Use for modules removed from disk!');
 $.lang.register('init.module.delete.success', 'Module deleted from DB: $1');
 $.lang.register('init.module.delete.404', 'Module not found in DB: $1');
-$.lang.register('init.reconnect', 'Reconnecting to $1');
-$.lang.register('init.rejoin', 'Rejoining the channel.');
-$.lang.register('init.disconnect', 'Disconnecting from $1');
+$.lang.register('init.reconnect', 'Reconnecting to TMI, Host TMI, and PubSub');
+$.lang.register('init.disconnect', 'Shutting down');
 $.lang.register('init.usage', '!$1 [reconnect / disconnect]');
+$.lang.register('init.forceonline', 'Forcing status to online');
+$.lang.register('init.forceoffline', 'Forcing status to offline');
 $.lang.register('init.connected.msg', 'Connect message set to: $1');
 $.lang.register('init.connected.msg.usage', '!$1 connectmessage [message]');
 $.lang.register('init.connected.msg.removed', 'Connect message removed!');
