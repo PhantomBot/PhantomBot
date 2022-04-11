@@ -22,6 +22,8 @@ $.lang.register('greetingsystem.set.default.success', 'Changed the default greet
 $.lang.register('greetingsystem.set.personal.success', 'Changed your personal greeting to "$1".');
 $.lang.register('greetingsystem.set.success', 'Changed $1s greeting to "$2".');
 $.lang.register('greetingsystem.remove.personal.success', 'Successfully removed your personal greeting message.');
+$.lang.register('greetingsystem.remove.success', 'Successfully removed $1s greeting message.');
+$.lang.register('greetingsystem.remove.error', 'Usage: !greeting remove [username].');
 $.lang.register('greetingsystem.generalusage.admin', 'Usage: !greeting [toggle | enable [default | message text] | set [username] [default | message text] | disable | setdefault ]. Tags for message text: (name)');
 $.lang.register('greetingsystem.generalusage.other', 'Usage: !greeting [ enable [default | message text] | disable ]. Tags for message text: (name)');
 $.lang.register('greetingsystem.cooldown.usage', 'Usage: !greeting cooldown [hours]');
