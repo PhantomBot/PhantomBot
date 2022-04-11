@@ -180,8 +180,7 @@
              * @commandpath greeting set [username] [default | message] - Set greetings for a user and use the default or set a message.
              */
              if (action.equalsIgnoreCase('set') || action.equalsIgnoreCase('setsilent')) {
-                //isSilent = action.equalsIgnoreCase('setsilent');
-                isSilent = false;
+                isSilent = action.equalsIgnoreCase('setsilent');
                 username = args[1].toLowerCase();
                 message = args.splice(2, args.length - 1).join(' ');
 
@@ -207,8 +206,7 @@
              * @commandpath greeting remove [username] - Delete a users greeting and automated greeting at join
              */
              if (action.equalsIgnoreCase('remove') || action.equalsIgnoreCase('removesilent')) {
-                //isSilent = action.equalsIgnoreCase('removesilent');
-                isSilent = false;
+                isSilent = action.equalsIgnoreCase('removesilent');
                 username = args[1].toLowerCase();
 
                 if (args[1] === undefined) {
