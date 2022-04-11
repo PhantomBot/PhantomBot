@@ -43,7 +43,7 @@
             <div class="col-md-3" id="ticketRaffleTable">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Ticket Raffle List</h3>
+                        <h3 class="box-title" id="traffle-list-title">Ticket Raffle List</h3>
                     </div>
 
                     <form role="form" id="ticketRaffleListModule">
@@ -118,7 +118,25 @@
                             <div class="form-group">
                                 <label for="ticket-raffle-sub">Subscribers Ticket Multiplier</label>
                                 <input type="number" min="1" max="10" class="form-control" id="ticket-raffle-sub" value="1"
-                                    data-toggle="tooltip" title="Ticket multiplier for susbcribers. Multiplies the number of tickets the users buys with this number."/>
+                                    data-toggle="tooltip" title="Ticket multiplier for subscribers. Multiplies the number of tickets the users buys with this number."/>
+                            </div>
+
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Draw Options</h3>
+                            </div>
+
+                            <!-- Draw amount -->
+                            <div class="form-group">
+                                <label for="ticket-raffle-draw">Draw amount</label>
+                                <input type="number" min="1" class="form-control" id="ticket-raffle-draw" value="1"
+                                    data-toggle="tooltip" title="The amount of winners to be drawn."/>
+                            </div>
+
+                            <!-- Prize -->
+                            <div class="form-group">
+                                <label for="ticket-raffle-prize">Prize</label>
+                                <input type="number" min="0" class="form-control" id="ticket-raffle-prize" value="0"
+                                    data-toggle="tooltip" title="The amount of point each winner is awarded."/>
                             </div>
                         </div>
 

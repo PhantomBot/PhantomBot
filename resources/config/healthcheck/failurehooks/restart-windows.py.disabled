@@ -25,15 +25,18 @@ from subprocess import run
 from time import sleep
 
 
-# Set this to the name of the PhantomBot service
+# Set this to the name of the PhantomBot service, or use --service-name when calling healthcheck.py
 # (Open Computer Management, go to Services, right-click on the service, open Properties, and use the "Service name" value in the dialog)
 servicename = "PhantomBotService"
 
 
 locals = locals()
 
+if locals.args.service_name:
+	servicename = locals.args.service_name
+
 print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
 
-run("net stop " + servicename, shell=True, check=True)
+run(["net", "stop", servicename], shell=True, check=True)
 sleep(2)
-run("net start " + servicename, shell=True, check=True)
+run(["net", "start", servicename], shell=True, check=True)

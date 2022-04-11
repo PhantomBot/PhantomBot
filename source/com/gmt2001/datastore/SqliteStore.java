@@ -301,7 +301,7 @@ public final class SqliteStore extends DataStore {
                         s.add(rs.getString("name").substring(11));
                     }
 
-                    out = s.toArray(new String[0]);
+                    out = s.toArray(String[]::new);
                 }
             }
         } catch (SQLException ex) {
@@ -328,7 +328,7 @@ public final class SqliteStore extends DataStore {
                             s.add(rs.getString("section"));
                         }
 
-                        out = s.toArray(new String[0]);
+                        out = s.toArray(String[]::new);
                     }
                 }
             }
@@ -359,7 +359,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -372,7 +372,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -403,7 +403,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                             }
 
-                            out = s.toArray(new KeyValue[0]);
+                            out = s.toArray(KeyValue[]::new);
                         }
                     }
                 } else {
@@ -416,7 +416,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
                             }
 
-                            out = s.toArray(new KeyValue[0]);
+                            out = s.toArray(KeyValue[]::new);
                         }
                     }
                 }
@@ -466,7 +466,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -484,7 +484,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -535,7 +535,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -553,7 +553,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -584,7 +584,7 @@ public final class SqliteStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -597,7 +597,7 @@ public final class SqliteStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -628,7 +628,7 @@ public final class SqliteStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -641,7 +641,7 @@ public final class SqliteStore extends DataStore {
                             while (rs.next()) {
                                 s.add(rs.getString("variable"));
                             }
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -676,7 +676,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 } else {
@@ -690,7 +690,7 @@ public final class SqliteStore extends DataStore {
                                 s.add(rs.getString("variable"));
                             }
 
-                            out = s.toArray(new String[0]);
+                            out = s.toArray(String[]::new);
                         }
                     }
                 }
@@ -713,7 +713,7 @@ public final class SqliteStore extends DataStore {
                 return false;
             }
 
-            if (section != null) {
+            if (section != null && !section.isEmpty()) {
                 try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
                     statement.setString(1, section);
                     statement.setString(2, key);

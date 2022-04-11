@@ -31,7 +31,7 @@ import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
  *
  * @author gmt2001
  */
-public class RestartRunner implements Listener {
+public final class RestartRunner implements Listener {
 
     private static final RestartRunner INSTANCE = new RestartRunner();
 
