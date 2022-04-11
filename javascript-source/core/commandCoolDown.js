@@ -101,13 +101,13 @@
      * @return {Boolean}
      */
     function isSpecial(command) {
-        return command == 'bet' ||
-               command == 'tickets' ||
-               command == 'bid' ||
-               command == 'adventure' ||
-               command == 'vote' ||
-               command == 'joinqueue' ||
-               command == $.raffleCommand;
+        return command === 'bet' ||
+               command === 'tickets' ||
+               command === 'bid' ||
+               command === 'adventure' ||
+               command === 'vote' ||
+               command === 'joinqueue' ||
+               command === $.raffleCommand;
     }
 
     /*
@@ -152,7 +152,7 @@
 
             if (cooldown.userSec !== Operation.UnSet) {
                 if (cooldown.userTimes[username] !== undefined && cooldown.userTimes[username] > $.systemTime()) {
-                    userCoolDown = getTimeDif(cooldown.userTimes[username]);
+                    var userCoolDown = getTimeDif(cooldown.userTimes[username]);
                     if(userCoolDown > maxCoolDown) {
                         isGlobal = false;
                         maxCoolDown = userCoolDown;
@@ -194,7 +194,7 @@
      * @param  {String}  username
      */
     function set(command, useDefault, duration, username) {
-        finishTime = (duration > 0 ? ((parseInt(duration) * 1e3) + $.systemTime()) : 0);
+        var finishTime = (duration > 0 ? ((parseInt(duration) * 1e3) + $.systemTime()) : 0);
 
         if (useDefault) {
             defaultCooldowns[command] = finishTime;
@@ -275,8 +275,8 @@
 
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
             type1 = Type.Global;
-            secsG = ParseInt(type1);
-        } else if (!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User) || isNaN(parseInt(action1[1]))) {
+            secsG = parseInt(type1);
+        } else if ((!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action1[1]))) {
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
             return;
         } else {
@@ -289,13 +289,13 @@
             var action2 = second.split("="),
                 type2   = action2[0];
 
-            if (!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
+            if ((!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
-            } else {
-                secsG = type2.equalsIgnoreCase(Type.Global) ? parseInt(action2[1]) : secsG;
-                secsU = type2.equalsIgnoreCase(Type.User) ? parseInt(action2[1]) : secsU;
             }
+
+            secsG = type2.equalsIgnoreCase(Type.Global) ? parseInt(action2[1]) : secsG;
+            secsU = type2.equalsIgnoreCase(Type.User) ? parseInt(action2[1]) : secsU;
         }
 
         if (secsG === Operation.UnSet && secsU === Operation.UnSet) {
@@ -308,7 +308,7 @@
         if(action2 !== undefined) {
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo', command, secsG, secsU));
         } else {
-            messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
+            var messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
             $.say($.whisperPrefix(sender) + $.lang.get(messageType, command, (secsG === Operation.UnChanged ? secsU : secsG)));
         }
     }
@@ -359,7 +359,9 @@
                 if (isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.default.usage'));
                     return;
-                } else if (parseInt(subAction) < 5) {
+                }
+
+                if (parseInt(subAction) < 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.err'));
                     return;
                 }
@@ -388,9 +390,9 @@
      */
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
-            if (event.getArgs()[0] == 'add') {
+            if (event.getArgs()[0] === 'add') {
                 add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3]);
-            } else if (event.getArgs()[0] == 'update') {
+            } else if (event.getArgs()[0] === 'update') {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
             } else {
