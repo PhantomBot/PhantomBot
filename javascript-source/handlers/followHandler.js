@@ -28,10 +28,6 @@
  *
  */
 
-function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
-    alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, false)
-}
-
 function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
     if (announceFollows === true && followToggle === true) {
         if (s.match(/\(name\)/)) {
@@ -92,7 +88,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
                 if (!$.audioHookExists(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
+                    $.alertspollssocket.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
                 s = $.replace(s, s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
@@ -118,7 +114,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
      */
     $.bind('twitchFollow', function (event) {
         var follower = event.getFollower();
-        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue);
+        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue, false);
     });
 
     /*
