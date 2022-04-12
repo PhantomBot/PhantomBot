@@ -28,10 +28,6 @@
  *
  */
 
-function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
-    alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, false)
-}
-
 function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
     if (announceFollows === true && followToggle === true) {
         if (s.match(/\(name\)/)) {
@@ -118,7 +114,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
      */
     $.bind('twitchFollow', function (event) {
         var follower = event.getFollower();
-        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue);
+        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue, false);
     });
 
     /*
