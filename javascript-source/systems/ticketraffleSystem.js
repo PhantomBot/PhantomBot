@@ -401,13 +401,13 @@
             }
 
             /**
-             * @commandpath traffle draw [amount (default = 1)] [prize points] - Picks winner(s) for the ticket raffle and optionally awards them with points 
+             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
 
                 var amount = 1;
                 if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
                     return;
                 }
 

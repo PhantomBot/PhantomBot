@@ -20,6 +20,7 @@ $.lang.register('ticketrafflesystem.err.missing.syntax', 'Usage: !traffle open [
 $.lang.register('ticketrafflesystem.msg.need.to.be.following', 'You need to be following to enter.');
 $.lang.register('ticketrafflesystem.raffle.opened', 'Ticket raffle is now open! Buy up to $1 tickets with !tickets - you can purchase multiple times. Tickets cost $2. $3');
 $.lang.register('ticketrafflesystem.err.raffle.not.opened', 'There is no ticket raffle opened.');
+$.lang.register('ticketrafflesystem.draw.usage', 'Usage: !draw [amount (default=1)] [loyalty points prize (default = 0)]');
 $.lang.register('ticketrafflesystem.err.already.drawn', 'Winners were already drawn.');
 $.lang.register('ticketrafflesystem.raffle.closed', 'The ticket raffle is now closed. Use "!traffle draw" to draw a winner.');
 $.lang.register('ticketrafflesystem.raffle.closed.and.draw', 'The ticket raffle is now closed.');
