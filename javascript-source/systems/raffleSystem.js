@@ -293,11 +293,8 @@
 
         /* whisper the winner if the toggle is on */
         if (whisperWinner && isFollowing) {
-            var i = newWinners.length,
-                isFollowing = false;
-            while (i--) {
-                isFollowing = $.user.isFollower(newWinners[i].toLowerCase());
-                if (isFollowing) {
+            for (var i = 0; i < newWinners.length; i++) {
+                if ($.user.isFollower(newWinners[i].toLowerCase())) {
                     $.say($.whisperPrefix(newWinners[i], true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
                 }
             }
