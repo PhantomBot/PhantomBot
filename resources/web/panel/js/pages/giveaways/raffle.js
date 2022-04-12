@@ -39,14 +39,14 @@ $(run = function () {
          */
         helpers.temp.loadRaffleList = function () {
             socket.getDBTableValues('get_raffle_list', 'raffleList', function (results) {
-                socket.getDBValues ('get_raffle_hasDrawn',{
+                socket.getDBValues ('get_raffle_hasDrawn', {
                     tables: ['raffleState', 'raffleresults'],
                     keys: ['bools', 'winner'],
-                }, function(e) {
+                }, true, function(e) {
                     const table = $('#raffle-table');
                     var hasDrawn = false;
 
-                    if (e['bools'] !== undefined && e['bools'].length >= 5 && e['bools'][4]) {
+                    if (e['bools'] !== undefined && JSON.parse(e['bools']).length >= 5 && JSON.parse(e['bools'])[4]) {
                         var winners = JSON.parse(e['winner']);
                         hasDrawn = true;
                     }
