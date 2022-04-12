@@ -422,6 +422,7 @@
                 
                 if (amount > uniqueEntries.length) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
+                    return;
                 }
 
                 winner(amount);

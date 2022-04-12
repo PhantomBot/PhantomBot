@@ -39,7 +39,8 @@
         regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
         interval, timeout, followMessage = '',
         saveStateInterval,
-        timerMessage = '';
+        timerMessage = '',
+        lastWinners;
 
     /**
      * @function reloadRaffle
@@ -71,8 +72,6 @@
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.open.error.opened'));
             return;
         }
-
-        clear();
 
         /* Check if the caster wants to use time or points for the raffle */
         if (arguments.match('-usetime')) {
@@ -137,6 +136,9 @@
             }, (timerTime * 6e4));
             timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
         }
+        
+        clear();
+        lastWinners = [];
 
         /* Say in chat that the raffle is now opened. */
         if (!usePoints && usePoints !== null) {
@@ -189,6 +191,7 @@
         subscribers = bools[1];
         usePoints = bools[2];
         status = bools[3];
+        lastWinners = $.inidb.HasKey('raffleState', '', 'startTime') ? JSON.parse($.inidb.get('raffleresults', 'winner')) : [];
 
         if (status === true) {
             $.inidb.set('raffleSettings', 'isActive', 'true');
@@ -232,6 +235,7 @@
         $.inidb.set('raffleState', 'timerTime', timerTime);
         $.inidb.set('raffleState', 'startTime', startTime);
         $.inidb.set('raffleState', 'bools', JSON.stringify([followers, subscribers, usePoints, status]));
+        $.inidb.set('raffleresults', 'winner', JSON.stringify(lastWinners));
     }
 
     /**
@@ -265,37 +269,105 @@
      * @function winner
      * @info chooses a winner for the raffle
      */
-    function draw(sender) {
+    function draw(amount) {
         /* Check if anyone entered the raffle */
         if (entries.length === 0) {
             $.say($.lang.get('rafflesystem.winner.404'));
             return;
         }
 
-        var username = $.randElement(entries),
-            isFollowing = $.user.isFollower(username.toLowerCase()),
-            followMsg = (isFollowing ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+        // Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
+        // Faster than calling $.randElement() over and over
+        var newWinners = [];
+        
+        var taken = [];
+        while (amount--) {
+            var rnd = Math.floor(Math.random() * entriesLen);
+            newWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
+            taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+        }
 
-        $.say($.lang.get('rafflesystem.winner', username, followMsg));
-        $.inidb.set('raffleresults', 'winner', username + ' ' + followMsg);
+        lastWinners = lastWinners.concat(newWinners);
+
+        winningMsg(newWinners);
 
         /* whisper the winner if the toggle is on */
         if (whisperWinner && isFollowing) {
-            $.say($.whisperPrefix(username, true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
+            var i = newWinners.length,
+                isFollowing = false;
+            while (i--) {
+                isFollowing = $.user.isFollower(newWinners[i].toLowerCase());
+                if (isFollowing) {
+                    $.say($.whisperPrefix(newWinners[i], true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
+                }
+            }
         }
 
         /* Remove the user from the array if we are not allowed to have multiple repicks. */
         if (allowRepick) {
             for (var i in entries) {
-                if (entries[i].equalsIgnoreCase(username)) {
-                    entries.splice(i, 1);
+                for (var j in newWinners) {
+                    var e = entries[i];
+                    if (e.equalsIgnoreCase(newWinners[j])) {
+                        entries.splice(i, 1);
+                        $.inidb.del('raffleList', newWinners[j]);
+                        $.inidb.decr('raffleresults', 'raffleEntries', 1);
+                    }
                 }
             }
-            $.inidb.del('raffleList', username);
-            $.inidb.decr('raffleresults', 'raffleEntries', 1);
         }
 
         saveState();
+    }
+
+    /**
+     * @function winningMsg
+     * 
+     * @info Builds the winning message
+     * @param {Array} winners the new winners drawn
+     */
+    function winningMsg(winners) {
+
+        //Special case !raffle lastWinners
+        if (winners.length === 0) {
+            $.say($.lang.get('rafflesystem.winner.none'));
+        }
+
+        if (winners.length === 1) {
+            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            $.say($.lang.get('rafflesystem.winner.single', $.username.resolve(winners[0]), followMsg));
+            return;
+        }
+
+        var msg = $.lang.get('rafflesystem.winner.multiple', winners.join(', '));
+
+        if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
+            var i = msg.substring(0, 500).lastIndexOf(",");
+            $.say(msg.substring(0, i));
+            $.say(msg.substring(i+1, msg.length));
+        } else {
+            $.say(msg);
+        }
+    }
+
+    /**
+     * @function winningMsg
+     * 
+     * @info Awards the winners
+     * @param {Number} amount
+     * @param {Number} prize
+     */
+    function awardWinners(amount, prize) {
+
+        for (var i = (lastWinners.length-amount); i < lastWinners.length; i++) {
+            $.inidb.incr('points', lastWinners[i], prize);
+        }
+
+        if (amount > 1) {
+            $.say($.lang.get('rafflesystem.winner.multiple.award', $.getPointsString(prize)));
+        } else {
+            $.say($.lang.get('rafflesystem.winner.single.award', $.getPointsString(prize)));
+        }
     }
 
     /**
@@ -331,10 +403,10 @@
         }
 
         /* Check if the user is following the channel. */
-        /*if (followers && !$.user.isFollower(username)) {
+        if (followers && !$.user.isFollower(username)) {
             message(username, $.lang.get('rafflesystem.enter.following'));
             return;
-        }*/
+        }
 
         /* Check the entry fee */
         if (entryFee > 0 && usePoints !== null) {
@@ -406,7 +478,7 @@
      */
     $.bind('ircChannelMessage', function(event) {
         if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
-            enter(event.getSender(), event.getTags());
+            enter(event.getSender().toLowerCase(), event.getTags());
         }
     });
 
@@ -448,12 +520,41 @@
             }
 
             /**
-             * @commandpath raffle draw - Draws a winner from the current raffle list.
+             * @commandpath raffle draw [amount (default = 1)] [prize points] - Picks winner(s) for the raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
-                draw(sender);
+                
+                var amount = 1;
+                if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
+                    return;
+                }
+                
+                if (args[1] !== undefined) {
+                    amount = parseInt(args[1]);
+                } 
+                
+                if (amount > uniqueEntries.length) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
+                    return;
+                }
+
+                draw(amount);
+
+                if(args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                    awardWinners(amount, parseInt(args[2]));
+                }
+
                 return;
             }
+
+            /**
+             * @commandpath raffle lastWinners - Prints the last raffle winners
+             */
+             if (action.equalsIgnoreCase('lastWinners')) {
+                winningMsg(lastWinners);
+                return;
+             }
 
             /**
              * @commandpath raffle reset - Resets the raffle.
@@ -577,6 +678,7 @@
         $.registerChatSubcommand('raffle', 'draw', 2);
         $.registerChatSubcommand('raffle', 'reset', 2);
         $.registerChatSubcommand('raffle', 'results', 7);
+        $.registerChatSubcommand('raffle', 'lastWinners', 2);
         $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
         $.registerChatSubcommand('raffle', 'regularbonus', 1);
         $.registerChatSubcommand('raffle', 'togglemessages', 1);
