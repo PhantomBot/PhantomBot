@@ -1,4 +1,4 @@
-3/*
+/*
  * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,20 +39,34 @@ $(run = function () {
          */
         helpers.temp.loadRaffleList = function () {
             socket.getDBTableValues('get_raffle_list', 'raffleList', function (results) {
-                const table = $('#raffle-table');
+                socket.getDBValues ('get_raffle_hasDrawn',{
+                    tables: ['raffleState', 'raffleresults'],
+                    keys: ['bools', 'winner'],
+                }, function(e) {
+                    const table = $('#raffle-table');
+                    var hasDrawn = false;
 
-                // Remove current data content.
-                table.find('tr:gt(0)').remove();
+                    if (e['bools'] !== undefined && e['bools'].length >= 5 && e['bools'][4]) {
+                        var winners = JSON.parse(e['winner']);
+                        hasDrawn = true;
+                    }
 
-                for (let i = 0; i < results.length; i++) {
-                    const tr = $('<tr/>');
+                    // Remove current data content.
+                    table.find('tr:gt(0)').remove();
 
-                    tr.append($('<td/>', {
-                        'html': results[i].key
-                    }));
+                    for (let i = 0; i < results.length; i++) {
+                        const tr = $('<tr/>');
 
-                    table.append(tr);
-                }
+                        tr.append($('<td/>', {
+                            'html': results[i].key
+                        }))
+                        .append($('<td/>', {
+                            'html' : (hasDrawn && i < winners.length) ? winners[i] : ''
+                        }));
+
+                        table.append(tr);
+                    }
+                });
             });
         };
 
@@ -94,7 +108,7 @@ $(function () {
         } else {
             $('#raffle-cost-title').html('Cost');
         }
-    })
+    });
 
     // Open/close raffle button.
     $('#open-or-close-raffle').on('click', function () {
@@ -121,6 +135,8 @@ $(function () {
                         keys: ['subscriberBonusRaffle', 'regularBonusRaffle'],
                         values: [subLuck.val(), regLuck.val()]
                     }, function () {
+                        console.log("Sending the following command: " + 'raffle open ' + cost.val() + ' ' + keyword.val() +
+                        ' ' + timer.val() + ' ' + costType + ' ' + elegibility);
                         socket.sendCommandSync('raffle_reload', 'reloadraffle', function () {
                             socket.sendCommand('open_raffle_cmd', 'raffle open ' + cost.val() + ' ' + keyword.val() +
                                     ' ' + timer.val() + ' ' + costType + ' ' + elegibility, function () {
@@ -131,7 +147,7 @@ $(function () {
                                     'class': 'fa fa-lock'
                                 })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                             });
-                        })
+                        });
                     });
             }
         } else {
@@ -150,12 +166,21 @@ $(function () {
 
     // Draw raffle button.
     $('#draw-raffle').on('click', function () {
-        socket.sendCommandSync('draw_raffle_cmd', 'raffle draw', function () {
-            // Alert the user.
-            toastr.success('Successfully drew a winner!');
-            // Reload to remove the winner.
-            helpers.temp.loadRaffleList();
-        });
+        const   drawAmount = $('#raffle-draw'),
+                prize = $('#raffle-prize');
+
+        switch (false) {
+            case helpers.handleInputNumber(drawAmount, 1):
+            case helpers.handleInputNumber(prize, 0):
+                break;
+            default:
+                socket.sendCommandSync('draw_raffle_cmd', 'raffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
+                    // Alert the user.
+                    toastr.success('Successfully drew ' + drawAmount.val() + ' winner' + (drawAmount.val() === 1 ? '' : 's') + '!');
+                    // Reload
+                    helpers.temp.loadRaffleList();
+                });
+            }
     });
 
     // Reset raffle button.
@@ -167,6 +192,8 @@ $(function () {
         $('#raffle-req').val('-usepoints');
         $('#raffle-reg, #raffle-sub').val('1');
         $('#raffle-table').find('tr:gt(0)').remove();
+        $('#raffle-draw').val('1');
+        $('#raffle-prize').val('0');
 
         $('#open-or-close-raffle').html($('<i/>', {
             'class': 'fa fa-unlock-alt'
