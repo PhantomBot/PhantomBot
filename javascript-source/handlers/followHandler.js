@@ -28,7 +28,11 @@
  *
  */
 
-function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay = false) {
+function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
+    alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, false)
+}
+
+function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
     if (announceFollows === true && followToggle === true) {
         if (s.match(/\(name\)/)) {
             s = $.replace(s, '(name)', $.username.resolve(follower));
