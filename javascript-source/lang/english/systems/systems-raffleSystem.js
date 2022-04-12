@@ -34,6 +34,7 @@ $.lang.register('rafflesystem.enter.subscriber', 'You need to be subscribed to e
 $.lang.register('rafflesystem.enter.points', 'You don\'t have enough $1 to enter this raffle.');
 $.lang.register('rafflesystem.enter.time', 'You have not been in the channel long enough to enter this raffle.');
 $.lang.register('rafflesystem.usage', 'Usage: !raffle [open / close / draw / results / subscriberbonus/ regularbonus / whisperwinner]');
+$.lang.register('rafflesystem.draw.usage', 'Usage: !raffle draw [amount (default = 1)] [prize points (default = 0)]');
 $.lang.register('rafflesystem.results', 'A raffle is still opened! Keyword: $1 - Total entries: $2');
 $.lang.register('rafflesystem.fee', ' - Entry fee: $1');
 $.lang.register('rafflesystem.subbonus.usage', 'Usage: !raffle subscriberbonus [1-10]');
