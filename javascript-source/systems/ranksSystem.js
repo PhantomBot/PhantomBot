@@ -38,11 +38,12 @@
 
         if (numA > numB) {
             return 1;
-        } else if (numA == numB) {
+        } 
+        if (numA == numB) {
             return 0;
-        } else {
-            return -1;
         }
+        
+        return -1;
     }
 
     /**
@@ -90,9 +91,8 @@
         for (var i = 0; i < ranksTimeTable.length; i++) {
             if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
                 return true;
-            } else {
-                i = ranksTimeTable.length;
             }
+            i = ranksTimeTable.length;
         }
         return false;
     }
@@ -314,7 +314,7 @@
         if (command.equalsIgnoreCase('rank')) {
             if (args[0]) {
                 if (args[0].equalsIgnoreCase('del')) {
-                    if (inidb.exists('viewerRanks', sender.toLowerCase())) {
+                    if ($.inidb.exists('viewerRanks', sender.toLowerCase())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ranks.delself.success'));
                         $.inidb.del('viewerRanks', sender.toLowerCase());
                     } else {
