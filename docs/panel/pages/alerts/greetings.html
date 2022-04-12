@@ -1,0 +1,63 @@
+<!--
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>User Greetings</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">User Greetings</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <label class="switch" data-toggle="tooltip" title="Module toggle">
+                            <input type="checkbox" id="greetingsModuleToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+
+                        <h3 class="box-title">User Greetings</h3>
+                    </div>
+
+                    <form role="form" id="greetingsModule">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <div class="btn-toolbar pull-right">
+                                <button class="btn btn-primary btn-sm" type="button" id="add-greeting-button"><i class="fa fa-plus"></i>&nbsp; Add User Greeting</button>
+                                <button class="btn btn-primary btn-sm" type="button" id="greeting-settings-button"><i class="fa fa-cog"></i>&nbsp; Settings</button>
+                            </div>
+
+                            <div class="load-ajax">
+                                <div class="spinner"></div>
+                                <p class="load-ajax-text">Loading...</p>
+                            </div>
+
+                            <table id="greetingsTable" class="table table-bordered table-hover"></table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- greetings -->
+    <script src="js/pages/alerts/greetings.js"></script>
+</main>
