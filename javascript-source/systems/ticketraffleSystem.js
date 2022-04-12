@@ -526,6 +526,13 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'traffle', 2);
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', 7);
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', 7);
+        $.registerChatSubcommand('traffle', 'open', 2);
+        $.registerChatSubcommand('traffle', 'close', 2);
+        $.registerChatSubcommand('traffle', 'draw', 2);
+        $.registerChatSubcommand('traffle', 'reset', 2);
+        $.registerChatSubcommand('traffle', 'autoannounceinterval', 1);
+        $.registerChatSubcommand('traffle', 'autoannouncemessage', 1);
+        $.registerChatSubcommand('traffle', 'messagetoggle', 1);
 
         reopen();
     });
