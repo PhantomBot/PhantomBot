@@ -176,8 +176,7 @@ $(function() {
                                     'If checked, the command cannot be used in chat.'))
                                 // Callback function to be called once we hit the save button on the modal.
                         })), function() {
-                            let commandName = $('#command-name'),
-                                commandPermission = $('#command-permission'),
+                            let commandPermission = $('#command-permission'),
                                 commandCost = $('#command-cost'),
                                 commandReward = $('#command-reward'),
                                 commandCooldownGlobal = $('#command-cooldown-global'),
