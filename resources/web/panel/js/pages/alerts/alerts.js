@@ -528,47 +528,6 @@ $(function() {
         });
     });
 
-    // Greeting settings.
-    $('#greetingSystemSettings').on('click', function() {
-        socket.getDBValues('alerts_get_greeting_settings', {
-            tables: ['greeting', 'greeting'],
-            keys: ['autoGreetEnabled', 'cooldown']
-        }, true, function(e) {
-            helpers.getModal('greeting-alert', 'Greeting Alert Settings', 'Save', $('<form/>', {
-                'role': 'form'
-            })
-            // Add the toggle for greeting alerts.
-            .append(helpers.getDropdownGroup('greeting-toggle', 'Enable Greeting Alerts', (e.autoGreetEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If users should be allowed to set a message for when they join the channel.'))
-            // Add the input for the greeting reward.
-            .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Greeting Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
-                'How long the greeting message per user will be in hours. Minimum is 5 hours.')),
-            function() { // Callback once the user clicks save.
-                let greetingToggle = $('#greeting-toggle').find(':selected').text() === 'Yes',
-                    greetingCooldown = $('#greeting-cooldown');
-
-                // Make sure the user has someone in each box.
-                switch (false) {
-                    case helpers.handleInputNumber(greetingCooldown, 5):
-                        break;
-                    default:
-                        socket.updateDBValues('alerts_update_greeting_settings', {
-                            tables: ['greeting', 'greeting'],
-                            keys: ['autoGreetEnabled', 'cooldown'],
-                            values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5)]
-                        }, function() {
-                            socket.sendCommand('alerts_update_greeting_settings_cmd', 'greetingspanelupdate', function() {
-                                // Close the modal.
-                                $('#greeting-alert').modal('toggle');
-                                // Alert the user.
-                                toastr.success('Successfully updated greeting alert settings!');
-                            });
-                        });
-                }
-            }).modal('toggle');
-        });
-    });
-
     // Welcome esettings.
     $('#welcomeSystemSettings').on('click', function() {
         const updateDisabled = function(disabledUsers, welcomeDisabled, callback) {
