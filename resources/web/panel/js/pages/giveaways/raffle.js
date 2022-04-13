@@ -44,24 +44,27 @@ $(run = function () {
                     keys: ['bools', 'winner'],
                 }, true, function(e) {
                     const table = $('#raffle-table');
-                    var hasDrawn = false;
+                    var hasDrawn = false,
+                        length = results.length;
 
+                    // Check length of bools array here, previous savedStates are missing the new bool (pre 3.7.0)
                     if (e['bools'] !== undefined && JSON.parse(e['bools']).length >= 5 && JSON.parse(e['bools'])[4]) {
                         var winners = JSON.parse(e['winner']);
                         hasDrawn = true;
+                        length = (length < winners.length) ? winners.length : length;
                     }
 
                     // Remove current data content.
                     table.find('tr:gt(0)').remove();
 
-                    for (let i = 0; i < results.length; i++) {
+                    for (let i = 0; i < length; i++) {
                         const tr = $('<tr/>');
 
                         tr.append($('<td/>', {
-                            'html': results[i].key
+                            'html': ((i < results.length && results[i] !== undefined) ? results[i].key : '')
                         }))
                         .append($('<td/>', {
-                            'html' : (hasDrawn && i < winners.length) ? winners[i] : ''
+                            'html' : ((hasDrawn && i < winners.length && winners[i] !== undefined) ? winners[i] : '')
                         }));
 
                         table.append(tr);
@@ -116,7 +119,7 @@ $(function () {
             const keyword = $('#raffle-keyword'),
                     cost = $('#raffle-cost'),
                     costType = $('#raffle-req').val(),
-                    elegibility = $('#raffle-perm').val(),
+                    eligibility = $('#raffle-perm').val(),
                     timer = $('#raffle-timer'),
                     regLuck = $('#raffle-reg'),
                     subLuck = $('#raffle-sub');
@@ -136,10 +139,10 @@ $(function () {
                         values: [subLuck.val(), regLuck.val()]
                     }, function () {
                         console.log("Sending the following command: " + 'raffle open ' + cost.val() + ' ' + keyword.val() +
-                        ' ' + timer.val() + ' ' + costType + ' ' + elegibility);
+                        ' ' + timer.val() + ' ' + costType + ' ' + eligibility);
                         socket.sendCommandSync('raffle_reload', 'reloadraffle', function () {
                             socket.sendCommand('open_raffle_cmd', 'raffle open ' + cost.val() + ' ' + keyword.val() +
-                                    ' ' + timer.val() + ' ' + costType + ' ' + elegibility, function () {
+                                    ' ' + timer.val() + ' ' + costType + ' ' + eligibility, function () {
                                 // Alert the user.
                                 toastr.success('Successfully opened the raffle!');
                                 // Update the button.
