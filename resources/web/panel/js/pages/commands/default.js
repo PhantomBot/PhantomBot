@@ -172,11 +172,12 @@ $(function() {
                                 // Append input box for per-user cooldown.
                                 .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                                     'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
-                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Disabled',
+                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
                                     'If checked, the command cannot be used in chat.'))
                                 // Callback function to be called once we hit the save button on the modal.
                         })), function() {
-                            let commandPermission = $('#command-permission'),
+                            let commandName = $('#command-name'),
+                                commandPermission = $('#command-permission'),
                                 commandCost = $('#command-cost'),
                                 commandReward = $('#command-reward'),
                                 commandCooldownGlobal = $('#command-cooldown-global'),
