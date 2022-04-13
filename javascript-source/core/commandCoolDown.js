@@ -390,9 +390,9 @@
      */
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
-            if (event.getArgs()[0] === 'add') {
-                add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3]);
-            } else if (event.getArgs()[0] === 'update') {
+            if (event.getArgs()[0].equalsIgnoreCase('add')) {
+                add(event.getArgs()[1], parseInt(event.getArgs()[2]), parseInt(event.getArgs()[3]));
+            } else if (event.getArgs()[0].equalsIgnoreCase('update')) {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
             } else {
