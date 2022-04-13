@@ -126,7 +126,7 @@ $(function () {
     // Open/close raffle button.
     $('#open-or-close-raffle').on('click', function () {
         if ($(this)[0].innerText.trim() === 'Open') {
-            const keyword = $('#raffle-keyword'),
+            const   keyword = $('#raffle-keyword'),
                     cost = $('#raffle-cost'),
                     costType = $('#raffle-req').val(),
                     eligibility = $('#raffle-perm').val(),
