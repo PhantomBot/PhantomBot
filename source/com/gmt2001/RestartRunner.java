@@ -34,13 +34,13 @@ import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 public final class RestartRunner implements Listener {
 
     private static final RestartRunner INSTANCE = new RestartRunner();
+    private boolean registered = false;
 
     /**
      * Constructor
      */
     @SuppressWarnings("LeakingThisInConstructor")
     private RestartRunner() {
-        EventBus.instance().register(this);
     }
 
     /**
@@ -50,6 +50,15 @@ public final class RestartRunner implements Listener {
      */
     public static RestartRunner instance() {
         return INSTANCE;
+    }
+
+    public void register() {
+        if (this.registered) {
+            return;
+        }
+
+        EventBus.instance().register(this);
+        this.registered = true;
     }
 
     /**

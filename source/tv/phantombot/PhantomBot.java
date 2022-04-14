@@ -18,6 +18,7 @@ package tv.phantombot;
 
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
+import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitchAuthorizationCodeFlow;
@@ -693,6 +694,7 @@ public final class PhantomBot implements Listener {
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(this.getProperties().getProperty("webauthro"), this.getProperties().getProperty("webauth")).register();
             new WsPanelRemoteLoginHandler(this.getProperties().getProperty("paneluser", "panel"), this.getPanelPassword(),
                     this.getProperties().getProperty("webauthro"), this.getProperties().getProperty("webauth")).register();
+            RestartRunner.instance().register();
         }
     }
 
