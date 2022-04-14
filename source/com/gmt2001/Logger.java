@@ -72,7 +72,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
                 Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
                         StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
             } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+                RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
+                ex.printStackTrace(System.err);
             }
         }
         this.subscription.request(1);
@@ -80,7 +81,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onError(Throwable throwable) {
-        com.gmt2001.Console.err.printStackTrace(throwable, false, true);
+        RollbarProvider.instance().error(throwable, null, "", true);
+        throwable.printStackTrace(System.err);
         com.gmt2001.Console.err.println("Logger threw an exception and is being disconnected...");
     }
 
@@ -127,7 +129,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             try {
                 Files.createDirectories(Paths.get(p));
             } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+                RollbarProvider.instance().error(ex, Collections.singletonMap("LOG_PATHS[]", p));
+                ex.printStackTrace(System.err);
             }
         });
     }
