@@ -46,6 +46,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -217,14 +218,14 @@ public class Helix {
             }
 
             HttpHeaders headers = HttpClient.createHeaders(type, true);
-            headers.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
+            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
                     ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
             headers.add("Authorization", "Bearer " + this.oAuthToken);
             HttpClientResponse response = HttpClient.request(type, HttpUrl.fromUri(BASE_URL, endPoint), headers, data);
 
             responseCode = response.responseCode().code();
 
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
+            if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
                 com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + response.responseHeaders().getAsString("Ratelimit-Limit")
                         + " <> Remaining: " + response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
                         + response.responseHeaders().getAsString("Ratelimit-Reset"));
@@ -251,14 +252,14 @@ public class Helix {
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
             StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
             com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
         }
 
         if (!isRetry && (responseCode == 401 || (returnObject.has("status") && returnObject.getInt("status") == 401)) && PhantomBot.instance() != null) {
-            PhantomBot.instance().getAuthFlow().refresh(PhantomBot.instance().getProperties(), false, true);
+            PhantomBot.instance().getAuthFlow().refresh(false, true);
             return this.handleRequest(type, endPoint, data, true);
         }
 

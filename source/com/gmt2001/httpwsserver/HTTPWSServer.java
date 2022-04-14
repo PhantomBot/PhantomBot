@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -181,7 +182,7 @@ public final class HTTPWSServer {
     }
 
     public boolean isSsl() {
-        return this.sslEnabled || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false);
+        return this.sslEnabled || CaselessProperties.instance().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
     void generateAutoSsl() {
