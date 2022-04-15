@@ -541,8 +541,6 @@ $(function () {
                     if (helpers.isAuth === true) {
                         helpers.log('Found reconnect auth', helpers.LOG_TYPE.DEBUG);
                         return;
-                    } else {
-                        helpers.isAuth = true;
                     }
 
                     sendToSocket({
@@ -557,6 +555,7 @@ $(function () {
 
             if (message.id !== undefined) {
                 if (message.id === 'initLoad.panelSettings') {
+                    helpers.isAuth = true;
                     window.panelSettings.channelName = message.channelName;
                     window.panelSettings.displayName = message.displayName;
                     $.loadPage('dashboard', 'dashboard.html');
