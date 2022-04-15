@@ -63,6 +63,7 @@ import org.json.JSONStringer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -356,11 +357,11 @@ public final class EventSub implements HttpRequestHandler {
     }
 
     static String getSecret() {
-        return PhantomBot.instance().getProperties().getProperty("appsecret", EventSub::generateSecret);
+        return CaselessProperties.instance().getProperty("appsecret", EventSub::generateSecret);
     }
 
     private static String generateSecret() {
-        Transaction transaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_NORMAL);
+        Transaction transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
         byte[] secret = new byte[64];
         SecureRandom rand = new SecureRandom();
 

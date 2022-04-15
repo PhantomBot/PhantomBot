@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.DiscordAPI;
@@ -98,9 +99,7 @@ public class ConsoleEventHandler implements Listener {
         }
 
         if (transaction == null || transaction.isCommitted()) {
-            if (PhantomBot.instance() != null) {
-                transaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_MAX);
-            }
+            transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
         }
 
         if (message.startsWith("!")) {

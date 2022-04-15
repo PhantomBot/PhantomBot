@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.cache.TwitchCache;
@@ -87,7 +88,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
 
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("wsdebug", false)) {
+            if (CaselessProperties.instance().getPropertyAsBoolean("wsdebug", false)) {
                 com.gmt2001.Console.debug.println(jso.toString());
             }
 
@@ -297,7 +298,7 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
         jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
         jsonObject.key("os-version").value(System.getProperty("os.name"));
-        jsonObject.key("autorefreshoauth").value(PhantomBot.instance().getProperties().getProperty("clientsecret") != null && !PhantomBot.instance().getProperties().getProperty("clientsecret").isBlank());
+        jsonObject.key("autorefreshoauth").value(CaselessProperties.instance().getProperty("clientsecret") != null && !CaselessProperties.instance().getProperty("clientsecret").isBlank());
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
