@@ -261,10 +261,10 @@
 
         if (notice.startsWith('command:')) {
             notice = notice.substring(8).replace('!', '');
-            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
+            EventBus.instance().postAsync(new CommandEvent($.botName, notice, ' '));
         } else if (notice.startsWith('!')) {
             notice = notice.substring(1);
-            EventBus.instance().post(new CommandEvent($.botName, notice, ' '));
+            EventBus.instance().postAsync(new CommandEvent($.botName, notice, ' '));
         } else {
             $.say(notice);
         }

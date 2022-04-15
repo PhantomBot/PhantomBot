@@ -29,7 +29,7 @@ public class ConsoleInputListener extends Thread {
         while (true) {
             try {
                 String msg = com.gmt2001.Console.in.readLine();
-                EventBus.instance().post(new ConsoleInputEvent(msg));
+                EventBus.instance().postAsync(new ConsoleInputEvent(msg));
                 Thread.sleep(10);
             } catch (Exception e) {
                 com.gmt2001.Console.err.printStackTrace(e);

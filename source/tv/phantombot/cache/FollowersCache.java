@@ -118,7 +118,7 @@ public class FollowersCache implements Runnable {
                     String followDate = jsonArray.getJSONObject(i).getString("created_at");
 
                     if (!datastore.exists("followed", follower)) {
-                        EventBus.instance().post(new TwitchFollowEvent(follower, followDate));
+                        EventBus.instance().postAsync(new TwitchFollowEvent(follower, followDate));
                         datastore.set("followed", follower, "true");
                     }
 
@@ -137,7 +137,7 @@ public class FollowersCache implements Runnable {
 
         if (!killed && firstUpdate) {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent());
+            EventBus.instance().postAsync(new TwitchFollowsInitializedEvent());
         }
     }
 

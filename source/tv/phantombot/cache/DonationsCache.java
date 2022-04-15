@@ -140,7 +140,7 @@ public class DonationsCache implements Runnable {
                 if (donationId > lastId) {
                     lastId = donationId;
                     if (!PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("donation_id").toString())) {
-                        EventBus.instance().post(new StreamLabsDonationEvent(donations.getJSONObject(i)));
+                        EventBus.instance().postAsync(new StreamLabsDonationEvent(donations.getJSONObject(i)));
                     }
                 }
             }
@@ -148,7 +148,7 @@ public class DonationsCache implements Runnable {
 
         if (this.firstUpdate && !this.killed) {
             this.firstUpdate = false;
-            EventBus.instance().post(new StreamLabsDonationInitializedEvent());
+            EventBus.instance().postAsync(new StreamLabsDonationInitializedEvent());
         }
 
         PhantomBot.instance().getDataStore().SetInteger("settings", "", "DonationsCache_lastId", lastId);

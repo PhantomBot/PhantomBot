@@ -126,7 +126,7 @@ public class ViewerListCache implements Runnable {
                     }
                 }
 
-                EventBus.instance().post(new IrcChannelUsersUpdateEvent(joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
+                EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(joins.toArray(new String[joins.size()]), parts.toArray(new String[parts.size()])));
                 // Set the new cache.
                 this.cache = cache;
                 // Delete the temp caches.

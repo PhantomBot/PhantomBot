@@ -17,6 +17,7 @@
 package tv.phantombot.discord;
 
 import discord4j.common.close.CloseException;
+import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
@@ -24,6 +25,7 @@ import discord4j.core.event.domain.VoiceStateUpdateEvent;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.event.domain.guild.MemberLeaveEvent;
+import discord4j.core.event.domain.lifecycle.DisconnectEvent;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.event.domain.message.ReactionAddEvent;
@@ -38,12 +40,10 @@ import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.gateway.DefaultGatewayClient;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.request.RouterOptions;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.lifecycle.DisconnectEvent;
-import discord4j.gateway.DefaultGatewayClient;
 import java.time.Duration;
 import java.util.List;
 import java.util.Timer;
@@ -76,6 +76,7 @@ import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartE
  */
 public class DiscordAPI extends DiscordUtil {
 
+    private static final int PROCESSMESSAGETIMEOUT = 5;
     private static DiscordAPI instance;
     private static DiscordClient client;
     private static GatewayDiscordClient gateway;
@@ -167,7 +168,7 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     private void subscribeToEvents() {
-        DiscordAPI.gateway.getEventDispatcher().on(DisconnectEvent.class).doOnNext(event -> DiscordEventListener.onDiscordDisconnectEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(DisconnectEvent.class).doOnNext(event -> DiscordEventListener.onDiscordDisconnectEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("DisconnectEvent disconnected due to " + s.name())).subscribe();
 
         DiscordAPI.gateway.getEventDispatcher().on(ReadyEvent.class) // Listen for ReadyEvent(s)
                 .map(event -> event.getGuilds().size()) // Get how many guilds the bot is in
@@ -177,17 +178,19 @@ public class DiscordAPI extends DiscordUtil {
                 .collectList()) // Take all received GuildCreateEvents and make it a List
                 .doOnNext(events -> DiscordEventListener.onDiscordReadyEvent(events))
                 .onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e))
+                .retry()
+                .doFinally((s) -> com.gmt2001.Console.debug.println("ReadyEvent disconnected due to " + s.name()))
                 .subscribe();
 
-        DiscordAPI.gateway.getEventDispatcher().on(MessageCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(MemberJoinEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserJoinEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(MemberLeaveEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserLeaveEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(RoleCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleCreateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(RoleUpdateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleUpdateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(RoleDeleteEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleDeleteEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(ReactionAddEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageReactionAddEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(ReactionRemoveEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageReactionRemoveEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        DiscordAPI.gateway.getEventDispatcher().on(VoiceStateUpdateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordVoiceStateUpdateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(MessageCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MessageCreateEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(MemberJoinEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserJoinEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MemberJoinEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(MemberLeaveEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserLeaveEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MemberLeaveEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(RoleCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleCreateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("RoleCreateEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(RoleUpdateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleUpdateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("RoleUpdateEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(RoleDeleteEvent.class).doOnNext(event -> DiscordEventListener.onDiscordRoleDeleteEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("RoleDeleteEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(ReactionAddEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageReactionAddEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("ReactionAddEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(ReactionRemoveEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageReactionRemoveEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("ReactionRemoveEvent disconnected due to " + s.name())).subscribe();
+        DiscordAPI.gateway.getEventDispatcher().on(VoiceStateUpdateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordVoiceStateUpdateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("VoiceStateUpdateEvent disconnected due to " + s.name())).subscribe();
     }
 
     /**
@@ -352,14 +355,30 @@ public class DiscordAPI extends DiscordUtil {
 
         public static void onDiscordMessageEvent(MessageCreateEvent event) {
             Message iMessage = event.getMessage();
-            if (iMessage.getContent() == null || processedMessages.contains(iMessage.getId().asLong())) {
+            if (iMessage.getContent() == null) {
+                com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null content");
+                return;
+            }
+
+            if (processedMessages.contains(iMessage.getId().asLong())) {
+                com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to processedMessages.contains(iMessage.getId().asLong())");
                 return;
             }
 
             iMessage.getChannel().timeout(Duration.ofMillis(500)).doOnSuccess(iChannel -> {
+                if (iChannel == null) {
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iChannel");
+                    return;
+                }
                 User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel ? ((PrivateChannel) iChannel).getRecipients().take(1).singleOrEmpty().block(Duration.ofMillis(500)) : null);
 
-                if (iUser == null || (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId))) {
+                if (iUser == null) {
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iUser");
+                    return;
+                }
+
+                if (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId)) {
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to iUser.getId().equals(DiscordAPI.selfId)");
                     return;
                 }
 
@@ -383,6 +402,7 @@ public class DiscordAPI extends DiscordUtil {
                 }
 
                 if (message == null || message.isEmpty()) {
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null or empty message");
                     return;
                 }
 
@@ -393,7 +413,7 @@ public class DiscordAPI extends DiscordUtil {
                 }
 
                 EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin.block(Duration.ofMillis(500))));
-            }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+            }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).timeout(Duration.ofSeconds(PROCESSMESSAGETIMEOUT)).subscribe();
         }
 
         public static void onDiscordUserJoinEvent(MemberJoinEvent event) {
@@ -405,11 +425,11 @@ public class DiscordAPI extends DiscordUtil {
         }
 
         public static void onDiscordRoleCreateEvent(RoleCreateEvent event) {
-            EventBus.instance().post(new DiscordRoleCreatedEvent(event.getRole()));
+            EventBus.instance().postAsync(new DiscordRoleCreatedEvent(event.getRole()));
         }
 
         public static void onDiscordRoleUpdateEvent(RoleUpdateEvent event) {
-            EventBus.instance().post(new DiscordRoleUpdatedEvent(event.getCurrent()));
+            EventBus.instance().postAsync(new DiscordRoleUpdatedEvent(event.getCurrent()));
         }
 
         public static void onDiscordRoleDeleteEvent(RoleDeleteEvent event) {
@@ -419,15 +439,15 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
 
-            EventBus.instance().post(new DiscordRoleDeletedEvent(role));
+            EventBus.instance().postAsync(new DiscordRoleDeletedEvent(role));
         }
 
         public static void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
-            EventBus.instance().post(new DiscordMessageReactionEvent(event));
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event));
         }
 
         public static void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
-            EventBus.instance().post(new DiscordMessageReactionEvent(event));
+            EventBus.instance().postAsync(new DiscordMessageReactionEvent(event));
         }
 
         public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {
