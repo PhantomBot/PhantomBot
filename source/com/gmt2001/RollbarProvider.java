@@ -44,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
 import reactor.util.annotation.Nullable;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
@@ -93,36 +94,29 @@ public final class RollbarProvider implements AutoCloseable {
                     })
                     .person(() -> {
                         Map<String, Object> metadata = new HashMap<>();
-                        String username = "";
-                        if (PhantomBot.instance() != null) {
-                            metadata.put("user", PhantomBot.instance().getBotName());
-                            metadata.put("channel", PhantomBot.instance().getChannelName());
-                            metadata.put("owner", PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName()));
-                            username = PhantomBot.instance().getProperties().getProperty("owner", PhantomBot.instance().getBotName());
-                        }
+                        String botName = CaselessProperties.instance().getProperty("user", "").toLowerCase();
+                        metadata.put("user", botName);
+                        metadata.put("channel", CaselessProperties.instance().getProperty("channel", "").toLowerCase());
+                        metadata.put("owner", CaselessProperties.instance().getProperty("owner", botName));
 
-                        return new Person.Builder().id(RollbarProvider.getId()).username(username).metadata(metadata).build();
+                        return new Person.Builder().id(RollbarProvider.getId()).username(CaselessProperties.instance().getProperty("owner", botName)).metadata(metadata).build();
                     })
                     .custom(() -> {
                         Map<String, Object> metadata = new HashMap<>();
-                        if (PhantomBot.instance() != null) {
-                            metadata.put("phantombot.datastore", PhantomBot.instance().getDataStoreType());
-                            metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
-                            metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
-                            metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
-                            metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(PhantomBot.instance().getBotName()) ? "true" : "false");
-                            metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(PhantomBot.instance().getChannelName()) ? "true" : "false");
+                        metadata.put("phantombot.datastore", CaselessProperties.instance().getProperty("datastore", "sqlite3store"));
+                        metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
+                        metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
+                        metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
+                        metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("user", "").toLowerCase()) ? "true" : "false");
+                        metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("channel", "").toLowerCase()) ? "true" : "false");
 
-                            PhantomBot.instance().getProperties().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
-                                if (RollbarProvider.SEND_VALUES.contains(s)) {
-                                    metadata.put("config." + s, PhantomBot.instance().getProperties().getProperty(s));
-                                } else {
-                                    metadata.put("config." + s, "set");
-                                }
-                            });
-                        } else {
-                            metadata.put("phantombot.instance", "null");
-                        }
+                        CaselessProperties.instance().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
+                            if (RollbarProvider.SEND_VALUES.contains(s)) {
+                                metadata.put("config." + s, CaselessProperties.instance().getProperty(s));
+                            } else {
+                                metadata.put("config." + s, "set");
+                            }
+                        });
 
                         return metadata;
                     })
@@ -619,13 +613,10 @@ public final class RollbarProvider implements AutoCloseable {
     }
 
     private static String getId() {
-        String id = null;
-        if (PhantomBot.instance() != null) {
-            id = PhantomBot.instance().getProperties().getProperty("rollbarid");
-        }
+        String id = CaselessProperties.instance().getProperty("rollbarid");
 
         if (id == null || id.isBlank()) {
-            Transaction transaction = PhantomBot.instance().getProperties().startTransaction(Transaction.PRIORITY_NORMAL);
+            Transaction transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
             id = RollbarProvider.generateId();
             transaction.setProperty("rollbarid", id);
             transaction.commit();

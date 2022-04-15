@@ -65,7 +65,8 @@ public class ConfigurationManager {
         String requiredPropertiesErrorMessage;
 
         /* Properties configuration */
-        CaselessProperties startProperties = new CaselessProperties();
+        CaselessProperties startProperties = CaselessProperties.instance();
+        startProperties.clear();
 
         /* Indicates that the botlogin.txt file should be overwritten/created. */
         boolean changed = false;
