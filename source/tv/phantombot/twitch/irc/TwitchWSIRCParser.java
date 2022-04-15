@@ -427,7 +427,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         // Send the message to the scripts.
-        eventBus.post(new IrcChannelMessageEvent(session, username, message, tags));
+        eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, tags));
 
         // Print the tags for debugging.
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tags);

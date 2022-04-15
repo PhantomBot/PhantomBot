@@ -336,7 +336,7 @@ public class WsYTHandler implements WsFrameHandler {
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().set(table, key, value);
 
-        EventBus.instance().post(new CommandEvent(PhantomBot.instance().getBotName(), "reloadyt", ""));
+        EventBus.instance().postAsync(new CommandEvent(PhantomBot.instance().getBotName(), "reloadyt", ""));
         jsonObject.object().key("query_id").value(id).endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }

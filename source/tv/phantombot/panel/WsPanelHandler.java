@@ -227,7 +227,7 @@ public class WsPanelHandler implements WsFrameHandler {
             }
         }
 
-        EventBus.instance().post(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
         jsonObject.object().key("query_id").value(uniqueID).endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }

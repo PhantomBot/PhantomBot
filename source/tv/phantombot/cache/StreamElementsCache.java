@@ -171,7 +171,7 @@ public class StreamElementsCache implements Runnable {
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new StreamElementsDonationInitializedEvent());
+            EventBus.instance().postAsync(new StreamElementsDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
