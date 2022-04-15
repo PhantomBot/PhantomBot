@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.httpwsserver;
+package com.gmt2001.httpwsserver.x509;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -39,12 +39,15 @@ import java.util.Date;
  * @author gmt2001
  */
 @SuppressWarnings("sunapi")
-final class SelfSignedX509CertificateGenerator {
+public final class SelfSignedX509CertificateGenerator {
 
-    static final int RECOMMENDED_KEY_SIZE = 2048;
-    static final String RECOMMENDED_SIG_ALGO = "SHA512withRSA";
-    static final int RECOMMENDED_VALIDITY_DAYS = 60;
-    static final int RECOMMENDED_RENEWAL_DAYS = 45;
+    public static final int RECOMMENDED_KEY_SIZE = 2048;
+    public static final String RECOMMENDED_SIG_ALGO = "SHA512withRSA";
+    public static final int RECOMMENDED_VALIDITY_DAYS = 60;
+    public static final int RECOMMENDED_RENEWAL_DAYS = 45;
+
+    private SelfSignedX509CertificateGenerator() {
+    }
 
     /**
      * Create a self-signed X.509 Certificate
@@ -61,7 +64,7 @@ final class SelfSignedX509CertificateGenerator {
      * @throws NoSuchProviderException
      * @throws SignatureException
      */
-    static X509Certificate generateCertificate(String dn, KeyPair pair, int days, String algorithm)
+    public static X509Certificate generateCertificate(String dn, KeyPair pair, int days, String algorithm)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
         PrivateKey privkey = pair.getPrivate();
         sun.security.x509.X509CertInfo info = new sun.security.x509.X509CertInfo();
@@ -96,7 +99,7 @@ final class SelfSignedX509CertificateGenerator {
      * @param commonName the Common Name
      * @return the formatted string
      */
-    static String generateDistinguishedName(String commonName) {
+    public static String generateDistinguishedName(String commonName) {
         return "CN=" + commonName.replace('=', '-').replace(',', '-');
     }
 
@@ -107,7 +110,7 @@ final class SelfSignedX509CertificateGenerator {
      * @return the generated key pair
      * @throws NoSuchAlgorithmException
      */
-    static KeyPair generateKeyPair(int keySize) throws NoSuchAlgorithmException {
+    public static KeyPair generateKeyPair(int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(keySize);
         return keyPairGenerator.generateKeyPair();

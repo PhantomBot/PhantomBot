@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver;
 
+import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
