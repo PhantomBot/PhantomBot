@@ -51,6 +51,18 @@ if [[ ! -O "/opt/PhantomBot_data" ]]; then
     exit 1
 fi
 
+mkdir -p /opt/PhantomBot_data/config/ || true
+
+if [[ ! -O "/opt/PhantomBot_data/config" ]]; then
+    echo "The data directory is not chown by the service user"
+    echo "Please run the following command to fix this:"
+    echo "   sudo docker exec --user root -it phantombot chown -R -H -L phantombot:phantombot /opt/PhantomBot_data"
+    echo "                                    ^"
+    echo "                                    Replace with the name of the container"
+
+    exit 1
+fi
+
 touch /opt/PhantomBot_data/config/botlogin.txt || true
 
 if [[ ! -O "/opt/PhantomBot_data/config/botlogin.txt" ]]; then
