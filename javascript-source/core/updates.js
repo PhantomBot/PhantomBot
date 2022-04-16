@@ -250,9 +250,9 @@
 
             noticeTimer = {
                 'name': 'Announcements',
-                'reqMessages': noticeReqMessages,
-                'intervalMin': noticeInterval,
-                'intervalMax': noticeInterval,
+                'reqMessages': isNaN(noticeReqMessages) ? 25 : noticeReqMessages,
+                'intervalMin': isNaN(noticeInterval) ? 10 : noticeInterval,
+                'intervalMax': isNaN(noticeInterval) ? 10 : noticeInterval,
                 'shuffle': false,
                 'noticeToggle': noticeToggle,
                 'noticeOfflineToggle': noticeOffline,
