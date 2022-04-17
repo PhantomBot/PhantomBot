@@ -613,5 +613,10 @@ public class TwitchPubSub {
         public void handshakeComplete(ChannelHandlerContext ctx) {
             this.onOpen();
         }
+
+        @Override
+        public void onClose() {
+            this.onClose(0, "channel closed");
+        }
     }
 }
