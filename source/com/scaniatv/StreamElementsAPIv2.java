@@ -71,7 +71,7 @@ public class StreamElementsAPIv2 {
                 HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
             } else {
                 jsonResult.put("error", response.responseBody());
-                HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, response.responseCode().code(), null, null);
+                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
             }
         } catch (Exception ex) {
             HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
