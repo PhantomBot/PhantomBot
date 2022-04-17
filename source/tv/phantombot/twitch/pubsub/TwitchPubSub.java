@@ -23,6 +23,7 @@ package tv.phantombot.twitch.pubsub;
 
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.Logger;
+import com.gmt2001.RollbarProvider;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
@@ -521,8 +522,9 @@ public class TwitchPubSub {
          * @param message Message the socket sent.
          */
         private void onMessage(String message) {
+            String fixedMessage = this.fixLineBreaksEscapes(message);
             try {
-                JSONObject messageObj = new JSONObject(this.fixLineBreaksEscapes(message));
+                JSONObject messageObj = new JSONObject(fixedMessage);
 
                 com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
@@ -584,7 +586,8 @@ public class TwitchPubSub {
 
                 this.parse(messageObj);
             } catch (JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
+                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage"}, new Object[]{message, fixedMessage});
+                com.gmt2001.Console.err.logStackTrace(ex, locals);
             }
         }
 

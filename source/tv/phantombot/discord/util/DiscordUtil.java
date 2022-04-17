@@ -17,31 +17,31 @@
 package tv.phantombot.discord.util;
 
 import com.gmt2001.PathValidator;
+import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Category;
 import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.object.entity.channel.NewsChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.core.object.entity.channel.StoreChannel;
+import discord4j.core.object.entity.channel.TextChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
-import discord4j.rest.util.Permission;
-import discord4j.common.util.Snowflake;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.channel.Category;
-import discord4j.core.object.entity.channel.GuildChannel;
-import discord4j.core.object.entity.channel.NewsChannel;
-import discord4j.core.object.entity.channel.StoreChannel;
-import discord4j.core.object.entity.channel.TextChannel;
-import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.rest.util.Color;
+import discord4j.rest.util.Permission;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -96,7 +96,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
-        return sendMessageAsync(channel, message).onErrorReturn(null).block();
+        try {
+            return sendMessageAsync(channel, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message) {
@@ -147,7 +151,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessage(String channelName, String message) {
-        return sendMessageAsync(channelName, message).onErrorReturn(null).block();
+        try {
+            return sendMessageAsync(channelName, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageAsync(String channelName, String message) {
@@ -230,7 +238,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
+        try {
+            return sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
@@ -278,7 +290,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
+        try {
+            return sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageEmbedAsync(String channelName, Consumer<? super EmbedCreateSpec> embed) {
@@ -295,7 +311,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
-        return sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
+        try {
+            return sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, String color, String message) {
@@ -314,14 +334,22 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, String color, String message) {
-        return sendMessageEmbedAsync(channelName, ebd
-                -> ebd.setColor(getColor(color)).setDescription(message)
-        ).onErrorReturn(null).block();
+        try {
+            return sendMessageEmbedAsync(channelName, ebd
+                    -> ebd.setColor(getColor(color)).setDescription(message)
+            ).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     @Deprecated
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
-        return sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
+        try {
+            return sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation) {
@@ -397,7 +425,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String message, String fileLocation) {
-        return sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
+        try {
+            return sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendFileAsync(String channelName, String message, String fileLocation) {
@@ -424,7 +456,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String fileLocation) {
-        return sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
+        try {
+            return sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -520,7 +556,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannel(String channelName) {
-        return getChannelAsync(channelName).onErrorReturn(null).block();
+        try {
+            return getChannelAsync(channelName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
@@ -537,7 +577,10 @@ public class DiscordUtil {
     @Deprecated
     public Map<String, Map<String, String>> getAllChannelInfo() {
         HashMap<String, Map<String, String>> data = new HashMap<>();
-        getAllChannelInfoAsync(data).onErrorReturn(null).blockLast(Duration.ofSeconds(5L));
+        try {
+            getAllChannelInfoAsync(data).onErrorReturn(null).blockLast(Duration.ofSeconds(5L));
+        } catch (NullPointerException ex) {
+        }
         return data;
     }
 
@@ -615,7 +658,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannelByID(String channelId) {
-        return getChannelByIDAsync(channelId).onErrorReturn(null).block();
+        try {
+            return getChannelByIDAsync(channelId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
@@ -629,7 +676,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUser(String userName) {
-        return getUserAsync(userName).onErrorReturn(null).block();
+        try {
+            return getUserAsync(userName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -661,7 +712,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserById(long userId) {
-        return getUserByIdAsync(userId).onErrorReturn(null).block();
+        try {
+            return getUserByIdAsync(userId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -681,7 +736,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserWithDiscriminator(String userName, String discriminator) {
-        return getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
+        try {
+            return getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -703,7 +762,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRole(String roleName) {
-        return getRoleAsync(roleName).onErrorReturn(null).block();
+        try {
+            return getRoleAsync(roleName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -736,7 +799,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRoleByID(String id) {
-        return getRoleByIDAsync(id).onErrorReturn(null).block();
+        try {
+            return getRoleByIDAsync(id).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -762,7 +829,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getRoleObjects(String... roles) {
-        return getRoleObjectsAsync(roles).onErrorReturn(null).block();
+        try {
+            return getRoleObjectsAsync(roles).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Role[]> getRoleObjectsAsync(String... roles) {
@@ -779,11 +850,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(User user) {
-        return getUserRolesAsync(user).onErrorReturn(null).block();
+        try {
+            return getUserRolesAsync(user).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Role[]> getUserRolesAsync(User user) {
-        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(new Role[0]))).onErrorReturn(new Role[0]);
+        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
     }
 
     /**
@@ -794,7 +869,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(String userId) {
-        return getUserRolesAsync(userId).onErrorReturn(null).block();
+        try {
+            return getUserRolesAsync(userId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Role[]> getUserRolesAsync(String userId) {
@@ -871,13 +950,19 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         com.gmt2001.Console.debug.println(userName + " > " + roleName);
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
-            com.gmt2001.Console.debug.println(role);
-            getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
-                com.gmt2001.Console.debug.println(user);
-                addRole(role, user);
+        try {
+            getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
+                com.gmt2001.Console.debug.println(role);
+                try {
+                    getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
+                        com.gmt2001.Console.debug.println(user);
+                        addRole(role, user);
+                    });
+                } catch (NullPointerException ex) {
+                }
             });
-        });
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -887,7 +972,10 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(String roleName, User user) {
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> addRole(role, user));
+        try {
+            getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> addRole(role, user));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -919,7 +1007,10 @@ public class DiscordUtil {
      * @param userName
      */
     public void removeRole(String roleName, String userName) {
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> getUserAsync(userName).onErrorReturn(null).subscribe(user -> removeRole(role, user)));
+        try {
+            getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> getUserAsync(userName).onErrorReturn(null).subscribe(user -> removeRole(role, user)));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -964,7 +1055,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<Role> getGuildRoles() {
-        return getGuildRolesAsync().onErrorReturn(null).block();
+        try {
+            return getGuildRolesAsync().onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
@@ -981,7 +1076,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(User user) {
-        return isAdministratorAsync(user).onErrorReturn(null).block();
+        try {
+            return isAdministratorAsync(user).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public Mono<Boolean> isAdministratorAsync(User user) {
@@ -1000,7 +1099,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(String userName) {
-        return isAdministratorAsync(userName).onErrorReturn(null).block();
+        try {
+            return isAdministratorAsync(userName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public Mono<Boolean> isAdministratorAsync(String userName) {
@@ -1040,7 +1143,10 @@ public class DiscordUtil {
      * @param amount
      */
     public void bulkDelete(String channelName, int amount) {
-        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDelete(channel, amount));
+        try {
+            getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDelete(channel, amount));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -1070,7 +1176,10 @@ public class DiscordUtil {
      * @param messages
      */
     public void bulkDeleteMessages(String channelName, Message... messages) {
-        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDeleteMessages(channel, messages));
+        try {
+            getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDeleteMessages(channel, messages));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -1140,7 +1249,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<User> getUsers() {
-        return getUsersAsync().onErrorReturn(null).block();
+        try {
+            return getUsersAsync().onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<List<User>> getUsersAsync() {
@@ -1196,12 +1309,16 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getMessageById(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        if (channel != null) {
-            return channel.getMessageById(Snowflake.of(messageId)).block();
-        }
+        try {
+            GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
+            if (channel != null) {
+                return channel.getMessageById(Snowflake.of(messageId)).block();
+            }
 
-        return null;
+            return null;
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -1229,15 +1346,19 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param messageId
-     * @return {List<Message>}
+     * @return
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        List<Message> messageList = new ArrayList<>();
-        if (channel != null) {
-            channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        try {
+            GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
+            List<Message> messageList = new ArrayList<>();
+            if (channel != null) {
+                channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+            }
+            return messageList;
+        } catch (NullPointerException ex) {
+            return null;
         }
-        return messageList;
     }
 
     /**
@@ -1247,12 +1368,16 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getLastMessage(String channelName) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        if (channel != null) {
-            return channel.getLastMessage().block();
-        }
+        try {
+            GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
+            if (channel != null) {
+                return channel.getLastMessage().block();
+            }
 
-        return null;
+            return null;
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public static Optional<Snowflake> channelId(Channel channel) {

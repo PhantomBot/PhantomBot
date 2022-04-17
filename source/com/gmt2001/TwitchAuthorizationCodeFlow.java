@@ -48,8 +48,6 @@ public class TwitchAuthorizationCodeFlow {
     private static final long REFRESH_INTERVAL = 900000L;
     private static final int DEFAULT_EXPIRE_TIME = 900000;
     private boolean timerStarted = false;
-    private Transaction refreshTransaction = null;
-    private static Transaction newTransaction = null;
 
     public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
         this.startup(clientid, clientsecret);
@@ -60,12 +58,12 @@ public class TwitchAuthorizationCodeFlow {
     }
 
     public boolean refresh(boolean shouldRefreshBot, boolean shouldRefreshAPI) {
-        this.refreshTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
-        return this.refreshTokens(shouldRefreshBot, shouldRefreshAPI);
+        Transaction refreshTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
+        return this.refreshTokens(refreshTransaction, shouldRefreshBot, shouldRefreshAPI);
     }
 
     public boolean checkAndRefreshTokens() {
-        this.refreshTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
+        Transaction refreshTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
         boolean bot = false;
         boolean api = false;
 
@@ -85,23 +83,23 @@ public class TwitchAuthorizationCodeFlow {
 
         com.gmt2001.Console.debug.println("bot=" + (bot ? "t" : "f") + "; api=" + (api ? "t" : "f"));
 
-        return this.refreshTokens(bot, api);
+        return this.refreshTokens(refreshTransaction, bot, api);
     }
 
-    private boolean refreshTokens(boolean bot, boolean api) {
+    private boolean refreshTokens(Transaction refreshTransaction, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
-            boolean botchanged = this.refreshBotOAuth();
+            boolean botchanged = this.refreshBotOAuth(refreshTransaction);
             changed = changed || botchanged;
         }
 
         if (api) {
-            boolean apichanged = this.refreshAPIOAuth();
+            boolean apichanged = this.refreshAPIOAuth(refreshTransaction);
             changed = changed || apichanged;
         }
 
         if (changed) {
-            this.refreshTransaction.commit();
+            refreshTransaction.commit();
             com.gmt2001.Console.debug.println("Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
             com.gmt2001.Console.debug.println("Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
             TwitchValidate.instance().updateChatToken(CaselessProperties.instance().getProperty("oauth"));
@@ -111,7 +109,7 @@ public class TwitchAuthorizationCodeFlow {
         return changed;
     }
 
-    private boolean refreshBotOAuth() {
+    private boolean refreshBotOAuth(Transaction refreshTransaction) {
         boolean changed = false;
         if (CaselessProperties.instance().containsKey("refresh") && !CaselessProperties.instance().getProperty("refresh").isBlank()) {
             JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"), CaselessProperties.instance().getProperty("refresh"));
@@ -121,9 +119,9 @@ public class TwitchAuthorizationCodeFlow {
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
-                this.refreshTransaction.setProperty("oauth", "oauth:" + result.getString("access_token"));
-                this.refreshTransaction.setProperty("refresh", result.getString("refresh_token"));
-                this.refreshTransaction.setProperty("oauthexpires", c.getTimeInMillis() + "");
+                refreshTransaction.setProperty("oauth", "oauth:" + result.getString("access_token"));
+                refreshTransaction.setProperty("refresh", result.getString("refresh_token"));
+                refreshTransaction.setProperty("oauthexpires", c.getTimeInMillis() + "");
 
                 com.gmt2001.Console.out.println("Refreshed the bot token");
                 com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
@@ -137,7 +135,7 @@ public class TwitchAuthorizationCodeFlow {
         return changed;
     }
 
-    private boolean refreshAPIOAuth() {
+    private boolean refreshAPIOAuth(Transaction refreshTransaction) {
         boolean changed = false;
         if (CaselessProperties.instance().containsKey("apirefresh") && !CaselessProperties.instance().getProperty("apirefresh").isBlank()) {
             JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"), CaselessProperties.instance().getProperty("apirefresh"));
@@ -147,9 +145,9 @@ public class TwitchAuthorizationCodeFlow {
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
-                this.refreshTransaction.setProperty("apioauth", "oauth:" + result.getString("access_token"));
-                this.refreshTransaction.setProperty("apirefresh", result.getString("refresh_token"));
-                this.refreshTransaction.setProperty("apiexpires", c.getTimeInMillis() + "");
+                refreshTransaction.setProperty("apioauth", "oauth:" + result.getString("access_token"));
+                refreshTransaction.setProperty("apirefresh", result.getString("refresh_token"));
+                refreshTransaction.setProperty("apiexpires", c.getTimeInMillis() + "");
 
                 com.gmt2001.Console.out.println("Refreshed the broadcaster token");
                 com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
@@ -205,7 +203,7 @@ public class TwitchAuthorizationCodeFlow {
                 }
                 data = "false".getBytes();
             } else {
-                newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
+                Transaction newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
                 newTransaction.setProperty("clientid", qsd.parameters().get("clientid").get(0));
                 newTransaction.setProperty("clientsecret", qsd.parameters().get("clientsecret").get(0));
                 newTransaction.commit();
@@ -241,7 +239,7 @@ public class TwitchAuthorizationCodeFlow {
                     data = ("false|invalidJSONResponse" + result.toString()).getBytes();
                     com.gmt2001.Console.err.println(result.toString());
                 } else {
-                    newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
+                    Transaction newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                     c.add(Calendar.SECOND, result.getInt("expires_in"));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", "oauth:" + result.getString("access_token"));

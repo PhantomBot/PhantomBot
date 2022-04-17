@@ -795,7 +795,7 @@ public class ConsoleEventHandler implements Listener {
                     JSONObject e = new JSONObject(res.content);
                     System.out.println("PhantomBot StreamLabs setup failed");
                     System.err.println(e.getString("error"));
-                    System.err.println(e.getString("message"));
+                    System.err.println(e.optString("message", "no message"));
                 } else {
                     System.out.println("PhantomBot StreamLabs setup failed");
                     System.err.println(res.httpCode);

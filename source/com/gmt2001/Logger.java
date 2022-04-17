@@ -110,7 +110,10 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     public static Logger instance() {
         if (INSTANCE.subscription == null) {
             synchronized (INSTANCE) {
-                INSTANCE.subscribe(INSTANCE);
+                try {
+                    INSTANCE.subscribe(INSTANCE);
+                } catch (IllegalStateException ex) {
+                }
             }
         }
 
