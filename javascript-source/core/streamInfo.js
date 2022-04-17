@@ -107,7 +107,7 @@
      * @returns {boolean}
      */
     function isOnline(channelName) {
-        if ($.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchcache !== undefined && $.twitchcache !== null && $.twitchCacheReady.equals('true') && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.isStreamOnline();
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
