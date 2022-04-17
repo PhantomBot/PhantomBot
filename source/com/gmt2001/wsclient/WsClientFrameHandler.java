@@ -40,4 +40,9 @@ public interface WsClientFrameHandler {
      * @param ctx The {@link ChannelHandlerContext} of the session
      */
     void handshakeComplete(ChannelHandlerContext ctx);
+
+    /**
+     * Handles the channel closing for any reason.
+     */
+    void onClose();
 }

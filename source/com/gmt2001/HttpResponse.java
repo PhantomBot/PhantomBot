@@ -34,6 +34,7 @@ public class HttpResponse {
     public int httpCode;
     public boolean success;
     public String exception;
+    public Exception rawException;
 
     @Override
     public String toString() {

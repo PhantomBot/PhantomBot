@@ -16,18 +16,13 @@
  */
 package com.scaniatv;
 
-import com.gmt2001.RollbarProvider;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import javax.net.ssl.HttpsURLConnection;
-import org.json.JSONException;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import org.json.JSONObject;
 
 /*
@@ -61,90 +56,26 @@ public class StreamElementsAPIv2 {
     }
 
     /*
-     * Reads data from a stream.
-     */
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    /*
-     * Populates additional information into a JSON object to be digested
-     * as needed.
-     */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type, String url, int responseCode, String exception, String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
-    /*
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
+    private static JSONObject readJsonFromUrl(String endpoint) {
         JSONObject jsonResult = new JSONObject("{}");
-        InputStream inputStream = null;
-        URL urlRaw;
-        HttpsURLConnection urlConn;
-        String jsonText = "";
-
         try {
-            urlRaw = new URL(urlAddress);
-            urlConn = (HttpsURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.addRequestProperty("Authorization", "Bearer " + jwtToken);
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            urlConn.connect();
+            HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
+            headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
+            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(url, endpoint));
 
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
+            if (response.hasJson()) {
+                jsonResult = response.json();
+                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
             } else {
-                inputStream = urlConn.getErrorStream();
+                jsonResult.put("error", response.responseBody());
+                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
             }
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
-            jsonText = readAll(rd);
-            jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
-        } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.printStackTrace(ex, RollbarProvider.localsToCustom(new String[]{"urlAddress", "ex.Class", "ex.getMessage", "jsonText"}, new Object[]{urlAddress, "JSONException", ex.getMessage(), jsonText}));
-        } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
+            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            }
         }
 
         return jsonResult;
@@ -182,7 +113,7 @@ public class StreamElementsAPIv2 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() throws JSONException {
-        return readJsonFromUrl(url + "/tips/" + this.id + "?limit=" + this.pullLimit);
+    public JSONObject GetDonations() {
+        return readJsonFromUrl("/tips/" + this.id + "?limit=" + this.pullLimit);
     }
 }

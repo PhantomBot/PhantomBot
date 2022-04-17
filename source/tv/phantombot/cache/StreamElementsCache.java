@@ -162,7 +162,7 @@ public class StreamElementsCache implements Runnable {
                     PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamElementsHandler.js", "false");
                     killed = true;
                 } else {
-                    throw new Exception("Failed to get donations: " + jsonResult);
+                    throw new Exception("Failed to get donations: " + jsonResult.toString());
                 }
             }
         } else {

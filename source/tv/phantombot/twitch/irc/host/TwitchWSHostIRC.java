@@ -291,13 +291,16 @@ public class TwitchWSHostIRC {
         private void onClose(int code, String reason) {
             // Reconnect if the bot isn't shutting down.
             if (!reason.equals("bye")) {
-                com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
-                com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
+                if (!this.connecting) {
+                    com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
+                    com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-                this.connecting = true;
-                this.twitchWSHostIRC.reconnect();
+                    this.connecting = true;
+                    this.twitchWSHostIRC.reconnect();
+                }
             } else {
                 com.gmt2001.Console.out.println("Connection to Twitch WS-IRC (Host) was closed...");
+                com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
             }
         }
 
@@ -395,6 +398,11 @@ public class TwitchWSHostIRC {
         @Override
         public void handshakeComplete(ChannelHandlerContext ctx) {
             this.onOpen();
+        }
+
+        @Override
+        public void onClose() {
+            this.onClose(0, "channel closed");
         }
     }
 }

@@ -118,6 +118,12 @@
                 rnd = Math.random(),
                 lastSent = lastTimeNoticesSent[idx],
                 time = (minTime + (maxTime - minTime) * rnd) * 6e4;
+        if (isNaN(time)) {
+            time = 10 * 6e4;
+        }
+        if (isNaN(lastSent)) {
+            lastSent = now - time;
+        }
         if (!retryCall && lastSent + time <= now) {
             if (trySendNotice(idx)) {
                 startNoticeTimer(idx);
@@ -128,6 +134,9 @@
             time -= now - lastSent;
             if (retryCall) {
                 time = Math.max(5e3, time);
+            }
+            if (isNaN(time)) {
+                time = 10 * 6e4;
             }
             noticeTimoutIds[idx] = setTimeout(function () {
                 noticeLock.lock();
