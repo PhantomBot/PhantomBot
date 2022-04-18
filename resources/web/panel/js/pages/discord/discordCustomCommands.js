@@ -225,84 +225,84 @@ $(run = function () {
                         .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                                 'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                         // Callback function to be called once we hit the save button on the modal.
-                })), function () {
-                    let commandName = $('#command-name'),
-                        commandResponse = $('#command-response'),
-                        commandPermissions = $('#command-permission option'),
-                        commandCost = $('#command-cost'),
-                        commandChannel = $('#command-channel'),
-                        commandAlias = $('#command-alias'),
-                        commandCooldownGlobal = $('#command-cooldown-global'),
-                        commandCooldownUser = $('#command-cooldown-user');
+                    })), function () {
+                        let commandName = $('#command-name'),
+                            commandResponse = $('#command-response'),
+                            commandPermissions = $('#command-permission option'),
+                            commandCost = $('#command-cost'),
+                            commandChannel = $('#command-channel'),
+                            commandAlias = $('#command-alias'),
+                            commandCooldownGlobal = $('#command-cooldown-global'),
+                            commandCooldownUser = $('#command-cooldown-user');
 
-                    // Remove the ! and spaces.
-                    commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
-                    commandAlias.val(commandAlias.val().replace(/(\!|\s)/g, '').toLowerCase());
+                        // Remove the ! and spaces.
+                        commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
+                        commandAlias.val(commandAlias.val().replace(/(\!|\s)/g, '').toLowerCase());
 
-                    // Generate all permissions.
-                    const permObj = {
-                        'roles': [],
-                        'permissions': []
-                    };
+                        // Generate all permissions.
+                        const permObj = {
+                            'roles': [],
+                            'permissions': []
+                        };
 
-                    commandPermissions.each(function () {
-                        var section = $(this).parent().attr('label');
+                        commandPermissions.each(function () {
+                            var section = $(this).parent().attr('label');
 
-                        // This is a permission.
-                        if (section == 'Permissions') {
-                            permObj.permissions.push({
-                                'name': $(this).html(),
-                                'selected': $(this).is(':selected').toString()
-                            });
-                        } else if ($(this).is(':selected')) {
-                            permObj.roles.push($(this).attr('id'));
-                        }
-                    });
-
-                    // Handle each input to make sure they have a value.
-                    switch (false) {
-                        case helpers.handleInputString(commandName):
-                        case helpers.handleInputString(commandResponse):
-                        case helpers.handleInputNumber(commandCooldownGlobal, -1):
-                        case helpers.handleInputNumber(commandCooldownUser, -1):
-                            break;
-                        default:
-                            // Save command information here and close the modal.
-                            socket.updateDBValues('custom_command_add', {
-                                tables: ['discordPricecom', 'discordPermcom', 'discordCommands',],
-                                keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
-                                values: [commandCost.val(), JSON.stringify(permObj), commandResponse.val()]
-                            }, function () {
-                                if (commandChannel.val().length > 0) {
-                                    socket.updateDBValue('discord_channel_command_cmd', 'discordChannelcom', commandName.val(), commandChannel.val(), new Function());
-                                } else {
-                                    socket.removeDBValue('discord_channel_command_cmd', 'discordChannelcom', commandName.val(), new Function());
-                                }
-
-                                if (commandAlias.val().length > 0) {
-                                    socket.updateDBValue('discord_alias_command_cmd', 'discordAliascom', commandName.val(), commandAlias.val(), new Function());
-                                } else {
-                                    socket.removeDBValue('discord_alias_command_cmd', 'discordAliascom', commandName.val(), new Function());
-                                }
-
-                                socket.wsEvent('custom_command_edit_cooldown_ws', './discord/core/commandCoolDown.js', null,
-                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
-
-                                    // Reload the table.
-                                    run();
-                                    // Close the modal.
-                                    $('#edit-command').modal('hide');
-                                    // Tell the user the command was added.
-                                    toastr.success('Successfully edited command !' + commandName.val());
-
-                                    // I hate doing this, but the logic is fucked anyways.
-                                    helpers.setTimeout(function () {
-                                        // Add the command to the cache.
-                                        socket.wsEvent('discord', './discord/commands/customCommands.js', '',
-                                                [commandName.val(), JSON.stringify(permObj), commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
-                                    }, 5e2);
+                            // This is a permission.
+                            if (section == 'Permissions') {
+                                permObj.permissions.push({
+                                    'name': $(this).html(),
+                                    'selected': $(this).is(':selected').toString()
                                 });
-                            });
+                            } else if ($(this).is(':selected')) {
+                                permObj.roles.push($(this).attr('id'));
+                            }
+                        });
+
+                        // Handle each input to make sure they have a value.
+                        switch (false) {
+                            case helpers.handleInputString(commandName):
+                            case helpers.handleInputString(commandResponse):
+                            case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                            case helpers.handleInputNumber(commandCooldownUser, -1):
+                                break;
+                            default:
+                                // Save command information here and close the modal.
+                                socket.updateDBValues('custom_command_add', {
+                                    tables: ['discordPricecom', 'discordPermcom', 'discordCommands',],
+                                    keys: [commandName.val(), commandName.val(), commandName.val(), commandName.val()],
+                                    values: [commandCost.val(), JSON.stringify(permObj), commandResponse.val()]
+                                }, function () {
+                                    if (commandChannel.val().length > 0) {
+                                        socket.updateDBValue('discord_channel_command_cmd', 'discordChannelcom', commandName.val(), commandChannel.val(), new Function());
+                                    } else {
+                                        socket.removeDBValue('discord_channel_command_cmd', 'discordChannelcom', commandName.val(), new Function());
+                                    }
+
+                                    if (commandAlias.val().length > 0) {
+                                        socket.updateDBValue('discord_alias_command_cmd', 'discordAliascom', commandName.val(), commandAlias.val(), new Function());
+                                    } else {
+                                        socket.removeDBValue('discord_alias_command_cmd', 'discordAliascom', commandName.val(), new Function());
+                                    }
+
+                                    socket.wsEvent('custom_command_edit_cooldown_ws', './discord/core/commandCoolDown.js', null,
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+
+                                        // Reload the table.
+                                        run();
+                                        // Close the modal.
+                                        $('#edit-command').modal('hide');
+                                        // Tell the user the command was added.
+                                        toastr.success('Successfully edited command !' + commandName.val());
+
+                                        // I hate doing this, but the logic is fucked anyways.
+                                        helpers.setTimeout(function () {
+                                            // Add the command to the cache.
+                                            socket.wsEvent('discord', './discord/commands/customCommands.js', '',
+                                                    [commandName.val(), JSON.stringify(permObj), commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
+                                        }, 5e2);
+                                    });
+                                });
                         }
                     }).on('shown.bs.modal', function (e) {
                         refreshChannels(function () {
