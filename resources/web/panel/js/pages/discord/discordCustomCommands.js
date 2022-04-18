@@ -42,14 +42,14 @@ $(run = function () {
             entry.options = [];
 
             for (const [channel, info] of Object.entries(channels)) {
-                if (channel === 'name') {
+                if (channel == 'name') {
                     continue;
                 }
 
                 entry.options.push({
                     'name': info.name,
                     'value': channel,
-                    'selected': channel === value,
+                    'selected': channel == value,
                     'disabled': !allowedChannelTypes.includes(info.type)
                 });
             }
@@ -67,7 +67,7 @@ $(run = function () {
         if (fchannel.id) {
             for (const [category, channels] of Object.entries(discordChannels)) {
                 for (const [channel, info] of Object.entries(channels)) {
-                    if (fchannel.id === channel) {
+                    if (fchannel.id == channel) {
                         switch (info.type) {
                             case 'GUILD_NEWS':
                                 return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
@@ -349,14 +349,14 @@ $(function () {
             entry.options = [];
 
             for (const [channel, info] of Object.entries(channels)) {
-                if (channel === 'name') {
+                if (channel == 'name') {
                     continue;
                 }
 
                 entry.options.push({
                     'name': info.name,
                     'value': channel,
-                    'selected': channel === value,
+                    'selected': channel == value,
                     'disabled': !allowedChannelTypes.includes(info.type)
                 });
             }
@@ -375,7 +375,7 @@ $(function () {
         if (fchannel.id) {
             for (const [category, channels] of Object.entries(discordChannels)) {
                 for (const [channel, info] of Object.entries(channels)) {
-                    if (fchannel.id === channel) {
+                    if (fchannel.id == channel) {
                         switch (info.type) {
                             case 'GUILD_NEWS':
                                 return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
