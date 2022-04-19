@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </info>
     <configurations defaultconf="default"/>
     <dependencies>
-        <dependency org="com.discord4j" name="discord4j-core" rev="3.1.5"/>
+        <dependency org="com.discord4j" name="discord4j-core" rev="3.2.2"/>
         <dependency org="com.h2database" name="h2" rev="1.4.200"/>
         <dependency org="com.rollbar" name="rollbar-java" rev="1.8.1"/>
         <dependency org="commons-codec" name="commons-codec" rev="1.9"/>
