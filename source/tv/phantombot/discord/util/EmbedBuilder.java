@@ -16,12 +16,14 @@
  */
 package tv.phantombot.discord.util;
 
+import discord4j.core.spec.EmbedCreateFields.Author;
+import discord4j.core.spec.EmbedCreateFields.Field;
+import discord4j.core.spec.EmbedCreateFields.Footer;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *
@@ -160,8 +162,8 @@ public class EmbedBuilder {
     }
 
     public int getTotalVisibleCharacters() {
-        return Math.min(TITLE_MAX_CHAR, title.length()) + Math.min(DESC_MAX_CHAR, description.length()) + Math.min(FOOTER_MAX_CHAR, footerTxt.length())
-                + Math.min(AUTHOR_NAME_MAX_CHAR, authorName.length()) + appendedFields.stream().mapToInt(af -> Math.min(FIELD_TITLE_MAX_CHAR, af.name.length())
+        return Math.min(TITLE_MAX_CHAR, title.length()) + Math.min(DESC_MAX_CHAR, this.description.length()) + Math.min(FOOTER_MAX_CHAR, this.footerTxt.length())
+                + Math.min(AUTHOR_NAME_MAX_CHAR, this.authorName.length()) + this.appendedFields.stream().mapToInt(af -> Math.min(FIELD_TITLE_MAX_CHAR, af.name.length())
                 + Math.min(FIELD_CONTENT_MAX_CHAR, af.value.length())).sum();
     }
 
@@ -169,57 +171,56 @@ public class EmbedBuilder {
         return this.getTotalVisibleCharacters() > TOTAL_MAX_CHAR;
     }
 
-    public Consumer<? super EmbedCreateSpec> build() {
+    public EmbedCreateSpec build() {
         if (this.doesExceedCharacterLimit()) {
             throw new IllegalArgumentException("Embed exceeds character limit of " + TOTAL_MAX_CHAR + " (has " + this.getTotalVisibleCharacters() + " chars)");
         }
 
-        return (EmbedCreateSpec t) -> {
-            if (!title.isEmpty()) {
-                t.setTitle(title.substring(0, Math.min(TITLE_MAX_CHAR, title.length())));
-            }
+        EmbedCreateSpec spec = EmbedCreateSpec.create();
+        if (!this.title.isEmpty()) {
+            spec.withTitle(this.title.substring(0, Math.min(TITLE_MAX_CHAR, this.title.length())));
+        }
 
-            if (!url.isEmpty()) {
-                t.setUrl(url);
-            }
+        if (!this.url.isEmpty()) {
+            spec.withUrl(this.url);
+        }
 
-            if (color != null) {
-                t.setColor(color);
-            }
+        if (this.color != null) {
+            spec.withColor(this.color);
+        }
 
-            if (timestamp != null) {
-                t.setTimestamp(timestamp);
-            }
+        if (this.timestamp != null) {
+            spec.withTimestamp(this.timestamp);
+        }
 
-            if (!footerTxt.isEmpty()) {
-                t.setFooter(footerTxt.substring(0, Math.min(FOOTER_MAX_CHAR, footerTxt.length())), footerIcon);
-            }
+        if (!this.footerTxt.isEmpty()) {
+            spec.withFooter(new EmbedFooter(this.footerTxt, this.footerIcon));
+        }
 
-            if (!authorName.isEmpty()) {
-                t.setAuthor(authorName.substring(0, Math.min(AUTHOR_NAME_MAX_CHAR, authorName.length())), authorUrl, authorIcon);
-            }
+        if (!this.authorName.isEmpty()) {
+            spec.withAuthor(new EmbedAuthor(this.authorName, this.authorUrl, this.authorIcon));
+        }
 
-            if (!description.isEmpty()) {
-                t.setDescription(description.substring(0, Math.min(DESC_MAX_CHAR, description.length())));
-            }
+        if (!this.description.isEmpty()) {
+            spec.withDescription(this.description.substring(0, Math.min(DESC_MAX_CHAR, this.description.length())));
+        }
 
-            if (!image.isEmpty()) {
-                t.setImage(image);
-            }
+        if (!this.image.isEmpty()) {
+            spec.withImage(this.image);
+        }
 
-            if (!thumbnail.isEmpty()) {
-                t.setThumbnail(thumbnail);
-            }
+        if (!this.thumbnail.isEmpty()) {
+            spec.withThumbnail(this.thumbnail);
+        }
 
-            if (!appendedFields.isEmpty()) {
-                appendedFields.forEach((af) -> {
-                    t.addField(af.name.substring(0, Math.min(FIELD_TITLE_MAX_CHAR, af.name.length())), af.value.substring(0, Math.min(FIELD_CONTENT_MAX_CHAR, af.value.length())), af.inline);
-                });
-            }
-        };
+        if (!this.appendedFields.isEmpty()) {
+            spec.withFields(this.appendedFields);
+        }
+
+        return spec;
     }
 
-    private class AppendedField {
+    private class AppendedField implements Field {
 
         private final String name;
         private final String value;
@@ -229,6 +230,70 @@ public class EmbedBuilder {
             this.name = name;
             this.value = value;
             this.inline = inline;
+        }
+
+        @Override
+        public String name() {
+            return this.name;
+        }
+
+        @Override
+        public String value() {
+            return this.value;
+        }
+
+        @Override
+        public boolean inline() {
+            return this.inline;
+        }
+    }
+
+    private class EmbedFooter implements Footer {
+
+        private final String footerTxt;
+        private final String footerIcon;
+
+        private EmbedFooter(String footerTxt, String footerIcon) {
+            this.footerTxt = footerTxt.substring(0, Math.min(FOOTER_MAX_CHAR, footerTxt.length()));
+            this.footerIcon = footerIcon;
+        }
+
+        @Override
+        public String text() {
+            return this.footerTxt;
+        }
+
+        @Override
+        public String iconUrl() {
+            return this.footerIcon;
+        }
+    }
+
+    private class EmbedAuthor implements Author {
+
+        private final String authorName;
+        private final String authorUrl;
+        private final String authorIcon;
+
+        private EmbedAuthor(String authorName, String authorUrl, String authorIcon) {
+            this.authorName = authorName.substring(0, Math.min(AUTHOR_NAME_MAX_CHAR, authorName.length()));
+            this.authorUrl = authorUrl;
+            this.authorIcon = authorIcon;
+        }
+
+        @Override
+        public String name() {
+            return this.authorName;
+        }
+
+        @Override
+        public String url() {
+            return this.authorUrl;
+        }
+
+        @Override
+        public String iconUrl() {
+            return this.authorIcon;
         }
     }
 }

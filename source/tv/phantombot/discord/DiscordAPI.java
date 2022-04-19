@@ -17,6 +17,7 @@
 package tv.phantombot.discord;
 
 import discord4j.common.close.CloseException;
+import discord4j.common.sinks.EmissionStrategy;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
 import discord4j.core.DiscordClientBuilder;
@@ -41,8 +42,10 @@ import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.gateway.DefaultGatewayClient;
+import discord4j.gateway.GatewayOptions;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
+import discord4j.rest.request.RequestQueueFactory;
 import discord4j.rest.request.RouterOptions;
 import java.time.Duration;
 import java.util.List;
@@ -53,6 +56,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import reactor.core.publisher.Mono;
+import reactor.util.concurrent.Queues;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.EventBus;
@@ -126,7 +130,7 @@ public class DiscordAPI extends DiscordUtil {
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
             DiscordAPI.builder = DiscordClientBuilder.create(token);
-            DiscordAPI.client = DiscordAPI.builder.build();
+            DiscordAPI.client = DiscordAPI.builder.setRequestQueueFactory(RequestQueueFactory.createFromSink(spec -> spec.multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)))).build();
         }
 
         this.connect();
@@ -135,7 +139,7 @@ public class DiscordAPI extends DiscordUtil {
     public void connect() {
         DiscordAPI.selfId = null;
         com.gmt2001.Console.debug.println("IntentSet: " + this.connectIntents.toString());
-        DiscordAPI.client.gateway().setEnabledIntents(this.connectIntents).login(DefaultGatewayClient::new).timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
+        DiscordAPI.client.gateway().setExtraOptions(o -> new DiscordGatewayOptions(o)).setEnabledIntents(this.connectIntents).login(DefaultGatewayClient::new).timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             DiscordAPI.gateway = cgateway;
             subscribeToEvents();
@@ -370,7 +374,8 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iChannel");
                     return;
                 }
-                User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel ? ((PrivateChannel) iChannel).getRecipients().take(1).singleOrEmpty().block(Duration.ofMillis(500)) : null);
+
+                User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel ? ((PrivateChannel) iChannel).getRecipients().stream().findFirst().orElse(null) : null);
 
                 if (iUser == null) {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iUser");
@@ -468,6 +473,16 @@ public class DiscordAPI extends DiscordUtil {
                     }).subscribe();
                 }).subscribe();
             }
+        }
+    }
+
+    public final class DiscordGatewayOptions extends GatewayOptions {
+
+        public DiscordGatewayOptions(GatewayOptions parent) {
+            super(parent.getToken(), parent.getReactorResources(), parent.getPayloadReader(),
+                    parent.getPayloadWriter(), parent.getReconnectOptions(), parent.getIdentifyOptions(),
+                    parent.getInitialObserver(), parent.getIdentifyLimiter(), parent.getMaxMissedHeartbeatAck(),
+                    parent.isUnpooled(), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)));
         }
     }
 }
