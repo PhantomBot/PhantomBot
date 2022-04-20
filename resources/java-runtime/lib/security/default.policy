@@ -123,6 +123,9 @@ grant codeBase "jrt:/jdk.crypto.ec" {
 
 grant codeBase "jrt:/jdk.crypto.cryptoki" {
     permission java.lang.RuntimePermission
+                   "accessClassInPackage.com.sun.crypto.provider";
+    permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.misc";
+    permission java.lang.RuntimePermission
                    "accessClassInPackage.sun.security.*";
     permission java.lang.RuntimePermission "accessClassInPackage.sun.nio.ch";
     permission java.lang.RuntimePermission "loadLibrary.j2pkcs11";
@@ -164,7 +167,6 @@ grant codeBase "jrt:/jdk.internal.vm.compiler" {
 grant codeBase "jrt:/jdk.internal.vm.compiler.management" {
     permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.vm.compiler.collections";
     permission java.lang.RuntimePermission "accessClassInPackage.jdk.vm.ci.runtime";
-    permission java.lang.RuntimePermission "accessClassInPackage.jdk.vm.ci.services";
     permission java.lang.RuntimePermission "accessClassInPackage.org.graalvm.compiler.core.common";
     permission java.lang.RuntimePermission "accessClassInPackage.org.graalvm.compiler.debug";
     permission java.lang.RuntimePermission "accessClassInPackage.org.graalvm.compiler.hotspot";
