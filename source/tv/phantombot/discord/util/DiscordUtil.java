@@ -850,7 +850,7 @@ public class DiscordUtil {
     }
 
     public Mono<Role[]> getUserRolesAsync(User user) {
-        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
+        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
     }
 
     /**
@@ -883,7 +883,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or roles object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             Set<Snowflake> rolesSf = new HashSet<>();
 
             for (Role role : roles) {
@@ -922,7 +922,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or role object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.addRole(role.getId()).doOnError(e -> {
                 com.gmt2001.Console.err.println("Unable to add member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -980,7 +980,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or role object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.removeRole(role.getId()).doOnError(e -> {
                 com.gmt2001.Console.err.println("Unable to remove member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -1078,7 +1078,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user object was null");
         }
 
-        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
+        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
     }
 
     /**
