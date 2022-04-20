@@ -41,8 +41,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="com.rollbar" name="rollbar-java" rev="1.8.1"/>
         <dependency org="commons-codec" name="commons-codec" rev="1.9"/>
         <dependency org="commons-io" name="commons-io" rev="2.5"/>
-        <dependency org="io.netty" name="netty-codec-http" rev="4.1.60.Final"/>
-        <dependency org="io.projectreactor.netty" name="reactor-netty" rev="0.9.18.RELEASE"/>
+        <dependency org="io.netty" name="netty-codec-http" rev="4.1.74.Final"/>
+        <dependency org="io.projectreactor.netty" name="reactor-netty" rev="1.0.16"/>
         <dependency org="joda-time" name="joda-time" rev="2.4"/>
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.49"/>
         <dependency org="net.engio" name="mbassador" rev="1.3.2"/>
