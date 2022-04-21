@@ -38,6 +38,7 @@ if [[ ! -O "PhantomBot.jar" ]]; then
     echo "                                    ^"
     echo "                                    Replace with the name of the container"
 
+    sleep 120
     exit 1
 fi
 
@@ -48,6 +49,7 @@ if [[ ! -O "/opt/PhantomBot_data" ]]; then
     echo "                                    ^"
     echo "                                    Replace with the name of the container"
 
+    sleep 120
     exit 1
 fi
 
@@ -60,6 +62,7 @@ if [[ ! -O "/opt/PhantomBot_data/config" ]]; then
     echo "                                    ^"
     echo "                                    Replace with the name of the container"
 
+    sleep 120
     exit 1
 fi
 
@@ -72,6 +75,7 @@ if [[ ! -O "/opt/PhantomBot_data/config/botlogin.txt" ]]; then
     echo "                                    ^"
     echo "                                    Replace with the name of the container"
 
+    sleep 120
     exit 1
 fi
 
