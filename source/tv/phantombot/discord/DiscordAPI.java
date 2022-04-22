@@ -16,7 +16,6 @@
  */
 package tv.phantombot.discord;
 
-import discord4j.common.close.CloseException;
 import discord4j.common.sinks.EmissionStrategy;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
@@ -147,13 +146,6 @@ public class DiscordAPI extends DiscordUtil {
         }).doOnError(e -> {
             com.gmt2001.Console.err.println("Failed to authenticate with Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
-            if (e.getClass().equals(CloseException.class) && ((CloseException) e).getCode() == 4014 && (this.connectIntents.contains(Intent.GUILD_MEMBERS) || this.connectIntents.contains(Intent.GUILD_PRESENCES))) {
-                com.gmt2001.Console.err.println("Discord rejected privileged intents (" + ((CloseException) e).getCode() + (((CloseException) e).getReason().isPresent() ? " " + ((CloseException) e).getReason().get() : "") + "). Trying without them...");
-                this.connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
-                Mono.delay(Duration.ofMillis(500)).doOnNext(l -> {
-                    this.connect();
-                }).subscribe();
-            }
         }).subscribe();
     }
 
@@ -300,9 +292,11 @@ public class DiscordAPI extends DiscordUtil {
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             if (event.getStatus().getCode() > 1000) {
                 if (event.getStatus().getCode() == 4014 && (DiscordAPI.instance().connectIntents.contains(Intent.GUILD_MEMBERS) || DiscordAPI.instance().connectIntents.contains(Intent.GUILD_PRESENCES))) {
-                    com.gmt2001.Console.warn.println("Discord rejected privileged intents (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Trying without them...");
+                    com.gmt2001.Console.err.println("Discord rejected privileged intents (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Trying without them...");
                     DiscordAPI.instance().connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
-                    DiscordAPI.instance().reconnect();
+                    Mono.delay(Duration.ofMillis(500)).doOnNext(l -> {
+                        DiscordAPI.instance().connect();
+                    }).subscribe();
                 } else {
                     com.gmt2001.Console.err.println("Discord connection closed with status " + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : ""));
                 }
