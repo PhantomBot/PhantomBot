@@ -134,6 +134,15 @@ public class ExponentialBackoff {
     }
 
     /**
+     * Returns true if the previous interval was equal to the max interval
+     *
+     * @return true if the previous interval was equal to the max interval
+     */
+    public boolean IsAtMaxInterval() {
+        return this.lastIntervalMS == this.maxIntervalMS;
+    }
+
+    /**
      * Determines the next interval to backoff for and stores it in this.lastIntervalMS
      */
     private synchronized void determineNextInterval() {
