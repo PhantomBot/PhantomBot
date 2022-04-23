@@ -16,10 +16,9 @@
  */
 package com.gmt2001.httpclient;
 
+import io.netty.handler.codec.http.QueryStringEncoder;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -332,28 +331,26 @@ public final class HttpUrl {
                 sb.append(':').append(this.port);
             }
 
+            QueryStringEncoder qse;
             if (this.path != null && !this.path.isBlank()) {
-                sb.append(this.path);
+                qse = new QueryStringEncoder(this.path);
+            } else {
+                qse = new QueryStringEncoder("/");
             }
 
             if (!this.query.isEmpty()) {
-                sb.append('?');
-
-                int len = sb.length();
                 this.query.forEach((k, v) -> {
                     if (k != null) {
-                        if (sb.length() > len) {
-                            sb.append(this.querySep);
-                        }
-
-                        sb.append(URLEncoder.encode(k, Charset.forName("UTF-8")));
-
                         if (v != null) {
-                            sb.append('=').append(URLEncoder.encode(v, Charset.forName("UTF-8")));
+                            qse.addParam(k, v);
+                        } else {
+                            qse.addParam(k, k);
                         }
                     }
                 });
             }
+
+            sb.append(qse.toString());
 
             this.builtUri = sb.toString();
         }
