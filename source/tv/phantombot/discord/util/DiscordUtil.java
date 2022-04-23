@@ -862,7 +862,7 @@ public class DiscordUtil {
         try {
             return this.getRoleObjectsAsync(roles).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -883,7 +883,7 @@ public class DiscordUtil {
         try {
             return this.getUserRolesAsync(user).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -902,7 +902,7 @@ public class DiscordUtil {
         try {
             return this.getUserRolesAsync(userId).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -1086,7 +1086,7 @@ public class DiscordUtil {
         try {
             return this.getGuildRolesAsync().onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -1278,7 +1278,7 @@ public class DiscordUtil {
         try {
             return this.getUsersAsync().onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -1383,7 +1383,7 @@ public class DiscordUtil {
             }
             return messageList;
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
