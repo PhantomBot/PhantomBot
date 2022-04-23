@@ -31,7 +31,7 @@ if mount | grep '/tmp' | grep -q noexec; then
     tmp="-Djava.io.tmpdir=$(dirname $(readlink -f $0))/tmp"
 fi
 
-if [[ ! -O "PhantomBot.jar" ]]; then
+if ! [[ -O "PhantomBot.jar" || $EUID -eq 0 ]]; then
     echo "The directory is not chown by the service user"
     echo "Please run the following command to fix this:"
     echo "   sudo docker exec --user root -it phantombot chown -R -H -L phantombot:phantombot /opt/PhantomBot"
@@ -42,7 +42,7 @@ if [[ ! -O "PhantomBot.jar" ]]; then
     exit 1
 fi
 
-if [[ ! -O "/opt/PhantomBot_data" ]]; then
+if ! [[ -O "/opt/PhantomBot_data" || $EUID -eq 0 ]]; then
     echo "The data directory is not chown by the service user"
     echo "Please run the following command to fix this:"
     echo "   sudo docker exec --user root -it phantombot chown -R -H -L phantombot:phantombot /opt/PhantomBot_data"
@@ -55,7 +55,7 @@ fi
 
 mkdir -p /opt/PhantomBot_data/config/ || true
 
-if [[ ! -O "/opt/PhantomBot_data/config" ]]; then
+if ! [[ -O "/opt/PhantomBot_data/config" || $EUID -eq 0 ]]; then
     echo "The data directory is not chown by the service user"
     echo "Please run the following command to fix this:"
     echo "   sudo docker exec --user root -it phantombot chown -R -H -L phantombot:phantombot /opt/PhantomBot_data"
@@ -68,7 +68,7 @@ fi
 
 touch /opt/PhantomBot_data/config/botlogin.txt || true
 
-if [[ ! -O "/opt/PhantomBot_data/config/botlogin.txt" ]]; then
+if ! [[ -O "/opt/PhantomBot_data/config/botlogin.txt" || $EUID -eq 0 ]]; then
     echo "The data directory is not chown by the service user"
     echo "Please run the following command to fix this:"
     echo "   sudo docker exec --user root -it phantombot chown -R -H -L phantombot:phantombot /opt/PhantomBot_data"
