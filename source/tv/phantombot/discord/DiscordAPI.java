@@ -23,6 +23,7 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.EventDispatcher;
 import discord4j.core.event.domain.VoiceStateUpdateEvent;
+import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.event.domain.guild.MemberLeaveEvent;
 import discord4j.core.event.domain.lifecycle.DisconnectEvent;
@@ -48,11 +49,13 @@ import discord4j.rest.request.RequestQueueFactory;
 import discord4j.rest.request.RouterOptions;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.concurrent.Queues;
 import tv.phantombot.PhantomBot;
@@ -63,6 +66,7 @@ import tv.phantombot.event.discord.channel.DiscordChannelJoinEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelMessageEvent;
 import tv.phantombot.event.discord.channel.DiscordChannelPartEvent;
 import tv.phantombot.event.discord.reaction.DiscordMessageReactionEvent;
+import tv.phantombot.event.discord.ready.DiscordGuildCreateEvent;
 import tv.phantombot.event.discord.ready.DiscordReadyEvent;
 import tv.phantombot.event.discord.role.DiscordRoleCreatedEvent;
 import tv.phantombot.event.discord.role.DiscordRoleDeletedEvent;
@@ -182,6 +186,7 @@ public class DiscordAPI extends DiscordUtil {
     private Publisher<Void> subscribeToEvents(EventDispatcher dispatcher) {
         return dispatcher.on(DisconnectEvent.class).doOnNext(event -> DiscordEventListener.onDiscordDisconnectEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("DisconnectEvent disconnected due to " + s.name())).then().and(
                 dispatcher.on(ReadyEvent.class).doOnNext(event -> DiscordEventListener.onDiscordReadyEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("ReadyEvent disconnected due to " + s.name())).then()).and(
+                dispatcher.on(GuildCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordGuildCreateEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("GuildCreateEvent disconnected due to " + s.name())).then()).and(
                 dispatcher.on(MessageCreateEvent.class).doOnNext(event -> DiscordEventListener.onDiscordMessageEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MessageCreateEvent disconnected due to " + s.name())).then()).and(
                 dispatcher.on(MemberJoinEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserJoinEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MemberJoinEvent disconnected due to " + s.name())).then()).and(
                 dispatcher.on(MemberLeaveEvent.class).doOnNext(event -> DiscordEventListener.onDiscordUserLeaveEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("MemberLeaveEvent disconnected due to " + s.name())).then()).and(
@@ -352,6 +357,12 @@ public class DiscordAPI extends DiscordUtil {
             }, 0, 1, TimeUnit.MINUTES);
 
             EventBus.instance().postAsync(new DiscordReadyEvent());
+        }
+
+        public static void onDiscordGuildCreateEvent(GuildCreateEvent event) {
+            Optional.ofNullable(event.getGuild().getRoles()).map(Flux<Role>::collectList).orElseGet(() -> {
+                return Flux.<Role>empty().collectList();
+            }).doOnSuccess(l -> EventBus.instance().postAsync(new DiscordGuildCreateEvent(l))).subscribe();
         }
 
         public static void onDiscordMessageEvent(MessageCreateEvent event) {
