@@ -71,7 +71,7 @@ public final class HttpClient {
 
                 if (!h.contains(HttpHeaderNames.CONTENT_LENGTH)) {
                     if (requestBody != null) {
-                        h.add(HttpHeaderNames.CONTENT_LENGTH, requestBody.length());
+                        h.add(HttpHeaderNames.CONTENT_LENGTH, requestBody.getBytes(Charset.forName("UTF-8")).length);
                     } else {
                         h.add(HttpHeaderNames.CONTENT_LENGTH, 0);
                     }
