@@ -77,7 +77,7 @@ import tv.phantombot.discord.DiscordAPI;
  */
 public class DiscordUtil {
 
-    private final ExponentialBackoff sendBackoff = new ExponentialBackoff(4000L, 60000L);
+    private final ExponentialBackoff sendBackoff = new ExponentialBackoff(4000L, 60000L, 300000L);
 
     public DiscordUtil() {
     }
@@ -150,7 +150,9 @@ public class DiscordUtil {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorResume(e -> this.sendMessageAsync(channel, message, true, e))
                     .doOnSuccess(m -> {
-                        this.sendBackoff.Reset();
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
                         com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message);
                     });
         } else {
@@ -252,7 +254,9 @@ public class DiscordUtil {
                 this.sendPrivateMessage(channel, message, true, e);
                 return Mono.empty();
             }).doOnSuccess(m -> {
-                this.sendBackoff.Reset();
+                if (isRetry) {
+                    this.sendBackoff.Reset();
+                }
                 com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
             }).subscribe();
         } else {
@@ -305,7 +309,9 @@ public class DiscordUtil {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).onErrorResume(e -> this.sendMessageEmbedAsync(channel, embed, true, e))
                     .doOnSuccess(m -> {
-                        this.sendBackoff.Reset();
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
                         com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
                     });
         } else {
@@ -428,7 +434,9 @@ public class DiscordUtil {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorResume(e -> this.sendFileAsync(channel, message, file, true, e))
                             .doOnSuccess(m -> {
-                                this.sendBackoff.Reset();
+                                if (isRetry) {
+                                    this.sendBackoff.Reset();
+                                }
                                 com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "]");
                             });
                 } else {
@@ -437,7 +445,9 @@ public class DiscordUtil {
                         com.gmt2001.Console.err.printStackTrace(e);
                     }).onErrorResume(e -> this.sendFileAsync(channel, message, file, true))
                             .doOnSuccess(m -> {
-                                this.sendBackoff.Reset();
+                                if (isRetry) {
+                                    this.sendBackoff.Reset();
+                                }
                                 com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "] " + message);
                             });
                 }
@@ -862,7 +872,7 @@ public class DiscordUtil {
         try {
             return this.getRoleObjectsAsync(roles).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -883,7 +893,7 @@ public class DiscordUtil {
         try {
             return this.getUserRolesAsync(user).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -902,7 +912,7 @@ public class DiscordUtil {
         try {
             return this.getUserRolesAsync(userId).onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new Role[0];
         }
     }
 
@@ -1086,7 +1096,7 @@ public class DiscordUtil {
         try {
             return this.getGuildRolesAsync().onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -1278,7 +1288,7 @@ public class DiscordUtil {
         try {
             return this.getUsersAsync().onErrorReturn(null).block();
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -1383,7 +1393,7 @@ public class DiscordUtil {
             }
             return messageList;
         } catch (NullPointerException ex) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
