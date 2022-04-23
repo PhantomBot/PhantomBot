@@ -177,40 +177,45 @@ public class EmbedBuilder {
         }
 
         EmbedCreateSpec spec = EmbedCreateSpec.create();
-        spec.withTitle(this.title.substring(0, Math.min(TITLE_MAX_CHAR, this.title.length())));
+
+        if (!this.title.isEmpty()) {
+            spec = spec.withTitle(this.title.substring(0, Math.min(TITLE_MAX_CHAR, this.title.length())));
+        }
 
         if (!this.url.isEmpty()) {
-            spec.withUrl(this.url);
+            spec = spec.withUrl(this.url);
         }
 
         if (this.color != null) {
-            spec.withColor(this.color);
+            spec = spec.withColor(this.color);
         }
 
         if (this.timestamp != null) {
-            spec.withTimestamp(this.timestamp);
+            spec = spec.withTimestamp(this.timestamp);
         }
 
         if (!this.footerTxt.isEmpty()) {
-            spec.withFooter(new EmbedFooter(this.footerTxt, this.footerIcon));
+            spec = spec.withFooter(new EmbedFooter(this.footerTxt, this.footerIcon));
         }
 
         if (!this.authorName.isEmpty()) {
-            spec.withAuthor(new EmbedAuthor(this.authorName, this.authorUrl, this.authorIcon));
+            spec = spec.withAuthor(new EmbedAuthor(this.authorName, this.authorUrl, this.authorIcon));
         }
 
-        spec.withDescription(this.description.substring(0, Math.min(DESC_MAX_CHAR, this.description.length())));
+        if (!this.description.isEmpty()) {
+            spec = spec.withDescription(this.description.substring(0, Math.min(DESC_MAX_CHAR, this.description.length())));
+        }
 
         if (!this.image.isEmpty()) {
-            spec.withImage(this.image);
+            spec = spec.withImage(this.image);
         }
 
         if (!this.thumbnail.isEmpty()) {
-            spec.withThumbnail(this.thumbnail);
+            spec = spec.withThumbnail(this.thumbnail);
         }
 
         if (!this.appendedFields.isEmpty()) {
-            spec.withFields(this.appendedFields);
+            spec = spec.withFields(this.appendedFields);
         }
 
         return spec;
