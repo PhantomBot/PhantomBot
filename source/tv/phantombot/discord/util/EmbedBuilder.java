@@ -177,9 +177,7 @@ public class EmbedBuilder {
         }
 
         EmbedCreateSpec spec = EmbedCreateSpec.create();
-        if (!this.title.isEmpty()) {
-            spec.withTitle(this.title.substring(0, Math.min(TITLE_MAX_CHAR, this.title.length())));
-        }
+        spec.withTitle(this.title.substring(0, Math.min(TITLE_MAX_CHAR, this.title.length())));
 
         if (!this.url.isEmpty()) {
             spec.withUrl(this.url);
@@ -201,9 +199,7 @@ public class EmbedBuilder {
             spec.withAuthor(new EmbedAuthor(this.authorName, this.authorUrl, this.authorIcon));
         }
 
-        if (!this.description.isEmpty()) {
-            spec.withDescription(this.description.substring(0, Math.min(DESC_MAX_CHAR, this.description.length())));
-        }
+        spec.withDescription(this.description.substring(0, Math.min(DESC_MAX_CHAR, this.description.length())));
 
         if (!this.image.isEmpty()) {
             spec.withImage(this.image);
