@@ -92,14 +92,14 @@ public final class HttpUrl {
         uri = uri.parseServerAuthority();
         HttpUrl u = new HttpUrl();
         u.scheme = uri.getScheme();
-        u.userInfo = uri.getUserInfo();
+        u.userInfo = uri.getRawUserInfo();
         u.host = uri.getHost();
         u.port = uri.getPort();
-        u.path = uri.getPath();
+        u.path = uri.getRawPath();
         u.querySep = querySep;
 
         if (uri.getQuery() != null) {
-            for (String s : uri.getQuery().split(querySep)) {
+            for (String s : uri.getRawQuery().split(querySep)) {
                 String[] param = s.split("=", 2);
                 if (param.length == 2) {
                     u.query.put(param[0], param[1]);

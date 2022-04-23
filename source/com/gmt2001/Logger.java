@@ -49,6 +49,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             LogType.Moderation, "./logs/moderation/"
     );
     private static final Logger INSTANCE = new Logger();
+    private static boolean subscribed = false;
 
     public enum LogType {
         Output,
@@ -108,10 +109,13 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public static Logger instance() {
-        if (INSTANCE.subscription == null) {
-            synchronized (INSTANCE) {
+        if (!subscribed) {
+            synchronized (LOG_PATHS) {
                 try {
-                    INSTANCE.subscribe(INSTANCE);
+                    if (!subscribed) {
+                        INSTANCE.subscribe(INSTANCE);
+                    }
+                    subscribed = true;
                 } catch (IllegalStateException ex) {
                 }
             }
