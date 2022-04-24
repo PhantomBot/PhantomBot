@@ -34,6 +34,14 @@ $(function () {
         }
     });
 
+    $('#set-online-btn').on('click', function () {
+        socket.sendCommand('set-online', getBotName() + ' forceonline', function (e) {});
+    });
+
+    $('#set-offline-btn').on('click', function () {
+        socket.sendCommand('set-offline', getBotName() + ' forceoffline', function (e) {});
+    });
+
     socket.addListener('restart-bot-result', function (e) {
         if (e.code === -3) {
             if (e.success) {
