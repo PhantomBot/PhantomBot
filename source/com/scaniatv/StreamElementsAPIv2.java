@@ -64,7 +64,7 @@ public class StreamElementsAPIv2 {
         try {
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
             headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
-            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(url, endpoint));
+            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(url, endpoint), headers);
 
             if (response.hasJson()) {
                 jsonResult = response.json();
