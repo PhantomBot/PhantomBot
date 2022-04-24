@@ -17,10 +17,12 @@
 
 window.panelSettings = {
     channelName: '',
+    botName: '',
     displayName: '',
     auth: ''
 };
 
 function getChannelName() { return window.panelSettings.channelName; }
+function getBotName() { return window.panelSettings.botName; }
 function getAuth() { return window.panelSettings.auth; }
 function getDisplayName() { return window.panelSettings.displayName; }

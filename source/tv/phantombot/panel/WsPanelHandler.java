@@ -313,6 +313,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
         if (query.equalsIgnoreCase("panelSettings")) {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
+            jsonObject.key("botName").value(PhantomBot.instance().getBotName());
             jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
             jsonObject.key("results").array();
