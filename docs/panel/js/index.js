@@ -557,6 +557,7 @@ $(function () {
                 if (message.id === 'initLoad.panelSettings') {
                     helpers.isAuth = true;
                     window.panelSettings.channelName = message.channelName;
+                    window.panelSettings.botName = message.botName;
                     window.panelSettings.displayName = message.displayName;
                     $.loadPage('dashboard', 'dashboard.html');
                     helpers.getUserLogo();
