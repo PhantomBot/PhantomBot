@@ -27,12 +27,15 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Queue;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -1059,6 +1062,51 @@ public class Helix {
             @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
             throws JSONException, IllegalArgumentException {
         return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at).block();
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips. (The seconds value is ignored.) If this is specified, ended_at also should be
+     * specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips. (Note that the seconds value is ignored.) If this is specified, started_at also must be
+     * specified; otherwise, the time period is ignored.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable Calendar started_at, @Nullable Calendar ended_at)
+            throws JSONException, IllegalArgumentException {
+        String started_atS = null;
+        String ended_atS = null;
+
+        if (started_at != null || ended_at != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            Calendar c = Calendar.getInstance();
+            c.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
+
+            if (started_at != null) {
+                c.setTimeInMillis(started_at.getTimeInMillis());
+                started_atS = sdf.format(c.getTime());
+            }
+
+            if (ended_at != null) {
+                c.setTimeInMillis(ended_at.getTimeInMillis());
+                ended_atS = sdf.format(c.getTime());
+            }
+        }
+
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_atS, ended_atS);
     }
 
     /**
