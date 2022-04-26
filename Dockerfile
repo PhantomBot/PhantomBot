@@ -72,7 +72,10 @@ RUN groupadd -r phantombot -g 900 \
 
 RUN mkdir -p "${BASEDIR}" "${DATADIR}" && chown phantombot:phantombot "${BASEDIR}" && chown phantombot:phantombot "${DATADIR}"
 
+ENV PATH="${BASEDIR}:$PATH"
+
 ENV GOSU_VERSION 1.14
+
 RUN set -eux; \
 # save list of currently installed packages for later so we can clean up
 	savedAptMark="$(apt-mark showmanual)"; \
