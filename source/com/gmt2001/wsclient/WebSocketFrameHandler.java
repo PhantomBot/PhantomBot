@@ -16,6 +16,7 @@
  */
 package com.gmt2001.wsclient;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -28,6 +29,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONObject;
 
 /**
@@ -45,6 +47,10 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * Socket fully connected flag
      */
     boolean connected = false;
+    /**
+     * Inbound frame fragment queue
+     */
+    private final ConcurrentLinkedQueue<WebSocketFrame> inboundFrameQueue = new ConcurrentLinkedQueue<>();
 
     /**
      * Default Constructor
@@ -55,7 +61,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
-     * Handles incoming WebSocket frames and passes them to the {@link WsClientFrameHandler}
+     * Handles incoming WebSocket frames
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} containing the request frame
@@ -63,7 +69,40 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        this.client.handler.handleFrame(ctx, frame);
+        this.inboundFrameQueue.offer(frame);
+
+        if (frame.isFinalFragment()) {
+            this.combineFragmentsAndHandle(ctx);
+        }
+    }
+
+    /**
+     * Combines fragments into a single frame and [asses them to {@link WsClientFrameHandler}
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     */
+    private void combineFragmentsAndHandle(ChannelHandlerContext ctx) {
+        ByteBuf buf = Unpooled.buffer();
+        WebSocketFrame firstFrame = null;
+
+        while (!this.inboundFrameQueue.isEmpty()) {
+            WebSocketFrame wf = this.inboundFrameQueue.poll();
+            if (firstFrame == null) {
+                firstFrame = wf;
+            }
+
+            if (wf != null) {
+                buf.writeBytes(wf.content());
+
+                if (wf.isFinalFragment()) {
+                    if (firstFrame != null) {
+                        firstFrame.replace(buf);
+                        this.client.handler.handleFrame(ctx, firstFrame);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /**

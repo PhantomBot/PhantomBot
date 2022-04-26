@@ -524,7 +524,14 @@ public class TwitchPubSub {
         private void onMessage(String message) {
             String fixedMessage = this.fixLineBreaksEscapes(message);
             try {
-                JSONObject messageObj = new JSONObject(fixedMessage);
+                JSONObject messageObj;
+                try {
+                    messageObj = new JSONObject(message);
+                } catch (JSONException ex) {
+                    Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage", "using"}, new Object[]{message, fixedMessage, "message"});
+                    com.gmt2001.Console.err.logStackTrace(ex, locals);
+                    messageObj = new JSONObject(fixedMessage);
+                }
 
                 com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
@@ -586,7 +593,7 @@ public class TwitchPubSub {
 
                 this.parse(messageObj);
             } catch (JSONException ex) {
-                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage"}, new Object[]{message, fixedMessage});
+                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage", "using"}, new Object[]{message, fixedMessage, "fixedMessage"});
                 com.gmt2001.Console.err.logStackTrace(ex, locals);
             }
         }
