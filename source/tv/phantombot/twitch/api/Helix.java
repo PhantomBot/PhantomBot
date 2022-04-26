@@ -1091,7 +1091,7 @@ public class Helix {
         String ended_atS = null;
 
         if (started_at != null || ended_at != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             Calendar c = Calendar.getInstance();
             c.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
 
@@ -1180,7 +1180,7 @@ public class Helix {
 
         String endpoint = "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
                 + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
-                + this.qspValid("&before", before) + this.qspValid("&started_at", this.uriEncode(started_at)) + this.qspValid("&ended_at", this.uriEncode(ended_at));
+                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
