@@ -16,7 +16,6 @@
  */
 package com.gmt2001.wsclient;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -29,7 +28,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONObject;
 
 /**
@@ -48,9 +46,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     boolean connected = false;
     /**
-     * Inbound frame fragment queue
+     * Inbound text frame fragment queue
      */
-    private final ConcurrentLinkedQueue<WebSocketFrame> inboundFrameQueue = new ConcurrentLinkedQueue<>();
+    private StringBuilder sb = new StringBuilder();
 
     /**
      * Default Constructor
@@ -69,38 +67,19 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        this.inboundFrameQueue.offer(frame);
-
-        if (frame.isFinalFragment()) {
-            this.combineFragmentsAndHandle(ctx);
-        }
-    }
-
-    /**
-     * Combines fragments into a single frame and [asses them to {@link WsClientFrameHandler}
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     */
-    private void combineFragmentsAndHandle(ChannelHandlerContext ctx) {
-        ByteBuf buf = Unpooled.buffer();
-        WebSocketFrame firstFrame = null;
-
-        while (!this.inboundFrameQueue.isEmpty()) {
-            WebSocketFrame wf = this.inboundFrameQueue.poll();
-            if (firstFrame == null) {
-                firstFrame = wf;
+        if (frame != null) {
+            if (frame instanceof TextWebSocketFrame && !frame.isFinalFragment()) {
+                sb.append(((TextWebSocketFrame) frame).text());
             }
 
-            if (wf != null) {
-                buf.writeBytes(wf.content());
-
-                if (wf.isFinalFragment()) {
-                    if (firstFrame != null) {
-                        firstFrame.replace(buf);
-                        this.client.handler.handleFrame(ctx, firstFrame);
-                        return;
-                    }
+            if (frame.isFinalFragment()) {
+                if (frame instanceof TextWebSocketFrame && sb.length() > 0) {
+                    sb.append(((TextWebSocketFrame) frame).text());
+                    frame = new TextWebSocketFrame(sb.toString());
+                    sb = new StringBuilder();
                 }
+
+                this.client.handler.handleFrame(ctx, frame);
             }
         }
     }
