@@ -7,7 +7,7 @@ Push-Location $PSScriptRoot
 [Environment]::CurrentDirectory = $PSScriptRoot
 
 $path = ".\PhantomBot_Transcript_$((get-date).ToString("MM-dd-yyyy-hhmmss")).txt"
-.\launch-jmx.bat --nowt 2>&1 | Tee-Object -FilePath $path
+.\launch-jmx.bat --nowt @args 2>&1 | Tee-Object -FilePath $path
 
 Pop-Location
 [Environment]::CurrentDirectory = $origEnvDir
