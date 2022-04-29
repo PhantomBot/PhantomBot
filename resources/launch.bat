@@ -40,7 +40,7 @@ GOTO :CHECKONE
 :LAUNCH
 setlocal enableextensions enabledelayedexpansion
 cd %~dp0
-".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar"
+".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
 endlocal
 pause
 
@@ -49,7 +49,7 @@ GOTO :EOF
 :SWITCHTOWT
 setlocal enableextensions enabledelayedexpansion
 copy /y NUL .\config\wtcheck.txt > NUL
-wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch.bat --nowt --df %1
+wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch.bat --nowt --df %*
 timeout /t 5 /nobreak > NUL
 IF EXIST .\config\wtcheck.txt GOTO :LAUNCH
 endlocal

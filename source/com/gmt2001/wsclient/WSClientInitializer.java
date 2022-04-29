@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
+import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 
@@ -68,6 +69,7 @@ class WSClientInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(WebSocketClientCompressionHandler.INSTANCE);
         pipeline.addLast(new WebSocketClientProtocolHandler(WebSocketClientHandshakerFactory.newHandshaker(this.client.uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())));
+        pipeline.addLast(new WebSocketFrameAggregator(65536));
         pipeline.addLast("wshandler", this.client.frameHandler);
     }
 }

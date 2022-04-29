@@ -30,7 +30,7 @@ GOTO :LAUNCH
 :LAUNCH
 setlocal enableextensions enabledelayedexpansion
 cd %~dp0
-".\java-runtime\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n -Dcom.sun.management.jmxremote.rmi.port=9090 -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %1
+".\java-runtime\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n -Dcom.sun.management.jmxremote.rmi.port=9090 -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
 endlocal
 pause
 
@@ -38,6 +38,6 @@ GOTO :EOF
 
 :SWITCHTOWT
 setlocal enableextensions enabledelayedexpansion
-wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch-jmx.bat --nowt %1
+wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch-jmx.bat --nowt %*
 endlocal
 
