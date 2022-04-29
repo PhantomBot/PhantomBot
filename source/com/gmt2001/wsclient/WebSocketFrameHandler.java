@@ -45,10 +45,6 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * Socket fully connected flag
      */
     boolean connected = false;
-    /**
-     * Inbound text frame fragment queue
-     */
-    private StringBuilder sb = new StringBuilder();
 
     /**
      * Default Constructor
@@ -67,21 +63,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        if (frame != null) {
-            if (frame instanceof TextWebSocketFrame && !frame.isFinalFragment()) {
-                sb.append(((TextWebSocketFrame) frame).text());
-            }
-
-            if (frame.isFinalFragment()) {
-                if (frame instanceof TextWebSocketFrame && sb.length() > 0) {
-                    sb.append(((TextWebSocketFrame) frame).text());
-                    frame = new TextWebSocketFrame(sb.toString());
-                    sb = new StringBuilder();
-                }
-
-                this.client.handler.handleFrame(ctx, frame);
-            }
-        }
+        this.client.handler.handleFrame(ctx, frame);
     }
 
     /**
