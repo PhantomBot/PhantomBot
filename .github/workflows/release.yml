@@ -48,7 +48,7 @@ jobs:
         push: true
         build-args: |
           PROJECT_VERSION=0.0.0
-          ANT_ARGS=-Dbuildtype=test
+          ANT_ARGS=-Dbuildtype=test -Dversion=0.0.0
         tags: localhost:5000/tester/phantombot:test
     - name: Test with Docker
       run: docker run --rm --name phantombot localhost:5000/tester/phantombot:test launch-docker.sh --version
