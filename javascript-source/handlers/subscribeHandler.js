@@ -43,6 +43,7 @@
             subPlan1000 = $.getSetIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
             subPlan2000 = $.getSetIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
             subPlan3000 = $.getSetIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
+            subPlanPrime = $.getSetIniDbString('subscribeHandler', 'subPlanPrime', 'Prime'),
             announce = false,
             emotes = [],
             i;
@@ -70,15 +71,17 @@
         giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward');
         massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward');
         customEmote = $.getIniDbString('subscribeHandler', 'resubEmote');
-        subPlan1000 = $.getIniDbString('subscribeHandler', 'Tier 1');
-        subPlan2000 = $.getIniDbString('subscribeHandler', 'Tier 2');
-        subPlan3000 = $.getIniDbString('subscribeHandler', 'Tier 3');
+        subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000');
+        subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000');
+        subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000');
+        subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime');
     }
 
     /*
      * @function getPlanName
      */
     function getPlanName(plan) {
+        plan = $.javaString(plan);
         if (plan.equals('1000')) {
             return subPlan1000;
         } else if (plan.equals('2000')) {
@@ -86,7 +89,7 @@
         } else if (plan.equals('3000')) {
             return subPlan3000;
         } else if (plan.equals('Prime')) {
-            return 'Prime';
+            return subPlanPrime;
         }
 
         return 'Unknown Tier';
@@ -155,6 +158,10 @@
 
             if (message.match(/\(reward\)/g)) {
                 message = $.replace(message, '(reward)', String(subReward));
+            }
+
+            if (message.match(/\(plan\)/g)) {
+                message = $.replace(message, '(plan)', getPlanName('Prime'));
             }
 
             if (message.match(/\(alert [,.\w\W]+\)/g)) {
@@ -718,7 +725,7 @@
         }
 
         /*
-         * @commandpath namesubplan [1|2|3] [name of plan] - Name a subscription plan, Twitch provides three tiers.
+         * @commandpath namesubplan [1|2|3|prime] [name of plan] - Name a subscription plan, Twitch provides three tiers.
          */
         if (command.equalsIgnoreCase('namesubplan')) {
             if (action === undefined) {
@@ -726,7 +733,9 @@
                 return;
             }
 
-            if (!action.equals('1') && !action.equals('2') && !action.equals('3')) {
+            action = $.javaString(action);
+
+            if (!action.equals('1') && !action.equals('2') && !action.equals('3') && !action.equalsIgnoreCase('prime')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));
                 return;
             }
@@ -737,6 +746,8 @@
                 planId = 'subPlan2000';
             } else if (action.equals('3')) {
                 planId = 'subPlan3000';
+            } else if (action.equalsIgnoreCase('prime')) {
+                planId = 'subPlanPrime';
             }
 
             if (args[1] === undefined) {
@@ -745,12 +756,15 @@
             }
 
             argsString = args.splice(1).join(' ');
+            planId = $.javaString(planId);
             if (planId.equals('subPlan1000')) {
                 subPlan1000 = argsString;
             } else if (planId.equals('subPlan2000')) {
                 subPlan2000 = argsString;
             } else if (planId.equals('subPlan3000')) {
                 subPlan3000 = argsString;
+            } else if (planId.equals('subPlanPrime')) {
+                subPlanPrime = argsString;
             }
             $.setIniDbString('subscribeHandler', planId, argsString);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.set', action, argsString));
