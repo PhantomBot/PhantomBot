@@ -116,6 +116,8 @@ public class TwitchAuthorizationCodeFlow {
 
             if (result.has("error")) {
                 com.gmt2001.Console.err.println(result.toString());
+            } else if (!result.has("access_token") || !result.has("refresh_token")) {
+                com.gmt2001.Console.err.println("Failed to refresh Chat (Bot) OAuth, Token or Refresh was missing: " + result.toString());
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
@@ -142,6 +144,8 @@ public class TwitchAuthorizationCodeFlow {
 
             if (result.has("error")) {
                 com.gmt2001.Console.err.println(result.toString());
+            } else if (!result.has("access_token") || !result.has("refresh_token")) {
+                com.gmt2001.Console.err.println("Failed to refresh API (Caster) OAuth, Token or Refresh was missing: " + result.toString());
             } else {
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
                 c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
