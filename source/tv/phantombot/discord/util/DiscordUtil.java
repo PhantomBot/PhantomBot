@@ -148,13 +148,12 @@ public class DiscordUtil {
 
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorResume(e -> this.sendMessageAsync(channel, message, true, e))
-                    .doOnSuccess(m -> {
-                        if (isRetry) {
-                            this.sendBackoff.Reset();
-                        }
-                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message);
-                    });
+            }).doOnSuccess(m -> {
+                if (isRetry) {
+                    this.sendBackoff.Reset();
+                }
+                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message);
+            }).doOnError(e -> this.sendMessageAsync(channel, message, true, e));
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -250,15 +249,12 @@ public class DiscordUtil {
 
             channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorResume(e -> {
-                this.sendPrivateMessage(channel, message, true, e);
-                return Mono.empty();
             }).doOnSuccess(m -> {
                 if (isRetry) {
                     this.sendBackoff.Reset();
                 }
                 com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
-            }).subscribe();
+            }).doOnError(e -> this.sendPrivateMessage(channel, message, true, e)).subscribe();
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -307,13 +303,12 @@ public class DiscordUtil {
             return channel.createMessage(MessageCreateSpec.create().withEmbeds(embed)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorResume(e -> this.sendMessageEmbedAsync(channel, embed, true, e))
-                    .doOnSuccess(m -> {
-                        if (isRetry) {
-                            this.sendBackoff.Reset();
-                        }
-                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
-                    });
+            }).doOnSuccess(m -> {
+                if (isRetry) {
+                    this.sendBackoff.Reset();
+                }
+                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
+            }).doOnError(e -> this.sendMessageEmbedAsync(channel, embed, true, e));
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -432,24 +427,22 @@ public class DiscordUtil {
                     return channel.createMessage(MessageCreateSpec.create().withFiles(file)
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorResume(e -> this.sendFileAsync(channel, message, file, true, e))
-                            .doOnSuccess(m -> {
-                                if (isRetry) {
-                                    this.sendBackoff.Reset();
-                                }
-                                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "]");
-                            });
+                    }).doOnSuccess(m -> {
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "]");
+                    }).doOnError(e -> this.sendFileAsync(channel, message, file, true, e));
                 } else {
                     return channel.createMessage(MessageCreateSpec.create().withFiles(file).withContent(message)
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorResume(e -> this.sendFileAsync(channel, message, file, true))
-                            .doOnSuccess(m -> {
-                                if (isRetry) {
-                                    this.sendBackoff.Reset();
-                                }
-                                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "] " + message);
-                            });
+                    }).doOnSuccess(m -> {
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "] " + message);
+                    }).doOnError(e -> this.sendFileAsync(channel, message, file, true));
                 }
             }
         } else {
