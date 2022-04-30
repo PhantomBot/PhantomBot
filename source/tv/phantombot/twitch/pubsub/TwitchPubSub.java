@@ -41,8 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.net.ssl.SSLException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,7 +77,6 @@ public class TwitchPubSub {
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 900000L);
     private boolean lastConnectSuccess = false;
-    private final Pattern escapePattern = Pattern.compile("(\\[^btnfru\"\\'/])");
 
     /**
      * Constructor for the PubSub class.
@@ -368,17 +365,17 @@ public class TwitchPubSub {
                             case "stream-up":
                                 if (chanid == this.channelId) {
                                     Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
-                                        TwitchCache.instance().updateGame();
+                                        TwitchCache.instance().syncStreamStatus(true);
                                         EventBus.instance().postAsync(new TwitchOnlineEvent());
-                                        TwitchCache.instance().goOnline();
-                                    });
+                                        TwitchCache.instance().goOnlinePS();
+                                    }).subscribe();
                                 }
                                 EventBus.instance().postAsync(new PubSubStreamUpEvent(chanid, srvtime, messageObj.getInt("play_delay")));
                                 break;
                             case "stream-down":
                                 if (chanid == this.channelId) {
                                     EventBus.instance().postAsync(new TwitchOfflineEvent());
-                                    TwitchCache.instance().goOffline();
+                                    TwitchCache.instance().goOfflinePS();
                                 }
                                 EventBus.instance().postAsync(new PubSubStreamDownEvent(chanid, srvtime));
                                 break;
@@ -449,22 +446,22 @@ public class TwitchPubSub {
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
                     String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? this.channelId : this.botId) + "." + this.channelId};
                     this.subscribeToTopics(type, "moderator");
-                    com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
+                    com.gmt2001.Console.out.println("Requesting Twitch Moderation Data Feed");
                 }
 
                 if (TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) {
                     String[] type2 = new String[]{"channel-points-channel-v1." + this.channelId};
                     this.subscribeToTopics(type2, "redemptions");
-                    com.gmt2001.Console.out.println("Connected to Twitch Channel Points Data Feed");
+                    com.gmt2001.Console.out.println("Requesting Twitch Channel Points Data Feed");
                 }
 
                 String[] type3 = new String[]{"video-playback-by-id." + this.channelId};
                 this.subscribeToTopics(type3, "streamupdown");
-                com.gmt2001.Console.out.println("Connected to Twitch Stream Up/Down Data Feed");
+                com.gmt2001.Console.out.println("Requesting Twitch Stream Up/Down Data Feed");
 
                 String[] type4 = new String[]{"following." + this.channelId};
                 this.subscribeToTopics(type4, "following");
-                com.gmt2001.Console.out.println("Connected to Twitch Follow Data Feed");
+                com.gmt2001.Console.out.println("Requesting Twitch Follow Data Feed");
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
@@ -485,35 +482,9 @@ public class TwitchPubSub {
             }
 
             if (!reason.equals("bye")) {
-                com.gmt2001.Console.out.println("Lost connection to Twitch Moderation Data Feed, retrying soon...");
+                com.gmt2001.Console.out.println("Lost connection to Twitch PubSub, retrying soon...");
                 this.twitchPubSub.reconnect();
             }
-        }
-
-        /**
-         * Fixes any literal line breaks or bad escapes that were inserted into one of the JSON values.
-         *
-         * @param message The message to fix.
-         * @return The fixed message.
-         */
-        private String fixLineBreaksEscapes(String message) {
-            StringBuilder sb = new StringBuilder();
-            String[] parts = message.replaceAll("\r", "").split("\n");
-
-            for (String s : parts) {
-                Matcher m = escapePattern.matcher(s);
-                int start = 0;
-                while (m.find(start)) {
-                    start = m.start() + 2;
-                    m.appendReplacement(sb, "\\\\");
-                    String g = m.group();
-                    sb.append(g.substring(g.length() - 1));
-                }
-                m.appendTail(sb);
-                sb.append("\\n");
-            }
-
-            return sb.substring(0, sb.length() - 2);
         }
 
         /**
@@ -522,16 +493,8 @@ public class TwitchPubSub {
          * @param message Message the socket sent.
          */
         private void onMessage(String message) {
-            String fixedMessage = this.fixLineBreaksEscapes(message);
             try {
-                JSONObject messageObj;
-                try {
-                    messageObj = new JSONObject(message);
-                } catch (JSONException ex) {
-                    Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage", "using"}, new Object[]{message, fixedMessage, "message"});
-                    com.gmt2001.Console.err.logStackTrace(ex, locals);
-                    messageObj = new JSONObject(fixedMessage);
-                }
+                JSONObject messageObj = new JSONObject(message);
 
                 com.gmt2001.Console.debug.println("[PubSub Raw Message] " + messageObj);
 
@@ -547,6 +510,8 @@ public class TwitchPubSub {
                             com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Moderation Feed (You can ignore the error if you aren't using this feature)");
                             com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                             return;
+                        } else {
+                            com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed");
                         }
                     } else if (messageObj.getString("nonce").equalsIgnoreCase("redemptions")) {
                         this.hasRedemptions = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
@@ -555,6 +520,8 @@ public class TwitchPubSub {
                             com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Channel Points (You can ignore the error if you aren't using this feature)");
                             com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                             return;
+                        } else {
+                            com.gmt2001.Console.out.println("Connected to Twitch Channel Points Data Feed");
                         }
                     } else if (messageObj.getString("nonce").equalsIgnoreCase("streamupdown")) {
                         this.hasStreamupdown = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
@@ -563,6 +530,11 @@ public class TwitchPubSub {
                             com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Stream Up/Down");
                             com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                             return;
+                        } else {
+                            com.gmt2001.Console.out.println("Connected to Twitch Stream Up/Down Data Feed");
+                            Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
+                                TwitchCache.instance().syncStreamStatus();
+                            }).subscribe();
                         }
                     } else if (messageObj.getString("nonce").equalsIgnoreCase("following")) {
                         this.hasFollowing = !(messageObj.has("error") && messageObj.getString("error").length() > 0);
@@ -571,6 +543,8 @@ public class TwitchPubSub {
                             com.gmt2001.Console.err.println("WARNING: This APIOauth token was rejected for Following");
                             com.gmt2001.Console.debug.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                             return;
+                        } else {
+                            com.gmt2001.Console.out.println("Connected to Twitch Follow Data Feed");
                         }
                     }
                     backoff.Reset();
@@ -593,7 +567,7 @@ public class TwitchPubSub {
 
                 this.parse(messageObj);
             } catch (JSONException ex) {
-                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message", "fixedMessage", "using"}, new Object[]{message, fixedMessage, "fixedMessage"});
+                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"message"}, new Object[]{message});
                 com.gmt2001.Console.err.logStackTrace(ex, locals);
             }
         }

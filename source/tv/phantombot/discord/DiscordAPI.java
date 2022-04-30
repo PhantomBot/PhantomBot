@@ -48,6 +48,7 @@ import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.request.RequestQueueFactory;
 import discord4j.rest.request.RouterOptions;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -93,6 +94,7 @@ public class DiscordAPI extends DiscordUtil {
     private boolean ready;
     private static Snowflake selfId;
     private IntentSet connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.GUILD_PRESENCES, Intent.DIRECT_MESSAGES);
+    private Instant nextReconnect = Instant.MIN;
 
     /**
      * Method to return this class object.
@@ -145,7 +147,13 @@ public class DiscordAPI extends DiscordUtil {
             if (this.connectionState == ConnectionState.CONNECTING) {
                 return;
             }
+
+            if (Instant.now().isBefore(this.nextReconnect)) {
+                Mono.delay(Duration.between(Instant.now(), this.nextReconnect).abs()).block();
+            }
+
             this.connectionState = ConnectionState.CONNECTING;
+            this.nextReconnect = Instant.now().plusSeconds(60);
         }
 
         DiscordAPI.selfId = null;
@@ -154,12 +162,18 @@ public class DiscordAPI extends DiscordUtil {
                 .setEnabledIntents(this.connectIntents).withEventDispatcher(this::subscribeToEvents).login(DefaultGatewayClient::new)
                 .timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
+            synchronized (this.mutex) {
+                this.nextReconnect = Instant.now().plusSeconds(30);
+            }
             DiscordAPI.gateway = cgateway;
             DiscordAPI.selfId = cgateway.getSelfId();
             com.gmt2001.Console.debug.println("selfid=" + DiscordAPI.selfId);
         }).doOnError(e -> {
-            this.connectionState = ConnectionState.DISCONNECTED;
-            com.gmt2001.Console.err.println("Failed to conenct to Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            synchronized (this.mutex) {
+                this.connectionState = ConnectionState.DISCONNECTED;
+                this.nextReconnect = Instant.now().plusSeconds(30);
+            }
+            com.gmt2001.Console.err.println("Failed to connect to Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
         }).subscribe();
     }
@@ -172,6 +186,10 @@ public class DiscordAPI extends DiscordUtil {
         synchronized (this.mutex) {
             if (this.connectionState != ConnectionState.DISCONNECTED && this.connectionState != ConnectionState.CONNECTED) {
                 return;
+            }
+
+            if (Instant.now().isBefore(this.nextReconnect)) {
+                Mono.delay(Duration.between(Instant.now(), this.nextReconnect)).block();
             }
 
             this.connectionState = ConnectionState.RECONNECTING;
@@ -234,9 +252,11 @@ public class DiscordAPI extends DiscordUtil {
      *
      */
     public void checkConnectionStatus() {
-        if (!this.isLoggedIn() || !this.isReady() || this.getConnectionState() == ConnectionState.DISCONNECTED) {
-            com.gmt2001.Console.warn.println("Connection lost with Discord, attempting to reconnect...");
-            this.reconnect();
+        if (!this.isLoggedIn() || !this.isReady()) {
+            if (Instant.now().isAfter(this.nextReconnect) && this.getConnectionState() == ConnectionState.DISCONNECTED) {
+                com.gmt2001.Console.warn.println("Connection lost with Discord, attempting to reconnect...");
+                this.reconnect();
+            }
         }
     }
 
@@ -307,17 +327,20 @@ public class DiscordAPI extends DiscordUtil {
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
+                DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
             }
             if (event.getStatus().getCode() > 1000) {
                 if (event.getStatus().getCode() == 4014 && (DiscordAPI.instance().connectIntents.contains(Intent.GUILD_MEMBERS) || DiscordAPI.instance().connectIntents.contains(Intent.GUILD_PRESENCES))) {
                     com.gmt2001.Console.err.println("Discord rejected privileged intents (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Trying without them...");
+                    com.gmt2001.Console.err.println("https://discord.com/developers/docs/topics/gateway#privileged-intents");
                     DiscordAPI.instance().connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
                     Mono.delay(Duration.ofMillis(500)).doOnNext(l -> {
                         DiscordAPI.instance().connect();
                     }).subscribe();
                 } else if (event.getStatus().getCode() == 4004) {
                     com.gmt2001.Console.err.println("Discord rejected bot token (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
-                    com.gmt2001.Console.err.println("Discord connection is now being disabled. Please stop the bot, put a new bot token into botlogin.txt, then start the bot again to use Discord features...");
+                    com.gmt2001.Console.err.println("Discord connection is now being disabled. Please stop the bot, put a new Discord bot token into botlogin.txt, then start the bot again to use Discord features...");
+                    com.gmt2001.Console.err.println("https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/discordintegrationsetup");
                     DiscordAPI.gateway.logout();
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
@@ -344,6 +367,7 @@ public class DiscordAPI extends DiscordUtil {
             DiscordAPI.instance().ready = true;
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.instance().connectionState = ConnectionState.CONNECTED;
+                DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
             }
 
             com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.guildId);

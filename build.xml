@@ -25,9 +25,9 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.6.2.4" />
+    <property name="version" value="3.6.2.5" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.6.2" />
+    <property name="webpanel.version" value="1.6.3" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -110,6 +110,7 @@
     </target>
 
     <target depends="init-ivy" name="ivy-retrieve">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:retrieve sync="true"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
         <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
@@ -124,10 +125,12 @@
     </target>
 
     <target depends="init-ivy" name="ivy-cleancache">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:cleancache/>
     </target>
 
     <target depends="init-ivy" name="ivy-list-updates">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:checkdepsupdate/>
     </target>
 

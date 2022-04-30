@@ -33,11 +33,11 @@
 
     const   Type = {
                 User: 'user',
-                Global: 'global',
+                Global: 'global'
             },
             Operation = {
                 UnSet: -1,
-                UnChanged: 0,
+                UnChanged: 0
             };
 
     /*
@@ -274,8 +274,8 @@
             secsU   = Operation.UnChanged;
 
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
-            type1 = Type.Global;
             secsG = parseInt(type1);
+            type1 = Type.Global;
         } else if ((!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action1[1]))) {
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
             return;
