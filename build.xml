@@ -110,6 +110,7 @@
     </target>
 
     <target depends="init-ivy" name="ivy-retrieve">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:retrieve sync="true"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
         <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
@@ -124,10 +125,12 @@
     </target>
 
     <target depends="init-ivy" name="ivy-cleancache">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:cleancache/>
     </target>
 
     <target depends="init-ivy" name="ivy-list-updates">
+        <ivy:settings file="ivysettings.xml"/>
         <ivy:checkdepsupdate/>
     </target>
 
