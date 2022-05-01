@@ -246,7 +246,7 @@ public class TwitterCache implements Runnable {
                 });
 
         if (!userNameList.isEmpty()) {
-            EventBus.instance().postAsync(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()])));
+            EventBus.instance().postAsync(new TwitterRetweetEvent(userNameList.toArray(String[]::new)));
         }
 
         /* Update DB with the last Tweet ID processed. */

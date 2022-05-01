@@ -278,7 +278,7 @@ public class TwitchCache implements Runnable {
                     } catch (ParseException | JSONException ex) {
                         success = false;
                         com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
-                        com.gmt2001.Console.debug.printStackTrace(ex);
+                        com.gmt2001.Console.err.printStackTrace(ex);
                     }
 
                     /* Determine the preview link. */

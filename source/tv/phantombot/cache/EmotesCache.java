@@ -111,25 +111,6 @@ public class EmotesCache implements Runnable {
                 return true;
             } else if (jsonResult.getInt("_http") == 404 && ignore404) {
                 return true;
-            } else if (jsonResult.getInt("_http") != 404 || (jsonResult.getInt("_http") == 404 && !ignore404)) {
-                try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req="
-                            + jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   "
-                            + (jsonResult.has("message") && !jsonResult.isNull("message") ? "message="
-                            + jsonResult.getString("message") : "content=" + jsonResult.getString("_content"))
-                            + "Emotes Type=" + emoteType);
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            }
-        } else {
-            try {
-                throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage") + "Emotes Type=" + emoteType);
-            } catch (Exception ex) {
-                if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
-                    checkLastFail();
-                    com.gmt2001.Console.debug.println("EmotesCache.updateCache: Failed to update emotes (" + emoteType + "): " + ex.getMessage());
-                }
             }
         }
         return false;

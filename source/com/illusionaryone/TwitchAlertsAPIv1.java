@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,36 +57,31 @@ public class TwitchAlertsAPIv1 {
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, null, HttpMethod.GET);
     }
 
-    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException {
+    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, postString, HttpMethod.POST);
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException {
+    private static JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
-        try {
-            HttpHeaders headers = HttpClient.createHeaders(method, true);
+        HttpHeaders headers = HttpClient.createHeaders(method, true);
 
-            if (method == HttpMethod.POST) {
-                headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
-            }
+        if (method == HttpMethod.POST) {
+            headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
+        }
 
-            HttpClientResponse response = HttpClient.request(method, HttpUrl.fromUri(APIURL, endpoint), headers, body);
+        HttpClientResponse response = HttpClient.request(method, HttpUrl.fromUri(APIURL, endpoint), headers, body);
 
-            if (response.hasJson()) {
-                jsonResult = response.json();
-                HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
-            } else {
-                jsonResult.put("error", response.responseBody());
-                HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
-            }
-        } catch (Exception ex) {
-            HttpRequest.generateJSONObject(jsonResult, false, method.name(), "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
-            com.gmt2001.Console.err.printStackTrace(ex);
+        if (response.hasJson()) {
+            jsonResult = response.json();
+            HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
+        } else {
+            jsonResult.put("error", response.responseBody());
+            HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
         }
 
         return jsonResult;
@@ -123,7 +119,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return donationsObject
      */
-    public JSONObject GetDonations(int lastId) throws JSONException {
+    public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
         return readJsonFromUrl("/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
     }
@@ -136,7 +132,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsObject
      */
-    public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException {
+    public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException, URISyntaxException {
         return readJsonFromUrl("/points?access_token=" + this.sAccessToken + "&username=" + userName + "&channel=" + channelName);
     }
 
@@ -148,7 +144,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsObject
      */
-    public JSONObject SetPointsAPI(String userName, int points) throws JSONException {
+    public JSONObject SetPointsAPI(String userName, int points) throws JSONException, URISyntaxException {
         return readJsonFromUrl("/points/user_point_edit", "access_token=" + this.sAccessToken + "&username=" + userName + "&points=" + points);
     }
 
@@ -160,7 +156,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsToAddObject
      */
-    public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException {
+    public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException, URISyntaxException {
         return readJsonFromUrl("/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&value=" + points);
     }
 
@@ -172,7 +168,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return points (-1 on error)
      */
-    public int GetPoints(String userName, String channelName) throws JSONException {
+    public int GetPoints(String userName, String channelName) throws JSONException, URISyntaxException {
         JSONObject jsonObject = GetPointsAPI(userName, channelName);
 
         if (jsonObject.has("points")) {
@@ -189,7 +185,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return newPoints
      */
-    public int SetPoints(String userName, int points) throws JSONException {
+    public int SetPoints(String userName, int points) throws JSONException, URISyntaxException {
         JSONObject jsonObject = SetPointsAPI(userName, points);
 
         if (jsonObject.has("points")) {
@@ -206,7 +202,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return boolean
      */
-    public boolean AddToAllPoints(String channelName, int points) throws JSONException {
+    public boolean AddToAllPoints(String channelName, int points) throws JSONException, URISyntaxException {
         JSONObject jsonObject = AddToAllPointsAPI(channelName, points);
 
         if (jsonObject.has("message")) {
