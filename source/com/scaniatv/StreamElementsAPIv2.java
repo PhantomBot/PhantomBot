@@ -23,6 +23,7 @@ import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import java.net.URISyntaxException;
 import org.json.JSONObject;
 
 /*
@@ -31,8 +32,7 @@ import org.json.JSONObject;
 public class StreamElementsAPIv2 {
 
     private static StreamElementsAPIv2 instance;
-    private static final String url = "https://api.streamelements.com/kappa/v2";
-    private static final int iHTTPTimeout = 2 * 1000;
+    private static final String URL = "https://api.streamelements.com/kappa/v2";
     private static String jwtToken = "";
     private String id = "";
     private int pullLimit = 5;
@@ -59,23 +59,18 @@ public class StreamElementsAPIv2 {
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String endpoint) {
+    private static JSONObject readJsonFromUrl(String endpoint) throws URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
-        try {
-            HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
-            headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
-            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(url, endpoint), headers);
+        HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
+        headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
+        HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(URL, endpoint), headers);
 
-            if (response.hasJson()) {
-                jsonResult = response.json();
-                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
-            } else {
-                jsonResult.put("error", response.responseBody());
-                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
-            }
-        } catch (Exception ex) {
-            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
-            com.gmt2001.Console.err.printStackTrace(ex);
+        if (response.hasJson()) {
+            jsonResult = response.json();
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
+        } else {
+            jsonResult.put("error", response.responseBody());
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
         }
 
         return jsonResult;
@@ -113,7 +108,7 @@ public class StreamElementsAPIv2 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() {
+    public JSONObject GetDonations() throws URISyntaxException {
         return readJsonFromUrl("/tips/" + this.id + "?limit=" + this.pullLimit);
     }
 }
