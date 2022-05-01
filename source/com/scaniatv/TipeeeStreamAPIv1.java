@@ -24,6 +24,7 @@ import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.HttpUrl;
+import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,21 +57,16 @@ public class TipeeeStreamAPIv1 {
      * Reads data from an API. In this case its tipeeestream.
      */
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String endpoint) throws JSONException {
+    private static JSONObject readJsonFromUrl(String endpoint) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
-        try {
-            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(endpoint));
+        HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(endpoint));
 
-            if (response.hasJson()) {
-                jsonResult = response.json();
-                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
-            } else {
-                jsonResult.put("error", response.responseBody());
-                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
-            }
-        } catch (Exception ex) {
-            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
-            com.gmt2001.Console.err.printStackTrace(ex);
+        if (response.hasJson()) {
+            jsonResult = response.json();
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
+        } else {
+            jsonResult.put("error", response.responseBody());
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
         }
 
         return jsonResult;
@@ -99,7 +95,7 @@ public class TipeeeStreamAPIv1 {
      *
      * @return {JSONObject}  The last 5 donations from the api.
      */
-    public JSONObject GetDonations() throws JSONException {
+    public JSONObject GetDonations() throws JSONException, URISyntaxException {
         return readJsonFromUrl(URL + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);
     }
 }
