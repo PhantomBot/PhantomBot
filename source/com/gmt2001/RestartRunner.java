@@ -39,7 +39,6 @@ public final class RestartRunner implements Listener {
     /**
      * Constructor
      */
-    @SuppressWarnings("LeakingThisInConstructor")
     private RestartRunner() {
     }
 
