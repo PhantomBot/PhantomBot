@@ -4,8 +4,8 @@ $token = ''; // Authorization token for this endpoint
 $maxver = array();
 $maxver['stable'] = 1; // Maximum number of stable versions
 $maxver['stable_docker'] = 1; // Maximum number of stable docker versions
-$maxver['nightly'] = 2; // Maximum number of nightly verisons
-$maxver['nightly_docker'] = 2; // Maximum number of nightly docker verisons
+$maxver['nightly_build'] = 2; // Maximum number of nightly verisons
+$maxver['nightly_build_docker'] = 2; // Maximum number of nightly docker verisons
 
 
 $headers = apache_request_headers();
