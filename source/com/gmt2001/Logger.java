@@ -138,10 +138,15 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         List<Boolean> success = new ArrayList<>();
         LOG_PATHS.forEach((t, p) -> {
             try {
-                Files.createDirectories(Paths.get(p).toAbsolutePath().normalize());
+                Files.createDirectories(Paths.get(p).toAbsolutePath().normalize().toRealPath());
                 success.add(Boolean.TRUE);
             } catch (Exception ex) {
-                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalized"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toString()});
+                Map<String, Object> locals;
+                try {
+                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalizedReal"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toRealPath().toString()});
+                } catch (IOException ex2) {
+                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalized", "realfailed"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toString(), ex2});
+                }
                 RollbarProvider.instance().error(ex, locals);
                 ex.printStackTrace(System.err);
                 success.add(Boolean.FALSE);

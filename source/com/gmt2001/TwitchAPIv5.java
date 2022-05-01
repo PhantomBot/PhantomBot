@@ -17,6 +17,9 @@
 package com.gmt2001;
 
 import com.gmt2001.datastore.DataStore;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -679,12 +682,27 @@ public class TwitchAPIv5 {
      * @param channel
      * @return
      */
-    public JSONObject GetChatUsers(String channel) throws JSONException {
-        HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.GET, "https://tmi.twitch.tv/group/user/" + channel + "/chatters", null, null);
-        JSONObject ret = new JSONObject(res.content);
-        ret.put("_success", res.success);
-        ret.put("_http", res.httpCode);
-        return ret;
+    @SuppressWarnings("UseSpecificCatch")
+    public JSONObject GetChatUsers(String channel) {
+        JSONObject jsonResult = new JSONObject("{}");
+        String endpoint = "https://tmi.twitch.tv/group/user/" + channel + "/chatters";
+
+        try {
+            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(endpoint));
+
+            if (response.hasJson()) {
+                jsonResult = response.json();
+                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
+            } else {
+                jsonResult.put("error", response.responseBody());
+                HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endpoint, response.responseCode().code(), null, null);
+            }
+        } catch (Exception ex) {
+            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endpoint, 0, ex.getClass().getName(), ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return jsonResult;
     }
 
     /**
