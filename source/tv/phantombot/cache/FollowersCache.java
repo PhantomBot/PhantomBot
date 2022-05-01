@@ -31,7 +31,7 @@ import tv.phantombot.event.twitch.follower.TwitchFollowsInitializedEvent;
 
 public class FollowersCache implements Runnable {
 
-    private static final Map<String, FollowersCache> instances = new HashMap<String, FollowersCache>();
+    private static final Map<String, FollowersCache> instances = new HashMap<>();
     private final Thread updateThread;
     private final String channelName;
     private Date timeoutExpire = new Date();
@@ -126,13 +126,7 @@ public class FollowersCache implements Runnable {
                         datastore.set("followedDate", follower, followDate);
                     }
                 }
-            } else {
-                throw new Exception("[HTTPErrorException] HTTP " + jsonObject.getInt("_http") + " " + jsonObject.getString("error") + ". req="
-                        + jsonObject.getString("_type") + " " + jsonObject.getString("_url") + " " + jsonObject.getString("_post") + "  "
-                        + (jsonObject.has("message") && !jsonObject.isNull("message") ? "message=" + jsonObject.getString("message") : "content=" + jsonObject.getString("_content")));
             }
-        } else if (!jsonObject.getString("_exception").isBlank()) {
-            throw new Exception("[" + jsonObject.getString("_exception") + "] " + jsonObject.getString("_exceptionMessage"));
         }
 
         if (!killed && firstUpdate) {
