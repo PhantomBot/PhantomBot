@@ -92,6 +92,7 @@ Restart=on-failure
 RestartSec=30
 ExecStart=/home/botuser/phantombot/launch-service.sh
 KillSignal=SIGTERM
+SuccessExitStatus=143
 
 [Install]
 WantedBy=multi-user.target
