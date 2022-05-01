@@ -115,7 +115,7 @@ public final class RestartRunner implements Listener {
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
                     int exitCode = Runtime.getRuntime().exec(String.format(cmd, CaselessProperties.instance().getProperty("restartcmd"))).waitFor();
-                    if (exitCode == 0) {
+                    if (exitCode == 0 || exitCode == 143) {
                         JSONStringer jsonObject = new JSONStringer();
                         jsonObject.object().key("query_id").value("restart-bot-result").key("results").object()
                                 .key("success").value(true).key("code").value(0).endObject().endObject();
