@@ -193,7 +193,17 @@ public class Helix {
      * @return
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
-        return this.handleRequest(type, endPoint, data, false);
+        try {
+            return this.handleRequest(type, endPoint, data, false);
+        } catch (Throwable ex) {
+            if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
+                com.gmt2001.Console.err.printStackTrace(ex.getCause());
+                return new JSONObject(ex.getMessage());
+            } else {
+                com.gmt2001.Console.err.printStackTrace(ex);
+                return new JSONObject();
+            }
+        }
     }
 
     /**
@@ -205,7 +215,7 @@ public class Helix {
      * @param isRetry
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException, Throwable {
         JSONObject returnObject = new JSONObject();
         int responseCode = 0;
 
@@ -244,6 +254,7 @@ public class Helix {
         } catch (Throwable ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
+            throw new Exception(returnObject.toString(), ex);
         }
 
         if (returnObject.has("error") && nextWarning.before(new Date())) {
