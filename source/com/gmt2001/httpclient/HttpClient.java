@@ -93,7 +93,7 @@ public final class HttpClient {
                     .defaultIfEmpty(new HttpClientResponse(null, requestBody, new byte[0], url, res)))
                     .toFuture().get(TIMEOUT_TIME, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-            return new HttpClientResponse(ex, false, method, requestBody, null, requestHeaders, null, null, url);
+            return new HttpClientResponse(ex, false, method, requestBody, ex.getClass().getName().getBytes(Charset.forName("UTF-8")), requestHeaders, null, null, url);
         }
     }
 
