@@ -339,10 +339,10 @@ $(function () {
             .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
                 'Reward in points the user will be given when running the command.'))
             // Append input box for the global command cooldown.
-            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', undefined,
+            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', '-1',
                 'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.')
             // Append input box for per-user cooldown.
-            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', undefined,
+            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', '-1',
                 'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.')))
             .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
                 'If checked, the command cannot be used in chat.'))

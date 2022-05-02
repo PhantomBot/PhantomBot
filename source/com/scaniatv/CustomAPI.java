@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 // This class is made to be used in the scripts to call APIs. It will make it way more simple with $.customAPI
 package com.scaniatv;
 
@@ -25,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CustomAPI {
+
     private static CustomAPI instance;
 
     /*
@@ -36,7 +36,7 @@ public class CustomAPI {
         if (instance == null) {
             instance = new CustomAPI();
         }
-        
+
         return instance;
     }
 
@@ -55,7 +55,7 @@ public class CustomAPI {
      */
     public JSONObject getJSON(String url) throws JSONException {
         try {
-            HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
+            HttpResponse data = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<>());
             if (data.success) {
                 return new JSONObject(data.content);
             } else {
@@ -74,7 +74,7 @@ public class CustomAPI {
      * @return {HttpResponse}
      */
     public HttpResponse get(String url) {
-        return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<String, String>());
+        return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap<>());
     }
 
     /*
@@ -85,7 +85,7 @@ public class CustomAPI {
      * @return {HttpResponse}
      */
     public HttpResponse post(String url, String content) {
-        return HttpRequest.getData(HttpRequest.RequestType.POST, url, content, new HashMap<String, String>());
+        return HttpRequest.getData(HttpRequest.RequestType.POST, url, content, new HashMap<>());
     }
 
     /*
@@ -96,7 +96,7 @@ public class CustomAPI {
      * @return {HttpResponse}
      */
     public HttpResponse put(String url, String content) {
-        return HttpRequest.getData(HttpRequest.RequestType.PUT, url, content, new HashMap<String, String>());
+        return HttpRequest.getData(HttpRequest.RequestType.PUT, url, content, new HashMap<>());
     }
 
     /*
@@ -107,6 +107,6 @@ public class CustomAPI {
      * @return {HttpResponse}
      */
     public HttpResponse del(String url, String content) {
-        return HttpRequest.getData(HttpRequest.RequestType.DELETE, url, content, new HashMap<String, String>());
+        return HttpRequest.getData(HttpRequest.RequestType.DELETE, url, content, new HashMap<>());
     }
 }
