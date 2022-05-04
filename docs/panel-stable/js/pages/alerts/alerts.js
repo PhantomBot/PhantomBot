@@ -116,9 +116,9 @@ $(function() {
         socket.getDBValues('alerts_subscribe_get_settings', {
             tables: ['subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
                     'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
+                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
             keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
-                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000',
+                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000', 'subPlanPrime',
                     'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle']
         }, true, function(e) {
             helpers.getModal('subscribe-alert', 'Subscribe Alert Settings', 'Save', $('<form/>', {
@@ -226,7 +226,10 @@ $(function() {
                 // Append first sub plan name
                 .append(helpers.getInputGroup('sub-2000', 'text', 'Subscription Plan Name 2', '', e.subPlan2000, 'Name given to the tier two plan.'))
                 // Append first sub plan name
-                .append(helpers.getInputGroup('sub-3000', 'text', 'Subscription Plan Name 3', '', e.subPlan3000, 'Name given to the tier three plan.'))))),
+                .append(helpers.getInputGroup('sub-3000', 'text', 'Subscription Plan Name 3', '', e.subPlan3000, 'Name given to the tier three plan.'))
+                // Append first sub plan name
+                .append(helpers.getInputGroup('sub-prime', 'text', 'Subscription Plan Name Prime', '', e.subPlanPrime, 'Name given to the Prime plan.'))
+                ))),
             function() { // Callback once the user clicks save.
                 let subToggle = $('#sub-toggle').find(':selected').text() === 'Yes',
                     subMsg = $('#sub-msg'),
@@ -249,7 +252,8 @@ $(function() {
                     massGiftSubReward = $('#mass-gifsub-reward'),
                     tierOne = $('#sub-1000'),
                     tierTwo = $('#sub-2000'),
-                    tierThree = $('#sub-3000');
+                    tierThree = $('#sub-3000'),
+                    tierPrime = $('#sub-prime');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
@@ -267,17 +271,18 @@ $(function() {
                     case helpers.handleInputString(tierOne):
                     case helpers.handleInputString(tierTwo):
                     case helpers.handleInputString(tierThree):
+                    case helpers.handleInputString(tierPrime):
                         break;
                     default:
                         socket.updateDBValues('alerts_subscribe_update_settings', {
                             tables: ['subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
                                     'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
+                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
                             keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
-                                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000',
+                                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000', 'subPlanPrime',
                                     'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle'],
                             values: [subMsg.val(), primeSubMsg.val(), reSubMsg.val(), gifSubMsg.val(), subToggle, primeSubToggle, reSubToggle, gifSubToggle, subReward.val(), reSubReward.val(),
-                                gifSubReward.val(), reSubEmote.val(), tierOne.val(), tierTwo.val(), tierThree.val(), massGiftSubToggle, massGiftSubMsg.val(), massGiftSubReward.val(),
+                                gifSubReward.val(), reSubEmote.val(), tierOne.val(), tierTwo.val(), tierThree.val(), tierPrime.val(), massGiftSubToggle, massGiftSubMsg.val(), massGiftSubReward.val(),
                                 anonGifSubMsg.val(), anonMassGiftSubMsg.val(), anonGifSubToggle, anonMassGiftSubToggle]
                         }, function() {
                             socket.sendCommand('alerts_subscribe_update_settings_cmd', 'subscriberpanelupdate', function() {
