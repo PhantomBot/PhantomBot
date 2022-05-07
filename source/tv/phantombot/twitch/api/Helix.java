@@ -27,12 +27,15 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Queue;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -46,6 +49,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -189,7 +193,17 @@ public class Helix {
      * @return
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
-        return this.handleRequest(type, endPoint, data, false);
+        try {
+            return this.handleRequest(type, endPoint, data, false);
+        } catch (Throwable ex) {
+            if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
+                com.gmt2001.Console.err.printStackTrace(ex.getCause());
+                return new JSONObject(ex.getMessage());
+            } else {
+                com.gmt2001.Console.err.printStackTrace(ex);
+                return new JSONObject();
+            }
+        }
     }
 
     /**
@@ -201,7 +215,7 @@ public class Helix {
      * @param isRetry
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException, Throwable {
         JSONObject returnObject = new JSONObject();
         int responseCode = 0;
 
@@ -217,14 +231,14 @@ public class Helix {
             }
 
             HttpHeaders headers = HttpClient.createHeaders(type, true);
-            headers.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
+            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
                     ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
             headers.add("Authorization", "Bearer " + this.oAuthToken);
             HttpClientResponse response = HttpClient.request(type, HttpUrl.fromUri(BASE_URL, endPoint), headers, data);
 
             responseCode = response.responseCode().code();
 
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
+            if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
                 com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + response.responseHeaders().getAsString("Ratelimit-Limit")
                         + " <> Remaining: " + response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
                         + response.responseHeaders().getAsString("Ratelimit-Reset"));
@@ -240,6 +254,7 @@ public class Helix {
         } catch (Throwable ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
+            throw new Exception(returnObject.toString(), ex);
         }
 
         if (returnObject.has("error") && nextWarning.before(new Date())) {
@@ -251,14 +266,14 @@ public class Helix {
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
         }
 
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
             StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
             com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
         }
 
         if (!isRetry && (responseCode == 401 || (returnObject.has("status") && returnObject.getInt("status") == 401)) && PhantomBot.instance() != null) {
-            PhantomBot.instance().getAuthFlow().refresh(PhantomBot.instance().getProperties(), false, true);
+            PhantomBot.instance().getAuthFlow().refresh(false, true);
             return this.handleRequest(type, endPoint, data, true);
         }
 
@@ -1072,6 +1087,51 @@ public class Helix {
      * cursor value specified here is from the pagination response field of a prior query.
      * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
      * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips. (The seconds value is ignored.) If this is specified, ended_at also should be
+     * specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips. (Note that the seconds value is ignored.) If this is specified, started_at also must be
+     * specified; otherwise, the time period is ignored.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable Calendar started_at, @Nullable Calendar ended_at)
+            throws JSONException, IllegalArgumentException {
+        String started_atS = null;
+        String ended_atS = null;
+
+        if (started_at != null || ended_at != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Calendar c = Calendar.getInstance();
+            c.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
+
+            if (started_at != null) {
+                c.setTimeInMillis(started_at.getTimeInMillis());
+                started_atS = sdf.format(c.getTime());
+            }
+
+            if (ended_at != null) {
+                c.setTimeInMillis(ended_at.getTimeInMillis());
+                ended_atS = sdf.format(c.getTime());
+            }
+        }
+
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_atS, ended_atS);
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
      * @param started_at Starting date/time for returned clips, in RFC3339 format. (The seconds value is ignored.) If this is specified, ended_at also
      * should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
      * @param ended_at Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
@@ -1131,7 +1191,7 @@ public class Helix {
 
         String endpoint = "/clips?" + this.qspValid("id", ids) + (ids == null ? "first=" + first : "")
                 + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
-                + this.qspValid("&before", before) + this.qspValid("&started_at", this.uriEncode(started_at)) + this.qspValid("&ended_at", this.uriEncode(ended_at));
+                + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);

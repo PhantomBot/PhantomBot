@@ -33,7 +33,6 @@ public class StreamElementsCache implements Runnable {
 
     private static final Map<String, StreamElementsCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
-    private final String channel;
     private Map<String, JSONObject> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
@@ -50,7 +49,7 @@ public class StreamElementsCache implements Runnable {
         StreamElementsCache instance = instances.get(channel);
 
         if (instance == null) {
-            instance = new StreamElementsCache(channel);
+            instance = new StreamElementsCache();
             instances.put(channel, instance);
         }
         return instance;
@@ -61,8 +60,8 @@ public class StreamElementsCache implements Runnable {
      *
      * @param {String} channel Channel to run the cache for.
      */
-    private StreamElementsCache(String channel) {
-        this.channel = channel;
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    private StreamElementsCache() {
         this.updateThread = new Thread(this, "tv.phantombot.cache.StreamElementsCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -161,17 +160,13 @@ public class StreamElementsCache implements Runnable {
                     com.gmt2001.Console.err.println("StreamElementsCache.updateCache: Bad JWT token disabling the StreamElements module.");
                     PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamElementsHandler.js", "false");
                     killed = true;
-                } else {
-                    throw new Exception("Failed to get donations: " + jsonResult);
                 }
             }
-        } else {
-            throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage"));
         }
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new StreamElementsDonationInitializedEvent());
+            EventBus.instance().postAsync(new StreamElementsDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {

@@ -18,18 +18,15 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.RollbarProvider;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import javax.net.ssl.HttpsURLConnection;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,8 +39,7 @@ import org.json.JSONObject;
 public class TwitchAlertsAPIv1 {
 
     private static TwitchAlertsAPIv1 instance;
-    private static final String sAPIURL = "https://www.streamlabs.com/api/v1.0";
-    private static final int iHTTPTimeout = 2 * 1000;
+    private static final String APIURL = "https://www.streamlabs.com/api/v1.0";
     private String sAccessToken = "";
     private int iDonationPullLimit = 5;
     private String sCurrencyCode = "";
@@ -60,108 +56,35 @@ public class TwitchAlertsAPIv1 {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    /*
-     * Reads data from a stream.
-     */
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
+    @SuppressWarnings("UseSpecificCatch")
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
+        return readJsonFromUrl(urlAddress, null, HttpMethod.GET);
     }
 
-    /*
-     * Populates additional information into a JSON object to be digested
-     * as needed.
-     */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-            String url, int responseCode, String exception,
-            String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
+    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
+        return readJsonFromUrl(urlAddress, postString, HttpMethod.POST);
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException {
-        return readJsonFromUrl(urlAddress, "");
-    }
-
-    @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException {
+    private static JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
-        InputStream inputStream = null;
-        URL urlRaw;
-        HttpsURLConnection urlConn;
-        String jsonText = "";
-        boolean doPost = (postString.length() > 0);
+        HttpHeaders headers = HttpClient.createHeaders(method, true);
 
-        try {
-            urlRaw = new URL(urlAddress);
-            urlConn = (HttpsURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setRequestMethod(doPost ? "POST" : "GET");
-            urlConn.addRequestProperty("Content-Type", doPost ? "application/x-www-form-urlencoded" : "application/json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
-                    + "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            if (doPost) {
-                urlConn.setDoOutput(true);
-            }
-
-            urlConn.connect();
-
-            if (doPost) {
-                try (BufferedOutputStream stream = new BufferedOutputStream(urlConn.getOutputStream())) {
-                    stream.write(postString.getBytes());
-                    stream.flush();
-                }
-            }
-
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
-            } else {
-                inputStream = urlConn.getErrorStream();
-            }
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
-            jsonText = readAll(rd);
-            jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, doPost ? "POST" : "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
-        } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            com.gmt2001.Console.err.printStackTrace(ex, RollbarProvider.localsToCustom(new String[]{"doPost", "urlAddress", "ex.Class", "ex.getMessage", "jsonText"}, new Object[]{doPost, urlAddress, "JSONException", ex.getMessage(), jsonText}));
-        } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            if (inputStream != null)
-                try {
-                inputStream.close();
-            } catch (IOException ex) {
-                fillJSONObject(jsonResult, false, doPost ? "POST" : "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
+        if (method == HttpMethod.POST) {
+            headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
         }
 
-        return (jsonResult);
+        HttpClientResponse response = HttpClient.request(method, HttpUrl.fromUri(APIURL, endpoint), headers, body);
+
+        if (response.hasJson()) {
+            jsonResult = response.json();
+            HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
+        } else {
+            jsonResult.put("error", response.responseBody());
+            HttpRequest.generateJSONObject(jsonResult, true, method.name(), "", endpoint, response.responseCode().code(), null, null);
+        }
+
+        return jsonResult;
     }
 
     /*
@@ -196,8 +119,8 @@ public class TwitchAlertsAPIv1 {
      *
      * @return donationsObject
      */
-    public JSONObject GetDonations(int lastId) throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit
+    public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
+        return readJsonFromUrl("/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
     }
 
@@ -209,8 +132,8 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsObject
      */
-    public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/points?access_token=" + this.sAccessToken + "&username=" + userName + "&channel=" + channelName);
+    public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException, URISyntaxException {
+        return readJsonFromUrl("/points?access_token=" + this.sAccessToken + "&username=" + userName + "&channel=" + channelName);
     }
 
     /*
@@ -221,8 +144,8 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsObject
      */
-    public JSONObject SetPointsAPI(String userName, int points) throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/points/user_point_edit", "access_token=" + this.sAccessToken + "&username=" + userName + "&points=" + points);
+    public JSONObject SetPointsAPI(String userName, int points) throws JSONException, URISyntaxException {
+        return readJsonFromUrl("/points/user_point_edit", "access_token=" + this.sAccessToken + "&username=" + userName + "&points=" + points);
     }
 
     /*
@@ -233,8 +156,8 @@ public class TwitchAlertsAPIv1 {
      *
      * @return pointsToAddObject
      */
-    public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException {
-        return readJsonFromUrl(sAPIURL + "/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&value=" + points);
+    public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException, URISyntaxException {
+        return readJsonFromUrl("/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&value=" + points);
     }
 
     /*
@@ -245,7 +168,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return points (-1 on error)
      */
-    public int GetPoints(String userName, String channelName) throws JSONException {
+    public int GetPoints(String userName, String channelName) throws JSONException, URISyntaxException {
         JSONObject jsonObject = GetPointsAPI(userName, channelName);
 
         if (jsonObject.has("points")) {
@@ -262,7 +185,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return newPoints
      */
-    public int SetPoints(String userName, int points) throws JSONException {
+    public int SetPoints(String userName, int points) throws JSONException, URISyntaxException {
         JSONObject jsonObject = SetPointsAPI(userName, points);
 
         if (jsonObject.has("points")) {
@@ -279,7 +202,7 @@ public class TwitchAlertsAPIv1 {
      *
      * @return boolean
      */
-    public boolean AddToAllPoints(String channelName, int points) throws JSONException {
+    public boolean AddToAllPoints(String channelName, int points) throws JSONException, URISyntaxException {
         JSONObject jsonObject = AddToAllPointsAPI(channelName, points);
 
         if (jsonObject.has("message")) {

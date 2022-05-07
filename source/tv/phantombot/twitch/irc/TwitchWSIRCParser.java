@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.SubmissionPublisher;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.event.EventBus;
@@ -138,7 +139,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param message The message to send
      */
     private void send(String message) {
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
             com.gmt2001.Console.debug.println("<" + message);
         }
         this.client.send(message);
@@ -254,7 +255,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         String event;
         int offset = 0;
 
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
             com.gmt2001.Console.debug.println(">" + rawMessage);
         }
 
@@ -426,7 +427,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         // Send the message to the scripts.
-        eventBus.post(new IrcChannelMessageEvent(session, username, message, tags));
+        eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, tags));
 
         // Print the tags for debugging.
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tags);
@@ -533,7 +534,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         switch (message) {
             case "Login authentication failed":
                 com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("Twitch Inidicated Login Failed. Check OAUTH password.");
+                com.gmt2001.Console.out.println("Twitch Indicated Login Failed. Check OAUTH password.");
                 com.gmt2001.Console.out.println("Exiting PhantomBot.");
                 com.gmt2001.Console.out.println();
                 PhantomBot.exitError();

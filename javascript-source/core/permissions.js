@@ -871,7 +871,8 @@
                 modListUsers = [];
 
                 for (i in keys) {
-                    if ($.inidb.get('group', keys[i]).equalsIgnoreCase('2')) {
+                    var val = $.javaString($.inidb.get('group', keys[i]));
+                    if (val === undefined || val === null || val.equalsIgnoreCase('2')) {
                         $.inidb.del('group', keys[i]);
                     }
                 }

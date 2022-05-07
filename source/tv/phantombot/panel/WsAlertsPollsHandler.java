@@ -29,7 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import tv.phantombot.PhantomBot;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
@@ -70,7 +70,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
                 return;
             }
 
-            if (PhantomBot.instance().getProperties().getPropertyAsBoolean("wsdebug", false)) {
+            if (CaselessProperties.instance().getPropertyAsBoolean("wsdebug", false)) {
                 com.gmt2001.Console.debug.println(jso.toString());
             }
 
@@ -106,7 +106,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
             }
         }
 
-        EventBus.instance().post(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
         jsonObject.object().key("query_id").value(uniqueID).endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }

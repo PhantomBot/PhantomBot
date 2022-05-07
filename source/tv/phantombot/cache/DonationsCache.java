@@ -106,31 +106,10 @@ public class DonationsCache implements Runnable {
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
                 donations = jsonResult.getJSONArray("data");
-            } else {
-                try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req="
-                            + jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   "
-                            + (jsonResult.has("message") && !jsonResult.isNull("message") ? "message="
-                            + jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
-                } catch (Exception ex) {
-                    /* Kill this cache if the streamlabs token is bad and disable the module. */
-                    if (ex.getMessage().contains("message=Unauthorized")) {
-                        com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
-                        PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
-                    } else {
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
-                    this.kill();
-                }
-            }
-        } else {
-            try {
-                throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage"));
-            } catch (Exception ex) {
-                if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
-                    checkLastFail();
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
+            } else if (jsonResult.optString("message", "").contains("Unauthorized")) {
+                com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
+                PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
+                this.kill();
             }
         }
 
@@ -140,7 +119,7 @@ public class DonationsCache implements Runnable {
                 if (donationId > lastId) {
                     lastId = donationId;
                     if (!PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("donation_id").toString())) {
-                        EventBus.instance().post(new StreamLabsDonationEvent(donations.getJSONObject(i)));
+                        EventBus.instance().postAsync(new StreamLabsDonationEvent(donations.getJSONObject(i)));
                     }
                 }
             }
@@ -148,7 +127,7 @@ public class DonationsCache implements Runnable {
 
         if (this.firstUpdate && !this.killed) {
             this.firstUpdate = false;
-            EventBus.instance().post(new StreamLabsDonationInitializedEvent());
+            EventBus.instance().postAsync(new StreamLabsDonationInitializedEvent());
         }
 
         PhantomBot.instance().getDataStore().SetInteger("settings", "", "DonationsCache_lastId", lastId);

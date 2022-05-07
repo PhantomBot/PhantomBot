@@ -16,6 +16,7 @@
  */
 package com.gmt2001;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,8 @@ public class ExponentialBackoff {
 
     private final long minIntervalMS;
     private final long maxIntervalMS;
+    private final long resetIntervalMS;
+    private Date lastBackoff = new Date();
     private long lastIntervalMS;
     private int totalIterations = 0;
     private boolean isNextIntervalDetermined = true;
@@ -42,6 +45,20 @@ public class ExponentialBackoff {
     public ExponentialBackoff(long minIntervalMS, long maxIntervalMS) {
         this.minIntervalMS = minIntervalMS;
         this.maxIntervalMS = maxIntervalMS;
+        this.resetIntervalMS = -1;
+        this.lastIntervalMS = this.minIntervalMS;
+    }
+
+    /**
+     *
+     * @param minIntervalMS Minimum backoff interval, in MS
+     * @param maxIntervalMS Maximum backoff interval, in MS
+     * @param resetIntervalMS Time since last backoff until an auto-reset occurs
+     */
+    public ExponentialBackoff(long minIntervalMS, long maxIntervalMS, long resetIntervalMS) {
+        this.minIntervalMS = minIntervalMS;
+        this.maxIntervalMS = maxIntervalMS;
+        this.resetIntervalMS = resetIntervalMS;
         this.lastIntervalMS = this.minIntervalMS;
     }
 
@@ -62,6 +79,7 @@ public class ExponentialBackoff {
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
         } finally {
+            this.lastBackoff = new Date();
             this.setIsBackingOff(false);
             com.gmt2001.Console.debug.println("Unlocked backoff...");
             this.setIsNextIntervalDetermined(false);
@@ -86,6 +104,7 @@ public class ExponentialBackoff {
         com.gmt2001.Console.debug.println("Scheduling...");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.schedule(() -> {
+            this.lastBackoff = new Date();
             this.setIsBackingOff(false);
             com.gmt2001.Console.debug.println("Unlocked backoff...");
             this.setIsNextIntervalDetermined(false);
@@ -134,10 +153,27 @@ public class ExponentialBackoff {
     }
 
     /**
+     * Returns true if the previous interval was equal to the max interval
+     *
+     * @return true if the previous interval was equal to the max interval
+     */
+    public boolean IsAtMaxInterval() {
+        return this.lastIntervalMS == this.maxIntervalMS;
+    }
+
+    /**
      * Determines the next interval to backoff for and stores it in this.lastIntervalMS
      */
     private synchronized void determineNextInterval() {
         if (this.isNextIntervalDetermined) {
+            return;
+        }
+
+        if (this.resetIntervalMS >= 0 && new Date().getTime() >= this.lastBackoff.getTime() + this.resetIntervalMS) {
+            com.gmt2001.Console.debug.println("Reset interval has expired, resetting to " + this.minIntervalMS + "...");
+            this.lastIntervalMS = this.minIntervalMS;
+            this.totalIterations = 0;
+            this.isNextIntervalDetermined = true;
             return;
         }
 

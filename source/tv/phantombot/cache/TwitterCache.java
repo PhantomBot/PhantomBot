@@ -206,7 +206,7 @@ public class TwitterCache implements Runnable {
         /* Poll latest retweet. */
         String tweet = "[RT] " + statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
         updateDBString("last_retweets", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet));
 
         /* Update DB with the last Tweet ID processed. */
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_retweets", twitterID);
@@ -246,7 +246,7 @@ public class TwitterCache implements Runnable {
                 });
 
         if (!userNameList.isEmpty()) {
-            EventBus.instance().post(new TwitterRetweetEvent(userNameList.toArray(new String[userNameList.size()])));
+            EventBus.instance().postAsync(new TwitterRetweetEvent(userNameList.toArray(String[]::new)));
         }
 
         /* Update DB with the last Tweet ID processed. */
@@ -280,7 +280,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_mentions", twitterID);
         updateDBString("last_mentions", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet, name));
+        EventBus.instance().postAsync(new TwitterEvent(tweet, name));
     }
 
     /**
@@ -308,7 +308,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet));
     }
 
     /**
@@ -336,7 +336,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
-        EventBus.instance().post(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet));
     }
 
     /**

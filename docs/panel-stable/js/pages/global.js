@@ -28,11 +28,21 @@ $(function () {
 
     // the button that restarts the bot, if configured
     $('#restart-bot-btn').on('click', function () {
-        toastr.info('Restarting the bot...', 'Restart', {timeOut: 30});
-        socket.wsEvent('restart-bot', 'RestartRunner', '', [], function(e) {});
+        if (!$('#restart-bot-btn').hasClass('disabled')) {
+            toastr.info('Restarting the bot...', 'Restart', {timeOut: 3000});
+            socket.wsEvent('restart-bot', 'RestartRunner', '', [], function (e) {});
+        }
     });
 
-    socket.addListener('restart-bot-result', function(e) {
+    $('#set-online-btn').on('click', function () {
+        socket.sendCommand('set-online', getBotName() + ' forceonline', function (e) {});
+    });
+
+    $('#set-offline-btn').on('click', function () {
+        socket.sendCommand('set-offline', getBotName() + ' forceoffline', function (e) {});
+    });
+
+    socket.addListener('restart-bot-result', function (e) {
         if (e.code === -3) {
             if (e.success) {
                 $('#restart-bot-btn').removeClass('disabled');
@@ -40,17 +50,17 @@ $(function () {
                 $('#restart-bot-btn').addClass('disabled');
             }
         } else if (e.success) {
-            toastr.success('Restart successful', 'Restart', {timeOut: 30});
+            toastr.success('Restart successful', 'Restart', {timeOut: 3000});
         } else if (e.code === -2) {
-            toastr.error('Restart failed with an exception. The exception can be found in the core-error logs', 'Restart', {timeOut: 30});
+            toastr.error('Restart failed with an exception. The exception can be found in the core-error logs', 'Restart', {timeOut: 3000});
         } else if (e.code === -1) {
-            toastr.error('Restart failed. Unable to determine OS or OS unsupported', 'Restart', {timeOut: 30});
+            toastr.error('Restart failed. Unable to determine OS or OS unsupported', 'Restart', {timeOut: 3000});
         } else {
-            toastr.error('Restart failed. The interpreter returned exit code ' + e.code, 'Restart', {timeOut: 30});
+            toastr.error('Restart failed. The interpreter returned exit code ' + e.code, 'Restart', {timeOut: 3000});
         }
     });
 
-    socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function(e) {});
+    socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function (e) {});
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function () {

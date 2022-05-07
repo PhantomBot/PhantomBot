@@ -20,6 +20,12 @@ REM
 REM
 REM PhantomBot Service Restart - Windows
 REM
+REM To enable this script:
+REM % Stop the bot
+REM % Add the following line to botlogin.txt: restartcmd=C:/path/to/restartbot.bat
+REM % Replace the path as appropriate, the full path must be used
+REM % Start the bot
+REM
 REM Check if the commands below are the correct commands to restart your PhantomBot service, and adjust accordingly
 REM
 REM NOTE: The bot must be running as a user who has permissions to restart the service

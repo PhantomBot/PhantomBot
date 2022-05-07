@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import tv.phantombot.PhantomBot;
+import tv.phantombot.CaselessProperties;
 
 /**
  * @author illusionaryone
@@ -195,7 +195,7 @@ public class TwitterAPI {
             return false;
         }
 
-        if (!PhantomBot.instance().getProperties().getPropertyAsBoolean("twitterallowmentions", false)) {
+        if (!CaselessProperties.instance().getPropertyAsBoolean("twitterallowmentions", false)) {
             statusString = statusString.replaceAll("@", "").replaceAll("#", "");
         }
 
@@ -227,7 +227,7 @@ public class TwitterAPI {
             return false;
         }
 
-        if (!PhantomBot.instance().getProperties().getPropertyAsBoolean("twitterallowmentions", false)) {
+        if (!CaselessProperties.instance().getPropertyAsBoolean("twitterallowmentions", false)) {
             statusString = statusString.replaceAll("@", "").replaceAll("#", "");
         }
 
@@ -286,7 +286,7 @@ public class TwitterAPI {
         try {
             com.gmt2001.Console.debug.println("Polling Data");
             AdditionalParametersBuilder ap = AdditionalParameters.builder()
-                    .maxResults(PhantomBot.instance().getProperties().getPropertyAsInt("twitterusertimelinelimit", 15));
+                    .maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
 
             if (sinceId != null && sinceId.isBlank()) {
                 ap.sinceId(sinceId);
@@ -366,8 +366,8 @@ public class TwitterAPI {
 
                 AdditionalParametersBuilder apb = AdditionalParameters.builder()
                         .maxResults(sinceId != null && sinceId.isBlank()
-                                ? PhantomBot.instance().getProperties().getPropertyAsInt("twittertimelinelimit", 15)
-                                : PhantomBot.instance().getProperties().getPropertyAsInt("twittertimelineextendedlimit", 30))
+                                ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)
+                                : CaselessProperties.instance().getPropertyAsInt("twittertimelineextendedlimit", 30))
                         .startTime(LocalDateTime.now().minusDays(1));
 
                 if (sinceId != null && sinceId.isBlank()) {
@@ -420,8 +420,8 @@ public class TwitterAPI {
 
                 AdditionalParametersBuilder apb = AdditionalParameters.builder()
                         .maxResults(sinceId != null && sinceId.isBlank()
-                                ? PhantomBot.instance().getProperties().getPropertyAsInt("twittertimelinelimit", 15)
-                                : PhantomBot.instance().getProperties().getPropertyAsInt("twittertimelineextendedlimit", 30))
+                                ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)
+                                : CaselessProperties.instance().getPropertyAsInt("twittertimelineextendedlimit", 30))
                         .startTime(LocalDateTime.now().minusDays(1));
 
                 if (sinceId != null && sinceId.isBlank()) {
@@ -483,7 +483,7 @@ public class TwitterAPI {
                 List<TweetData> alltweets = new ArrayList<>();
 
                 AdditionalParametersBuilder ap = AdditionalParameters.builder()
-                        .maxResults(PhantomBot.instance().getProperties().getPropertyAsInt("twitterusertimelinelimit", 15))
+                        .maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15))
                         .startTime(LocalDateTime.now().minusDays(1));
 
                 following.getData().forEach(u -> {
@@ -524,7 +524,7 @@ public class TwitterAPI {
         try {
             com.gmt2001.Console.debug.println("Polling Data");
             AdditionalParametersBuilder ap = AdditionalParameters.builder()
-                    .maxResults(PhantomBot.instance().getProperties().getPropertyAsInt("twitterusertimelinelimit", 15));
+                    .maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
 
             if (sinceId != null && sinceId.isBlank()) {
                 ap.sinceId(sinceId);

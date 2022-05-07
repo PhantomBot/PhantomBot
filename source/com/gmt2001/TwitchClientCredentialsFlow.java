@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
-import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
@@ -73,7 +72,7 @@ public class TwitchClientCredentialsFlow {
      * @return true if a new token was saved
      */
     public boolean getNewToken() {
-        return this.getAppToken(PhantomBot.instance().getProperties());
+        return this.getAppToken(CaselessProperties.instance());
     }
 
     /**
@@ -101,7 +100,7 @@ public class TwitchClientCredentialsFlow {
      * @return true if a new token was saved
      */
     public boolean checkExpirationAndGetNewToken() {
-        return this.checkExpirationAndGetNewToken(PhantomBot.instance().getProperties());
+        return this.checkExpirationAndGetNewToken(CaselessProperties.instance());
     }
 
     private boolean getAppToken(CaselessProperties properties) {
@@ -117,6 +116,8 @@ public class TwitchClientCredentialsFlow {
 
         if (result.has("error")) {
             com.gmt2001.Console.err.println(result.toString());
+        } else if (!result.has("access_token") || !result.has("expires_in")) {
+            com.gmt2001.Console.err.println("Failed to get App (EventSub) OAuth, Token or Expiration was missing: " + result.toString());
         } else {
             Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
             c.add(Calendar.SECOND, result.getInt("expires_in"));
@@ -131,9 +132,7 @@ public class TwitchClientCredentialsFlow {
 
             transaction.commit();
 
-            if (PhantomBot.instance() != null) {
-                TwitchValidate.instance().updateAppToken(PhantomBot.instance().getProperties().getProperty("apptoken"));
-            }
+            TwitchValidate.instance().updateAppToken(CaselessProperties.instance().getProperty("apptoken"));
         }
 
         return changed;
@@ -147,9 +146,7 @@ public class TwitchClientCredentialsFlow {
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                if (PhantomBot.instance() != null) {
-                    checkExpirationAndGetNewToken();
-                }
+                checkExpirationAndGetNewToken();
             }, REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
             this.timerStarted = true;
         } else {

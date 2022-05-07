@@ -250,9 +250,9 @@
 
             noticeTimer = {
                 'name': 'Announcements',
-                'reqMessages': noticeReqMessages,
-                'intervalMin': noticeInterval,
-                'intervalMax': noticeInterval,
+                'reqMessages': isNaN(noticeReqMessages) ? 25 : noticeReqMessages,
+                'intervalMin': isNaN(noticeInterval) ? 10 : noticeInterval,
+                'intervalMax': isNaN(noticeInterval) ? 10 : noticeInterval,
                 'shuffle': false,
                 'noticeToggle': noticeToggle,
                 'noticeOfflineToggle': noticeOffline,
@@ -364,5 +364,24 @@
 
         $.consoleLn('PhantomBot update 3.6.0 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
+    }
+
+    /* version 3.6.2.5 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.2.5')) {
+        $.consoleLn('Starting PhantomBot update 3.6.2.5 updates...');
+
+        var keys = $.inidb.GetKeyList('greeting', ''),
+                i;
+
+        for (i = 0; i < keys.length; i++) {
+            var key = $.javaString(keys[i]);
+
+            if (key === null || key === undefined || key.startsWith('function(n)')) {
+                $.inidb.RemoveKey('greeting', '', key);
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.6.2.5 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.2.5', true);
     }
 })();

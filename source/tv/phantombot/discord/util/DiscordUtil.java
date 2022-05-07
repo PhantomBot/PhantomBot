@@ -16,33 +16,40 @@
  */
 package tv.phantombot.discord.util;
 
+import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.PathValidator;
+import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Category;
 import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.MessageChannel;
-import discord4j.core.object.entity.channel.PrivateChannel;
-import discord4j.core.object.presence.Activity;
-import discord4j.core.object.presence.Presence;
-import discord4j.core.object.reaction.ReactionEmoji;
-import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.rest.http.client.ClientException;
-import discord4j.rest.json.response.ErrorResponse;
-import discord4j.rest.util.Permission;
-import discord4j.common.util.Snowflake;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.channel.Category;
-import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.NewsChannel;
+import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.object.presence.ClientActivity;
+import discord4j.core.object.presence.ClientPresence;
+import discord4j.core.object.reaction.ReactionEmoji;
+import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.GuildMemberEditSpec;
+import discord4j.core.spec.MessageCreateFields;
+import discord4j.core.spec.MessageCreateSpec;
+import discord4j.core.spec.MessageEditSpec;
+import discord4j.core.spec.RoleCreateSpec;
+import discord4j.rest.http.client.ClientException;
+import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Color;
+import discord4j.rest.util.Permission;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -54,7 +61,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
@@ -70,7 +77,7 @@ import tv.phantombot.discord.DiscordAPI;
  */
 public class DiscordUtil {
 
-    private static final int MAX_ITERATION = 5;
+    private final ExponentialBackoff sendBackoff = new ExponentialBackoff(4000L, 60000L, 300000L);
 
     public DiscordUtil() {
     }
@@ -96,11 +103,15 @@ public class DiscordUtil {
 
     @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
-        return sendMessageAsync(channel, message).onErrorReturn(null).block();
+        try {
+            return this.sendMessageAsync(channel, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message) {
-        return sendMessageAsync(channel, message, 0);
+        return this.sendMessageAsync(channel, message, false);
     }
 
     /**
@@ -111,28 +122,38 @@ public class DiscordUtil {
      * @param iteration
      * @return {Message}
      */
-    public Mono<Message> sendMessageAsync(MessageChannel channel, String message, int iteration) {
-        if (iteration >= MAX_ITERATION) {
-            throw new IllegalStateException("connection failing");
+    private Mono<Message> sendMessageAsync(MessageChannel channel, String message, boolean isRetry) {
+        return this.sendMessageAsync(channel, message, isRetry, null);
+    }
+
+    private Mono<Message> sendMessageAsync(MessageChannel channel, String message, boolean isRetry, Throwable ex) {
+        if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
+            if (ex != null) {
+                com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+            }
+
+            throw new IllegalStateException("connection failing", ex);
         }
 
-        if (iteration > 0) {
-            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
-            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        if (isRetry) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (this.sendBackoff.GetNextInterval() / 1000) + " seconds...");
+            this.sendBackoff.Backoff();
         }
 
         if (channel != null) {
             if (channel.getType() == Channel.Type.DM || channel.getType() == Channel.Type.GROUP_DM) {
-                sendPrivateMessage((PrivateChannel) channel, message);
+                this.sendPrivateMessage((PrivateChannel) channel, message);
                 return null;
             }
 
             return channel.createMessage(message).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorResume(e -> sendMessageAsync(channel, message, iteration + 1))
-                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message));
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            return sendMessageAsync(channel, message, iteration + 1);
+            }).doOnSuccess(m -> {
+                if (isRetry) {
+                    this.sendBackoff.Reset();
+                }
+                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [CHAT] " + message);
+            }).doOnError(e -> this.sendMessageAsync(channel, message, true, e));
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -147,11 +168,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessage(String channelName, String message) {
-        return sendMessageAsync(channelName, message).onErrorReturn(null).block();
+        try {
+            return this.sendMessageAsync(channelName, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageAsync(String channelName, String message) {
-        return getChannelAsync(channelName).flatMap(channel -> sendMessageAsync(channel, message));
+        return this.getChannelAsync(channelName).flatMap(channel -> this.sendMessageAsync(channel, message));
     }
 
     /**
@@ -164,7 +189,7 @@ public class DiscordUtil {
         if (user != null) {
             user.getPrivateChannel().doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).doOnSuccess(channel -> sendPrivateMessage(channel, message)).subscribe();
+            }).doOnSuccess(channel -> this.sendPrivateMessage(channel, message)).subscribe();
         } else {
             throw new IllegalArgumentException("user object was null");
         }
@@ -177,11 +202,11 @@ public class DiscordUtil {
      * @param message
      */
     public void sendPrivateMessage(String userName, String message) {
-        getUserAsync(userName).doOnSuccess(user -> sendPrivateMessage(user, message)).subscribe();
+        this.getUserAsync(userName).doOnSuccess(user -> this.sendPrivateMessage(user, message)).subscribe();
     }
 
     public void sendPrivateMessage(PrivateChannel channel, String message) {
-        sendPrivateMessage(channel, message, 0);
+        this.sendPrivateMessage(channel, message, false);
     }
 
     /**
@@ -191,50 +216,61 @@ public class DiscordUtil {
      * @param message
      * @param iteration
      */
-    public void sendPrivateMessage(PrivateChannel channel, String message, int iteration) {
-        if (iteration >= MAX_ITERATION) {
-            throw new IllegalStateException("connection failing");
+    private void sendPrivateMessage(PrivateChannel channel, String message, boolean isRetry) {
+        this.sendPrivateMessage(channel, message, isRetry, null);
+    }
+
+    private void sendPrivateMessage(PrivateChannel channel, String message, boolean isRetry, Throwable ex) {
+        if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
+            if (ex != null) {
+                com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+            }
+
+            throw new IllegalStateException("connection failing", ex);
         }
 
-        if (iteration > 0) {
-            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
-            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        if (isRetry) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (this.sendBackoff.GetNextInterval() / 1000) + " seconds...");
+            this.sendBackoff.Backoff();
         }
 
         if (channel != null) {
-            channel.getRecipients().take(1).singleOrEmpty().doOnSuccess(user -> {
-                String uname;
-                String udisc;
+            User user = channel.getRecipients().stream().findFirst().orElse(null);
+            String uname;
+            String udisc;
 
-                if (user != null) {
-                    uname = user.getUsername().toLowerCase();
-                    udisc = user.getDiscriminator();
-                } else {
-                    uname = "";
-                    udisc = "";
+            if (user != null) {
+                uname = user.getUsername().toLowerCase();
+                udisc = user.getDiscriminator();
+            } else {
+                uname = "";
+                udisc = "";
+            }
+
+            channel.createMessage(message).doOnError(e -> {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }).doOnSuccess(m -> {
+                if (isRetry) {
+                    this.sendBackoff.Reset();
                 }
-
-                channel.createMessage(message).doOnError(e -> {
-                    com.gmt2001.Console.err.printStackTrace(e);
-                }).onErrorResume(e -> {
-                    sendPrivateMessage(channel, message, iteration + 1);
-                    return Mono.empty();
-                }).doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message)).subscribe();
-            }).subscribe();
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            sendPrivateMessage(channel, message, iteration + 1);
+                com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
+            }).doOnError(e -> this.sendPrivateMessage(channel, message, true, e)).subscribe();
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
     }
 
     @Deprecated
-    public Message sendMessageEmbed(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
+    public Message sendMessageEmbed(GuildMessageChannel channel, EmbedCreateSpec embed) {
+        try {
+            return this.sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
-    public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channel, embed, 0);
+    public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed) {
+        return this.sendMessageEmbedAsync(channel, embed, false);
     }
 
     /**
@@ -245,25 +281,34 @@ public class DiscordUtil {
      * @param iteration
      * @return {Message}
      */
-    public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, Consumer<? super EmbedCreateSpec> embed, int iteration) {
-        if (iteration >= MAX_ITERATION) {
-            throw new IllegalStateException("connection failing");
+    private Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed, boolean isRetry) {
+        return this.sendMessageEmbedAsync(channel, embed, isRetry, null);
+    }
+
+    private Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed, boolean isRetry, Throwable ex) {
+        if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
+            if (ex != null) {
+                com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+            }
+
+            throw new IllegalStateException("connection failing", ex);
         }
 
-        if (iteration > 0) {
-            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
-            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        if (isRetry) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (this.sendBackoff.GetNextInterval() / 1000) + " seconds...");
+            this.sendBackoff.Backoff();
         }
 
         if (channel != null) {
-            return channel.createMessage(msg
-                    -> msg.setEmbed(embed)
+            return channel.createMessage(MessageCreateSpec.create().withEmbeds(embed)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
-            }).onErrorResume(e -> sendMessageEmbedAsync(channel, embed, iteration + 1))
-                    .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse(""))));
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            return sendMessageEmbedAsync(channel, embed, iteration + 1);
+            }).doOnSuccess(m -> {
+                if (isRetry) {
+                    this.sendBackoff.Reset();
+                }
+                com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [EMBED] " + m.getEmbeds().get(0).getDescription().orElse(m.getEmbeds().get(0).getTitle().orElse("")));
+            }).doOnError(e -> this.sendMessageEmbedAsync(channel, embed, true, e));
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -277,12 +322,16 @@ public class DiscordUtil {
      * @return {Message}
      */
     @Deprecated
-    public Message sendMessageEmbed(String channelName, Consumer<? super EmbedCreateSpec> embed) {
-        return sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
+    public Message sendMessageEmbed(String channelName, EmbedCreateSpec embed) {
+        try {
+            return this.sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
-    public Mono<Message> sendMessageEmbedAsync(String channelName, Consumer<? super EmbedCreateSpec> embed) {
-        return getChannelAsync(channelName).flatMap(channel -> sendMessageEmbedAsync(channel, embed));
+    public Mono<Message> sendMessageEmbedAsync(String channelName, EmbedCreateSpec embed) {
+        return this.getChannelAsync(channelName).flatMap(channel -> this.sendMessageEmbedAsync(channel, embed));
     }
 
     /**
@@ -295,13 +344,16 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
-        return sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
+        try {
+            return this.sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, String color, String message) {
-        return sendMessageEmbedAsync(channel, ebd
-                -> ebd.setColor(getColor(color)).setDescription(message)
-        );
+        EmbedCreateSpec embed = new EmbedBuilder().withColor(this.getColor(color)).withDescription(message).build();
+        return this.sendMessageEmbedAsync(channel, embed);
     }
 
     /**
@@ -314,18 +366,29 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, String color, String message) {
-        return sendMessageEmbedAsync(channelName, ebd
-                -> ebd.setColor(getColor(color)).setDescription(message)
-        ).onErrorReturn(null).block();
+        try {
+            EmbedCreateSpec embed = new EmbedBuilder().withColor(this.getColor(color)).withDescription(message).build();
+            return this.sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     @Deprecated
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
-        return sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
+        try {
+            return this.sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation) {
-        return sendFileAsync(channel, message, fileLocation, 0);
+        return this.sendFileAsync(channel, message, new MessageCreateFile(fileLocation, fileLocation), false);
+    }
+
+    public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, MessageCreateFile file) {
+        return this.sendFileAsync(channel, message, file, false);
     }
 
     /**
@@ -337,51 +400,51 @@ public class DiscordUtil {
      * @param iteration
      * @return {Message}
      */
-    public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation, int iteration) {
-        if (iteration >= MAX_ITERATION) {
-            throw new IllegalStateException("connection failing");
+    private Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, MessageCreateFile file, boolean isRetry) {
+        return this.sendFileAsync(channel, message, file, isRetry, null);
+    }
+
+    private Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, MessageCreateFile file, boolean isRetry, Throwable ex) {
+        if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
+            if (ex != null) {
+                com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
+            }
+
+            throw new IllegalStateException("connection failing", ex);
         }
 
-        if (iteration > 0) {
-            com.gmt2001.Console.err.println("Request failed, trying again in " + (iteration * iteration) + " seconds...");
-            Mono.delay(Duration.ofSeconds(iteration * iteration));
+        if (isRetry) {
+            com.gmt2001.Console.err.println("Request failed, trying again in " + (this.sendBackoff.GetNextInterval() / 1000) + " seconds...");
+            this.sendBackoff.Backoff();
         }
 
         if (channel != null) {
-            if (!this.isValidFilePath(fileLocation)) {
-                com.gmt2001.Console.err.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "] Rejecting fileLocation");
+            if (!this.isValidFilePath(file.path())) {
+                com.gmt2001.Console.err.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "] Rejecting fileLocation");
                 return null;
             } else {
                 if (message.isEmpty()) {
-                    return channel.createMessage(msg
-                            -> {
-                        try {
-                            msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation)));
-                        } catch (IOException ex) {
-                            com.gmt2001.Console.err.printStackTrace(ex);
-                        }
-                    }
+                    return channel.createMessage(MessageCreateSpec.create().withFiles(file)
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
-                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "]"));
+                    }).doOnSuccess(m -> {
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "]");
+                    }).doOnError(e -> this.sendFileAsync(channel, message, file, true, e));
                 } else {
-                    return channel.createMessage(msg
-                            -> {
-                        try {
-                            msg.addFile(fileLocation, Files.newInputStream(Paths.get(fileLocation))).setContent(message);
-                        } catch (IOException ex) {
-                            com.gmt2001.Console.err.printStackTrace(ex);
-                        }
-                    }
+                    return channel.createMessage(MessageCreateSpec.create().withFiles(file).withContent(message)
                     ).doOnError(e -> {
                         com.gmt2001.Console.err.printStackTrace(e);
-                    }).onErrorResume(e -> sendFileAsync(channel, message, fileLocation, iteration + 1))
-                            .doOnSuccess(m -> com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + fileLocation + "] " + message));
+                    }).doOnSuccess(m -> {
+                        if (isRetry) {
+                            this.sendBackoff.Reset();
+                        }
+                        com.gmt2001.Console.out.println("[DISCORD] [#" + DiscordUtil.channelName(channel) + "] [UPLOAD] [" + file.name() + "] " + message);
+                    }).doOnError(e -> this.sendFileAsync(channel, message, file, true));
                 }
             }
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            return sendFileAsync(channel, message, fileLocation, iteration + 1);
         } else {
             throw new IllegalArgumentException("channel object was null");
         }
@@ -397,11 +460,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String message, String fileLocation) {
-        return sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
+        try {
+            return this.sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<Message> sendFileAsync(String channelName, String message, String fileLocation) {
-        return getChannelAsync(channelName).flatMap(channel -> sendFileAsync(channel, message, fileLocation));
+        return this.getChannelAsync(channelName).flatMap(channel -> this.sendFileAsync(channel, message, fileLocation));
     }
 
     /**
@@ -412,7 +479,7 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message sendFile(GuildMessageChannel channel, String fileLocation) {
-        return sendFile(channel, "", fileLocation);
+        return this.sendFile(channel, "", fileLocation);
     }
 
     /**
@@ -424,7 +491,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public Message sendFile(String channelName, String fileLocation) {
-        return sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
+        try {
+            return this.sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -438,8 +509,6 @@ public class DiscordUtil {
             message.addReaction(emoji).doOnError(e -> {
                 com.gmt2001.Console.err.printStackTrace(e);
             }).subscribe();
-        } else if (DiscordAPI.instance().checkConnectionStatus() == DiscordAPI.ConnectionState.RECONNECTED) {
-            addReaction(message, emoji);
         } else {
             throw new IllegalArgumentException("message or emoji object was null");
         }
@@ -453,7 +522,7 @@ public class DiscordUtil {
      */
     public void addReactions(Message message, ReactionEmoji... emojis) {
         for (ReactionEmoji emoji : emojis) {
-            addReaction(message, emoji);
+            this.addReaction(message, emoji);
         }
     }
 
@@ -479,7 +548,7 @@ public class DiscordUtil {
                 re = ReactionEmoji.unicode(emoji);
             }
 
-            addReaction(message, re);
+            this.addReaction(message, re);
         }).subscribe();
     }
 
@@ -507,7 +576,7 @@ public class DiscordUtil {
                     re = ReactionEmoji.unicode(emoji);
                 }
 
-                addReaction(message, re);
+                this.addReaction(message, re);
             }
         }).subscribe();
     }
@@ -520,7 +589,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannel(String channelName) {
-        return getChannelAsync(channelName).onErrorReturn(null).block();
+        try {
+            return this.getChannelAsync(channelName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
@@ -537,7 +610,10 @@ public class DiscordUtil {
     @Deprecated
     public Map<String, Map<String, String>> getAllChannelInfo() {
         HashMap<String, Map<String, String>> data = new HashMap<>();
-        getAllChannelInfoAsync(data).onErrorReturn(null).blockLast(Duration.ofSeconds(5L));
+        try {
+            this.getAllChannelInfoAsync(data).onErrorReturn(null).blockLast(Duration.ofSeconds(5L));
+        } catch (NullPointerException ex) {
+        }
         return data;
     }
 
@@ -615,7 +691,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public GuildMessageChannel getChannelByID(String channelId) {
-        return getChannelByIDAsync(channelId).onErrorReturn(null).block();
+        try {
+            return this.getChannelByIDAsync(channelId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
@@ -629,7 +709,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUser(String userName) {
-        return getUserAsync(userName).onErrorReturn(null).block();
+        try {
+            return this.getUserAsync(userName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -661,7 +745,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserById(long userId) {
-        return getUserByIdAsync(userId).onErrorReturn(null).block();
+        try {
+            return this.getUserByIdAsync(userId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -681,7 +769,11 @@ public class DiscordUtil {
 
     @Deprecated
     public User getUserWithDiscriminator(String userName, String discriminator) {
-        return getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
+        try {
+            return this.getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -703,7 +795,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRole(String roleName) {
-        return getRoleAsync(roleName).onErrorReturn(null).block();
+        try {
+            return this.getRoleAsync(roleName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -736,7 +832,11 @@ public class DiscordUtil {
 
     @Deprecated
     public Role getRoleByID(String id) {
-        return getRoleByIDAsync(id).onErrorReturn(null).block();
+        try {
+            return this.getRoleByIDAsync(id).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -762,12 +862,16 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getRoleObjects(String... roles) {
-        return getRoleObjectsAsync(roles).onErrorReturn(null).block();
+        try {
+            return this.getRoleObjectsAsync(roles).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return new Role[0];
+        }
     }
 
     public Mono<Role[]> getRoleObjectsAsync(String... roles) {
         return Mono.fromCallable(() -> {
-            return Flux.fromArray(roles).map(r -> getRoleAsync(r).block()).toStream().toArray(i -> new Role[i]);
+            return Flux.fromArray(roles).map(r -> this.getRoleAsync(r).block()).toStream().toArray(i -> new Role[i]);
         });
     }
 
@@ -779,11 +883,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(User user) {
-        return getUserRolesAsync(user).onErrorReturn(null).block();
+        try {
+            return this.getUserRolesAsync(user).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return new Role[0];
+        }
     }
 
     public Mono<Role[]> getUserRolesAsync(User user) {
-        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(new Role[0]))).onErrorReturn(new Role[0]);
+        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
     }
 
     /**
@@ -794,11 +902,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public Role[] getUserRoles(String userId) {
-        return getUserRolesAsync(userId).onErrorReturn(null).block();
+        try {
+            return this.getUserRolesAsync(userId).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return new Role[0];
+        }
     }
 
     public Mono<Role[]> getUserRolesAsync(String userId) {
-        return getUserByIdAsync(Long.parseUnsignedLong(userId)).flatMap(user -> getUserRolesAsync(user));
+        return this.getUserByIdAsync(Long.parseUnsignedLong(userId)).flatMap(user -> this.getUserRolesAsync(user));
     }
 
     /**
@@ -812,15 +924,14 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or roles object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             Set<Snowflake> rolesSf = new HashSet<>();
 
             for (Role role : roles) {
                 rolesSf.add(role.getId());
             }
 
-            m.edit(eds
-                    -> eds.setRoles(rolesSf)
+            m.edit(GuildMemberEditSpec.create().withRoles(rolesSf)
             ).doOnError(e -> {
                 com.gmt2001.Console.err.println("Unable to edit member roles" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -838,7 +949,7 @@ public class DiscordUtil {
      * @param roles
      */
     public void editUserRoles(String userId, Role... roles) {
-        getUserByIdAsync(Long.parseUnsignedLong(userId)).subscribe(user -> editUserRoles(user, roles));
+        this.getUserByIdAsync(Long.parseUnsignedLong(userId)).subscribe(user -> this.editUserRoles(user, roles));
     }
 
     /**
@@ -852,7 +963,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or role object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.addRole(role.getId()).doOnError(e -> {
                 com.gmt2001.Console.err.println("Unable to add member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -871,13 +982,19 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         com.gmt2001.Console.debug.println(userName + " > " + roleName);
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
-            com.gmt2001.Console.debug.println(role);
-            getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
-                com.gmt2001.Console.debug.println(user);
-                addRole(role, user);
+        try {
+            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
+                com.gmt2001.Console.debug.println(role);
+                try {
+                    this.getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
+                        com.gmt2001.Console.debug.println(user);
+                        this.addRole(role, user);
+                    });
+                } catch (NullPointerException ex) {
+                }
             });
-        });
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -887,7 +1004,10 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(String roleName, User user) {
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> addRole(role, user));
+        try {
+            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> this.addRole(role, user));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -901,7 +1021,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user or role object was null");
         }
 
-        user.asMember(DiscordAPI.getGuild().getId()).doOnSuccess(m -> {
+        user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.removeRole(role.getId()).doOnError(e -> {
                 com.gmt2001.Console.err.println("Unable to remove member role" + user.getMention() + " (" + DiscordAPI.getGuild().getName() + ")");
                 com.gmt2001.Console.err.printStackTrace(e);
@@ -919,7 +1039,10 @@ public class DiscordUtil {
      * @param userName
      */
     public void removeRole(String roleName, String userName) {
-        getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> getUserAsync(userName).onErrorReturn(null).subscribe(user -> removeRole(role, user)));
+        try {
+            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> this.getUserAsync(userName).onErrorReturn(null).subscribe(user -> this.removeRole(role, user)));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -928,8 +1051,7 @@ public class DiscordUtil {
      * @param roleName
      */
     public void createRole(String roleName) {
-        DiscordAPI.getGuild().createRole(role
-                -> role.setName(roleName)
+        DiscordAPI.getGuild().createRole(RoleCreateSpec.create().withName(roleName)
         ).doOnError(e -> {
             com.gmt2001.Console.err.println("Unable to create role" + roleName + " (" + DiscordAPI.getGuild().getName() + ")");
             com.gmt2001.Console.err.printStackTrace(e);
@@ -954,7 +1076,7 @@ public class DiscordUtil {
      * @param roleName
      */
     public void deleteRole(String roleName) {
-        getRoleAsync(roleName).subscribe(role -> deleteRole(role));
+        this.getRoleAsync(roleName).subscribe(role -> this.deleteRole(role));
     }
 
     /**
@@ -964,7 +1086,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<Role> getGuildRoles() {
-        return getGuildRolesAsync().onErrorReturn(null).block();
+        try {
+            return this.getGuildRolesAsync().onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return new ArrayList<>();
+        }
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
@@ -981,7 +1107,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(User user) {
-        return isAdministratorAsync(user).onErrorReturn(null).block();
+        try {
+            return this.isAdministratorAsync(user).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public Mono<Boolean> isAdministratorAsync(User user) {
@@ -989,7 +1119,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("user object was null");
         }
 
-        return user.asMember(DiscordAPI.getGuild().getId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
+        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
     }
 
     /**
@@ -1000,11 +1130,15 @@ public class DiscordUtil {
      */
     @Deprecated
     public boolean isAdministrator(String userName) {
-        return isAdministratorAsync(userName).onErrorReturn(null).block();
+        try {
+            return this.isAdministratorAsync(userName).onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public Mono<Boolean> isAdministratorAsync(String userName) {
-        return getUserAsync(userName).flatMap(user -> isAdministratorAsync(user));
+        return this.getUserAsync(userName).flatMap(user -> this.isAdministratorAsync(user));
     }
 
     /**
@@ -1022,15 +1156,13 @@ public class DiscordUtil {
         }
 
         com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + DiscordUtil.channelName(channel));
-        Thread thread;
-        thread = new Thread(() -> {
+        Executors.newSingleThreadExecutor().submit(() -> {
+            Thread.currentThread().setName("tv.phantombot.discord.util.DiscordUtil::bulkDelete");
             channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().doOnSuccess(msgs -> {
                 com.gmt2001.Console.debug.println("Found " + msgs.size() + " messages to delete");
                 channel.bulkDelete(Flux.fromIterable(msgs).map(msg -> msg.getId())).doOnNext(s -> com.gmt2001.Console.err.println("Rejected message " + s.asString() + " from delete operation for being too old")).doOnError(e -> com.gmt2001.Console.debug.printStackTrace(e)).doOnComplete(() -> com.gmt2001.Console.debug.println("Bulk delete complete")).subscribe();
             }).subscribe();
-        }, "tv.phantombot.discord.util.DiscordUtil::bulkDelete");
-
-        thread.start();
+        });
     }
 
     /**
@@ -1040,7 +1172,10 @@ public class DiscordUtil {
      * @param amount
      */
     public void bulkDelete(String channelName, int amount) {
-        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDelete(channel, amount));
+        try {
+            this.getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> this.bulkDelete(channel, amount));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -1070,7 +1205,10 @@ public class DiscordUtil {
      * @param messages
      */
     public void bulkDeleteMessages(String channelName, Message... messages) {
-        getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> bulkDeleteMessages(channel, messages));
+        try {
+            this.getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> this.bulkDeleteMessages(channel, messages));
+        } catch (NullPointerException ex) {
+        }
     }
 
     /**
@@ -1108,7 +1246,7 @@ public class DiscordUtil {
      * @param game
      */
     public void setGame(String game) {
-        DiscordAPI.getGateway().updatePresence(Presence.online(Activity.playing(game))).doOnError(e -> {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.playing(game))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
@@ -1120,7 +1258,7 @@ public class DiscordUtil {
      * @param url
      */
     public void setStream(String game, String url) {
-        DiscordAPI.getGateway().updatePresence(Presence.online(Activity.streaming(game, url))).doOnError(e -> {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.streaming(game, url))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
@@ -1130,7 +1268,7 @@ public class DiscordUtil {
      *
      */
     public void removeGame() {
-        DiscordAPI.getGateway().updatePresence(Presence.online()).subscribe();
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online()).subscribe();
     }
 
     /**
@@ -1140,7 +1278,11 @@ public class DiscordUtil {
      */
     @Deprecated
     public List<User> getUsers() {
-        return getUsersAsync().onErrorReturn(null).block();
+        try {
+            return this.getUsersAsync().onErrorReturn(null).block();
+        } catch (NullPointerException ex) {
+            return new ArrayList<>();
+        }
     }
 
     public Mono<List<User>> getUsersAsync() {
@@ -1196,12 +1338,16 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getMessageById(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        if (channel != null) {
-            return channel.getMessageById(Snowflake.of(messageId)).block();
-        }
+        try {
+            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
+            if (channel != null) {
+                return channel.getMessageById(Snowflake.of(messageId)).block();
+            }
 
-        return null;
+            return null;
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     /**
@@ -1211,7 +1357,7 @@ public class DiscordUtil {
      * @param newMessage
      */
     public void editMessageContent(Message message, String newMessage) {
-        message.edit(spec -> spec.setContent(newMessage)).subscribe();
+        message.edit(MessageEditSpec.create().withContentOrNull(newMessage)).subscribe();
     }
 
     /**
@@ -1220,8 +1366,8 @@ public class DiscordUtil {
      * @param message
      * @param newEmbed
      */
-    public void editMessageEmbed(Message message, Consumer<? super EmbedCreateSpec> newEmbed) {
-        message.edit(spec -> spec.setEmbed(newEmbed)).subscribe();
+    public void editMessageEmbed(Message message, EmbedCreateSpec newEmbed) {
+        message.edit(MessageEditSpec.create().withEmbeds(newEmbed)).subscribe();
     }
 
     /**
@@ -1229,15 +1375,19 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param messageId
-     * @return {List<Message>}
+     * @return
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        List<Message> messageList = new ArrayList<>();
-        if (channel != null) {
-            channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+        try {
+            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
+            List<Message> messageList = new ArrayList<>();
+            if (channel != null) {
+                channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
+            }
+            return messageList;
+        } catch (NullPointerException ex) {
+            return new ArrayList<>();
         }
-        return messageList;
     }
 
     /**
@@ -1247,12 +1397,16 @@ public class DiscordUtil {
      * @return {Message}
      */
     public Message getLastMessage(String channelName) {
-        GuildMessageChannel channel = getChannelAsync(channelName).onErrorReturn(null).block();
-        if (channel != null) {
-            return channel.getLastMessage().block();
-        }
+        try {
+            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
+            if (channel != null) {
+                return channel.getLastMessage().block();
+            }
 
-        return null;
+            return null;
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public static Optional<Snowflake> channelId(Channel channel) {
@@ -1315,5 +1469,36 @@ public class DiscordUtil {
         }
 
         return "";
+    }
+
+    public class MessageCreateFile implements MessageCreateFields.File {
+
+        private final String fileName;
+        private final String fileLocation;
+
+        public MessageCreateFile(String fileName, String fileLocation) {
+            this.fileName = fileName;
+            this.fileLocation = fileLocation;
+        }
+
+        @Override
+        public String name() {
+            return this.fileName;
+        }
+
+        public String path() {
+            return this.fileLocation;
+        }
+
+        @Override
+        public InputStream inputStream() {
+            try {
+                return Files.newInputStream(Paths.get(this.fileLocation));
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+
+            return null;
+        }
     }
 }

@@ -172,7 +172,7 @@ $(function() {
                                 // Append input box for per-user cooldown.
                                 .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                                     'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
-                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Disabled',
+                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
                                     'If checked, the command cannot be used in chat.'))
                                 // Callback function to be called once we hit the save button on the modal.
                         })), function() {
@@ -200,7 +200,7 @@ $(function() {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                                ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                     helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {

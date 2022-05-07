@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
-import tv.phantombot.PhantomBot;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 
@@ -41,6 +41,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
     private boolean connecting = true;
+    private boolean connected = false;
     private final URI uri;
     private final WSClient client;
     private final ExecutorService ircParseExecutorService = Executors.newCachedThreadPool();
@@ -74,8 +75,12 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
             Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-            if (!this.client.connected()) {
-                return;
+            if (!this.connected) {
+                if (this.client.connected()) {
+                    this.connected = true;
+                } else {
+                    return;
+                }
             }
 
             if (this.connecting) {
@@ -117,6 +122,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     public boolean connectWSS() {
         try {
             com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            this.connected = false;
             this.connecting = true;
             return this.client.connect();
         } catch (IllegalStateException | InterruptedException ex) {
@@ -169,15 +175,19 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      * @param reason The close reason message
      */
     private void onClose(int code, String reason) {
+        this.connected = false;
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
-            com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
-            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
+            if (!this.connecting) {
+                com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
+                com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-            this.connecting = true;
-            this.session.reconnect();
+                this.connecting = true;
+                this.session.reconnect();
+            }
         } else {
             com.gmt2001.Console.out.println("Connection to Twitch WS-IRC was closed...");
+            com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
         }
     }
 
@@ -206,7 +216,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      * @param message The message to send
      */
     public void send(String message) {
-        if (PhantomBot.instance().getProperties().getPropertyAsBoolean("ircdebug", false)) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
             com.gmt2001.Console.debug.println("<" + message);
         }
         this.client.send(message);
@@ -236,5 +246,10 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     @Override
     public void handshakeComplete(ChannelHandlerContext ctx) {
         this.onOpen();
+    }
+
+    @Override
+    public void onClose() {
+        this.onClose(0, "channel closed");
     }
 }

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             LogType.Moderation, "./logs/moderation/"
     );
     private static final Logger INSTANCE = new Logger();
+    private static boolean subscribed = false;
+    private final boolean pathsCreated;
 
     public enum LogType {
         Output,
@@ -72,7 +75,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
                 Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
                         StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
             } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+                RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
+                ex.printStackTrace(System.err);
             }
         }
         this.subscription.request(1);
@@ -80,7 +84,8 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onError(Throwable throwable) {
-        com.gmt2001.Console.err.printStackTrace(throwable, false, true);
+        RollbarProvider.instance().error(throwable, null, "", true);
+        throwable.printStackTrace(System.err);
         com.gmt2001.Console.err.println("Logger threw an exception and is being disconnected...");
     }
 
@@ -106,9 +111,15 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public static Logger instance() {
-        if (INSTANCE.subscription == null) {
-            synchronized (INSTANCE) {
-                INSTANCE.subscribe(INSTANCE);
+        if (!subscribed) {
+            synchronized (LOG_PATHS) {
+                try {
+                    if (!subscribed) {
+                        INSTANCE.subscribe(INSTANCE);
+                    }
+                    subscribed = true;
+                } catch (IllegalStateException ex) {
+                }
             }
         }
 
@@ -120,16 +131,29 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
     }
 
+    @SuppressWarnings("UseSpecificCatch")
     private Logger() {
         updateTimezones();
 
+        List<Boolean> success = new ArrayList<>();
         LOG_PATHS.forEach((t, p) -> {
             try {
-                Files.createDirectories(Paths.get(p));
-            } catch (IOException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+                Files.createDirectories(Paths.get(p).toAbsolutePath().normalize().toRealPath());
+                success.add(Boolean.TRUE);
+            } catch (Exception ex) {
+                Map<String, Object> locals;
+                try {
+                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalizedReal"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toRealPath().toString()});
+                } catch (IOException ex2) {
+                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalized", "realfailed"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toString(), ex2});
+                }
+                RollbarProvider.instance().error(ex, locals);
+                ex.printStackTrace(System.err);
+                success.add(Boolean.FALSE);
             }
         });
+
+        this.pathsCreated = !success.contains(Boolean.FALSE);
     }
 
     @Handler
@@ -138,10 +162,18 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public void log(LogType type, String lines) {
+        if (!this.pathsCreated) {
+            return;
+        }
+
         this.submit(new LogItem(type, lines));
     }
 
     public void log(LogType type, List<String> lines) {
+        if (!this.pathsCreated) {
+            return;
+        }
+
         this.submit(new LogItem(type, lines));
     }
 

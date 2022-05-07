@@ -22,14 +22,14 @@
  * Exports various time formatting functions
  * Use the $ API
  */
-(function() {
+(function () {
     var levelWithTime = $.getSetIniDbBoolean('timeSettings', 'timeLevel', false),
-        timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
-        keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
-        hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
-        regularsGroupId = 6,
-        interval,
-        inter;
+            timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
+            keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
+            hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
+            regularsGroupId = 6,
+            interval,
+            inter;
 
     /**
      * @function updateTimeSettings
@@ -114,7 +114,7 @@
      * @return {String}
      */
     function getLocalTime() {
-        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
         return dateFormat.format(new java.util.Date());
     }
@@ -128,10 +128,10 @@
      */
     function dateToString(date, timeOnly) {
         var year = date.getFullYear(),
-            month = date.getMonth() + 1,
-            day = date.getDate(),
-            hours = date.getHours(),
-            minutes = date.getMinutes();
+                month = date.getMonth() + 1,
+                day = date.getDate(),
+                hours = date.getHours(),
+                minutes = date.getMinutes();
 
         if (timeOnly) {
             return hours + ':' + minutes;
@@ -149,17 +149,17 @@
      */
     function getTimeString(time, hoursOnly) {
         var floor = Math.floor,
-            months = (time / 2628000);
-            days = ((months % 1) * 30.42),
-            hours = ((days % 1) * 24),
-            minutes = ((hours % 1) * 60),
-            seconds = ((minutes % 1) * 60);
+                months = (time / 2628000);
+        days = ((months % 1) * 30.42),
+                hours = ((days % 1) * 24),
+                minutes = ((hours % 1) * 60),
+                seconds = ((minutes % 1) * 60);
 
         if (hoursOnly) {
             return floor(time / 3600) + $.lang.get('common.hours3');
         } else {
             var timeStringParts = [],
-                timeString = '';
+                    timeString = '';
 
             // Append months if greater than one.
             if (months >= 1) {
@@ -211,14 +211,14 @@
      */
     function getCountString(time, countUp) {
         var floor = Math.floor,
-            months = (time / 2628000);
-            days = ((months % 1) * 30.42),
-            hours = ((days % 1) * 24),
-            minutes = ((hours % 1) * 60),
-            seconds = ((minutes % 1) * 60);
+                months = (time / 2628000);
+        days = ((months % 1) * 30.42),
+                hours = ((days % 1) * 24),
+                minutes = ((hours % 1) * 60),
+                seconds = ((minutes % 1) * 60);
 
         var timeStringParts = [],
-            timeString = '';
+                timeString = '';
 
         // Append months if greater than one.
         if (months >= 1) {
@@ -248,10 +248,10 @@
         // If the array is empty, return 0 seconds.
         if (timeStringParts.length === 0) {
             if (countUp) {
-                 return ($.lang.get('common.time.nostart'));
-             } else {
-                 return ($.lang.get('common.time.expired'));
-             }
+                return ($.lang.get('common.time.nostart'));
+            } else {
+                return ($.lang.get('common.time.expired'));
+            }
         }
 
         // Join the array to make a string.
@@ -273,8 +273,8 @@
      */
     function getTimeStringMinutes(time) {
         var floor = Math.floor,
-            cHours = time / 3600,
-            cMins = cHours % 1 * 60;
+                cHours = time / 3600,
+                cMins = cHours % 1 * 60;
 
         if (cHours == 0 || cHours < 1) {
             return (floor(~~cMins) + $.lang.get('common.minutes2'));
@@ -301,9 +301,9 @@
      */
     function getUserTimeString(username) {
         var floor = Math.floor,
-            time = $.getUserTime(username.toLowerCase()),
-            cHours = time / 3600,
-            cMins = cHours % 1 * 60;
+                time = $.getUserTime(username.toLowerCase()),
+                cHours = time / 3600,
+                cMins = cHours % 1 * 60;
 
         if (floor(cHours) > 0) {
             return ($.lang.get('user.time.string.hours', floor(cHours), floor(~~cMins)));
@@ -315,14 +315,14 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            username = $.username.resolve(sender),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            subject,
-            timeArg;
+                username = $.username.resolve(sender),
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                subject,
+                timeArg;
 
         /**
          * @commandpath time - Announce amount of time spent in channel
@@ -483,9 +483,9 @@
     });
 
     // Set an interval for increasing all current users logged time
-    interval = setInterval(function() {
+    interval = setInterval(function () {
         var username,
-            i;
+                i;
 
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
             $.inidb.IncreaseBatchString('time', '', $.users, '60');
@@ -493,23 +493,25 @@
     }, 6e4, 'scripts::systems::timeSystem.js#1');
 
     // Interval for auto level to regular
-    inter = setInterval(function() {
+    inter = setInterval(function () {
         var username,
-            i;
+                i;
 
         if (levelWithTime) {
             for (i in $.users) {
-                username = $.users[i].toLowerCase();
-                if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && !$.isVIP(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
-                    if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
-                        $.setUserGroupById(username, regularsGroupId);
-                        if (timeLevelWarning) {
-                            $.say($.lang.get(
-                                'timesystem.autolevel.promoted',
-                                $.username.resolve(username),
-                                $.getGroupNameById(regularsGroupId).toLowerCase(),
-                                hoursForLevelUp
-                            )); //No whisper mode needed here.
+                if ($.users[i] !== null) {
+                    username = $.users[i].toLowerCase();
+                    if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && !$.isVIP(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
+                        if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
+                            $.setUserGroupById(username, regularsGroupId);
+                            if (timeLevelWarning) {
+                                $.say($.lang.get(
+                                        'timesystem.autolevel.promoted',
+                                        $.username.resolve(username),
+                                        $.getGroupNameById(regularsGroupId).toLowerCase(),
+                                        hoursForLevelUp
+                                        )); //No whisper mode needed here.
+                            }
                         }
                     }
                 }
@@ -520,7 +522,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./core/timeSystem.js', 'streamertime');
         $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
         $.registerChatCommand('./core/timeSystem.js', 'time');

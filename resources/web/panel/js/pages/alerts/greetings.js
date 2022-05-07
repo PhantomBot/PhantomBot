@@ -124,7 +124,7 @@ $(run = function() {
                                 break;
                             default:
                                 // Edit the greeting.
-                                socket.updateDBValue('edit_greeting_update', 'greeting', greetingUsername.val, greetingMessage.val().replace(/"/g, '\'\''), function() {
+                                socket.updateDBValue('edit_greeting_update', 'greeting', greetingUsername.val(), greetingMessage.val().replace(/"/g, '\'\''), function() {
                                     // Update the username.
                                     t.parents('tr').find('td:eq(1)').text(greetingUsername.val());
                                     // Update the greeting message.

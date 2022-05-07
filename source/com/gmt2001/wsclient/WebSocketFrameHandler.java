@@ -55,7 +55,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
-     * Handles incoming WebSocket frames and passes them to the {@link WsClientFrameHandler}
+     * Handles incoming WebSocket frames
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} containing the request frame
@@ -79,6 +79,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             com.gmt2001.Console.debug.println("200 WS Client: Remote: [" + ctx.channel().remoteAddress().toString() + "]");
             ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                 this.connected = false;
+                this.client.handler.onClose();
             });
             this.connected = true;
             this.client.handler.handshakeComplete(ctx);

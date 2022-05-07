@@ -96,8 +96,16 @@ public final class HttpClientResponse {
         this.method = method;
         this.requestBody = requestBody;
         this.responseBody = responseBody;
-        this.requestHeaders = requestHeaders.copy();
-        this.responseHeaders = responseHeaders.copy();
+        if (requestHeaders != null) {
+            this.requestHeaders = requestHeaders.copy();
+        } else {
+            this.requestHeaders = HttpClient.createHeaders();
+        }
+        if (responseHeaders != null) {
+            this.responseHeaders = responseHeaders.copy();
+        } else {
+            this.responseHeaders = HttpClient.createHeaders();
+        }
         this.responseCode = responseCode;
         this.url = url;
 

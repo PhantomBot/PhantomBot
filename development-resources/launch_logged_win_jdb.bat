@@ -1,1 +1,1 @@
-powershell -ExecutionPolicy ByPass -File .\launch_logged_win_jdb.ps1
+powershell -ExecutionPolicy ByPass -File .\launch_logged_win_jdb.ps1 %*

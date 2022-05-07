@@ -34,7 +34,6 @@ public class TwitchTeamsCache implements Runnable {
     private static final Map<String, Team> teams = new HashMap<>();
     private final Thread updateThread;
     private final String channelName;
-    private boolean isKilled = false;
 
     /**
      * Method that starts this cache, and returns it.
@@ -68,11 +67,12 @@ public class TwitchTeamsCache implements Runnable {
      * Method that updates the Twitch teams.
      */
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
-        while (!isKilled) {
+        while (true) {
             try {
                 updateCache();
-            } catch (Exception ex) {
+            } catch (JSONException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
             try {

@@ -30,7 +30,7 @@ GOTO :LAUNCH
 :LAUNCH
 setlocal enableextensions enabledelayedexpansion
 cd %~dp0
-".\java-runtime\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %1
+".\java-runtime\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
 endlocal
 pause
 
@@ -38,6 +38,6 @@ GOTO :EOF
 
 :SWITCHTOWT
 setlocal enableextensions enabledelayedexpansion
-wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch-jdb.bat --nowt %1
+wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch-jdb.bat --nowt %*
 endlocal
 

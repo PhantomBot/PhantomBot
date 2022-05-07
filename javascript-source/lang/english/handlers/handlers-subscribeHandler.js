@@ -62,3 +62,6 @@ $.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome
 $.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message) - Tag: (name)');
 $.lang.register('subscribehandler.resubemote.set', 'New resubscriber emote set!');
 $.lang.register('subscribehandler.resubemote.usage', 'Usage: !resubemote (emote name)');
+$.lang.register('subscribehandler.namesubplan.usage', 'Usage: !namesubplan [1|2|3|prime] (name of plan)');
+$.lang.register('subscribehandler.namesubplan.show', 'The current name for subscription tier $1 is: $2');
+$.lang.register('subscribehandler.namesubplan.set', 'The name for subscription tier $1 was changed to: $2');

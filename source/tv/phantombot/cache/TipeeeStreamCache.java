@@ -33,7 +33,6 @@ public class TipeeeStreamCache implements Runnable {
 
     private static final Map<String, TipeeeStreamCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
-    private final String channel;
     private Map<String, String> cache = new ConcurrentHashMap<>();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
@@ -50,7 +49,7 @@ public class TipeeeStreamCache implements Runnable {
         TipeeeStreamCache instance = instances.get(channel);
 
         if (instance == null) {
-            instance = new TipeeeStreamCache(channel);
+            instance = new TipeeeStreamCache();
             instances.put(channel, instance);
         }
         return instance;
@@ -61,8 +60,8 @@ public class TipeeeStreamCache implements Runnable {
      *
      * @param {String} channel Channel to run the cache for.
      */
-    private TipeeeStreamCache(String channel) {
-        this.channel = channel;
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    private TipeeeStreamCache() {
         this.updateThread = new Thread(this, "tv.phantombot.cache.TipeeeStreamCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -159,43 +158,24 @@ public class TipeeeStreamCache implements Runnable {
                     }
                 }
             } else {
-                try {
-                    throw new Exception("[HTTPErrorExecption] HTTP " + " " + jsonResult.getInt("_http") + ". req="
-                            + jsonResult.getString("_type") + " " + jsonResult.getString("_url") + "   "
-                            + (jsonResult.has("message") && !jsonResult.isNull("message") ? "message="
-                            + jsonResult.getString("message") : "content=" + jsonResult.getString("_content")));
-                } catch (Exception ex) {
-                    /* Kill this cache if the tipeeestream token is bad and disable the module. */
-                    if (ex.getMessage().contains("authentification")) {
-                        com.gmt2001.Console.err.println("TipeeeStreamCache.updateCache: Bad API key disabling the TipeeeStream module.");
-                        PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/tipeeestreamHandler.js", "false");
-                    } else {
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
+                if (jsonResult.optString("message", "").contains("authentification")) {
+                    com.gmt2001.Console.err.println("TipeeeStreamCache.updateCache: Bad API key disabling the TipeeeStream module.");
+                    PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/tipeeestreamHandler.js", "false");
                     this.kill();
-                }
-            }
-        } else {
-            try {
-                throw new Exception("[" + jsonResult.getString("_exception") + "] " + jsonResult.getString("_exceptionMessage"));
-            } catch (Exception ex) {
-                if (ex.getMessage().startsWith("[SocketTimeoutException]") || ex.getMessage().startsWith("[IOException]")) {
-                    checkLastFail();
-                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }
 
         if (firstUpdate && !killed) {
             firstUpdate = false;
-            EventBus.instance().post(new TipeeeStreamDonationInitializedEvent());
+            EventBus.instance().postAsync(new TipeeeStreamDonationInitializedEvent());
         }
 
         if (donations != null && !killed) {
             for (int i = 0; i < donations.length(); i++) {
                 if ((cache == null || !cache.containsKey(donations.getJSONObject(i).get("id").toString()))
                         && !PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("id").toString())) {
-                    EventBus.instance().post(new TipeeeStreamDonationEvent(donations.getJSONObject(i).toString()));
+                    EventBus.instance().postAsync(new TipeeeStreamDonationEvent(donations.getJSONObject(i).toString()));
                 }
             }
         }

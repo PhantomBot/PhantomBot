@@ -310,7 +310,7 @@
             } catch (ex) {
                 var errmsg;
                 try {
-                    errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']'
+                    errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']';
                 } catch (ex2) {
                     errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']';
                 }
@@ -658,9 +658,9 @@
         loadedHooks.push('discordChannelCommand');
 
         /*
-         * @event discordReady
+         * @event discordGuildCreate
          */
-        $api.on($script, 'discordReady', function (event) {
+        $api.on($script, 'discordGuildCreate', function (event) {
             var roles = $.discordAPI.getGuildRoles();
             var perms = {
                 roles: []
@@ -676,9 +676,9 @@
 
             $.inidb.set('discordPermsObj', 'obj', JSON.stringify(perms));
 
-            callHook('discordReady', event, false);
+            callHook('discordGuildCreate', event, false);
         });
-        loadedHooks.push('discordReady');
+        loadedHooks.push('discordGuildCreate');
 
         var hookNames = $api.getEventNames();
         for (var i = 0; i < hookNames.size(); i++) {

@@ -172,16 +172,15 @@ $(function () {
             // On edit button.
             table.on('click', '.btn-warning', function () {
                 let command = $(this).data('command'),
-                        t = $(this);
+                    t = $(this);
 
                 // Get all the info about the command.
                 socket.getDBValues('custom_command_edit', {
                     tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'hiddenCommands'],
                     keys: [command, command, command, command, command, command, command]
                 }, function (e) {
-                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
-
-                    let tokenButton = '';
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown)),
+                        tokenButton = '';
 
                     if (e.command.match(/\(customapi/gi) !== null) {
                         tokenButton = $('<button/>', {
@@ -200,48 +199,48 @@ $(function () {
                     helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                            // Append input box for the command name. This one is disabled.
-                            .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
-                            // Append a text box for the command response.
-                            .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', e.command, 'Response of the command. Use enter for multiple chat lines maximum is 5.'))
-                            .append(tokenButton)
-                            // Append a select option for the command permission.
-                            .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                                    ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
-                            // Add an advance section that can be opened with a button toggle.
-                            .append($('<div/>', {
-                                'class': 'collapse',
-                                'id': 'advance-collapse',
-                                'html': $('<form/>', {
-                                    'role': 'form'
-                                })
-                                        // Append input box for the command cost.
-                                        .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
-                                            'Cost in points that will be taken from the user when running the command.'))
-                                        // Append input box for the command reward.
-                                        .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
-                                            'Reward in points the user will be given when running the command.'))
-                                        // Append input box for the global command cooldown.
-                                        .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
-                                            'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
-                                        // Append input box for per-user cooldown.
-                                        .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
-                                            'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
-                                        .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Disabled',
-                                            'If checked, the command cannot be used in chat.'))
-                                        .append(helpers.getCheckBox('command-hidden', e.hiddenCommands != null, 'Hidden',
-                                            'If checked, the command will not be listed when !command is called.'))
-                                        // Callback function to be called once we hit the save button on the modal.
-                            })), function () {
+                    // Append input box for the command name. This one is disabled.
+                    .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+                    // Append a text box for the command response.
+                    .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', e.command, 'Response of the command. Use enter for multiple chat lines maximum is 5.'))
+                    .append(tokenButton)
+                    // Append a select option for the command permission.
+                    .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
+                            ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
+                    // Add an advance section that can be opened with a button toggle.
+                    .append($('<div/>', {
+                        'class': 'collapse',
+                        'id': 'advance-collapse',
+                        'html': $('<form/>', {
+                            'role': 'form'
+                        })
+                        // Append input box for the command cost.
+                        .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
+                            'Cost in points that will be taken from the user when running the command.'))
+                        // Append input box for the command reward.
+                        .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
+                            'Reward in points the user will be given when running the command.'))
+                        // Append input box for the global command cooldown.
+                        .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                            'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
+                        // Append input box for per-user cooldown.
+                        .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                            'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
+                        .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
+                            'If checked, the command cannot be used in chat.'))
+                        .append(helpers.getCheckBox('command-hidden', e.hiddenCommands !== null, 'Hidden',
+                            'If checked, the command will not be listed when !command is called.'))
+                        // Callback function to be called once we hit the save button on the modal.
+                    })), function () {
                         let commandName = $('#command-name'),
-                                commandResponse = $('#command-response'),
-                                commandPermission = $('#command-permission'),
-                                commandCost = $('#command-cost'),
-                                commandReward = $('#command-reward'),
-                                commandCooldownGlobal = $('#command-cooldown-global'),
-                                commandCooldownUser = $('#command-cooldown-user'),
-                                commandDisabled = $('#command-disabled').is(':checked'),
-                                commandHidden = $('#command-hidden').is(':checked');
+                            commandResponse = $('#command-response'),
+                            commandPermission = $('#command-permission'),
+                            commandCost = $('#command-cost'),
+                            commandReward = $('#command-reward'),
+                            commandCooldownGlobal = $('#command-cooldown-global'),
+                            commandCooldownUser = $('#command-cooldown-user'),
+                            commandDisabled = $('#command-disabled').is(':checked'),
+                            commandHidden = $('#command-hidden').is(':checked');
 
                         // Remove the ! and spaces.
                         commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -319,47 +318,47 @@ $(function () {
         helpers.getAdvanceModal('add-command', 'Add Command', 'Save', $('<form/>', {
             'role': 'form'
         })
-                // Append input box for the command name.
-                .append(helpers.getInputGroup('command-name', 'text', 'Command', '!example'))
-                // Append a text box for the command response.
-                .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', 'Response example! Use enter for multiple chat lines maximum is 5.'))
-                // Append a select option for the command permission.
-                .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
-                // Add an advance section that can be opened with a button toggle.
-                .append($('<div/>', {
-                    'class': 'collapse',
-                    'id': 'advance-collapse',
-                    'html': $('<form/>', {
-                        'role': 'form'
-                    })
-                            // Append input box for the command cost.
-                            .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
-                                'Cost in points that will be taken from the user when running the command.'))
-                            // Append input box for the command reward.
-                            .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
-                                'Reward in points the user will be given when running the command.'))
-                            // Append input box for the global command cooldown.
-                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', undefined,
-                                'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.')
-                            // Append input box for per-user cooldown.
-                            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', undefined,
-                                'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.')))
-                            .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
-                                'If checked, the command cannot be used in chat.'))
-                            .append(helpers.getCheckBox('command-hidden', false, 'Hidden',
-                                'If checked, the command will not be listed when !command is called.'))
-                })), function () {
+        // Append input box for the command name.
+        .append(helpers.getInputGroup('command-name', 'text', 'Command', '!example'))
+        // Append a text box for the command response.
+        .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', 'Response example! Use enter for multiple chat lines maximum is 5.'))
+        // Append a select option for the command permission.
+        .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
+                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
+        // Add an advance section that can be opened with a button toggle.
+        .append($('<div/>', {
+            'class': 'collapse',
+            'id': 'advance-collapse',
+            'html': $('<form/>', {
+                'role': 'form'
+            })
+            // Append input box for the command cost.
+            .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', '0',
+                'Cost in points that will be taken from the user when running the command.'))
+            // Append input box for the command reward.
+            .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
+                'Reward in points the user will be given when running the command.'))
+            // Append input box for the global command cooldown.
+            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', '-1',
+                'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.')
+            // Append input box for per-user cooldown.
+            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', '-1',
+                'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.')))
+            .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
+                'If checked, the command cannot be used in chat.'))
+            .append(helpers.getCheckBox('command-hidden', false, 'Hidden',
+                'If checked, the command will not be listed when !command is called.'))
+        })), function () {
             // Callback function to be called once we hit the save button on the modal.
             let commandName = $('#command-name'),
-                    commandResponse = $('#command-response'),
-                    commandPermission = $('#command-permission'),
-                    commandCost = $('#command-cost'),
-                    commandReward = $('#command-reward'),
-                    commandCooldownGlobal = $('#command-cooldown-global'),
-                    commandCooldownUser = $('#command-cooldown-user'),
-                    commandDisabled = $('#command-disabled').is(':checked'),
-                    commandHidden = $('#command-hidden').is(':checked');
+                commandResponse = $('#command-response'),
+                commandPermission = $('#command-permission'),
+                commandCost = $('#command-cost'),
+                commandReward = $('#command-reward'),
+                commandCooldownGlobal = $('#command-cooldown-global'),
+                commandCooldownUser = $('#command-cooldown-user'),
+                commandDisabled = $('#command-disabled').is(':checked'),
+                commandHidden = $('#command-hidden').is(':checked');
 
             // Remove the ! and spaces.
             commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -416,18 +415,18 @@ $(function () {
         helpers.getModal('token-command', 'Set Command Token', 'Save', $('<form/>', {
             'role': 'form'
         })
-                .append('This dialog stores a user/pass or API key to be replaced into a (customapi) tag.\n\
-        <br /> NOTE: This is only useful if you place a (token) subtag into the URL of a (customapi) or (customapijson) command tag.\n\
-        <br /> Example (using the bot\s chat commands for demonstration purposes):\n\
-        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!addcom myapicommand (customapi http://(token)@example.com/myapi)\n\
-        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!tokencom myapicommand myuser:mypass\n\
-        <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>The command now effectively calls http://myuser:mypass@example.com/myapi while reducing exposure of your user/pass</i>')
-                // Append input box for the command name. This one is disabled.
-                .append(helpers.getInputGroup('command-tname', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
-                // Append a text box for the command token.
-                .append(helpers.getInputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function () {
+        .append('This dialog stores a user/pass or API key to be replaced into a (customapi) tag.\n\
+            <br /> NOTE: This is only useful if you place a (token) subtag into the URL of a (customapi) or (customapijson) command tag.\n\
+            <br /> Example (using the bot\s chat commands for demonstration purposes):\n\
+            <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!addcom myapicommand (customapi http://(token)@example.com/myapi)\n\
+            <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!tokencom myapicommand myuser:mypass\n\
+            <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>The command now effectively calls http://myuser:mypass@example.com/myapi while reducing exposure of your user/pass</i>')
+        // Append input box for the command name. This one is disabled.
+        .append(helpers.getInputGroup('command-tname', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+        // Append a text box for the command token.
+        .append(helpers.getInputGroup('command-token', 'text', 'Token', '', 'The token value for the command.')), function () {
             let commandName = $('#command-tname'),
-                    commandToken = $('#command-token');
+                commandToken = $('#command-token');
 
             // Remove the ! and spaces.
             commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());

@@ -19,7 +19,7 @@ package com.gmt2001.eventsub;
 import java.util.Date;
 import java.util.Map;
 import reactor.core.publisher.Mono;
-import tv.phantombot.PhantomBot;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.Listener;
 
 /**
@@ -69,7 +69,7 @@ public abstract class EventSubSubscriptionType implements Listener {
     }
 
     protected EventSubTransport proposeTransport() {
-        return new EventSubTransport("webhook", PhantomBot.instance().getProperties().getProperty("eventsubcallbackurl"), EventSub.getSecret());
+        return new EventSubTransport("webhook", CaselessProperties.instance().getProperty("eventsubcallbackurl"), EventSub.getSecret());
     }
 
     protected abstract void validateParameters() throws IllegalArgumentException;

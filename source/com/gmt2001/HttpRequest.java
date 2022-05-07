@@ -45,16 +45,35 @@ public final class HttpRequest {
 
     @Deprecated
     public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers) {
+        try {
+            return getData(type, HttpUrl.fromUri(url), post, headers);
+        } catch (URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            HttpResponse r = new HttpResponse();
+            r.url = url;
+            r.headers = headers;
+            r.type = type;
+            r.post = post;
+            r.success = false;
+            r.exception = ex.getClass().getSimpleName() + ": " + ex.getMessage();
+            r.rawException = ex;
+            r.httpCode = 0;
+            return r;
+        }
+    }
+
+    @Deprecated
+    @SuppressWarnings("UseSpecificCatch")
+    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, HashMap<String, String> headers) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();
-        r.url = url;
+        r.url = uri.build();
         r.headers = headers;
         r.type = type;
         r.post = post;
 
         try {
-            HttpUrl uri = HttpUrl.fromUri(url);
             HttpHeaders h = HttpClient.createHeaders();
             if (headers != null) {
                 headers.forEach(h::add);
@@ -76,10 +95,11 @@ public final class HttpRequest {
                 r.httpCode = hcr.responseCode().code();
                 r.success = false;
             }
-        } catch (URISyntaxException ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             r.success = false;
             r.exception = ex.getClass().getSimpleName() + ": " + ex.getMessage();
+            r.rawException = ex;
             r.httpCode = 0;
         }
 

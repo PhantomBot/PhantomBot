@@ -46,6 +46,11 @@ public class CaselessProperties extends Properties {
     private final List<Transaction> transactions = new CopyOnWriteArrayList<>();
     private final Object lock = new Object();
     private final Timer timer = new Timer();
+    private static final CaselessProperties INSTANCE = new CaselessProperties();
+
+    public static CaselessProperties instance() {
+        return INSTANCE;
+    }
 
     @Override
     public Object put(Object key, Object value) {
@@ -239,7 +244,7 @@ public class CaselessProperties extends Properties {
 
     public void store(boolean reload) {
         try {
-            try (FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
+            try ( FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
                 this.store(outputStream, "PhantomBot Configuration File");
             }
 
