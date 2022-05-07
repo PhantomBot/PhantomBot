@@ -187,7 +187,7 @@ $(function () {
             case helpers.handleInputNumber(prize, 0):
                 break;
             default:
-                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val() , function () {
+                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully drew a winner!');
 
