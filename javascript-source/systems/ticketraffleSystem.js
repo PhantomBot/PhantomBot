@@ -401,13 +401,13 @@
             }
 
             /**
-             * @commandpath traffle draw [amount (default = 1)] [prize points] - Picks winner(s) for the ticket raffle and optionally awards them with points 
+             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
 
                 var amount = 1;
                 if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
                     return;
                 }
 
@@ -422,6 +422,7 @@
                 
                 if (amount > uniqueEntries.length) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
+                    return;
                 }
 
                 winner(amount);
@@ -525,6 +526,13 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'traffle', 2);
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', 7);
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', 7);
+        $.registerChatSubcommand('traffle', 'open', 2);
+        $.registerChatSubcommand('traffle', 'close', 2);
+        $.registerChatSubcommand('traffle', 'draw', 2);
+        $.registerChatSubcommand('traffle', 'reset', 2);
+        $.registerChatSubcommand('traffle', 'autoannounceinterval', 1);
+        $.registerChatSubcommand('traffle', 'autoannouncemessage', 1);
+        $.registerChatSubcommand('traffle', 'messagetoggle', 1);
 
         reopen();
     });
