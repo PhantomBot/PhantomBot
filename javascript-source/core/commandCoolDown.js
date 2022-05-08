@@ -205,6 +205,10 @@
             return;
         }
 
+        if (!exists(command)) {
+            add(command, Operation.UnChanged, Operation.UnChanged);
+        }
+
         if (username === undefined) {
             cooldowns[command].globalTime = finishTime;
         } else {
