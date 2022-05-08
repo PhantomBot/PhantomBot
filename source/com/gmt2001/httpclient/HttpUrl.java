@@ -19,6 +19,8 @@ package com.gmt2001.httpclient;
 import io.netty.handler.codec.http.QueryStringEncoder;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +40,57 @@ public final class HttpUrl {
     private final Map<String, String> query = new HashMap<>();
     private String builtUri = null;
     private String querySep = "&";
+    private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=";
 
     /**
      * Constructor
      */
     private HttpUrl() {
+    }
+
+    /**
+     * Automatically encodes the path and query of a URI
+     *
+     * @param uri A URI to encode
+     * @return The encoded URI
+     */
+    public static String autoEncode(String uri) {
+        StringBuilder encoded = new StringBuilder();
+
+        int start = uri.indexOf("//");
+        boolean shouldEncode = false;
+        if (start > -1) {
+            shouldEncode = true;
+            start += 2;
+        } else {
+            start = 0;
+        }
+
+        if (uri.substring(start).contains("/")) {
+            shouldEncode = true;
+            start = uri.indexOf('/', start);
+        } else if (uri.substring(start).contains("?")) {
+            shouldEncode = true;
+            start = uri.indexOf('?', start);
+        }
+
+        if (shouldEncode) {
+            if (start > 0) {
+                encoded.append(uri.substring(0, start));
+                uri = uri.substring(start);
+            }
+
+            uri.chars().forEach(chr -> {
+                String schr = Character.toString(chr);
+                if (ALLOWED_CHARS.contains(schr)) {
+                    encoded.append(schr);
+                } else {
+                    encoded.append(URLEncoder.encode(schr, StandardCharsets.UTF_8));
+                }
+            });
+        }
+
+        return encoded.toString();
     }
 
     /**
@@ -53,7 +101,7 @@ public final class HttpUrl {
      * @throws URISyntaxException If the given string violates RFC 2396
      */
     public static HttpUrl fromUri(String uri) throws URISyntaxException {
-        return fromUri(new URI(uri));
+        return fromUri(new URI(autoEncode(uri)));
     }
 
     /**
@@ -65,7 +113,8 @@ public final class HttpUrl {
      * @throws URISyntaxException If the given string violates RFC 2396
      */
     public static HttpUrl fromUri(String baseUri, String endPoint) throws URISyntaxException {
-        return fromUri(new URI(baseUri + (!baseUri.endsWith("/") && !endPoint.startsWith("/") && !endPoint.startsWith("?") ? "/" : "") + endPoint));
+        return fromUri(new URI(autoEncode(baseUri) + (!baseUri.endsWith("/") && !endPoint.startsWith("/") && !endPoint.startsWith("?") ? "/" : "")
+                + autoEncode(endPoint)));
     }
 
     /**
@@ -192,7 +241,7 @@ public final class HttpUrl {
      * @return
      */
     public HttpUrl withPath(String path) {
-        this.path = path;
+        this.path = autoEncode(path);
         this.builtUri = null;
         return this;
     }
