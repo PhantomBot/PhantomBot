@@ -127,7 +127,7 @@ public final class LangFileUpdater {
             // If the script doesn't exist, load it.
             File file = new File(langFile);
             if (!exists) {
-                ScriptManager.loadScript(file);
+                ScriptManager.loadScript(file, langFile);
             } else {
                 if (!PhantomBot.getReloadScripts()) {
                     HashMap<String, Script> scripts = ScriptManager.getScripts();

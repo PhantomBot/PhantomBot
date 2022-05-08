@@ -886,7 +886,7 @@ public final class PhantomBot implements Listener {
 
         /* And finally try to load init, that will then load the scripts */
         try {
-            ScriptManager.loadScript(new File("./scripts/init.js"));
+            ScriptManager.loadScript(new File("./scripts/init.js"), "init.js");
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
