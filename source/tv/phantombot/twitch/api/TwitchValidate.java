@@ -147,6 +147,7 @@ public class TwitchValidate {
         } catch (Throwable ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, "GET", "", BASE_URL, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
+            com.gmt2001.Console.debug.printStackTrace(ex);
         }
 
         return returnObject;
