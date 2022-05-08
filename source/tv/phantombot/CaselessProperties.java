@@ -47,6 +47,12 @@ public class CaselessProperties extends Properties {
     private final Object lock = new Object();
     private final Timer timer = new Timer();
     private static final CaselessProperties INSTANCE = new CaselessProperties();
+    private static final String HEADER = "PhantomBot Configuration File\n"
+            + "\n                     +---------+"
+            + "\n                     | WARNING |"
+            + "\n                     +---------+"
+            + "\n       DO NOT MODIFY WHILE THE BOT IS RUNNING!"
+            + "\n CHANGES MADE WHILE THE BOT IS RUNNING WILL BE LOST!\n";
 
     public static CaselessProperties instance() {
         return INSTANCE;
@@ -245,7 +251,7 @@ public class CaselessProperties extends Properties {
     public void store(boolean reload) {
         try {
             try ( FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
-                this.store(outputStream, "PhantomBot Configuration File");
+                this.store(outputStream, HEADER);
             }
 
             if (reload && PhantomBot.instance() != null) {

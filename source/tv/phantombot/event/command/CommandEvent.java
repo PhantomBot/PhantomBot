@@ -23,6 +23,7 @@ import java.util.Map;
 import tv.phantombot.event.Event;
 
 public class CommandEvent extends Event {
+
     private final String sender;
     private final String command;
     private final String arguments;
@@ -35,7 +36,7 @@ public class CommandEvent extends Event {
      * @param {String} sender
      * @param {String} command
      * @param {String} arguments
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     public CommandEvent(String sender, String command, String arguments) {
         this.sender = sender;
@@ -51,7 +52,7 @@ public class CommandEvent extends Event {
      * @param {String} sender
      * @param {String} command
      * @param {String} arguments
-     * @param {Map}    tags
+     * @param {Map} tags
      */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
         this.sender = sender;

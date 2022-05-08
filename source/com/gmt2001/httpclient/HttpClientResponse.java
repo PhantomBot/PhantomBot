@@ -20,7 +20,6 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -51,6 +50,7 @@ public final class HttpClientResponse {
      * @param url The URL requested
      * @param response The response metadata object
      */
+    @SuppressWarnings("UseSpecificCatch")
     protected HttpClientResponse(Throwable exception, String requestBody, byte[] responseBody, HttpUrl url,
             reactor.netty.http.client.HttpClientResponse response) {
         this.exception = exception;
@@ -66,10 +66,12 @@ public final class HttpClientResponse {
         JSONObject jsonT = null;
         Throwable jsonExceptionT = null;
 
-        try {
-            jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
-        } catch (JSONException ex) {
-            jsonExceptionT = ex;
+        if (this.responseBody.length > 0 && this.responseBody[0] == '{') {
+            try {
+                jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
+            } catch (Exception ex) {
+                jsonExceptionT = ex;
+            }
         }
 
         this.json = jsonT;
@@ -89,6 +91,7 @@ public final class HttpClientResponse {
      * @param responseCode The response status code
      * @param url The URL requested
      */
+    @SuppressWarnings("UseSpecificCatch")
     protected HttpClientResponse(Throwable exception, boolean isSuccess, HttpMethod method, String requestBody, byte[] responseBody,
             HttpHeaders requestHeaders, HttpHeaders responseHeaders, HttpResponseStatus responseCode, HttpUrl url) {
         this.exception = exception;
@@ -106,16 +109,22 @@ public final class HttpClientResponse {
         } else {
             this.responseHeaders = HttpClient.createHeaders();
         }
-        this.responseCode = responseCode;
+        if (responseCode != null) {
+            this.responseCode = responseCode;
+        } else {
+            this.responseCode = HttpResponseStatus.valueOf(0, "Unknown");
+        }
         this.url = url;
 
         JSONObject jsonT = null;
         Throwable jsonExceptionT = null;
 
-        try {
-            jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
-        } catch (JSONException ex) {
-            jsonExceptionT = ex;
+        if (this.responseBody.length > 0 && this.responseBody[0] == '{') {
+            try {
+                jsonT = new JSONObject(new String(this.responseBody, StandardCharsets.UTF_8));
+            } catch (Exception ex) {
+                jsonExceptionT = ex;
+            }
         }
 
         this.json = jsonT;
@@ -132,7 +141,7 @@ public final class HttpClientResponse {
     }
 
     /**
-     * Returns true if there was an exception
+     * Returns true if there was an exception not related to JSON decoding
      *
      * @return
      */
@@ -159,7 +168,9 @@ public final class HttpClientResponse {
     }
 
     /**
-     * Returns the response body as a JSONObject, if it was a valid stringified JSON object, otherwise throws the JSONException that was thrown
+     * Returns the response body as a JSONObject, if it was a valid stringified JSON object; if the response body looked like JSON but failed
+     * validation, throws the JSONException (or, rarely, a non-JSONException); if an exception was caught during the request, it is thrown; otherwise,
+     * if the response body did not start with '{', throws NotJSONException
      *
      * @return
      * @throws java.lang.Throwable
@@ -167,18 +178,31 @@ public final class HttpClientResponse {
     public JSONObject jsonOrThrow() throws Throwable {
         if (this.hasJson()) {
             return this.json;
-        } else {
+        } else if (this.hasJsonException()) {
             throw this.jsonException;
+        } else if (this.hasException()) {
+            throw this.exception;
+        } else {
+            throw new NotJSONException();
         }
     }
 
     /**
-     * Returns true if the response was JSON and no JSONExceptions were thrown during parsing
+     * Returns true if the response was JSON, no JSONExceptions were thrown during parsing, and no exceptions were thrown during the request
      *
      * @return
      */
     public boolean hasJson() {
-        return this.json != null && this.jsonException == null;
+        return this.json != null && !this.hasJsonException() && !this.hasException();
+    }
+
+    /**
+     * Returns true if the response was not JSON or failed JSON parsing
+     *
+     * @return
+     */
+    public boolean isNotJson() {
+        return !this.hasJson();
     }
 
     /**

@@ -39,6 +39,7 @@ public class Script {
     private final List<ScriptDestroyable> destroyables = new ArrayList<>();
     private static final NativeObject vars = new NativeObject();
     private final File file;
+    private final String fileName;
     private long lastModified;
     private Context context;
     private boolean killed = false;
@@ -46,8 +47,9 @@ public class Script {
     private static ScriptableObject scope;
 
     @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
-    public Script(File file) {
+    public Script(File file, String fileName) {
         this.file = file;
+        this.fileName = fileName;
         this.lastModified = file.lastModified();
 
         if (PhantomBot.getReloadScripts()) {
@@ -238,6 +240,10 @@ public class Script {
 
     public String getPath() {
         return file.toPath().toString();
+    }
+
+    public String getRealFileName() {
+        return fileName;
     }
 
     public Context getContext() {

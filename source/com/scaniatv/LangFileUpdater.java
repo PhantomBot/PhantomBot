@@ -113,7 +113,7 @@ public final class LangFileUpdater {
                 throw new AccessDeniedException(langFile, null, "Outside acceptable path");
             }
 
-            Files.createDirectories(Paths.get(langFile).getParent());
+            Files.createDirectories(Paths.get(langFile).toAbsolutePath().normalize().toRealPath().getParent());
 
             // This is used if we need to load the script or not.
             boolean exists = true;
@@ -127,7 +127,7 @@ public final class LangFileUpdater {
             // If the script doesn't exist, load it.
             File file = new File(langFile);
             if (!exists) {
-                ScriptManager.loadScript(file);
+                ScriptManager.loadScript(file, langFile);
             } else {
                 if (!PhantomBot.getReloadScripts()) {
                     HashMap<String, Script> scripts = ScriptManager.getScripts();
@@ -222,7 +222,7 @@ public final class LangFileUpdater {
         if (PathValidator.isValidPathLang(langFile)) {
             if (new File(langFile).exists()) {
                 try {
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
+                    try ( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
                         int c;
 
                         while ((c = br.read()) != -1) {
