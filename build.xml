@@ -267,6 +267,26 @@
             replace="ENDPOINT = &quot;@endpoint@&quot;;" />
     </target>
 
+    <target name="copy-javascript" depends="prepare-javascript-true, prepare-javascript-false">
+    </target>
+
+    <target name="prepare-javascript-true" depends="check-compiled" if="${compiled}">
+        <echo level="info" message="Phantombot ${version} already compiled, copying javascript"/>
+        <delete dir="${version.folder}/scripts" />
+        <copy todir="${version.folder}/scripts">
+            <fileset dir="./javascript-source" />
+        </copy>
+    </target>
+
+    <target name="prepare-javascript-false" depends="check-compiled" unless="${compiled}">
+        <echo level="info" message="Phantombot ${version} has not yet been compiled, compiling now"/>
+        <antcall target="jar"/>
+    </target>
+
+    <target name="check-compiled">
+        <available file="${version.folder}/PhantomBot.jar" property="compiled"/>
+    </target>
+
     <target depends="compile.src,post.compile,git.revision" name="jar">
         <jar destfile="${build.dir}/${ant.project.name}.jar">
             <fileset dir="${classes}" />

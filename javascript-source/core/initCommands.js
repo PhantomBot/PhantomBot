@@ -154,6 +154,25 @@
             }
 
             /*
+             * @commandpath module reload [path/all (option)] - Force reloads all active modules or force reloads a single module.
+             */
+            if (action.equalsIgnoreCase('reload')) {
+                if (subAction === undefined || subAction.equalsIgnoreCase('all')) {
+                    $.bot.loadScriptRecursive('', false, true);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload.all'));
+                    return;
+                }
+                if ($.getIniDbString('modules', subAction, undefined) !== undefined){
+                    $.bot.loadScript(subAction, true, false);
+                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload', subAction));
+                    return;
+                }
+
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload.usage'));
+                return;
+            }
+
+            /*
              * @commandpath module delete [path] - Removes a module from the modules list. This does not remove the module itself.
              */
             if (action.equalsIgnoreCase('delete')) {
