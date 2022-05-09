@@ -797,7 +797,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/ytplayer/js/"));
+            Files.createDirectories(Paths.get("./web/ytplayer/js/").toAbsolutePath().normalize().toRealPath());
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -821,7 +821,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/playlist/js/"));
+            Files.createDirectories(Paths.get("./web/playlist/js/").toAbsolutePath().normalize().toRealPath());
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/playlist/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -847,7 +847,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return panelSettings.http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/common/js/"));
+            Files.createDirectories(Paths.get("./web/common/js/").toAbsolutePath().normalize().toRealPath());
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/common/js/wsConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -886,7 +886,7 @@ public final class PhantomBot implements Listener {
 
         /* And finally try to load init, that will then load the scripts */
         try {
-            ScriptManager.loadScript(new File("./scripts/init.js"));
+            ScriptManager.loadScript(new File("./scripts/init.js"), "init.js");
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

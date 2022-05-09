@@ -27,9 +27,6 @@ var setTimeout,
         clearInterval;
 
 (function () {
-    var counter = 1,
-            registry = {};
-
     /**
      * @function setTimeout
      * @param {Function} fn
@@ -39,23 +36,7 @@ var setTimeout,
      * @returns {Number}
      */
     setTimeout = function (fn, delay, name) {
-        var id = counter++,
-                timer;
-
-        delay = Math.max(1, Math.abs(delay));
-
-        if (name !== undefined) {
-            timer = new java.util.Timer(name);
-        } else {
-            timer = new java.util.Timer();
-        }
-
-        registry[id] = new JavaAdapter(java.util.TimerTask, {
-            run: fn
-        });
-        timer.schedule(registry[id], delay);
-
-        return id;
+        return Packages.com.gmt2001.JSTimers.instance().setTimeout(fn, delay, name);
     };
 
     /**
@@ -67,23 +48,7 @@ var setTimeout,
      * @returns {Number}
      */
     setInterval = function (fn, interval, name) {
-        var id = counter++,
-                timer;
-
-        interval = Math.max(1, Math.abs(interval));
-
-        if (name !== undefined) {
-            timer = new java.util.Timer(name);
-        } else {
-            timer = new java.util.Timer();
-        }
-
-        registry[id] = new JavaAdapter(java.util.TimerTask, {
-            run: fn
-        });
-        timer.schedule(registry[id], interval, interval);
-
-        return id;
+        return Packages.com.gmt2001.JSTimers.instance().setInterval(fn, interval, name);
     };
 
     /**
@@ -91,20 +56,11 @@ var setTimeout,
      * @param {Number} id
      */
     clearTimeout = function (id) {
-        if (id == undefined) {
+        if (id === undefined || id === null) {
             return;
         }
 
-        if (registry[id] != undefined) {
-            try {
-                registry[id].cancel();
-            } catch (ex) {
-                // Cannot cancel since timer is already over.
-                // Ignore this.
-            }
-        }
-
-        delete registry[id];
+        Packages.com.gmt2001.JSTimers.instance().clearTimer(id);
     };
 
     /**

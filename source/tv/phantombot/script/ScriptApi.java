@@ -55,11 +55,11 @@ public class ScriptApi {
     }
 
     public void loadScript(Script script, String fileName) throws IOException {
-        ScriptManager.loadScript(new File(new File("./scripts/"), fileName));
+        ScriptManager.loadScript(new File(new File("./scripts/"), fileName), fileName);
     }
 
     public Script loadScriptR(Script script, String fileName) throws IOException {
-        return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName));
+        return ScriptManager.loadScriptR(new File(new File("./scripts/"), fileName), fileName);
     }
 
     public Script reloadScriptR(Script script, String fileName) throws IOException {

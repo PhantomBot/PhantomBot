@@ -22,6 +22,7 @@ import java.util.HashMap;
 import tv.phantombot.PhantomBot;
 
 public class ScriptManager {
+
     private static final HashMap<String, Script> scripts = new HashMap<String, Script>();
 
     /**
@@ -30,12 +31,12 @@ public class ScriptManager {
      *
      * @param {File} scriptFile
      */
-    public static void loadScript(File scriptFile) throws IOException {
+    public static void loadScript(File scriptFile, String fileName) throws IOException {
         if (scripts.containsKey(scriptFile.toPath().toString()) && !scripts.get(scriptFile.toPath().toString()).isKilled()) {
             return;
         }
 
-        Script script = new Script(scriptFile);
+        Script script = new Script(scriptFile, fileName);
         scripts.put(scriptFile.toPath().toString(), script);
         try {
             script.load();
@@ -101,8 +102,8 @@ public class ScriptManager {
      * @param {File} scriptFile
      * @return {Script} file
      */
-    public static Script loadScriptR(File scriptFile) throws IOException {
-        loadScript(scriptFile);
+    public static Script loadScriptR(File scriptFile, String fileName) throws IOException {
+        loadScript(scriptFile, fileName);
         return getScript(scriptFile);
     }
 

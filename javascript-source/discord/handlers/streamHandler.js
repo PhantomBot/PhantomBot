@@ -75,7 +75,10 @@
             // Delete live messages if any.
             if (deleteMessageToggle && liveMessages.length > 0) {
                 while (liveMessages.length > 0) {
-                    $.discordAPI.deleteMessage(liveMessages.shift());
+                    var message = liveMessages.shift();
+                    if (message !== null) {
+                        $.discordAPI.deleteMessage();
+                    }
                 }
             }
 
