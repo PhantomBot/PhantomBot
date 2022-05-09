@@ -167,6 +167,8 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload', subAction));
                     return;
                 }
+
+                $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload.usage'));
                 return;
             }
 
