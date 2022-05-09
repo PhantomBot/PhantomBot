@@ -105,20 +105,23 @@ public final class SqliteStore extends DataStore {
                 }
             }
 
-            if (!hasAutoVacuum) {
-                try {
+            try {
+                this.rwl.writeLock().lock();
+                if (!hasAutoVacuum) {
                     com.gmt2001.Console.debug.println("Enabling auto_vacuum");
-                    this.rwl.writeLock().lock();
                     try ( PreparedStatement pragmaStatement = connection.prepareStatement("PRAGMA auto_vacuum = 2;")) {
                         pragmaStatement.executeUpdate();
                     }
-                    try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                        vacuumStatement.executeUpdate();
-                    }
-                } finally {
-                    this.rwl.writeLock().unlock();
                 }
+
+                com.gmt2001.Console.debug.println("STARTUP VACUUM");
+                try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                    vacuumStatement.executeUpdate();
+                }
+            } finally {
+                this.rwl.writeLock().unlock();
             }
+
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
