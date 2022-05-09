@@ -22,20 +22,19 @@
  * Use the $ API for log functions
  * Use the $.logging API for getting log-like date and time strings
  */
-(function() {
-    var logDays = $.getSetIniDbNumber('settings', 'log_rotate_days', 30),
-        logs = {
-            file: $.getSetIniDbBoolean('settings', 'log.file', true),
-            event: $.getSetIniDbBoolean('settings', 'log.event', true),
-            error: $.getSetIniDbBoolean('settings', 'log.error', true)
-        },
-        cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false),
-        cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+(function () {
+    var logs = {
+        file: $.getSetIniDbBoolean('settings', 'log.file', true),
+        event: $.getSetIniDbBoolean('settings', 'log.event', true),
+        error: $.getSetIniDbBoolean('settings', 'log.error', true)
+    },
+            cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false),
+            cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
 
     /*
      * @event webPanelSocketUpdate
      */
-    $.bind('webPanelSocketUpdate', function(event) {
+    $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./core/logging.js')) {
             cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false);
             cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
@@ -46,7 +45,6 @@
      * function reloadLogs()
      */
     function reloadLogs() {
-        $.getIniDbNumber('settings', 'log_rotate_days');
         logs.file = $.getIniDbBoolean('settings', 'log.file');
         logs.event = $.getIniDbBoolean('settings', 'log.event');
         logs.error = $.getIniDbBoolean('settings', 'log.error');
@@ -61,9 +59,9 @@
      */
     function getLogDateString(timeStamp) {
         var now = (timeStamp ? new Date(timeStamp) : new Date()),
-            pad = function(i) {
-                return (i < 10 ? '0' + i : i);
-            };
+                pad = function (i) {
+                    return (i < 10 ? '0' + i : i);
+                };
 
         return pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
     }
@@ -102,12 +100,29 @@
      * @param {object} info
      */
     function logCustomCommand(info) {
-        var lines = Object.keys(info).map(function(key) {
+        var lines = Object.keys(info).map(function (key) {
             return '**' + $.lang.get('discord.customcommandlogs.' + key) + '**: ' + info[key];
         });
         $.log.file('customCommands', lines.join('\r\n'));
         if (!$.hasDiscordToken && cmdLogEnabled && cmdDiscordLogChannel) {
             $.discordAPI.sendMessageEmbed(cmdDiscordLogChannel, 'blue', lines.join('\r\n\r\n'));
+        }
+    }
+
+    function invalidLocation(path) {
+        return !Packages.com.gmt2001.PathValidator.isValidPathScript($.javaString(path));
+    }
+
+    function writeToFile(line, path, append) {
+        if (invalidLocation(path)) {
+            Packages.com.gmt2001.Console.err.printlnRhino('Failed to write to \'' + path + '\': Outside of valid paths');
+            return;
+        }
+
+        try {
+            Packages.com.gmt2001.JSFileSystem.WriteLineToFile($.javaString(path), $.javaString(line), append);
+        } catch (e) {
+            Packages.com.gmt2001.Console.err.printlnRhino('Failed to write to \'' + path + '\': ' + e);
         }
     }
 
@@ -124,14 +139,9 @@
             return;
         }
 
-        if (!$.isDirectory('./logs/' + filePrefix + '/')) {
-            if (!$.isDirectory('./logs/')) {
-                $.mkDir('./logs');
-            }
-            $.mkDir('./logs/' + filePrefix);
-        }
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/' + filePrefix));
 
-        $.writeToFile('[' + getLogEntryTimeDateString() + '] ' + message, './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] ' + message, './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
     }
 
     /*
@@ -145,12 +155,7 @@
             return;
         }
 
-        if (!$.isDirectory('./logs/events')) {
-            if (!$.isDirectory('./logs/')) {
-                $.mkDir('./logs');
-            }
-            $.mkDir('./logs/event');
-        }
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/event'));
 
         try {
             throw new Error('eventlog');
@@ -158,7 +163,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/event/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/event/' + getLogDateString() + '.txt', true);
     }
 
     /*
@@ -172,12 +177,7 @@
             return;
         }
 
-        if (!$.isDirectory('./logs/error/')) {
-            if (!$.isDirectory('./logs/')) {
-                $.mkDir('./logs');
-            }
-            $.mkDir('./logs/error');
-        }
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/error'));
 
         try {
             throw new Error('errorlog');
@@ -185,7 +185,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/error/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/error/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
     }
 
@@ -200,12 +200,7 @@
             return;
         }
 
-        if (!$.isDirectory('./logs/warning/')) {
-            if (!$.isDirectory('./logs/')) {
-                $.mkDir('./logs');
-            }
-            $.mkDir('./logs/warning');
-        }
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/warning'));
 
         try {
             throw new Error('warninglog');
@@ -213,7 +208,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        $.writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/warning/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/warning/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     }
 
@@ -222,14 +217,14 @@
      */
     function logRotate() {
         var logFiles,
-            idx,
-            logFileDate,
-            logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
-            logDirIdx,
-            datefmt = new java.text.SimpleDateFormat('dd-MM-yyyy'),
-            date,
-            rotateDays = $.getIniDbNumber('settings', 'log_rotate_days') * 24 * 60 * 6e4,
-            checkDate = $.systemTime() - rotateDays;
+                idx,
+                logFileDate,
+                logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
+                logDirIdx,
+                datefmt = new java.text.SimpleDateFormat('dd-MM-yyyy'),
+                date,
+                rotateDays = $.getIniDbNumber('settings', 'log_rotate_days') * 24 * 60 * 6e4,
+                checkDate = $.systemTime() - rotateDays;
 
         if (rotateDays === 0) {
             return;
@@ -253,16 +248,16 @@
     /*
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function(event) {
+    $.bind('ircChannelMessage', function (event) {
         logfile('chat', '' + event.getSender() + ': ' + event.getMessage());
     });
 
     /*
      * @event ircPrivateMessage
      */
-    $.bind('ircPrivateMessage', function(event) {
+    $.bind('ircPrivateMessage', function (event) {
         var sender = event.getSender().toLowerCase(),
-            message = event.getMessage().toLowerCase();
+                message = event.getMessage().toLowerCase();
 
         if (message.startsWith('specialuser')) {
             return;
@@ -308,11 +303,11 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var command = event.getCommand(),
-            sender = event.getSender(),
-            args = event.getArgs(),
-            action = args[0];
+                sender = event.getSender(),
+                args = event.getArgs(),
+                action = args[0];
 
         if (command.equalsIgnoreCase('log')) {
             if (action === undefined) {
@@ -372,14 +367,14 @@
         }
     });
 
-    var interval = setInterval(function() {
+    setInterval(function () {
         logRotate();
     }, 24 * 60 * 6e4, 'scripts::core::logging.js');
 
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./core/logging.js', 'log', 1);
 
         logRotate();
