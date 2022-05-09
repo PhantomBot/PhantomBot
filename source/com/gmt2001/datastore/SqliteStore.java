@@ -22,15 +22,21 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteErrorCode;
@@ -44,8 +50,12 @@ import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 public final class SqliteStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;
+    private static final long MAXWALSIZE = 104857600L;
     private static SqliteStore instance;
+    private final String dbFile;
     private final MiniConnectionPoolManager poolMgr;
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private Instant nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
 
     public static SqliteStore instance() {
         return instance("");
@@ -77,9 +87,43 @@ public final class SqliteStore extends DataStore {
         config.setJournalMode((boolean) o[3] ? SQLiteConfig.JournalMode.WAL : SQLiteConfig.JournalMode.OFF);
         config.setBusyTimeout(10000);
 
+        this.dbFile = ((String) o[0]).replaceAll("\\\\", "/");
+
         SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource(config);
-        dataSource.setUrl("jdbc:sqlite:" + ((String) o[0]).replaceAll("\\\\", "/"));
-        poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
+        dataSource.setUrl("jdbc:sqlite:" + this.dbFile);
+        this.poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
+
+        try ( Connection connection = this.poolMgr.getConnection()) {
+            boolean hasAutoVacuum = false;
+            try ( PreparedStatement statement = connection.prepareStatement("PRAGMA auto_vacuum;")) {
+                try ( ResultSet rs = statement.executeQuery()) {
+                    if (rs.next()) {
+                        if (rs.getInt("auto_vacuum") == 2) {
+                            hasAutoVacuum = true;
+                        }
+                    }
+                }
+            }
+
+            if (!hasAutoVacuum) {
+                try {
+                    com.gmt2001.Console.debug.println("Enabling auto_vacuum");
+                    this.rwl.writeLock().lock();
+                    try ( PreparedStatement pragmaStatement = connection.prepareStatement("PRAGMA auto_vacuum = 2;")) {
+                        pragmaStatement.executeUpdate();
+                    }
+                    try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                        vacuumStatement.executeUpdate();
+                    }
+                } finally {
+                    this.rwl.writeLock().unlock();
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::doMaintenance, 3, 3, TimeUnit.HOURS);
     }
 
     private String sanitizeOrder(String order) {
@@ -161,7 +205,7 @@ public final class SqliteStore extends DataStore {
     }
 
     private Connection GetConnection() throws SQLException {
-        return poolMgr.getConnection();
+        return this.poolMgr.getConnection();
     }
 
     @Override
@@ -174,87 +218,112 @@ public final class SqliteStore extends DataStore {
     }
 
     public void AddFile(Connection connection, String fName) {
-        fName = validateFname(fName);
+        try {
+            this.rwl.readLock().lock();
+            fName = validateFname(fName);
 
-        if (!FileExists(connection, fName)) {
-            try ( Statement statement = connection.createStatement()) {
-                statement.addBatch("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section string, variable string, value string);");
-                statement.addBatch("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);");
-                statement.executeBatch();
-            } catch (SQLException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+            if (!FileExists(connection, fName)) {
+                try ( Statement statement = connection.createStatement()) {
+                    statement.addBatch("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section string, variable string, value string);");
+                    statement.addBatch("CREATE UNIQUE INDEX IF NOT EXISTS " + fName + "_idx on phantombot_" + fName + " (section, variable);");
+                    statement.executeBatch();
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void RemoveKey(String fName, String section, String key) {
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                try ( PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                    statement.setString(1, section);
-                    statement.setString(2, key);
-                    statement.execute();
+                if (FileExists(connection, fName)) {
+                    try ( PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+                        statement.setString(1, section);
+                        statement.setString(2, key);
+                        statement.execute();
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void RemoveSection(String fName, String section) {
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                try ( PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;")) {
-                    statement.setString(1, section);
-                    statement.execute();
+                if (FileExists(connection, fName)) {
+                    try ( PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;")) {
+                        statement.setString(1, section);
+                        statement.execute();
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void RemoveFile(String fName) {
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                try ( Statement statement = connection.createStatement()) {
-                    statement.execute("DROP TABLE phantombot_" + fName + ";");
+                if (FileExists(connection, fName)) {
+                    try ( Statement statement = connection.createStatement()) {
+                        statement.execute("DROP TABLE phantombot_" + fName + ";");
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void RenameFile(String fNameSource, String fNameDest) {
-        try ( Connection connection = GetConnection()) {
-            fNameSource = validateFname(fNameSource);
-            fNameDest = validateFname(fNameDest);
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
+                fNameSource = validateFname(fNameSource);
+                fNameDest = validateFname(fNameDest);
 
-            if (!FileExists(connection, fNameSource)) {
-                return;
-            }
-
-            try ( Statement statement = connection.createStatement()) {
-
-                if (FileExists(connection, fNameDest)) {
-                    statement.execute("DROP TABLE phantombot_" + fNameDest + ";");
+                if (!FileExists(connection, fNameSource)) {
+                    return;
                 }
 
-                statement.execute("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+                try ( Statement statement = connection.createStatement()) {
+
+                    if (FileExists(connection, fNameDest)) {
+                        statement.execute("DROP TABLE phantombot_" + fNameDest + ";");
+                    }
+
+                    statement.execute("ALTER TABLE phantombot_" + fNameSource + " RENAME TO phantombot_" + fNameDest + ";");
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
@@ -272,160 +341,185 @@ public final class SqliteStore extends DataStore {
     }
 
     public boolean FileExists(Connection connection, String fName) {
-        fName = validateFname(fName);
+        try {
+            this.rwl.readLock().lock();
+            fName = validateFname(fName);
 
-        boolean out = false;
+            boolean out = false;
 
-        try ( Statement statement = connection.createStatement()) {
-            try ( ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
-                out = rs.next();
+            try ( Statement statement = connection.createStatement()) {
+                try ( ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';")) {
+                    out = rs.next();
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public String[] GetFileList() {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            try ( Statement statement = connection.createStatement()) {
-                try ( ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
-
-                    ArrayList<String> s = new ArrayList<>();
-
-                    while (rs.next()) {
-                        s.add(rs.getString("name").substring(11));
-                    }
-
-                    out = s.toArray(String[]::new);
-                }
-            }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        return out;
-    }
-
-    @Override
-    public String[] GetCategoryList(String fName) {
-        String[] out = new String[]{};
-
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
-
-            if (FileExists(connection, fName)) {
+            try ( Connection connection = GetConnection()) {
                 try ( Statement statement = connection.createStatement()) {
-                    try ( ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
+                    try ( ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';")) {
 
                         ArrayList<String> s = new ArrayList<>();
 
                         while (rs.next()) {
-                            s.add(rs.getString("section"));
+                            s.add(rs.getString("name").substring(11));
                         }
 
                         out = s.toArray(String[]::new);
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
+    }
+
+    @Override
+    public String[] GetCategoryList(String fName) {
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
+
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
+
+                if (FileExists(connection, fName)) {
+                    try ( Statement statement = connection.createStatement()) {
+                        try ( ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;")) {
+
+                            ArrayList<String> s = new ArrayList<>();
+
+                            while (rs.next()) {
+                                s.add(rs.getString("section"));
+                            }
+
+                            out = s.toArray(String[]::new);
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public String[] GetKeyList(String fName, String section) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
-                        statement.setString(1, section);
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;")) {
+                            statement.setString(1, section);
 
-                        try ( ResultSet rs = statement.executeQuery()) {
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            ArrayList<String> s = new ArrayList<>();
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
-
-                            out = s.toArray(String[]::new);
                         }
-                    }
-                } else {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
-                        try ( ResultSet rs = statement.executeQuery()) {
+                    } else {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + ";")) {
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            ArrayList<String> s = new ArrayList<>();
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
-
-                            out = s.toArray(String[]::new);
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public KeyValue[] GetKeyValueList(String fName, String section) {
-        KeyValue[] out = new KeyValue[]{};
+        try {
+            this.rwl.readLock().lock();
+            KeyValue[] out = new KeyValue[]{};
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
-                        statement.setString(1, section);
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + " WHERE section=?;")) {
+                            statement.setString(1, section);
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<KeyValue> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<KeyValue> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                                while (rs.next()) {
+                                    s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                                }
+
+                                out = s.toArray(KeyValue[]::new);
                             }
-
-                            out = s.toArray(KeyValue[]::new);
                         }
-                    }
-                } else {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
-                        try ( ResultSet rs = statement.executeQuery()) {
+                    } else {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable, value FROM phantombot_" + fName + ";")) {
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            ArrayList<KeyValue> s = new ArrayList<>();
+                                ArrayList<KeyValue> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                                while (rs.next()) {
+                                    s.add(new KeyValue(rs.getString("variable"), rs.getString("value")));
+                                }
+
+                                out = s.toArray(KeyValue[]::new);
                             }
-
-                            out = s.toArray(KeyValue[]::new);
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
@@ -439,61 +533,66 @@ public final class SqliteStore extends DataStore {
     }
 
     private String[] GetKeysByOrderInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            String statementStr;
-            fName = validateFname(fName);
-            order = sanitizeOrder(order);
-            limit = sanitizeLimit(limit);
-            offset = sanitizeOffset(offset);
+            try ( Connection connection = GetConnection()) {
+                String statementStr;
+                fName = validateFname(fName);
+                order = sanitizeOrder(order);
+                limit = sanitizeLimit(limit);
+                offset = sanitizeOffset(offset);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    if (isNumber) {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    } else {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    }
-                    try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                        statement.setString(1, section);
-
-                        try ( ResultSet rs = statement.executeQuery()) {
-
-                            ArrayList<String> s = new ArrayList<>();
-
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
-                            }
-
-                            out = s.toArray(String[]::new);
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        if (isNumber) {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        } else {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                         }
-                    }
-                } else {
-                    if (isNumber) {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    } else {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    }
-                    try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                        try ( ResultSet rs = statement.executeQuery()) {
+                        try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
+                            statement.setString(1, section);
 
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                ArrayList<String> s = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
+                        }
+                    } else {
+                        if (isNumber) {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(variable as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        } else {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY variable COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        }
+                        try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            out = s.toArray(String[]::new);
+                                ArrayList<String> s = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
+                            }
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
@@ -507,532 +606,596 @@ public final class SqliteStore extends DataStore {
     }
 
     private String[] GetKeysByOrderValueInternal(String fName, String section, String order, String limit, String offset, boolean isNumber) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            String statementStr;
-            fName = validateFname(fName);
-            order = sanitizeOrder(order);
-            limit = sanitizeLimit(limit);
-            offset = sanitizeOffset(offset);
+            try ( Connection connection = GetConnection()) {
+                String statementStr;
+                fName = validateFname(fName);
+                order = sanitizeOrder(order);
+                limit = sanitizeLimit(limit);
+                offset = sanitizeOffset(offset);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    if (isNumber) {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    } else {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    }
-
-                    try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                        statement.setString(1, section);
-
-                        try ( ResultSet rs = statement.executeQuery()) {
-
-                            ArrayList<String> s = new ArrayList<>();
-
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
-                            }
-
-                            out = s.toArray(String[]::new);
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        if (isNumber) {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        } else {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " WHERE section=? ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
                         }
-                    }
-                } else {
-                    if (isNumber) {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    } else {
-                        statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
-                    }
-                    try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
-                        try ( ResultSet rs = statement.executeQuery()) {
 
-                            ArrayList<String> s = new ArrayList<>();
+                        try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
+                            statement.setString(1, section);
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                            try ( ResultSet rs = statement.executeQuery()) {
+
+                                ArrayList<String> s = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
+                        }
+                    } else {
+                        if (isNumber) {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY CAST(value as INTEGER) COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        } else {
+                            statementStr = "SELECT variable FROM phantombot_" + fName + " ORDER BY value COLLATE NOCASE " + order + " LIMIT " + limit + " OFFSET " + offset + ";";
+                        }
+                        try ( PreparedStatement statement = connection.prepareStatement(statementStr)) {
+                            try ( ResultSet rs = statement.executeQuery()) {
 
-                            out = s.toArray(String[]::new);
+                                ArrayList<String> s = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
+                            }
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
-                        statement.setString(1, section);
-                        statement.setString(2, "%" + search + "%");
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value LIKE ?;")) {
+                            statement.setString(1, section);
+                            statement.setString(2, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+                                out = s.toArray(String[]::new);
                             }
-                            out = s.toArray(String[]::new);
                         }
-                    }
-                } else {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
-                        statement.setString(1, "%" + search + "%");
+                    } else {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value LIKE ?;")) {
+                            statement.setString(1, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+                                out = s.toArray(String[]::new);
                             }
-                            out = s.toArray(String[]::new);
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
-                        statement.setString(1, section);
-                        statement.setString(2, "%" + search + "%");
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ?;")) {
+                            statement.setString(1, section);
+                            statement.setString(2, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+                                out = s.toArray(String[]::new);
                             }
-                            out = s.toArray(String[]::new);
                         }
-                    }
-                } else {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
-                        statement.setString(1, "%" + search + "%");
+                    } else {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ?;")) {
+                            statement.setString(1, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+                                out = s.toArray(String[]::new);
                             }
-                            out = s.toArray(String[]::new);
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
-        String[] out = new String[]{};
+        try {
+            this.rwl.readLock().lock();
+            String[] out = new String[]{};
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
-            order = sanitizeOrder(order);
-            limit = sanitizeLimit(limit);
-            offset = sanitizeOffset(offset);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
+                order = sanitizeOrder(order);
+                limit = sanitizeLimit(limit);
+                offset = sanitizeOffset(offset);
 
-            if (FileExists(connection, fName)) {
-                if (section != null) {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
-                        statement.setString(1, section);
-                        statement.setString(2, "%" + search + "%");
+                if (FileExists(connection, fName)) {
+                    if (section != null) {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                            statement.setString(1, section);
+                            statement.setString(2, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
-
-                            out = s.toArray(String[]::new);
                         }
-                    }
-                } else {
-                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
-                        statement.setString(1, "%" + search + "%");
+                    } else {
+                        try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE variable LIKE ? ORDER BY variable " + order + " LIMIT " + limit + " OFFSET " + offset + ";")) {
+                            statement.setString(1, "%" + search + "%");
 
-                        try ( ResultSet rs = statement.executeQuery()) {
-                            ArrayList<String> s = new ArrayList<>();
+                            try ( ResultSet rs = statement.executeQuery()) {
+                                ArrayList<String> s = new ArrayList<>();
 
-                            while (rs.next()) {
-                                s.add(rs.getString("variable"));
+                                while (rs.next()) {
+                                    s.add(rs.getString("variable"));
+                                }
+
+                                out = s.toArray(String[]::new);
                             }
-
-                            out = s.toArray(String[]::new);
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return out;
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public boolean HasKey(String fName, String section, String key) {
-        boolean out = false;
+        try {
+            this.rwl.readLock().lock();
+            boolean out = false;
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (!FileExists(connection, fName)) {
-                return false;
-            }
+                if (!FileExists(connection, fName)) {
+                    return false;
+                }
 
-            if (section != null && !section.isEmpty()) {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                    statement.setString(1, section);
-                    statement.setString(2, key);
+                if (section != null && !section.isEmpty()) {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+                        statement.setString(1, section);
+                        statement.setString(2, key);
 
-                    try ( ResultSet rs = statement.executeQuery()) {
+                        try ( ResultSet rs = statement.executeQuery()) {
 
-                        if (rs.next()) {
-                            out = true;
+                            if (rs.next()) {
+                                out = true;
+                            }
+                        }
+                    }
+                } else {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+                        statement.setString(1, key);
+
+                        try ( ResultSet rs = statement.executeQuery()) {
+
+                            if (rs.next()) {
+                                out = true;
+                            }
                         }
                     }
                 }
-            } else {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
-                    statement.setString(1, key);
-
-                    try ( ResultSet rs = statement.executeQuery()) {
-
-                        if (rs.next()) {
-                            out = true;
-                        }
-                    }
-                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+
+            return out;
+        } finally {
+            this.rwl.readLock().unlock();
         }
-
-        return out;
     }
 
     @Override
     public String GetKeyByValue(String fName, String section, String value) {
-        String result = null;
+        try {
+            this.rwl.readLock().lock();
+            String result = null;
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (!FileExists(connection, fName)) {
-                return result;
-            }
+                if (!FileExists(connection, fName)) {
+                    return result;
+                }
 
-            if (section != null) {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
-                    statement.setString(1, section);
-                    statement.setString(2, value);
+                if (section != null) {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND value=?;")) {
+                        statement.setString(1, section);
+                        statement.setString(2, value);
 
-                    try ( ResultSet rs = statement.executeQuery()) {
+                        try ( ResultSet rs = statement.executeQuery()) {
 
-                        if (rs.next()) {
-                            result = rs.getString("variable");
+                            if (rs.next()) {
+                                result = rs.getString("variable");
+                            }
+                        }
+                    }
+                } else {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
+                        statement.setString(1, value);
+
+                        try ( ResultSet rs = statement.executeQuery()) {
+
+                            if (rs.next()) {
+                                result = rs.getString("variable");
+                            }
                         }
                     }
                 }
-            } else {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE value=?;")) {
-                    statement.setString(1, value);
-
-                    try ( ResultSet rs = statement.executeQuery()) {
-
-                        if (rs.next()) {
-                            result = rs.getString("variable");
-                        }
-                    }
-                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+
+            return result;
+        } finally {
+            this.rwl.readLock().unlock();
         }
-
-        return result;
-
     }
 
     @Override
     public String GetString(String fName, String section, String key) {
-        String result = null;
+        try {
+            this.rwl.readLock().lock();
+            String result = null;
 
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
 
-            if (!FileExists(connection, fName)) {
-                return result;
-            }
+                if (!FileExists(connection, fName)) {
+                    return result;
+                }
 
-            if (section != null) {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
-                    statement.setString(1, section);
-                    statement.setString(2, key);
+                if (section != null) {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;")) {
+                        statement.setString(1, section);
+                        statement.setString(2, key);
 
-                    try ( ResultSet rs = statement.executeQuery()) {
+                        try ( ResultSet rs = statement.executeQuery()) {
 
-                        if (rs.next()) {
-                            result = rs.getString("value");
+                            if (rs.next()) {
+                                result = rs.getString("value");
+                            }
+                        }
+                    }
+                } else {
+                    try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
+                        statement.setString(1, key);
+
+                        try ( ResultSet rs = statement.executeQuery()) {
+
+                            if (rs.next()) {
+                                result = rs.getString("value");
+                            }
                         }
                     }
                 }
-            } else {
-                try ( PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE variable=?;")) {
-                    statement.setString(1, key);
-
-                    try ( ResultSet rs = statement.executeQuery()) {
-
-                        if (rs.next()) {
-                            result = rs.getString("value");
-                        }
-                    }
-                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+
+            return result;
+        } finally {
+            this.rwl.readLock().unlock();
         }
-
-        return result;
     }
 
     @Override
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        try ( Connection connection = GetConnection()) {
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
 
-            fName = validateFname(fName);
-            AddFile(connection, fName);
+                fName = validateFname(fName);
+                AddFile(connection, fName);
 
-            /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
-            Map<String, String> insertMap = new HashMap<>();
-            Map<String, String> updateMap = new HashMap<>();
+                /* Walk the list of keys to figure out which ones can pass INSERT and which ones need UPDATE */
+                Map<String, String> insertMap = new HashMap<>();
+                Map<String, String> updateMap = new HashMap<>();
 
-            for (int idx = 0; idx < keys.length; idx++) {
-                if (HasKey(fName, section, keys[idx])) {
-                    updateMap.put(keys[idx], values[idx]);
-                } else {
-                    insertMap.put(keys[idx], values[idx]);
-                }
-            }
-
-            connection.setAutoCommit(false);
-
-            if (!insertMap.isEmpty()) {
-                try ( PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
-                    for (String key : insertMap.keySet()) {
-                        statement.setString(1, insertMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
+                for (int idx = 0; idx < keys.length; idx++) {
+                    if (HasKey(fName, section, keys[idx])) {
+                        updateMap.put(keys[idx], values[idx]);
+                    } else {
+                        insertMap.put(keys[idx], values[idx]);
                     }
-
-                    statement.executeBatch();
                 }
-            }
 
-            if (!updateMap.isEmpty()) {
-                try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
-                    for (String key : updateMap.keySet()) {
-                        statement.setString(1, updateMap.get(key));
-                        statement.setString(2, section);
-                        statement.setString(3, key);
-                        statement.addBatch();
+                connection.setAutoCommit(false);
+
+                if (!insertMap.isEmpty()) {
+                    try ( PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " (value, section, variable) values(?, ?, ?);")) {
+                        for (String key : insertMap.keySet()) {
+                            statement.setString(1, insertMap.get(key));
+                            statement.setString(2, section);
+                            statement.setString(3, key);
+                            statement.addBatch();
+                        }
+
+                        statement.executeBatch();
                     }
-
-                    statement.executeBatch();
                 }
-            }
 
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+                if (!updateMap.isEmpty()) {
+                    try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? and variable=?;")) {
+                        for (String key : updateMap.keySet()) {
+                            statement.setString(1, updateMap.get(key));
+                            statement.setString(2, section);
+                            statement.setString(3, key);
+                            statement.addBatch();
+                        }
+
+                        statement.executeBatch();
+                    }
+                }
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void SetString(String fName, String section, String key, String value) {
-        try ( Connection connection = GetConnection()) {
+        try {
+            this.rwl.readLock().lock();
+            try ( Connection connection = GetConnection()) {
 
-            fName = validateFname(fName);
+                fName = validateFname(fName);
 
-            AddFile(connection, fName);
+                AddFile(connection, fName);
 
-            if (HasKey(fName, section, key)) {
-                try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
-                    statement.setString(1, value);
-                    statement.setString(2, section);
-                    statement.setString(3, key);
-                    statement.execute();
+                if (HasKey(fName, section, key)) {
+                    try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;")) {
+                        statement.setString(1, value);
+                        statement.setString(2, section);
+                        statement.setString(3, key);
+                        statement.execute();
+                    }
+                } else {
+                    try ( PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
+                        statement.setString(1, section);
+                        statement.setString(2, key);
+                        statement.setString(3, value);
+                        statement.execute();
+                    }
                 }
-            } else {
-                try ( PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);")) {
-                    statement.setString(1, section);
-                    statement.setString(2, key);
-                    statement.setString(3, value);
-                    statement.execute();
-                }
+
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
-        if (keys.length == 0) {
-            return;
-        }
-
-        try ( Connection connection = GetConnection()) {
-            fName = validateFname(fName);
-
-            AddFile(connection, fName);
-
-            connection.setAutoCommit(false);
-
-            StringBuilder sb = new StringBuilder(keys.length * 2);
-
-            for (String key : keys) {
-                sb.append("?,");
+        try {
+            this.rwl.readLock().lock();
+            if (keys.length == 0) {
+                return;
             }
 
-            try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS UNSIGNED) + ? WHERE section = ? AND variable IN (" + sb.deleteCharAt(sb.length() - 1).toString() + ");")) {
-                statement.setInt(1, Integer.parseUnsignedInt(value));
-                statement.setString(2, section);
-                int i = 3;
-                for (String k : keys) {
-                    statement.setString(i++, k);
+            try ( Connection connection = GetConnection()) {
+                fName = validateFname(fName);
+
+                AddFile(connection, fName);
+
+                connection.setAutoCommit(false);
+
+                StringBuilder sb = new StringBuilder(keys.length * 2);
+
+                for (String key : keys) {
+                    sb.append("?,");
                 }
-                statement.execute();
-            }
 
-            sb = new StringBuilder(keys.length * 10);
-
-            for (String key : keys) {
-                sb.append("(?, ?, ?),");
-            }
-
-            try ( PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO phantombot_" + fName + " (section, variable, value) VALUES " + sb.deleteCharAt(sb.length() - 1).toString() + ";")) {
-                int i = 1;
-                for (String k : keys) {
-                    statement.setString(i++, section);
-                    statement.setString(i++, k);
-                    statement.setString(i++, value);
+                try ( PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value = CAST(value AS UNSIGNED) + ? WHERE section = ? AND variable IN (" + sb.deleteCharAt(sb.length() - 1).toString() + ");")) {
+                    statement.setInt(1, Integer.parseUnsignedInt(value));
+                    statement.setString(2, section);
+                    int i = 3;
+                    for (String k : keys) {
+                        statement.setString(i++, k);
+                    }
+                    statement.execute();
                 }
-                statement.execute();
-            }
 
-            connection.commit();
-            connection.setAutoCommit(true);
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+                sb = new StringBuilder(keys.length * 10);
+
+                for (String key : keys) {
+                    sb.append("(?, ?, ?),");
+                }
+
+                try ( PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO phantombot_" + fName + " (section, variable, value) VALUES " + sb.deleteCharAt(sb.length() - 1).toString() + ";")) {
+                    int i = 1;
+                    for (String k : keys) {
+                        statement.setString(i++, section);
+                        statement.setString(i++, k);
+                        statement.setString(i++, value);
+                    }
+                    statement.execute();
+                }
+
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } finally {
+            this.rwl.readLock().unlock();
         }
     }
 
     @Override
     public String[][] executeSql(String sql, String[] replacements) {
-        ArrayList<ArrayList<String>> results = new ArrayList<>();
+        try {
+            this.rwl.readLock().lock();
+            ArrayList<ArrayList<String>> results = new ArrayList<>();
 
-        try ( Connection connection = GetConnection()) {
-            try ( PreparedStatement statement = connection.prepareStatement(sql)) {
-                int i = 1;
-                for (String k : replacements) {
-                    statement.setString(i++, k);
-                }
+            try ( Connection connection = GetConnection()) {
+                try ( PreparedStatement statement = connection.prepareStatement(sql)) {
+                    int i = 1;
+                    for (String k : replacements) {
+                        statement.setString(i++, k);
+                    }
 
-                try ( ResultSet rs = statement.executeQuery()) {
-                    int numcol = rs.getMetaData().getColumnCount();
-                    i = 0;
+                    try ( ResultSet rs = statement.executeQuery()) {
+                        int numcol = rs.getMetaData().getColumnCount();
+                        i = 0;
 
-                    while (rs.next()) {
-                        results.add(new ArrayList<>());
+                        while (rs.next()) {
+                            results.add(new ArrayList<>());
 
-                        for (int b = 1; b <= numcol; b++) {
-                            results.get(i).add(rs.getString(b));
+                            for (int b = 1; b <= numcol; b++) {
+                                results.get(i).add(rs.getString(b));
+                            }
+
+                            i++;
                         }
-
-                        i++;
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
-        return results.stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
+            return results.stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     @Override
     public void CreateIndexes() {
-        try ( Connection connection = GetConnection()) {
-            String[] tableNames = GetFileList();
-            try ( Statement statement = connection.createStatement()) {
-                for (String tableName : tableNames) {
-                    tableName = validateFname(tableName);
-                    try {
-                        statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
-                    } catch (SQLiteException ex) {
-                        if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT) {
-                            statement.execute("DELETE FROM phantombot_" + tableName + " WHERE rowid NOT IN (SELECT MIN(rowid) FROM phantombot_" + tableName + " GROUP BY section, variable);");
+        try {
+            this.rwl.writeLock().lock();
+            try ( Connection connection = GetConnection()) {
+                String[] tableNames = GetFileList();
+                try ( Statement statement = connection.createStatement()) {
+                    for (String tableName : tableNames) {
+                        tableName = validateFname(tableName);
+                        try {
                             statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
-                        } else {
-                            throw ex;
+                        } catch (SQLiteException ex) {
+                            if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT) {
+                                statement.execute("DELETE FROM phantombot_" + tableName + " WHERE rowid NOT IN (SELECT MIN(rowid) FROM phantombot_" + tableName + " GROUP BY section, variable);");
+                                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
+                            } else {
+                                throw ex;
+                            }
                         }
                     }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.writeLock().unlock();
         }
     }
 
     @Override
     public void DropIndexes() {
-        try ( Connection connection = GetConnection()) {
-            String[] tableNames = GetFileList();
-            try ( Statement statement = connection.createStatement()) {
-                for (String tableName : tableNames) {
-                    tableName = validateFname(tableName);
-                    statement.execute("DROP INDEX IF EXISTS " + tableName + "_idx");
+        try {
+            this.rwl.writeLock().lock();
+            try ( Connection connection = GetConnection()) {
+                String[] tableNames = GetFileList();
+                try ( Statement statement = connection.createStatement()) {
+                    for (String tableName : tableNames) {
+                        tableName = validateFname(tableName);
+                        statement.execute("DROP INDEX IF EXISTS " + tableName + "_idx");
+                    }
                 }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.writeLock().unlock();
         }
     }
 
@@ -1043,23 +1206,85 @@ public final class SqliteStore extends DataStore {
 
     @Override
     public void backupDB(String filename) {
-        try ( Connection connection = GetConnection()) {
-            if (!new File("./dbbackup").exists()) {
-                new File("./dbbackup").mkdirs();
-            }
+        try {
+            this.rwl.writeLock().lock();
+            try ( Connection connection = GetConnection()) {
+                if (!new File("./dbbackup").exists()) {
+                    new File("./dbbackup").mkdirs();
+                }
 
-            try ( Statement statement = connection.createStatement()) {
-                statement.execute("backup to ./dbbackup/" + filename);
-                com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+                try ( Statement statement = connection.createStatement()) {
+                    statement.execute("backup to ./dbbackup/" + filename);
+                    com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } finally {
+            this.rwl.writeLock().unlock();
+        }
+    }
+
+    public void doMaintenance() {
+        try {
+            this.rwl.writeLock().lock();
+
+            try ( Connection connection = this.poolMgr.getConnection()) {
+                boolean vacuumed = false;
+                try {
+                    Path walPath = Paths.get(this.dbFile + "-wal").toAbsolutePath().normalize().toRealPath();
+                    if (Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
+                        vacuumed = true;
+                        com.gmt2001.Console.debug.println("MAXWALSIZE VACUUM");
+                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                            vacuumStatement.executeUpdate();
+                            this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+                        }
+                    }
+                } catch (IOException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+
+                if (!vacuumed) {
+                    if (this.nextVacuum.isBefore(Instant.now())) {
+                        com.gmt2001.Console.debug.println("DAILY VACUUM");
+                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                            vacuumStatement.executeUpdate();
+                            this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+                        }
+                    } else {
+                        com.gmt2001.Console.debug.println("PRAGMA incremental_vacuum(2048)");
+                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("PRAGMA incremental_vacuum(2048);")) {
+                            vacuumStatement.executeUpdate();
+                        }
+                    }
+                }
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.writeLock().unlock();
         }
     }
 
     @Override
     public void dispose() {
         super.dispose();
+
+        try {
+            com.gmt2001.Console.debug.println("VACUUM on dispose");
+            this.rwl.writeLock().lock();
+
+            try ( Connection connection = this.poolMgr.getConnection()) {
+                try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                    vacuumStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            this.rwl.writeLock().unlock();
+        }
 
         try {
             poolMgr.dispose();
