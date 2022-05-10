@@ -31,7 +31,7 @@ services:
       # Twitch bot user (Required)
       PHANTOMBOT_USER: ""
       # Twitch bot user OAuth token (https://phantombot.github.io/PhantomBot/oauth/) (Required)
-      PHANTOMBOT_OAUTH: ""
+      PHANTOMBOT_OAUTH: "nothing"
       # Twitch caster channel (Required)
       PHANTOMBOT_CHANNEL: ""
       # Webinterface username
@@ -40,6 +40,8 @@ services:
       PHANTOMBOT_PANELPASSWORD: ""
       # Webinterface use https?
       PHANTOMBOT_USEHTTPS: "true"
+      # Enables the restart button in the panel
+      PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
 
 volumes:
   PhantomBot_data:
