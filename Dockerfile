@@ -42,7 +42,8 @@ RUN cd "${BUILDDIR}" \
 
 RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && ls | grep java-runtime | xargs --no-run-if-empty rm -rf \
-    && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf
+    && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf \
+    && ls | grep restartbot | grep -v restartbot-docker.sh | xargs --no-run-if-empty rm -rf
 
 RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && mkdir "${DATADIR}/scripts" \
