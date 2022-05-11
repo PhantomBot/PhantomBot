@@ -18,6 +18,7 @@ package com.gmt2001;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import tv.phantombot.CaselessProperties;
@@ -50,6 +51,28 @@ public final class PathValidator {
     };
 
     private PathValidator() {
+    }
+
+    public static Path getRealPath(String path) {
+        return getRealPath(Paths.get(path));
+    }
+
+    public static Path getRealPath(Path path) {
+        Path originalPath = path.toAbsolutePath().normalize();
+        try {
+            return originalPath.toRealPath();
+        } catch (IOException ex) {
+            if (NoSuchFileException.class.isAssignableFrom(ex.getClass())) {
+                Path parentPath = originalPath.getParent();
+
+                if (parentPath != null) {
+                    Path realPath = getRealPath(parentPath);
+                    return realPath.resolve(originalPath.getFileName());
+                }
+            }
+        }
+
+        return path;
     }
 
     public static String getDockerPath() {

@@ -256,7 +256,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         int offset = 0;
 
         if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
-            com.gmt2001.Console.debug.println(">" + rawMessage);
+            com.gmt2001.Console.debug.println(">" + rawMessage.trim());
         }
 
         if (rawMessage.startsWith("PONG")) {

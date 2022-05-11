@@ -18,6 +18,7 @@ package tv.phantombot;
 
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
+import com.gmt2001.PathValidator;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
@@ -797,7 +798,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/ytplayer/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/ytplayer/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -821,7 +822,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/playlist/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/playlist/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/playlist/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -847,7 +848,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return panelSettings.http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/common/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/common/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/common/js/wsConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);

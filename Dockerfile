@@ -42,7 +42,8 @@ RUN cd "${BUILDDIR}" \
 
 RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && ls | grep java-runtime | xargs --no-run-if-empty rm -rf \
-    && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf
+    && ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf \
+    && ls | grep restartbot | grep -v restartbot-docker.sh | xargs --no-run-if-empty rm -rf
 
 RUN cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/" \
     && mkdir "${DATADIR}/scripts" \
@@ -126,6 +127,7 @@ RUN cd "${BASEDIR}" \
     && ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom" \
     && touch "${DATADIR}/gameslist/gamesList.txt" \
     && ln -s "${DATADIR}/gameslist/gamesList.txt" "${BASEDIR}/web/panel/js/utils/gamesList.txt" \
+    && chmod u+x "${BASEDIR}/restartbot-docker.sh" \
     && chmod u+x "${BASEDIR}/launch-docker.sh" \
     && chmod u+x "${BASEDIR}/docker-entrypoint.sh"
 
