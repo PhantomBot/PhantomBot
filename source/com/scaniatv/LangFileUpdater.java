@@ -113,7 +113,7 @@ public final class LangFileUpdater {
                 throw new AccessDeniedException(langFile, null, "Outside acceptable path");
             }
 
-            Files.createDirectories(Paths.get(langFile).toAbsolutePath().normalize().toRealPath().getParent());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get(langFile)).getParent());
 
             // This is used if we need to load the script or not.
             boolean exists = true;

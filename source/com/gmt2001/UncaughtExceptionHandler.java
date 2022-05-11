@@ -55,8 +55,8 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
                 String timestamp = datefmt.format(new Date());
 
-                Path p = Paths.get("./logs/stacktraces/" + timestamp + ".txt");
-                Files.createDirectories(p.toAbsolutePath().normalize().toRealPath().getParent());
+                Path p = PathValidator.getRealPath(Paths.get("./logs/stacktraces/" + timestamp + ".txt"));
+                Files.createDirectories(p.getParent());
 
                 Files.write(p, List.of("[" + timestamp + "] " + trace.toString()), StandardCharsets.UTF_8, StandardOpenOption.CREATE,
                         StandardOpenOption.APPEND, StandardOpenOption.WRITE);

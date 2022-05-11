@@ -17,6 +17,7 @@
 package com.gmt2001.datastore;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
+import com.gmt2001.PathValidator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -1235,7 +1236,7 @@ public final class SqliteStore extends DataStore {
             try ( Connection connection = this.poolMgr.getConnection()) {
                 boolean vacuumed = false;
                 try {
-                    Path walPath = Paths.get(this.dbFile + "-wal").toAbsolutePath().normalize().toRealPath();
+                    Path walPath = PathValidator.getRealPath(Paths.get(this.dbFile + "-wal"));
                     if (Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
                         vacuumed = true;
                         com.gmt2001.Console.debug.println("MAXWALSIZE VACUUM");
