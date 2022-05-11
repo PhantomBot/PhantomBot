@@ -87,7 +87,7 @@
         hasDrawn = false;
         $.inidb.RemoveFile('ticketsList');
         $.inidb.RemoveFile('entered');
-        $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
+        $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
         entries = "";
         entries = [];
 
@@ -306,7 +306,7 @@
     function incr(user, times) {
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
-            $.inidb.incr('raffleresults', 'ticketRaffleEntries', 1);
+            $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
         }
         $.inidb.incr('ticketsList', user.toLowerCase(), times);
 
@@ -441,7 +441,7 @@
                 clear();
                 $.inidb.RemoveFile('ticketsList');
                 $.inidb.RemoveFile('entered');
-                $.inidb.set('raffleresults', 'ticketRaffleEntries', 0);
+                $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
                 entries = [];
                 saveState();
                 if (!sender.equalsIgnoreCase($.botName)) {
