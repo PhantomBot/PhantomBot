@@ -386,10 +386,12 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validateAPI(CaselessProperties.instance().getProperty("apioauth", ""), "API (apioauth)");
         }
 
-        /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
+        if (!CaselessProperties.instance().getProperty("oauth", "").isEmpty()) {
+            /* Validate the chat OAUTH token. */
+            TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-        TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+        }
     }
 
     private void initChat() {
