@@ -60,7 +60,7 @@ public class ConfigurationManager {
 
     static CaselessProperties getConfiguration() {
         /* List of properties that must exist. */
-        String[] requiredProperties = new String[]{PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER};
+        String[] requiredProperties = new String[]{PROP_PANEL_USER, PROP_PANEL_PASSWORD, PROP_CHANNEL, PROP_OWNER, PROP_USER};
         String requiredPropertiesErrorMessage;
 
         /* Properties configuration */
