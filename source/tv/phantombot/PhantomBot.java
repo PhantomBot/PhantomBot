@@ -131,6 +131,7 @@ public final class PhantomBot implements Listener {
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
     private HTTPOAuthHandler oauthHandler;
+    private HTTPAuthenticatedHandler httpAuthenticatedHandler;
 
     /* PhantomBot Information */
     private static PhantomBot instance;
@@ -473,6 +474,8 @@ public final class PhantomBot implements Listener {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
 
+        this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
 
@@ -672,6 +675,15 @@ public final class PhantomBot implements Listener {
         return pass;
     }
 
+    private String getPanelOAuth() {
+        String pass = CaselessProperties.instance().getProperty("oauth", (String) null);
+        if (pass == null) {
+            pass = PhantomBot.generateRandomString(12);
+        }
+
+        return pass;
+    }
+
     private void initWeb() {
         /* Is the web toggle enabled? */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
@@ -680,7 +692,8 @@ public final class PhantomBot implements Listener {
                     CaselessProperties.instance().getPropertyAsBoolean("usehttps", true), CaselessProperties.instance().getProperty("httpsFileName", ""),
                     CaselessProperties.instance().getProperty("httpsPassword", ""), this.getBotName());
             new HTTPNoAuthHandler().register();
-            new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), CaselessProperties.instance().getProperty("oauth", "").replace("oauth:", "")).register();
+            this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+            this.httpAuthenticatedHandler.register();
             new HTTPPanelAndYTHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
             this.oauthHandler = (HTTPOAuthHandler) new HTTPOAuthHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
             if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
