@@ -15,33 +15,57 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Compose spec version. Do not change
 version: '3'
 services:
+  # Service name, used internally by Docker Compose. Can be changed but does not matter
   phantombot:
+    # Container name, this will show up in Docker command output, Docker Desktop, Portainer, etc
+    # If running multiple bot instances, this should be changed so you will know which bot this instance belongs to
     container_name: phantombot
+    # Image to pull, automatically selects the latest version when creating the container
     image: ghcr.io/phantombot/phantombot
+    #
+    # Maps the panel port so it is accessible to the host and, if firewall settings allow, the internet
     ports:
-      - "25000:25000"
+        # The port the bot webserver listens on in the container
+        # This should not be changed, and the baseport setting in botlogin.txt should not be changed
+        # It is not necessary with Docker since this is internal to each individual container instance
+      - target: 25000
+        #
+        # The port the bot webserver will be published to on the host
+        # This is the number that should be changed when hosting multiple bot instances on the same server
+        published: 25000
+        #
+        # TCP protocol for HTTP. Do not change
+        protocol: tcp
+    # The restart policy. "always" or "unless-stopped" are the recommended values and are required to use the panel restart button
+    # "unless-stopped": The container auto-restarts. If you stop the container using a Docker command, it will stay stopped until you start it using a Docker command
+    # "always": The container always auto-restarts. If you stop the container using a Docker command, it will auto-restart if the Docker service or server restarts
     restart: always
     volumes:
+     # Defines the volume mount for data persistence inside the container, do not change
+     # See the bottom of this file for the part you can change
       - PhantomBot_data:/opt/PhantomBot_data
     environment:
-      # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix.
-      # ------ Note that after first run, botlogin.txt takes priority.
+      # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
+      # ------ Note that after first run, botlogin.txt takes priority
+      # ------ The next 4 variables provided are required to be set to valid values for first run
       # Twitch bot user (Required)
       PHANTOMBOT_USER: ""
-      # Twitch bot user OAuth token (https://phantombot.github.io/PhantomBot/oauth/) (Required)
-      PHANTOMBOT_OAUTH: "nothing"
       # Twitch caster channel (Required)
       PHANTOMBOT_CHANNEL: ""
-      # Webinterface username
+      # Webinterface username (Required)
       PHANTOMBOT_PANELUSER: ""
-      # Webinterface password
+      # Webinterface password (Required)
       PHANTOMBOT_PANELPASSWORD: ""
-      # Webinterface use https?
-      PHANTOMBOT_USEHTTPS: "true"
       # Enables the restart button in the panel
       PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
 
 volumes:
+  # It is recommended to leave this as it is with nothing after the colon (:)
+  # This allows Docker to handle your data volume and associated permissions
+  # with a guarantee that they will work properly
+  #
+  # If you still want mount to a host directory, this is where you do it, after the colon (:)
   PhantomBot_data:

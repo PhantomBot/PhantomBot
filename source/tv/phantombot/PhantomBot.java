@@ -370,8 +370,8 @@ public final class PhantomBot implements Listener {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
-                Files.write(Paths.get("PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
-                        StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.DELETE_ON_CLOSE);
+                Files.write(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+                        StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException | NumberFormatException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -386,10 +386,12 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validateAPI(CaselessProperties.instance().getProperty("apioauth", ""), "API (apioauth)");
         }
 
-        /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
+        if (!CaselessProperties.instance().getProperty("oauth", "").isEmpty()) {
+            /* Validate the chat OAUTH token. */
+            TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-        TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+        }
     }
 
     private void initChat() {
@@ -999,6 +1001,14 @@ public final class PhantomBot implements Listener {
             RollbarProvider.instance().close();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
+            try {
+                Files.deleteIfExists(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"));
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
         this.print(this.getBotName() + " is exiting.");

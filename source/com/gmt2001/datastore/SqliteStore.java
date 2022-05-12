@@ -111,13 +111,13 @@ public final class SqliteStore extends DataStore {
                 if (!hasAutoVacuum) {
                     com.gmt2001.Console.debug.println("Enabling auto_vacuum");
                     try ( PreparedStatement pragmaStatement = connection.prepareStatement("PRAGMA auto_vacuum = 2;")) {
-                        pragmaStatement.executeQuery().close();
+                        pragmaStatement.execute();
                     }
                 }
 
                 com.gmt2001.Console.debug.println("STARTUP VACUUM");
                 try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                    vacuumStatement.executeQuery().close();
+                    vacuumStatement.execute();
                 }
             } finally {
                 this.rwl.writeLock().unlock();
@@ -1241,7 +1241,7 @@ public final class SqliteStore extends DataStore {
                         vacuumed = true;
                         com.gmt2001.Console.debug.println("MAXWALSIZE VACUUM");
                         try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                            vacuumStatement.executeQuery().close();
+                            vacuumStatement.execute();
                             this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
                         }
                     }
@@ -1253,13 +1253,13 @@ public final class SqliteStore extends DataStore {
                     if (this.nextVacuum.isBefore(Instant.now())) {
                         com.gmt2001.Console.debug.println("DAILY VACUUM");
                         try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                            vacuumStatement.executeQuery().close();
+                            vacuumStatement.execute();
                             this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
                         }
                     } else {
                         com.gmt2001.Console.debug.println("PRAGMA incremental_vacuum(2048)");
                         try ( PreparedStatement vacuumStatement = connection.prepareStatement("PRAGMA incremental_vacuum(2048);")) {
-                            vacuumStatement.executeQuery().close();
+                            vacuumStatement.execute();
                         }
                     }
                 }
@@ -1281,7 +1281,7 @@ public final class SqliteStore extends DataStore {
 
             try ( Connection connection = this.poolMgr.getConnection()) {
                 try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                    vacuumStatement.executeQuery().close();
+                    vacuumStatement.execute();
                 }
             }
         } catch (SQLException ex) {
