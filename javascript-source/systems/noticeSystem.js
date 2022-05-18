@@ -857,7 +857,7 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./systems/noticeSystem.js', 'notice', 1);
+        $.registerChatCommand('./systems/noticeSystem.js', 'notice', $.PERMISSION.Admin);
         startNoticeTimers();
     });
 

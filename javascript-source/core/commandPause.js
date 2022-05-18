@@ -101,7 +101,7 @@
      */
     $.bind('initReady', function() {
         if ($.bot.isModuleEnabled('./core/commandPause.js')) {
-            $.registerChatCommand('./core/commandPause.js', 'pausecommands', 2);
+            $.registerChatCommand('./core/commandPause.js', 'pausecommands', $.PERMISSION.Mod);
         }
     });
 

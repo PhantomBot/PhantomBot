@@ -109,7 +109,7 @@
 
                 for (i in commands) {
                     if (!$.commandExists(commands[i])) {
-                        $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], 7);
+                        $.registerChatCommand('./systems/audioPanelSystem.js', commands[i], $.PERMISSION.Viewer);
                     }
                 }
             }
@@ -149,7 +149,7 @@
             actionArgs = args[3],
             audioHook = args[1],
             audioHookListStr,
-            isModv3 = $.isModv3(sender, event.getTags());
+            isModv3 = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
         /* Control Panel call to update the Audio Hooks DB. */
         if (command.equalsIgnoreCase('reloadaudiopanelhooks')) {
@@ -203,7 +203,8 @@
         if (command.equalsIgnoreCase('audiohook')) {
             var hookKeys = $.inidb.GetKeyList('audio_hooks', ''),
                 hookList = [],
-                idx;
+                idx,
+                isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
             for (idx in hookKeys) {
                 hookList[hookKeys[idx]] = hookKeys[idx];
@@ -211,19 +212,19 @@
 
             if (subCommand === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('audiohook.usage'));
-                $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
+                $.returnCommandCost(sender, command, isMod);
                 return;
             }
 
             if (subCommand.equalsIgnoreCase('play')) {
                 if (audioHook === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.usage'));
-                    $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
+                    $.returnCommandCost(sender, command, isMod);
                     return;
                 }
 
                 if (!audioHookExists(audioHook)) {
-                    $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
+                    $.returnCommandCost(sender, command, isMod);
                     return;
                 }
 
@@ -292,7 +293,7 @@
                     if (actionArgs.equalsIgnoreCase('(list)')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('audiohook.customcommand.add.list', subAction));
                         $.inidb.set('audioCommands', subAction.toLowerCase(), actionArgs);
-                        $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), 7);
+                        $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), $.PERMISSION.Viewer);
                         return;
                     }
 
@@ -302,7 +303,7 @@
                     }
 
                     $.inidb.set('audioCommands', subAction.toLowerCase(), actionArgs);
-                    $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), 7);
+                    $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), $.PERMISSION.Viewer);
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.customcommand.add.success', subAction, actionArgs));
                     return;
                 }
@@ -333,15 +334,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', 30);
-        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelremoveaudiohook', 30);
-        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelloadaudiohookcmds', 30);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'reloadaudiopanelhooks', $.PERMISSION.Panel);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelremoveaudiohook', $.PERMISSION.Panel);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'panelloadaudiohookcmds', $.PERMISSION.Panel);
 
-        $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', 1);
-        $.registerChatSubcommand('audiohook', 'play', 1);
-        $.registerChatSubcommand('audiohook', 'list', 1);
-        $.registerChatSubcommand('audiohook', 'togglemessages', 1);
-        $.registerChatSubcommand('audiohook', 'customcommand', 1);
+        $.registerChatCommand('./systems/audioPanelSystem.js', 'audiohook', $.PERMISSION.Admin);
+        $.registerChatSubcommand('audiohook', 'play', $.PERMISSION.Admin);
+        $.registerChatSubcommand('audiohook', 'list', $.PERMISSION.Admin);
+        $.registerChatSubcommand('audiohook', 'togglemessages', $.PERMISSION.Admin);
+        $.registerChatSubcommand('audiohook', 'customcommand', $.PERMISSION.Admin);
 
         loadAudioHookCommands();
         updateAudioHookDB();

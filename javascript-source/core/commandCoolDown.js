@@ -91,7 +91,7 @@
      * @return {Boolean}
      */
     function canIgnore(username, isMod) {
-        return (!modCooldown && isMod) || $.isAdmin(username);
+        return (!modCooldown && isMod) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin);
     }
 
     /*
@@ -385,11 +385,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/commandCoolDown.js', 'coolcom', 1);
+        $.registerChatCommand('./core/commandCoolDown.js', 'coolcom', $.PERMISSION.Admin);
 
-        $.registerChatCommand('./core/commandCoolDown.js', 'cooldown', 1);
-        $.registerChatSubcommand('cooldown', 'togglemoderators', 1);
-        $.registerChatSubcommand('cooldown', 'setdefault', 1);
+        $.registerChatCommand('./core/commandCoolDown.js', 'cooldown', $.PERMISSION.Admin);
+        $.registerChatSubcommand('cooldown', 'togglemoderators', $.PERMISSION.Admin);
+        $.registerChatSubcommand('cooldown', 'setdefault', $.PERMISSION.Admin);
         loadCooldowns();
     });
 

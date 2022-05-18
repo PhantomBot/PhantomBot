@@ -486,7 +486,7 @@
         for (i in blackList) {
             if (blackList[i].isRegex) {
                 if ($.test(message, blackList[i].phrase)) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVIP(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.checkUserPermission(sender, tags, $.PERMISSION.Regular) || blackList[i].excludeSubscribers && $.checkUserPermission(sender, tags, $.PERMISSION.Sub) || blackList[i].excludeVips && $.checkUserPermission(sender, tags, $.PERMISSION.VIP)) {
                         return false;
                     }
 
@@ -503,7 +503,7 @@
                 }
             } else {
                 if (message.indexOf(blackList[i].phrase) !== -1) {
-                    if (blackList[i].excludeRegulars && $.isReg(sender) || blackList[i].excludeSubscribers && $.isSubv3(sender, event.getTags()) || blackList[i].excludeVips && $.isVIP(sender, event.getTags())) {
+                    if (blackList[i].excludeRegulars && $.checkUserPermission(sender, tags, $.PERMISSION.Regular) || blackList[i].excludeSubscribers && $.checkUserPermission(sender, tags, $.PERMISSION.Sub) || blackList[i].excludeVips && $.checkUserPermission(sender, tags, $.PERMISSION.VIP)) {
                         return false;
                     }
 
@@ -577,7 +577,7 @@
             messageLength = message.length(),
             tags = event.getTags();
 
-        if (!$.isModv3(sender, tags)) {
+        if (!$.checkUserPermission(sender, tags, $.PERMISSION.Mod)) {
             // Blacklist
             if (checkBlackList(sender, event, message, tags)) {
                 return;
@@ -587,7 +587,8 @@
             if (linksToggle && $.patternDetector.hasLinks(event)) {
                 if (checkYoutubePlayer(message) || checkPermitList(sender) || checkWhiteList(message)) {
                     return;
-                } else if ((!regulars.Links && $.isReg(sender)) || (!subscribers.Links && $.isSubv3(sender, event.getTags())) || (!vips.Links && $.isVIP(sender, event.getTags()))) {
+                }
+                if ((!regulars.Links && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Links && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Links && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -600,7 +601,7 @@
             // Symbol filter
             if (symbolsToggle && messageLength >= symbolsTriggerLength) {
                 if ($.patternDetector.getLongestNonLetterSequence(event) >= symbolsGroupLimit || (($.patternDetector.getNumberOfNonLetters(event) / messageLength) * 100) >= symbolsLimitPercent) {
-                    if ((!regulars.Symbols && $.isReg(sender)) || (!subscribers.Symbols && $.isSubv3(sender, event.getTags())) || (!vips.Symbols && $.isVIP(sender, event.getTags()))) {
+                    if ((!regulars.Symbols && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Symbols && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Symbols && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                         return;
                     }
 
@@ -612,7 +613,7 @@
 
             // Spam filter
             if (spamToggle && $.patternDetector.getLongestRepeatedSequence(event) >= spamLimit) {
-                if ((!regulars.Spam && $.isReg(sender)) || (!subscribers.Spam && $.isSubv3(sender, event.getTags())) || (!vips.Spam && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.Spam && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Spam && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Spam && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -623,7 +624,7 @@
 
             // Long msg filter
             if (longMessageToggle && messageLength >= longMessageLimit) {
-                if ((!regulars.LongMsg && $.isReg(sender)) || (!subscribers.LongMsg && $.isSubv3(sender, event.getTags())) || (!vips.LongMsg && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.LongMsg && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.LongMsg && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.LongMsg && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -634,7 +635,7 @@
 
             // Fake purge filter
             if (fakePurgeToggle && $.patternDetector.getFakePurge(event)) {
-                if ((!regulars.FakePurge && $.isReg(sender)) || (!subscribers.FakePurge && $.isSubv3(sender, event.getTags())) || (!vips.FakePurge && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.FakePurge && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.FakePurge && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.FakePurge && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -645,7 +646,7 @@
 
             // Emotes folter
             if (emotesToggle && $.patternDetector.getEmotesCount(event) >= emotesLimit) {
-                if ((!regulars.Emotes && $.isReg(sender)) || (!subscribers.Emotes && $.isSubv3(sender, event.getTags())) || (!vips.Emotes && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.Emotes && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Emotes && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Emotes && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -657,7 +658,7 @@
             // Caps filter
             if (capsToggle && messageLength >= capsTriggerLength) {
                 if ((($.patternDetector.getNumberOfCaps(event) / messageLength) * 100) >= capsLimitPercent) {
-                    if ((!regulars.Caps && $.isReg(sender)) || (!subscribers.Caps && $.isSubv3(sender, event.getTags())) || (!vips.Caps && $.isVIP(sender, event.getTags()))) {
+                    if ((!regulars.Caps && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Caps && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Caps && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                         return;
                     }
 
@@ -669,7 +670,7 @@
 
             // Color filter
             if (colorsToggle && $.patternDetector.getColoredMessage(event)) {
-                if ((!regulars.Colors && $.isReg(sender)) || (!subscribers.Colors && $.isSubv3(sender, event.getTags())) || (!vips.Colors && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.Colors && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.Colors && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.Colors && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -680,7 +681,7 @@
 
             // Spam tracker
             if (spamTrackerToggle) {
-                if ((!regulars.SpamTracker && $.isReg(sender)) || (!subscribers.SpamTracker && $.isSubv3(sender, event.getTags())) || (!vips.SpamTracker && $.isVIP(sender, event.getTags()))) {
+                if ((!regulars.SpamTracker && $.checkUserPermission(sender, tags, $.PERMISSION.Regular)) || (!subscribers.SpamTracker && $.checkUserPermission(sender, tags, $.PERMISSION.Sub)) || (!vips.SpamTracker && $.checkUserPermission(sender, tags, $.PERMISSION.VIP))) {
                     return;
                 }
 
@@ -688,6 +689,7 @@
                     if (spamTracker[sender].time - $.systemTime() <= 0) {
                         spamTracker[sender] = {count: 0, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                     }
+
                     spamTracker[sender].count++;
                 } else {
                     spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
@@ -2200,11 +2202,11 @@
         loadWhiteList();
         loadBlackList();
 
-        $.registerChatCommand('./core/chatModerator.js', 'permit', 2);
-        $.registerChatCommand('./core/chatModerator.js', 'moderation', 1);
-        $.registerChatCommand('./core/chatModerator.js', 'mod', 1);
-        $.registerChatCommand('./core/chatModerator.js', 'blacklist', 1);
-        $.registerChatCommand('./core/chatModerator.js', 'whitelist', 1);
+        $.registerChatCommand('./core/chatModerator.js', 'permit', $.PERMISSION.Mod);
+        $.registerChatCommand('./core/chatModerator.js', 'moderation', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/chatModerator.js', 'mod', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/chatModerator.js', 'blacklist', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/chatModerator.js', 'whitelist', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

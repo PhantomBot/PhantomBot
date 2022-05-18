@@ -166,8 +166,8 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/commercialSystem.js', 'commercial', 2);
-        $.registerChatSubcommand('commercial', 'autotimer', 1);
+        $.registerChatCommand('./systems/commercialSystem.js', 'commercial', $.PERMISSION.Mod);
+        $.registerChatSubcommand('commercial', 'autotimer', $.PERMISSION.Admin);
 
         // Set the interval to run commercials
         if (commercialTimer) {

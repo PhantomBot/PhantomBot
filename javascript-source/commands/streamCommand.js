@@ -107,9 +107,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/streamCommand.js', 'setgame', 1);
-        $.registerChatCommand('./commands/streamCommand.js', 'settitle', 1);
-        $.registerChatCommand('./commands/streamCommand.js', 'vod', 7);
+        $.registerChatCommand('./commands/streamCommand.js', 'setgame', $.PERMISSION.Admin);
+        $.registerChatCommand('./commands/streamCommand.js', 'settitle', $.PERMISSION.Admin);
+        $.registerChatCommand('./commands/streamCommand.js', 'vod', $.PERMISSION.Viewer);
     });
 
     /*

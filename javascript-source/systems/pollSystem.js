@@ -412,11 +412,11 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./systems/pollSystem.js', 'poll', 2);
-        $.registerChatCommand('./systems/pollSystem.js', 'vote', 7);
-        $.registerChatSubcommand('poll', 'results', 2);
-        $.registerChatSubcommand('poll', 'open', 2);
-        $.registerChatSubcommand('poll', 'close', 2);
+        $.registerChatCommand('./systems/pollSystem.js', 'poll', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/pollSystem.js', 'vote', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('poll', 'results', $.PERMISSION.Mod);
+        $.registerChatSubcommand('poll', 'open', $.PERMISSION.Mod);
+        $.registerChatSubcommand('poll', 'close', $.PERMISSION.Mod);
 
         reopen();
     });

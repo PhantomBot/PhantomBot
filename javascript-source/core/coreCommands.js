@@ -79,7 +79,7 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./core/coreCommands.js', 'shoutout', 2);
-        $.registerChatCommand('./core/coreCommands.js', 'settimevar', 2);
+        $.registerChatCommand('./core/coreCommands.js', 'shoutout', $.PERMISSION.Mod);
+        $.registerChatCommand('./core/coreCommands.js', 'settimevar', $.PERMISSION.Mod);
     });
 })();

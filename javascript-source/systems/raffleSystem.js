@@ -413,7 +413,7 @@
         }
 
         /* Check if the user is a subscriber */
-        if (subscribers && !$.isSubv3(username, tags)) {
+        if (subscribers && !$.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
             message(username, $.lang.get('rafflesystem.enter.subscriber'));
             return;
         }
@@ -446,11 +446,11 @@
         entered[username] = true;
         entries.push(username);
         var i;
-        if (subscriberBonus > 0 && $.isSubv3(username, tags)) {
+        if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
             for (i = 0; i < subscriberBonus; i++) {
                 entries.push(username);
             }
-        } else if (regularBonus > 0 && $.isReg(username)) {
+        } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
             for (i = 0; i < regularBonus; i++) {
                 entries.push(username);
             }
@@ -684,20 +684,20 @@
      * @info event sent to register commands
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/raffleSystem.js', 'raffle', 2);
+        $.registerChatCommand('./systems/raffleSystem.js', 'raffle', $.PERMISSION.Mod);
 
-        $.registerChatSubcommand('raffle', 'open', 2);
-        $.registerChatSubcommand('raffle', 'close', 2);
-        $.registerChatSubcommand('raffle', 'draw', 2);
-        $.registerChatSubcommand('raffle', 'reset', 2);
-        $.registerChatSubcommand('raffle', 'results', 7);
-        $.registerChatSubcommand('raffle', 'lastWinners', 2);
-        $.registerChatSubcommand('raffle', 'subscriberbonus', 1);
-        $.registerChatSubcommand('raffle', 'regularbonus', 1);
-        $.registerChatSubcommand('raffle', 'togglemessages', 1);
-        $.registerChatSubcommand('raffle', 'togglerepicks', 1);
-        $.registerChatSubcommand('raffle', 'message', 1);
-        $.registerChatSubcommand('raffle', 'messagetimer', 1);
+        $.registerChatSubcommand('raffle', 'open', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'draw', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'reset', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'results', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('raffle', 'lastWinners', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'subscriberbonus', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'regularbonus', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'togglemessages', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'togglerepicks', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'message', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'messagetimer', $.PERMISSION.Admin);
 
         reopen();
     });

@@ -67,7 +67,7 @@
         if (lang.startsWith('(jail)')) {
             lang = $.replace(lang, '(jail)', '');
             $.say(lang);
-            if (!$.isMod(sender) && jailTimeout > 0) {
+            if (!$.checkUserPermission(sender, undefined, $.PERMISSION.Mod) && jailTimeout > 0) {
                 setTimeout(function() {
                     Packages.tv.phantombot.PhantomBot.instance().getSession().say('.timeout ' + sender + ' ' + jailTimeout);
                 }, 1500);
@@ -120,8 +120,8 @@
             loadResponses();
         }
 
-        $.registerChatCommand('./games/killCommand.js', 'kill', 7);
-        $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', 1);
+        $.registerChatCommand('./games/killCommand.js', 'kill', $.PERMISSION.Viewer);
+        $.registerChatCommand('./games/killCommand.js', 'jailtimeouttime', $.PERMISSION.Admin);
     });
 
     $.reloadKill = reloadKill;

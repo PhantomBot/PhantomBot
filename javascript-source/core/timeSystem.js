@@ -27,7 +27,6 @@
             timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
             keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
             hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50),
-            regularsGroupId = 6,
             interval,
             inter;
 
@@ -415,13 +414,13 @@
                     }
 
                     if (subject < 0) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.promotehours.error.negative', $.getGroupNameById(regularsGroupId)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.promotehours.error.negative', $.getGroupNameById($.PERMISSION.Regular)));
                         return;
                     }
 
                     hoursForLevelUp = parseInt(subject);
                     $.inidb.set('timeSettings', 'timePromoteHours', hoursForLevelUp);
-                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.promotehours.success', $.getGroupNameById(regularsGroupId), hoursForLevelUp));
+                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.promotehours.success', $.getGroupNameById($.PERMISSION.Regular), hoursForLevelUp));
                 }
 
                 /**
@@ -430,7 +429,7 @@
                 if (action.equalsIgnoreCase('autolevel')) {
                     levelWithTime = !levelWithTime;
                     $.setIniDbBoolean('timeSettings', 'timeLevel', levelWithTime);
-                    $.say($.whisperPrefix(sender) + (levelWithTime ? $.lang.get('timesystem.autolevel.enabled', $.getGroupNameById(regularsGroupId), hoursForLevelUp) : $.lang.get('timesystem.autolevel.disabled', $.getGroupNameById(regularsGroupId), hoursForLevelUp)));
+                    $.say($.whisperPrefix(sender) + (levelWithTime ? $.lang.get('timesystem.autolevel.enabled', $.getGroupNameById($.PERMISSION.Regular), hoursForLevelUp) : $.lang.get('timesystem.autolevel.disabled', $.getGroupNameById($.PERMISSION.Regular), hoursForLevelUp)));
                 }
 
                 /**
@@ -501,14 +500,20 @@
             for (i in $.users) {
                 if ($.users[i] !== null) {
                     username = $.users[i].toLowerCase();
-                    if (!$.isMod(username) && !$.isAdmin(username) && !$.isSub(username) && !$.isVIP(username) && $.inidb.exists('time', username) && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp && parseInt($.getUserGroupId(username)) > regularsGroupId) {
+                    if (!$.checkUserPermission(username, undefined, $.PERMISSION.Mod)
+                        && !$.checkUserPermission(username, undefined, $.PERMISSION.Admin)
+                        && !$.checkUserPermission(username, undefined, $.PERMISSION.Sub)
+                        && !$.checkUserPermission(username, undefined, $.PERMISSION.VIP)
+                        && $.inidb.exists('time', username)
+                        && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp
+                        && $.checkUserPermission(username, undefined, $.getLowestIDSubVIP())) {
                         if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
-                            $.setUserGroupById(username, regularsGroupId);
+                            $.setUserGroupById(username, $.PERMISSION.Regular);
                             if (timeLevelWarning) {
                                 $.say($.lang.get(
                                         'timesystem.autolevel.promoted',
                                         $.username.resolve(username),
-                                        $.getGroupNameById(regularsGroupId).toLowerCase(),
+                                        $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
                                         hoursForLevelUp
                                         )); //No whisper mode needed here.
                             }
@@ -524,15 +529,15 @@
      */
     $.bind('initReady', function () {
         $.registerChatCommand('./core/timeSystem.js', 'streamertime');
-        $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
+        $.registerChatCommand('./core/timeSystem.js', 'timezone', $.PERMISSION.Admin);
         $.registerChatCommand('./core/timeSystem.js', 'time');
 
-        $.registerChatSubcommand('time', 'add', 1);
-        $.registerChatSubcommand('time', 'take', 1);
-        $.registerChatSubcommand('time', 'set', 1);
-        $.registerChatSubcommand('time', 'autolevel', 1);
-        $.registerChatSubcommand('time', 'promotehours', 1);
-        $.registerChatSubcommand('time', 'autolevelnotification', 1);
+        $.registerChatSubcommand('time', 'add', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'take', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'set', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'autolevel', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'promotehours', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'autolevelnotification', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

@@ -69,6 +69,6 @@
     });
 
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/nameConverter.js', 'namechange', 1);
+        $.registerChatCommand('./commands/nameConverter.js', 'namechange', $.PERMISSION.Admin);
     });
 })();

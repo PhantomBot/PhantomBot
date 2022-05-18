@@ -150,11 +150,11 @@
     });
 
     $.bind('initReady', function() {
-        $.registerChatCommand('./games/gambling.js', 'gamble', 7);
-        $.registerChatCommand('./games/gambling.js', 'gamblesetmax', 1);
-        $.registerChatCommand('./games/gambling.js', 'gamblesetmin', 1);
-        $.registerChatCommand('./games/gambling.js', 'gamblesetwinningrange', 1);
-        $.registerChatCommand('./games/gambling.js', 'gamblesetgainpercent', 1);
+        $.registerChatCommand('./games/gambling.js', 'gamble', $.PERMISSION.Viewer);
+        $.registerChatCommand('./games/gambling.js', 'gamblesetmax', $.PERMISSION.Admin);
+        $.registerChatCommand('./games/gambling.js', 'gamblesetmin', $.PERMISSION.Admin);
+        $.registerChatCommand('./games/gambling.js', 'gamblesetwinningrange', $.PERMISSION.Admin);
+        $.registerChatCommand('./games/gambling.js', 'gamblesetgainpercent', $.PERMISSION.Admin);
     });
 
     $.reloadGamble = reloadGamble;

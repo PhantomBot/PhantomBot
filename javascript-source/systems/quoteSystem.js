@@ -361,16 +361,16 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
-        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', $.PERMISSION.Viewer);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', $.PERMISSION.Mod);
         $.registerChatCommand('./systems/quoteSystem.js', 'quote');
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotedateformat', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotedateformat', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', $.PERMISSION.Admin);
     });
 })();

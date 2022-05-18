@@ -179,9 +179,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./games/slotMachine.js', 'slot', 7);
-        $.registerChatSubcommand('slot', 'rewards', 1);
-        $.registerChatSubcommand('slot', 'emotes', 1);
+        $.registerChatCommand('./games/slotMachine.js', 'slot', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('slot', 'rewards', $.PERMISSION.Admin);
+        $.registerChatSubcommand('slot', 'emotes', $.PERMISSION.Admin);
     });
 
     $.loadPrizesSlot = loadPrizes;

@@ -97,7 +97,7 @@
          */
         if (command.equalsIgnoreCase('greeting')) {
             if (!action) {
-                if ($.isAdmin(sender)) {
+                if ($.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.admin'));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.other'));
@@ -241,16 +241,16 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/greetingSystem.js', 'greeting', 6);
-        $.registerChatSubcommand('greeting', 'cooldown', 1);
-        $.registerChatSubcommand('greeting', 'toggle', 1);
-        $.registerChatSubcommand('greeting', 'set', 2);
-        $.registerChatSubcommand('greeting', 'setsilent', 1);
-        $.registerChatSubcommand('greeting', 'setdefault', 2);
-        $.registerChatSubcommand('greeting', 'enable', 6);
-        $.registerChatSubcommand('greeting', 'remove', 2);
-        $.registerChatSubcommand('greeting', 'removesilent', 1);
-        $.registerChatSubcommand('greeting', 'disable', 6);
+        $.registerChatCommand('./systems/greetingSystem.js', 'greeting', $.PERMISSION.Regular);
+        $.registerChatSubcommand('greeting', 'cooldown', $.PERMISSION.Admin);
+        $.registerChatSubcommand('greeting', 'toggle', $.PERMISSION.Admin);
+        $.registerChatSubcommand('greeting', 'set', $.PERMISSION.Mod);
+        $.registerChatSubcommand('greeting', 'setsilent', $.PERMISSION.Admin);
+        $.registerChatSubcommand('greeting', 'setdefault', $.PERMISSION.Mod);
+        $.registerChatSubcommand('greeting', 'enable', $.PERMISSION.Regular);
+        $.registerChatSubcommand('greeting', 'remove', $.PERMISSION.Mod);
+        $.registerChatSubcommand('greeting', 'removesilent', $.PERMISSION.Admin);
+        $.registerChatSubcommand('greeting', 'disable', $.PERMISSION.Regular);
 
         doUserGreetings();
     });

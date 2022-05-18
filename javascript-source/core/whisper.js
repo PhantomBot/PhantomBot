@@ -88,7 +88,7 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && $.userExists(sender)) {
+        if (message.startsWith('!') && $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod) && $.userExists(sender)) {
             message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');
@@ -124,7 +124,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/whisper.js', 'togglewhispermode', 1);
+        $.registerChatCommand('./core/whisper.js', 'togglewhispermode', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

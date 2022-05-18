@@ -155,8 +155,8 @@
             donationUsername = donationUsername.toLowerCase();
             $.inidb.incr('donations', donationUsername, donationAmount);
             if ($.inidb.exists('donations', donationUsername) && $.inidb.get('donations', donationUsername) >= groupMin) {
-                if ($.getUserGroupId(donationUsername) > 3) {
-                    $.setUserGroupById(donationUsername, '4');
+                if ($.getUserGroupId(donationUsername) > $.PERMISSION.Donator) {
+                    $.setUserGroupById(donationUsername, $.PERMISSION.Donator);
                 }
             }
         }
@@ -255,7 +255,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/tipeeeStreamHandler.js', 'tipeeestream', 1);
+        $.registerChatCommand('./handlers/tipeeeStreamHandler.js', 'tipeeestream', $.PERMISSION.Admin);
     });
 
     $.reloadTipeeeStream = reloadTipeeeStream;

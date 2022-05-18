@@ -81,6 +81,24 @@
             $.delSubUsersList(args[0]);
         }
 
+        // Adds a (real or fake) user as a VIP in the cache
+        if (command.equalsIgnoreCase('addVIP')) {
+            if (args.length < 1) {
+                $.say('Usage: !addvip user');
+                return;
+            }
+            $.addVIPUsersList(args[0]);
+        }
+
+        // Removes a (real or fake) user as a VIP in the cache (NOTE: Does not affect tags)
+        if (command.equalsIgnoreCase('delVIP')) {
+            if (args.length < 1) {
+                $.say('Usage: !delvip user');
+                return;
+            }
+            $.delVIPUsersList(args[0]);
+        }
+
         // Sets a (real or fake) user as a Caster in the database
         if (command.equalsIgnoreCase('setcaster')) {
             if (args.length < 1) {
@@ -174,6 +192,8 @@
         $.registerChatCommand('./custom/test.js', 'delmod', 1);
         $.registerChatCommand('./custom/test.js', 'addsub', 1);
         $.registerChatCommand('./custom/test.js', 'delsub', 1);
+        $.registerChatCommand('./custom/test.js', 'addvip', 1);
+        $.registerChatCommand('./custom/test.js', 'delvip', 1);
         $.registerChatCommand('./custom/test.js', 'setcaster', 1);
         $.registerChatCommand('./custom/test.js', 'setadmin', 1);
         $.registerChatCommand('./custom/test.js', 'setvip', 1);

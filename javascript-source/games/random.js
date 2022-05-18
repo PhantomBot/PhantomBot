@@ -107,6 +107,6 @@
         }
 
         $.registerChatCommand('./games/random.js', 'random');
-        $.registerChatSubcommand('random', 'pg13toggle', 1);
+        $.registerChatSubcommand('random', 'pg13toggle', $.PERMISSION.Admin);
     });
 })();

@@ -216,11 +216,11 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', 1);
+        $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', $.PERMISSION.Admin);
 
-        $.registerChatSubcommand('keyword', 'add', 1);
-        $.registerChatSubcommand('keyword', 'remove', 1);
-        $.registerChatSubcommand('keyword', 'cooldown', 1);
+        $.registerChatSubcommand('keyword', 'add', $.PERMISSION.Admin);
+        $.registerChatSubcommand('keyword', 'remove', $.PERMISSION.Admin);
+        $.registerChatSubcommand('keyword', 'cooldown', $.PERMISSION.Admin);
         loadKeywords();
     });
 

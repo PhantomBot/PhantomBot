@@ -209,7 +209,7 @@ $(run = function() {
                     .append(helpers.getInputGroup('command-audio', 'text', 'Audio Hook', '', e.audioCommands, 'Audio to be played. This cannot be edited.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers']))
+                    helpers.getPermGroupNames()))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -389,7 +389,7 @@ $(function() {
             .append(helpers.getDropdownGroup('command-audio', 'Audio Hook', 'Select an Audio Hook', audioNames, 'Audio hook to be played when the command is ran.'))
             // Append a select option for the command permission.
             .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
-                ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars', 'Viewers'], 'Users who can run the command.'))
+                helpers.getPermGroupNames, 'Users who can run the command.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',

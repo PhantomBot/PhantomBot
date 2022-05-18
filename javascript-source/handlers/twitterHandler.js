@@ -567,14 +567,14 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', 7);
-        $.registerChatSubcommand('twitter', 'set', 1);
-        $.registerChatSubcommand('twitter', 'post', 1);
-        $.registerChatSubcommand('twitter', 'lasttweet', 7);
-        $.registerChatSubcommand('twitter', 'lastmention', 7);
-        $.registerChatSubcommand('twitter', 'lastretweet', 7);
-        $.registerChatSubcommand('twitter', 'id', 7);
-        $.registerChatSubcommand('twitter', 'register', 7);
-        $.registerChatSubcommand('twitter', 'unregister', 7);
+        $.registerChatCommand('./handlers/twitterHandler.js', 'twitter', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'set', $.PERMISSION.Admin);
+        $.registerChatSubcommand('twitter', 'post', $.PERMISSION.Admin);
+        $.registerChatSubcommand('twitter', 'lasttweet', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'lastmention', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'lastretweet', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'id', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'register', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('twitter', 'unregister', $.PERMISSION.Viewer);
     });
 })();

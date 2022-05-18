@@ -105,9 +105,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/highlightCommand.js', 'highlight', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', 1);
+        $.registerChatCommand('./commands/highlightCommand.js', 'highlight', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', $.PERMISSION.Admin);
     });
 })();

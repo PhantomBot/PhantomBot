@@ -127,7 +127,7 @@
      */
     $.bind('initReady', function() {
         $.registerChatCommand('./games/roll.js', 'roll');
-        $.registerChatSubcommand('roll', 'rewards', 1);
+        $.registerChatSubcommand('roll', 'rewards', $.PERMISSION.Admin);
     });
 
 

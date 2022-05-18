@@ -487,15 +487,15 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/bettingSystem.js', 'bet', 7);
-        $.registerChatSubcommand('bet', 'current', 7);
-        $.registerChatSubcommand('bet', 'results', 7);
-        $.registerChatSubcommand('bet', 'open', 2);
-        $.registerChatSubcommand('bet', 'close', 2);
-        $.registerChatSubcommand('bet', 'reset', 2);
-        $.registerChatSubcommand('bet', 'save', 1);
-        $.registerChatSubcommand('bet', 'saveformat', 1);
-        $.registerChatSubcommand('bet', 'gain', 1);
+        $.registerChatCommand('./systems/bettingSystem.js', 'bet', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('bet', 'current', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('bet', 'results', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('bet', 'open', $.PERMISSION.Mod);
+        $.registerChatSubcommand('bet', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('bet', 'reset', $.PERMISSION.Mod);
+        $.registerChatSubcommand('bet', 'save', $.PERMISSION.Admin);
+        $.registerChatSubcommand('bet', 'saveformat', $.PERMISSION.Admin);
+        $.registerChatSubcommand('bet', 'gain', $.PERMISSION.Admin);
 
         reopen();
     });

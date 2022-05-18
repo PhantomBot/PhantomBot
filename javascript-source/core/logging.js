@@ -374,8 +374,8 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function () {
-        $.registerChatCommand('./core/logging.js', 'log', 1);
+    $.bind('initReady', function() {
+        $.registerChatCommand('./core/logging.js', 'log', $.PERMISSION.Admin);
 
         logRotate();
     });

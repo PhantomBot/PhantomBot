@@ -163,8 +163,13 @@
                     return;
                 }
                 if ($.getIniDbString('modules', subAction, undefined) !== undefined){
-                    $.bot.loadScript(subAction, true, false);
-                    $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload', subAction));
+                    var module = $.bot.getModule(subAction);
+                    if (module !== undefined) {
+                        $.bot.loadScript(module.scriptName, true, false);
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload', subAction));
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('init.module.delete.404'));
+                    }
                     return;
                 }
 
@@ -408,23 +413,23 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/initCommands.js', 'chat', 1);
-        $.registerChatCommand('./core/initCommands.js', 'module', 1);
-        $.registerChatCommand('./core/initCommands.js', 'echo', 1);
-        $.registerChatCommand('./core/initCommands.js', 'reconnect', 1);
-        $.registerChatCommand('./core/initCommands.js', 'disconnect', 1);
-        $.registerChatCommand('./core/initCommands.js', bot, 2);
-        $.registerChatSubcommand(bot, 'disconnect', 1);
-        $.registerChatSubcommand(bot, 'reconnect', 1);
-        $.registerChatSubcommand(bot, 'moderate', 2);
-        $.registerChatSubcommand(bot, 'forceonline', 2);
-        $.registerChatSubcommand(bot, 'forceoffline', 2);
-        $.registerChatSubcommand(bot, 'setconnectmessage', 1);
-        $.registerChatSubcommand(bot, 'removeconnectmessage', 1);
-        $.registerChatSubcommand(bot, 'togglepricecommods', 1);
-        $.registerChatSubcommand(bot, 'togglepermcommessage', 1);
-        $.registerChatSubcommand(bot, 'togglepricecommessage', 1);
-        $.registerChatSubcommand(bot, 'togglecooldownmessage', 1);
+        $.registerChatCommand('./core/initCommands.js', 'chat', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', 'module', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', 'echo', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', 'reconnect', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', 'disconnect', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', bot, $.PERMISSION.Mod);
+        $.registerChatSubcommand(bot, 'disconnect', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'reconnect', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'moderate', $.PERMISSION.Mod);
+        $.registerChatSubcommand(bot, 'forceonline', $.PERMISSION.Mod);
+        $.registerChatSubcommand(bot, 'forceoffline', $.PERMISSION.Mod);
+        $.registerChatSubcommand(bot, 'setconnectmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'removeconnectmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'togglepricecommods', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'togglepermcommessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'togglepricecommessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'togglecooldownmessage', $.PERMISSION.Admin);
 
         // Say the connected message.
         if (!sentReady && $.inidb.exists('settings', 'connectedMsg')) {

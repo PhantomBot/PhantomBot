@@ -259,14 +259,14 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'hostrewardminviewers', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'hosttoggle', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'host', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'unhost', 1);
-        $.registerChatCommand('./handlers/hostHandler.js', 'hostminviewers', 1);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostreward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostrewardminviewers', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hosthistory', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hosttoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'host', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'unhost', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/hostHandler.js', 'hostminviewers', $.PERMISSION.Admin);
     });
 
     $.updateHost = updateHost;

@@ -350,14 +350,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/auctionSystem.js', 'auction', 7);
-        $.registerChatSubcommand('auction', 'open', 2);
-        $.registerChatSubcommand('auction', 'close', 2);
-        $.registerChatSubcommand('auction', 'setExtensionTime', 2);
-        $.registerChatSubcommand('auction', 'reset', 2);
-        $.registerChatSubcommand('auction', 'warn', 2);
-        $.registerChatSubcommand('auction', 'lastWinner', 7);
-        $.registerChatCommand('./systems/auctionSystem.js', 'bid', 7);
+        $.registerChatCommand('./systems/auctionSystem.js', 'auction', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('auction', 'open', $.PERMISSION.Mod);
+        $.registerChatSubcommand('auction', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('auction', 'setExtensionTime', $.PERMISSION.Mod);
+        $.registerChatSubcommand('auction', 'reset', $.PERMISSION.Mod);
+        $.registerChatSubcommand('auction', 'warn', $.PERMISSION.Mod);
+        $.registerChatSubcommand('auction', 'lastWinner', $.PERMISSION.Viewer);
+        $.registerChatCommand('./systems/auctionSystem.js', 'bid', $.PERMISSION.Viewer);
 
         $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
     });

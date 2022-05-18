@@ -48,7 +48,7 @@
     // Event that runs once at boot-up if the module is enabled.
     $.bind('initReady', function() {
         // Register the command with the: module path, command name, and command permission.
-        $.registerChatCommand('./commands/moduleExample.js', 'randomstring', 7);
+        $.registerChatCommand('./commands/moduleExample.js', 'randomstring', $.PERMISSION.Viewer);
     });
 })();
 
