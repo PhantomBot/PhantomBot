@@ -125,12 +125,12 @@ $(function () {
             // Query panel information.
             socket.getDBValue('dashboard_get_data', 'panelData', 'stream', function (e) {
                 if (e.panelData === null) {
-                    alert('Please allow the bot to generate the data needed to load this page. Try again in 60 seconds...');
-                    return;
+                    socket.wsEvent('panelDataRefresh', './core/panelHandler.js', '', [], function (e) {});
+                    e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'views': 0};
+                } else {
+                    // Parse our object.
+                    e = JSON.parse(e.panelData);
                 }
-
-                // Parse our object.
-                e = JSON.parse(e.panelData);
                 // Temp data.
                 const tempData = e;
                 // Set stream title.
@@ -309,12 +309,10 @@ $(function () {
     });
 
     $(window).resize(function () {
-        let isSmall = $('.small-box').width() < 230;
-
         $('.small-box').each(function () {
             const h3 = $(this).find('h3');
 
-            if (h3.attr('id') != 'dashboard-uptime') {
+            if (h3.attr('id') !== 'dashboard-uptime') {
                 helpers.handlePanelSetInfo(h3, h3.attr('id'), h3.data('parsed'));
             }
         });
@@ -491,8 +489,13 @@ $(function () {
         helpers.log('Refreshing dashboard data.', helpers.LOG_TYPE.INFO);
         // Query stream data.
         socket.getDBValue('dashboard_get_data_refresh', 'panelData', 'stream', function (e) {
-            // Parse our object.
-            e = JSON.parse(e.panelData);
+            if (e.panelData === null) {
+                socket.wsEvent('panelDataRefresh', './core/panelHandler.js', '', [], function (e) {});
+                e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'views': 0};
+            } else {
+                // Parse our object.
+                e = JSON.parse(e.panelData);
+            }
             // Set views if not hidden.
             helpers.handlePanelSetInfo($('#dashboard-views').data('number', helpers.parseNumber(e.views)), 'dashboard-views', helpers.fixNumber(e.views));
             // Set viewers.

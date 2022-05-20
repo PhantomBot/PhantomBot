@@ -40,10 +40,10 @@
         if (array.length > 50) {
             // Sort for newer events
             /*array.sort(function (a, b) {
-                var d1 = new Date(a.date);
-                var d2 = new Date(b.date);
-                return d1 - d2;
-            });*/
+             var d1 = new Date(a.date);
+             var d2 = new Date(b.date);
+             return d1 - d2;
+             });*/
 
             // Remove old events.
             array = array.slice(array.length - 50);
@@ -176,7 +176,7 @@
      * @event twitchPrimeSubscriber
      */
     $.bind('twitchPrimeSubscriber', function (event) {
-        addObjectToArray('panelData', 'data', 'Prime ' + (event.getMonths() > 1 ? 'Re' : '') +'Subscriber', {
+        addObjectToArray('panelData', 'data', 'Prime ' + (event.getMonths() > 1 ? 'Re' : '') + 'Subscriber', {
             'username': event.getSubscriber(),
             'date': $.systemTime(),
             'isReSub': false,
@@ -300,6 +300,12 @@
             'date': $.systemTime(),
             'message': data.message
         });
+    });
+
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getId().equalsIgnoreCase('panelDataRefresh')) {
+            updateStreamData();
+        }
     });
 
     // Interval that updates stream data.
