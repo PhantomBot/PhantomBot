@@ -1166,7 +1166,7 @@ public final class SqliteStore extends DataStore {
                         try {
                             statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
                         } catch (SQLiteException ex) {
-                            if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT) {
+                            if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT || ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE) {
                                 statement.execute("DELETE FROM phantombot_" + tableName + " WHERE rowid NOT IN (SELECT MIN(rowid) FROM phantombot_" + tableName + " GROUP BY section, variable);");
                                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName + " (section, variable);");
                             } else {
