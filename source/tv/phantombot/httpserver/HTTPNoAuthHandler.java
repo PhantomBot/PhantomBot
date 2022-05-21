@@ -46,9 +46,6 @@ import tv.phantombot.PhantomBot;
  */
 public class HTTPNoAuthHandler implements HttpRequestHandler {
 
-    public HTTPNoAuthHandler() {
-    }
-
     @Override
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/", this);

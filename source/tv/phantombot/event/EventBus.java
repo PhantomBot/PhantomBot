@@ -21,9 +21,12 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import tv.phantombot.PhantomBot;
 
-public class EventBus {
+public final class EventBus {
+
     private static final EventBus instance = new EventBus();
-    private static final MBassador<Event> bus = new MBassador<Event>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
+    private static final MBassador<Event> bus = new MBassador<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
+            .addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default()
+            .setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
 
     /**
      * Class constructor.

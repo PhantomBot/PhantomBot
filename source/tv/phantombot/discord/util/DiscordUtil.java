@@ -79,9 +79,6 @@ public class DiscordUtil {
 
     private final ExponentialBackoff sendBackoff = new ExponentialBackoff(4000L, 60000L, 300000L);
 
-    public DiscordUtil() {
-    }
-
     /**
      * Method that removes the # in the channel name.
      *

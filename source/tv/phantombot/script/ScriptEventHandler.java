@@ -20,5 +20,5 @@ import tv.phantombot.event.Event;
 
 public interface ScriptEventHandler {
 
-    public void handle(Event event);
+    void handle(Event event);
 }

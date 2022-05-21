@@ -28,7 +28,7 @@ import org.apache.commons.text.WordUtils;
 import tv.phantombot.event.Event;
 import tv.phantombot.event.Listener;
 
-public class ScriptEventManager implements Listener {
+public final class ScriptEventManager implements Listener {
 
     private static final ScriptEventManager instance = new ScriptEventManager();
     private final ConcurrentHashMap<String, ScriptEventHandler> events = new ConcurrentHashMap<>();

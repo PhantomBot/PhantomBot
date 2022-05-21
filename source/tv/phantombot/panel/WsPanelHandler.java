@@ -27,8 +27,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.base64.Base64;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -317,7 +317,7 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
         } else if (query.equalsIgnoreCase("userLogo")) {
             jsonObject.key("results").array();
-            try ( FileInputStream inputStream = new FileInputStream("./web/panel/img/logo.jpeg")) {
+            try ( InputStream inputStream = Files.newInputStream(Paths.get("./web/panel/img/logo.jpeg"))) {
                 ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
                 ByteBuf buf2 = Base64.encode(buf);
                 jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();

@@ -321,9 +321,6 @@ public class DiscordAPI extends DiscordUtil {
         private static final List<Long> processedMessages = new CopyOnWriteArrayList<>();
         private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        private DiscordEventListener() {
-        }
-
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
@@ -414,7 +411,7 @@ public class DiscordAPI extends DiscordUtil {
                     return;
                 }
 
-                if (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId)) {
+                if (DiscordAPI.selfId != null && DiscordAPI.selfId.equals(iUser.getId())) {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to iUser.getId().equals(DiscordAPI.selfId)");
                     return;
                 }

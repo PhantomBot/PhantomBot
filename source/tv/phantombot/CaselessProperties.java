@@ -16,8 +16,10 @@
  */
 package tv.phantombot;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -250,7 +252,7 @@ public class CaselessProperties extends Properties {
 
     public void store(boolean reload) {
         try {
-            try ( FileOutputStream outputStream = new FileOutputStream("./config/botlogin.txt")) {
+            try ( OutputStream outputStream = Files.newOutputStream(Paths.get("./config/botlogin.txt"))) {
                 this.store(outputStream, HEADER);
             }
 
