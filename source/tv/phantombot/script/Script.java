@@ -208,7 +208,7 @@ public class Script {
             throw new IOException("JavaScript Error: " + ex.getMessage());
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            throw new IOException(ex.getMessage());
+            throw ex;
         }
     }
 

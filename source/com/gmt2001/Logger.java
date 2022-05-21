@@ -133,6 +133,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @SuppressWarnings("UseSpecificCatch")
     private Logger() {
+        super();
         updateTimezones();
 
         List<Boolean> success = new ArrayList<>();

@@ -22,7 +22,7 @@ public class YTPlayerLoadPlaylistEvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {String} playlist
+     * @param playlist
      */
     public YTPlayerLoadPlaylistEvent(String playlist) {
         this.playlist = playlist;
@@ -31,7 +31,7 @@ public class YTPlayerLoadPlaylistEvent extends YTPlayerEvent {
     /**
      * Method that gets the playlist name.
      *
-     * @return {String} playlist
+     * @return playlist
      */
     public String getPlaylist() {
         return this.playlist;

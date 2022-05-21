@@ -32,11 +32,11 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Class constructor for this event.
      *
-     * @param {IUser}    user
-     * @param {IChannel} channel
-     * @param {String}   command
-     * @param {String}   arguments
-     * @param {boolean}  isAdmin
+     * @param    user
+     * @param channel
+     * @param   command
+     * @param   arguments
+     * @param  isAdmin
      */
     public DiscordChannelCommandEvent(User user, Channel channel, Message message, String command, String arguments, boolean isAdmin) {
         super(user, channel, message);
@@ -50,7 +50,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that parses the command arguments.
      *
-     * @return {String[]}
+     * @return
      */
     private String[] parse() {
         List<String> tempArgs = new LinkedList<>();
@@ -80,7 +80,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that sets the command for this class. Mostly used for aliases.
      *
-     * @return {String} command
+     * @return command
      */
     public String setCommand(String command) {
         this.command = command;
@@ -90,7 +90,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that returns the command.
      *
-     * @return {String} command
+     * @return command
      */
     public String getCommand() {
         return this.command.toLowerCase();
@@ -99,7 +99,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that returns the string of arguments.
      *
-     * @return {String} arguments
+     * @return arguments
      */
     public String getArguments() {
         return this.arguments;
@@ -108,7 +108,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that returns the array of arguments
      *
-     * @return {String[]} args
+     * @return args
      */
     public String[] getArgs() {
         return this.args;
@@ -126,7 +126,7 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Method that returns this object as a string.
      *
-     * @return {String}
+     * @return
      */
     @Override
     public String toString() {

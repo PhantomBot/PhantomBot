@@ -30,7 +30,7 @@ public abstract class DiscordReactionEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     protected DiscordReactionEvent(User user) {
         super(user);
@@ -39,8 +39,8 @@ public abstract class DiscordReactionEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser}    user
-     * @param {IChannel} channel
+     * @param    user
+     * @param channel
      */
     protected DiscordReactionEvent(User user, Channel channel) {
         super(user, channel);

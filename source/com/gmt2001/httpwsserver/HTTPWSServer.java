@@ -315,7 +315,7 @@ public final class HTTPWSServer {
      *
      * @param path The path to check
      * @param isWs Whether this check is for a WebSocket or not
-     * @return {@code false} if the path is illegal, {@code} true otherwise
+     * @return true otherwise
      */
     static boolean validateUriPath(String path, boolean isWs) {
         return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))

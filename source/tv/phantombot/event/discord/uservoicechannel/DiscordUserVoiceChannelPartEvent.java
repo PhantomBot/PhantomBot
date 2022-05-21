@@ -24,7 +24,7 @@ public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEve
     /**
      * Class constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     public DiscordUserVoiceChannelPartEvent(User user) {
         super(user);
@@ -33,8 +33,8 @@ public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEve
     /**
      * Class constructor.
      *
-     * @param {IUser}    user
-     * @param {IVoiceChannel} voicechannel
+     * @param    user
+     * @param voicechannel
      */
     public DiscordUserVoiceChannelPartEvent(User user, VoiceChannel voicechannel) {
         super(user, voicechannel);

@@ -43,7 +43,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     public static StreamElementsCache instance(String channel) {
         StreamElementsCache instance = instances.get(channel);
@@ -58,7 +58,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private StreamElementsCache() {
@@ -73,7 +73,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Checks if the donation has been cached.
      *
-     * @return {boolean}
+     * @return
      */
     public boolean exists(String donationID) {
         return cache.containsKey(donationID);
@@ -82,7 +82,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Returns the current cache count (size/length),
      *
-     * @return {Integer}
+     * @return
      */
     public int count() {
         return cache.size();
@@ -184,7 +184,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map} Cache
+     * @param Cache
      */
     public void setCache(Map<String, JSONObject> cache) {
         this.cache = cache;
@@ -193,7 +193,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Returns the current cache.
      *
-     * @return {Map} Current cache.
+     * @return Current cache.
      */
     public Map<String, JSONObject> getCache() {
         return cache;

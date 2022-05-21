@@ -20,9 +20,9 @@ public class PubSubModerationDeleteEvent extends PubSubModerationEvent {
     /**
      * Class constructor.
      *
-     * @param {String} username
-     * @param {String} creator
-     * @param {String} message
+     * @param username
+     * @param creator
+     * @param message
      */
     public PubSubModerationDeleteEvent(String username, String creator, String message) {
         super(username, creator, message);

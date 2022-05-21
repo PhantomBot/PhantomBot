@@ -73,7 +73,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} to check
-     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with
+     * @return, this method will also reply with
      * {@code 401 Unauthorized} and then close the channel
      */
     @Override

@@ -26,10 +26,10 @@ public class TwitchMassSubscriptionGiftedEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} username
-     * @param {String} recipient
-     * @param {String} months
-     * @param {String} plan
+     * @param username
+     * @param recipient
+     * @param months
+     * @param plan
      */
     public TwitchMassSubscriptionGiftedEvent(String username, String amount, String plan) {
         this.username = username;
@@ -40,7 +40,7 @@ public class TwitchMassSubscriptionGiftedEvent extends TwitchEvent {
     /**
      * Method that returns the gifted the subscriptions.
      *
-     * @return {String} username
+     * @return username
      */
     public String getUsername() {
         return this.username;
@@ -49,7 +49,7 @@ public class TwitchMassSubscriptionGiftedEvent extends TwitchEvent {
     /**
      * Method that returns amount of subs gifted
      *
-     * @return {String} recipient
+     * @return recipient
      */
     public String getAmount() {
         return this.amount;
@@ -58,7 +58,7 @@ public class TwitchMassSubscriptionGiftedEvent extends TwitchEvent {
     /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
-     * @return {String} plan
+     * @return plan
      */
     public String getPlan() {
         return this.plan;

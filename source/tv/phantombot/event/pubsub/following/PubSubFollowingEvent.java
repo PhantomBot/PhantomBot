@@ -27,9 +27,9 @@ public abstract class PubSubFollowingEvent extends PubSubEvent {
     /**
      * Abstract constructor.
      *
-     * @param {String} username
-     * @param {String} userid
-     * @param {String} displayname
+     * @param username
+     * @param userid
+     * @param displayname
      */
     protected PubSubFollowingEvent(String username, String userid, String displayname) {
         this.username = username;
@@ -40,7 +40,7 @@ public abstract class PubSubFollowingEvent extends PubSubEvent {
     /**
      * Method that returns the username that the even was triggered for.
      *
-     * @return {String} username
+     * @return username
      */
     public String getUsername() {
         return this.username;

@@ -29,9 +29,9 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /**
      * Class constructor.
      *
-     * @param {TwitchSession} session
-     * @param {String}  sender
-     * @param {String}  message
+     * @param session
+     * @param  sender
+     * @param  message
      */
     protected IrcMessageEvent(TwitchSession session, String sender, String message) {
         super(session);
@@ -44,10 +44,10 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /**
      * Class constructor.
      *
-     * @param {TwitchSession} session
-     * @param {String}  sender
-     * @param {String}  message
-     * @param {Map}     tags
+     * @param session
+     * @param  sender
+     * @param  message
+     * @param     tags
      */
     protected IrcMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session);
@@ -60,7 +60,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /**
      * Method that returns the sender.
      *
-     * @return {String} sender
+     * @return sender
      */
     public String getSender() {
         return this.sender;
@@ -69,7 +69,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /**
      * Method that returns the message.
      *
-     * @return {String} sender
+     * @return sender
      */
     public String getMessage() {
         return this.message;
@@ -78,7 +78,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
     /**
      * Method that returns the IRCv3 tags.
      *
-     * @return {Map} tags
+     * @return tags
      */
     public Map<String, String> getTags() {
         return this.tags;

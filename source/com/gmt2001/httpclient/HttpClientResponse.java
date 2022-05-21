@@ -29,10 +29,10 @@ import org.json.JSONObject;
  */
 public final class HttpClientResponse {
 
-    private final Throwable exception;
+    private final Exception exception;
     private final boolean isSuccess;
     private final JSONObject json;
-    private final Throwable jsonException;
+    private final Exception jsonException;
     private final HttpMethod method;
     private final String requestBody;
     private final byte[] responseBody;
@@ -51,20 +51,20 @@ public final class HttpClientResponse {
      * @param response The response metadata object
      */
     @SuppressWarnings("UseSpecificCatch")
-    protected HttpClientResponse(Throwable exception, String requestBody, byte[] responseBody, HttpUrl url,
+    protected HttpClientResponse(Exception exception, String requestBody, byte[] responseBody, HttpUrl url,
             reactor.netty.http.client.HttpClientResponse response) {
         this.exception = exception;
         this.isSuccess = response.status().code() > 0 && response.status().code() < 400;
         this.method = response.method();
         this.requestBody = requestBody;
-        this.responseBody = responseBody;
+        this.responseBody = responseBody.clone();
         this.requestHeaders = response.requestHeaders().copy();
         this.responseHeaders = response.responseHeaders().copy();
         this.responseCode = response.status();
         this.url = url;
 
         JSONObject jsonT = null;
-        Throwable jsonExceptionT = null;
+        Exception jsonExceptionT = null;
 
         if (this.responseBody.length > 0 && this.responseBody[0] == '{') {
             try {
@@ -92,13 +92,13 @@ public final class HttpClientResponse {
      * @param url The URL requested
      */
     @SuppressWarnings("UseSpecificCatch")
-    protected HttpClientResponse(Throwable exception, boolean isSuccess, HttpMethod method, String requestBody, byte[] responseBody,
+    protected HttpClientResponse(Exception exception, boolean isSuccess, HttpMethod method, String requestBody, byte[] responseBody,
             HttpHeaders requestHeaders, HttpHeaders responseHeaders, HttpResponseStatus responseCode, HttpUrl url) {
         this.exception = exception;
         this.isSuccess = isSuccess;
         this.method = method;
         this.requestBody = requestBody;
-        this.responseBody = responseBody;
+        this.responseBody = responseBody.clone();
         if (requestHeaders != null) {
             this.requestHeaders = requestHeaders.copy();
         } else {
@@ -117,7 +117,7 @@ public final class HttpClientResponse {
         this.url = url;
 
         JSONObject jsonT = null;
-        Throwable jsonExceptionT = null;
+        Exception jsonExceptionT = null;
 
         if (this.responseBody.length > 0 && this.responseBody[0] == '{') {
             try {
@@ -136,7 +136,7 @@ public final class HttpClientResponse {
      *
      * @return
      */
-    public Throwable exception() {
+    public Exception exception() {
         return this.exception;
     }
 
@@ -173,9 +173,9 @@ public final class HttpClientResponse {
      * if the response body did not start with '{', throws NotJSONException
      *
      * @return
-     * @throws java.lang.Throwable
+     * @throws java.lang.Exception
      */
-    public JSONObject jsonOrThrow() throws Throwable {
+    public JSONObject jsonOrThrow() throws Exception {
         if (this.hasJson()) {
             return this.json;
         } else if (this.hasJsonException()) {
@@ -210,7 +210,7 @@ public final class HttpClientResponse {
      *
      * @return
      */
-    public Throwable jsonException() {
+    public Exception jsonException() {
         return this.jsonException;
     }
 
@@ -256,7 +256,7 @@ public final class HttpClientResponse {
      * @return
      */
     public byte[] rawResponseBody() {
-        return this.responseBody;
+        return this.responseBody.clone();
     }
 
     /**

@@ -23,9 +23,9 @@ public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
     /**
      * Constructor.
      *
-     * @param {int} channelId
-     * @param {float} serverTime
-     * @param {int} viewers
+     * @param channelId
+     * @param serverTime
+     * @param viewers
      */
     public PubSubViewCountEvent(int channelId, float serverTime, int viewers) {
         super(channelId, serverTime);
@@ -35,7 +35,7 @@ public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
     /**
      * Method that returns the number of viewers in the channel at @see getServerTime.
      *
-     * @return {int} viewers
+     * @return viewers
      */
     public int getViewers() {
         return this.viewers;

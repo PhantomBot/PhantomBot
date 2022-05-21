@@ -23,7 +23,7 @@ public class IrcJoinCompleteEvent extends IrcCompleteEvent {
     /**
      * Class constructor
      *
-     * @param {TwitchSession} session
+     * @param session
      */
     public IrcJoinCompleteEvent(TwitchSession session) {
         super(session);

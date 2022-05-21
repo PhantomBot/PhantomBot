@@ -24,9 +24,9 @@ public class IrcModerationEvent extends IrcMessageEvent {
     /**
      * Class constructor.
      *
-     * @param {TwitchSession} session
-     * @param {String}  sender
-     * @param {String}  message
+     * @param session
+     * @param  sender
+     * @param  message
      */
     public IrcModerationEvent(TwitchSession session, String sender, String message) {
         super(session, sender, message);
@@ -35,10 +35,10 @@ public class IrcModerationEvent extends IrcMessageEvent {
     /**
      * Class constructor.
      *
-     * @param {TwitchSession} session
-     * @param {String}  sender
-     * @param {String}  message
-     * @param {Map}     tags
+     * @param session
+     * @param  sender
+     * @param  message
+     * @param     tags
      */
     public IrcModerationEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session, sender, message, tags);

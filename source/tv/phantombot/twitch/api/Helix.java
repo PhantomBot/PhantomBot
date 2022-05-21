@@ -251,7 +251,7 @@ public class Helix {
             returnObject = response.jsonOrThrow();
             // Generate the return object,
             HttpRequest.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             // Generate the return object.
             HttpRequest.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
             throw new Exception(returnObject.toString(), ex);

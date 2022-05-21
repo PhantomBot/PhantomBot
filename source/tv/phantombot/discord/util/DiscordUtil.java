@@ -79,14 +79,11 @@ public class DiscordUtil {
 
     private final ExponentialBackoff sendBackoff = new ExponentialBackoff(4000L, 60000L, 300000L);
 
-    public DiscordUtil() {
-    }
-
     /**
      * Method that removes the # in the channel name.
      *
      * @param channelName
-     * @return {String}
+     * @return
      */
     public String sanitizeChannelName(String channelName) {
         // We have to make sure that it's at the start.
@@ -120,7 +117,7 @@ public class DiscordUtil {
      * @param channel
      * @param message
      * @param iteration
-     * @return {Message}
+     * @return
      */
     private Mono<Message> sendMessageAsync(MessageChannel channel, String message, boolean isRetry) {
         return this.sendMessageAsync(channel, message, isRetry, null);
@@ -164,7 +161,7 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param message
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendMessage(String channelName, String message) {
@@ -279,7 +276,7 @@ public class DiscordUtil {
      * @param channel
      * @param embed
      * @param iteration
-     * @return {Message}
+     * @return
      */
     private Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed, boolean isRetry) {
         return this.sendMessageEmbedAsync(channel, embed, isRetry, null);
@@ -319,7 +316,7 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param embed
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, EmbedCreateSpec embed) {
@@ -340,7 +337,7 @@ public class DiscordUtil {
      * @param channel
      * @param message
      * @param color
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
@@ -362,7 +359,7 @@ public class DiscordUtil {
      * @param channelName
      * @param message
      * @param color
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendMessageEmbed(String channelName, String color, String message) {
@@ -398,7 +395,7 @@ public class DiscordUtil {
      * @param message
      * @param fileLocation
      * @param iteration
-     * @return {Message}
+     * @return
      */
     private Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, MessageCreateFile file, boolean isRetry) {
         return this.sendFileAsync(channel, message, file, isRetry, null);
@@ -456,7 +453,7 @@ public class DiscordUtil {
      * @param channelName
      * @param message
      * @param fileLocation
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendFile(String channelName, String message, String fileLocation) {
@@ -476,7 +473,7 @@ public class DiscordUtil {
      *
      * @param channel
      * @param fileLocation
-     * @return {Message}
+     * @return
      */
     public Message sendFile(GuildMessageChannel channel, String fileLocation) {
         return this.sendFile(channel, "", fileLocation);
@@ -487,7 +484,7 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param fileLocation
-     * @return {Message}
+     * @return
      */
     @Deprecated
     public Message sendFile(String channelName, String fileLocation) {
@@ -585,7 +582,7 @@ public class DiscordUtil {
      * Method to return a channel object by its name.
      *
      * @param channelName - The name of the channel.
-     * @return {Channel}
+     * @return
      */
     @Deprecated
     public GuildMessageChannel getChannel(String channelName) {
@@ -687,7 +684,7 @@ public class DiscordUtil {
      * Method to return a channel object by its ID.
      *
      * @param channelId - The string ID of the channel
-     * @return {Channel}
+     * @return
      */
     @Deprecated
     public GuildMessageChannel getChannelByID(String channelId) {
@@ -720,7 +717,7 @@ public class DiscordUtil {
      * Method to return a user object by its name.
      *
      * @param userName - The user's name.
-     * @return {User}
+     * @return
      */
     public Mono<User> getUserAsync(String userName) {
         Flux<Member> members = DiscordAPI.getGuild().getMembers();
@@ -756,7 +753,7 @@ public class DiscordUtil {
      * Method to return a user object by its id.
      *
      * @param userId - The ID of the user.
-     * @return {User}
+     * @return
      */
     public Mono<User> getUserByIdAsync(long userId) {
         try {
@@ -781,7 +778,7 @@ public class DiscordUtil {
      *
      * @param userName
      * @param discriminator
-     * @return {User}
+     * @return
      */
     public Mono<User> getUserWithDiscriminatorAsync(String userName, String discriminator) {
         try {
@@ -806,7 +803,7 @@ public class DiscordUtil {
      * Method to return a role object by its name.
      *
      * @param roleName
-     * @return {Role}
+     * @return
      */
     public Mono<Role> getRoleAsync(String roleName) {
         Flux<Role> roles = DiscordAPI.getGuild().getRoles();
@@ -843,7 +840,7 @@ public class DiscordUtil {
      * Method that returns a role by its ID.
      *
      * @param id
-     * @return {Role}
+     * @return
      */
     public Mono<Role> getRoleByIDAsync(String id) {
         try {
@@ -858,7 +855,7 @@ public class DiscordUtil {
      * Method to get an array of role objects by a string of role names.
      *
      * @param roles
-     * @return {Role[]}
+     * @return
      */
     @Deprecated
     public Role[] getRoleObjects(String... roles) {
@@ -879,7 +876,7 @@ public class DiscordUtil {
      * Method to get a list of a user's roles.
      *
      * @param user
-     * @return {List}
+     * @return
      */
     @Deprecated
     public Role[] getUserRoles(User user) {
@@ -898,7 +895,7 @@ public class DiscordUtil {
      * Method to get a list of a user's roles.
      *
      * @param userId
-     * @return {List}
+     * @return
      */
     @Deprecated
     public Role[] getUserRoles(String userId) {
@@ -1103,7 +1100,7 @@ public class DiscordUtil {
      * Method to check if someone is an administrator.
      *
      * @param user
-     * @return {Boolean}
+     * @return
      */
     @Deprecated
     public boolean isAdministrator(User user) {
@@ -1126,7 +1123,7 @@ public class DiscordUtil {
      * Method to check if someone is an administrator.
      *
      * @param userName
-     * @return {Boolean}
+     * @return
      */
     @Deprecated
     public boolean isAdministrator(String userName) {
@@ -1293,7 +1290,7 @@ public class DiscordUtil {
      * Method to get a color object.
      *
      * @param color
-     * @return {Color}
+     * @return
      */
     public Color getColor(String color) {
         Matcher match = Pattern.compile("(\\d{1,3}),?\\s?(\\d{1,3}),?\\s?(\\d{1,3})").matcher(color);
@@ -1335,7 +1332,7 @@ public class DiscordUtil {
      *
      * @param channelName
      * @param messageId
-     * @return {Message}
+     * @return
      */
     public Message getMessageById(String channelName, String messageId) {
         try {
@@ -1394,7 +1391,7 @@ public class DiscordUtil {
      * Method to return a the last message of a given channel.
      *
      * @param channelName
-     * @return {Message}
+     * @return
      */
     public Message getLastMessage(String channelName) {
         try {

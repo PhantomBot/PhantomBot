@@ -24,7 +24,7 @@ public class TwitchGameChangeEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} gameTitle
+     * @param gameTitle
      */
     public TwitchGameChangeEvent(String gameTitle) {
         this.gameTitle = gameTitle;
@@ -33,7 +33,7 @@ public class TwitchGameChangeEvent extends TwitchEvent {
     /**
      * Method that returns the game name
      *
-     * @return {String} gameTitle
+     * @return gameTitle
      */
     public String getGameTitle() {
         return this.gameTitle;

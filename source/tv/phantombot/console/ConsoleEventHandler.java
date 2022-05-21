@@ -56,7 +56,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 import tv.phantombot.script.Script;
 
-public class ConsoleEventHandler implements Listener {
+public final class ConsoleEventHandler implements Listener {
 
     private static final ConsoleEventHandler instance = new ConsoleEventHandler();
     private Transaction transaction = null;
@@ -109,8 +109,8 @@ public class ConsoleEventHandler implements Listener {
         // Check for arguments in the message string.
         if (message.contains(" ")) {
             String messageString = message;
-            message = messageString.substring(0, messageString.indexOf(" "));
-            arguments = messageString.substring(messageString.indexOf(" ") + 1);
+            message = messageString.substring(0, messageString.indexOf(' '));
+            arguments = messageString.substring(messageString.indexOf(' ') + 1);
             argument = arguments.split(" ");
         }
 
@@ -199,7 +199,7 @@ public class ConsoleEventHandler implements Listener {
                 String[] str = new String[3];
                 str[0] = ("!" + key);
                 str[1] = PhantomBot.instance().getDataStore().get("groups", PhantomBot.instance().getDataStore().get("permcom", key));
-                str[2] = Script.callMethod("getCommandScript", key.contains(" ") ? key.substring(0, key.indexOf(" ")) : key);
+                str[2] = Script.callMethod("getCommandScript", key.contains(" ") ? key.substring(0, key.indexOf(' ')) : key);
                 // If the module is disabled, return.
                 if (str[2].contains("Undefined")) {
                     continue;
@@ -776,7 +776,7 @@ public class ConsoleEventHandler implements Listener {
                 }
 
                 if (twitchAlertsKickback.contains("&")) {
-                    twitchAlertsKickback = twitchAlertsKickback.substring(0, twitchAlertsKickback.indexOf("&"));
+                    twitchAlertsKickback = twitchAlertsKickback.substring(0, twitchAlertsKickback.indexOf('&'));
                 }
 
                 HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.POST, "https://streamlabs.com/api/v1.0/token",

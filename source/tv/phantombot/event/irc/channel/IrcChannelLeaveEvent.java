@@ -24,8 +24,8 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent {
     /**
      * Class constructor
      *
-     * @param {TwitchSession} session
-     * @param {String} user
+     * @param session
+     * @param user
      */
     public IrcChannelLeaveEvent(TwitchSession session, String user) {
         super(session);
@@ -36,7 +36,7 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent {
     /**
      * Class constructor
      *
-     * @param {String} user
+     * @param user
      */
     public IrcChannelLeaveEvent(String user) {
         super(null);
@@ -47,7 +47,7 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent {
     /**
      * Method that returns the user who left.
      *
-     * @return {String} user
+     * @return user
      */
     public String getUser() {
         return this.user;

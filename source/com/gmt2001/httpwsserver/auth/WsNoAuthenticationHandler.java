@@ -60,7 +60,7 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link WebSocketFrame} of the request
-     * @return {@code true}
+     * @return
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame req) {

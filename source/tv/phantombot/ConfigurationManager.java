@@ -220,7 +220,7 @@ public class ConfigurationManager {
      * @param propertyName the name of the property, which should be set if null
      * @param defaultValue the default value, to which the property is set, if the property is missing in the properties object
      * @param setMessage the message which will be printed if the value is set to the given default value
-     * @return {@code true} if the value has been set to default, {@code false} if the value is already present in the properties object
+     * @return if the value is already present in the properties object
      */
     private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, String defaultValue, String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
@@ -233,7 +233,7 @@ public class ConfigurationManager {
      * @param propertyName the name of the property, which should be generated if null
      * @param defaultValueGenerator the generating function, which generates the default value, if the property is missing in the properties object
      * @param generatedMessage the message which will be printed if the value is generated
-     * @return {@code true} if the value has been generated, {@code false} if the value is already present in the properties object and does not have
+     * @return if the value is already present in the properties object and does not have
      * to be generated
      */
     private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {

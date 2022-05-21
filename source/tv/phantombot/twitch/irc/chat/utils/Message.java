@@ -24,7 +24,7 @@ public class Message {
     /**
      * Class constructor.
      *
-     * @param {String} message
+     * @param message
      */
     public Message(String message) {
         this.message = message;
@@ -34,8 +34,8 @@ public class Message {
     /**
      * Class constructor.
      *
-     * @param {String} message
-     * @param {boolean} hasPriority
+     * @param message
+     * @param hasPriority
      */
     public Message(String message, boolean hasPriority) {
         this.message = message;
@@ -45,7 +45,7 @@ public class Message {
     /**
      * Method that returns the message.
      *
-     * @return {String} message
+     * @return message
      */
     public String getMessage() {
         return this.message;
@@ -54,7 +54,7 @@ public class Message {
     /**
      * Method that returns if the message has priority.
      *
-     * @return {boolean} hasPriority
+     * @return hasPriority
      */
     public boolean hasPriority() {
         return this.hasPriority;

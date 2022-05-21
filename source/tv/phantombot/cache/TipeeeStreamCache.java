@@ -43,7 +43,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     public static TipeeeStreamCache instance(String channel) {
         TipeeeStreamCache instance = instances.get(channel);
@@ -58,7 +58,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TipeeeStreamCache() {
@@ -73,7 +73,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Checks if the donation has been cached.
      *
-     * @return {boolean}
+     * @return
      */
     public boolean exists(String donationID) {
         return cache.containsKey(donationID);
@@ -82,7 +82,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Returns the current cache count (size/length),
      *
-     * @return {Integer}
+     * @return
      */
     public int count() {
         return cache.size();
@@ -185,7 +185,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map} Cache
+     * @param Cache
      */
     public void setCache(Map<String, String> cache) {
         this.cache = cache;
@@ -194,7 +194,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Returns the current cache.
      *
-     * @return {Map} Current cache.
+     * @return Current cache.
      */
     public Map<String, String> getCache() {
         return cache;
