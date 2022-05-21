@@ -25,7 +25,7 @@ public abstract class IrcEvent extends Event {
     /**
      * Class constructor
      *
-     * @param {TwitchSession} session
+     * @param session
      */
     protected IrcEvent(TwitchSession session) {
         this.session = session;
@@ -34,7 +34,7 @@ public abstract class IrcEvent extends Event {
     /**
      * Method that returns the session.
      *
-     * @param {TwitchSession} session
+     * @param session
      */
     public TwitchSession getSession() {
         return this.session;

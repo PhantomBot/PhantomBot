@@ -21,7 +21,7 @@ public class StreamElementsDonationEvent extends StreamElementsDonateEvent {
     /**
      * Class constructor
      *
-     * @param {String} jsonString
+     * @param jsonString
      */
     public StreamElementsDonationEvent(String jsonString) {
         super(jsonString);

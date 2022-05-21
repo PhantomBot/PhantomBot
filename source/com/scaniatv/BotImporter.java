@@ -33,7 +33,7 @@ public class BotImporter {
     /*
      * Method that will import time and points from RevloBot.
      *
-     * @param {String} fileName
+     * @param fileName
      */
     public static void ImportRevlo(String fileName) {
         DataStore db = PhantomBot.instance().getDataStore();
@@ -81,7 +81,7 @@ public class BotImporter {
     /*
      * Method that will import time and points from AnkhBot.
      *
-     * @param {String} fileName
+     * @param fileName
      */
     public static void ImportAnkh(String fileName) {
         DataStore db = PhantomBot.instance().getDataStore();

@@ -35,7 +35,7 @@ public class EventBus {
     /**
      * Method that returns this instance
      *
-     * @return {EventBus}
+     * @return
      */
     public static EventBus instance() {
         return instance;
@@ -44,7 +44,7 @@ public class EventBus {
     /**
      * Method that registers a listener with the bus.
      *
-     * @param {Listener} listener
+     * @param listener
      */
     public void register(Listener listener) {
         bus.subscribe(listener);
@@ -53,7 +53,7 @@ public class EventBus {
     /**
      * Method that removes a listener from the bus.
      *
-     * @param {Listener} listener
+     * @param listener
      */
     public void unregister(Listener listener) {
         bus.unsubscribe(listener);
@@ -62,7 +62,7 @@ public class EventBus {
     /**
      * Method that posts an event in sync.
      *
-     * @param {Event} event
+     * @param event
      */
     public void post(Event event) {
         if (PhantomBot.isInExitState()) {
@@ -75,7 +75,7 @@ public class EventBus {
     /**
      * Method that posts an event in async.
      *
-     * @param {Event} event
+     * @param event
      */
     public void postAsync(Event event) {
         if (PhantomBot.isInExitState()) {

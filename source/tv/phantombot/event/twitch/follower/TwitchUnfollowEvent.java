@@ -23,7 +23,7 @@ public class TwitchUnfollowEvent extends TwitchFollowerEvent {
     /**
      * Class constructor.
      *
-     * @param {String} follower
+     * @param follower
      */
     public TwitchUnfollowEvent(String follower) {
         super(follower, (new Date()).toString());

@@ -45,7 +45,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     /**
      * Method that returns the YouTube ID.
      *
-     * @return {String} youTubeID
+     * @return youTubeID
      */
     public String getYouTubeID() {
         return this.youTubeID;
@@ -54,7 +54,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     /**
      * Method that returns requester.
      *
-     * @return {String} requester
+     * @return requester
      */
     public String getRequester() {
         return this.requester;

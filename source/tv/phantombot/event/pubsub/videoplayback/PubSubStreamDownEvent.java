@@ -21,8 +21,8 @@ public class PubSubStreamDownEvent extends PubSubVideoPlaybackEvent {
     /**
      * Constructor.
      *
-     * @param {int} channelId
-     * @param {float} serverTime
+     * @param channelId
+     * @param serverTime
      */
     public PubSubStreamDownEvent(int channelId, float serverTime) {
         super(channelId, serverTime);

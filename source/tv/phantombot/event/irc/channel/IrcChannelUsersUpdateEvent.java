@@ -53,7 +53,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
     /**
      * Method that returns the current array of users who joined the channel in the last 10 minutes.
      *
-     * @return {String[]} joins
+     * @return joins
      */
     public String[] getJoins() {
         return this.joins.clone();
@@ -62,7 +62,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
     /**
      * Method that returns the current array of users who left the channel in the last 10 minutes.
      *
-     * @return {String[]} parts
+     * @return parts
      */
     public String[] getParts() {
         return this.parts.clone();

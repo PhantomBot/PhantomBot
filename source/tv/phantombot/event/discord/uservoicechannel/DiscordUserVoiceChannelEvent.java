@@ -26,7 +26,7 @@ public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     protected DiscordUserVoiceChannelEvent(User user) {
         super(user);
@@ -35,8 +35,8 @@ public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser}    user
-     * @param {IVoiceChannel} voicechannel
+     * @param    user
+     * @param voicechannel
      */
     protected DiscordUserVoiceChannelEvent(User user, VoiceChannel voicechannel) {
         super(user, voicechannel);

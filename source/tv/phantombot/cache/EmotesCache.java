@@ -139,10 +139,6 @@ public class EmotesCache implements Runnable {
 
         com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
 
-        /**
-         * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes. twitchJsonResult = TwitchAPIv5.instance().GetEmotes(); if
-         * (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) { com.gmt2001.Console.err.println("Failed to get Twitch Emotes"); return; }
-         */
         bttvJsonResult = BTTVAPIv3.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Emotes");

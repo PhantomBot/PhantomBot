@@ -65,7 +65,7 @@ public class CommandEvent extends Event {
     /**
      * Method that parses the command arguments.
      *
-     * @return {String[]}
+     * @return
      */
     private String[] parse() {
         List<String> tmpArgs = new LinkedList<>();
@@ -95,7 +95,7 @@ public class CommandEvent extends Event {
     /**
      * Method that will return the sender of this command.
      *
-     * @return {String} sender
+     * @return sender
      */
     public String getSender() {
         return this.sender;
@@ -104,7 +104,7 @@ public class CommandEvent extends Event {
     /**
      * Method that will return the command name.
      *
-     * @return {String}
+     * @return
      */
     public String getCommand() {
         return this.command.toLowerCase();
@@ -113,7 +113,7 @@ public class CommandEvent extends Event {
     /**
      * Method that will return the string of arguments.
      *
-     * @return {String} arguments
+     * @return arguments
      */
     public String getArguments() {
         return this.arguments;
@@ -122,7 +122,7 @@ public class CommandEvent extends Event {
     /**
      * Method that will return the array of arguments.
      *
-     * @return {String[]} args
+     * @return args
      */
     public String[] getArgs() {
         return this.args.clone();
@@ -131,7 +131,7 @@ public class CommandEvent extends Event {
     /**
      * Method that returns the IRCv3 tags in a map.
      *
-     * @return {Map} tags
+     * @return tags
      */
     public Map<String, String> getTags() {
         return this.tags;
@@ -140,7 +140,7 @@ public class CommandEvent extends Event {
     /**
      * Method that returns this object as a string.
      *
-     * @return {String}
+     * @return
      */
     @Override
     public String toString() {

@@ -41,10 +41,8 @@ public class FollowersCache implements Runnable {
     private int numfail = 0;
 
     /*
-     * @function instance
-     *
      * @param  {String} channelName
-     * @return {Object}
+     * @return
      */
     public static FollowersCache instance(String channelName) {
         FollowersCache instance = instances.get(channelName);
@@ -57,9 +55,7 @@ public class FollowersCache implements Runnable {
     }
 
     /*
-     * @function FollowersCache
-     *
-     * @param {String} channelName
+     * @param channelName
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache(String channelName) {
@@ -99,9 +95,6 @@ public class FollowersCache implements Runnable {
         }
     }
 
-    /*
-     * @function updateCache
-     */
     private void updateCache() throws Exception {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
         DataStore datastore = PhantomBot.instance().getDataStore();
@@ -135,9 +128,6 @@ public class FollowersCache implements Runnable {
         }
     }
 
-    /*
-     * @function checkLastFail
-     */
     private void checkLastFail() {
         Calendar cal = Calendar.getInstance();
         numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
@@ -150,16 +140,10 @@ public class FollowersCache implements Runnable {
         }
     }
 
-    /*
-     * @function kill
-     */
     public void kill() {
         this.killed = true;
     }
 
-    /*
-     * @function killall
-     */
     public static void killall() {
         instances.values().forEach(instance -> {
             instance.kill();

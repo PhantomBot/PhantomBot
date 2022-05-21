@@ -44,7 +44,7 @@ public class SteamCache implements Runnable {
     /**
      * Method that returns this instance.
      *
-     * @param {String} channelName
+     * @param channelName
      * @return
      */
     public static SteamCache instance(String channelName) {
@@ -127,7 +127,7 @@ public class SteamCache implements Runnable {
     /**
      * Method that returns the game ID, or null if it doesn't exist.
      *
-     * @param {String} gameName
+     * @param gameName
      * @return
      */
     public String getGameID(String gameName) {

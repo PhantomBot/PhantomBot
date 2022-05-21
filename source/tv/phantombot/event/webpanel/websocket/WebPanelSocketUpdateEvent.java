@@ -42,7 +42,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the socket event ID.
      *
-     * @return {String} id
+     * @return id
      */
     public String getId() {
         return this.id;
@@ -51,7 +51,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the script location and name.
      *
-     * @return {String} script
+     * @return script
      */
     public String getScript() {
         return this.script;
@@ -60,7 +60,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the arguments string.
      *
-     * @return {String} arguments
+     * @return arguments
      */
     public String getArguments() {
         return this.arguments;
@@ -69,7 +69,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the arguments array.
      *
-     * @return {String[]} args
+     * @return args
      */
     public String[] getArgs() {
         return this.args.clone();

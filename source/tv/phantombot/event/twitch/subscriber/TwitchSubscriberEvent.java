@@ -27,9 +27,9 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} subscriber
-     * @param {String} plan
-     * @param {String} message
+     * @param subscriber
+     * @param plan
+     * @param message
      */
     public TwitchSubscriberEvent(String subscriber, String plan, String months, String message) {
         this.subscriber = subscriber;
@@ -41,7 +41,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the subscriber's name.
      *
-     * @return {String} subscriber
+     * @return subscriber
      */
     public String getSubscriber() {
         return this.subscriber;
@@ -50,7 +50,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
-     * @return {String} plan
+     * @return plan
      */
     public String getPlan() {
         return this.plan;
@@ -59,7 +59,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the cumulative months.
      *
-     * @return {String} months
+     * @return months
      */
     public String getMonths() {
         return this.months;

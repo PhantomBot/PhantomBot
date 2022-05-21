@@ -233,7 +233,7 @@ public final class PhantomBot implements Listener {
     /**
      * Prints a message in the bot console.
      *
-     * @param {Object} message
+     * @param message
      */
     private void print(String message) {
         com.gmt2001.Console.out.println(message);

@@ -104,7 +104,7 @@ public class ScriptManager {
 
     /**
      * @param scriptFile
-     * @return {Script} file
+     * @return file
      * @throws java.io.IOException
      */
     public static Script getScript(File scriptFile) throws IOException {
@@ -121,7 +121,7 @@ public class ScriptManager {
     }
 
     /**
-     * @return {Script} file
+     * @return file
      */
     public static Map<String, Script> getScripts() {
         return scripts;

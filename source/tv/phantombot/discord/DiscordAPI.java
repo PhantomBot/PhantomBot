@@ -99,7 +99,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to return this class object.
      *
-     * @return {Object}
+     * @return
      */
     public static synchronized DiscordAPI instance() {
         if (DiscordAPI.instance == null) {
@@ -263,7 +263,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current guild.
      *
-     * @return {Guild}
+     * @return
      */
     public static Guild getGuild() {
         return DiscordAPI.gateway.getGuildById(DiscordAPI.guildId).block(Duration.ofSeconds(5L));
@@ -276,7 +276,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current client
      *
-     * @return {DiscordClient}
+     * @return
      */
     public static DiscordClient getClient() {
         return DiscordAPI.client;
@@ -285,7 +285,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current gateway
      *
-     * @return {GatewayDiscordClient}
+     * @return
      */
     public static GatewayDiscordClient getGateway() {
         return DiscordAPI.gateway;
@@ -294,7 +294,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to parse commands.
      *
-     * @param {String} message
+     * @param message
      */
     private void parseCommand(User user, Channel channel, Message message, boolean isAdmin) {
         if (message.getContent().isEmpty()) {

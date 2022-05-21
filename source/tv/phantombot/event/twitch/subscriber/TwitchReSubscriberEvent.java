@@ -27,9 +27,9 @@ public class TwitchReSubscriberEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} resubscriber
-     * @param {String} months
-     * @param {String} plan
+     * @param resubscriber
+     * @param months
+     * @param plan
      */
     public TwitchReSubscriberEvent(String resubscriber, String months, String plan, String message) {
         this.resubscriber = resubscriber;
@@ -41,7 +41,7 @@ public class TwitchReSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the resubscriber.
      *
-     * @return {String} resubscriber
+     * @return resubscriber
      */
     public String getReSubscriber() {
         return this.resubscriber;
@@ -50,7 +50,7 @@ public class TwitchReSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the resub months.
      *
-     * @return {String} months
+     * @return months
      */
     public String getMonths() {
         return this.months;
@@ -59,7 +59,7 @@ public class TwitchReSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
-     * @return {String} plan
+     * @return plan
      */
     public String getPlan() {
         return this.plan;

@@ -77,7 +77,7 @@ public class GenerateLogs {
      * Method that will read the log files.
      *
      * @param  {String} file
-     * @return {String}
+     * @return
      */
     private static String readFile(String file) {
         BufferedReader bufferedReader = null;
@@ -110,8 +110,8 @@ public class GenerateLogs {
     /*
      * Method used to write the log data to a file in the main bot folder.
      *
-     * @param {String} file
-     * @param {String} data
+     * @param file
+     * @param data
      */
     private static void writeToFile(String file, String data) {
         BufferedWriter bufferedWriter = null;
@@ -139,7 +139,7 @@ public class GenerateLogs {
      *
      * @param  {boolean} isGMT
      * @param  {boolean} minusDay
-     * @return {String}
+     * @return
      */
     private static String getDate(boolean isGMT, boolean minusDay) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");

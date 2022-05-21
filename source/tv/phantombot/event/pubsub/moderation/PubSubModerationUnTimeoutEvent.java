@@ -21,8 +21,8 @@ public class PubSubModerationUnTimeoutEvent extends PubSubModerationEvent {
     /**
      * Class constructor
      *
-     * @param {String} username
-     * @param {String} creator
+     * @param username
+     * @param creator
      */
     public PubSubModerationUnTimeoutEvent(String username, String creator) {
         super(username, creator, null);

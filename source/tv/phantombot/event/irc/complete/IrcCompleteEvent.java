@@ -24,7 +24,7 @@ public abstract class IrcCompleteEvent extends IrcEvent {
     /**
      * Class constructor
      *
-     * @param {TwitchSession} session
+     * @param session
      */
     protected IrcCompleteEvent(TwitchSession session) {
         super(session);

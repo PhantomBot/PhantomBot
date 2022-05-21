@@ -28,7 +28,7 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     protected DiscordChannelEvent(User user) {
         super(user);
@@ -37,8 +37,8 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser}    user
-     * @param {IChannel} channel
+     * @param    user
+     * @param channel
      */
     protected DiscordChannelEvent(User user, Channel channel) {
         super(user, channel);
@@ -47,9 +47,9 @@ public abstract class DiscordChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param {IUser}    user
-     * @param {IChannel} channel
-     * @param {IMessage} message
+     * @param    user
+     * @param channel
+     * @param message
      */
     protected DiscordChannelEvent(User user, Channel channel, Message message) {
         super(user, channel, message);

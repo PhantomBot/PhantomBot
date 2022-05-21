@@ -49,7 +49,7 @@ public class TwitterEvent extends Event {
     /**
      * Method that returns the Tweet.
      *
-     * @return {String} tweet
+     * @return tweet
      */
     public String getTweet() {
         return this.tweet;
@@ -58,7 +58,7 @@ public class TwitterEvent extends Event {
     /**
      * Method that returns the mention user.
      *
-     * @return {String} mention
+     * @return mention
      */
     public String getMentionUser() {
         return this.mention;

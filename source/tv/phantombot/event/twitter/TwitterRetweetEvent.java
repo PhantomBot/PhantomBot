@@ -35,7 +35,7 @@ public class TwitterRetweetEvent extends Event {
     /**
      * Method that returns the array of users.
      *
-     * @return {String[]} userNameArray
+     * @return userNameArray
      */
     public String[] getUserNameArray() {
         return this.userNameArray.clone();

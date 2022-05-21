@@ -38,7 +38,7 @@ public class ScriptEventManager implements Listener {
     /**
      * Method to get this instance.
      *
-     * @return {Object}
+     * @return
      */
     public static ScriptEventManager instance() {
         return instance;
@@ -64,7 +64,7 @@ public class ScriptEventManager implements Listener {
     /**
      * Method that handles events.
      *
-     * @param {Event} event
+     * @param event
      */
     @Handler
     public void onEvent(Event event) {
@@ -88,8 +88,8 @@ public class ScriptEventManager implements Listener {
     /**
      * Method to see if an event exists, this is used from init.js.
      *
-     * @param {String} eventName
-     * @return {boolean}
+     * @param eventName
+     * @return
      */
     public boolean hasEvent(String eventName) {
         return events.containsKey((WordUtils.capitalize(eventName) + "Event"));
@@ -98,8 +98,8 @@ public class ScriptEventManager implements Listener {
     /**
      * Method to register event handlers.
      *
-     * @param {String} eventName
-     * @param {ScriptEventHandler} handler
+     * @param eventName
+     * @param handler
      */
     public void register(String eventName, ScriptEventHandler handler) {
         register(eventName, handler, true);
@@ -140,7 +140,7 @@ public class ScriptEventManager implements Listener {
     /**
      * Method to unregister an event handler.
      *
-     * @param {ScriptEventHandler} handler
+     * @param handler
      */
     public void unregister(ScriptEventHandler handler) {
         Set<Entry<String, ScriptEventHandler>> entries = events.entrySet();

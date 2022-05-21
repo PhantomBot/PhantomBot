@@ -27,10 +27,10 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     /**
      * Class constructor for this event.
      *
-     * @param {IUser}    user
-     * @param {IChannel} channel
-     * @param {IMessage} message
-     * @param {boolean}  isAdmin
+     * @param    user
+     * @param channel
+     * @param message
+     * @param  isAdmin
      */
     public DiscordChannelMessageEvent(User user, Channel channel, Message message, boolean isAdmin) {
         super(user, channel, message);
@@ -41,7 +41,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     /**
      * Method that returns if the user a admin in the server.
      *
-     * @return {boolean} isAdmin
+     * @return isAdmin
      */
     public boolean isAdmin() {
         return this.isAdmin;
@@ -50,7 +50,7 @@ public class DiscordChannelMessageEvent extends DiscordChannelEvent {
     /**
      * Method that returns this object as a string.
      *
-     * @return {String}
+     * @return
      */
     @Override
     public String toString() {

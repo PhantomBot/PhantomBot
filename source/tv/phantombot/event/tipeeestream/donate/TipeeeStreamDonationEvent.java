@@ -21,7 +21,7 @@ public class TipeeeStreamDonationEvent extends TipeeeStreamDonateEvent {
     /**
      * Class constructor.
      *
-     * @param {String} jsonString
+     * @param jsonString
      */
     public TipeeeStreamDonationEvent(String jsonString) {
         super(jsonString);

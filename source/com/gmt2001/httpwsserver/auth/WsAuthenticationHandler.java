@@ -39,7 +39,7 @@ public interface WsAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return {@code true} if authenticated, {@code false} otherwise
+     * @return otherwise
      */
     boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame);
 
