@@ -19,15 +19,17 @@ package tv.phantombot.event.twitter;
 import tv.phantombot.event.Event;
 
 public class TwitterRetweetEvent extends Event {
+
     private final String[] userNameArray;
 
     /**
      * Class constructor.
      *
-     * @param {String[]} userNameArray
+     * @param userNameArray
      */
     public TwitterRetweetEvent(String[] userNameArray) {
-        this.userNameArray = userNameArray;
+        super();
+        this.userNameArray = userNameArray.clone();
     }
 
     /**
@@ -36,6 +38,6 @@ public class TwitterRetweetEvent extends Event {
      * @return {String[]} userNameArray
      */
     public String[] getUserNameArray() {
-        return this.userNameArray;
+        return this.userNameArray.clone();
     }
 }

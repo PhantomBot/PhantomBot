@@ -19,11 +19,4 @@ package tv.phantombot.event.tipeeestream.donate;
 import tv.phantombot.event.tipeeestream.TipeeeStreamEvent;
 
 public class TipeeeStreamDonationInitializedEvent extends TipeeeStreamEvent {
-
-    /**
-     * Class constructor.
-     */
-    public TipeeeStreamDonationInitializedEvent() {
-
-    }
 }

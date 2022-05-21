@@ -16,7 +16,7 @@
  */
 package tv.phantombot;
 
-public class RepoVersion {
+public final class RepoVersion {
 
     private static final String phantomBotVersion = "@phantombot.version@";
     private static final String repoVersion = "@repository.version@";
@@ -43,11 +43,11 @@ public class RepoVersion {
         return buildType + (isDocker ? "_docker" : "");
     }
 
-    public static boolean getNightlyBuild() {
+    public static boolean isNightlyBuild() {
         return buildType.equals("nightly_build");
     }
 
-    public static boolean getPrereleaseBuild() {
+    public static boolean isPrereleaseBuild() {
         return buildType.equals("prerelease_build");
     }
 

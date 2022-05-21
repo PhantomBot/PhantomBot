@@ -19,34 +19,35 @@ package tv.phantombot.event.irc.channel;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
+
     private final String[] joins;
     private final String[] parts;
 
     /**
      * Class constructor.
      *
-     * @param {TwitchSession}  session
-     * @param {String[]} joins
-     * @param {String[]} parts
+     * @param session
+     * @param joins
+     * @param parts
      */
     public IrcChannelUsersUpdateEvent(TwitchSession session, String[] joins, String[] parts) {
         super(session);
 
-        this.joins = joins;
-        this.parts = parts;
+        this.joins = joins.clone();
+        this.parts = parts.clone();
     }
 
     /**
      * Class constructor.
      *
-     * @param {String[]} joins
-     * @param {String[]} parts
+     * @param joins
+     * @param parts
      */
     public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
         super(null);
 
-        this.joins = joins;
-        this.parts = parts;
+        this.joins = joins.clone();
+        this.parts = parts.clone();
     }
 
     /**
@@ -55,7 +56,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * @return {String[]} joins
      */
     public String[] getJoins() {
-        return this.joins;
+        return this.joins.clone();
     }
 
     /**
@@ -64,6 +65,6 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * @return {String[]} parts
      */
     public String[] getParts() {
-        return this.parts;
+        return this.parts.clone();
     }
 }

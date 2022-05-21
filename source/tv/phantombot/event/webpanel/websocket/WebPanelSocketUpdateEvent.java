@@ -17,6 +17,7 @@
 package tv.phantombot.event.webpanel.websocket;
 
 public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
+
     private final String id;
     private final String script;
     private final String arguments;
@@ -25,16 +26,17 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Class constructor.
      *
-     * @param {String}   id
-     * @param {String}   script
-     * @param {String}   arguments
-     * @param {String[]} args
+     * @param id
+     * @param script
+     * @param arguments
+     * @param args
      */
     public WebPanelSocketUpdateEvent(String id, String script, String arguments, String[] args) {
+        super();
         this.id = id;
         this.script = script;
         this.arguments = arguments;
-        this.args = args;
+        this.args = args.clone();
     }
 
     /**
@@ -69,8 +71,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
      *
      * @return {String[]} args
      */
-
     public String[] getArgs() {
-        return this.args;
+        return this.args.clone();
     }
 }

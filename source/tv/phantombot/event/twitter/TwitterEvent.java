@@ -19,15 +19,17 @@ package tv.phantombot.event.twitter;
 import tv.phantombot.event.Event;
 
 public class TwitterEvent extends Event {
+
     private final String tweet;
     private final String mention;
 
     /**
      * Class constructor.
      *
-     * @param {String} tweet
+     * @param tweet
      */
     public TwitterEvent(String tweet) {
+        super();
         this.tweet = tweet;
         this.mention = null;
     }
@@ -35,10 +37,11 @@ public class TwitterEvent extends Event {
     /**
      * Class constructor.
      *
-     * @param {String} tweet
-     * @param {String} mention
+     * @param tweet
+     * @param mention
      */
     public TwitterEvent(String tweet, String mention) {
+        super();
         this.tweet = tweet;
         this.mention = mention;
     }

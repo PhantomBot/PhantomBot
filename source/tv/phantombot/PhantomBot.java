@@ -53,9 +53,9 @@ import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -430,7 +430,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isNightly() {
-        return RepoVersion.getNightlyBuild();
+        return RepoVersion.isNightlyBuild();
     }
 
     /**
@@ -439,7 +439,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isPrerelease() {
-        return RepoVersion.getPrereleaseBuild();
+        return RepoVersion.isPrereleaseBuild();
     }
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
@@ -980,7 +980,7 @@ public final class PhantomBot implements Listener {
         }
 
         this.print("Terminating all script modules...");
-        HashMap<String, Script> scripts = ScriptManager.getScripts();
+        Map<String, Script> scripts = ScriptManager.getScripts();
         scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
         });
@@ -1311,7 +1311,7 @@ public final class PhantomBot implements Listener {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                    if (RepoVersion.getNightlyBuild()) {
+                    if (RepoVersion.isNightlyBuild()) {
                         String latestNightly = HttpClient.get(HttpUrl.fromUri("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.dataStore.del("settings", "newrelease_info");

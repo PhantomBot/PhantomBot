@@ -52,7 +52,7 @@ import tv.phantombot.twitch.api.Helix;
  * This class keeps track of certain Twitch information such as if the channel is online or not and sends events to the JS side to indicate when the
  * channel has gone off or online.
  */
-public class TwitchCache implements Runnable {
+public final class TwitchCache implements Runnable {
 
     private static final Map<String, TwitchCache> instances = new ConcurrentHashMap<>();
     private final String channel;

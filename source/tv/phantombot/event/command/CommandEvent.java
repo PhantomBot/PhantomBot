@@ -33,33 +33,33 @@ public class CommandEvent extends Event {
     /**
      * Class constructor for this event without tags. Always send tags if you can.
      *
-     * @param {String} sender
-     * @param {String} command
-     * @param {String} arguments
-     * @param {Map} tags
+     * @param sender
+     * @param command
+     * @param arguments
      */
     public CommandEvent(String sender, String command, String arguments) {
+        super();
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.args = parse();
-        this.tags = new HashMap<String, String>();
+        this.tags = new HashMap<>();
     }
 
     /**
      * Class constructor for this event.
      *
-     * @param {String} sender
-     * @param {String} command
-     * @param {String} arguments
-     * @param {Map} tags
+     * @param sender
+     * @param command
+     * @param arguments
+     * @param tags
      */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.args = parse();
-        this.tags = (tags == null ? new HashMap<String, String>() : tags);
+        this.tags = (tags == null ? new HashMap<>() : tags);
     }
 
     /**
@@ -68,7 +68,7 @@ public class CommandEvent extends Event {
      * @return {String[]}
      */
     private String[] parse() {
-        List<String> tmpArgs = new LinkedList<String>();
+        List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
         String tmpStr = "";
 
@@ -89,7 +89,7 @@ public class CommandEvent extends Event {
             tmpArgs.add(tmpStr);
         }
 
-        return tmpArgs.toArray(new String[tmpArgs.size()]);
+        return tmpArgs.toArray(String[]::new);
     }
 
     /**
@@ -125,7 +125,7 @@ public class CommandEvent extends Event {
      * @return {String[]} args
      */
     public String[] getArgs() {
-        return this.args;
+        return this.args.clone();
     }
 
     /**

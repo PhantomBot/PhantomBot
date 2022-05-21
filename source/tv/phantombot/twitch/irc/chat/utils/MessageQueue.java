@@ -40,6 +40,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
      * @param channelName
      */
     protected MessageQueue(String channelName) {
+        super();
         this.channelName = channelName;
 
         // Set the default thread uncaught exception handler.
@@ -60,7 +61,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
      *
      * @return isAllowedToSend
      */
-    public boolean getAllowSendMessages() {
+    public boolean isAllowedToSendMessages() {
         return this.isAllowedToSend;
     }
 
