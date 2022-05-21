@@ -21,39 +21,39 @@
  * Tags in welcomes:
  * - (name) The username corresponding to the target user
  */
-(function() {
+(function () {
     var welcomeEnabled = $.getSetIniDbBoolean('welcome', 'welcomeEnabled', false),
-        welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
-        welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
-        welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
-        welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
-        welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
-        welcomeTimer = null,
-        // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
-        welcomeLock = new java.util.concurrent.locks.ReentrantLock;
+            welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
+            welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
+            welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
+            welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+            welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
+            welcomeTimer = null,
+            // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
+            welcomeLock = new java.util.concurrent.locks.ReentrantLock;
 
     /**
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function(event) {
-        var sender = event.getSender(),
-            now = $.systemTime();
+    $.bind('ircChannelMessage', function (event) {
+        var sender = event.getSender().toLowerCase(),
+                now = $.systemTime();
         if ($.equalsIgnoreCase(sender, $.channelName)) {
             return;
         }
         if ($.equalsIgnoreCase(sender, $.botName)) {
             return;
         }
-        if ($.isTwitchBot(sender.toLowerCase())) {
-			return;
-		}
+        if ($.isTwitchBot(sender)) {
+            return;
+        }
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
-            var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
-                firstTimeChatter = lastUserMessage === undefined,
-                queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
+            var lastUserMessage = $.getIniDbNumber('greetingCoolDown', sender),
+                    firstTimeChatter = lastUserMessage === undefined,
+                    queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
             lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
 
-            if (!$.inidb.exists('welcome_disabled_users', sender.toLowerCase())  && lastUserMessage + welcomeCooldown < now) {
+            if (!$.inidb.exists('welcome_disabled_users', sender) && lastUserMessage + welcomeCooldown < now) {
                 welcomeLock.lock();
                 try {
                     queue.add($.username.resolve(sender));
@@ -63,7 +63,7 @@
                 sendUserWelcomes();
             }
         }
-        $.inidb.set('welcomeLastUserMessage', sender.toLowerCase(), now);
+        $.inidb.set('greetingCoolDown', sender, now);
     });
 
     /**
@@ -81,7 +81,7 @@
      */
     function buildMessage(message, names) {
         var match,
-          namesString;
+                namesString;
         if (!names.length || !message) {
             return null;
         }
@@ -97,7 +97,7 @@
                             break;
                         default:
                             namesString = names.slice(0, -1).join($.lang.get('welcomesystem.names.join1')) +
-                              $.lang.get('welcomesystem.names.join2') + names[names.length - 1];
+                                    $.lang.get('welcomesystem.names.join2') + names[names.length - 1];
 
                     }
                     return {
@@ -145,11 +145,10 @@
             if (welcomeQueue.isEmpty() && welcomeQueueFirst.isEmpty()) {
                 // No welcomes within the last 15 seconds and none are waiting.
                 welcomeTimer = null;
-            }
-            else {
+            } else {
                 if (welcomeEnabled) {
                     var names = [],
-                      message = welcomeMessageFirst ? welcomeMessageFirst : welcomeMessage;
+                            message = welcomeMessageFirst ? welcomeMessageFirst : welcomeMessage;
                     while (names.length < 15 && !welcomeQueueFirst.isEmpty()) {
                         names.push(welcomeQueueFirst.poll());
                     }
@@ -208,14 +207,14 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            cooldown,
-            username,
-            message;
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                cooldown,
+                username,
+                message;
 
         /**
          * @commandpath welcome - Base command for controlling welcomes.
@@ -335,7 +334,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/welcomeSystem.js', 'welcome', 2);
         $.registerChatSubcommand('welcome', 'cooldown', 1);
         $.registerChatSubcommand('welcome', 'toggle', 1);
