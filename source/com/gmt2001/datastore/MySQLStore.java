@@ -833,7 +833,7 @@ public final class MySQLStore extends DataStore {
 
             StringBuilder sb = new StringBuilder(keys.length * 2);
 
-            for (String key : keys) {
+            for (String unused : keys) {
                 sb.append("?,");
             }
 

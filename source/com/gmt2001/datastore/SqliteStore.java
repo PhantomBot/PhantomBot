@@ -1076,7 +1076,7 @@ public final class SqliteStore extends DataStore {
 
                 StringBuilder sb = new StringBuilder(keys.length * 2);
 
-                for (String key : keys) {
+                for (String unused : keys) {
                     sb.append("?,");
                 }
 
@@ -1092,7 +1092,7 @@ public final class SqliteStore extends DataStore {
 
                 sb = new StringBuilder(keys.length * 10);
 
-                for (String key : keys) {
+                for (String unused : keys) {
                     sb.append("(?, ?, ?),");
                 }
 
