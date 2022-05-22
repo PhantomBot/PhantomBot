@@ -294,7 +294,7 @@
             $.inidb.decr('points', user, (baseAmount * cost));
         }
 
-        incr(user.toLowerCase(), baseAmount);
+        incr(user.toLowerCase(), baseAmount, event);
 
         if (msgToggle) {
             if (userGetsBonus(user, event)) {
@@ -305,13 +305,15 @@
         }
     }
 
-    function incr(user, times) {
+    function incr(user, times, event) {
         if (!$.inidb.exists('entered', user.toLowerCase())) {
             $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
             $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
         }
 
         $.inidb.incr('ticketsList', user.toLowerCase(), times);
+
+        times = (userGetsBonus(user, event) ? times * calcBonus(user, event, times) : times);
 
         for (var i = 0; i < times; i++) {
             entries.push(user);
