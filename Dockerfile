@@ -147,7 +147,7 @@ RUN set -eux;  \
     apt-get install -y --no-install-recommends python3 python3-pip; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
-    pip3 install --no-cache-dir -r "${BASEDIR}/config/healthcheck/requirements.txt"
+    pip3 install --no-cache-dir -r "${BASEDIR}/config/healthcheck/requirements.txt"; \
     apt-get remove -y python3-pip; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
