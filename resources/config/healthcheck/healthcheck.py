@@ -14,7 +14,7 @@
 
 #
 # Requires Python 3.8+
-# Requires running once (from this healthcheck folder): pip install --no-cache-dir -r requirements.txt
+# Requires running once (from this healthcheck folder): pip3 install --no-cache-dir -r requirements.txt
 #
 # To see all the available command line arguments, run: python3 healthcheck.py --help
 #
@@ -57,6 +57,7 @@ import requests
 import subprocess
 import sys
 import time
+import urllib3
 
 def getscriptdir():
     filename = getframeinfo(currentframe()).filename
@@ -91,7 +92,7 @@ def dofailure(args, errtype, message):
         if args.json:
             json.dump(outobj, sys.stderr)
         else:
-            print("Health Check Failed (" + type + "):" + message, file=sys.stderr)
+            print("Health Check Failed (" + outobj["type"] + "): " + str(outobj["message"]), file=sys.stderr)
     sys.exit(1)
 
 
@@ -103,7 +104,7 @@ def dosuccess(args):
         if args.json:
             json.dump(outobj, sys.stdout)
         else:
-            print("Success, the bot is online", file=sys.stdout)
+            print("Health Check Success (" + outobj["type"] + "): " + str(outobj["message"]), file=sys.stdout)
     sys.exit(0)
 
 
@@ -141,6 +142,7 @@ def getconfigfile(args):
 
 
 def main(args):
+    urllib3.disable_warnings()
     try:
         if args.is_docker and not args.service_name:
             dofailure(args, "noservicename", "Set --is-docker but --service-name is missing or empty")
@@ -163,18 +165,18 @@ def main(args):
                 port = line.split("=", 1)[1]
         if webauth is None:
             dofailure(args, "noauth", "No webauth in botlogin.txt")
-        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/presence", headers = { "User-Agent": "phantombot.healthcheck/2022" })
+        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/presence", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
             dofailure(args, "nopresencecode", "Presence check failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "PBok":
             dofailure(args, "nopresence", "Presence check returned an unknown response")
-        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".mods" })
+        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".mods" }, verify = False)
         if resp.status_code != 200:
             dofailure(args, "noputcode", "Send .mods failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "event posted":
             dofailure(args, "noput", "Send .mods returned an unknown response")
         time.sleep(5)
-        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" })
+        resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
             dofailure(args, "nohealthcheckcode", "Retrieve health check failed with HTTP " + resp.status_code)
         try:
