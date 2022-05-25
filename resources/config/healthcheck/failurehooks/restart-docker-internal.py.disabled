@@ -13,25 +13,20 @@
 #
 
 #
-# Example hook to restart the bot using service (SystemV) on CentOS or other Linux/Unix distros
+# Example hook to restart the bot when running as a Docker container, from inside the container
 #
-# To enable this hook, rename to: restart-systemv.py
-#
-# Also ensure the setting for servicename is correct below
+# To enable this hook, rename to: restart-docker-internal.py
 #
 
 from subprocess import run
-
-
-# Set this to the name of the PhantomBot service, or use --service-name when calling healthcheck.py
-servicename = "phantombot"
-
+from time import sleep
 
 locals = locals()
 
-if locals.args.service_name:
-	servicename = locals.args.service_name
-
 print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
 
-run(["service", servicename, "restart"], check=True)
+pid = int(run(["pidof", "-s", "java"], capture_output=True, check=True).stdout)
+
+run(["kill", str(pid)], check=True)
+sleep(10)
+run(["kill", "-9", str(pid)], check=True)
