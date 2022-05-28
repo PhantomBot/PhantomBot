@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global java */
+/* global java, Packages */
 
 /**
  * timeSystem.js
@@ -49,7 +49,7 @@
      * @param {String} timeformat
      * @returns {String}
      *
-     * timeformat = java.text.SimpleDateFormat allowed formats:
+     * timeformat = java.time.format.DateTimeFormatter allowed formats:
      *   Letter   Date or Time Component   Presentation        Examples
      *   G        Era designator           Text                AD
      *   y        Year                     Year                1996; 96
@@ -77,9 +77,8 @@
      *     getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'");
      */
     function getCurLocalTimeString(format) {
-        var dateFormat = new java.text.SimpleDateFormat(format);
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
-        return dateFormat.format(new java.util.Date());
+        var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -90,9 +89,8 @@
      * @return {String}
      */
     function getLocalTimeString(format, utc_secs) {
-        var dateFormat = new java.text.SimpleDateFormat(format);
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
-        return dateFormat.format(new java.util.Date(utc_secs));
+        var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        return Packages.java.time.LocalDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -103,9 +101,7 @@
      * @return {String}
      */
     function getCurrentLocalTimeString(format, timeZone) {
-        var dateFormat = new java.text.SimpleDateFormat(format);
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-        return dateFormat.format(new java.util.Date());
+        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(timeZone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -116,9 +112,8 @@
      * @return {String}
      */
     function getLocalTime() {
-        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
-        return dateFormat.format(new java.util.Date());
+        var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
     }
 
     /**

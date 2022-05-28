@@ -215,10 +215,9 @@
                 logFileDate,
                 logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
                 logDirIdx,
-                datefmt = new java.text.SimpleDateFormat('dd-MM-yyyy'),
                 date,
                 rotateDays = $.getIniDbNumber('settings', 'log_rotate_days') * 24 * 60 * 6e4,
-                checkDate = $.systemTime() - rotateDays;
+                checkDate = Packages.java.time.LocalDate.now().minusDays(rotateDays);
 
         if (rotateDays === 0) {
             return;
@@ -228,9 +227,9 @@
         for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
             logFiles = $.findFiles('./logs/' + logDirs[logDirIdx], 'txt');
             for (idx = 0; idx < logFiles.length; idx++) {
-                logFileDate = logFiles[idx].match(/(\d{2}-\d{2}-\d{4})/)[1];
-                date = datefmt.parse(logFileDate);
-                if (date.getTime() < checkDate) {
+                logFileDate = logFiles[idx].match(/(\d{4}-\d{2}-\d{2})/)[1];
+                date = Packages.java.time.LocalDate.parse(logFileDate);
+                if (date.isBefore(checkDate)) {
                     $.log.event('Log Rotate: Deleted ./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx]);
                     $.deleteFile('./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx], true);
                 }

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function () {
     var currentGame = null;
     var count = 1;
@@ -126,9 +128,9 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('status') && channelData.getInt('_http') == 200) {
+            if (!channelData.isNull('status') && channelData.getInt('_http') === 200) {
                 return channelData.getString('status');
-            } else if (channelData.isNull('status') && channelData.getInt('_http') == 200) {
+            } else if (channelData.isNull('status') && channelData.getInt('_http') === 200) {
                 return $.lang.get('common.twitch.no.status');
             }
             $.log.error('Failed to get the current status: ' + channelData.optString('message', 'no message'));
@@ -148,9 +150,9 @@
         } else {
             var channelData = $.twitch.GetChannel(channelName);
 
-            if (!channelData.isNull('game') && channelData.getInt('_http') == 200) {
+            if (!channelData.isNull('game') && channelData.getInt('_http') === 200) {
                 return channelData.getString("game");
-            } else if (channelData.isNull('game') && channelData.getInt('_http') == 200) {
+            } else if (channelData.isNull('game') && channelData.getInt('_http') === 200) {
                 return $.lang.get('common.twitch.no.game');
             }
 
@@ -170,7 +172,7 @@
     function getLogo(channelName) {
         var channel = $.twitch.GetChannel(channelName);
 
-        if (!channel.isNull('logo') && channel.getInt('_http') == 200) {
+        if (!channel.isNull('logo') && channel.getInt('_http') === 200) {
             return channel.getString('logo');
         } else {
             return 0;
@@ -307,7 +309,7 @@
         } else {
             var stream = $.twitch.GetStream(channelName);
 
-            if (!stream.isNull('stream') && stream.getInt('_http') == 200) {
+            if (!stream.isNull('stream') && stream.getInt('_http') === 200) {
                 return stream.getJSONObject('stream').getInt('viewers');
             } else {
                 return 0;
@@ -324,7 +326,7 @@
     function getFollows(channelName) {
         var channel = $.twitch.GetChannel(channelName);
 
-        if (!channel.isNull('followers') && channel.getInt('_http') == 200) {
+        if (!channel.isNull('followers') && channel.getInt('_http') === 200) {
             return channel.getInt('followers');
         } else {
             return 0;
@@ -347,11 +349,8 @@
             return $.lang.get('followhandler.follow.age.datefmt.404');
         }
 
-        var date = new Date(user.getString('created_at')),
-                dateFormat = new java.text.SimpleDateFormat($.lang.get('followhandler.follow.age.datefmt')),
-                dateFinal = dateFormat.format(date);
-
-        return dateFinal;
+        var date = Packages.java.time.LocalDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return date.format(Packages.java.time.format.DateTimeFormatter.ofPattern($.lang.get('followhandler.follow.age.datefmt')));
     }
 
     /**
@@ -371,10 +370,9 @@
             return;
         }
 
-        var date = new Date(user.getString('created_at')),
-                dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
-                dateFinal = dateFormat.format(date),
-                days = Math.floor((($.systemTime() - date.getTime()) / 1000) / 86400);
+        var date = Packages.java.time.LocalDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
+        var days = Packages.java.time.Duration.between(date, Packages.java.time.LocalDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -396,10 +394,9 @@
             return;
         }
 
-        var date = new Date(channelData.getString('created_at')),
-                dateFormat = new java.text.SimpleDateFormat("MMMM dd', 'yyyy"),
-                dateFinal = dateFormat.format(date),
-                days = Math.floor((Math.abs((date.getTime() - $.systemTime()) / 1000)) / 86400);
+        var date = Packages.java.time.LocalDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
+        var days = Packages.java.time.Duration.between(date, Packages.java.time.LocalDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
@@ -439,7 +436,7 @@
         }
 
         if (http.getBoolean('_success')) {
-            if (http.getInt('_http') == 200) {
+            if (http.getInt('_http') === 200) {
                 if (!silent) {
                     $.say($.lang.get('common.game.change', http.getString('game')));
                 }
@@ -472,7 +469,7 @@
         var http = $.twitch.UpdateChannel(channelName, status, '');
 
         if (http.getBoolean('_success')) {
-            if (http.getInt('_http') == 200) {
+            if (http.getInt('_http') === 200) {
                 if (!silent) {
                     $.say($.lang.get('common.title.change', http.getString('status')));
                 }

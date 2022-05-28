@@ -20,7 +20,7 @@ import com.gmt2001.ExponentialBackoff;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -221,7 +221,7 @@ public class TwitchSession extends MessageQueue {
                 com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
             }
 
-            if (new Date().after(this.nextReminder)) {
+            if (Instant.now().isAfter(this.nextReminder)) {
                 if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName()))) {
                     com.gmt2001.Console.warn.println("WARNING: Unable to send last message due to configuration error");
 
@@ -232,7 +232,7 @@ public class TwitchSession extends MessageQueue {
                     }
                 }
 
-                this.nextReminder.setTime(new Date().getTime() + REMINDER_INTERVAL);
+                this.nextReminder = Instant.now().plusMillis(REMINDER_INTERVAL);
             }
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

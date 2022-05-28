@@ -18,8 +18,8 @@ package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONArray;
@@ -34,8 +34,8 @@ public class FollowersCache implements Runnable {
     private static final Map<String, FollowersCache> instances = new HashMap<>();
     private final Thread updateThread;
     private final String channelName;
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private boolean firstUpdate = true;
     private boolean killed = false;
     private int numfail = 0;
@@ -79,7 +79,7 @@ public class FollowersCache implements Runnable {
 
         while (!killed) {
             try {
-                if (new Date().after(timeoutExpire)) {
+                if (Instant.now().isAfter(timeoutExpire)) {
                     updateCache();
                 }
             } catch (Exception ex) {
@@ -129,14 +129,12 @@ public class FollowersCache implements Runnable {
     }
 
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
+        numfail = (lastFail.isAfter(Instant.now()) ? numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        lastFail = cal.getTime();
+        lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (numfail > 5) {
-            timeoutExpire = cal.getTime();
+            timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
