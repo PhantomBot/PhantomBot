@@ -27,15 +27,13 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Queue;
-import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -90,7 +88,7 @@ public class Helix {
     private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
-    private Date nextWarning = new Date();
+    private Instant nextWarning = Instant.now();
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -162,8 +160,8 @@ public class Helix {
                     waitForRateLimit().then(requestQueue.poll()).block();
                 }
 
-                Date d = Calendar.getInstance().getTime();
-                calls.entrySet().stream().filter(kvp -> (kvp.getValue().expires.before(d))).forEachOrdered(kvp -> {
+                Instant d = Instant.now();
+                calls.entrySet().stream().filter(kvp -> (kvp.getValue().expires.isBefore(d))).forEachOrdered(kvp -> {
                     calls.remove(kvp.getKey());
                 });
             } finally {
@@ -246,7 +244,7 @@ public class Helix {
 
             this.updateRateLimits(response.responseHeaders().getInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
                     response.responseHeaders().getInt("Ratelimit-Remaining", 1),
-                    response.responseHeaders().getInt("Ratelimit-Reset", (int) (Date.from(Instant.now()).getTime() / 1000)) * 1000);
+                    response.responseHeaders().getInt("Ratelimit-Reset", (int) (Instant.now().toEpochMilli() / 1000)) * 1000);
 
             returnObject = response.jsonOrThrow();
             // Generate the return object,
@@ -257,10 +255,8 @@ public class Helix {
             throw new Exception(returnObject.toString(), ex);
         }
 
-        if (returnObject.has("error") && nextWarning.before(new Date())) {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.MINUTE, WARNING_INTERVAL_MINS);
-            nextWarning = c.getTime();
+        if (returnObject.has("error") && nextWarning.isBefore(Instant.now())) {
+            this.nextWarning = Instant.now().plus(WARNING_INTERVAL_MINS, ChronoUnit.MINUTES);
 
             com.gmt2001.Console.warn.println("Helix rejected a request [" + endPoint + "] " + returnObject.optInt("status", 0) + " "
                     + returnObject.optString("error", "Unknown") + ": " + returnObject.optString("message", "Unknown"));
@@ -293,8 +289,6 @@ public class Helix {
 
     private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
         return calls.computeIfAbsent(this.digest(callid), k -> {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.MILLISECOND, CACHE_TIME);
             Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
                 try {
                     emitter.success(action.get());
@@ -303,14 +297,12 @@ public class Helix {
                 }
             }).cache();
             requestQueue.add(processor);
-            return new CallRequest(c.getTime(), processor);
+            return new CallRequest(Instant.now().plusMillis(CACHE_TIME), processor);
         }).processor;
     }
 
     private Mono<JSONObject> handleMutatorAsync(String callid, Supplier<JSONObject> action) {
         return calls.computeIfAbsent(this.digest(callid), k -> {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.MILLISECOND, MUTATOR_CACHE_TIME);
             Mono<JSONObject> processor = Mono.<JSONObject>create(emitter -> {
                 try {
                     emitter.success(action.get());
@@ -319,7 +311,7 @@ public class Helix {
                 }
             }).cache();
             requestQueue.add(processor);
-            return new CallRequest(c.getTime(), processor);
+            return new CallRequest(Instant.now().plusMillis(MUTATOR_CACHE_TIME), processor);
         }).processor;
     }
 
@@ -1096,24 +1088,19 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
-            @Nullable String before, @Nullable String after, @Nullable Calendar started_at, @Nullable Calendar ended_at)
+            @Nullable String before, @Nullable String after, @Nullable LocalDateTime started_at, @Nullable LocalDateTime ended_at)
             throws JSONException, IllegalArgumentException {
         String started_atS = null;
         String ended_atS = null;
 
         if (started_at != null || ended_at != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Calendar c = Calendar.getInstance();
-            c.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
-
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
             if (started_at != null) {
-                c.setTimeInMillis(started_at.getTimeInMillis());
-                started_atS = sdf.format(c.getTime());
+                started_atS = started_at.format(dateTimeFormatter);
             }
 
             if (ended_at != null) {
-                c.setTimeInMillis(ended_at.getTimeInMillis());
-                ended_atS = sdf.format(c.getTime());
+                ended_atS = ended_at.format(dateTimeFormatter);
             }
         }
 
@@ -1200,10 +1187,10 @@ public class Helix {
 
     private class CallRequest {
 
-        private final Date expires;
+        private final Instant expires;
         private final Mono<JSONObject> processor;
 
-        private CallRequest(Date expires, Mono<JSONObject> processor) {
+        private CallRequest(Instant expires, Mono<JSONObject> processor) {
             this.expires = expires;
             this.processor = processor;
         }

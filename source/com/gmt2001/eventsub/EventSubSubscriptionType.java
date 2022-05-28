@@ -16,7 +16,7 @@
  */
 package com.gmt2001.eventsub;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
@@ -31,12 +31,12 @@ public abstract class EventSubSubscriptionType implements Listener {
 
     protected EventSubSubscription subscription;
     protected String messageId;
-    protected Date messageTimestamp;
+    protected LocalDateTime messageTimestamp;
 
     protected EventSubSubscriptionType() {
     }
 
-    protected EventSubSubscriptionType(EventSubSubscription subscription, String messageId, Date messageTimestamp) {
+    protected EventSubSubscriptionType(EventSubSubscription subscription, String messageId, LocalDateTime messageTimestamp) {
         this.subscription = subscription;
         this.messageId = messageId;
         this.messageTimestamp = messageTimestamp;
@@ -65,7 +65,7 @@ public abstract class EventSubSubscriptionType implements Listener {
     protected abstract EventSubSubscription proposeSubscription();
 
     protected EventSubSubscription proposeSubscriptionInternal(String type, Map<String, String> condition) {
-        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, new Date(), proposeTransport());
+        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, LocalDateTime.now(), proposeTransport());
     }
 
     protected EventSubTransport proposeTransport() {
@@ -112,7 +112,7 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public Date getMessageTimestamp() {
+    public LocalDateTime getMessageTimestamp() {
         return this.messageTimestamp;
     }
 }

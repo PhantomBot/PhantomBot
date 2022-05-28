@@ -22,18 +22,18 @@ import com.gmt2001.HttpResponse;
 import com.gmt2001.TwitchAPIv5;
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
+import static tv.phantombot.PhantomBot.getTimeZoneId;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -267,9 +267,7 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("backupdb")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing backupdb");
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-            String timestamp = datefmt.format(new Date());
+            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             PhantomBot.instance().getDataStore().backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
@@ -331,8 +329,7 @@ public final class ConsoleEventHandler implements Listener {
             }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followertest (User: " + user + ")");
-
-            EventBus.instance().postAsync(new TwitchFollowEvent(user, (new Date()).toString()));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user, LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             return;
         }
 
@@ -350,7 +347,7 @@ public final class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
 
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, (new Date()).toString()));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             }
             return;
         }

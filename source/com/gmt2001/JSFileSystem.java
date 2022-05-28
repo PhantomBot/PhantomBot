@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -102,7 +102,7 @@ public final class JSFileSystem {
         try {
             Files.createFile(Paths.get(path));
         } catch (FileAlreadyExistsException ex) {
-            Files.setLastModifiedTime(Paths.get(path), FileTime.fromMillis(new Date().getTime()));
+            Files.setLastModifiedTime(Paths.get(path), FileTime.fromMillis(Instant.now().getEpochSecond()));
         }
     }
 

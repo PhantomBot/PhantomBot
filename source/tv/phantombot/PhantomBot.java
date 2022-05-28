@@ -51,12 +51,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -1387,9 +1387,7 @@ public final class PhantomBot implements Listener {
         service.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(CaselessProperties.instance().getProperty("logtimezone", "GMT")));
-            String timestamp = datefmt.format(new Date());
+            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             this.dataStore.backupDB("phantombot.auto.backup." + timestamp + ".db");
 
@@ -1489,6 +1487,10 @@ public final class PhantomBot implements Listener {
 
     public static String getTimeZone() {
         return CaselessProperties.instance().getProperty("logtimezone", "GMT");
+    }
+
+    public static ZoneId getTimeZoneId() {
+        return ZoneId.of(getTimeZone());
     }
 
     public static boolean isInExitState() {

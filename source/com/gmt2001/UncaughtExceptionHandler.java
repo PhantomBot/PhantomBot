@@ -25,11 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
-import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -51,9 +47,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 e.printStackTrace(ptrace);
                 com.gmt2001.Console.err.printStackTrace(e, true);
 
-                SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
-                datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-                String timestamp = datefmt.format(new Date());
+                String timestamp = Logger.instance().logFileTimestamp();
 
                 Path p = PathValidator.getRealPath(Paths.get("./logs/stacktraces/" + timestamp + ".txt"));
                 Files.createDirectories(p.getParent());

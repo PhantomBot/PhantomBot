@@ -60,12 +60,7 @@
      * @return {String}
      */
     function getLogDateString(timeStamp) {
-        var now = (timeStamp ? new Date(timeStamp) : new Date()),
-                pad = function (i) {
-                    return (i < 10 ? '0' + i : i);
-                };
-
-        return pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear();
+        return Packages.com.gmt2001.Logger.instance().logFileTimestamp();
     }
 
     /*
@@ -90,10 +85,7 @@
      * @return {String}
      */
     function getLogEntryTimeDateString() {
-        var dateFormat = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT')));
-        return dateFormat.format(new Date());
+        return Packages.com.gmt2001.Logger.instance().logTimestamp();
     }
 
     /*

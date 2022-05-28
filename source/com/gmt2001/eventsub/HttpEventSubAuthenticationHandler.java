@@ -31,10 +31,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
 import java.nio.charset.Charset;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDateTime;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -53,10 +50,8 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
         boolean authenticated = HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
 
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.add(Calendar.MINUTE, -10);
-        Date ts = EventSub.parseDate(timestamp);
-        if (ts.before(c.getTime()) || EventSub.instance().isDuplicate(id, ts)) {
+        LocalDateTime ts = EventSub.parseDate(timestamp);
+        if (ts.isBefore(LocalDateTime.now().minusMinutes(10)) || EventSub.instance().isDuplicate(id, ts)) {
             authenticated = false;
         }
 
