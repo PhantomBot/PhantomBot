@@ -46,7 +46,7 @@
 
         for (i in keys) {
             if (!$.isBot(keys[i]) && !$.isOwner(keys[i])) {
-                if (ctr++ == (iniName.equals('points') ? amountPoints : amountTime)) {
+                if (ctr++ === (iniName.equals('points') ? amountPoints : amountTime)) {
                     break;
                 }
                 list.push({

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java */
+
 /**
  * timeSystem.js
  *
@@ -276,7 +278,7 @@
                 cHours = time / 3600,
                 cMins = cHours % 1 * 60;
 
-        if (cHours == 0 || cHours < 1) {
+        if (cHours === 0 || cHours < 1) {
             return (floor(~~cMins) + $.lang.get('common.minutes2'));
         } else {
             return (floor(cHours) + $.lang.get('common.hours2') + floor(~~cMins) + $.lang.get('common.minutes2'));
@@ -381,7 +383,7 @@
                     }
 
                     $.inidb.decr('time', subject, timeArg);
-                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success', $.getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)))
+                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success', $.getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)));
                 }
 
                 if (action.equalsIgnoreCase('set')) {

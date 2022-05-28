@@ -26,14 +26,14 @@
  */
 (function() {
     var data = [],
-        curLang = ($.inidb.exists('settings', 'lang') ? $.inidb.get('settings', 'lang') : 'english');
+        curLang = $.jsString($.inidb.exists('settings', 'lang') ? $.inidb.get('settings', 'lang') : 'english');
 
     /**
      * @function load
      */
     function load(force) {
         $.bot.loadScriptRecursive('./lang/english', true, (force ? force : false));
-        if (curLang != 'english') {
+        if (curLang !== 'english') {
             $.bot.loadScriptRecursive('./lang/' + curLang, true, (force ? force : false));
         }
 
@@ -77,7 +77,7 @@
             return '';
         }
 
-        if (string == '<<EMPTY_PLACEHOLDER>>') {
+        if (string === '<<EMPTY_PLACEHOLDER>>') {
             return '';
         }
 

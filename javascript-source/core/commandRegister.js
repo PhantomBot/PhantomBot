@@ -43,7 +43,7 @@
         }
 
         // This is for the panel commands.
-        if (groupId == 30) {
+        if (groupId === 30) {
             if ($.inidb.exists('permcom', command)) {
                 $.inidb.del('permcom', command);
             }
@@ -93,7 +93,7 @@
 
         commands[command].subcommands[subcommand] = {
             groupId: groupId
-        }
+        };
     }
 
     /*
@@ -211,9 +211,9 @@
         if (commandExists(command)) {
             var groupid = commands[command].groupId;
 
-            if ($.isSwappedSubscriberVIP() && groupid == 3) {
+            if ($.isSwappedSubscriberVIP() && groupid === 3) {
                 groupid = 5;
-            } else if ($.isSwappedSubscriberVIP() && groupid == 5) {
+            } else if ($.isSwappedSubscriberVIP() && groupid === 5) {
                 groupid = 3;
             }
 
@@ -232,21 +232,21 @@
         var group = '';
 
         if (commandExists(command)) {
-            if (commands[command].groupId == 0) {
+            if (commands[command].groupId === 0) {
                 group = 'Caster';
-            } else if (commands[command].groupId == 1) {
+            } else if (commands[command].groupId === 1) {
                 group = 'Administrator';
-            } else if (commands[command].groupId == 2) {
+            } else if (commands[command].groupId === 2) {
                 group = 'Moderator';
-            } else if (commands[command].groupId == $.getSubscriberGroupID()) {
+            } else if (commands[command].groupId === $.getSubscriberGroupID()) {
                 group = 'Subscriber';
-            } else if (commands[command].groupId == 4) {
+            } else if (commands[command].groupId === 4) {
                 group = 'Donator';
-            } else if (commands[command].groupId == $.getVIPGroupID()) {
+            } else if (commands[command].groupId === $.getVIPGroupID()) {
                 group = 'VIP';
-            } else if (commands[command].groupId == 6) {
+            } else if (commands[command].groupId === 6) {
                 group = 'Regular';
-            } else if (commands[command].groupId == 7) {
+            } else if (commands[command].groupId === 7) {
                 group = 'Viewer';
             }
             return group;
@@ -282,21 +282,21 @@
         var group = '';
 
         if (subCommandExists(command, subcommand)) {
-            if (commands[command].subcommands[subcommand].groupId == 0) {
+            if (commands[command].subcommands[subcommand].groupId === 0) {
                 group = 'Caster';
-            } else if (commands[command].subcommands[subcommand].groupId == 1) {
+            } else if (commands[command].subcommands[subcommand].groupId === 1) {
                 group = 'Administrator';
-            } else if (commands[command].subcommands[subcommand].groupId == 2) {
+            } else if (commands[command].subcommands[subcommand].groupId === 2) {
                 group = 'Moderator';
-            } else if (commands[command].subcommands[subcommand].groupId == $.getSubscriberGroupID()) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.getSubscriberGroupID()) {
                 group = 'Subscriber';
-            } else if (commands[command].subcommands[subcommand].groupId == 4) {
+            } else if (commands[command].subcommands[subcommand].groupId === 4) {
                 group = 'Donator';
-            } else if (commands[command].subcommands[subcommand].groupId == $.getVIPGroupID()) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.getVIPGroupID()) {
                 group = 'VIP';
-            } else if (commands[command].subcommands[subcommand].groupId == 6) {
+            } else if (commands[command].subcommands[subcommand].groupId === 6) {
                 group = 'Regular';
-            } else if (commands[command].subcommands[subcommand].groupId == 7) {
+            } else if (commands[command].subcommands[subcommand].groupId === 7) {
                 group = 'Viewer';
             }
             return group;
