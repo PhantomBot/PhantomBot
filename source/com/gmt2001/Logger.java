@@ -21,13 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
@@ -39,8 +40,9 @@ import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
 
     private Flow.Subscription subscription = null;
-    private static final SimpleDateFormat logdatefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-    private static final SimpleDateFormat filedatefmt = new SimpleDateFormat("dd-MM-yyyy");
+    private static final DateTimeFormatter logdatefmt = DateTimeFormatter.ofPattern("MM-dd-yyyy @ HH:mm:ss.SSS z");
+    private static final DateTimeFormatter filedatefmt = DateTimeFormatter.ISO_LOCAL_DATE;
+    private ZoneId zoneId;
     private static final Map<LogType, String> LOG_PATHS = Map.of(
             LogType.Output, "./logs/core/",
             LogType.Input, "./logs/core/",
@@ -70,14 +72,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onNext(LogItem item) {
-        synchronized (filedatefmt) {
-            try {
-                Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
-                        StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
-            } catch (IOException ex) {
-                RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
-                ex.printStackTrace(System.err);
-            }
+        try {
+            Files.write(Paths.get(LOG_PATHS.get(item.type), LocalDate.now(this.zoneId).format(filedatefmt) + ".txt"), item.lines,
+                    StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+        } catch (IOException ex) {
+            RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
+            ex.printStackTrace(System.err);
         }
         this.subscription.request(1);
     }
@@ -126,15 +126,10 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         return INSTANCE;
     }
 
-    private static synchronized void updateTimezones() {
-        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-    }
-
     @SuppressWarnings("UseSpecificCatch")
     private Logger() {
         super();
-        updateTimezones();
+        this.zoneId = PhantomBot.getTimeZoneId();
 
         List<Boolean> success = new ArrayList<>();
         LOG_PATHS.forEach((t, p) -> {
@@ -154,7 +149,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Handler
     public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
-        updateTimezones();
+        this.zoneId = PhantomBot.getTimeZoneId();
     }
 
     public void log(LogType type, String lines) {
@@ -173,9 +168,19 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         this.submit(new LogItem(type, lines));
     }
 
+    public static DateTimeFormatter getLogTimestampFormatter() {
+        return logdatefmt;
+    }
+
     public String logTimestamp() {
-        synchronized (logdatefmt) {
-            return logdatefmt.format(new Date());
-        }
+        return LocalDateTime.now(this.zoneId).format(logdatefmt);
+    }
+
+    public static DateTimeFormatter getLogFileTimestampFormatter() {
+        return filedatefmt;
+    }
+
+    public String logFileTimestamp() {
+        return LocalDateTime.now(this.zoneId).format(filedatefmt);
     }
 }

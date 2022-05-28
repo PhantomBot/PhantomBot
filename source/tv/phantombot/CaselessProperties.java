@@ -20,9 +20,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -285,9 +284,7 @@ public class CaselessProperties extends Properties {
                 @Override
                 public void run() {
                     transactions.forEach(ot -> {
-                        Calendar c = Calendar.getInstance();
-                        c.add(Calendar.MILLISECOND, -TRANSACTION_LIFETIME_MS);
-                        if (c.getTime().before(ot.getCommitTime())) {
+                        if (Instant.now().minusMillis(TRANSACTION_LIFETIME_MS).isBefore(ot.getCommitTime())) {
                             transactions.remove(ot);
                         }
                     });
@@ -309,7 +306,7 @@ public class CaselessProperties extends Properties {
         private final Map<String, String> newValues = new HashMap<>();
         private boolean isCommitted = false;
         private final CaselessProperties parent;
-        private Date commitTime;
+        private Instant commitTime;
 
         private Transaction(CaselessProperties parent, int priority) {
             this.parent = parent;
@@ -352,13 +349,13 @@ public class CaselessProperties extends Properties {
             return this.isCommitted;
         }
 
-        public Date getCommitTime() {
+        public Instant getCommitTime() {
             return this.commitTime;
         }
 
         public void commit() {
             this.isCommitted = true;
-            this.commitTime = new Date();
+            this.commitTime = Instant.now();
             parent.commit(this);
         }
     }

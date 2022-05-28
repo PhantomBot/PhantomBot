@@ -20,10 +20,11 @@ import com.gmt2001.datastore.DataStore;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.HttpUrl;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -404,7 +405,7 @@ public class TwitchAPIv5 {
         JSONObject subscriptionData = Helix.instance().getBroadcasterSubscriptionsAsync(this.getIDFromChannel(channel), null, limit, from).block();
         JSONObject result = new JSONObject();
         JSONArray subscriptions = new JSONArray();
-        Date now = new Date();
+        Instant now = Instant.now();
 
         this.setupResult(result, subscriptionData, "subscriptions");
         if (subscriptionData == null || subscriptionData.has("error") || subscriptionData.isNull("data")) {
@@ -1182,15 +1183,11 @@ public class TwitchAPIv5 {
      * @return JSONObject clips object.
      */
     public JSONObject getClipsToday(String channel) throws JSONException {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTimeInMillis(c.getTimeInMillis());
-        c2.add(Calendar.DAY_OF_MONTH, 1);
-
+        LocalDateTime started_at = LocalDate.now().atTime(0, 0, 0);
+        LocalDateTime ended_at = started_at.plusDays(1);
+        
         JSONObject result = new JSONObject();
-        JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, c, c2).block();
+        JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, started_at, ended_at).block();
 
         this.setupResult(result, clipsData, "clips");
         if (clipsData == null || clipsData.has("error") || clipsData.isNull("data")) {

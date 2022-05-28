@@ -41,19 +41,17 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.json.JSONArray;
@@ -87,9 +85,9 @@ public final class EventSub implements HttpRequestHandler {
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
     private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
-    private final ConcurrentMap<String, Date> handledMessages = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, LocalDateTime> handledMessages = new ConcurrentHashMap<>();
     private List<EventSubSubscription> subscriptions = Collections.emptyList();
-    private Date lastSubscriptionRetrieval;
+    private Instant lastSubscriptionRetrieval;
 
     public static EventSub instance() {
         return EventSub.INSTANCE;
@@ -190,10 +188,7 @@ public final class EventSub implements HttpRequestHandler {
     }
 
     private synchronized void doGetSubscriptions(boolean force) {
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.add(Calendar.SECOND, -EventSub.SUBSCRIPTION_RETRIEVE_INTERVAL);
-
-        if (force || this.lastSubscriptionRetrieval.before(c.getTime())) {
+        if (force || this.lastSubscriptionRetrieval.isBefore(Instant.now().minusSeconds(EventSub.SUBSCRIPTION_RETRIEVE_INTERVAL))) {
             List<EventSubSubscription> n = new ArrayList<>();
             this.getSubscriptionsFromAPI().doOnNext(n::add).doOnComplete(() -> {
                 this.subscriptions = Collections.unmodifiableList(n);
@@ -345,15 +340,14 @@ public final class EventSub implements HttpRequestHandler {
         );
     }
 
-    static Date parseDate(String date) {
+    static LocalDateTime parseDate(String date) {
         try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-            return fmt.parse(date);
-        } catch (ParseException ex) {
+            return LocalDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        } catch (DateTimeParseException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        return new Date();
+        return LocalDateTime.now();
     }
 
     static String getSecret() {
@@ -375,16 +369,14 @@ public final class EventSub implements HttpRequestHandler {
         return ssecret;
     }
 
-    boolean isDuplicate(String messageId, Date timestamp) {
+    boolean isDuplicate(String messageId, LocalDateTime timestamp) {
         return this.handledMessages.putIfAbsent(messageId, timestamp) != null;
     }
 
     private void cleanupDuplicates() {
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.add(Calendar.MINUTE, -10);
-        Date expires = c.getTime();
+        LocalDateTime expires = LocalDateTime.now();
         this.handledMessages.forEach((id, ts) -> {
-            if (ts.before(expires)) {
+            if (ts.isBefore(expires)) {
                 this.handledMessages.remove(id);
             }
         });

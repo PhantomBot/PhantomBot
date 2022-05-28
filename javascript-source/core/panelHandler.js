@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java, parseFloat */
+
 // Only tracks data for now.
 (function () {
     /*

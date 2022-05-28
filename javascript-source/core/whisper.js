@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false),
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
@@ -55,7 +57,7 @@
      * @returns {string}
      */
     function whisperPrefix(username, force) {
-        if (username.toLowerCase() == $.botName.toLowerCase()) {
+        if (username.toLowerCase() === $.botName.toLowerCase()) {
             return ''; 
         }        
         if (whisperMode || force) {

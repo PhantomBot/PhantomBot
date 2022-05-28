@@ -94,9 +94,9 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
-                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                    if ($.isSwappedSubscriberVIP() && group === 3) {
                         group = 5;
-                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                    } else if ($.isSwappedSubscriberVIP() && group === 5) {
                         group = 3;
                     }
                 }
@@ -104,7 +104,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action,
                     'set.perm.group': $.getGroupNameById(group),
-                    'sender': sender,
+                    'sender': sender
                 });
 
                 var list = $.inidb.GetKeyList('aliases', ''),
@@ -127,9 +127,9 @@
                     return;
                 } else if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
-                    if ($.isSwappedSubscriberVIP() && group == 3) {
+                    if ($.isSwappedSubscriberVIP() && group === 3) {
                         group = 5;
-                    } else if ($.isSwappedSubscriberVIP() && group == 5) {
+                    } else if ($.isSwappedSubscriberVIP() && group === 5) {
                         group = 3;
                     }
                 }
@@ -137,7 +137,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action + ' ' + subAction,
                     'set.perm.group': $.getGroupNameById(group),
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.set('permcom', action + ' ' + subAction, group);
                 $.updateSubcommandGroup(action, subAction, group);

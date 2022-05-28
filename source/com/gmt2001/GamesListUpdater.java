@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,18 +66,16 @@ public final class GamesListUpdater {
             PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", 0);
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date(PhantomBot.instance().getDataStore().GetLong("settings", "", "gamesList-lastCheck")));
-        cal.add(Calendar.DATE, UPDATE_INTERVAL_DAYS);
+        LocalDateTime lastCheck = LocalDateTime.ofEpochSecond(PhantomBot.instance().getDataStore().GetLong("settings", "", "gamesList-lastCheck"), 0, ZoneOffset.UTC);
 
-        com.gmt2001.Console.debug.println("Last Update: " + cal.toString());
+        com.gmt2001.Console.debug.println("Last Update: " + lastCheck.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        if (!force && cal.getTime().after(new Date())) {
+        if (!force && lastCheck.plusDays(UPDATE_INTERVAL_DAYS).isAfter(LocalDateTime.now())) {
             com.gmt2001.Console.debug.println("Skipping update, interval has not expired...");
             return;
         }
 
-        PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", new Date().getTime());
+        PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
         HttpClientResponse response;
         try {
