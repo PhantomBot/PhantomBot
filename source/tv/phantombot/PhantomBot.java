@@ -99,7 +99,6 @@ import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.script.ScriptManager;
-import tv.phantombot.scripts.core.Moderation;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
@@ -898,7 +897,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
-        Script.global.defineProperty("moderation", Moderation.instance(), 0);
 
         /* And finally try to load init, that will then load the scripts */
         try {
