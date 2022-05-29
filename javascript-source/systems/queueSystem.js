@@ -164,9 +164,9 @@
      */
     function date(time, simple) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT';
-        var ldate = Packages.java.time.LocalDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
+        var ldate = Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
         var date = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
-        var string = $.getTimeString(Packages.java.time.Duration.between(date, Packages.java.time.LocalDateTime.now()).toSeconds());
+        var string = $.getTimeString(Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toSeconds());
 
         if (simple === undefined) {
             return date + ' ' + $.lang.get('queuesystem.time.info', string);

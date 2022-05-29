@@ -34,7 +34,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -391,11 +391,11 @@ public class TwitchPubSub {
                         if (chanid == this.channelId) {
                             DataStore datastore = PhantomBot.instance().getDataStore();
                             if (!datastore.exists("followed", messageObj.getString("username"))) {
-                                EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), LocalDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+                                EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
                                 datastore.set("followed", messageObj.getString("username"), "true");
                             }
                             if (!datastore.exists("followedDate", messageObj.getString("username"))) {
-                                datastore.set("followedDate", messageObj.getString("username"), LocalDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                                datastore.set("followedDate", messageObj.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
                             }
                         }
                         EventBus.instance().postAsync(new PubSubFollowEvent(messageObj.getString("username"), messageObj.getString("user_id"), messageObj.getString("display_name")));

@@ -43,7 +43,7 @@ import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public final class EventSub implements HttpRequestHandler {
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
     private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
-    private final ConcurrentMap<String, LocalDateTime> handledMessages = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ZonedDateTime> handledMessages = new ConcurrentHashMap<>();
     private List<EventSubSubscription> subscriptions = Collections.emptyList();
     private Instant lastSubscriptionRetrieval;
 
@@ -340,14 +340,14 @@ public final class EventSub implements HttpRequestHandler {
         );
     }
 
-    static LocalDateTime parseDate(String date) {
+    static ZonedDateTime parseDate(String date) {
         try {
-            return LocalDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         } catch (DateTimeParseException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        return LocalDateTime.now();
+        return ZonedDateTime.now();
     }
 
     static String getSecret() {
@@ -369,12 +369,12 @@ public final class EventSub implements HttpRequestHandler {
         return ssecret;
     }
 
-    boolean isDuplicate(String messageId, LocalDateTime timestamp) {
+    boolean isDuplicate(String messageId, ZonedDateTime timestamp) {
         return this.handledMessages.putIfAbsent(messageId, timestamp) != null;
     }
 
     private void cleanupDuplicates() {
-        LocalDateTime expires = LocalDateTime.now();
+        ZonedDateTime expires = ZonedDateTime.now();
         this.handledMessages.forEach((id, ts) -> {
             if (ts.isBefore(expires)) {
                 this.handledMessages.remove(id);

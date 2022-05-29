@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -193,7 +195,7 @@ public final class TwitchCache implements Runnable {
         String creator = "";
         String title = "";
         JSONObject thumbnailObj = new JSONObject();
-        LocalDateTime latestClip = LocalDateTime.MIN;
+        ZonedDateTime latestClip = ZonedDateTime.ofInstant(Instant.MIN, ZoneId.systemDefault());
 
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");
@@ -201,12 +203,12 @@ public final class TwitchCache implements Runnable {
                 setDBString("most_viewed_clip_url", "https://clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
                 String lastDateStr = getDBString("last_clips_tracking_date");
                 if (lastDateStr != null && !lastDateStr.isBlank()) {
-                    latestClip = LocalDateTime.parse(lastDateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    latestClip = ZonedDateTime.parse(lastDateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                 }
                 for (int i = 0; i < clipsData.length(); i++) {
                     JSONObject clipData = clipsData.getJSONObject(i);
                     if (clipData.has("created_at")) {
-                        LocalDateTime clipDate = LocalDateTime.parse(clipData.getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                        ZonedDateTime clipDate = ZonedDateTime.parse(clipData.getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                         if (clipDate.isAfter(latestClip)) {
                             latestClip = clipDate;
                             clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
@@ -237,8 +239,8 @@ public final class TwitchCache implements Runnable {
         String streamTitlen;
         String previewLinkn;
         String logoLinkn;
-        LocalDateTime streamCreatedDate;
-        LocalDateTime currentDate = LocalDateTime.now();
+        ZonedDateTime streamCreatedDate;
+        ZonedDateTime currentDate = ZonedDateTime.now();
         long streamUptimeSecondsn;
 
         com.gmt2001.Console.debug.println("TwitchCache::updateCache");
@@ -266,7 +268,7 @@ public final class TwitchCache implements Runnable {
                 if (isOnlinen) {
                     /* Calculate the stream uptime in seconds. */
                     try {
-                        streamCreatedDate = LocalDateTime.parse(streamObj.getJSONObject("stream").getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                        streamCreatedDate = ZonedDateTime.parse(streamObj.getJSONObject("stream").getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                         streamUptimeSecondsn = Duration.between(currentDate, streamCreatedDate).getSeconds();
                         this.streamUptimeSeconds = streamUptimeSecondsn;
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");

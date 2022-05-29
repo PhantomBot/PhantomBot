@@ -78,7 +78,7 @@
      */
     function getCurLocalTimeString(format) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -90,7 +90,7 @@
      */
     function getLocalTimeString(format, utc_secs) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.LocalDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        return Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -101,7 +101,7 @@
      * @return {String}
      */
     function getCurrentLocalTimeString(format, timeZone) {
-        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(timeZone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(timeZone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
     }
 
     /**
@@ -113,7 +113,7 @@
      */
     function getLocalTime() {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.LocalDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
+        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
     }
 
     /**
