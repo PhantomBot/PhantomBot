@@ -31,7 +31,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -50,8 +50,8 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
         boolean authenticated = HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
 
-        LocalDateTime ts = EventSub.parseDate(timestamp);
-        if (ts.isBefore(LocalDateTime.now().minusMinutes(10)) || EventSub.instance().isDuplicate(id, ts)) {
+        ZonedDateTime ts = EventSub.parseDate(timestamp);
+        if (ts.isBefore(ZonedDateTime.now().minusMinutes(10)) || EventSub.instance().isDuplicate(id, ts)) {
             authenticated = false;
         }
 

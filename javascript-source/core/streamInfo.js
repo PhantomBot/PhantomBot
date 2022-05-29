@@ -349,7 +349,7 @@
             return $.lang.get('followhandler.follow.age.datefmt.404');
         }
 
-        var date = Packages.java.time.LocalDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         return date.format(Packages.java.time.format.DateTimeFormatter.ofPattern($.lang.get('followhandler.follow.age.datefmt')));
     }
 
@@ -370,9 +370,9 @@
             return;
         }
 
-        var date = Packages.java.time.LocalDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
-        var days = Packages.java.time.Duration.between(date, Packages.java.time.LocalDateTime.now()).toDays();
+        var days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -394,9 +394,9 @@
             return;
         }
 
-        var date = Packages.java.time.LocalDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var date = Packages.java.time.ZonedDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
-        var days = Packages.java.time.Duration.between(date, Packages.java.time.LocalDateTime.now()).toDays();
+        var days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));

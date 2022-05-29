@@ -21,8 +21,7 @@ import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.HttpUrl;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1183,9 +1182,9 @@ public class TwitchAPIv5 {
      * @return JSONObject clips object.
      */
     public JSONObject getClipsToday(String channel) throws JSONException {
-        LocalDateTime started_at = LocalDate.now().atTime(0, 0, 0);
-        LocalDateTime ended_at = started_at.plusDays(1);
-        
+        ZonedDateTime started_at = ZonedDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        ZonedDateTime ended_at = started_at.plusDays(1);
+
         JSONObject result = new JSONObject();
         JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, started_at, ended_at).block();
 

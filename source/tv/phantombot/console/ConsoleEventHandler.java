@@ -23,6 +23,7 @@ import com.gmt2001.TwitchAPIv5;
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -329,7 +330,7 @@ public final class ConsoleEventHandler implements Listener {
             }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followertest (User: " + user + ")");
-            EventBus.instance().postAsync(new TwitchFollowEvent(user, LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user, ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             return;
         }
 
@@ -347,7 +348,7 @@ public final class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
 
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             }
             return;
         }

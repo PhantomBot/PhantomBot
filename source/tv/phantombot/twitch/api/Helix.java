@@ -29,7 +29,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -1088,7 +1088,7 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
-            @Nullable String before, @Nullable String after, @Nullable LocalDateTime started_at, @Nullable LocalDateTime ended_at)
+            @Nullable String before, @Nullable String after, @Nullable ZonedDateTime started_at, @Nullable ZonedDateTime ended_at)
             throws JSONException, IllegalArgumentException {
         String started_atS = null;
         String ended_atS = null;

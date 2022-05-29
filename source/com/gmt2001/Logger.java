@@ -22,8 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +73,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     @Override
     public void onNext(LogItem item) {
         try {
-            Files.write(Paths.get(LOG_PATHS.get(item.type), LocalDate.now(this.zoneId).format(filedatefmt) + ".txt"), item.lines,
+            Files.write(Paths.get(LOG_PATHS.get(item.type), this.logFileTimestamp() + ".txt"), item.lines,
                     StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
         } catch (IOException ex) {
             RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
@@ -173,7 +173,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public String logTimestamp() {
-        return LocalDateTime.now(this.zoneId).format(logdatefmt);
+        return ZonedDateTime.now(this.zoneId).format(logdatefmt);
     }
 
     public static DateTimeFormatter getLogFileTimestampFormatter() {
@@ -181,6 +181,6 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public String logFileTimestamp() {
-        return LocalDateTime.now(this.zoneId).format(filedatefmt);
+        return LocalDate.now(this.zoneId).format(filedatefmt);
     }
 }

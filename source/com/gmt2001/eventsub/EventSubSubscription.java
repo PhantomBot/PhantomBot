@@ -16,7 +16,7 @@
  */
 package com.gmt2001.eventsub;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class EventSubSubscription {
     private final String version;
     private final int cost;
     private final Map<String, String> condition;
-    private final LocalDateTime created_at;
+    private final ZonedDateTime created_at;
     private final EventSubTransport transport;
 
     /**
@@ -92,7 +92,7 @@ public class EventSubSubscription {
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, LocalDateTime created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, ZonedDateTime created_at, EventSubTransport transport) {
         this.id = id;
         this.status = SubscriptionStatus.valueOf(status.toUpperCase());
         this.type = type;
@@ -103,7 +103,7 @@ public class EventSubSubscription {
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, LocalDateTime created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, ZonedDateTime created_at, EventSubTransport transport) {
         this.id = id;
         this.status = status;
         this.type = type;
@@ -121,7 +121,7 @@ public class EventSubSubscription {
         this.version = version;
         this.cost = -1;
         this.condition = new HashMap<>(condition);
-        this.created_at = LocalDateTime.now();
+        this.created_at = ZonedDateTime.now();
         this.transport = transport;
     }
 
@@ -184,7 +184,7 @@ public class EventSubSubscription {
      *
      * @return
      */
-    public LocalDateTime getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return this.created_at;
     }
 
