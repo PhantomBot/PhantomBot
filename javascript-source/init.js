@@ -374,11 +374,11 @@
 
         // Load all core modules.
         loadScript('./core/misc.js', false, silentScriptsLoad);
-        loadScript('./core/jsTimers.js', false, silentScriptsLoad);
+        loadScript('./core/fileSystem.js', false, silentScriptsLoad);
         loadScript('./core/updates.js', false, silentScriptsLoad);
+        loadScript('./core/jsTimers.js', false, silentScriptsLoad);
         loadScript('./core/commandTags.js', false, silentScriptsLoad);
         loadScript('./core/chatModerator.js', false, silentScriptsLoad);
-        loadScript('./core/fileSystem.js', false, silentScriptsLoad);
         loadScript('./core/lang.js', false, silentScriptsLoad);
         loadScript('./core/commandPause.js', false, silentScriptsLoad);
         loadScript('./core/logging.js', false, silentScriptsLoad);

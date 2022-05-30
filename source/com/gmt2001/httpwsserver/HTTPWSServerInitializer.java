@@ -19,6 +19,7 @@ package com.gmt2001.httpwsserver;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
@@ -56,6 +57,7 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new HttpContentCompressor());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));

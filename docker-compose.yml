@@ -16,7 +16,7 @@
 #
 
 # Compose spec version. Do not change
-version: '3'
+version: '3.2'
 services:
   # Service name, used internally by Docker Compose. Can be changed but does not matter
   phantombot:

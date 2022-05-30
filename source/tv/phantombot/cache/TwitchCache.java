@@ -195,7 +195,7 @@ public final class TwitchCache implements Runnable {
         String creator = "";
         String title = "";
         JSONObject thumbnailObj = new JSONObject();
-        ZonedDateTime latestClip = ZonedDateTime.ofInstant(Instant.MIN, ZoneId.systemDefault());
+        ZonedDateTime latestClip = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
 
         if (clipsObj.has("clips")) {
             JSONArray clipsData = clipsObj.getJSONArray("clips");

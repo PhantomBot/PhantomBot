@@ -76,6 +76,14 @@ public final class JSFileSystem {
         Files.move(Paths.get(pathToFile), Paths.get(pathToTargetDirectory, Paths.get(pathToFile).getFileName().toString()));
     }
 
+    public static void MoveFile(String pathToFile, String newPathToFile) throws IOException {
+        if (!PathValidator.isValidPathScript(pathToFile) || !PathValidator.isValidPathScript(newPathToFile)) {
+            return;
+        }
+
+        Files.move(Paths.get(pathToFile), Paths.get(newPathToFile));
+    }
+
     public static void WriteLinesToFile(String path, List<String> lines, boolean append) throws IOException {
         if (!PathValidator.isValidPathScript(path)) {
             return;
