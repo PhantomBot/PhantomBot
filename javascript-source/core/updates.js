@@ -384,4 +384,27 @@
         $.consoleLn('PhantomBot update 3.6.2.5 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.2.5', true);
     }
+
+    /* version 3.6.3 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.3')) {
+        $.consoleLn('Starting PhantomBot update 3.6.3 updates...');
+
+        var logFiles,
+                idx,
+                logFileDate,
+                logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
+                logDirIdx;
+        for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
+            logFiles = $.findFiles('./logs/' + logDirs[logDirIdx], 'txt');
+            for (idx = 0; idx < logFiles.length; idx++) {
+                logFileDate = logFiles[idx].match(/((\d{2})-(\d{2})-(\d{4}))/);
+                if (logFileDate !== null && logFileDate[1] !== null) {
+                    $.moveRenameFile('./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx], './logs/' + logDirs[logDirIdx] + '/' + logFiles[idx].replace(/((\d{2})-(\d{2})-(\d{4}))/, '$4-$3-$2'));
+                }
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.6.3 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
+    }
 })();
