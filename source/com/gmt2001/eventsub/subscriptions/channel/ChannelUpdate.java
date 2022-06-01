@@ -86,7 +86,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
 
     @Override
     public boolean isAlreadySubscribed() {
-        return EventSub.instance().getSubscriptions().stream().anyMatch(possibleSubscription -> {
+        return EventSub.instance().getSubscriptions().values().stream().anyMatch(possibleSubscription -> {
             return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
                     && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
                     && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
@@ -96,7 +96,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
 
     @Override
     public String findMatchingSubscriptionId() {
-        return EventSub.instance().getSubscriptions().stream().filter(possibleSubscription -> {
+        return EventSub.instance().getSubscriptions().values().stream().filter(possibleSubscription -> {
             return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
                     && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
                     && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
