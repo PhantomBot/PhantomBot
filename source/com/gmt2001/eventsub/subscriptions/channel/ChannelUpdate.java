@@ -31,10 +31,10 @@ import tv.phantombot.event.eventsub.channel.EventSubChannelUpdateEvent;
  *
  * @author gmt2001
  */
-public class ChannelUpdate extends EventSubSubscriptionType {
+public final class ChannelUpdate extends EventSubSubscriptionType {
 
     public static final String TYPE = "channel.update";
-    protected String broadcaster_user_id;
+    private String broadcaster_user_id;
     private String broadcaster_user_login;
     private String broadcaster_user_name;
     private String title;
@@ -43,10 +43,10 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     private String category_name;
     private boolean is_mature;
 
-    protected ChannelUpdate() {
+    public ChannelUpdate() {
     }
 
-    protected ChannelUpdate(EventSubInternalNotificationEvent e) {
+    public ChannelUpdate(EventSubInternalNotificationEvent e) {
         super(e.getSubscription(), e.getMessageId(), e.getMessageTimestamp());
         this.broadcaster_user_id = e.getEvent().getString("broadcaster_user_id");
         this.broadcaster_user_login = e.getEvent().getString("broadcaster_user_login");
@@ -63,14 +63,14 @@ public class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     @Override
-    protected EventSubSubscription proposeSubscription() {
+    public EventSubSubscription proposeSubscription() {
         Map<String, String> condition = new HashMap<>();
         condition.put("broadcaster_user_id", this.broadcaster_user_id);
         return this.proposeSubscriptionInternal(ChannelUpdate.TYPE, condition);
     }
 
     @Override
-    protected void validateParameters() throws IllegalArgumentException {
+    public void validateParameters() throws IllegalArgumentException {
         if (this.broadcaster_user_id == null || this.broadcaster_user_id.isBlank() || !this.broadcaster_user_id.matches("[0-9]+")
                 || this.broadcaster_user_id.startsWith("-") || this.broadcaster_user_id.startsWith("0")) {
             throw new IllegalArgumentException("broadcaster_user_id must be a valid id");
