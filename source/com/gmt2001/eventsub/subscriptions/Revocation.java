@@ -54,7 +54,7 @@ public final class Revocation extends EventSubSubscriptionType {
     }
 
     @Handler
-    public void onEventSubInternalVerificationEvent(EventSubInternalRevocationEvent e) {
+    public void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
         EventBus.instance().postAsync(new EventSubRevocationEvent(e.getSubscription()));
     }
 }

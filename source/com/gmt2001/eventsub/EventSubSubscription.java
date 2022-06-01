@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author gmt2001
  */
-public class EventSubSubscription {
+public final class EventSubSubscription {
 
     private final String id;
     private final SubscriptionStatus status;

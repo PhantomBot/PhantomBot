@@ -54,6 +54,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,20 +70,26 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 
 /**
+ * Manages EventSub subscriptions
  *
  * @author gmt2001
  */
 public final class EventSub implements HttpRequestHandler {
 
+    /**
+     * Constructor. Populates the existing subscription list from Twitch after 5 seconds. Schedules a task to remove handled messages from the
+     * anti-duplicate map when they expire.
+     */
     private EventSub() {
-        Mono.delay(Duration.ofSeconds(5), Schedulers.boundedElastic()).doOnNext(l -> this.getSubscriptions(true)).subscribe();
-        Flux.interval(Duration.ofMillis(CLEANUP_INTERVAL), Schedulers.boundedElastic()).doOnNext(l -> this.cleanupDuplicates()).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+        ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
+        svc.schedule(() -> this.getSubscriptions(true), 5, TimeUnit.SECONDS);
+        svc.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     private static final EventSub INSTANCE = new EventSub();
     private static final String BASE = "https://api.twitch.tv/helix/eventsub/subscriptions";
-    private static final long CLEANUP_INTERVAL = 120000L;
-    private static final int SUBSCRIPTION_RETRIEVE_INTERVAL = 86400;
+    private static final Duration CLEANUP_INTERVAL = Duration.ofMinutes(2);
+    private static final Duration SUBSCRIPTION_RETRIEVE_INTERVAL = Duration.ofDays(1);
     private int subscription_total = 0;
     private int subscription_total_cost = 0;
     private int subscription_max_cost = 0;
@@ -188,7 +197,7 @@ public final class EventSub implements HttpRequestHandler {
     }
 
     private synchronized void doGetSubscriptions(boolean force) {
-        if (force || this.lastSubscriptionRetrieval.isBefore(Instant.now().minusSeconds(EventSub.SUBSCRIPTION_RETRIEVE_INTERVAL))) {
+        if (force || this.lastSubscriptionRetrieval.isBefore(Instant.now().minus(SUBSCRIPTION_RETRIEVE_INTERVAL))) {
             List<EventSubSubscription> n = new ArrayList<>();
             this.getSubscriptionsFromAPI().doOnNext(n::add).doOnComplete(() -> {
                 this.subscriptions = Collections.unmodifiableList(n);

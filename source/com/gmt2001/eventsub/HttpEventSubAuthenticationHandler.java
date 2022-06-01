@@ -39,7 +39,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author gmt2001
  */
-class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
+final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {

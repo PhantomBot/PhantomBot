@@ -172,7 +172,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public boolean getIsMature() {
+    public boolean isMature() {
         return this.is_mature;
     }
 }
