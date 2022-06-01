@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author gmt2001
  */
-public class EventSubSubscription {
+public final class EventSubSubscription {
 
     private final String id;
     private final SubscriptionStatus status;
@@ -64,6 +64,10 @@ public class EventSubSubscription {
          * A user in the condition of the subscription was removed.
          */
         USER_REMOVED,
+        /**
+         * The subscription was removed via API request, probably by a script on the bot.
+         */
+        API_REMOVED,
         /**
          * Subscription proposal that has not been submitted to the EventSub endpoint for creation yet.
          */

@@ -21,7 +21,7 @@ package com.gmt2001.eventsub;
  *
  * @author gmt2001
  */
-public class EventSubTransport {
+public final class EventSubTransport {
 
     private final String method;
     private final String callback;
