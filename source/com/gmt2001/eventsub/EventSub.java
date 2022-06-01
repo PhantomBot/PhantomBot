@@ -46,17 +46,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,8 +94,9 @@ public final class EventSub implements HttpRequestHandler {
     private int subscription_max_cost = 0;
     private final HttpEventSubAuthenticationHandler authHandler = new HttpEventSubAuthenticationHandler();
     private final ConcurrentMap<String, ZonedDateTime> handledMessages = new ConcurrentHashMap<>();
-    private List<EventSubSubscription> subscriptions = Collections.emptyList();
+    private final ConcurrentMap<String, EventSubSubscription> subscriptions = new ConcurrentHashMap<>();
     private Instant lastSubscriptionRetrieval;
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     public static EventSub instance() {
         return EventSub.INSTANCE;
@@ -138,9 +138,12 @@ public final class EventSub implements HttpRequestHandler {
         } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("notification")) {
             EventBus.instance().postAsync(new EventSubInternalNotificationEvent(req));
         } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("revocation")) {
-            EventBus.instance().postAsync(new EventSubInternalRevocationEvent(req));
+            EventSubInternalRevocationEvent event = new EventSubInternalRevocationEvent(req);
+            this.updateSubscription(event.getSubscription());
+            EventBus.instance().postAsync(event);
         } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("webhook_callback_verification")) {
             EventSubInternalVerificationEvent event = new EventSubInternalVerificationEvent(req);
+            this.updateSubscription(event.getSubscription());
             EventBus.instance().postAsync(event);
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.buffer());
             ByteBuf buf = Unpooled.copiedBuffer(event.getChallenge(), CharsetUtil.UTF_8);
@@ -152,6 +155,7 @@ public final class EventSub implements HttpRequestHandler {
 
             res.headers().set(CONNECTION, CLOSE);
             ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            this.updateSubscriptionWithNewStatus(event.getSubscription(), EventSubSubscription.SubscriptionStatus.ENABLED);
             return;
         } else {
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.buffer());
@@ -181,7 +185,7 @@ public final class EventSub implements HttpRequestHandler {
      *
      * @return
      */
-    public List<EventSubSubscription> getSubscriptions() {
+    public Map<String, EventSubSubscription> getSubscriptions() {
         return this.getSubscriptions(false);
     }
 
@@ -191,16 +195,22 @@ public final class EventSub implements HttpRequestHandler {
      * @param force true to force a retrieval
      * @return
      */
-    public List<EventSubSubscription> getSubscriptions(boolean force) {
+    public Map<String, EventSubSubscription> getSubscriptions(boolean force) {
         this.doGetSubscriptions(force);
-        return this.subscriptions;
+        return Collections.unmodifiableMap(this.subscriptions);
     }
 
     private synchronized void doGetSubscriptions(boolean force) {
         if (force || this.lastSubscriptionRetrieval.isBefore(Instant.now().minus(SUBSCRIPTION_RETRIEVE_INTERVAL))) {
-            List<EventSubSubscription> n = new ArrayList<>();
-            this.getSubscriptionsFromAPI().doOnNext(n::add).doOnComplete(() -> {
-                this.subscriptions = Collections.unmodifiableList(n);
+            Map<String, EventSubSubscription> n = new HashMap<>();
+            this.getSubscriptionsFromAPI().doOnNext(s -> n.put(s.getId(), s)).doOnComplete(() -> {
+                this.rwl.writeLock().lock();
+                try {
+                    this.subscriptions.clear();
+                    this.subscriptions.putAll(n);
+                } finally {
+                    this.rwl.writeLock().unlock();
+                }
             }).blockLast();
         }
     }
@@ -233,9 +243,14 @@ public final class EventSub implements HttpRequestHandler {
                         emitter.next(EventSub.JSONToEventSubSubscription(arr.getJSONObject(i)));
                     }
 
-                    this.subscription_total = response.getInt("total");
-                    this.subscription_total_cost = response.getInt("total_cost");
-                    this.subscription_max_cost = response.getInt("max_total_cost");
+                    this.rwl.writeLock().lock();
+                    try {
+                        this.subscription_total = response.getInt("total");
+                        this.subscription_total_cost = response.getInt("total_cost");
+                        this.subscription_max_cost = response.getInt("max_total_cost");
+                    } finally {
+                        this.rwl.writeLock().unlock();
+                    }
                     emitter.complete();
                 }
             } catch (URISyntaxException | IOException | JSONException ex) {
@@ -251,7 +266,12 @@ public final class EventSub implements HttpRequestHandler {
      * @return
      */
     public int getTotalSubscriptionCount() {
-        return this.subscription_total;
+        this.rwl.readLock().lock();
+        try {
+            return this.subscription_total;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     /**
@@ -260,7 +280,12 @@ public final class EventSub implements HttpRequestHandler {
      * @return
      */
     public int getTotalSubscriptionCost() {
-        return this.subscription_total_cost;
+        this.rwl.readLock().lock();
+        try {
+            return this.subscription_total_cost;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     /**
@@ -269,7 +294,12 @@ public final class EventSub implements HttpRequestHandler {
      * @return
      */
     public int getSubscriptionCostLimit() {
-        return this.subscription_max_cost;
+        this.rwl.readLock().lock();
+        try {
+            return this.subscription_max_cost;
+        } finally {
+            this.rwl.readLock().unlock();
+        }
     }
 
     /**
@@ -286,6 +316,9 @@ public final class EventSub implements HttpRequestHandler {
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
                 } else {
+                    if (this.subscriptions.containsKey(id)) {
+                        this.updateSubscriptionWithNewStatus(this.subscriptions.get(id), EventSubSubscription.SubscriptionStatus.API_REMOVED);
+                    }
                     emitter.success();
                 }
             } catch (URISyntaxException | IOException | JSONException ex) {
@@ -318,17 +351,9 @@ public final class EventSub implements HttpRequestHandler {
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
                 } else {
-                    JSONArray arr = response.getJSONArray("data");
-                    JSONObject subscription = arr.getJSONObject(0);
-                    Map<String, String> condition = new HashMap<>();
-
-                    subscription.getJSONObject("condition").keySet().forEach(key -> condition.put(key, subscription.getJSONObject("condition").getString(key)));
-
-                    emitter.success(new EventSubSubscription(
-                            subscription.getString("id"), subscription.getString("status"), subscription.getString("type"), subscription.getString("version"),
-                            subscription.getInt("cost"), condition, subscription.getString("created_at"),
-                            new EventSubTransport(subscription.getJSONObject("transport").getString("method"), subscription.getJSONObject("transport").getString("callback"))
-                    ));
+                    EventSubSubscription subscription = JSONToEventSubSubscription(response.getJSONArray("data").getJSONObject(0));
+                    this.updateSubscription(subscription);
+                    emitter.success(subscription);
                 }
             } catch (URISyntaxException | IOException | JSONException ex) {
                 emitter.error(ex);
@@ -380,6 +405,26 @@ public final class EventSub implements HttpRequestHandler {
 
     boolean isDuplicate(String messageId, ZonedDateTime timestamp) {
         return this.handledMessages.putIfAbsent(messageId, timestamp) != null;
+    }
+
+    private void updateSubscriptionWithNewStatus(EventSubSubscription oldSubscription, EventSubSubscription.SubscriptionStatus newStatus) {
+        this.updateSubscription(this.cloneSubscriptionWithNewStatus(oldSubscription, newStatus));
+    }
+
+    private EventSubSubscription cloneSubscriptionWithNewStatus(EventSubSubscription oldSubscription, EventSubSubscription.SubscriptionStatus newStatus) {
+        return new EventSubSubscription(oldSubscription.getId(), newStatus,
+                oldSubscription.getType(), oldSubscription.getVersion(), oldSubscription.getCost(), oldSubscription.getCondition(),
+                oldSubscription.getCreatedAt(), oldSubscription.getTransport());
+    }
+
+    private void updateSubscription(EventSubSubscription subscription) {
+        this.rwl.writeLock().lock();
+        try {
+            this.subscriptions.put(subscription.getId(), subscription);
+            this.subscription_total = this.subscriptions.size();
+        } finally {
+            this.rwl.writeLock().unlock();
+        }
     }
 
     private void cleanupDuplicates() {

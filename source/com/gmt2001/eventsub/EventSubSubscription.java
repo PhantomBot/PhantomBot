@@ -65,6 +65,10 @@ public final class EventSubSubscription {
          */
         USER_REMOVED,
         /**
+         * The subscription was removed via API request, probably by a script on the bot.
+         */
+        API_REMOVED,
+        /**
          * Subscription proposal that has not been submitted to the EventSub endpoint for creation yet.
          */
         NOT_CREATED_YET
