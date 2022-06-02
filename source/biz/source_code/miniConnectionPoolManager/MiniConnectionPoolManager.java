@@ -63,8 +63,8 @@ public class MiniConnectionPoolManager {
             super("Timeout while waiting for a free database connection.");
         }
 
-        public TimeoutException(String msg) {
-            super(msg);
+        public TimeoutException(String msg, Exception cause) {
+            super(msg, cause);
         }
     }
 
@@ -103,6 +103,8 @@ public class MiniConnectionPoolManager {
 
     /**
      * Closes all unused pooled connections.
+     *
+     * @throws java.sql.SQLException
      */
     public synchronized void dispose() throws SQLException {
         if (isDisposed) {
@@ -133,6 +135,7 @@ public class MiniConnectionPoolManager {
      * seconds elapsed. When the application is finished using the connection, it must close it in order to return it to the pool.
      *
      * @return a new <code>Connection</code> object.
+     * @throws java.sql.SQLException
      * @throws TimeoutException when no connection becomes available within <code>timeout</code> seconds.
      */
     public Connection getConnection() throws SQLException {
@@ -207,17 +210,25 @@ public class MiniConnectionPoolManager {
      * <p>
      * This method requires Java 1.6 or newer.
      *
+     * @return
      * @throws TimeoutException when no valid connection becomes available within <code>timeout</code> seconds.
      */
-    @SuppressWarnings("SleepWhileInLoop")
+    @SuppressWarnings({"UseSpecificCatch", "SleepWhileInLoop"})
     public Connection getValidConnection() {
-        long time = System.currentTimeMillis();
-        long timeoutTime = time + timeoutMs;
+        long timeoutTime = System.nanoTime() + timeoutMs * (long) 1E6;
         int triesWithoutDelay = getInactiveConnections() + 1;
         while (true) {
-            Connection conn = getValidConnection2(time, timeoutTime);
-            if (conn != null) {
-                return conn;
+            Exception cause = null;
+            try {
+                Connection conn = getValidConnection2(timeoutTime);
+                if (conn != null) {
+                    return conn;
+                }
+            } catch (Exception e) {
+                cause = e;
+            }
+            if (System.nanoTime() >= timeoutTime) {
+                throw new TimeoutException("Timeout while waiting for a valid database connection.", cause);
             }
             triesWithoutDelay--;
             if (triesWithoutDelay <= 0) {
@@ -225,26 +236,16 @@ public class MiniConnectionPoolManager {
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException("Interrupted while waiting for a valid database connection.", e);
+                    throw new RuntimeException("Interrupted while waiting for a valid database connection.", cause);
                 }
-            }
-            time = System.currentTimeMillis();
-            if (time >= timeoutTime) {
-                throw new TimeoutException("Timeout while waiting for a valid database connection.");
             }
         }
     }
 
-    private Connection getValidConnection2(long time, long timeoutTime) {
-        long rtime = Math.max(1, timeoutTime - time);
-        Connection conn;
-        try {
-            conn = getConnection2(rtime);
-        } catch (SQLException e) {
-            return null;
-        }
-        rtime = timeoutTime - System.currentTimeMillis();
-        int rtimeSecs = Math.max(1, (int) ((rtime + 999) / 1000));
+    private Connection getValidConnection2(long timeoutTime) throws SQLException {
+        long rtimeMs = Math.max(1, (timeoutTime - System.nanoTime()) / (int) 1E6);
+        Connection conn = getConnection2(rtimeMs);
+        int rtimeSecs = (int) Math.min(3600, Math.max(1, ((timeoutTime - System.nanoTime() + (long) 1E9 - 1) / (long) 1E9)));
         try {
             if (conn.isValid(rtimeSecs)) {
                 return conn;
@@ -262,6 +263,7 @@ public class MiniConnectionPoolManager {
     }
 
 // Purges the PooledConnection associated with the passed Connection from the connection pool.
+    @SuppressWarnings("ConvertToTryWithResources")
     private synchronized void purgeConnection(Connection conn) {
         try {
             doPurgeConnection = true;

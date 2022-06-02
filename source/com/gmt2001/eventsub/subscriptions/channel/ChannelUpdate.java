@@ -16,7 +16,6 @@
  */
 package com.gmt2001.eventsub.subscriptions.channel;
 
-import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.eventsub.EventSubSubscription;
 import com.gmt2001.eventsub.EventSubSubscriptionType;
@@ -43,9 +42,17 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
     private String category_name;
     private boolean is_mature;
 
+    /**
+     * Only used by EventBus for handler registration
+     */
     public ChannelUpdate() {
     }
 
+    /**
+     * Used by {@link onEventSubInternalNotificationEvent} to construct an object from an incoming notification
+     *
+     * @param e The event
+     */
     public ChannelUpdate(EventSubInternalNotificationEvent e) {
         super(e.getSubscription(), e.getMessageId(), e.getMessageTimestamp());
         this.broadcaster_user_id = e.getEvent().getString("broadcaster_user_id");
@@ -58,6 +65,11 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
         this.is_mature = e.getEvent().getBoolean("is_mature");
     }
 
+    /**
+     * Constructor
+     *
+     * @param broadcaster_user_id The user id of the broadcaster
+     */
     public ChannelUpdate(String broadcaster_user_id) {
         this.broadcaster_user_id = broadcaster_user_id;
     }
@@ -85,23 +97,9 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     @Override
-    public boolean isAlreadySubscribed() {
-        return EventSub.instance().getSubscriptions().stream().anyMatch(possibleSubscription -> {
-            return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
-                    && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
-                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
-                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        });
-    }
-
-    @Override
-    public String findMatchingSubscriptionId() {
-        return EventSub.instance().getSubscriptions().stream().filter(possibleSubscription -> {
-            return possibleSubscription.getType().equals(ChannelUpdate.TYPE)
-                    && possibleSubscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
-                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
-                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        }).findFirst().map(EventSubSubscription::getId).orElse(null);
+    protected boolean isMatch(EventSubSubscription subscription) {
+        return subscription.getType().equals(ChannelUpdate.TYPE)
+                && subscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
     }
 
     /**
