@@ -56,35 +56,6 @@
     }
 
     /*
-     * @function permCom
-     *
-     * @export $
-     * @param {string} username
-     * @param {string} command
-     * @param {sub} subcommand
-     * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
-     */
-    function permCom(username, command, subcommand, tags) {
-        var commandGroup, allowed;
-        if (subcommand === '' || subcommand === undefined) {
-            commandGroup = $.getCommandGroup(command);
-        } else {
-            commandGroup = $.getSubcommandGroup(command, subcommand);
-        }
-
-        $.consoleLn('Checking permissions for command: ' + command + 'and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
-        $.consoleLn('For user: ' + username + ' with group/permission level: ' + $.getUserGroupId(username) + '(' + $.getUserGroupName(username) + ')');
-        $.consoleLn('Current VIP id: ' + $.PERMISSION.VIP + ' Current Sub id: ' + $.PERMISSION.Sub);
-        $.consoleLn('isSub?: ' + $.isSub(username, tags) + ' isVIP?: ' + $.isVIP(username, tags) + ' isMod?: ' + $.isMod(username, tags) + ' isAdmin?: ' + $.isAdmin(username) + ' isDonator?: ' + $.isDonator(username) + ' isRegular?: ' + $.isRegular(username) + ' isCaster?: ' + $.isCaster(username));
-
-
-        allowed = parseInt(commandGroup) >= $.getUserGroupId(username, tags);
-        $.consoleLn("Allowed: " + allowed + " Allowed var: " + (allowed ? 0 : (subcommand === '' ? 1 : 2)));
-
-        return allowed ? 0 : (subcommand === '' ? 1 : 2);
-    }
-
-    /*
      * @function priceCom
      *
      * @export $
@@ -950,7 +921,6 @@
     $.addComRegisterCommands = addComRegisterCommands;
     $.addComRegisterAliases = addComRegisterAliases;
     $.returnCommandCost = returnCommandCost;
-    $.permCom = permCom;
     $.priceCom = priceCom;
     $.getCommandPrice = getCommandPrice;
     $.getCommandPay = getCommandPay;

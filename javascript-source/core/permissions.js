@@ -449,6 +449,35 @@
         return getUserGroupId(username, tags) <= permission;
     }
 
+    /*
+     * @function permCom
+     *
+     * @export $
+     * @param {string} username
+     * @param {string} command
+     * @param {sub} subcommand
+     * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
+     */
+    function permCom(username, command, subcommand, tags) {
+        var commandGroup, allowed;
+        if (subcommand === '' || subcommand === undefined) {
+            commandGroup = $.getCommandGroup(command);
+        } else {
+            commandGroup = $.getSubcommandGroup(command, subcommand);
+        }
+
+        $.consoleDebug('Checking permissions for command: ' + command + 'and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
+        $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username) + '(' + getUserGroupName(username) + ')');
+        $.consoleDebug('Current VIP id: ' + PERMISSION.VIP + ' Current Sub id: ' + PERMISSION.Sub + ' is VIPSubGroupID swapped: ' + _isSwappedSubscriberVIP);
+        $.consoleDebug('isSub?: ' + isSub(username, tags) + ' isVIP?: ' + isVIP(username, tags) + ' isMod?: ' + isMod(username, tags) + ' isAdmin?: ' + isAdmin(username) + ' isDonator?: ' + isDonator(username) + ' isRegular?: ' + isRegular(username) + ' isCaster?: ' + isCaster(username));
+
+
+        allowed = checkUserPermission(username, tags, parseInt(commandGroup));
+        $.consoleDebug("Allowed: " + allowed + " Allowed var: " + (allowed ? 0 : (subcommand === '' ? 1 : 2)));
+
+        return allowed ? 0 : (subcommand === '' ? 1 : 2);
+    }
+
     /**
      * @function queryDBPermission
      * @export $
@@ -657,7 +686,7 @@
      * @function restoreSubscriberStatus
      * @param username
      */
-    function restoreSubscriberStatus(username) { //TODO: Check this logic against old/previous logic
+    function restoreSubscriberStatus(username) {
         username = username.toString().toLowerCase();
 
         if (isMod(username) || isAdmin(username)) {
@@ -1398,6 +1427,7 @@
     $.getHighestIDSubVIP = getHighestIDSubVIP;
     $.getLowestIDSubVIP = getLowestIDSubVIP;
     $.checkUserPermission = checkUserPermission;
+    $.permCom = permCom;
 
     //DEPRECATED Functions
     $.isSwappedSubscriberVIP = isSwappedSubscriberVIP;
