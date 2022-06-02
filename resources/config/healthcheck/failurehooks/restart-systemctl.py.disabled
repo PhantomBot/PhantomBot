@@ -34,4 +34,4 @@ if locals.args.service_name:
 
 print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
 
-run(["systemctl", "restart", servicename], shell=True, check=True)
+run(["systemctl", "restart", servicename], check=True)

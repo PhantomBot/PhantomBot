@@ -30,7 +30,7 @@ public interface HttpRequestHandler {
     /**
      * Registers this {@link HttpRequestHandler} with the {@link HttpServerPageHandler}
      *
-     * @return {@code this}
+     * @return
      */
     HttpRequestHandler register();
 

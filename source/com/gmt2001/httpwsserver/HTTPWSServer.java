@@ -43,8 +43,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -81,7 +81,7 @@ public final class HTTPWSServer {
     private KeyStore ks = null;
     private String sslFile = null;
     private String sslPass = null;
-    private Date nextAutoSslCheck = new Date();
+    private Instant nextAutoSslCheck = Instant.now();
 
     /**
      * Gets the server instance.
@@ -237,9 +237,7 @@ public final class HTTPWSServer {
 
             this.reloadSslContext();
 
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-            this.nextAutoSslCheck = cal.getTime();
+            this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
         } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -278,12 +276,9 @@ public final class HTTPWSServer {
                 if (key instanceof PrivateKey) {
                     // Get certificate of public key
                     X509Certificate cert = (X509Certificate) ks.getCertificate("phantombot");
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.DAY_OF_MONTH, 1);
-                    this.nextAutoSslCheck = cal.getTime();
-                    cal.add(Calendar.DAY_OF_MONTH, 29);
+                    this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
 
-                    if (cal.getTime().after(cert.getNotAfter())) {
+                    if (Instant.now().plus(29, ChronoUnit.DAYS).isAfter(cert.getNotAfter().toInstant())) {
                         this.generateAutoSsl();
                     }
                 }
@@ -299,7 +294,7 @@ public final class HTTPWSServer {
      * @return the current SslContext
      */
     SslContext getSslContext() {
-        if (this.autoSSL && new Date().after(this.nextAutoSslCheck)) {
+        if (this.autoSSL && Instant.now().isAfter(this.nextAutoSslCheck)) {
             this.renewAutoSsl();
         }
 
@@ -315,7 +310,7 @@ public final class HTTPWSServer {
      *
      * @param path The path to check
      * @param isWs Whether this check is for a WebSocket or not
-     * @return {@code false} if the path is illegal, {@code} true otherwise
+     * @return true otherwise
      */
     static boolean validateUriPath(String path, boolean isWs) {
         return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))

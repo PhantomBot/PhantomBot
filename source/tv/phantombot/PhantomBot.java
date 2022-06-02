@@ -18,6 +18,7 @@ package tv.phantombot;
 
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
+import com.gmt2001.PathValidator;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
@@ -50,12 +51,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -98,7 +99,6 @@ import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.script.ScriptManager;
-import tv.phantombot.scripts.core.Moderation;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
@@ -130,6 +130,7 @@ public final class PhantomBot implements Listener {
     private WsPanelHandler panelHandler;
     private WsYTHandler ytHandler;
     private HTTPOAuthHandler oauthHandler;
+    private HTTPAuthenticatedHandler httpAuthenticatedHandler;
 
     /* PhantomBot Information */
     private static PhantomBot instance;
@@ -231,7 +232,7 @@ public final class PhantomBot implements Listener {
     /**
      * Prints a message in the bot console.
      *
-     * @param {Object} message
+     * @param message
      */
     private void print(String message) {
         com.gmt2001.Console.out.println(message);
@@ -369,8 +370,8 @@ public final class PhantomBot implements Listener {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
-                Files.write(Paths.get("PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
-                        StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.DELETE_ON_CLOSE);
+                Files.write(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+                        StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException | NumberFormatException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -385,10 +386,12 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validateAPI(CaselessProperties.instance().getProperty("apioauth", ""), "API (apioauth)");
         }
 
-        /* Validate the chat OAUTH token. */
-        TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
+        if (!CaselessProperties.instance().getProperty("oauth", "").isEmpty()) {
+            /* Validate the chat OAUTH token. */
+            TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-        TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+        }
     }
 
     private void initChat() {
@@ -426,7 +429,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isNightly() {
-        return RepoVersion.getNightlyBuild();
+        return RepoVersion.isNightlyBuild();
     }
 
     /**
@@ -435,7 +438,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isPrerelease() {
-        return RepoVersion.getPrereleaseBuild();
+        return RepoVersion.isPrereleaseBuild();
     }
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
@@ -469,6 +472,8 @@ public final class PhantomBot implements Listener {
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
+
+        this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
 
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
@@ -669,6 +674,15 @@ public final class PhantomBot implements Listener {
         return pass;
     }
 
+    private String getPanelOAuth() {
+        String pass = CaselessProperties.instance().getProperty("oauth", (String) null);
+        if (pass == null) {
+            pass = PhantomBot.generateRandomString(12);
+        }
+
+        return pass;
+    }
+
     private void initWeb() {
         /* Is the web toggle enabled? */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
@@ -677,7 +691,8 @@ public final class PhantomBot implements Listener {
                     CaselessProperties.instance().getPropertyAsBoolean("usehttps", true), CaselessProperties.instance().getProperty("httpsFileName", ""),
                     CaselessProperties.instance().getProperty("httpsPassword", ""), this.getBotName());
             new HTTPNoAuthHandler().register();
-            new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), CaselessProperties.instance().getProperty("oauth", "").replace("oauth:", "")).register();
+            this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+            this.httpAuthenticatedHandler.register();
             new HTTPPanelAndYTHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
             this.oauthHandler = (HTTPOAuthHandler) new HTTPOAuthHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
             if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
@@ -797,7 +812,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/ytplayer/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/ytplayer/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/ytplayer/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -821,7 +836,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/playlist/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/playlist/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/playlist/js/playerConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -847,7 +862,7 @@ public final class PhantomBot implements Listener {
             data += "function getProtocol() { return panelSettings.http; }\r\n";
 
             /* Create a new file if it does not exist */
-            Files.createDirectories(Paths.get("./web/common/js/").toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./web/common/js/")));
 
             /* Write the data to that file */
             Files.write(Paths.get("./web/common/js/wsConfig.js"), data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -882,7 +897,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
-        Script.global.defineProperty("moderation", Moderation.instance(), 0);
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -964,7 +978,7 @@ public final class PhantomBot implements Listener {
         }
 
         this.print("Terminating all script modules...");
-        HashMap<String, Script> scripts = ScriptManager.getScripts();
+        Map<String, Script> scripts = ScriptManager.getScripts();
         scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
         });
@@ -998,6 +1012,14 @@ public final class PhantomBot implements Listener {
             RollbarProvider.instance().close();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
+            try {
+                Files.deleteIfExists(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"));
+            } catch (IOException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
         this.print(this.getBotName() + " is exiting.");
@@ -1287,7 +1309,7 @@ public final class PhantomBot implements Listener {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                    if (RepoVersion.getNightlyBuild()) {
+                    if (RepoVersion.isNightlyBuild()) {
                         String latestNightly = HttpClient.get(HttpUrl.fromUri("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.dataStore.del("settings", "newrelease_info");
@@ -1365,9 +1387,7 @@ public final class PhantomBot implements Listener {
         service.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(CaselessProperties.instance().getProperty("logtimezone", "GMT")));
-            String timestamp = datefmt.format(new Date());
+            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             this.dataStore.backupDB("phantombot.auto.backup." + timestamp + ".db");
 
@@ -1467,6 +1487,10 @@ public final class PhantomBot implements Listener {
 
     public static String getTimeZone() {
         return CaselessProperties.instance().getProperty("logtimezone", "GMT");
+    }
+
+    public static ZoneId getTimeZoneId() {
+        return ZoneId.of(getTimeZone());
     }
 
     public static boolean isInExitState() {

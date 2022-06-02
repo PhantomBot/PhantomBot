@@ -17,6 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 public class YTPlayerStealSongEvent extends YTPlayerEvent {
+
     private final String youTubeID;
     private final String requester;
 
@@ -24,6 +25,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
      * Class constructor.
      */
     public YTPlayerStealSongEvent() {
+        super();
         this.youTubeID = "";
         this.requester = "";
     }
@@ -31,10 +33,11 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {String} youTubeID
-     * @param {String} requester
+     * @param youTubeID
+     * @param requester
      */
     public YTPlayerStealSongEvent(String youTubeID, String requester) {
+        super();
         this.youTubeID = youTubeID;
         this.requester = requester;
     }
@@ -42,7 +45,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     /**
      * Method that returns the YouTube ID.
      *
-     * @return {String} youTubeID
+     * @return youTubeID
      */
     public String getYouTubeID() {
         return this.youTubeID;
@@ -51,7 +54,7 @@ public class YTPlayerStealSongEvent extends YTPlayerEvent {
     /**
      * Method that returns requester.
      *
-     * @return {String} requester
+     * @return requester
      */
     public String getRequester() {
         return this.requester;

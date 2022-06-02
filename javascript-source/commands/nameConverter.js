@@ -41,7 +41,7 @@
 
             // Update the default tables with that users new name if it's currently in any tables.
             for (i in tables) {
-                if ($.inidb.exists(tables[i], action.toLowerCase()) == true) {
+                if ($.inidb.exists(tables[i], action.toLowerCase()) === true) {
                     $.inidb.set(tables[i], subAction.toLowerCase(), $.inidb.get(tables[i], action.toLowerCase()));
                     $.inidb.del(tables[i], action.toLowerCase());
                     changed++;

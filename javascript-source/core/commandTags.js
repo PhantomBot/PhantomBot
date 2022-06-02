@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function () {
     /*
      * @function getCustomAPIValue
@@ -23,7 +25,13 @@
      * @returns {string}
      */
     function getCustomAPIValue(url) {
-        return $.customAPI.get(url).content;
+        var res = $.customAPI.get(url);
+
+        if (res.content !== null) {
+            return res.content;
+        } else {
+            throw res.toString();
+        }
     }
 
     /*
@@ -367,8 +375,15 @@
                 if (flag) {
                     return {result: $.lang.get('customcommands.customapi.404', cmd)};
                 }
+                var response;
+                try {
+                    response = getCustomAPIValue(encodeURI(match[1]));
+                } catch (ex) {
+                    $.log.error('Failed to get data from API: ' + ex.message);
+                    return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                }
                 return {
-                    result: String(getCustomAPIValue(encodeURI(match[1]))),
+                    result: String(response),
                     cache: false
                 };
             }
@@ -415,7 +430,12 @@
                 }
 
                 result = '';
-                response = getCustomAPIValue(encodeURI(match[1]));
+                try {
+                    response = getCustomAPIValue(encodeURI(match[1]));
+                } catch (ex) {
+                    $.log.error('Failed to get data from API: ' + ex.message);
+                    return {result: $.lang.get('customcommands.customapijson.err', cmd)};
+                }
                 jsonItems = match[2].split(' ');
                 for (j = 0; j < jsonItems.length; j++) {
                     if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
@@ -661,10 +681,10 @@
          * @cancels sometimes
          */
         function gameonly(args) {
-            if (args.match(/^(?:=|\s)(.*)$/) != null) {
+            if (args.match(/^(?:=|\s)(.*)$/) !== null) {
                 args = args.substring(1);
                 var negate = false;
-                if (args.match(/^(!!\s)/) != null) {
+                if (args.match(/^(!!\s)/) !== null) {
                     args = args.substring(3);
                     negate = true;
                 }
@@ -925,7 +945,7 @@
                 return {
                     result: String($.getPlayTime() || ''),
                     cache: true
-                }
+                };
             }
         }
 
@@ -1228,9 +1248,9 @@
                     teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     teamMember = teamObj.getTeamMember(match[2]);
-                    if (teamMember != null) {
+                    if (teamMember !== null) {
                         return {
                             result: String(teamMember.get('followers')),
                             cache: true
@@ -1261,9 +1281,9 @@
                     teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     teamMember = teamObj.getTeamMember(match[2]);
-                    if (teamMember != null) {
+                    if (teamMember !== null) {
                         return {
                             result: String(teamMember.getString('game')),
                             cache: true
@@ -1294,9 +1314,9 @@
                     teamMember;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     teamMember = teamObj.getTeamMember(match[2]);
-                    if (teamMember != null) {
+                    if (teamMember !== null) {
                         return {
                             result: String(teamMember.getString('url')),
                             cache: true
@@ -1326,7 +1346,7 @@
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     return {
                         result: String(teamObj.getTotalMembers()),
                         cache: true
@@ -1350,7 +1370,7 @@
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     return {
                         result: String(teamObj.getName()),
                         cache: true
@@ -1373,7 +1393,7 @@
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     return {
                         result: String(teamObj.getRandomMember()),
                         cache: false
@@ -1397,7 +1417,7 @@
             var teamObj;
             if ((match = args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
                 teamObj = $.twitchteamscache.getTeam(match[1]);
-                if (teamObj != null) {
+                if (teamObj !== null) {
                     return {
                         result: String(teamObj.getUrl()),
                         cache: true
@@ -1513,7 +1533,7 @@
          * @cancels sometimes
          */
         function useronly(args, event) {
-            if (args.match(/^(?:=|\s)(.*)$/) != null) {
+            if (args.match(/^(?:=|\s)(.*)$/) !== null) {
                 match = args.match(/(@?\w+)/g);
                 for (var x in match) {
                     if (match[x].match(/^@moderators$/) != null) {
@@ -1709,7 +1729,7 @@
                         return null;
                     }
                     if (!transformed.hasOwnProperty('raw') || !transformed.raw) {
-                        transformed.result = escapeTags(transformed.result)
+                        transformed.result = escapeTags(transformed.result);
                     }
                     if (transformed.hasOwnProperty('cache') && transformed.cache) {
                         transformCache[wholeMatch] = transformed.result;

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
@@ -113,7 +114,7 @@ public final class LangFileUpdater {
                 throw new AccessDeniedException(langFile, null, "Outside acceptable path");
             }
 
-            Files.createDirectories(Paths.get(langFile).toAbsolutePath().normalize().toRealPath().getParent());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get(langFile)).getParent());
 
             // This is used if we need to load the script or not.
             boolean exists = true;
@@ -130,7 +131,7 @@ public final class LangFileUpdater {
                 ScriptManager.loadScript(file, langFile);
             } else {
                 if (!PhantomBot.getReloadScripts()) {
-                    HashMap<String, Script> scripts = ScriptManager.getScripts();
+                    Map<String, Script> scripts = ScriptManager.getScripts();
                     String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
 
                     final List<String> errors = new ArrayList<>();

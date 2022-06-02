@@ -24,7 +24,7 @@ public class TwitchTitleChangeEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} streamTitle
+     * @param streamTitle
      */
     public TwitchTitleChangeEvent(String streamTitle) {
         this.streamTitle = streamTitle;
@@ -33,7 +33,7 @@ public class TwitchTitleChangeEvent extends TwitchEvent {
     /**
      * Method that returns the stream name
      *
-     * @return {String} streamTitle
+     * @return streamTitle
      */
     public String getStreamTitle() {
         return this.streamTitle;

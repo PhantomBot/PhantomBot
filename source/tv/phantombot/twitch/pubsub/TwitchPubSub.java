@@ -33,9 +33,9 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -389,15 +389,13 @@ public class TwitchPubSub {
                     } else if (dataObj.getString("topic").startsWith("following")) {
                         int chanid = Integer.parseInt(dataObj.getString("topic").substring(dataObj.getString("topic").lastIndexOf(".") + 1));
                         if (chanid == this.channelId) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-                            Calendar c = Calendar.getInstance();
                             DataStore datastore = PhantomBot.instance().getDataStore();
                             if (!datastore.exists("followed", messageObj.getString("username"))) {
-                                EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), sdf.format(c.getTime())));
+                                EventBus.instance().postAsync(new TwitchFollowEvent(messageObj.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
                                 datastore.set("followed", messageObj.getString("username"), "true");
                             }
                             if (!datastore.exists("followedDate", messageObj.getString("username"))) {
-                                datastore.set("followedDate", messageObj.getString("username"), sdf.format(c.getTime()));
+                                datastore.set("followedDate", messageObj.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
                             }
                         }
                         EventBus.instance().postAsync(new PubSubFollowEvent(messageObj.getString("username"), messageObj.getString("user_id"), messageObj.getString("display_name")));

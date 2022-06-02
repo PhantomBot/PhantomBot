@@ -23,7 +23,7 @@ public class DiscordChannelPartEvent extends DiscordChannelEvent {
     /**
      * Class constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     public DiscordChannelPartEvent(User user) {
         super(user);

@@ -101,7 +101,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action,
                     'set.perm.group': $.getGroupNameById(group),
-                    'sender': sender,
+                    'sender': sender
                 });
 
                 var list = $.inidb.GetKeyList('aliases', ''),
@@ -131,7 +131,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action + ' ' + subAction,
                     'set.perm.group': $.getGroupNameById(group),
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.set('permcom', action + ' ' + subAction, group);
                 $.updateSubcommandGroup(action, subAction, group);

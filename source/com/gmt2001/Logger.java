@@ -21,13 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
@@ -39,8 +40,9 @@ import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
 
     private Flow.Subscription subscription = null;
-    private static final SimpleDateFormat logdatefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-    private static final SimpleDateFormat filedatefmt = new SimpleDateFormat("dd-MM-yyyy");
+    private static final DateTimeFormatter logdatefmt = DateTimeFormatter.ofPattern("MM-dd-yyyy @ HH:mm:ss.SSS z");
+    private static final DateTimeFormatter filedatefmt = DateTimeFormatter.ISO_LOCAL_DATE;
+    private ZoneId zoneId;
     private static final Map<LogType, String> LOG_PATHS = Map.of(
             LogType.Output, "./logs/core/",
             LogType.Input, "./logs/core/",
@@ -70,14 +72,12 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onNext(LogItem item) {
-        synchronized (filedatefmt) {
-            try {
-                Files.write(Paths.get(LOG_PATHS.get(item.type), filedatefmt.format(new Date()) + ".txt"), item.lines,
-                        StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
-            } catch (IOException ex) {
-                RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
-                ex.printStackTrace(System.err);
-            }
+        try {
+            Files.write(Paths.get(LOG_PATHS.get(item.type), this.logFileTimestamp() + ".txt"), item.lines,
+                    StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+        } catch (IOException ex) {
+            RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
+            ex.printStackTrace(System.err);
         }
         this.subscription.request(1);
     }
@@ -126,27 +126,18 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         return INSTANCE;
     }
 
-    private static synchronized void updateTimezones() {
-        logdatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        filedatefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-    }
-
     @SuppressWarnings("UseSpecificCatch")
     private Logger() {
-        updateTimezones();
+        super();
+        this.zoneId = PhantomBot.getTimeZoneId();
 
         List<Boolean> success = new ArrayList<>();
         LOG_PATHS.forEach((t, p) -> {
             try {
-                Files.createDirectories(Paths.get(p).toAbsolutePath().normalize().toRealPath());
+                Files.createDirectories(PathValidator.getRealPath(Paths.get(p)));
                 success.add(Boolean.TRUE);
             } catch (Exception ex) {
-                Map<String, Object> locals;
-                try {
-                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalizedReal"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toRealPath().toString()});
-                } catch (IOException ex2) {
-                    locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalized", "realfailed"}, new Object[]{p, Paths.get(p).toAbsolutePath().normalize().toString(), ex2});
-                }
+                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalizedReal"}, new Object[]{p, PathValidator.getRealPath(Paths.get(p))});
                 RollbarProvider.instance().error(ex, locals);
                 ex.printStackTrace(System.err);
                 success.add(Boolean.FALSE);
@@ -158,7 +149,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Handler
     public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
-        updateTimezones();
+        this.zoneId = PhantomBot.getTimeZoneId();
     }
 
     public void log(LogType type, String lines) {
@@ -177,9 +168,19 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         this.submit(new LogItem(type, lines));
     }
 
+    public static DateTimeFormatter getLogTimestampFormatter() {
+        return logdatefmt;
+    }
+
     public String logTimestamp() {
-        synchronized (logdatefmt) {
-            return logdatefmt.format(new Date());
-        }
+        return ZonedDateTime.now(this.zoneId).format(logdatefmt);
+    }
+
+    public static DateTimeFormatter getLogFileTimestampFormatter() {
+        return filedatefmt;
+    }
+
+    public String logFileTimestamp() {
+        return LocalDate.now(this.zoneId).format(filedatefmt);
     }
 }

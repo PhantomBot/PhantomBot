@@ -24,7 +24,7 @@ public class DiscordUserVoiceChannelJoinEvent extends DiscordUserVoiceChannelEve
     /**
      * Class constructor.
      *
-     * @param {IUser} user
+     * @param user
      */
     public DiscordUserVoiceChannelJoinEvent(User user) {
         super(user);
@@ -33,8 +33,8 @@ public class DiscordUserVoiceChannelJoinEvent extends DiscordUserVoiceChannelEve
     /**
      * Class constructor.
      *
-     * @param {IUser}    user
-     * @param {IVoiceChannel} voicechannel
+     * @param    user
+     * @param voicechannel
      */
     public DiscordUserVoiceChannelJoinEvent(User user, VoiceChannel voicechannel) {
         super(user, voicechannel);

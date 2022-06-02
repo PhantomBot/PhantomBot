@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.scaniatv;
 
+import com.gmt2001.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import org.joda.time.DateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import tv.phantombot.PhantomBot;
 
 /*
@@ -77,12 +77,12 @@ public class GenerateLogs {
      * Method that will read the log files.
      *
      * @param  {String} file
-     * @return {String}
+     * @return
      */
     private static String readFile(String file) {
         BufferedReader bufferedReader = null;
         String data = "----" + file + "----\r\n";
-        String line = "";
+        String line;
 
         try {
             if (new File(file).exists()) {
@@ -110,8 +110,8 @@ public class GenerateLogs {
     /*
      * Method used to write the log data to a file in the main bot folder.
      *
-     * @param {String} file
-     * @param {String} data
+     * @param file
+     * @param data
      */
     private static void writeToFile(String file, String data) {
         BufferedWriter bufferedWriter = null;
@@ -139,12 +139,10 @@ public class GenerateLogs {
      *
      * @param  {boolean} isGMT
      * @param  {boolean} minusDay
-     * @return {String}
+     * @return
      */
     private static String getDate(boolean isGMT, boolean minusDay) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone((isGMT ? "GMT" : PhantomBot.getTimeZone())));
-        return (!minusDay ? dateFormat.format(new Date()) : dateFormat.format(new DateTime(new Date()).minusDays(1).toDate()));
+        ZoneId zoneId = isGMT ? ZoneId.of("Z") : PhantomBot.getTimeZoneId();
+        return LocalDate.now(zoneId).minus(minusDay ? 1 : 0, ChronoUnit.DAYS).format(Logger.getLogFileTimestampFormatter());
     }
 }

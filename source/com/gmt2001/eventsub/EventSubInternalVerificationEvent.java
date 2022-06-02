@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
  *
  * @author gmt2001
  */
-public class EventSubInternalVerificationEvent extends EventSubInternalEvent {
+public final class EventSubInternalVerificationEvent extends EventSubInternalEvent {
 
     EventSubInternalVerificationEvent(FullHttpRequest req) {
         super(req);

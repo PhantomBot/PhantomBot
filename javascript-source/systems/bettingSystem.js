@@ -224,8 +224,7 @@
      */
     function save() {
         if (saveBets) {
-            var dateFormat = new java.text.SimpleDateFormat(saveFormat),
-                date = dateFormat.format(new Date());
+            var date = Packages.java.time.ZonedDateTime.now().format(Packages.java.time.format.DateTimeFormatter.ofPattern(saveFormat));
 
             if (!$.inidb.exists('bettingResults', date)) {
                 $.inidb.set('bettingResults', date, $.lang.get('bettingsystem.save.format', bet.title, bet.opt.join(', '), bet.total, bet.entries, bet.pointsWon));

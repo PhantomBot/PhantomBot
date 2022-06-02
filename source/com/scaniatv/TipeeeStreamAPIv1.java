@@ -75,7 +75,7 @@ public class TipeeeStreamAPIv1 {
     /*
      * Sets the api oauth for this class to use.
      *
-     * @param {String}  apiOauth  Oauth key that the user added in the bot login.
+     * @param  apiOauth  Oauth key that the user added in the bot login.
      */
     public void SetOauth(String apiOauth) {
         this.apiOauth = apiOauth;
@@ -84,7 +84,7 @@ public class TipeeeStreamAPIv1 {
     /*
      * Sets the api pull limit.
      *
-     * @param {Int}  pullLimit  Amount of donations to pull, default is 5.
+     * @param  pullLimit  Amount of donations to pull, default is 5.
      */
     public void SetLimit(int pullLimit) {
         this.pullLimit = pullLimit;
@@ -93,7 +93,7 @@ public class TipeeeStreamAPIv1 {
     /*
      * Pulls the 5 last donations from the API.
      *
-     * @return {JSONObject}  The last 5 donations from the api.
+     * @return  The last 5 donations from the api.
      */
     public JSONObject GetDonations() throws JSONException, URISyntaxException {
         return readJsonFromUrl(URL + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);

@@ -43,10 +43,14 @@ import tv.phantombot.PhantomBot;
  */
 public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
-    private final HttpAuthenticationHandler authHandler;
+    private HttpAuthenticationHandler authHandler;
 
     public HTTPAuthenticatedHandler(String webAuth, String myPassword) {
-        authHandler = new HttpSharedTokenOrPasswordAuthenticationHandler(webAuth, myPassword);
+        this.authHandler = new HttpSharedTokenOrPasswordAuthenticationHandler(webAuth, myPassword);
+    }
+
+    public void updateAuth(String webAuth, String myPassword) {
+        this.authHandler = new HttpSharedTokenOrPasswordAuthenticationHandler(webAuth, myPassword);
     }
 
     @Override

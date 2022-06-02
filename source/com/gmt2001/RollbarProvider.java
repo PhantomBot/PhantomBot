@@ -29,10 +29,10 @@ import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +69,7 @@ public final class RollbarProvider implements AutoCloseable {
     private final Rollbar rollbar;
     private boolean enabled = false;
     private MessageDigest md;
-    private final ConcurrentHashMap<String, Date> reportsPassedFilters = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Instant> reportsPassedFilters = new ConcurrentHashMap<>();
     private final Timer t = new Timer();
 
     private RollbarProvider() {
@@ -107,8 +107,8 @@ public final class RollbarProvider implements AutoCloseable {
                         metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                         metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                         metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
-                        metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("user", "").toLowerCase()) ? "true" : "false");
-                        metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("channel", "").toLowerCase()) ? "true" : "false");
+                        metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("user", "")) ? "true" : "false");
+                        metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("channel", "")) ? "true" : "false");
 
                         CaselessProperties.instance().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {
                             if (RollbarProvider.SEND_VALUES.contains(s)) {
@@ -361,16 +361,13 @@ public final class RollbarProvider implements AutoCloseable {
 
                                     String digest = Hex.encodeHexString(md.digest());
 
-                                    Calendar c = Calendar.getInstance();
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now()) ? "t" : "f"));
 
-                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime()) ? "t" : "f"));
-
-                                    if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).after(c.getTime())) {
+                                    if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now())) {
                                         com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
                                         return true;
                                     } else {
-                                        c.add(Calendar.MINUTE, REPEAT_INTERVAL_MINUTES);
-                                        reportsPassedFilters.put(digest, c.getTime());
+                                        reportsPassedFilters.put(digest, Instant.now().plus(REPEAT_INTERVAL_MINUTES, ChronoUnit.MINUTES));
                                     }
                                 } catch (Exception e) {
                                     com.gmt2001.Console.debug.printOrLogStackTrace(e);
@@ -386,10 +383,10 @@ public final class RollbarProvider implements AutoCloseable {
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    Date now = Calendar.getInstance().getTime();
+                    Instant now = Instant.now();
 
                     reportsPassedFilters.forEach((digest, date) -> {
-                        if (date.before(now)) {
+                        if (date.isBefore(now)) {
                             reportsPassedFilters.remove(digest);
                         }
                     });

@@ -22,7 +22,7 @@ public class YTPlayerVolumeEvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {int} volume
+     * @param volume
      */
     public YTPlayerVolumeEvent(int volume) {
         this.volume = volume;
@@ -31,7 +31,7 @@ public class YTPlayerVolumeEvent extends YTPlayerEvent {
     /**
      * Method that returns the volume level.
      *
-     * @return {int} volume
+     * @return volume
      */
     public int getVolume() {
         return this.volume;

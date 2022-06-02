@@ -17,8 +17,8 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +34,8 @@ public class UsernameCache {
     }
 
     private final Map<String, UserData> cache = new ConcurrentHashMap<>();
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private int numfail = 0;
 
     private UsernameCache() {
@@ -58,20 +58,16 @@ public class UsernameCache {
                 }
             } else {
                 if (user.getString("_exception").equalsIgnoreCase("SocketTimeoutException") || user.getString("_exception").equalsIgnoreCase("IOException")) {
-                    Calendar c = Calendar.getInstance();
-
-                    if (lastFail.after(new Date())) {
+                    if (lastFail.isAfter(Instant.now())) {
                         numfail++;
                     } else {
                         numfail = 1;
                     }
 
-                    c.add(Calendar.MINUTE, 1);
-
-                    lastFail = c.getTime();
+                    lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
                     if (numfail >= 5) {
-                        timeoutExpire = c.getTime();
+                        timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
                     }
                 }
             }
@@ -79,7 +75,7 @@ public class UsernameCache {
             com.gmt2001.Console.err.printStackTrace(e);
         }
     }
-    
+
     // This will be implemented later
     // For now it's just to keep another class from throwing errors.
     public JSONObject getUserData(String username) throws JSONException {
@@ -110,7 +106,7 @@ public class UsernameCache {
                 return tags.get("display-name");
             }
 
-            if (new Date().before(timeoutExpire)) {
+            if (Instant.now().isBefore(timeoutExpire)) {
                 return username;
             }
 
@@ -159,7 +155,7 @@ public class UsernameCache {
         if (hasUser(lusername)) {
             return cache.get(lusername).getUserID();
         } else {
-            if (new Date().before(timeoutExpire)) {
+            if (Instant.now().isBefore(timeoutExpire)) {
                 return "0";
             }
             lookupUserData(lusername);
@@ -185,6 +181,7 @@ public class UsernameCache {
      * int within Java is 4,294,967,295 which should serve as a large enough data type.
      */
     private class UserData {
+
         private String userName;
         private int userID;
 
@@ -192,6 +189,7 @@ public class UsernameCache {
             this.userName = userName;
             this.userID = userID;
         }
+
         public UserData(String userName, String userID) {
             this.userName = userName;
             this.userID = Integer.parseUnsignedInt(userID);
@@ -200,9 +198,11 @@ public class UsernameCache {
         public void putUserName(String userName) {
             this.userName = userName;
         }
+
         public void putUserID(int userID) {
             this.userID = userID;
         }
+
         public void putUserID(String userID) {
             this.userID = Integer.parseUnsignedInt(userID);
         }
@@ -210,6 +210,7 @@ public class UsernameCache {
         public String getUserName() {
             return userName;
         }
+
         public String getUserID() {
             return Integer.toUnsignedString(userID);
         }

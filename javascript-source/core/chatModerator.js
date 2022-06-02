@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var permitList = [],
         timeouts = [],
@@ -381,7 +383,7 @@
      * @param {map} tags
      */
     function timeoutUserFor(username, time, reason, tags) {
-        if (time == 0) {
+        if (time === 0) {
             Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.delete ' + tags.get('id')); // Cannot send a reason/time with this.
         } else {
             Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
@@ -431,7 +433,7 @@
      * @param {boolean} filter
      */
     function sendMessage(username, message, filter) {
-        if (filter == false && messageTime < $.systemTime() && $.getMessageWrites() < 7) {
+        if (filter === false && messageTime < $.systemTime() && $.getMessageWrites() < 7) {
             Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('@' + username + ', ' + message + ' ' + warning);
             messageTime = ((msgCooldownSec * 1000) + $.systemTime());
         }

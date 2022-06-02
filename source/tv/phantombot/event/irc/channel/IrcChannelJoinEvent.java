@@ -24,8 +24,8 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
     /**
      * Class constructor
      *
-     * @param {TwitchSession} session
-     * @param {String}  user
+     * @param session
+     * @param  user
      */
     public IrcChannelJoinEvent(TwitchSession session, String user) {
         super(session);
@@ -36,7 +36,7 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
     /**
      * Class constructor
      *
-     * @param {String}  user
+     * @param  user
      */
     public IrcChannelJoinEvent(String user) {
         super(null);
@@ -47,7 +47,7 @@ public class IrcChannelJoinEvent extends IrcChannelEvent {
     /**
      * Method that returns the user who joined the channel.
      *
-     * @return {String} user
+     * @return user
      */
     public String getUser() {
         return this.user;

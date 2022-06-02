@@ -35,7 +35,7 @@ public interface HttpAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} to check
-     * @return {@code true} if authenticated, {@code false} otherwise
+     * @return otherwise
      */
     boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 

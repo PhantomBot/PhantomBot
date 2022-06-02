@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var isOpened = false,
         info = {},
@@ -161,16 +163,15 @@
      * @return {String}
      */
     function date(time, simple) {
-        var date = new Date(time),
-            format = new java.text.SimpleDateFormat('HH:mm:ss z'),
-            seconds = Math.floor((new Date() - time) / 1000),
-            string = $.getTimeString(seconds);
+        var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT';
+        var ldate = Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
+        var date = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
+        var string = $.getTimeString(Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toSeconds());
 
-        format.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT')));
         if (simple === undefined) {
-            return format.format(date) + ' ' + $.lang.get('queuesystem.time.info', string);
+            return date + ' ' + $.lang.get('queuesystem.time.info', string);
         } else {
-            return format.format(date);
+            return date;
         }
     }
 

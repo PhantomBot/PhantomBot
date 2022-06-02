@@ -22,10 +22,10 @@ public class PubSubModerationBanEvent extends PubSubModerationEvent {
     /**
      * Class constructor.
      *
-     * @param {String} username
-     * @param {String} creator
-     * @param {String} message
-     * @param {String} reason
+     * @param username
+     * @param creator
+     * @param message
+     * @param reason
      */
     public PubSubModerationBanEvent(String username, String creator, String message, String reason) {
         super(username, creator, message);
@@ -36,7 +36,7 @@ public class PubSubModerationBanEvent extends PubSubModerationEvent {
     /*
      * Method that returns the reason as to why the user was banned.
      *
-     * @return {String} reason
+     * @return reason
      */
     public String getReason() {
         return this.reason;

@@ -202,7 +202,14 @@
         subscribers = bools[1];
         usePoints = bools[2];
         status = bools[3];
-        lastWinners = $.inidb.HasKey('raffleresults', '', 'winner') ? JSON.parse($.inidb.get('raffleresults', 'winner')) : []; //Consider raffles saved before this change
+        lastWinners = [];
+        if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before this change
+            var temp = $.inidb.get('raffleresults', 'winner');
+            if (temp !== undefined && !temp.equalsIgnoreCase('undefined')) {
+                lastWinners = JSON.parse(temp); //lastWinners found
+            }
+        }
+
         hasDrawn = bools.length !== 5 ? false : bools[4]; //Consider raffles saved before this change
 
         if (status === true) {
@@ -247,7 +254,11 @@
         $.inidb.set('raffleState', 'timerTime', timerTime);
         $.inidb.set('raffleState', 'startTime', startTime);
         $.inidb.set('raffleState', 'bools', JSON.stringify([followers, subscribers, usePoints, status, hasDrawn]));
-        $.inidb.set('raffleresults', 'winner', JSON.stringify(lastWinners));
+        if (lastWinners.length >= 0){
+            $.inidb.set('raffleresults', 'winner', JSON.stringify(lastWinners));
+        } else if ($.inidb.HasKey('raffleresults', '', 'winner')) { //No winners but key present - we have to remove it
+            $.inidb.del('raffleresults', 'winner');
+        }
     }
 
     /**

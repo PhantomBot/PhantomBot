@@ -34,5 +34,5 @@ if locals.args.service_name:
 
 print("Restarting phantombot due to failure " + locals.get("type", "unknown") + "...")
 
-run(["docker", "restart", servicename], shell=True, check=True)
+run(["docker", "restart", servicename], check=True)
 

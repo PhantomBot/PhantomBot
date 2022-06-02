@@ -22,7 +22,7 @@ public class ConsoleInputEvent extends ConsoleEvent {
     /**
      * Class constructor for this event.
      *
-     * @param {String} message
+     * @param message
      */
     public ConsoleInputEvent(String message) {
         this.message = message;
@@ -31,7 +31,7 @@ public class ConsoleInputEvent extends ConsoleEvent {
     /**
      * Method that will return the message said in the console.
      *
-     * @return {String} message
+     * @return message
      */
     public String getMessage() {
         return this.message;
@@ -40,7 +40,7 @@ public class ConsoleInputEvent extends ConsoleEvent {
     /**
      * Method that returns this object as a string.
      *
-     * @return {String}
+     * @return
      */
     @Override
     public String toString() {

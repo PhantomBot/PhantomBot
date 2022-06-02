@@ -22,7 +22,7 @@ public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {String} youTubeID
+     * @param youTubeID
      */
     public YTPlayerDeletePlaylistByIDEvent(String youTubeID) {
         this.youTubeID = youTubeID;
@@ -31,7 +31,7 @@ public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
     /**
      * Method that returns the YouTube song ID.
      *
-     * @return {String} youTubeID
+     * @return youTubeID
      */
     public String getYouTubeID() {
         return this.youTubeID;

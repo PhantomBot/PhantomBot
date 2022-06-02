@@ -99,7 +99,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to return this class object.
      *
-     * @return {Object}
+     * @return
      */
     public static synchronized DiscordAPI instance() {
         if (DiscordAPI.instance == null) {
@@ -263,7 +263,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current guild.
      *
-     * @return {Guild}
+     * @return
      */
     public static Guild getGuild() {
         return DiscordAPI.gateway.getGuildById(DiscordAPI.guildId).block(Duration.ofSeconds(5L));
@@ -276,7 +276,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current client
      *
-     * @return {DiscordClient}
+     * @return
      */
     public static DiscordClient getClient() {
         return DiscordAPI.client;
@@ -285,7 +285,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current gateway
      *
-     * @return {GatewayDiscordClient}
+     * @return
      */
     public static GatewayDiscordClient getGateway() {
         return DiscordAPI.gateway;
@@ -294,7 +294,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to parse commands.
      *
-     * @param {String} message
+     * @param message
      */
     private void parseCommand(User user, Channel channel, Message message, boolean isAdmin) {
         if (message.getContent().isEmpty()) {
@@ -320,9 +320,6 @@ public class DiscordAPI extends DiscordUtil {
 
         private static final List<Long> processedMessages = new CopyOnWriteArrayList<>();
         private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-        private DiscordEventListener() {
-        }
 
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
@@ -414,7 +411,7 @@ public class DiscordAPI extends DiscordUtil {
                     return;
                 }
 
-                if (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId)) {
+                if (DiscordAPI.selfId != null && DiscordAPI.selfId.equals(iUser.getId())) {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to iUser.getId().equals(DiscordAPI.selfId)");
                     return;
                 }

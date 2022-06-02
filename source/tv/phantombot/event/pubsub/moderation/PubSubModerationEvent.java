@@ -26,9 +26,9 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
     /**
      * Abstract constructor.
      *
-     * @param {String} username
-     * @param {String} creator
-     * @param {String} message
+     * @param username
+     * @param creator
+     * @param message
      */
     protected PubSubModerationEvent(String username, String creator, String message) {
         this.username = username;
@@ -39,7 +39,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
     /**
      * Method that returns the username that the even was triggered for.
      *
-     * @return {String} username
+     * @return username
      */
     public String getUsername() {
         return this.username;
@@ -48,7 +48,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
     /**
      * Method that returns the creator for the event.
      *
-     * @return {String} creator
+     * @return creator
      */
     public String getCreator() {
         return this.creator;
@@ -57,7 +57,7 @@ public abstract class PubSubModerationEvent extends PubSubEvent {
     /**
      * Method that returns the message of the creator if one is given.
      *
-     * @return {String} message
+     * @return message
      */
     public String getMessage() {
         return this.message;

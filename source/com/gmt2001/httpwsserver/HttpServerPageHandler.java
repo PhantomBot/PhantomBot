@@ -309,7 +309,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param p The {@link Path} to the file or directory to check
      * @param directoryAllowed Indicates if directories are allowed. If set to {@code false}, will cause a {@code 403 FORBIDDEN} if {@code p} is a
      * directory
-     * @return {@code true} if the file is valid, not hidden, not a symlink, and is readable. {@code true} if {@code directoryAllowed} is {@code true}
+     * @return
      * and passed the same tests. {@code false} otherwise
      */
     public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {

@@ -57,7 +57,7 @@
      * @param username
      */
     function set(keyword, hasCooldown, time, username) {
-        if (time == null || time == 0 || time == 1 || isNaN(time)) {
+        if (time === null || time === 0 || time === 1 || isNaN(time)) {
             return;
         }
 
@@ -126,6 +126,6 @@
     $.coolDownKeywords = {
         set: set,
         get: get,
-        clear: clear,
+        clear: clear
     };
 })();

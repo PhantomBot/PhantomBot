@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function () {
     // Pre-build regular expressions.z
     var reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
@@ -210,7 +212,7 @@
             $.logCustomCommand({
                 'add.command': '!' + action,
                 'add.response': argsString,
-                'sender': sender,
+                'sender': sender
             });
             $.registerChatCommand('./commands/customCommands.js', action);
             $.inidb.set('command', action, argsString);
@@ -251,7 +253,7 @@
             $.logCustomCommand({
                 'edit.command': '!' + action,
                 'edit.response': argsString,
-                'sender': sender,
+                'sender': sender
             });
             $.registerChatCommand('./commands/customCommands.js', action, $.PERMISSION.Viewer);
             $.inidb.set('command', action, argsString);
@@ -318,7 +320,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delete.success', action));
             $.logCustomCommand({
                 'delete.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.del('command', action);
             $.inidb.del('permcom', action);
@@ -359,7 +361,7 @@
             $.logCustomCommand({
                 'alias.command': '!' + action,
                 'alias.target': '!' + subAction,
-                'sender': sender,
+                'sender': sender
             });
             $.registerChatCommand('./commands/customCommands.js', action);
             $.inidb.set('aliases', action, subAction);
@@ -386,7 +388,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.delete.success', action));
             $.logCustomCommand({
                 'alias.delete.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.unregisterChatCommand(action);
             $.inidb.del('aliases', action);
@@ -425,7 +427,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action,
                     'set.perm.group': groupname,
-                    'sender': sender,
+                    'sender': sender
                 });
 
                 var list = $.inidb.GetKeyList('aliases', ''),
@@ -460,7 +462,7 @@
                 $.logCustomCommand({
                     'set.perm.command': '!' + action + ' ' + subAction,
                     'set.perm.group': groupname,
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.set('permcom', action + ' ' + subAction, group);
                 $.updateSubcommandGroup(action, subAction, group);
@@ -494,7 +496,7 @@
                 $.logCustomCommand({
                     'set.price.command': '!' + action,
                     'set.price.amount': subAction,
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.set('pricecom', action, subAction);
 
@@ -519,7 +521,7 @@
                 $.logCustomCommand({
                     'set.price.command': '!' + action + ' ' + subAction,
                     'set.price.amount': args[2],
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.set('pricecom', action + ' ' + subAction, args[2]);
             } else {
@@ -533,7 +535,7 @@
                     $.logCustomCommand({
                         'set.price.command': '!' + action + ' ' + subAction + ' ' + args[2],
                         'set.price.amount': args[3],
-                        'sender': sender,
+                        'sender': sender
                     });
                     $.inidb.set('pricecom', action + ' ' + subAction + ' ' + args[2], args[3]);
                 }
@@ -564,7 +566,7 @@
             $.logCustomCommand({
                 'set.pay.command': '!' + action,
                 'set.pay.amount': subAction,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.set('paycom', action, subAction);
 
@@ -673,7 +675,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.disable.success', action));
             $.logCustomCommand({
                 'disable.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.set('disabledCommands', action, true);
             $.tempUnRegisterChatCommand(action);
@@ -699,7 +701,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.enable.success', action));
             $.logCustomCommand({
                 'enable.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.del('disabledCommands', action);
             $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', action) ? $.inidb.get('tempDisabledCommandScript', action) : './commands/customCommands.js'), action);
@@ -728,7 +730,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.hide.success', action));
             $.logCustomCommand({
                 'hide.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.set('hiddenCommands', action, true);
             return;
@@ -753,7 +755,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.show.success', action));
             $.logCustomCommand({
                 'show.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.del('hiddenCommands', action);
             return;
@@ -778,7 +780,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.external.add.success', action));
             $.logCustomCommand({
                 'external.add.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.set('externalCommands', action, true);
             return;
@@ -803,7 +805,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('customcommands.external.delete.success', action));
             $.logCustomCommand({
                 'external.delete.command': '!' + action,
-                'sender': sender,
+                'sender': sender
             });
             $.inidb.del('externalCommands', action);
             return;
@@ -825,7 +827,7 @@
                 $.logCustomCommand({
                     'reset.command': '!' + action,
                     'reset.count': 0,
-                    'sender': sender,
+                    'sender': sender
                 });
                 $.inidb.del('commandCount', action);
             } else {
@@ -837,7 +839,7 @@
                     $.logCustomCommand({
                         'reset.command': '!' + action,
                         'reset.count': subAction,
-                        'sender': sender,
+                        'sender': sender
                     });
                 }
             }
@@ -874,7 +876,7 @@
      */
     $.bind('webPanelSocketUpdate', function (event) {
         var handleExtraDisabled = function (commandLower, extra) {
-            if (extra.disabled != null) {
+            if (extra.disabled !== null) {
                 if (extra.disabled) {
                     $.tempUnRegisterChatCommand(commandLower);
                 } else {
@@ -888,7 +890,7 @@
                     eventName = args[0] + '',
                     command = args[1] + '',
                     commandLower = command.toLowerCase() + '',
-                    extra = args[3] == null ? {} : JSON.parse(args[3]);
+                    extra = args[3] === null ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 if (customCommands[commandLower] !== undefined) {
                     delete customCommands[commandLower];

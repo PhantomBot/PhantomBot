@@ -17,6 +17,7 @@
 package tv.phantombot.event.webpanel.websocket;
 
 public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
+
     private final String id;
     private final String script;
     private final String arguments;
@@ -25,22 +26,23 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Class constructor.
      *
-     * @param {String}   id
-     * @param {String}   script
-     * @param {String}   arguments
-     * @param {String[]} args
+     * @param id
+     * @param script
+     * @param arguments
+     * @param args
      */
     public WebPanelSocketUpdateEvent(String id, String script, String arguments, String[] args) {
+        super();
         this.id = id;
         this.script = script;
         this.arguments = arguments;
-        this.args = args;
+        this.args = args.clone();
     }
 
     /**
      * Method that returns the socket event ID.
      *
-     * @return {String} id
+     * @return id
      */
     public String getId() {
         return this.id;
@@ -49,7 +51,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the script location and name.
      *
-     * @return {String} script
+     * @return script
      */
     public String getScript() {
         return this.script;
@@ -58,7 +60,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the arguments string.
      *
-     * @return {String} arguments
+     * @return arguments
      */
     public String getArguments() {
         return this.arguments;
@@ -67,10 +69,9 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     /**
      * Method that returns the arguments array.
      *
-     * @return {String[]} args
+     * @return args
      */
-
     public String[] getArgs() {
-        return this.args;
+        return this.args.clone();
     }
 }

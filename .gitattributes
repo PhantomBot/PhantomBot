@@ -1,20 +1,31 @@
 # Auto detect text files and perform LF normalization
-* text=auto
+*        text=auto
 
 # Custom for Visual Studio
 *.cs     diff=csharp
 
 # Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+*.doc    diff=astextplain
+*.DOC    diff=astextplain
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+*.dot    diff=astextplain
+*.DOT    diff=astextplain
+*.pdf    diff=astextplain
+*.PDF    diff=astextplain
+*.rtf    diff=astextplain
+*.RTF    diff=astextplain
 
 # Shell scripts are always LF
-*.sh text eol=lf
+*.sh     text eol=lf
+
+# Linguist overrides
+docs/panel/**                     linguist-generated
+docs/panel-stable/**              linguist-generated
+docs/common/**                    linguist-generated
+resources/licenses/**             linguist-generated
+resources/java-runtime/**         linguist-generated
+resources/java-runtime-linux/**   linguist-generated
+resources/java-runtime-macos/**   linguist-generated
+resources/web/common/**           linguist-vendored
+resources/web/panel/vendors/**    linguist-vendored

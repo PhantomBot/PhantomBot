@@ -24,7 +24,7 @@ public abstract class StreamElementsDonateEvent extends StreamElementsEvent {
     /**
      * Abstract constructor.
      *
-     * @param {String} jsonString
+     * @param jsonString
      */
     protected StreamElementsDonateEvent(String jsonString) {
         this.jsonString = jsonString;
@@ -33,7 +33,7 @@ public abstract class StreamElementsDonateEvent extends StreamElementsEvent {
     /**
      * Method that returns the donation's JSON string.
      *
-     * @return {String} jsonString
+     * @return jsonString
      */
     public String getJsonString() {
         return this.jsonString;
@@ -42,7 +42,7 @@ public abstract class StreamElementsDonateEvent extends StreamElementsEvent {
     /**
      * Method that converts the class into a string.
      *
-     * @return {String}
+     * @return
      */
     @Override
     public String toString() {

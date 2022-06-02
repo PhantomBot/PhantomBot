@@ -101,6 +101,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param session The {@link TwitchSession} that controls the IRC session
      */
     private TwitchWSIRCParser(WSClient client, String channelName, TwitchSession session) {
+        super();
         this.client = client;
         this.channelName = channelName;
         this.session = session;
@@ -211,7 +212,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
             for (String badge : badgeParts) {
                 // Remove the `/1` from the badge.
                 // For bits it can be `/1000`, so we need to use indexOf.
-                badge = badge.substring(0, badge.indexOf("/"));
+                badge = badge.substring(0, badge.indexOf('/'));
 
                 switch (badge) {
                     case "staff":
@@ -233,6 +234,8 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                         break;
                     case "vip":
                         badges.put("vip", "1");
+                        break;
+                    default:
                         break;
                 }
             }
@@ -256,7 +259,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         int offset = 0;
 
         if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
-            com.gmt2001.Console.debug.println(">" + rawMessage);
+            com.gmt2001.Console.debug.println(">" + rawMessage.trim());
         }
 
         if (rawMessage.startsWith("PONG")) {
@@ -308,7 +311,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
         // Get username if present.
         if (prefixcommand.length > 1 && prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
-            username = prefixcommand[0].substring(prefixcommand[0].indexOf("!") + 1, prefixcommand[0].indexOf("@"));
+            username = prefixcommand[0].substring(prefixcommand[0].indexOf('!') + 1, prefixcommand[0].indexOf('@'));
         } else if (prefixcommand.length > 1) {
             username = prefixcommand[0];
         }
@@ -336,8 +339,8 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         // Check for arguments.
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(0, commandString.indexOf(" "));
-            arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            command = commandString.substring(0, commandString.indexOf(' '));
+            arguments = commandString.substring(commandString.indexOf(' ') + 1);
         }
 
         // Send the command.
@@ -355,7 +358,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onChannelJoined(String message, String username, Map<String, String> tags) {
+    private void onChannelJoined(String unusedMessage, String unusedUsername, Map<String, String> unusedTags) {
         // Request our tags
         this.send("CAP REQ :twitch.tv/membership");
         this.send("CAP REQ :twitch.tv/commands");
@@ -440,7 +443,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onClearChat(String message, String username, Map<String, String> tags) {
+    private void onClearChat(String unusedMessage, String username, Map<String, String> tags) {
         String duration = "";
         String reason = "";
 
@@ -479,7 +482,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onJoin(String message, String username, Map<String, String> tags) {
+    private void onJoin(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
         eventBus.postAsync(new IrcChannelJoinEvent(session, username));
         // Show the message in debug mode.
@@ -493,7 +496,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onPart(String message, String username, Map<String, String> tags) {
+    private void onPart(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
         eventBus.postAsync(new IrcChannelLeaveEvent(session, username));
         // Show the message in debug mode.
@@ -507,7 +510,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onNotice(String message, String username, Map<String, String> tags) {
+    private void onNotice(String message, String unusedUsername, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             switch (tags.get("msg-id")) {
                 case "msg_banned":
@@ -528,6 +531,8 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 case "whisper_restricted":
                 case "whisper_restricted_recipient":
                     com.gmt2001.Console.err.println(tags.get("msg-id") + ": " + message);
+                    break;
+                default:
                     break;
             }
         }
@@ -560,7 +565,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onUserNotice(String message, String username, Map<String, String> tags) {
+    private void onUserNotice(String message, String unusedUsername, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             if (tags.get("msg-id").equalsIgnoreCase("resub")) {
                 scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
@@ -609,7 +614,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onUserState(String message, String username, Map<String, String> tags) {
+    private void onUserState(String unusedMessage, String username, Map<String, String> tags) {
         username = session.getBotName();
 
         if (tags.containsKey("user-type")) {

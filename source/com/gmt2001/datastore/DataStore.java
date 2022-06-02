@@ -26,7 +26,7 @@ public abstract class DataStore {
         return null;
     }
 
-    protected DataStore(String configStr) {
+    protected DataStore(String unused) {
     }
 
     public void SaveAll(boolean force) {

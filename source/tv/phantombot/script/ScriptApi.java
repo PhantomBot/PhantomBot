@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class ScriptApi {
+public final class ScriptApi {
 
     private static final ScriptApi instance = new ScriptApi();
 

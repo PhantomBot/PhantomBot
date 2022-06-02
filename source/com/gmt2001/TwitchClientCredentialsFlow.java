@@ -184,7 +184,7 @@ public class TwitchClientCredentialsFlow {
             com.gmt2001.Console.debug.println(response.responseCode());
 
             return response.jsonOrThrow();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
             return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
         }

@@ -16,7 +16,7 @@
  */
 package com.gmt2001.eventsub;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author gmt2001
  */
-public class EventSubSubscription {
+public final class EventSubSubscription {
 
     private final String id;
     private final SubscriptionStatus status;
@@ -33,7 +33,7 @@ public class EventSubSubscription {
     private final String version;
     private final int cost;
     private final Map<String, String> condition;
-    private final Date created_at;
+    private final ZonedDateTime created_at;
     private final EventSubTransport transport;
 
     /**
@@ -65,6 +65,10 @@ public class EventSubSubscription {
          */
         USER_REMOVED,
         /**
+         * The subscription was removed via API request, probably by a script on the bot.
+         */
+        API_REMOVED,
+        /**
          * Subscription proposal that has not been submitted to the EventSub endpoint for creation yet.
          */
         NOT_CREATED_YET
@@ -92,7 +96,7 @@ public class EventSubSubscription {
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, Date created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, String status, String type, String version, int cost, Map<String, String> condition, ZonedDateTime created_at, EventSubTransport transport) {
         this.id = id;
         this.status = SubscriptionStatus.valueOf(status.toUpperCase());
         this.type = type;
@@ -103,7 +107,7 @@ public class EventSubSubscription {
         this.transport = transport;
     }
 
-    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, Date created_at, EventSubTransport transport) {
+    EventSubSubscription(String id, SubscriptionStatus status, String type, String version, int cost, Map<String, String> condition, ZonedDateTime created_at, EventSubTransport transport) {
         this.id = id;
         this.status = status;
         this.type = type;
@@ -121,7 +125,7 @@ public class EventSubSubscription {
         this.version = version;
         this.cost = -1;
         this.condition = new HashMap<>(condition);
-        this.created_at = new Date();
+        this.created_at = ZonedDateTime.now();
         this.transport = transport;
     }
 
@@ -184,7 +188,7 @@ public class EventSubSubscription {
      *
      * @return
      */
-    public Date getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return this.created_at;
     }
 

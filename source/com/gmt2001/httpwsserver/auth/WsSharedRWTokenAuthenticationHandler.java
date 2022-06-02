@@ -77,7 +77,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with the appropriate
+     * @return, this method will also reply with the appropriate
      * frames to continue the authentication sequence, or an {@code Unauthorized} frame if authentication has been fully attempted and failed
      */
     @Override

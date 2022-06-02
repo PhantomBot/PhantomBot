@@ -36,8 +36,8 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to get this instance.
      *
-     * @param {String} channelName
-     * @return {Object}
+     * @param channelName
+     * @return
      */
     public static synchronized ViewerListCache instance(String channelName) {
         if (instance == null) {
@@ -50,7 +50,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Class constructor.
      *
-     * @param {String} channelName
+     * @param channelName
      */
     private ViewerListCache(String channelName) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -146,8 +146,8 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to check if a user is in the cache.
      *
-     * @param {String} username
-     * @return {boolean}
+     * @param username
+     * @return
      */
     public boolean hasUser(String username) {
         return (!this.cache.isEmpty() ? this.cache.contains(username) : true);
@@ -156,7 +156,7 @@ public class ViewerListCache implements Runnable {
     /**
      * Method to add users to the cache.
      *
-     * @param {String} username
+     * @param username
      */
     public void addUser(String username) {
         this.cache.add(username);

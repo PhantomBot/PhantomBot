@@ -23,7 +23,7 @@ public class StreamLabsDonationEvent extends StreamLabsDonateEvent {
     /**
      * Class constructor.
      *
-     * @param {String} jsonString
+     * @param jsonString
      */
     public StreamLabsDonationEvent(JSONObject data) {
         super(data);

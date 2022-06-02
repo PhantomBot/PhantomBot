@@ -25,7 +25,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param {String} subscriber
+     * @param subscriber
      */
     public TwitchPrimeSubscriberEvent(String subscriber) {
         this.subscriber = subscriber;
@@ -35,7 +35,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
         /**
      * Class constructor.
      *
-     * @param {String} subscriber
+     * @param subscriber
      */
     public TwitchPrimeSubscriberEvent(String subscriber, String months) {
         this.subscriber = subscriber;
@@ -45,7 +45,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the user who subscribed.
      *
-     * @return {String} subscriber
+     * @return subscriber
      */
     public String getSubscriber() {
         return this.subscriber;
@@ -54,7 +54,7 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     /**
      * Method that returns the cumulative months.
      *
-     * @return {String} months
+     * @return months
      */
     public String getMonths() {
         return this.months;

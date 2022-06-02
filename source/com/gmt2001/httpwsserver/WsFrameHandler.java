@@ -30,7 +30,7 @@ public interface WsFrameHandler {
     /**
      * Registers this {@link WsFrameHandler} with the {@link WebSocketFrameHandler}
      *
-     * @return {@code this}
+     * @return
      */
     WsFrameHandler register();
 

@@ -56,7 +56,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
     /**
      * Method that returns the gifted the subscription.
      *
-     * @return {String} username
+     * @return username
      */
     public String getUsername() {
         return "anonymous";
@@ -65,7 +65,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
     /**
      * Method that returns the recipient.
      *
-     * @return {String} recipient
+     * @return recipient
      */
     public String getRecipient() {
         return this.recipient;
@@ -74,7 +74,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
     /**
      * Method that returns the months, can be 0.
      *
-     * @return {String} months
+     * @return months
      */
     public String getMonths() {
         return (this.months == null) ? "1" : this.months;
@@ -83,7 +83,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
     /**
      * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
      *
-     * @return {String} plan
+     * @return plan
      */
     public String getPlan() {
         return this.plan;

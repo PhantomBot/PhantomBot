@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -60,7 +60,7 @@ public final class JSFileSystem {
         }
 
         try {
-            Files.createDirectories(Paths.get(path).toAbsolutePath().normalize().toRealPath());
+            Files.createDirectories(PathValidator.getRealPath(Paths.get(path)));
         } catch (IOException ex) {
             return false;
         }
@@ -74,6 +74,14 @@ public final class JSFileSystem {
         }
 
         Files.move(Paths.get(pathToFile), Paths.get(pathToTargetDirectory, Paths.get(pathToFile).getFileName().toString()));
+    }
+
+    public static void MoveFile(String pathToFile, String newPathToFile) throws IOException {
+        if (!PathValidator.isValidPathScript(pathToFile) || !PathValidator.isValidPathScript(newPathToFile)) {
+            return;
+        }
+
+        Files.move(Paths.get(pathToFile), Paths.get(newPathToFile));
     }
 
     public static void WriteLinesToFile(String path, List<String> lines, boolean append) throws IOException {
@@ -102,7 +110,7 @@ public final class JSFileSystem {
         try {
             Files.createFile(Paths.get(path));
         } catch (FileAlreadyExistsException ex) {
-            Files.setLastModifiedTime(Paths.get(path), FileTime.fromMillis(new Date().getTime()));
+            Files.setLastModifiedTime(Paths.get(path), FileTime.fromMillis(Instant.now().getEpochSecond()));
         }
     }
 

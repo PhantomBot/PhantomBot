@@ -25,8 +25,8 @@ public abstract class TwitchFollowerEvent extends TwitchEvent {
     /**
      * Abstract constructor
      *
-     * @param {String} follower
-     * @param {String} date
+     * @param follower
+     * @param date
      */
     protected TwitchFollowerEvent(String follower, String date) {
         this.follower = follower;
@@ -36,7 +36,7 @@ public abstract class TwitchFollowerEvent extends TwitchEvent {
     /**
      * Method that returns the follower's username.
      *
-     * @param {String} follower
+     * @param follower
      */
     public String getFollower() {
         return this.follower;
@@ -45,7 +45,7 @@ public abstract class TwitchFollowerEvent extends TwitchEvent {
     /**
      * Method that returns the follower's follow date.
      *
-     * @param {String} date
+     * @param date
      */
     public String getFollowDate() {
         return this.date;

@@ -89,7 +89,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, winMessageCount.roll);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
@@ -99,7 +99,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, winMessageCount.gamble);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
@@ -109,7 +109,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, winMessageCount.slot);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
@@ -134,7 +134,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, lostMessagesCount.roll);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
@@ -144,7 +144,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, lostMessagesCount.gamble);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
@@ -154,7 +154,7 @@
                 } else {
                     do {
                         rand = $.randRange(1, lostMessagesCount.slot);
-                    } while (rand == lastRandom);
+                    } while (rand === lastRandom);
                 }
                 lastRandom = rand;
                 return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));

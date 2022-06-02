@@ -17,8 +17,8 @@
 package tv.phantombot.cache;
 
 import com.scaniatv.TipeeeStreamAPIv1;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +34,8 @@ public class TipeeeStreamCache implements Runnable {
     private static final Map<String, TipeeeStreamCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
     private Map<String, String> cache = new ConcurrentHashMap<>();
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private boolean firstUpdate = true;
     private boolean killed = false;
     private int numfail = 0;
@@ -43,7 +43,8 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
+     * @return
      */
     public static TipeeeStreamCache instance(String channel) {
         TipeeeStreamCache instance = instances.get(channel);
@@ -58,7 +59,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TipeeeStreamCache() {
@@ -73,7 +74,8 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Checks if the donation has been cached.
      *
-     * @return {boolean}
+     * @param donationID
+     * @return
      */
     public boolean exists(String donationID) {
         return cache.containsKey(donationID);
@@ -82,7 +84,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Returns the current cache count (size/length),
      *
-     * @return {Integer}
+     * @return
      */
     public int count() {
         return cache.size();
@@ -92,14 +94,12 @@ public class TipeeeStreamCache implements Runnable {
      * Checks the amount of time we failed when calling the api to avoid abusing it.
      */
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
+        numfail = (lastFail.isAfter(Instant.now()) ? numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        lastFail = cal.getTime();
+        lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (numfail > 5) {
-            timeoutExpire = cal.getTime();
+            timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
@@ -117,7 +117,7 @@ public class TipeeeStreamCache implements Runnable {
 
         while (!killed) {
             try {
-                if (new Date().after(timeoutExpire)) {
+                if (Instant.now().isAfter(timeoutExpire)) {
                     this.updateCache();
                 }
             } catch (Exception ex) {
@@ -185,7 +185,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map} Cache
+     * @param cache
      */
     public void setCache(Map<String, String> cache) {
         this.cache = cache;
@@ -194,7 +194,7 @@ public class TipeeeStreamCache implements Runnable {
     /**
      * Returns the current cache.
      *
-     * @return {Map} Current cache.
+     * @return Current cache.
      */
     public Map<String, String> getCache() {
         return cache;

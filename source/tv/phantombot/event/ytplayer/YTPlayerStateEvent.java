@@ -24,7 +24,7 @@ public class YTPlayerStateEvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {YTPlayerState} state
+     * @param state
      */
     public YTPlayerStateEvent(YTPlayerState state) {
         this.state = state;
@@ -33,7 +33,7 @@ public class YTPlayerStateEvent extends YTPlayerEvent {
     /**
      * Method that returns the player state.
      *
-     * @return {YTPlayerState} state
+     * @return state
      */
     public YTPlayerState getState() {
         return this.state;
@@ -42,7 +42,7 @@ public class YTPlayerStateEvent extends YTPlayerEvent {
     /**
      * Method that returns the player state ID.
      *
-     * @return {int} state.i
+     * @return state.i
      */
     public int getStateId() {
         return this.state.i;

@@ -22,18 +22,19 @@ import com.gmt2001.HttpResponse;
 import com.gmt2001.TwitchAPIv5;
 import com.scaniatv.BotImporter;
 import com.scaniatv.GenerateLogs;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
+import static tv.phantombot.PhantomBot.getTimeZoneId;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -56,7 +57,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
 import tv.phantombot.event.twitter.TwitterRetweetEvent;
 import tv.phantombot.script.Script;
 
-public class ConsoleEventHandler implements Listener {
+public final class ConsoleEventHandler implements Listener {
 
     private static final ConsoleEventHandler instance = new ConsoleEventHandler();
     private Transaction transaction = null;
@@ -109,8 +110,8 @@ public class ConsoleEventHandler implements Listener {
         // Check for arguments in the message string.
         if (message.contains(" ")) {
             String messageString = message;
-            message = messageString.substring(0, messageString.indexOf(" "));
-            arguments = messageString.substring(messageString.indexOf(" ") + 1);
+            message = messageString.substring(0, messageString.indexOf(' '));
+            arguments = messageString.substring(messageString.indexOf(' ') + 1);
             argument = arguments.split(" ");
         }
 
@@ -199,7 +200,7 @@ public class ConsoleEventHandler implements Listener {
                 String[] str = new String[3];
                 str[0] = ("!" + key);
                 str[1] = PhantomBot.instance().getDataStore().get("groups", PhantomBot.instance().getDataStore().get("permcom", key));
-                str[2] = Script.callMethod("getCommandScript", key.contains(" ") ? key.substring(0, key.indexOf(" ")) : key);
+                str[2] = Script.callMethod("getCommandScript", key.contains(" ") ? key.substring(0, key.indexOf(' ')) : key);
                 // If the module is disabled, return.
                 if (str[2].contains("Undefined")) {
                     continue;
@@ -267,9 +268,7 @@ public class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("backupdb")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing backupdb");
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-            String timestamp = datefmt.format(new Date());
+            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             PhantomBot.instance().getDataStore().backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;
@@ -331,8 +330,7 @@ public class ConsoleEventHandler implements Listener {
             }
 
             com.gmt2001.Console.out.println("[CONSOLE] Executing followertest (User: " + user + ")");
-
-            EventBus.instance().postAsync(new TwitchFollowEvent(user, (new Date()).toString()));
+            EventBus.instance().postAsync(new TwitchFollowEvent(user, ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             return;
         }
 
@@ -350,7 +348,7 @@ public class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing followerstest (Count: " + followCount + ", User: " + randomUser + ")");
 
             for (int i = 0; i < followCount; i++) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, (new Date()).toString()));
+                EventBus.instance().postAsync(new TwitchFollowEvent(randomUser + "_" + i, ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
             }
             return;
         }
@@ -776,7 +774,7 @@ public class ConsoleEventHandler implements Listener {
                 }
 
                 if (twitchAlertsKickback.contains("&")) {
-                    twitchAlertsKickback = twitchAlertsKickback.substring(0, twitchAlertsKickback.indexOf("&"));
+                    twitchAlertsKickback = twitchAlertsKickback.substring(0, twitchAlertsKickback.indexOf('&'));
                 }
 
                 HttpResponse res = HttpRequest.getData(HttpRequest.RequestType.POST, "https://streamlabs.com/api/v1.0/token",
@@ -795,6 +793,7 @@ public class ConsoleEventHandler implements Listener {
                     JSONObject e = new JSONObject(res.content);
                     System.out.println("PhantomBot StreamLabs setup failed");
                     System.err.println(e.getString("error"));
+                    System.err.println(e.optString("error_description", "no error description"));
                     System.err.println(e.optString("message", "no message"));
                 } else {
                     System.out.println("PhantomBot StreamLabs setup failed");

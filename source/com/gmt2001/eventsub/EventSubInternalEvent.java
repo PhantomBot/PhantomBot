@@ -18,7 +18,7 @@ package com.gmt2001.eventsub;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import java.nio.charset.Charset;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.json.JSONObject;
 import tv.phantombot.event.Event;
 
@@ -32,7 +32,7 @@ public abstract class EventSubInternalEvent extends Event {
     private final String challenge;
     private final JSONObject event;
     private final String messageId;
-    private final Date messageTimestamp;
+    private final ZonedDateTime messageTimestamp;
     private final EventSubSubscription subscription;
 
     EventSubInternalEvent(FullHttpRequest req) {
@@ -56,7 +56,7 @@ public abstract class EventSubInternalEvent extends Event {
         return this.messageId;
     }
 
-    public Date getMessageTimestamp() {
+    public ZonedDateTime getMessageTimestamp() {
         return this.messageTimestamp;
     }
 

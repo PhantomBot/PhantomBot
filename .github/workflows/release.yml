@@ -22,6 +22,7 @@ jobs:
     name: Docker test on ubuntu-latest with JDK 11
     runs-on: ubuntu-latest
     needs: buildtest
+    timeout-minutes: 5
     services:
       registry:
         image: registry:2
@@ -191,13 +192,13 @@ jobs:
         FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', needs.workflowvars.outputs.version) }}
       run: |
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.sh --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
         mkdir dist/$FOLDERARMBSDOTHER
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
         cd dist
         echo Zip Full
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL

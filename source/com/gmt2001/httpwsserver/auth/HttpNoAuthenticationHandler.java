@@ -49,7 +49,7 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} of the request
-     * @return {@code true}
+     * @return
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {

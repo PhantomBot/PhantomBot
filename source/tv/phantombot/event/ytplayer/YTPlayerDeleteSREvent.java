@@ -22,7 +22,7 @@ public class YTPlayerDeleteSREvent extends YTPlayerEvent {
     /**
      * Class constructor.
      *
-     * @param {String} id
+     * @param id
      */
     public YTPlayerDeleteSREvent(String id) {
         this.id = id;
@@ -31,7 +31,7 @@ public class YTPlayerDeleteSREvent extends YTPlayerEvent {
     /**
      * Method that returns the event ID.
      *
-     * @return {String} id
+     * @return id
      */
     public String getId() {
         return this.id;

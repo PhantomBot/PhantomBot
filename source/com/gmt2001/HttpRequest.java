@@ -45,8 +45,13 @@ public final class HttpRequest {
 
     @Deprecated
     public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers) {
+        return getData(type, url, post, headers, false);
+    }
+
+    @Deprecated
+    public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers, boolean isJson) {
         try {
-            return getData(type, HttpUrl.fromUri(url), post, headers);
+            return getData(type, HttpUrl.fromUri(url), post, headers, isJson);
         } catch (URISyntaxException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             HttpResponse r = new HttpResponse();
@@ -63,8 +68,13 @@ public final class HttpRequest {
     }
 
     @Deprecated
-    @SuppressWarnings("UseSpecificCatch")
     public static HttpResponse getData(RequestType type, HttpUrl uri, String post, HashMap<String, String> headers) {
+        return getData(type, uri, post, headers, false);
+    }
+
+    @Deprecated
+    @SuppressWarnings("UseSpecificCatch")
+    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, HashMap<String, String> headers, boolean isJson) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();
@@ -74,7 +84,7 @@ public final class HttpRequest {
         r.post = post;
 
         try {
-            HttpHeaders h = HttpClient.createHeaders();
+            HttpHeaders h = HttpClient.createHeaders(HttpMethod.valueOf(type.name()), isJson);
             if (headers != null) {
                 headers.forEach(h::add);
             }

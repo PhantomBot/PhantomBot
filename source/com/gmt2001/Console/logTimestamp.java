@@ -16,10 +16,7 @@
  */
 package com.gmt2001.Console;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import tv.phantombot.PhantomBot;
+import com.gmt2001.Logger;
 
 public final class logTimestamp {
 
@@ -27,8 +24,6 @@ public final class logTimestamp {
     }
 
     public static String log() {
-        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss.SSS z");
-        datefmt.setTimeZone(TimeZone.getTimeZone(PhantomBot.getTimeZone()));
-        return datefmt.format(new Date());
+        return Logger.instance().logTimestamp();
     }
 }
