@@ -594,7 +594,7 @@
             for (idx in cmds) {
                 if (!$.inidb.exists('disabledCommands', cmds[idx])
                         && !$.inidb.exists('hiddenCommands', cmds[idx])
-                        && permCom(sender, cmds[idx], '') === 0) {
+                        && $.permCom(sender, cmds[idx], '') === 0) {
                     cmdList.push('!' + cmds[idx]);
                 }
             }
@@ -604,7 +604,7 @@
 
                 if (!$.inidb.exists('disabledCommands', aliases[idx])
                         && !$.inidb.exists('hiddenCommands', aliases[idx])
-                        && permCom(sender, aliasCmd, '') === 0) {
+                        && $.permCom(sender, aliasCmd, '') === 0) {
                     cmdList.push('!' + aliases[idx]);
                 }
             }
@@ -634,7 +634,7 @@
                 if (cmds[idx].indexOf(' ') !== -1) {
                     continue;
                 }
-                if (permCom(sender, cmds[idx], '') === 0) {
+                if ($.permCom(sender, cmds[idx], '') === 0) {
                     cmdList.push('!' + cmds[idx]);
                 }
             }
