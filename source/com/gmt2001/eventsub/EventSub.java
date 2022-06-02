@@ -98,10 +98,20 @@ public final class EventSub implements HttpRequestHandler {
     private Instant lastSubscriptionRetrieval;
     private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
+    /**
+     * Singleton instance getter.
+     *
+     * @return
+     */
     public static EventSub instance() {
         return EventSub.INSTANCE;
     }
 
+    /**
+     * Loads subscription types and registers HTTP handling.
+     *
+     * @return
+     */
     @Override
     public HttpRequestHandler register() {
         Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
@@ -155,7 +165,7 @@ public final class EventSub implements HttpRequestHandler {
 
             res.headers().set(CONNECTION, CLOSE);
             ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            this.updateSubscriptionWithNewStatus(event.getSubscription(), EventSubSubscription.SubscriptionStatus.ENABLED);
+            this.updateSubscription(event.getSubscription(), EventSubSubscription.SubscriptionStatus.ENABLED);
             return;
         } else {
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.buffer());
@@ -200,6 +210,11 @@ public final class EventSub implements HttpRequestHandler {
         return Collections.unmodifiableMap(this.subscriptions);
     }
 
+    /**
+     * Actually performs the getSubscriptions action
+     *
+     * @param force true to force a retrieval
+     */
     private synchronized void doGetSubscriptions(boolean force) {
         if (force || this.lastSubscriptionRetrieval.isBefore(Instant.now().minus(SUBSCRIPTION_RETRIEVE_INTERVAL))) {
             Map<String, EventSubSubscription> n = new HashMap<>();
@@ -240,7 +255,7 @@ public final class EventSub implements HttpRequestHandler {
                 } else {
                     JSONArray arr = response.getJSONArray("data");
                     for (int i = 0; i < arr.length(); i++) {
-                        emitter.next(EventSub.JSONToEventSubSubscription(arr.getJSONObject(i)));
+                        emitter.next(EventSubSubscription.fromJSON(arr.getJSONObject(i)));
                     }
 
                     this.rwl.writeLock().lock();
@@ -317,7 +332,7 @@ public final class EventSub implements HttpRequestHandler {
                     emitter.error(new IOException(response.toString()));
                 } else {
                     if (this.subscriptions.containsKey(id)) {
-                        this.updateSubscriptionWithNewStatus(this.subscriptions.get(id), EventSubSubscription.SubscriptionStatus.API_REMOVED);
+                        this.updateSubscription(this.subscriptions.get(id), EventSubSubscription.SubscriptionStatus.API_REMOVED);
                     }
                     emitter.success();
                 }
@@ -328,6 +343,12 @@ public final class EventSub implements HttpRequestHandler {
         }).publishOn(Schedulers.boundedElastic());
     }
 
+    /**
+     * Performs the create action for an {@link EventSubSubscriptionType}
+     *
+     * @param proposedSubscription The {@link EventSubSubscription} spec to create
+     * @return The new subscription
+     */
     Mono<EventSubSubscription> createSubscription(EventSubSubscription proposedSubscription) {
         return Mono.<EventSubSubscription>create(emitter -> {
             try {
@@ -351,7 +372,7 @@ public final class EventSub implements HttpRequestHandler {
                 if (response.has("error")) {
                     emitter.error(new IOException(response.toString()));
                 } else {
-                    EventSubSubscription subscription = JSONToEventSubSubscription(response.getJSONArray("data").getJSONObject(0));
+                    EventSubSubscription subscription = EventSubSubscription.fromJSON(response.getJSONArray("data").getJSONObject(0));
                     this.updateSubscription(subscription);
                     emitter.success(subscription);
                 }
@@ -362,18 +383,12 @@ public final class EventSub implements HttpRequestHandler {
         }).publishOn(Schedulers.boundedElastic());
     }
 
-    static EventSubSubscription JSONToEventSubSubscription(JSONObject subscription) {
-        Map<String, String> condition = new HashMap<>();
-
-        subscription.getJSONObject("condition").keySet().forEach(key -> condition.put(key, subscription.getJSONObject("condition").getString(key)));
-
-        return new EventSubSubscription(
-                subscription.getString("id"), subscription.getString("status"), subscription.getString("type"), subscription.getString("version"),
-                subscription.getInt("cost"), condition, subscription.getString("created_at"),
-                new EventSubTransport(subscription.getJSONObject("transport").getString("method"), subscription.getJSONObject("transport").getString("callback"))
-        );
-    }
-
+    /**
+     * Parses a date from an EventSub message into a {@link ZonedDateTime}
+     *
+     * @param date
+     * @return
+     */
     static ZonedDateTime parseDate(String date) {
         try {
             return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -384,10 +399,20 @@ public final class EventSub implements HttpRequestHandler {
         return ZonedDateTime.now();
     }
 
+    /**
+     * Retrieves the secret used for signature verification
+     *
+     * @return
+     */
     static String getSecret() {
         return CaselessProperties.instance().getProperty("appsecret", EventSub::generateSecret);
     }
 
+    /**
+     * Generates and stores a new secret for signature verification
+     *
+     * @return
+     */
     private static String generateSecret() {
         Transaction transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
         byte[] secret = new byte[64];
@@ -403,20 +428,32 @@ public final class EventSub implements HttpRequestHandler {
         return ssecret;
     }
 
+    /**
+     * Checks if the specified message has already been handled
+     *
+     * @param messageId The message id to check
+     * @param timestamp The timestamp of the message
+     * @return
+     */
     boolean isDuplicate(String messageId, ZonedDateTime timestamp) {
         return this.handledMessages.putIfAbsent(messageId, timestamp) != null;
     }
 
-    private void updateSubscriptionWithNewStatus(EventSubSubscription oldSubscription, EventSubSubscription.SubscriptionStatus newStatus) {
-        this.updateSubscription(this.cloneSubscriptionWithNewStatus(oldSubscription, newStatus));
+    /**
+     * Updates the local {@link EventSubSubscription} object with a new status
+     *
+     * @param subscription The subscription to update
+     * @param newStatus The new status
+     */
+    private void updateSubscription(EventSubSubscription subscription, EventSubSubscription.SubscriptionStatus newStatus) {
+        this.updateSubscription(subscription.clone(newStatus));
     }
 
-    private EventSubSubscription cloneSubscriptionWithNewStatus(EventSubSubscription oldSubscription, EventSubSubscription.SubscriptionStatus newStatus) {
-        return new EventSubSubscription(oldSubscription.getId(), newStatus,
-                oldSubscription.getType(), oldSubscription.getVersion(), oldSubscription.getCost(), oldSubscription.getCondition(),
-                oldSubscription.getCreatedAt(), oldSubscription.getTransport());
-    }
-
+    /**
+     * Adds/updates an {@link EventSubSubscription} in the local cache and updates the subscription total
+     *
+     * @param subscription The subscription to add/update
+     */
     private void updateSubscription(EventSubSubscription subscription) {
         this.rwl.writeLock().lock();
         try {
@@ -427,6 +464,9 @@ public final class EventSub implements HttpRequestHandler {
         }
     }
 
+    /**
+     * Removes expired message ids from the duplicate list
+     */
     private void cleanupDuplicates() {
         ZonedDateTime expires = ZonedDateTime.now();
         this.handledMessages.forEach((id, ts) -> {
@@ -436,6 +476,17 @@ public final class EventSub implements HttpRequestHandler {
         });
     }
 
+    /**
+     * Sends requests to Helix. Handles 401 responses by attempting to get a new token and trying again
+     *
+     * @param type The method to use
+     * @param queryString The query string
+     * @param post The post data
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     * @throws URISyntaxException
+     */
     private JSONObject doRequest(HttpMethod type, String queryString, String post) throws IOException, JSONException, URISyntaxException {
         HttpUrl url = HttpUrl.fromUri(BASE, queryString);
         HttpHeaders headers = HttpClient.createHeaders(type, true);
