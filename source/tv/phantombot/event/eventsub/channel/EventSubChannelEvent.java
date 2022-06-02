@@ -19,6 +19,7 @@ package tv.phantombot.event.eventsub.channel;
 import tv.phantombot.event.eventsub.EventSubEvent;
 
 /**
+ * An EventSub event related to a channel
  *
  * @author gmt2001
  */
