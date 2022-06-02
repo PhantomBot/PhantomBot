@@ -431,7 +431,7 @@
         if (id > PERMISSION.VIP && isVIP(username, tags)) {
             id = PERMISSION.VIP;
         }
-        if (id > PERMISSION.Donator && isRegular(username)) {
+        if (id > PERMISSION.Regular && isRegular(username)) {
             id = PERMISSION.Regular;
         }
 
