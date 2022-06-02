@@ -327,15 +327,15 @@
     }
 
     function userGetsBonus(user, event) {
-        return (event.getTags().containsKey('subscriber') && event.getTags().get('subscriber').equals('1')) || $.checkUserPermission(user, event.getTags(), $.PERMISSION.Regular);
+        return ($.isSub(user, event.getTags()) || $.isRegular(user));
     }
 
     function calcBonus(user, event, tickets) {
         var bonus = tickets;
 
-        if (event.getTags().containsKey('subscriber') && event.getTags().get('subscriber').equals('1')) {
+        if ($.isSub(user, event.getTags())) {
             bonus = tickets * subTMulti;
-        } else if ($.checkUserPermission(user, event.getTags(), $.PERMISSION.Regular)) {
+        } else if ($.isRegular(user)) {
             bonus = tickets * regTMulti;
         }
 
