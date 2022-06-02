@@ -245,14 +245,11 @@
      * @returns {boolean}
      */
     function isMod(username, tags) {
-        if (checkTags(tags)) {
-            $.consoleLn('IsMod with Tags:' + tags.toString());
-            if (tags.get('user-type').length() > 0) { // Broadcaster should be included here.
-                return true;
-            }
+        if (checkTags(tags) && tags.get('user-type').length() > 0) { // Broadcaster should be included here.
+            return true;
         }
-        $.consoleLn('IsMod without Tags:');
-        $.consoleDebug('Used isModv3 without tags::' + tags);
+
+        $.consoleDebug('Used isMod without tags::' + tags);
         return isModNoTags(username);
     }
 
@@ -287,13 +284,11 @@
      * @returns {boolean}
      */
     function isSub(username, tags) {
-        if (checkTags(tags)) {
-            if (tags.containsKey('subscriber')) {
-                return tags.get('subscriber').equals('1');
-            }
+        if (checkTags(tags) && tags.containsKey('subscriber')) {
+            return tags.get('subscriber').equals('1');
         }
 
-        $.consoleDebug('Used isSubv3 without tags::' + tags);
+        $.consoleDebug('Used isSub without tags::' + tags);
         return isSubNoTags(username);
     }
 
@@ -337,11 +332,8 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        if (checkTags(tags)) {
-            $.consoleLn('VIP tags' + tags.toString());
-            if (tags.containsKey('vip')) {
-                return tags.get('vip').equals('1');
-            }
+        if (checkTags(tags) && tags.containsKey('vip')) {
+            return tags.get('vip').equals('1');
         }
 
         $.consoleDebug('Used isVIP without tags::' + tags);
