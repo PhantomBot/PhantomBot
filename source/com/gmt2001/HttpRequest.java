@@ -35,7 +35,7 @@ import org.json.JSONObject;
 public final class HttpRequest {
 
     @Deprecated
-    public static enum RequestType {
+    public enum RequestType {
 
         GET, POST, PATCH, PUT, DELETE
     }
