@@ -70,22 +70,6 @@ botinfo - Prints the bot information in the console.
 
 &nbsp;
 
-### revloconvert
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-revloconvert [CSV file] - Command that imports points from RevloBot.
-
-&nbsp;
-
-### ankhconvert
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-ankhconvert [CSV file] - Command that imports points from AnkhBot.
-
-&nbsp;
-
 ### backupdb
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -259,22 +243,6 @@ debugon - Enables debug mode.
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 debugoff - Disables debug mode.
-
-&nbsp;
-
-### dumplogs
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-dumplogs - Writes the latest logs to a file.
-
-&nbsp;
-
-### printlogs
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-printlogs - Prints the latest logs to the console.
 
 &nbsp;
 
