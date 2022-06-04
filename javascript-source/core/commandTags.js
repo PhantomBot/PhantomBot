@@ -359,10 +359,6 @@
         function customapi(args, event) {
             if ((match = args.match(/^\s(.+)$/))) {
                 cmd = event.getCommand();
-                if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
-                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
-                }
-
                 flag = false;
                 match[1] = match[1].replace(/\$([1-9])/g, function (m) {
                     i = parseInt(m[1]);
@@ -412,10 +408,6 @@
                     result = '';
             if ((match = args.match(/^ (\S+) (.+)$/))) {
                 cmd = event.getCommand();
-                if (match[1].indexOf('(token)') !== -1 && $.inidb.HasKey('commandtoken', '', cmd)) {
-                    match[1] = match[1].replace(/\(token\)/gi, $.inidb.GetString('commandtoken', '', cmd));
-                }
-
                 flag = false;
                 match[1] = match[1].replace(/\$([1-9])/g, function (m) {
                     i = parseInt(m[1]);
@@ -1463,6 +1455,31 @@
         }
 
         /*
+         * @transformer token
+         * @formula (token) replaced with the secret token that was set by !tokencom or the panel
+         * @example Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=(token)&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
+         * Caster: !tokencom !weather mySecretApiKey
+         * User: !weather 80314
+         * // customapijson generates the below response using the url: http://api.apixu.com/v1/current.json?key=mySecretApiKey&q=80314
+         * Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
+         * @cached
+         */
+        function token(args, event) {
+            cmd = event.getCommand();
+            if ($.inidb.HasKey('commandtoken', '', cmd)) {
+                return {
+                    result: $.inidb.GetString('commandtoken', '', cmd),
+                    cache: true
+                };
+            } else {
+                return {
+                    result: 'NOT_SET',
+                    cache: true
+                };
+            }
+        }
+
+        /*
          * @transformer touser
          * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
          * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
@@ -1662,6 +1679,7 @@
             'team_random_member': team_random_member,
             'team_url': team_url,
             'titleinfo': titleinfo,
+            'token': token,
             'touser': touser,
             'unescape': unescape,
             'uptime': uptime,
