@@ -179,7 +179,7 @@ $(function () {
                     tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'hiddenCommands'],
                     keys: [command, command, command, command, command, command, command]
                 }, function (e) {
-                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown)),
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1, modsSkip: false } : JSON.parse(e.cooldown)),
                         tokenButton = '';
 
                     if (e.command.match(/\(customapi/gi) !== null) {
@@ -226,6 +226,9 @@ $(function () {
                         // Append input box for per-user cooldown.
                         .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                             'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
+                        // Append input box for mods skip cooldown.
+                        .append(helpers.getCheckbox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
+                            'If checked, moderators are exempt from cooldowns on this command.'))
                         .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
                             'If checked, the command cannot be used in chat.'))
                         .append(helpers.getCheckBox('command-hidden', e.hiddenCommands !== null, 'Hidden',
@@ -239,6 +242,7 @@ $(function () {
                             commandReward = $('#command-reward'),
                             commandCooldownGlobal = $('#command-cooldown-global'),
                             commandCooldownUser = $('#command-cooldown-user'),
+                            commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                             commandDisabled = $('#command-disabled').is(':checked'),
                             commandHidden = $('#command-hidden').is(':checked');
 
@@ -268,7 +272,7 @@ $(function () {
                                             commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                            ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                            ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
                                                 // Update command permission.
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
@@ -344,6 +348,9 @@ $(function () {
             // Append input box for per-user cooldown.
             .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', '-1',
                 'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.')))
+            // Append input box for mods skip cooldown.
+            .append(helpers.getCheckbox('command-cooldown-modsskip', false, 'Mods Skip Cooldown',
+                'If checked, moderators are exempt from cooldowns on this command.'))
             .append(helpers.getCheckBox('command-disabled', false, 'Disabled',
                 'If checked, the command cannot be used in chat.'))
             .append(helpers.getCheckBox('command-hidden', false, 'Hidden',
@@ -357,6 +364,7 @@ $(function () {
                 commandReward = $('#command-reward'),
                 commandCooldownGlobal = $('#command-cooldown-global'),
                 commandCooldownUser = $('#command-cooldown-user'),
+                commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                 commandDisabled = $('#command-disabled').is(':checked'),
                 commandHidden = $('#command-hidden').is(':checked');
 
@@ -393,7 +401,7 @@ $(function () {
                                     ['add', commandName.val(), commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
-                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
                                         // Reload the table.
                                         loadCustomCommands();
                                         // Close the modal.

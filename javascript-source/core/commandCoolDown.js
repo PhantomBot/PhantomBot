@@ -47,12 +47,13 @@
      * @param {Number}  globalSec
      * @param {Number}  userSec
      */
-    function Cooldown(command, globalSec, userSec) {
+    function Cooldown(command, globalSec, userSec, modsSkip) {
             this.command = command;
             this.globalSec = globalSec;
             this.userSec = userSec;
             this.userTimes = [];
             this.globalTime = 0;
+            this.modsSkip = modsSkip;
     }
 
     /*
@@ -65,7 +66,8 @@
         return JSON.stringify({
             command: String(command.command),
             globalSec: command.globalSec,
-            userSec: command.userSec
+            userSec: command.userSec,
+            modsSkip: command.modsSkip
         });
     }
 
@@ -79,7 +81,7 @@
 
         for (i in commands) {
             json = JSON.parse($.inidb.get('cooldown', commands[i]));
-            cooldowns[commands[i]] = new Cooldown(json.command, json.globalSec, json.userSec);
+            cooldowns[commands[i]] = new Cooldown(json.command, json.globalSec, json.userSec, json.modsSkip);
         }
     }
 
@@ -141,6 +143,10 @@
 
         if (cooldown !== undefined) {
             var hasCooldown = false;
+
+            if (cooldown.modsSkip && isMod) {
+                return [maxCoolDown, isGlobal];
+            }
 
             if (cooldown.globalSec !== Operation.UnSet) {
                 hasCooldown = true;
@@ -206,7 +212,7 @@
         }
 
         if (!exists(command)) {
-            add(command, Operation.UnChanged, Operation.UnChanged);
+            add(command, Operation.UnChanged, Operation.UnChanged, null);
         }
 
         if (username === undefined) {
@@ -223,18 +229,23 @@
      * @param {String}  command
      * @param {Number}  globalSec
      * @param {Number}  userSec
+     * @param {Boolean}  modsSkip
      */
-    function add(command, globalSec, userSec) {
+    function add(command, globalSec, userSec, modsSkip) {
         if (cooldowns[command] === undefined) {
             cooldowns[command] = new Cooldown(command,
                                              (globalSec === Operation.UnChanged ? Operation.UnSet : globalSec),
-                                             (userSec === Operation.UnChanged ? Operation.UnSet : userSec));
+                                             (userSec === Operation.UnChanged ? Operation.UnSet : userSec),
+                                             modsSkip === undefined || modsSkip === null ? false : modsSkip);
         } else {
             if (globalSec !== Operation.UnChanged) {
                 cooldowns[command].globalSec = globalSec;
             }
             if (userSec !== Operation.UnChanged) {
                 cooldowns[command].userSec = userSec;
+            }
+            if (modsSkip !== undefined && modsSkip !== null) {
+                cooldowns[command].modsSkip = modsSkip;
             }
         }
 
@@ -275,49 +286,75 @@
      * @param {String}  first
      * @param {String}  second
      */
-    function handleCoolCom(sender, command, first, second) {
+    function handleCoolCom(sender, command, first, second, modsSkipIn) {
         var action1 = first.split("="),
             type1   = action1[0],
             secsG   = Operation.UnChanged,
             secsU   = Operation.UnChanged;
 
+        if (modsSkipIn === undefined) {
+            modsSkipIn = null;
+        }
+
+        if (type1.equalsIgnoreCase('remove')) {
+            remove(command);
+            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', command));
+            return;
+        }
+
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
             secsG = parseInt(type1);
             type1 = Type.Global;
-        } else if ((!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action1[1]))) {
+        } else if ((!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User) && !type1.equalsIgnoreCase('modsskip')) || isNaN(parseInt(action1[1]))) {
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
             return;
         } else {
             secsG = type1.equalsIgnoreCase(Type.Global) ? parseInt(action1[1]) : secsG;
             secsU = type1.equalsIgnoreCase(Type.User) ? parseInt(action1[1]) : secsU;
+            modsSkipIn = modsSkipIn === null && type1.equalsIgnoreCase('modsskip') ? action1[1] : modsSkipIn;
         }
-
 
         if (second !== undefined){
             var action2 = second.split("="),
                 type2   = action2[0];
 
-            if ((!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
+            if ((!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User) && !type2.equalsIgnoreCase('modsskip')) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }
 
             secsG = type2.equalsIgnoreCase(Type.Global) ? parseInt(action2[1]) : secsG;
             secsU = type2.equalsIgnoreCase(Type.User) ? parseInt(action2[1]) : secsU;
+            modsSkipIn = modsSkipIn === null && type2.equalsIgnoreCase('modsskip') ? action2[1] : modsSkipIn;
         }
 
-        if (secsG === Operation.UnSet && secsU === Operation.UnSet) {
+        var modsSkip = null;
+
+        if (modsSkipIn !== null) {
+            modsSkipIn = $.jsString(modsSkipIn).toLowerCase().trim();
+            modsSkip = modsSkipIn === 'true' || modsSkipIn === '1' || modsSkipIn === 'modsskip=true' || modsSkipIn === 'modsskip=1';
+        }
+
+        if (secsG === Operation.UnSet && secsU === Operation.UnSet && modsSkip !== true) {
             remove(command);
+            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', command));
+            return;
         } else {
-            add(command, secsG, secsU);
+            add(command, secsG, secsU, modsSkip);
             clear(command);
         }
 
-        if(action2 !== undefined) {
-            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo', command, secsG, secsU));
+        if (modsSkip) {
+            modsSkip = 'ModsSkip';
+        } else {
+            modsSkip = '';
+        }
+
+        if (action2 !== undefined) {
+            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + modsSkip, command, secsG, secsU));
         } else {
             var messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
-            $.say($.whisperPrefix(sender) + $.lang.get(messageType, command, (secsG === Operation.UnChanged ? secsU : secsG)));
+            $.say($.whisperPrefix(sender) + $.lang.get(messageType + modsSkip, command, (secsG === Operation.UnChanged ? secsU : secsG)));
         }
     }
 
@@ -333,14 +370,15 @@
             actionArgs = args[2];
 
         /*
-         * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
+         * @commandpath coolcom [command] [user=seconds] [global=seconds] [modsskip=true] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown. Specifying the 'modsskip' parameter with a value of 'true' enables moderators to ignore cooldowns for this command.
+         * @commandpath coolcom [command] remove - Removes any command-specific cooldown that was set on the specified command.
          */
         if (command.equalsIgnoreCase('coolcom')) {
-            if(action === undefined || isNaN(parseInt(subAction))) {
+            if(action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 return;
             }
-            handleCoolCom(sender, action, subAction, actionArgs);
+            handleCoolCom(sender, action, subAction, actionArgs, args[3]);
             return;
         }
 
@@ -399,7 +437,7 @@
     $.bind('webPanelSocketUpdate', function(event) {
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
             if (event.getArgs()[0].equalsIgnoreCase('add')) {
-                add(event.getArgs()[1], parseInt(event.getArgs()[2]), parseInt(event.getArgs()[3]));
+                add(event.getArgs()[1], parseInt(event.getArgs()[2]), parseInt(event.getArgs()[3]), $.jsString(event.getArgs()[4]) === '1');
             } else if (event.getArgs()[0].equalsIgnoreCase('update')) {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
