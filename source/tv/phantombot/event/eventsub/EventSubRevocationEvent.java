@@ -29,6 +29,7 @@ public class EventSubRevocationEvent extends EventSubEvent {
     private final EventSubSubscription subscription;
 
     public EventSubRevocationEvent(EventSubSubscription subscription) {
+        super();
         this.subscription = subscription;
     }
 

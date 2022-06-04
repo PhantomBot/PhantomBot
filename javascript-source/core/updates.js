@@ -403,6 +403,16 @@
                 }
             }
         }
+        
+        var commands = $.inidb.GetKeyList('cooldown', ''),
+            json,
+            i;
+
+        for (i in commands) {
+            json = JSON.parse($.inidb.get('cooldown', commands[i]));
+            json.modsSkip = false;
+            $.inidb.set('cooldown', commands[i], JSON.stringify(json));
+        }
 
         $.consoleLn('PhantomBot update 3.6.3 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);

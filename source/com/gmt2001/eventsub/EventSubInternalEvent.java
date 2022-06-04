@@ -36,6 +36,7 @@ public abstract class EventSubInternalEvent extends Event {
     private final EventSubSubscription subscription;
 
     EventSubInternalEvent(FullHttpRequest req) {
+        super();
         JSONObject data = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
         this.challenge = data.optString("challenge");
         this.event = data.optJSONObject("event");

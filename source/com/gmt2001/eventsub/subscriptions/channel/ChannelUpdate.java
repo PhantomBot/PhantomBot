@@ -46,6 +46,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      * Only used by EventBus for handler registration
      */
     public ChannelUpdate() {
+        super();
     }
 
     /**
@@ -71,6 +72,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      * @param broadcaster_user_id The user id of the broadcaster
      */
     public ChannelUpdate(String broadcaster_user_id) {
+        super();
         this.broadcaster_user_id = broadcaster_user_id;
     }
 

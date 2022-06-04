@@ -30,9 +30,6 @@ import tv.phantombot.event.eventsub.EventSubRevocationEvent;
  */
 public final class Revocation extends EventSubSubscriptionType {
 
-    public Revocation() {
-    }
-
     @Override
     public EventSubSubscription proposeSubscription() {
         throw new UnsupportedOperationException("Not a valid subscription type.");

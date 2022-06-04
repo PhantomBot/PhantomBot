@@ -30,9 +30,6 @@ import tv.phantombot.event.eventsub.EventSubWebhookValidatedEvent;
  */
 public final class WebhookValidated extends EventSubSubscriptionType {
 
-    public WebhookValidated() {
-    }
-
     @Override
     public EventSubSubscription proposeSubscription() {
         throw new UnsupportedOperationException("Not a valid subscription type.");

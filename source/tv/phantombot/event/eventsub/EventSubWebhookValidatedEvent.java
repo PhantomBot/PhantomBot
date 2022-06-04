@@ -28,6 +28,7 @@ public class EventSubWebhookValidatedEvent extends EventSubEvent {
     private final EventSubSubscription subscription;
 
     public EventSubWebhookValidatedEvent(EventSubSubscription subscription) {
+        super();
         this.subscription = subscription;
     }
 
