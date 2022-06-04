@@ -29,6 +29,7 @@ public class EventSubChannelUpdateEvent extends EventSubChannelEvent {
     private final ChannelUpdate event;
 
     public EventSubChannelUpdateEvent(ChannelUpdate event) {
+        super();
         this.event = event;
     }
 
