@@ -253,18 +253,6 @@
         return isModNoTags(username);
     }
 
-    /**
-     * @function isMod
-     * @deprecated
-     *
-     * @export $
-     * @param {string} username
-     * @param {Object} tags
-     * @returns {boolean}
-     */
-    function isModv3(username, tags) {
-        return isMod(username, tags);
-    }
 
     /**
      * @function isSubNoTags
@@ -290,19 +278,6 @@
 
         $.consoleDebug('Used isSub without tags::' + tags);
         return isSubNoTags(username);
-    }
-
-    /**
-     * @function isSubv3
-     * @deprecated
-     *
-     * @export $
-     * @param {string} username
-     * @param {Object} tags
-     * @returns {boolean}
-     */
-    function isSubv3(username, tags) {
-        return isSub(username, tags);
     }
 
     /**
@@ -358,6 +333,18 @@
      */
     function isRegular(username) {
         return queryDBPermission(username.toLowerCase()) === PERMISSION.Regular;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @function isReg
+     * @export $
+     * @param {string} username
+     * @returns {boolean}
+     */
+    function isReg(username) {
+        return getUserGroupId(username.toLowerCase()) <= PERMISSION.Regular || isOwner(username);
     }
 
     /**
@@ -1425,7 +1412,8 @@
     $.isSwappedSubscriberVIP = isSwappedSubscriberVIP;
     $.getSubscriberGroupID = getSubscriberGroupID;
     $.getVIPGroupID = getVIPGroupID;
-    $.isSubv3 = isSubv3;
-    $.isModv3 = isModv3;
+    $.isSubv3 = isSub;
+    $.isModv3 = isMod;
+    $.isReg = isReg;
 
 })();
