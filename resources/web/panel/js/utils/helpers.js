@@ -978,7 +978,8 @@ $(function () {
                 permGroupNames[i] =  i.toString() + ' (' + permGroups[i].value + ')';
             }
         });
-    }
+    };
+
     let permGroups = [];
     let permGroupNames = [];
 
@@ -997,7 +998,7 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupNameById = function (id) {
-        return permGroupNames[parseInt(id)] //The database always holds the names in the correct order
+        return permGroupNames[parseInt(id)]; //The database always holds the names in the correct order
     };
 
     helpers.getPermGroupNames = function () {
