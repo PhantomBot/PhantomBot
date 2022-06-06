@@ -190,7 +190,7 @@
      * @returns {boolean}
      */
     function isBot(username) {
-        return username.equalsIgnoreCase($.botName);
+        return $.equalsIgnoreCase(username, $.botName);
     }
 
     /**
@@ -200,7 +200,7 @@
      * @returns {boolean}
      */
     function isOwner(username) {
-        return username.equalsIgnoreCase($.ownerName) || isBot(username);
+        return $.equalsIgnoreCase(username, $.ownerName) || isBot(username);
     }
 
     /**
@@ -234,7 +234,7 @@
     }
 
     function checkTags(tags) {
-        return tags !== null && tags != '{}' && tags != '-1' && tags !== undefined;
+        return tags !== null && !$.equalsIgnoreCase(tags, '{}') && !$.equalsIgnoreCase(tags, '-1') && tags !== undefined;
     }
 
     /**
@@ -503,7 +503,7 @@
 
         for (var i = 0; i < userGroups.length; i++) {
             userGroupName = $.javaString(userGroups[i]);
-            if (userGroupName.equalsIgnoreCase(groupName.toLowerCase()) || userGroupName.substring(0, userGroupName.length() - 1).equalsIgnoreCase(groupName.toLowerCase())) {
+            if ($.equalsIgnoreCase(userGroupName, groupName.toLowerCase()) || $.equalsIgnoreCase(userGroupName.substring(0, userGroupName.length() - 1), groupName.toLowerCase())) {
                 return i;
             }
         }
