@@ -1553,11 +1553,11 @@
             if (args.match(/^(?:=|\s)(.*)$/) !== null) {
                 match = args.match(/(@?\w+)/g);
                 for (var x in match) {
-                    if (match[x].match(/^@moderators$/) != null) {
+                    if (match[x].match(/^@moderators$/) !== null) {
                         if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
                             return {result: ''};
                         }
-                    } else if (match[x].match(/^@admins$/) != null) {
+                    } else if (match[x].match(/^@admins$/) !== null) {
                         if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Admin)) {
                             return {result: ''};
                         }

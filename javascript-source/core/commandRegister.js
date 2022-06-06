@@ -43,7 +43,7 @@
         }
 
         // This is for the panel commands.
-        if (groupId == $.PERMISSION.Panel) {
+        if (groupId === $.PERMISSION.Panel) {
             if ($.inidb.exists('permcom', command)) {
                 $.inidb.del('permcom', command);
             }
@@ -227,21 +227,21 @@
         var group = '';
 
         if (commandExists(command)) {
-            if (commands[command].groupId == $.PERMISSION.Caster) {
+            if (commands[command].groupId === $.PERMISSION.Caster) {
                 group = 'Caster';
-            } else if (commands[command].groupId == $.PERMISSION.Admin) {
+            } else if (commands[command].groupId === $.PERMISSION.Admin) {
                 group = 'Administrator';
-            } else if (commands[command].groupId == $.PERMISSION.Mod) {
+            } else if (commands[command].groupId === $.PERMISSION.Mod) {
                 group = 'Moderator';
-            } else if (commands[command].groupId == $.PERMISSION.Sub) {
+            } else if (commands[command].groupId === $.PERMISSION.Sub) {
                 group = 'Subscriber';
-            } else if (commands[command].groupId == $.PERMISSION.Donator) {
+            } else if (commands[command].groupId === $.PERMISSION.Donator) {
                 group = 'Donator';
-            } else if (commands[command].groupId == $.PERMISSION.VIP) {
+            } else if (commands[command].groupId === $.PERMISSION.VIP) {
                 group = 'VIP';
-            } else if (commands[command].groupId == $.PERMISSION.Regular) {
+            } else if (commands[command].groupId === $.PERMISSION.Regular) {
                 group = 'Regular';
-            } else if (commands[command].groupId == $.PERMISSION.Viewer) {
+            } else if (commands[command].groupId === $.PERMISSION.Viewer) {
                 group = 'Viewer';
             }
             return group;
@@ -277,21 +277,21 @@
         var group = '';
 
         if (subCommandExists(command, subcommand)) {
-            if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Caster) {
+            if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Caster) {
                 group = 'Caster';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Admin) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Admin) {
                 group = 'Administrator';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Mod) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Mod) {
                 group = 'Moderator';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Sub) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Sub) {
                 group = 'Subscriber';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Donator) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Donator) {
                 group = 'Donator';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.VIP) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.VIP) {
                 group = 'VIP';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Regular) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Regular) {
                 group = 'Regular';
-            } else if (commands[command].subcommands[subcommand].groupId == $.PERMISSION.Viewer) {
+            } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Viewer) {
                 group = 'Viewer';
             }
             return group;
