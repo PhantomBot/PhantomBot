@@ -230,7 +230,7 @@ $(run = function() {
                             .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                                 'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                             // Append input box for mods skip cooldown.
-                            .append(helpers.getCheckbox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
+                            .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
                                 'If checked, moderators are exempt from cooldowns on this command.'))
                     })), function() {
                         let commandPermission = $('#command-permission'),
@@ -414,7 +414,7 @@ $(function() {
                     .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', undefined,
                         'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                     // Append input box for mods skip cooldown.
-                    .append(helpers.getCheckbox('command-cooldown-modsskip', false, 'Mods Skip Cooldown',
+                    .append(helpers.getCheckBox('command-cooldown-modsskip', false, 'Mods Skip Cooldown',
                         'If checked, moderators are exempt from cooldowns on this command.'))
             })), function() {
                 let commandName = $('#command-name'),
