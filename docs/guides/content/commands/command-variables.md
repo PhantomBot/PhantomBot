@@ -1213,6 +1213,30 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### token
+
+Defined in script: _./javascript-source/core/commandTags.js_
+
+**Formulas:**
+
+- `(token)` - replaced with the secret token that was set by !tokencom or the panel
+
+
+**Example:**
+```text
+Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=(token)&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
+Caster: !tokencom !weather mySecretApiKey
+User: !weather 80314
+// customapijson generates the below response using the url: http://api.apixu.com/v1/current.json?key=mySecretApiKey&q=80314
+Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### touser
 
 Defined in script: _./javascript-source/core/commandTags.js_

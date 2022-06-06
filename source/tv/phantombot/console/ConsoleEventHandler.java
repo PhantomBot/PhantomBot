@@ -20,8 +20,6 @@ import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.TwitchAPIv5;
-import com.scaniatv.BotImporter;
-import com.scaniatv.GenerateLogs;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -232,34 +230,6 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("botinfo")) {
             com.gmt2001.Console.out.println(PhantomBot.instance().getBotInformation());
-            return;
-        }
-
-        /**
-         * @consolecommand revloconvert [CSV file] - Command that imports points from RevloBot.
-         */
-        if (message.equalsIgnoreCase("revloconvert")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing revloconvert");
-            if (argument == null) {
-                com.gmt2001.Console.out.println("You must specify the file name you want to convert.");
-                return;
-            }
-
-            BotImporter.ImportRevlo(arguments);
-            return;
-        }
-
-        /**
-         * @consolecommand ankhconvert [CSV file] - Command that imports points from AnkhBot.
-         */
-        if (message.equalsIgnoreCase("ankhconvert")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing ankhconvert");
-            if (argument == null) {
-                com.gmt2001.Console.out.println("You must specify the file name you want to convert.");
-                return;
-            }
-
-            BotImporter.ImportAnkh(arguments);
             return;
         }
 
@@ -618,26 +588,6 @@ public final class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing debugoff: Disable Debug Mode");
 
             PhantomBot.setDebuggingLogOnly(false);
-            return;
-        }
-
-        /**
-         * @consolecommand dumplogs - Writes the latest logs to a file.
-         */
-        if (message.equalsIgnoreCase("dumplogs")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing dumplogs");
-
-            GenerateLogs.writeLogs();
-            return;
-        }
-
-        /**
-         * @consolecommand printlogs - Prints the latest logs to the console.
-         */
-        if (message.equalsIgnoreCase("printlogs")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing printlogs");
-
-            GenerateLogs.printLogs();
             return;
         }
 

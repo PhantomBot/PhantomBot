@@ -36,30 +36,56 @@ public abstract class EventSubInternalEvent extends Event {
     private final EventSubSubscription subscription;
 
     EventSubInternalEvent(FullHttpRequest req) {
+        super();
         JSONObject data = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
         this.challenge = data.optString("challenge");
         this.event = data.optJSONObject("event");
         this.messageId = req.headers().get("Twitch-Eventsub-Message-Id");
         this.messageTimestamp = EventSub.parseDate(req.headers().get("Twitch-Eventsub-Message-Timestamp"));
-        this.subscription = EventSub.JSONToEventSubSubscription(data.getJSONObject("subscription"));
+        this.subscription = EventSubSubscription.fromJSON(data.getJSONObject("subscription"));
     }
 
+    /**
+     * Gets the authentication challenge
+     *
+     * @return
+     */
     String getChallenge() {
         return this.challenge;
     }
 
+    /**
+     * Gets the event data object, describing the data for the notification
+     *
+     * @return
+     */
     public JSONObject getEvent() {
         return this.event;
     }
 
+    /**
+     * Gets the message id for this event
+     *
+     * @return
+     */
     public String getMessageId() {
         return this.messageId;
     }
 
+    /**
+     * Gets the timestamp of the message
+     *
+     * @return
+     */
     public ZonedDateTime getMessageTimestamp() {
         return this.messageTimestamp;
     }
 
+    /**
+     * Gets the subscription data defining the subscription that triggered the event
+     *
+     * @return
+     */
     public EventSubSubscription getSubscription() {
         return this.subscription;
     }

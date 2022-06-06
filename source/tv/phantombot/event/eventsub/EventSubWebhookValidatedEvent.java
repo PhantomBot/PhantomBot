@@ -19,7 +19,8 @@ package tv.phantombot.event.eventsub;
 import com.gmt2001.eventsub.EventSubSubscription;
 
 /**
- * The Webhook Validated event signals that a subscription has been tested by Twitch and successfully activated.
+ * The Webhook Validated event signals that a subscription has been tested by Twitch and successfully activated
+ *
  * @author gmt2001
  */
 public class EventSubWebhookValidatedEvent extends EventSubEvent {
@@ -27,9 +28,15 @@ public class EventSubWebhookValidatedEvent extends EventSubEvent {
     private final EventSubSubscription subscription;
 
     public EventSubWebhookValidatedEvent(EventSubSubscription subscription) {
+        super();
         this.subscription = subscription;
     }
 
+    /**
+     * Returns an {@link EventSubSubscription} object that indicates the subscription that was validated
+     *
+     * @return
+     */
     public EventSubSubscription getSubscription() {
         return this.subscription;
     }

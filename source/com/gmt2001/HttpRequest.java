@@ -22,7 +22,7 @@ import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ import org.json.JSONObject;
 public final class HttpRequest {
 
     @Deprecated
-    public static enum RequestType {
+    public enum RequestType {
 
         GET, POST, PATCH, PUT, DELETE
     }
@@ -44,12 +44,12 @@ public final class HttpRequest {
     }
 
     @Deprecated
-    public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers) {
+    public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers) {
         return getData(type, url, post, headers, false);
     }
 
     @Deprecated
-    public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers, boolean isJson) {
+    public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers, boolean isJson) {
         try {
             return getData(type, HttpUrl.fromUri(url), post, headers, isJson);
         } catch (URISyntaxException ex) {
@@ -68,13 +68,13 @@ public final class HttpRequest {
     }
 
     @Deprecated
-    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, HashMap<String, String> headers) {
+    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, Map<String, String> headers) {
         return getData(type, uri, post, headers, false);
     }
 
     @Deprecated
     @SuppressWarnings("UseSpecificCatch")
-    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, HashMap<String, String> headers, boolean isJson) {
+    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, Map<String, String> headers, boolean isJson) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();

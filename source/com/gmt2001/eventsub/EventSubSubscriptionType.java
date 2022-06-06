@@ -53,7 +53,7 @@ public abstract class EventSubSubscriptionType implements Listener {
     }
 
     /**
-     * Deletes the EventSub subscription matching the parameters this object, if it can be found in the subscription list
+     * Deletes the EventSub subscription matching the parameters in this object, if it can be found in the subscription list
      *
      * @return
      */
@@ -62,16 +62,38 @@ public abstract class EventSubSubscriptionType implements Listener {
         return EventSub.instance().deleteSubscription(this.findMatchingSubscriptionId());
     }
 
+    /**
+     * Compiles the parameters of this object into an {@link EventSubSubscription} that can be created
+     *
+     * @return
+     */
     protected abstract EventSubSubscription proposeSubscription();
 
+    /**
+     * Actually creates the proposed {@link EventSubSubscription}
+     *
+     * @param type The subscription type to create
+     * @param condition The conditions which will trigger notifications for this subscription
+     * @return
+     */
     protected EventSubSubscription proposeSubscriptionInternal(String type, Map<String, String> condition) {
-        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, ZonedDateTime.now(), proposeTransport());
+        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, ZonedDateTime.now(), this.proposeTransport());
     }
 
+    /**
+     * Creates a transport for a proposed subscription
+     *
+     * @return
+     */
     protected EventSubTransport proposeTransport() {
         return new EventSubTransport("webhook", CaselessProperties.instance().getProperty("eventsubcallbackurl"), EventSub.getSecret());
     }
 
+    /**
+     * Validates that the provided parameters are acceptable for use in {@link proposeSubscription}
+     *
+     * @throws IllegalArgumentException One of the parameters is not acceptable
+     */
     protected abstract void validateParameters() throws IllegalArgumentException;
 
     /**
@@ -79,7 +101,13 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public abstract boolean isAlreadySubscribed();
+    public boolean isAlreadySubscribed() {
+        return EventSub.instance().getSubscriptions().values().stream().anyMatch(possibleSubscription -> {
+            return this.isMatch(possibleSubscription)
+                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        });
+    }
 
     /**
      * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states, otherwise
@@ -87,7 +115,21 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public abstract String findMatchingSubscriptionId();
+    public String findMatchingSubscriptionId() {
+        return EventSub.instance().getSubscriptions().values().stream().filter(possibleSubscription -> {
+            return this.isMatch(possibleSubscription)
+                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        }).findFirst().map(EventSubSubscription::getId).orElse(null);
+    }
+
+    /**
+     * Returns true if the provided subscription is an instance of the current subscription type and matches the current subscription conditions
+     *
+     * @param subscription
+     * @return
+     */
+    protected abstract boolean isMatch(EventSubSubscription subscription);
 
     /**
      * Gets the subscription information, if the object was created as part of a notification

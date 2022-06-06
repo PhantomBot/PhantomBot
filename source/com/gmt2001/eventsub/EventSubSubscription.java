@@ -19,6 +19,7 @@ package com.gmt2001.eventsub;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  * EventSub Subscription Data
@@ -127,6 +128,64 @@ public final class EventSubSubscription {
         this.condition = new HashMap<>(condition);
         this.created_at = ZonedDateTime.now();
         this.transport = transport;
+    }
+
+    /**
+     * Creates a new subscription from a JSONObject
+     *
+     * @param subscriptionJson The JSON object to process
+     * @return
+     */
+    static EventSubSubscription fromJSON(JSONObject subscriptionJson) {
+        Map<String, String> condition = new HashMap<>();
+
+        subscriptionJson.getJSONObject("condition").keySet().forEach(key -> condition.put(key, subscriptionJson.getJSONObject("condition").getString(key)));
+
+        return new EventSubSubscription(
+                subscriptionJson.getString("id"), subscriptionJson.getString("status"), subscriptionJson.getString("type"),
+                subscriptionJson.getString("version"), subscriptionJson.getInt("cost"), condition, subscriptionJson.getString("created_at"),
+                EventSubTransport.fromJSON(subscriptionJson.getJSONObject("transport"))
+        );
+    }
+
+    /**
+     * Clones the subscription with a new status
+     *
+     * @param newStatus The new status to apply to the clone
+     * @return
+     */
+    EventSubSubscription clone(SubscriptionStatus newStatus) {
+        return new EventSubSubscription(this.getId(), newStatus, this.getType(), this.getVersion(), this.getCost(), this.getCondition(),
+                this.getCreatedAt(), this.getTransport());
+    }
+
+    /**
+     * Indicates if the subscription is enabled and valid.
+     *
+     * @return
+     */
+    public boolean isEnabled() {
+        return this.status == SubscriptionStatus.ENABLED;
+    }
+
+    /**
+     * Indicates if the subscription has been revoked for any reason.
+     *
+     * @return
+     */
+    public boolean isRevoked() {
+        return this.status == SubscriptionStatus.API_REMOVED || this.status == SubscriptionStatus.AUTHORIZATION_REVOKED
+                || this.status == SubscriptionStatus.NOTIFICATION_FAILURES_EXCEEDED || this.status == SubscriptionStatus.USER_REMOVED
+                || this.status == SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_FAILED;
+    }
+
+    /**
+     * Indicates if the subscription is pending.
+     *
+     * @return
+     */
+    public boolean isPending() {
+        return this.status == SubscriptionStatus.NOT_CREATED_YET || this.status == SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING;
     }
 
     /**

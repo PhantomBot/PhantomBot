@@ -16,6 +16,8 @@
  */
 package com.gmt2001.eventsub;
 
+import org.json.JSONObject;
+
 /**
  * EventSub Transport Data
  *
@@ -40,6 +42,17 @@ public final class EventSubTransport {
     }
 
     /**
+     * Creates a new transport from a JSONObject
+     *
+     * @param transportJson The JSOn object to process
+     * @return
+     */
+    static EventSubTransport fromJSON(JSONObject transportJson) {
+        return new EventSubTransport(transportJson.getString("method"),
+                transportJson.getString("callback"));
+    }
+
+    /**
      * The transport method. Supported values: webhook.
      *
      * @return
@@ -57,6 +70,11 @@ public final class EventSubTransport {
         return this.callback;
     }
 
+    /**
+     * Returns the secret used in this transport
+     *
+     * @return
+     */
     String getSecret() {
         return this.secret;
     }

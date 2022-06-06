@@ -308,6 +308,9 @@ $.lang.register('cooldown.coolcom.err', 'The minimum cooldown that can be set is
 $.lang.register('cooldown.coolcom.setGlobal', 'Cooldown for command !$1 has globally been set to $2 seconds.');
 $.lang.register('cooldown.coolcom.setUser', 'Cooldown for command !$1 has been set to $2 seconds individually for each user.');
 $.lang.register('cooldown.coolcom.setCombo', 'Cooldown for command !$1 has globally been set to $2 seconds and to $3 seconds individually for each user.');
+$.lang.register('cooldown.coolcom.setGlobalModsSkip', 'Cooldown for command !$1 has globally been set to $2 seconds. Moderators will skip the cooldown for this command.');
+$.lang.register('cooldown.coolcom.setUserModsSkip', 'Cooldown for command !$1 has been set to $2 seconds individually for each user. Moderators will skip the cooldown for this command.');
+$.lang.register('cooldown.coolcom.setComboModsSkip', 'Cooldown for command !$1 has globally been set to $2 seconds and to $3 seconds individually for each user. Moderators will skip the cooldown for this command.');
 $.lang.register('cooldown.coolcom.remove', 'Cooldown for command !$1 has been removed.');
 $.lang.register('cooldown.cooldown.usage', 'Usage: !cooldown [togglemoderators / setdefault]');
 $.lang.register('cooldown.default.set', 'The default cooldown for commands without one has been set to $1 seconds.');
