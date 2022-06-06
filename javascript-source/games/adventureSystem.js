@@ -528,7 +528,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./games/adventureSystem.js', 'adventure', $.PERMISSION.Viewer);
         $.registerChatSubcommand('adventure', 'set', $.PERMISSION.Admin);
-        $.registerChatSubcommand('adventure', 'top5', $.getHighestIDSubVIP);
+        $.registerChatSubcommand('adventure', 'top5', $.getHighestIDSubVIP());
 
         loadStories();
     });
