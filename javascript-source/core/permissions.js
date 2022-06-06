@@ -739,35 +739,35 @@
      * @function generateDefaultGroups
      */
     function generateDefaultGroups() {
-        if (!userGroups[PERMISSION.Caster] || !userGroups[PERMISSION.Caster].equalsIgnoreCase('Caster')) {
+        if (!userGroups[PERMISSION.Caster] || !$.equalsIgnoreCase(userGroups[PERMISSION.Caster], 'Caster')) {
             userGroups[PERMISSION.Caster] = 'Caster';
             $.setIniDbString('groups', PERMISSION.Caster.toString(), 'Caster');
         }
-        if (!userGroups[PERMISSION.Admin] || !userGroups[PERMISSION.Admin].equalsIgnoreCase('Administrator')) {
+        if (!userGroups[PERMISSION.Admin] || !$.equalsIgnoreCase(userGroups[PERMISSION.Admin], 'Administrator')) {
             userGroups[PERMISSION.Admin] = 'Administrator';
             $.setIniDbString('groups', PERMISSION.Admin.toString(), 'Administrator');
         }
-        if (!userGroups[PERMISSION.Mod] || !userGroups[PERMISSION.Mod].equalsIgnoreCase('Moderator')) {
+        if (!userGroups[PERMISSION.Mod] || !$.equalsIgnoreCase(userGroups[PERMISSION.Mod], 'Moderator')) {
             userGroups[PERMISSION.Mod] = 'Moderator';
             $.setIniDbString('groups', PERMISSION.Mod.toString(), 'Moderator');
         }
-        if (!userGroups[PERMISSION.Sub] || !userGroups[PERMISSION.Sub].equalsIgnoreCase('Subscriber')) {
+        if (!userGroups[PERMISSION.Sub] || !$.equalsIgnoreCase(userGroups[PERMISSION.Sub], 'Subscriber')) {
             userGroups[PERMISSION.Sub] = 'Subscriber';
             $.setIniDbString('groups', PERMISSION.Sub.toString(), 'Subscriber');
         }
-        if (!userGroups[PERMISSION.Donator] || !userGroups[PERMISSION.Donator].equalsIgnoreCase('Donator')) {
+        if (!userGroups[PERMISSION.Donator] || !$.equalsIgnoreCase(userGroups[PERMISSION.Donator], 'Donator')) {
             userGroups[PERMISSION.Donator] = 'Donator';
             $.setIniDbString('groups', PERMISSION.Donator.toString(), 'Donator');
         }
-        if (!userGroups[PERMISSION.VIP] || !userGroups[PERMISSION.VIP].equalsIgnoreCase('VIP')) {
+        if (!userGroups[PERMISSION.VIP] || !$.equalsIgnoreCase(userGroups[PERMISSION.VIP], 'VIP')) {
             userGroups[PERMISSION.VIP] = 'VIP';
             $.setIniDbString('groups', PERMISSION.VIP.toString(), 'VIP');
         }
-        if (!userGroups[PERMISSION.Regular] || !userGroups[PERMISSION.Regular].equalsIgnoreCase('Regular')) {
+        if (!userGroups[PERMISSION.Regular] || !$.equalsIgnoreCase(userGroups[PERMISSION.Regular], 'Regular')) {
             userGroups[PERMISSION.Regular] = 'Regular';
             $.setIniDbString('groups', PERMISSION.Regular.toString(), 'Regular');
         }
-        if (!userGroups[PERMISSION.Viewer] || !userGroups[PERMISSION.Viewer].equalsIgnoreCase('Viewer')) {
+        if (!userGroups[PERMISSION.Viewer] || !$.equalsIgnoreCase(userGroups[PERMISSION.Viewer], 'Viewer')) {
             userGroups[PERMISSION.Viewer] = 'Viewer';
             $.setIniDbString('groups', PERMISSION.Viewer.toString(), 'Viewer');
         }
