@@ -234,7 +234,7 @@
     }
 
     function checkTags(tags) {
-        return tags !== null && !$.equalsIgnoreCase(tags, '{}') && !$.equalsIgnoreCase(tags, '-1') && tags !== undefined;
+        return !(tags === null || tags != '{}' || tags != '-1' || tags === undefined);
     }
 
     /**
@@ -245,10 +245,8 @@
      * @returns {boolean}
      */
     function isMod(username, tags) {
-        if (checkTags(tags)) {
-            if (tags.get('user-type').length() > 0) { // Broadcaster should be included here.
-                return true;
-            }
+        if (checkTags(tags) && tags.get('user-type').length() > 0) { // Broadcaster should be included here.
+            return true;
         }
 
         $.consoleDebug('Used isMod without tags::' + tags);
@@ -274,10 +272,8 @@
      * @returns {boolean}
      */
     function isSub(username, tags) {
-        if (checkTags(tags)) {
-            if (tags.containsKey('subscriber')) {
-                return tags.get('subscriber').equals('1');
-            }
+        if (checkTags(tags) && tags.containsKey('subscriber')) {
+            return tags.get('subscriber').equals('1');
         }
 
         $.consoleDebug('Used isSub without tags::' + tags);
@@ -291,7 +287,7 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
-        if (checkTags(tags)) {
+        if (checkTags(tags) && tags.containsKey('turbo')) {
             return tags.get('turbo').equals('1');
         }
 
@@ -315,10 +311,8 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        if (checkTags(tags)) {
-            if (tags.containsKey('vip')) {
-                return tags.get('vip').equals('1');
-            }
+        if (checkTags(tags) && tags.containsKey('vip')) {
+            return tags.get('vip').equals('1');
         }
 
         $.consoleDebug('Used isVIP without tags::' + tags);
