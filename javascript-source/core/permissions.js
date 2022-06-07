@@ -234,7 +234,7 @@
     }
 
     function checkTags(tags) {
-        return !(tags === null || tags != '{}' || tags != '-1' || tags === undefined);
+        return !(tags === null || tags !== '{}' || tags !== '-1' || tags === undefined);
     }
 
     /**
