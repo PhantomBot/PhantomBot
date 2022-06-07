@@ -234,6 +234,7 @@
     }
 
     function checkTags(tags) {
+        $.consoleDebug('Tags: ' + tags + ', isNull: ' + (tags === null) + ', isUndefined: ' + (tags === undefined) + ', strict -1: ' + (tags !== '-1') + ', strict {}: ' + (tags !== '{}'));
         return !(tags === null || tags !== '{}' || tags !== '-1' || tags === undefined);
     }
 
@@ -451,8 +452,8 @@
 
         $.consoleDebug('Checking permissions for command: ' + command + 'and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
         $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username) + '(' + getUserGroupName(username) + ')');
-        $.consoleDebug('Current VIP id: ' + PERMISSION.VIP + ' Current Sub id: ' + PERMISSION.Sub + ' is VIPSubGroupID swapped: ' + _isSwappedSubscriberVIP);
-        $.consoleDebug('isSub?: ' + isSub(username, tags) + ' isVIP?: ' + isVIP(username, tags) + ' isMod?: ' + isMod(username, tags) + ' isAdmin?: ' + isAdmin(username) + ' isDonator?: ' + isDonator(username) + ' isRegular?: ' + isRegular(username) + ' isCaster?: ' + isCaster(username));
+        $.consoleDebug('Current VIP id: ' + PERMISSION.VIP + ', Current Sub id: ' + PERMISSION.Sub + ', is VIPSubGroupID swapped: ' + _isSwappedSubscriberVIP);
+        $.consoleDebug('isSub?: ' + isSub(username, tags) + ', isVIP?: ' + isVIP(username, tags) + ', isMod?: ' + isMod(username, tags) + ', isAdmin?: ' + isAdmin(username) + ', isDonator?: ' + isDonator(username) + ', isRegular?: ' + isRegular(username) + ' isCaster?: ' + isCaster(username));
 
 
         allowed = checkUserPermission(username, tags, parseInt(commandGroup));
