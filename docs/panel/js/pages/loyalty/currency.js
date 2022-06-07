@@ -259,7 +259,7 @@ $(function() {
                     });
             }
         } else {
-            let groups = ['caster', 'administrator', 'moderator', 'subscriber', 'donator', 'regular', 'viewer'],
+            let groups = ['caster', 'administrator', 'moderator', 'subscriber', 'donator', 'regular', 'viewer'], //Hardcoded in order to keep the logic and still have consistent ordering
                 temp = [];
 
             // Make sure that all groups have a value.

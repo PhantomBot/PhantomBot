@@ -15,15 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
+// Function that queries all of the data we need.
 $(run = function() {
+    socket.getDBTableValues('permissions_get_groups', 'groups', function(results){
+        for (let i = 0; i < results.length; i++) {
+            //Future proof by allowing different ids for viewers to the point where these users aren't called Viewer anymore :/
+            if (results[i].value.localeCompare('Viewer') === 0) {
+                helpers.temp.viewerID = results[i].key;
+            }
+        }
+    });
     // Query permissions.
     socket.getDBTableValues('permissions_get_group', 'group', function(results) {
         let tableData = [];
 
         for (let i = 0; i < results.length; i++) {
             // Ignore viewers.
-            if (results[i].value === '7') {
+            if (results[i].value === helpers.temp.viewerID) {
                 continue;
             }
 
@@ -88,15 +96,15 @@ $(run = function() {
             helpers.getConfirmDeleteModal('user_permission_modal_remove', 'Are you sure you want to reset ' + username + '\'s permissions to Viewer?', false,
                 username + '\'s permissions have been reset to Viewer!', function() {
                 // Delete all information about the alias.
-                socket.removeDBValue('permission_remove', 'group', username, function() {
-                    socket.sendCommand('permission_remove_cmd', 'permissionsetuser ' + username + ' 7', function() {
-                        // Hide tooltip.
-                        t.tooltip('hide');
-                        // Remove the table row.
-                        table.row(row).remove().draw(false);
+                    socket.removeDBValue('permission_remove', 'group', username, function() {
+                        socket.sendCommand('permission_remove_cmd', 'permissionsetuser ' + username + ' ' + helpers.temp.viewerID, function() {
+                            // Hide tooltip.
+                            t.tooltip('hide');
+                            // Remove the table row.
+                            table.row(row).remove().draw(false);
+                        });
                     });
                 });
-            });
         });
 
         // On edit button.
@@ -112,7 +120,7 @@ $(run = function() {
                 .append(helpers.getInputGroup('user-name', 'text', 'Username', '', username, 'Name of the user. This cannot be edited.', true))
                 // Append the group.
                 .append(helpers.getDropdownGroup('user-permission', 'Permission', helpers.getGroupNameById(e.group),
-                    ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars'])),
+                    helpers.getPermGroupNames())),
                 // callback once the user hits save.
                 function() {
                     let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text());
@@ -143,7 +151,7 @@ $(function() {
         // Append user name.
         .append(helpers.getInputGroup('user-name', 'text', 'Username', 'PhantomBot', '', 'Name of the user to set the permissions on.'))
         // Append the group.
-        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', ['Caster', 'Administrators', 'Moderators', 'Subscribers', 'Donators', 'VIPs', 'Regulars'])),
+        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', helpers.getPermGroupNames())),
         // callback once the user hits save.
         function() {
             let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text()),
