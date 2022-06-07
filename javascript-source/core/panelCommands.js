@@ -92,13 +92,10 @@
 
                 if (!$.commandExists(action)) {
                     return;
-                } else if (isNaN(parseInt(group))) {
+                }
+
+                if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
-                    if ($.isSwappedSubscriberVIP() && group === 3) {
-                        group = 5;
-                    } else if ($.isSwappedSubscriberVIP() && group === 5) {
-                        group = 3;
-                    }
                 }
 
                 $.logCustomCommand({
@@ -125,13 +122,10 @@
 
                 if (!$.subCommandExists(action, subAction)) {
                     return;
-                } else if (isNaN(parseInt(group))) {
+                }
+
+                if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
-                    if ($.isSwappedSubscriberVIP() && group === 3) {
-                        group = 5;
-                    } else if ($.isSwappedSubscriberVIP() && group === 5) {
-                        group = 3;
-                    }
                 }
 
                 $.logCustomCommand({
@@ -522,46 +516,46 @@
     $.bind('initReady', function () {
         /* 10 second delay here because I don't want these commands to be registered first. */
         setTimeout(function () {
-            $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'registerpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'unregisterpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadmod', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'clearhighlightspanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'highlightpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'settitlesilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'setgamesilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadadventure', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadgamble', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'loadprizesroll', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadroulette', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'loadprizes', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadbits', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadhost', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadpoints', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointsallpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointsbonuspanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'pointstakeallpanel', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadraffle', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'rankreloadtable', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadtraffle', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadbet', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadclip', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadkill', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadraid', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', 30);
-            $.registerChatCommand('./core/panelCommands.js', 'welcomepanelupdate', 30);
+            $.registerChatCommand('./core/panelCommands.js', 'permissionsetuser', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadcommand', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'permcomsilent', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'registerpanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'unregisterpanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadmod', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'clearhighlightspanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'highlightpanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'settitlesilent', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'setgamesilent', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadadventure', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadgamble', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'loadprizesroll', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadroulette', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'loadprizes', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadbits', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdate', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadhost', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadpoints', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'pointsallpanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'pointsbonuspanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'pointstakeallpanel', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadraffle', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'rankreloadtable', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadtraffle', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'updatetimesettings', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadlogs', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadbet', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadclip', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadkill', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadraid', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadmisc', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'welcomepanelupdate', $.PERMISSION.Panel);
         }, 10000);
     });
 })();

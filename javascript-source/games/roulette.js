@@ -85,7 +85,7 @@
                     random = $.randRange(1, responseCounts.lost);
                 } while (random == lastRandom);
                 $.say($.lang.get('roulette.lost.' + random, $.resolveRank(sender)));
-                if (!$.isModv3(sender, event.getTags())) {
+                if (!$.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod)) {
                     if ($.getBotWhisperMode()) {
                         $.say($.whisperPrefix(sender) + $.lang.get('roulette.timeout.notifyuser', timeoutTime));
                     }
@@ -98,7 +98,7 @@
          * @commandpath roulettetimeouttime [seconds] - Sets for how long the user gets timed out for when loosing at roulette
          */
         if (command.equalsIgnoreCase('roulettetimeouttime')) {
-            if (!$.isAdmin(sender)) {
+            if (!$.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;
             }
@@ -122,8 +122,8 @@
             loadResponses();
         }
 
-        $.registerChatCommand('./games/roulette.js', 'roulette', 7);
-        $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', 1);
+        $.registerChatCommand('./games/roulette.js', 'roulette', $.PERMISSION.Viewer);
+        $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', $.PERMISSION.Admin);
     });
 
     $.reloadRoulette = reloadRoulette;

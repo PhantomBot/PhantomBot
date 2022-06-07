@@ -332,15 +332,15 @@
     }
 
     function userGetsBonus(user, event) {
-        return (event.getTags().containsKey('subscriber') && event.getTags().get('subscriber').equals('1')) || $.isReg(user);
+        return ($.isSub(user, event.getTags()) || $.isRegular(user));
     }
 
     function calcBonus(user, event, tickets) {
         var bonus = tickets;
 
-        if (event.getTags().containsKey('subscriber') && event.getTags().get('subscriber').equals('1')) {
+        if ($.isSub(user, event.getTags())) {
             bonus = tickets * subTMulti;
-        } else if ($.isReg(user)) {
+        } else if ($.isRegular(user)) {
             bonus = tickets * regTMulti;
         }
 
@@ -529,16 +529,16 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./systems/ticketraffleSystem.js', 'traffle', 2);
-        $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', 7);
-        $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', 7);
-        $.registerChatSubcommand('traffle', 'open', 2);
-        $.registerChatSubcommand('traffle', 'close', 2);
-        $.registerChatSubcommand('traffle', 'draw', 2);
-        $.registerChatSubcommand('traffle', 'reset', 2);
-        $.registerChatSubcommand('traffle', 'autoannounceinterval', 1);
-        $.registerChatSubcommand('traffle', 'autoannouncemessage', 1);
-        $.registerChatSubcommand('traffle', 'messagetoggle', 1);
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'traffle', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'tickets', $.PERMISSION.Viewer);
+        $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('traffle', 'open', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'draw', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'reset', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'autoannounceinterval', $.PERMISSION.Admin);
+        $.registerChatSubcommand('traffle', 'autoannouncemessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('traffle', 'messagetoggle', $.PERMISSION.Admin);
 
         reopen();
     });

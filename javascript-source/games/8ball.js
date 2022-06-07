@@ -50,7 +50,7 @@
         if (command.equalsIgnoreCase('8ball')) {
             if (!args[0]) {
                 $.say($.resolveRank(sender) + ' ' + $.lang.get('8ball.usage'));
-                $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
+                $.returnCommandCost(sender, command, $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod));
                 return
             }
 
@@ -70,6 +70,6 @@
         if (responseCount == 0) {
             loadResponses();
         }
-        $.registerChatCommand('./games/8ball.js', '8ball', 7);
+        $.registerChatCommand('./games/8ball.js', '8ball', $.PERMISSION.Viewer);
     });
 })();

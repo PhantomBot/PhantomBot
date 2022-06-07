@@ -127,16 +127,16 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/deathctrCommand.js', 'deathctr', 7);
+        $.registerChatCommand('./commands/deathctrCommand.js', 'deathctr', $.PERMISSION.Viewer);
 
-        $.registerChatSubcommand('deathctr', 'reset', 2);
-        $.registerChatSubcommand('deathctr', 'set', 2);
-        $.registerChatSubcommand('deathctr', 'add', 2);
-        $.registerChatSubcommand('deathctr', 'incr', 2);
-        $.registerChatSubcommand('deathctr', '+', 2);
-        $.registerChatSubcommand('deathctr', 'sub', 2);
-        $.registerChatSubcommand('deathctr', 'decr', 2);
-        $.registerChatSubcommand('deathctr', '-', 2);
+        $.registerChatSubcommand('deathctr', 'reset', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', 'set', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', 'add', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', 'incr', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', '+', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', 'sub', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', 'decr', $.PERMISSION.Mod);
+        $.registerChatSubcommand('deathctr', '-', $.PERMISSION.Mod);
 
         setInterval(function() {
             deathUpdateFile(($.jsString($.getGame($.channelName)) !== '' ? $.getGame($.channelName) : 'Some Game'));

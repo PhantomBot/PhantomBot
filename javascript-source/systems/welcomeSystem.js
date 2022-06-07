@@ -334,14 +334,14 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function () {
-        $.registerChatCommand('./systems/welcomeSystem.js', 'welcome', 2);
-        $.registerChatSubcommand('welcome', 'cooldown', 1);
-        $.registerChatSubcommand('welcome', 'toggle', 1);
-        $.registerChatSubcommand('welcome', 'setmessage', 2);
-        $.registerChatSubcommand('welcome', 'setfirstmessage', 2);
-        $.registerChatSubcommand('welcome', 'disable', 2);
-        $.registerChatSubcommand('welcome', 'enable', 2);
+    $.bind('initReady', function() {
+        $.registerChatCommand('./systems/welcomeSystem.js', 'welcome', $.PERMISSION.Mod);
+        $.registerChatSubcommand('welcome', 'cooldown', $.PERMISSION.Admin);
+        $.registerChatSubcommand('welcome', 'toggle', $.PERMISSION.Admin);
+        $.registerChatSubcommand('welcome', 'setmessage', $.PERMISSION.Mod);
+        $.registerChatSubcommand('welcome', 'setfirstmessage', $.PERMISSION.Mod);
+        $.registerChatSubcommand('welcome', 'disable', $.PERMISSION.Mod);
+        $.registerChatSubcommand('welcome', 'enable', $.PERMISSION.Mod);
 
         sendUserWelcomes();
     });

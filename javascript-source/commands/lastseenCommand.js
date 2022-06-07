@@ -69,6 +69,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/lastseenCommand.js', 'lastseen', 7);
+        $.registerChatCommand('./commands/lastseenCommand.js', 'lastseen', $.PERMISSION.Viewer);
     });
 })();

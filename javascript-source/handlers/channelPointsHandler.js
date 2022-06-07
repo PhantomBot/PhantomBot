@@ -588,7 +588,7 @@
      * add chat commands
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/channelPointsHandler.js', 'channelpoints', 1);
+        $.registerChatCommand('./handlers/channelPointsHandler.js', 'channelpoints', $.PERMISSION.Admin);
     });
 
     /*

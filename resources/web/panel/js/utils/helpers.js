@@ -959,40 +959,8 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupIdByName = function (name, asString) {
-        let swap = helpers.isSwappedSubscriberVIP();
-        switch (name.toLowerCase()) {
-            case 'casters':
-            case 'caster':
-                return (asString ? '0' : 0);
-            case 'administrators':
-            case 'administrator':
-                return (asString ? '1' : 1);
-            case 'moderators':
-            case 'moderator':
-                return (asString ? '2' : 2);
-            case 'subscribers':
-            case 'subscriber':
-                if (swap) {
-                    return (asString ? '5' : 5);
-                } else {
-                    return (asString ? '3' : 3);
-                }
-            case 'donators':
-            case 'donator':
-                return (asString ? '4' : 4);
-            case 'vips':
-            case 'vip':
-                if (!swap) {
-                    return (asString ? '5' : 5);
-                } else {
-                    return (asString ? '3' : 3);
-                }
-            case 'regulars':
-            case 'regular':
-                return (asString ? '6' : 6);
-            default:
-                return (asString ? '7' : 7);
-        }
+        let idx =  permGroupNames.indexOf(name);
+        return (asString ? idx.toString() : parseInt(idx));
     };
 
     /*
@@ -1014,6 +982,26 @@ $(function () {
         return 'null';
     };
 
+    let updatePermGroups = function () {
+        socket.getDBTableValues('permissions_get_all_groups', 'groups', function(results){
+            permGroups = results;
+            for (let i = 0; i < results.length; i++) {
+                permGroupNames[i] =  i.toString() + ' (' + permGroups[i].value + ')';
+            }
+        });
+    };
+
+    let permGroups = [];
+    let permGroupNames = [];
+
+    setTimeout(function () {
+        updatePermGroups();
+    }, 1e3);
+
+    setInterval(function () {
+        updatePermGroups();
+    }, 30e3);
+
     /*
      * @function Gets the group name by its ID.
      *
@@ -1021,33 +1009,11 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupNameById = function (id) {
-        let swap = helpers.isSwappedSubscriberVIP();
-        switch (id.toString()) {
-            case '0':
-                return 'Caster';
-            case '1':
-                return 'Administrators';
-            case '2':
-                return 'Moderators';
-            case '3':
-                if (swap) {
-                    return 'VIPs';
-                } else {
-                    return 'Subscribers';
-                }
-            case '4':
-                return 'Donators';
-            case '5':
-                if (!swap) {
-                    return 'VIPs';
-                } else {
-                    return 'Subscribers';
-                }
-            case '6':
-                return 'Regulars';
-            default:
-                return 'Viewers';
-        }
+        return permGroupNames[parseInt(id)]; //The database always holds the names in the correct order
+    };
+
+    helpers.getPermGroupNames = function () {
+        return permGroupNames;
     };
 
     /*

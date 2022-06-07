@@ -180,9 +180,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/lang.js', 'lang', 1);
-        $.registerChatCommand('./core/lang.js', 'mute', 1);
-        $.registerChatCommand('./core/lang.js', 'toggleme', 1);
+        $.registerChatCommand('./core/lang.js', 'lang', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/lang.js', 'mute', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/lang.js', 'toggleme', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

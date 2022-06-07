@@ -81,6 +81,24 @@
             $.delSubUsersList(args[0]);
         }
 
+        // Adds a (real or fake) user as a VIP in the cache
+        if (command.equalsIgnoreCase('addVIP')) {
+            if (args.length < 1) {
+                $.say('Usage: !addvip user');
+                return;
+            }
+            $.addVIPUsersList(args[0]);
+        }
+
+        // Removes a (real or fake) user as a VIP in the cache (NOTE: Does not affect tags)
+        if (command.equalsIgnoreCase('delVIP')) {
+            if (args.length < 1) {
+                $.say('Usage: !delvip user');
+                return;
+            }
+            $.delVIPUsersList(args[0]);
+        }
+
         // Sets a (real or fake) user as a Caster in the database
         if (command.equalsIgnoreCase('setcaster')) {
             if (args.length < 1) {
@@ -168,22 +186,24 @@
     });
 
     $.bind('initReady', function () {
-        $.registerChatCommand('./custom/test.js', 'testhelp', 1);
-        $.registerChatCommand('./custom/test.js', 'testcmd', 1);
-        $.registerChatCommand('./custom/test.js', 'addmod', 1);
-        $.registerChatCommand('./custom/test.js', 'delmod', 1);
-        $.registerChatCommand('./custom/test.js', 'addsub', 1);
-        $.registerChatCommand('./custom/test.js', 'delsub', 1);
-        $.registerChatCommand('./custom/test.js', 'setcaster', 1);
-        $.registerChatCommand('./custom/test.js', 'setadmin', 1);
-        $.registerChatCommand('./custom/test.js', 'setvip', 1);
-        $.registerChatCommand('./custom/test.js', 'setdonator', 1);
-        $.registerChatCommand('./custom/test.js', 'setregular', 1);
-        $.registerChatCommand('./custom/test.js', 'setviewer', 1);
-        $.registerChatCommand('./custom/test.js', 'testexception', 1);
-        $.registerChatCommand('./custom/test.js', 'testtimeout', 1);
-        $.registerChatCommand('./custom/test.js', 'testinterval', 1);
-        $.registerChatCommand('./custom/test.js', 'testcleartimeout', 1);
-        $.registerChatCommand('./custom/test.js', 'testclearinterval', 1);
+        $.registerChatCommand('./custom/test.js', 'testhelp', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testcmd', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'addmod', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'delmod', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'addsub', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'delsub', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'addvip', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'delvip', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setcaster', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setadmin', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setvip', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setdonator', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setregular', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'setviewer', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testexception', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testtimeout', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testinterval', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testcleartimeout', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testclearinterval', $.PERMISSION.Admin);
     });
 })();

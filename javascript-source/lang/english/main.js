@@ -394,9 +394,9 @@ $.lang.register('permissions.grouppoints.showgroup.online', '$1 gains $2 $3 onli
 $.lang.register('permissions.grouppoints.showgroup.offline', '$1 gains $2 $3 offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Set permission $1 to gain $2 $3 online.');
 $.lang.register('permissions.grouppoints.set.offline', 'Set permission $1 to gain $2 $3 offline.');
-$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch.'); 
-$.lang.register('permissions.swapsubscribervip.normal', 'Subscribers are now set as higher than VIPs (default).'); 
-$.lang.register('permissions.swapsubscribervip.swapped', 'VIPs are now set as higher than Subscribers.'); 
+$.lang.register('permissions.grouppoints.set.sub.error', 'You cannot promote anyone to Subscriber, this status is from Twitch.');
+$.lang.register('permissions.swapsubscribervip.normal', 'Subscribers are now set as higher than VIPs (default).');
+$.lang.register('permissions.swapsubscribervip.swapped', 'VIPs are now set as higher than Subscribers.');
 $.lang.register('ignorelist', 'Current Ignored Bots: $1');
 $.lang.register('ignorelist.listtoolong', 'There are over $1 to list, I suggest checking the ./addons/ignorebots.txt');
 $.lang.register('ignoreadd.usage', 'Usage: !ignoreadd [username], to add a channel to the ignore list.');

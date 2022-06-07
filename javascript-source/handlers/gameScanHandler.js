@@ -98,6 +98,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/gameScanHandler.js', 'gamescan', 7);
+        $.registerChatCommand('./handlers/gameScanHandler.js', 'gamescan', $.PERMISSION.Viewer);
     });
 })();

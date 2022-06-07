@@ -128,6 +128,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', 1);
+        $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', $.PERMISSION.Admin);
     });
 })();

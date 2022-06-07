@@ -109,7 +109,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', 1);
-        $.registerChatCommand('./handlers/wordCounter.js', 'count', 7);
+        $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/wordCounter.js', 'count', $.PERMISSION.Viewer);
     });
 })();

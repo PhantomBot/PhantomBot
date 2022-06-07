@@ -58,10 +58,10 @@
             if (action === undefined) {
                 if (!otherChannels.equals('Channel-1 Channel-2')) {
                     $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' + otherChannels.split(' ').join('/'));
-                } else {
-                    if ($.isModv3(sender, event.getTags())) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.usage'));
-                    }
+                    return;
+                }
+                if ($.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod)) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.usage'));
                 }
                 return;
             }
@@ -157,14 +157,14 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', 7);
-        $.registerChatCommand('./commands/dualstreamCommand.js', 'reloadmulti', 1);
+        $.registerChatCommand('./commands/dualstreamCommand.js', 'multi', $.PERMISSION.Viewer);
+        $.registerChatCommand('./commands/dualstreamCommand.js', 'reloadmulti', $.PERMISSION.Admin);
 
-        $.registerChatSubcommand('multi', 'set', 2);
-        $.registerChatSubcommand('multi', 'clear', 2);
-        $.registerChatSubcommand('multi', 'timer', 2);
-        $.registerChatSubcommand('multi', 'timerinterval', 1);
-        $.registerChatSubcommand('multi', 'reqmessage', 1);
+        $.registerChatSubcommand('multi', 'set', $.PERMISSION.Mod);
+        $.registerChatSubcommand('multi', 'clear', $.PERMISSION.Mod);
+        $.registerChatSubcommand('multi', 'timer', $.PERMISSION.Mod);
+        $.registerChatSubcommand('multi', 'timerinterval', $.PERMISSION.Admin);
+        $.registerChatSubcommand('multi', 'reqmessage', $.PERMISSION.Admin);
 
         /*
          * interval timer.

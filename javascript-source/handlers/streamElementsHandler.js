@@ -140,8 +140,8 @@
             donationUsername = donationUsername.toLowerCase();
             $.inidb.incr('donations', donationUsername, donationAmount);
             if ($.inidb.exists('donations', donationUsername) && $.inidb.get('donations', donationUsername) >= groupMin) {
-                if ($.getUserGroupId(donationUsername) > 3) {
-                    $.setUserGroupById(donationUsername, '4');
+                if ($.getUserGroupId(donationUsername) > $.PERMISSION.Donator) {
+                    $.setUserGroupById(donationUsername, $.PERMISSION.Donator);
                 }
             }
         }
@@ -240,7 +240,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/streamElementsHandler.js', 'streamelements', 1);
+        $.registerChatCommand('./handlers/streamElementsHandler.js', 'streamelements', $.PERMISSION.Admin);
     });
 
     $.reloadStreamElements = reloadStreamElements;

@@ -397,16 +397,16 @@
      *
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/ranksSystem.js', 'rank', 7);
-        $.registerChatCommand('./systems/ranksSystem.js', 'rankedit', 1);
+        $.registerChatCommand('./systems/ranksSystem.js', 'rank', $.PERMISSION.Viewer);
+        $.registerChatCommand('./systems/ranksSystem.js', 'rankedit', $.PERMISSION.Admin);
 
-        $.registerChatSubcommand('rankedit', 'add', 1);
-        $.registerChatSubcommand('rankedit', 'del', 1);
-        $.registerChatSubcommand('rankedit', 'custom', 1);
-        $.registerChatSubcommand('rankedit', 'customdel', 1);
+        $.registerChatSubcommand('rankedit', 'add', $.PERMISSION.Admin);
+        $.registerChatSubcommand('rankedit', 'del', $.PERMISSION.Admin);
+        $.registerChatSubcommand('rankedit', 'custom', $.PERMISSION.Admin);
+        $.registerChatSubcommand('rankedit', 'customdel', $.PERMISSION.Admin);
 
-        $.registerChatSubcommand('rank', 'set', 7);
-        $.registerChatSubcommand('rank', 'del', 7);
+        $.registerChatSubcommand('rank', 'set', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('rank', 'del', $.PERMISSION.Viewer);
     });
 
     /**

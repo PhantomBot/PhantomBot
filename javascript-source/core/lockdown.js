@@ -71,6 +71,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/lockdown.js', 'lockdown', 2);
+        $.registerChatCommand('./core/lockdown.js', 'lockdown', $.PERMISSION.Mod);
     });
 })();

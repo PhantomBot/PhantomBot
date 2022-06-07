@@ -854,7 +854,7 @@
         function offlineonly(args, event) {
             if (!args) {
                 if ($.isOnline($.channelName)) {
-                    $.returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
+                    $.returnCommandCost(event.getSender(), event.getCommand(), $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod));
                     return {cancel: true};
                 }
                 return {result: ''};
@@ -870,7 +870,7 @@
         function onlineonly(args, event) {
             if (!args) {
                 if (!$.isOnline($.channelName)) {
-                    $.returnCommandCost(event.getSender(), event.getCommand(), $.isModv3(event.getSender(), event.getTags()));
+                    $.returnCommandCost(event.getSender(), event.getCommand(), $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod));
                     return {cancel: true};
                 }
                 return {result: ''};
@@ -1554,11 +1554,11 @@
                 match = args.match(/(@?\w+)/g);
                 for (var x in match) {
                     if (match[x].match(/^@moderators$/) !== null) {
-                        if ($.isModv3(event.getSender(), event.getTags())) {
+                        if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
                             return {result: ''};
                         }
                     } else if (match[x].match(/^@admins$/) !== null) {
-                        if ($.isAdmin(event.getSender())) {
+                        if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Admin)) {
                             return {result: ''};
                         }
                     } else if (event.getSender().equalsIgnoreCase(match[x])) {
@@ -1768,7 +1768,7 @@
         if (tagFound === -1
                 && atEnabled
                 && event.getArgs()[0] !== undefined
-                && $.isModv3(event.getSender(), event.getTags())) {
+                && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
             return event.getArgs()[0] + ' -> ' + unescapeTags(message);
         }
 

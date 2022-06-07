@@ -214,12 +214,12 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/followHandler.js', 'followreward', 1);
-        $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', 1);
-        $.registerChatCommand('./handlers/followHandler.js', 'followdelay', 1);
-        $.registerChatCommand('./handlers/followHandler.js', 'followmessage', 1);
-        $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', 2);
-        $.registerChatCommand('./handlers/followHandler.js', 'replayfollow', 1);
+        $.registerChatCommand('./handlers/followHandler.js', 'followreward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/followHandler.js', 'followtoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/followHandler.js', 'followdelay', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/followHandler.js', 'followmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/followHandler.js', 'checkfollow', $.PERMISSION.Mod);
+        $.registerChatCommand('./handlers/followHandler.js', 'replayfollow', $.PERMISSION.Admin);
 
         setInterval(runFollows, 2e3, 'scripts::handlers::followHandler.js');
     });

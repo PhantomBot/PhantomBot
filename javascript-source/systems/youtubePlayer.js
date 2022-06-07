@@ -819,7 +819,7 @@
          */
         this.requestSong = function(searchQuery, requestOwner) {
             var keys = $.inidb.GetKeyList('ytpBlacklistedSong', '');
-            if (!$.isAdmin(requestOwner) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner))) {
+            if (!$.checkUserPermission(requestOwner, undefined, $.PERMISSION.Admin) && (!songRequestsEnabled || this.senderReachedRequestMax(requestOwner))) {
                 if (this.senderReachedRequestMax(requestOwner)) {
                     requestFailReason = $.lang.get('ytplayer.requestsong.error.maxrequests');
                 } else {
@@ -841,7 +841,7 @@
                 return null;
             }
 
-            if (this.videoLengthExceedsMax(youtubeVideo) && !$.isAdmin(requestOwner)) {
+            if (this.videoLengthExceedsMax(youtubeVideo) && !$.checkUserPermission(requestOwner, undefined, $.PERMISSION.Admin)) {
                 requestFailReason = $.lang.get('ytplayer.requestsong.error.maxlength', youtubeVideo.getVideoLengthMMSS());
                 return null;
             }
@@ -1164,7 +1164,7 @@
         if (stealRefund && retval != -2 && refundUser.length > 1) {
             if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
                 if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
-                    var isMod = $.isMod(refundUser);
+                    var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                     if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(refundUser)) || !isMod))) {
                         var refund = $.inidb.get('pricecom', 'songrequest');
                         if (refund == 0) {
@@ -1833,7 +1833,7 @@
             if (stealRefund) {
                 if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
                     if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
-                        var isMod = $.isMod(refundUser);
+                        var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                         if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
                             var refund = $.inidb.get('pricecom', 'songrequest');
                             if (refund == 0) {
@@ -1941,7 +1941,7 @@
 
             if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.songrequest.usage'));
-                $.returnCommandCost(sender, command, $.isModv3(sender, event.getTags()));
+                $.returnCommandCost(sender, command, $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod));
                 return;
             }
 
@@ -2081,15 +2081,15 @@
     });
 
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'findsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', 1);
-        $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', 1);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'ytp', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'musicplayer', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'playlist', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'stealsong', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'jumptosong', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'findsong', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'playsong', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'skipsong', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/youtubePlayer.js', 'reloadyt', $.PERMISSION.Admin);
         $.registerChatCommand('./systems/youtubePlayer.js', 'songrequest');
         $.registerChatCommand('./systems/youtubePlayer.js', 'addsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'previoussong');
@@ -2097,8 +2097,8 @@
         $.registerChatCommand('./systems/youtubePlayer.js', 'wrongsong');
         $.registerChatCommand('./systems/youtubePlayer.js', 'nextsong');
 
-        $.registerChatSubcommand('skipsong', 'vote', 7);
-        $.registerChatSubcommand('wrongsong', 'user', 2);
+        $.registerChatSubcommand('skipsong', 'vote', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('wrongsong', 'user', $.PERMISSION.Mod);
 
         loadPanelPlaylist();
         loadDefaultPl();

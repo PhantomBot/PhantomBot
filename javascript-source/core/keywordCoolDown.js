@@ -33,8 +33,8 @@
      * @return boolean
      */
     function permCheck(username) {
-        return (!modCooldown && $.isMod(username)) || $.isAdmin(username);
-    };
+        return (!modCooldown && $.checkUserPermission(username, undefined, $.PERMISSION.Mod)) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin);
+    }
 
     /**
      * @function getCooldown
@@ -47,7 +47,7 @@
         } else {
             return 0;
         }
-    };
+    }
 
     /**
      * @function set
