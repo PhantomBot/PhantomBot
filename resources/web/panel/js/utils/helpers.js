@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr, swal */
+
 $(function () {
     const helpers = {};
 
@@ -273,7 +275,7 @@ $(function () {
         return helpers.handleInput(obj, function (obj) {
             let matched = obj.val().match(/^((\d{2}|\d{4})(\\|\/|\.|-)(\d{2})(\\|\/|\.|-)(\d{4}|\d{2}))$/);
 
-            if (matched === null || ((matched[6].length < 4 && matched[2].length == 2) || (matched[6].length == 2 && matched[2].length < 4))) {
+            if (matched === null || ((matched[6].length < 4 && matched[2].length === 2) || (matched[6].length === 2 && matched[2].length < 4))) {
                 return 'Please enter a valid date (mm/dd/yyyy or dd/mm/yyyy).';
             }
             return null;
@@ -290,10 +292,14 @@ $(function () {
         id = 'phantombot_' + id.substring(id.indexOf('-') + 1);
 
         if (localStorage.getItem(id) === 'false') {
-            if (parseInt(obj.data('number').replace(/,/g, '')) < 9999) {
-                obj.html(obj.data('number'));
+            let numval = obj.data('number');
+            if (numval === undefined || numval === null || numval.trim().length === 0) {
+                numval = '0';
+            }
+            if (parseInt(numval.replace(/,/g, '')) < 9999) {
+                obj.html(numval);
             } else {
-                obj.html($('.small-box').width() < 230 ? obj.data('parsed') : obj.data('number'));
+                obj.html($('.small-box').width() < 230 ? obj.data('parsed') : numval);
             }
             localStorage.setItem(id, 'true');
         } else {
@@ -313,14 +319,19 @@ $(function () {
                 isSmall = $('.small-box').width() < 230;
 
         if (item === 'true' || item === null) {
-            if (parseInt(obj.data('number').replace(/,/g, '')) < 9999) {
-                obj.html(obj.data('number'));
+            let numval = obj.data('number');
+            if (numval === undefined || numval === null || numval.trim().length === 0) {
+                numval = '0';
+            }
+            if (parseInt(numval.replace(/,/g, '')) < 9999) {
+                obj.html(numval);
             } else {
-                obj.html(isSmall ? parsed : obj.data('number'));
+                obj.html(isSmall ? parsed : numval);
             }
         } else {
             obj.html('Hidden');
         }
+
         obj.data('parsed', parsed);
     };
 
@@ -1017,7 +1028,7 @@ $(function () {
         let perms = [];
 
         for (let i = 0; i < json.roles.length; i++) {
-            if (json.roles[i].selected == 'true')
+            if (json.roles[i].selected === 'true')
                 roles.push(json.roles[i].name);
         }
 
@@ -1026,7 +1037,7 @@ $(function () {
         }
 
         for (let i = 0; i < json.permissions.length; i++) {
-            if (json.permissions[i].selected == 'true')
+            if (json.permissions[i].selected === 'true')
                 perms.push(json.permissions[i].name);
         }
 

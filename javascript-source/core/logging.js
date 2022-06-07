@@ -216,12 +216,13 @@
                 logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
                 logDirIdx,
                 date,
-                rotateDays = $.getIniDbNumber('settings', 'log_rotate_days') * 24 * 60 * 6e4,
-                checkDate = Packages.java.time.LocalDate.now().minusDays(rotateDays);
+                rotateDays = $.getIniDbNumber('settings', 'log_rotate_days', 0) * 24 * 60 * 6e4;
 
         if (rotateDays === 0) {
             return;
         }
+
+        var checkDate = Packages.java.time.LocalDate.now().minusDays(rotateDays);
 
         $.log.event('Starting Log Rotation');
         for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
