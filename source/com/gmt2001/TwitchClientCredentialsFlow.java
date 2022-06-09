@@ -103,7 +103,7 @@ public class TwitchClientCredentialsFlow {
         return this.checkExpirationAndGetNewToken(CaselessProperties.instance());
     }
 
-    private boolean getAppToken(CaselessProperties properties) {
+    private synchronized boolean getAppToken(CaselessProperties properties) {
         if (properties == null || !properties.containsKey("clientid") || properties.getProperty("clientid").isBlank()
                 || !properties.containsKey("clientsecret") || properties.getProperty("clientsecret").isBlank()) {
             com.gmt2001.Console.debug.println("skipped refresh");
