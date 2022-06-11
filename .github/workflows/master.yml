@@ -37,7 +37,7 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         ref: 'master'
     - name: Set up Python 3.x
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
         architecture: 'x64'
@@ -59,7 +59,7 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         ref: 'master'
     - name: Set up Python 3.x
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
         architecture: 'x64'
