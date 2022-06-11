@@ -1703,9 +1703,10 @@
      * @param {bool} atEnabled
      * @param {object} localTransformers
      * @param {bool} disableGlobalTransformers
+     * @param {object} customArgs
      * @return {string}
      */
-    function tags(event, message, atEnabled, localTransformers, disableGlobalTransformers) {
+    function tags(event, message, atEnabled, localTransformers, disableGlobalTransformers, customArgs) {
         var match,
                 tagFound = false,
                 transformed,
@@ -1734,10 +1735,10 @@
                 thisTagFound = true;
             } else {
                 if (localTransformers.hasOwnProperty(tagName)
-                        && (transformed = localTransformers[tagName](tagArgs, event))) {
+                        && (transformed = localTransformers[tagName](tagArgs, event, customArgs))) {
                     thisTagFound = true;
                 } else if (!disableGlobalTransformers && transformers.hasOwnProperty(tagName)
-                        && (transformed = transformers[tagName](tagArgs, event))) {
+                        && (transformed = transformers[tagName](tagArgs, event, customArgs))) {
                     thisTagFound = true;
                 }
 
@@ -1798,7 +1799,17 @@
         transformers[tag.toLowerCase()] = transformer;
     }
 
+    function getGlobalTransformers() {
+        return transformers;
+    }
+
+    function getGlobalTransformer(tag) {
+        return transformers[tag.toLowerCase()];
+    }
+
     $.tags = tags;
     $.escapeTags = escapeTags;
     $.addTagTransformer = addTagTransformer;
+    $.getGlobalTransformers = getGlobalTransformers;
+    $.getGlobalTransformer = getGlobalTransformer;
 })();

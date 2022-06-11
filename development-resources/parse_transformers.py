@@ -18,6 +18,7 @@
 # /*
 #  * @[|local]transformer functionName
 #  * @formula... (tag[|:type][|=|\|][| var:type...]) description?
+#  * @customarg...? (name:customArgType) description?
 #  * @notes?... text
 #  * multi-line allowed
 #  * @example?... text
@@ -28,6 +29,8 @@
 #  */
 
 # types: str, int, bool
+
+# custom arg types: str, int, bool, array, dictionary, javaObject[className]
 
 # Uses Doc-comment definition
 
@@ -48,6 +51,7 @@ transformer_template = {}
 transformer_template["script"] = ""
 transformer_template["function"] = ""
 transformer_template["formulas"] = []
+transformer_template["customArgs"] = []
 transformer_template["notes"] = []
 transformer_template["examples"] = []
 transformer_template["raw"] = False
@@ -146,6 +150,20 @@ def parse_file(fpath, lines):
                     else:
                         formula["desc"] = ""
                     transformer["formulas"].append(formula)
+                if line.startswith("@customarg"):
+                    line = line[9:].strip()
+                    desc_pos = line.find(") ")
+                    if desc_pos == -1:
+                        desc_pos = len(line)
+                    else:
+                        desc_pos = desc_pos + 1
+                    customarg = {}
+                    customarg["arg"] = line[0:desc_pos].strip()
+                    if desc_pos < len(line):
+                        customarg["desc"] = line[desc_pos:].strip()
+                    else:
+                        customarg["desc"] = ""
+                    transformer["customArgs"].append(formula)
                 if line.startswith("@notes"):
                     state = state + 1
                     line = line[7:].strip()
@@ -191,6 +209,15 @@ def output_transformer(transformer, hlevel):
         if len(formula["desc"]) > 0:
             line = line + " - " + formula["desc"]
         lines.append(line + '\n')
+    if len(transformer["customArgs"]) > 0:
+        lines.append('\n')
+        lines.append("**Custom Arguments:**" + '\n')
+        lines.append('\n')
+        for customarg in transformer["customArgs"]:
+            line = "- `" + customarg["arg"] + "`"
+            if len(customarg["desc"]) > 0:
+                line = line + " - " + customarg["desc"]
+            lines.append(line + '\n')
     if len(transformer["notes"]) > 0:
         lines.append('\n')
         for note in transformer["notes"]:
