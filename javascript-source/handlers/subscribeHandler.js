@@ -21,461 +21,422 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function () {
-    var subMessage = $.getSetIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
-            primeSubMessage = $.getSetIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
-            reSubMessage = $.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
-            giftSubMessage = $.getSetIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
-            giftAnonSubMessage = $.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
-            massGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
-            massAnonGiftSubMessage = $.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
+    var subMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'subscribeMessage', createDuoJson('(name) just subscribed!', '(name) just subscribed with Twitch Prime!'))),
+            reSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', createSingleJson('(name) just subscribed for (months) months in a row!'))),
+            giftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftSubMessage', createSingleNPJson('(name) just gifted (recipient) a subscription!'))),
+            giftAnonSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson('An anonymous viewer gifted (recipient) a subscription!'))),
+            massGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', createSingleNPJson('(name) just gifted (amount) subscriptions to random users in the channel!'))),
+            massAnonGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson('An anonymous viewer gifted (amount) subscriptions to random viewers!'))),
             subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
-            primeSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', true),
             reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
             giftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', true),
             giftAnonSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', true),
             massGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', true),
             massAnonGiftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', true),
-            subReward = $.getSetIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-            reSubReward = $.getSetIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
-            giftSubReward = $.getSetIniDbNumber('subscribeHandler', 'giftSubReward', 0),
-            massGiftSubReward = $.getSetIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
-            customEmote = $.getSetIniDbString('subscribeHandler', 'resubEmote', ''),
-            subPlan1000 = $.getSetIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
-            subPlan2000 = $.getSetIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
-            subPlan3000 = $.getSetIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
-            subPlanPrime = $.getSetIniDbString('subscribeHandler', 'subPlanPrime', 'Prime'),
+            subReward = JSON.parse($.getSetIniDbString('subscribeHandler', 'subscribeReward', createSingleJson(0))),
+            reSubReward = JSON.parse($.getSetIniDbString('subscribeHandler', 'reSubscribeReward', createSingleJson(0))),
+            giftSubReward = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftSubReward', createSingleNPJson(0))),
+            massGiftSubReward = JSON.parse($.getSetIniDbString('subscribeHandler', 'massGiftSubReward', createSingleNPJson(0))),
+            customEmote = JSON.parse($.getSetIniDbString('subscribeHandler', 'subEmote', createSingleJson(''))),
+            subPlans = JSON.parse($.getSetIniDbString('subscribeHandler', 'subPlans', createMultiJson('Tier 1', 'Tier 2', 'Tier 3', 'Prime'))),
             announce = false,
-            emotes = [],
-            i;
+            types = {SUB: 0, RESUB: 1, GIFT: 2, GIFTANON: 3, MASSGIFT: 4, MASSGIFTANON: 5};
 
     /*
      * @function updateSubscribeConfig
      */
     function updateSubscribeConfig() {
-        subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage');
-        primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage');
-        reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage');
-        giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage');
-        giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage');
-        massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage');
-        massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage');
+        subMessage = JSON.parse($.getIniDbString('subscribeHandler', 'subscribeMessage'));
+        reSubMessage = JSON.parse($.getIniDbString('subscribeHandler', 'reSubscribeMessage'));
+        giftSubMessage = JSON.parse($.getIniDbString('subscribeHandler', 'giftSubMessage'));
+        giftAnonSubMessage = JSON.parse($.getIniDbString('subscribeHandler', 'giftAnonSubMessage'));
+        massGiftSubMessage = JSON.parse($.getIniDbString('subscribeHandler', 'massGiftSubMessage'));
+        massAnonGiftSubMessage = JSON.parse($.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage'));
         subWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle');
-        primeSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle');
         reSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle');
         giftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle');
         giftAnonSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle');
         massGiftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle');
         massAnonGiftSubWelcomeToggle = $.getIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle');
-        subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward');
-        reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward');
-        giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward');
-        massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward');
-        customEmote = $.getIniDbString('subscribeHandler', 'resubEmote');
-        subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000');
-        subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000');
-        subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000');
-        subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime');
+        subReward = JSON.parse($.getIniDbString('subscribeHandler', 'subscribeReward'));
+        reSubReward = JSON.parse($.getIniDbString('subscribeHandler', 'reSubscribeReward'));
+        giftSubReward = JSON.parse($.getIniDbString('subscribeHandler', 'giftSubReward'));
+        massGiftSubReward = JSON.parse($.getIniDbString('subscribeHandler', 'massGiftSubReward'));
+        customEmote = JSON.parse($.getIniDbString('subscribeHandler', 'subEmote'));
+        subPlans = JSON.parse($.getIniDbString('subscribeHandler', 'subPlans'));
+    }
+
+    function createSingleJson(val) {
+        return JSON.stringify({
+            '1000': val,
+            '2000': val,
+            '3000': val,
+            'Prime': val
+        });
+    }
+
+    function createSingleNPJson(val) {
+        return JSON.stringify({
+            '1000': val,
+            '2000': val,
+            '3000': val
+        });
+    }
+
+    function createDuoJson(val, vPrime) {
+        return JSON.stringify({
+            '1000': val,
+            '2000': val,
+            '3000': val,
+            'Prime': vPrime
+        });
+    }
+
+    function createMultiJson(v1000, v2000, v3000, vPrime) {
+        return JSON.stringify({
+            '1000': v1000,
+            '2000': v2000,
+            '3000': v3000,
+            'Prime': vPrime
+        });
     }
 
     /*
      * @function getPlanName
      */
     function getPlanName(plan) {
-        plan = $.javaString(plan);
-        if (plan.equals('1000')) {
-            return subPlan1000;
-        } else if (plan.equals('2000')) {
-            return subPlan2000;
-        } else if (plan.equals('3000')) {
-            return subPlan3000;
-        } else if (plan.equals('Prime')) {
-            return subPlanPrime;
+        plan = $.jsString(plan);
+
+        if (subPlans.hasOwnProperty(plan)) {
+            return subPlans[plan];
         }
 
         return 'Unknown Tier';
     }
 
+    var transformers = function (type) {
+        var transformers;
+
+        /*
+         * @localtransformer amount
+         * @formula (amount) The number of subs given by a mass-giftsub event
+         * @example Caster: !massgiftsubmessage 1000 (name) just gave away (amount) subs! Thank you!
+         * Twitch: User has just gifted 20 subs at Tier 1 to the community!
+         * Bot: User just gave away 20 subs! Thank you!
+         * @cached
+         */
+        function amount(args, event) {
+            return {
+                result: $.jsString(event.getMonths()),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer customemote
+         * @formula (customemote) '<The Emote, Repeated Months Times (Max 12)>'
+         * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you! (customemote)
+         * Caster: !subemote 1000 BloodTrail
+         * Twitch: User has just subscriber at Tier 1! They have been subscribed for 3 months!
+         * Bot: User just subscribed! They have been subscribed for 3 months! Thank you! BloodTrail BloodTrail BloodTrail
+         * @cached
+         */
+        function customemote(args, event) {
+            var emotes = [];
+            var emote = customEmote[event.getPlan()];
+
+            for (var i = 0; i < event.getMonths(); i++) {
+                emotes.push(emote);
+            }
+
+            return {
+                result: $.jsString(emotes).join(' ').trim(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer giftreward
+         * @formula (giftreward) '<Points Reward>'
+         * @customarg (giftreward:int) The number of points awarded to the gifter for gifting a sub to someone else
+         * @example Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! (name) gets (giftreward) points! Thank you!
+         * @example Caster: !giftsubreward 1000 25
+         * Twitch: User has just gifted a sub to OtherUser at Tier 1!
+         * Bot: OtherUser just received a sub from User! User gets 25 points! Thank you!
+         * @cached
+         */
+        function giftreward(args, event, customArgs) {
+            return {
+                result: $.jsString(customArgs['giftreward']),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer months
+         * @formula (months) '<Total Months Subscribed>'
+         * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you!
+         * Twitch: User has just subscriber at Tier 1! They have been subscribed for 12 months!
+         * Bot: User just subscribed! They have been subscribed for 12 months! Thank you!
+         * @cached
+         */
+        function months(args, event) {
+            return {
+                result: $.jsString(event.getMonths()),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer name
+         * @formula (name) For subs/resubs, the subscriber's name. For gift subs, the name of the person gifting the sub
+         * @example Caster: !submessage 1000 (name) just subscribed at Tier 1! Thank you!
+         * Twitch: User has just subscriber at Tier 1!
+         * Bot: User just subscribed at Tier 1! Thank you!
+         * @cached
+         */
+        function name(args, event) {
+            return {
+                result: event.getUsername(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer plan
+         * @formula (plan) '<Subscription Tier>'
+         * @example Caster: !submessage 1000 (name) just subscribed at (plan)! Thank you!
+         * Caster: !namesubplan 1000 Friendo Tier
+         * Twitch: User has just subscriber at Tier 1!
+         * Bot: User just subscribed at Friendo Tier! Thank you!
+         * @cached
+         */
+        function plan(args, event) {
+            return {
+                result: getPlanName(event.getPlan()),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer recipient
+         * @formula (recipient) The name of the recipient of a gift sub
+         * @example Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! Thank you!
+         * Twitch: User has just gifted a sub to OtherUser at Tier 1!
+         * Bot: OtherUser just received a sub from User! Thank you!
+         * @cached
+         */
+        function recipient(args, event) {
+            return {
+                result: event.getRecipient(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer reward
+         * @formula (reward) '<Points Reward>'
+         * @customarg (reward:int) The number of points awarded for the sub
+         * @example Caster: !submessage 1000 (name) just subscribed at Tier 1! They get (reward) points! Thank you!
+         * Twitch: User has just subscriber at Tier 1!
+         * Bot: User just subscribed at Tier 1! They get 100 points! Thank you!
+         * @cached
+         */
+        function reward(args, event, customArgs) {
+            return {
+                result: $.jsString(customArgs['reward']),
+                cache: true
+            };
+        }
+
+        transformers = {
+            'alert': $.getGlobalTransformer('alert'),
+            'customemote': customemote,
+            'name': name,
+            'plan': plan,
+            'playsound': $.getGlobalTransformer('playsound')
+        };
+
+        if (type === types.MASSGIFT || type === types.MASSGIFTANON) {
+            transformers['amount'] = amount;
+        }
+
+        if (type === types.GIFT || type === types.MASSGIFT) {
+            transformers['giftreward'] = giftreward;
+        }
+
+        if (type === types.GIFT || type === types.GIFTANON) {
+            transformers['recipient'] = recipient;
+        }
+
+        if (type === types.RESUB || type === types.GIFT || type === types.GIFTANON) {
+            transformers['months'] = months;
+        }
+
+        if (type !== types.MASSGIFT && type !== types.MASSGIFTANON) {
+            transformers['reward'] = reward;
+        }
+
+        return transformers;
+    };
+
     /*
      * @event twitchSubscriber
+     * @usestransformers local
      */
     $.bind('twitchSubscriber', function (event) {
-        var subscriber = event.getSubscriber(),
-                tier = event.getPlan(),
-                message = subMessage;
-
         if (subWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', subscriber);
-            }
+            var subscriber = event.getUsername(),
+                    plan = event.getPlan(),
+                    reward = subReward[plan],
+                    message = $.jsString(subMessage[plan]);
 
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
-            }
+            message = $.tags(event, message, false, transformers(types.SUB), true, {'reward': reward});
 
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
+
             $.addSubUsersList(subscriber);
             $.restoreSubscriberStatus(subscriber);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
-            if (subReward > 0) {
-                $.inidb.incr('points', subscriber, subReward);
-            }
-        }
-    });
 
-    /*
-     * @event twitchPrimeSubscriber
-     */
-    $.bind('twitchPrimeSubscriber', function (event) {
-        var subscriber = event.getSubscriber(),
-                message = primeSubMessage;
-
-        if (primeSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', subscriber);
-            }
-
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
-            }
-
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName('Prime'));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
-                $.say(message);
-            }
-            $.addSubUsersList(subscriber);
-            $.restoreSubscriberStatus(subscriber);
-            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
-            $.inidb.set('streamInfo', 'lastSub', subscriber);
-            if (subReward > 0) {
-                $.inidb.incr('points', subscriber, subReward);
+            if (reward > 0) {
+                $.inidb.incr('points', subscriber, reward);
             }
         }
     });
 
     /*
      * @event twitchReSubscriber
+     * @usestransformers local
      */
     $.bind('twitchReSubscriber', function (event) {
-        var resubscriber = event.getReSubscriber(),
-                months = event.getMonths(),
-                tier = event.getPlan(),
-                message = reSubMessage,
-                emotes = [];
-
         if (reSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', resubscriber);
-            }
+            var subscriber = event.getUsername(),
+                    plan = event.getPlan(),
+                    reward = reSubReward[plan],
+                    message = $.jsString(reSubMessage[plan]);
 
-            if (message.match(/\(months\)/g)) {
-                message = $.replace(message, '(months)', months);
-            }
+            message = $.tags(event, message, false, transformers(types.RESUB), true, {'reward': reward});
 
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(reSubReward));
-            }
-
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(customemote\)/)) {
-                for (i = 0; i < months; i++, emotes.push(customEmote))
-                    ;
-                message = $.replace(message, '(customemote)', emotes.join(' '));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
-            $.addSubUsersList(resubscriber);
-            $.restoreSubscriberStatus(resubscriber);
-            $.writeToFile(resubscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
-            $.writeToFile(resubscriber + ': ' + months + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
-            $.inidb.set('streamInfo', 'lastReSub', resubscriber);
-            if (reSubReward > 0) {
-                $.inidb.incr('points', resubscriber, reSubReward);
+
+            $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(subscriber);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestResub.txt', false);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
+            $.writeToFile(subscriber + ': ' + event.getMonths() + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
+            $.inidb.set('streamInfo', 'lastReSub', subscriber);
+
+            if (reward > 0) {
+                $.inidb.incr('points', subscriber, reward);
             }
         }
     });
 
     /*
      * @event twitchSubscriptionGift
+     * @usestransformers local
      */
     $.bind('twitchSubscriptionGift', function (event) {
-        var gifter = event.getUsername(),
-                recipient = event.getRecipient(),
-                months = event.getMonths(),
-                tier = event.getPlan(),
-                message = giftSubMessage;
-
         if (giftSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', gifter);
-            }
+            var subscriber = event.getRecipient(),
+                    gifter = event.getUsername(),
+                    plan = event.getPlan(),
+                    reward = subReward[plan],
+                    giftreward = giftSubReward[plan],
+                    message = $.jsString(giftSubMessage[plan]);
 
-            if (message.match(/\(recipient\)/g)) {
-                message = $.replace(message, '(recipient)', recipient);
-            }
+            message = $.tags(event, message, false, transformers(types.GIFT), true, {'reward': reward, 'giftreward': giftreward});
 
-            if (message.match(/\(months\)/g)) {
-                message = $.replace(message, '(months)', months);
-            }
-
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
-            }
-
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(customemote\)/)) {
-                for (i = 0; i < months; i++, emotes.push(customEmote))
-                    ;
-                message = $.replace(message, '(customemote)', emotes.join(' '));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
 
-            $.addSubUsersList(recipient);
-            $.restoreSubscriberStatus(recipient);
+            $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(subscriber);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
 
-            $.writeToFile(recipient + ' ', './addons/subscribeHandler/latestSub.txt', false);
-
-            $.inidb.set('streamInfo', 'lastSub', recipient);
-            if (subReward > 0) {
-                $.inidb.incr('points', recipient, subReward);
+            if (reward > 0) {
+                $.inidb.incr('points', subscriber, reward);
             }
-            if (giftSubReward > 0) {
-                $.inidb.incr('points', gifter, giftSubReward);
+
+            if (giftreward > 0) {
+                $.inidb.incr('points', gifter, giftreward);
             }
         }
     });
 
     /*
-     * @event twitchSubscriptionGift
+     * @event twitchMassSubscriptionGifted
+     * @usestransformers local
      */
     $.bind('twitchMassSubscriptionGifted', function (event) {
-        var gifter = event.getUsername(),
-                amount = event.getAmount(),
-                tier = event.getPlan(),
-                message = massGiftSubMessage;
-
         if (massGiftSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', gifter);
-            }
+            var gifter = event.getUsername(),
+                    plan = event.getPlan(),
+                    giftreward = massGiftSubReward[plan] * parseInt(event.getAmount()),
+                    message = $.jsString(massGiftSubMessage[plan]);
 
-            if (message.match(/\(amount\)/g)) {
-                message = $.replace(message, '(amount)', amount);
-            }
+            message = $.tags(event, message, false, transformers(types.MASSGIFT), true, {'giftreward': giftreward});
 
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(massGiftSubReward * parseInt(amount)));
-            }
-
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
 
-            if (massGiftSubReward > 0) {
-                $.inidb.incr('points', gifter, massGiftSubReward * parseInt(amount));
+            if (giftreward > 0) {
+                $.inidb.incr('points', gifter, giftreward);
             }
         }
     });
 
     /*
      * @event twitchAnonymousSubscriptionGift
+     * @usestransformers local
      */
     $.bind('twitchAnonymousSubscriptionGift', function (event) {
-        var gifter = event.getUsername(),
-                recipient = event.getRecipient(),
-                months = event.getMonths(),
-                tier = event.getPlan(),
-                message = giftAnonSubMessage;
-
         if (giftAnonSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', gifter);
-            }
+            var subscriber = event.getRecipient(),
+                    plan = event.getPlan(),
+                    reward = subReward[plan],
+                    message = $.jsString(giftAnonSubMessage[plan]);
 
-            if (message.match(/\(recipient\)/g)) {
-                message = $.replace(message, '(recipient)', recipient);
-            }
+            message = $.tags(event, message, false, transformers(types.GIFTANON), true, {'reward': reward});
 
-            if (message.match(/\(months\)/g)) {
-                message = $.replace(message, '(months)', months);
-            }
-
-            if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
-            }
-
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
 
-            $.addSubUsersList(recipient);
-            $.restoreSubscriberStatus(recipient);
+            $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(subscriber);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
 
-            $.writeToFile(recipient + ' ', './addons/subscribeHandler/latestSub.txt', false);
-
-            $.inidb.set('streamInfo', 'lastSub', recipient);
-            if (subReward > 0) {
-                $.inidb.incr('points', recipient, subReward);
+            if (reward > 0) {
+                $.inidb.incr('points', subscriber, reward);
             }
         }
     });
 
     /*
      * @event twitchMassAnonymousSubscriptionGifted
+     * @usestransformers local
      */
     $.bind('twitchMassAnonymousSubscriptionGifted', function (event) {
-        var gifter = event.getUsername(),
-                amount = event.getAmount(),
-                tier = event.getPlan(),
-                message = massAnonGiftSubMessage;
-
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
-            if (message.match(/\(name\)/g)) {
-                message = $.replace(message, '(name)', gifter);
-            }
+            var message = $.jsString(massGiftSubMessage[event.getPlan()]);
 
-            if (message.match(/\(amount\)/g)) {
-                message = $.replace(message, '(amount)', amount);
-            }
+            message = $.tags(event, message, false, transformers(types.MASSGIFTANON), true);
 
-            if (message.match(/\(plan\)/g)) {
-                message = $.replace(message, '(plan)', getPlanName(tier));
-            }
-
-            if (message.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = message.match(/\(alert ([,.\w\W]+)\)/)[1];
-                $.alertspollssocket.alertImage(filename);
-                message = (message + '').replace(/\(alert [,.\w\W]+\)/, '');
-            }
-
-            if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
-                if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Could not play audio hook: Audio hook does not exist.');
-                } else {
-                    $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
-                }
-                message = $.replace(message, message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
-            }
-
-            if (message != '') {
+            if ($.jsString(message).trim() !== '') {
                 $.say(message);
             }
         }
@@ -516,7 +477,7 @@
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
             reSubWelcomeToggle = !reSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', reSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (reSubWelcomeToggle ? $.lang.get('subscribehandler.resub.toggle.on') : $.lang.get('subscribehandler.resub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (reSubWelcomeToggle ? $.lang.get('subscribehandler.resub.toggle.on') : $.lang.get('subscribehandler.resub.toggle.off')));
         }
 
         /*
@@ -525,7 +486,7 @@
         if (command.equalsIgnoreCase('giftsubwelcometoggle')) {
             giftSubWelcomeToggle = !giftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', giftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (giftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (giftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')));
         }
 
         /*
@@ -534,7 +495,7 @@
         if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
             giftAnonSubWelcomeToggle = !giftAnonSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', giftAnonSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')));
         }
 
         /*
@@ -543,7 +504,7 @@
         if (command.equalsIgnoreCase('massgiftsubwelcometoggle')) {
             massGiftSubWelcomeToggle = !massGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', massGiftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')));
         }
 
         /*
@@ -552,7 +513,7 @@
         if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
             massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', massAnonGiftSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')))
+            $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')));
         }
 
         /*

@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchPrimeSubscriberEvent extends TwitchEvent {
+
     private final String subscriber;
     private final String months;
 
@@ -31,11 +32,12 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
         this.subscriber = subscriber;
         this.months = null;
     }
-    
-        /**
+
+    /**
      * Class constructor.
      *
      * @param subscriber
+     * @param months
      */
     public TwitchPrimeSubscriberEvent(String subscriber, String months) {
         this.subscriber = subscriber;
@@ -50,7 +52,11 @@ public class TwitchPrimeSubscriberEvent extends TwitchEvent {
     public String getSubscriber() {
         return this.subscriber;
     }
-    
+
+    public String getUsername() {
+        return this.getSubscriber();
+    }
+
     /**
      * Method that returns the cumulative months.
      *

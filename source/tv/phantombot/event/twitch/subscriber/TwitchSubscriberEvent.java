@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchSubscriberEvent extends TwitchEvent {
+
     private final String subscriber;
     private final String plan;
     private final String months;
@@ -29,6 +30,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
      *
      * @param subscriber
      * @param plan
+     * @param months
      * @param message
      */
     public TwitchSubscriberEvent(String subscriber, String plan, String months, String message) {
@@ -45,6 +47,10 @@ public class TwitchSubscriberEvent extends TwitchEvent {
      */
     public String getSubscriber() {
         return this.subscriber;
+    }
+
+    public String getUsername() {
+        return this.getSubscriber();
     }
 
     /**
@@ -64,7 +70,7 @@ public class TwitchSubscriberEvent extends TwitchEvent {
     public String getMonths() {
         return this.months;
     }
-    
+
     public String getMessage() {
         return this.message;
     }
