@@ -414,17 +414,19 @@
             $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
 
-        var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
-            defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
-            greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5));
+        if ($.inidb.FileExists('greeting')) {
+            var autoGreetEnabled = $.inidb.GetBoolean('greeting', '', 'autoGreetEnabled'),
+                defaultJoinMessage = $.getIniDbString('greeting', 'defaultJoin'),
+                greetingCooldown = $.getIniDbNumber('greeting', 'cooldown');
 
-        $.inidb.SetBoolean('greetingSettings', '', 'autoGreetEnabled', autoGreetEnabled);
-        $.setIniDbString('greetingSettings', 'defaultJoin', defaultJoinMessage);
-        $.setIniDbNumber('greetingSettings', 'cooldown', greetingCooldown);
+            $.inidb.SetBoolean('greetingSettings', '', 'autoGreetEnabled', autoGreetEnabled);
+            $.setIniDbString('greetingSettings', 'defaultJoin', defaultJoinMessage);
+            $.setIniDbNumber('greetingSettings', 'cooldown', greetingCooldown);
 
-        $.inidb.RemoveKey('greeting', '', 'autoGreetEnabled');
-        $.inidb.RemoveKey('greeting', '', 'defaultJoin');
-        $.inidb.RemoveKey('greeting', '', 'cooldown');
+            $.inidb.RemoveKey('greeting', '', 'autoGreetEnabled');
+            $.inidb.RemoveKey('greeting', '', 'defaultJoin');
+            $.inidb.RemoveKey('greeting', '', 'cooldown');
+        }
 
         $.consoleLn('PhantomBot update 3.6.3 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
