@@ -22,31 +22,44 @@
  * - (name) The username corresponding to the target user
  */
 (function () {
-    var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
-            defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
-            greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5)),
-            /* 6 Hours */
-            greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
+    var autoGreetEnabled = $.getSetIniDbBoolean('greetingSettings', 'autoGreetEnabled', false),
+        defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
+        greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
+        /* 6 Hours */
+        greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+        onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
+        userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
 
     /**
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function (event) {
-        if ($.isOnline($.channelName) && autoGreetEnabled) {
-            var sender = event.getUser().toLowerCase(),
-                    username = $.resolveRank(sender),
-                    message = $.getIniDbString('greeting', sender, ''),
-                    lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
-                    now = $.systemTime();
-
-            if (lastUserGreeting + greetingCooldown < now) {
-                if (message) {
-                    greetingQueue.add(message.replace('(name)', username));
-                    $.inidb.set('greetingCoolDown', sender, now);
-                }
-            }
+        if ($.isOnline($.channelName) && autoGreetEnabled && onJoin) {
+            addToQueue(event.getSender().toLowerCase());
         }
     });
+
+    /**
+     * @event ircChannelJoin
+     */
+    $.bind('ircChannelMessage', function (event) {
+        if ($.isOnline($.channelName) && autoGreetEnabled && !onJoin) {
+            addToQueue(event.getUser().toLowerCase());
+        }
+    });
+
+    function addToQueue(sender){
+        var rankStr = $.resolveRank(sender),
+            message = $.getIniDbString('greeting', sender, ''),
+            lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
+            now = $.systemTime();
+        if (lastUserGreeting + greetingCooldown < now) {
+            if (message) {
+                greetingQueue.add(message.replace('(name)', rankStr));
+                $.inidb.set('greetingCoolDown', sender, now);
+            }
+        }
+    }
 
     /**
      * @function doUserGreetings
@@ -74,9 +87,9 @@
      * @function greetingspanelupdate
      */
     function greetingspanelupdate() {
-        autoGreetEnabled = $.getIniDbBoolean('greeting', 'autoGreetEnabled');
-        defaultJoinMessage = $.getIniDbString('greeting', 'defaultJoin');
-        greetingCooldown = $.getIniDbNumber('greeting', 'cooldown');
+        autoGreetEnabled = $.getIniDbBoolean('greetingSettings', 'autoGreetEnabled');
+        defaultJoinMessage = $.getIniDbString('greetingSettings', 'defaultJoin');
+        greetingCooldown = $.getIniDbNumber('greetingSettings', 'cooldown');
     }
 
     /**
@@ -84,13 +97,13 @@
      */
     $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                action = args[0],
-                cooldown,
-                message,
-                username,
-                isSilent;
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0],
+            cooldown,
+            message,
+            username,
+            isSilent;
 
         /**
          * @commandpath greeting - Base command for controlling greetings.
@@ -99,7 +112,7 @@
             if (!action) {
                 if ($.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.admin'));
-                } else {
+                } else if (userSelfService) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.other'));
                 }
                 return;
@@ -113,6 +126,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.usage'));
                     return;
                 }
+
                 cooldown = parseInt(args[1]);
                 if (isNaN(cooldown)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.usage'));
@@ -120,7 +134,7 @@
                 }
 
                 greetingCooldown = cooldown * 36e5; // Convert hours to ms
-                $.inidb.set('greeting', 'cooldown', greetingCooldown);
+                $.inidb.set('greetingSettings', 'cooldown', greetingCooldown);
                 $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.success', cooldown));
                 return;
             }
@@ -130,7 +144,7 @@
              */
             if (action.equalsIgnoreCase('toggle')) {
                 autoGreetEnabled = !autoGreetEnabled;
-                $.setIniDbBoolean('greeting', 'autoGreetEnabled', autoGreetEnabled);
+                $.setIniDbBoolean('greetingSettings', 'autoGreetEnabled', autoGreetEnabled);
                 if (autoGreetEnabled) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.enabled', $.username.resolve($.botName)));
                 } else {
@@ -150,7 +164,7 @@
                     return;
                 }
 
-                $.inidb.set('greeting', 'defaultJoin', message);
+                $.inidb.set('greetingSettings', 'defaultJoin', message);
                 defaultJoinMessage = message;
                 $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.default.success', defaultJoinMessage));
                 return;
@@ -159,7 +173,7 @@
             /**
              * @commandpath greeting enable [default | message] - Enable greetings and use the default or set a message.
              */
-            if (action.equalsIgnoreCase('enable')) {
+            if (action.equalsIgnoreCase('enable') && userSelfService) {
                 message = args.splice(1, args.length - 1).join(' ');
 
                 if (!message) {
@@ -172,6 +186,7 @@
                 } else {
                     $.inidb.set('greeting', sender, message);
                 }
+
                 $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', $.inidb.get('greeting', sender)));
                 return;
             }
@@ -227,10 +242,38 @@
             /**
              * @commandpath greeting disable - Delete personal greeting and automated greeting at join
              */
-            if (action.equalsIgnoreCase('disable')) {
+            if (action.equalsIgnoreCase('disable') && userSelfService) {
                 if ($.inidb.exists('greeting', sender)) {
                     $.inidb.del('greeting', sender);
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.remove.personal.success'));
+                }
+                return;
+            }
+
+            /**
+             * @commandpath greeting toggleblockselfservice - Toggles between users being allowed or prevented to set their own greeting message
+             */
+            if (action.equalsIgnoreCase('toggleuserselfservice')) {
+                userSelfService = !userSelfService;
+                $.inidb.SetBoolean('greetingSettings', '', 'userSelfService', userSelfService);
+                if (userSelfService) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.userselfservice.on'));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.userselfservice.off'));
+                }
+                return;
+            }
+
+            /**
+             * @commandpath greeting toggleonjoin - Toggles if greetings are sent when a users joins the chat or when a user first sends a message
+             */
+            if (action.equalsIgnoreCase('toggleonjoin')) {
+                onJoin = !onJoin;
+                $.inidb.SetBoolean('greetingSettings', '', 'onJoin', onJoin);
+                if (onJoin) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.onJoin.on'));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.onJoin.off'));
                 }
                 return;
             }
@@ -251,6 +294,8 @@
         $.registerChatSubcommand('greeting', 'remove', $.PERMISSION.Mod);
         $.registerChatSubcommand('greeting', 'removesilent', $.PERMISSION.Admin);
         $.registerChatSubcommand('greeting', 'disable', $.PERMISSION.Regular);
+        $.registerChatSubcommand('greeting', 'toggleuserselfservice', $.PERMISSION.Admin);
+        $.registerChatSubcommand('greeting', 'toggleonjoin', $.PERMISSION.Admin);
 
         doUserGreetings();
     });

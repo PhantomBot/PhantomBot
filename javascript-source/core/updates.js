@@ -29,9 +29,9 @@
  */
 (function () {
     var modules,
-            versions,
-            sounds,
-            i;
+        versions,
+        sounds,
+        i;
 
     /** New setup */
     if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
@@ -136,11 +136,11 @@
 
         $.consoleLn('Updating keywords...');
         var keys = $.inidb.GetKeyList('keywords', ''),
-                newKeywords = [],
-                key,
-                json,
-                i,
-                strippedKeys = {};
+            newKeywords = [],
+            key,
+            json,
+            i,
+            strippedKeys = {};
 
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
@@ -189,9 +189,9 @@
         $.consoleLn('Starting PhantomBot update 3.4.1 updates...');
 
         var keys = $.inidb.GetKeyList('keywords', ''),
-                i,
-                coolkey,
-                json;
+            i,
+            coolkey,
+            json;
 
         for (i = 0; i < keys.length; i++) {
             json = JSON.parse($.inidb.get('keywords', keys[i]));
@@ -218,16 +218,16 @@
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
             $.consoleLn('Updating timers...');
             var noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
-                    noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
-                    noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
-                    noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
-                    noticeKeys = $.inidb.GetKeyList('notices', ''),
-                    noticeIdx,
-                    notice,
-                    notices = [],
-                    disabled = [],
-                    disabledKey,
-                    noticeTimer;
+                noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
+                noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
+                noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
+                noticeKeys = $.inidb.GetKeyList('notices', ''),
+                noticeIdx,
+                notice,
+                notices = [],
+                disabled = [],
+                disabledKey,
+                noticeTimer;
 
             noticeKeys.sort();
 
@@ -277,7 +277,7 @@
 
         // Remove org.mozilla.javascript entries in phantombot_time
         var keys = $.inidb.GetKeyList('time', ''),
-                i;
+            i;
 
         $.consoleLn('Checking ' + keys.length + ' time entries for bad keys...');
 
@@ -301,8 +301,8 @@
 
         // Convert cooldowns to separate global and user cooldowns
         var cooldowns = $.inidb.GetKeyList('cooldown', ''),
-                json,
-                i;
+            json,
+            i;
 
 
         for (i in cooldowns) {
@@ -333,8 +333,8 @@
 
         // Convert cooldowns to separate global and user cooldowns
         var cooldowns = $.inidb.GetKeyList('discordCooldown', ''),
-                json,
-                i;
+            json,
+            i;
 
 
         for (i in cooldowns) {
@@ -371,7 +371,7 @@
         $.consoleLn('Starting PhantomBot update 3.6.2.5 updates...');
 
         var keys = $.inidb.GetKeyList('greeting', ''),
-                i;
+            i;
 
         for (i = 0; i < keys.length; i++) {
             var key = $.javaString(keys[i]);
@@ -390,10 +390,10 @@
         $.consoleLn('Starting PhantomBot update 3.6.3 updates...');
 
         var logFiles,
-                idx,
-                logFileDate,
-                logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
-                logDirIdx;
+            idx,
+            logFileDate,
+            logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
+            logDirIdx;
         for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
             logFiles = $.findFiles('./logs/' + logDirs[logDirIdx], 'txt');
             for (idx = 0; idx < logFiles.length; idx++) {
@@ -403,7 +403,7 @@
                 }
             }
         }
-        
+
         var commands = $.inidb.GetKeyList('cooldown', ''),
             json,
             i;
@@ -413,6 +413,18 @@
             json.modsSkip = false;
             $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
+
+        var autoGreetEnabled = $.getSetIniDbBoolean('greeting', 'autoGreetEnabled', false),
+            defaultJoinMessage = $.getSetIniDbString('greeting', 'defaultJoin', '(name) joined!'),
+            greetingCooldown = $.getSetIniDbNumber('greeting', 'cooldown', (6 * 36e5));
+
+        $.inidb.SetBoolean('greetingSettings', '', 'autoGreetEnabled', autoGreetEnabled);
+        $.setIniDbString('greetingSettings', 'defaultJoin', defaultJoinMessage);
+        $.setIniDbNumber('greetingSettings', 'cooldown', greetingCooldown);
+
+        $.inidb.RemoveKey('greeting', '', 'autoGreetEnabled');
+        $.inidb.RemoveKey('greeting', '', 'defaultJoin');
+        $.inidb.RemoveKey('greeting', '', 'cooldown');
 
         $.consoleLn('PhantomBot update 3.6.3 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);

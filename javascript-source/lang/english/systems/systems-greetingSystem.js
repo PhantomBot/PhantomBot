@@ -28,3 +28,7 @@ $.lang.register('greetingsystem.generalusage.admin', 'Usage: !greeting [toggle |
 $.lang.register('greetingsystem.generalusage.other', 'Usage: !greeting [ enable [default | message text] | disable ]. Tags for message text: (name)');
 $.lang.register('greetingsystem.cooldown.usage', 'Usage: !greeting cooldown [hours]');
 $.lang.register('greetingsystem.cooldown.success', 'Greetings cooldown set to $1 hours.');
+$.lang.register('greetingsystem.set.userselfservice.off', 'Users are prevented to set their own greeting messages now!');
+$.lang.register('greetingsystem.set.userselfservice.on', 'Users are allowed to set their own greeting messages!');
+$.lang.register('greetingsystem.set.onJoin.off', 'Users will be greeted after their first message!');
+$.lang.register('greetingsystem.set.onJoin.on', 'Users will be greeted upon joining the chat!');
