@@ -48,33 +48,33 @@
             if (this.labels.length === 0 || label === undefined || label === null || label.length === 0) {
                 return true;
             }
-            
+
             return this.labels.includes(label.trim().toLowerCase());
         };
         this.hasAllLabels = function (labelSet) {
             if (labelSet.length === 0) {
                 return true;
             }
-            
+
             for (var i = 0; i < labelSet.length; i++) {
                 if (!this.hasLabel(labelSet[i])) {
                     return false;
                 }
             }
-            
+
             return true;
         };
         this.hasAnyLabel = function (labelSet) {
             if (labelSet.length === 0) {
                 return true;
             }
-            
+
             for (var i = 0; i < labelSet.length; i++) {
                 if (this.hasLabel(labelSet[i])) {
                     return true;
                 }
             }
-            
+
             return false;
         };
 
@@ -91,31 +91,31 @@
      * @param {string} event
      * @param {string} message
      * @param {bool} atEnabled
+     * @param {array} globalTransformerRequriedLabels
+     * @param {array} globalTransformerAnyLabels
      * @param {object} localTransformers
-     * @param {array or bool} globalTransformerLabels
-     * @param {bool} allLabelsMode
      * @param {object} customArgs
      * @return {string}
      */
-    function tags(event, message, atEnabled, localTransformers, globalTransformerLabels, allLabelsMode, customArgs) {
+    function tags(event, message, atEnabled, globalTransformerRequiredLabels, globalTransformerAnyLabels, localTransformers, customArgs) {
         var match,
                 tagFound = false,
                 transformed,
                 transformCache = {};
 
-        if (atEnabled === undefined) {
+        if (atEnabled === undefined || atEnabled === null) {
             atEnabled = false;
         }
 
-        if (globalTransformerLabels === undefined) {
-            globalTransformerLabels = [];
-        }
-        
-        if (allLabelsMode === undefined) {
-            allLabelsMode = false;
+        if (globalTransformerRequiredLabels === undefined || globalTransformerRequiredLabels === null) {
+            globalTransformerRequiredLabels = ['twitch'];
         }
 
-        if (localTransformers === undefined) {
+        if (globalTransformerAnyLabels === undefined || globalTransformerAnyLabels === null) {
+            globalTransformerAnyLabels = [];
+        }
+
+        if (localTransformers === undefined || localTransformers === null) {
             localTransformers = {};
         }
 
@@ -132,12 +132,10 @@
                 if (localTransformers.hasOwnProperty(tagName)
                         && (transformed = localTransformers[tagName](tagArgs, event, customArgs))) {
                     thisTagFound = true;
-                } else if (globalTransformerLabels !== true && transformers.hasOwnProperty(tagName)) {
-                    if (globalTransformerLabels === false || (allLabelsMode && transformers[tagName].hasAllLabels(globalTransformerLabels))
-                            || (!allLabelsMode && transformers[tagName].hasAnyLabel(globalTransformerLabels)))
-                        if ((transformed = transformers[tagName].transformer(tagArgs, event, customArgs))) {
-                            thisTagFound = true;
-                        }
+                } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
+                        && transformers[tagName].hasAnyLabel(globalTransformerAnyLabels)
+                        && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs))) {
+                    thisTagFound = true;
                 }
 
                 if (thisTagFound) {
@@ -164,7 +162,7 @@
         }
 
         // custom commands without tags can be directed towards users by mods
-        if (tagFound === -1
+        if (!tagFound
                 && atEnabled
                 && event.getArgs()[0] !== undefined
                 && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
@@ -188,19 +186,16 @@
     }
 
     /*
-     * @function addTagTransformer
-     * @export $
-     * @param {string} tag
-     * @param {function} transformer
+     * @deprecated
      */
-    function addTagTransformer(tag, transformer) {
+    function legacyAddTransformer(tag, transformer) {
         addTransformer(new Transformer(tag, [], transformer));
     }
 
     function addTransformer(transformer) {
         transformers[transformer.tag] = transformer;
     }
-    
+
     function addTransformers(transformerSet) {
         for (var i = 0; i < transformerSet.length; i++) {
             addTransformer(transformerSet[i]);
@@ -215,17 +210,17 @@
         return transformers[tag.toLowerCase()];
     }
 
-    function getTransformersByLabel(label) {
+    function getTransformersWithLabel(label) {
         var result = [];
         for (var i = 0; i < transformers.length; i++) {
             if (transformers[i].hasLabel(label)) {
                 result.push(transformers[i]);
             }
         }
-        
+
         return result;
     }
-    
+
     function getTransformersWithAllLabels(labelSet) {
         var result = [];
         for (var i = 0; i < transformers.length; i++) {
@@ -233,10 +228,10 @@
                 result.push(transformers[i]);
             }
         }
-        
+
         return result;
     }
-    
+
     function getTransformersWithAnyLabel(labelSet) {
         var result = [];
         for (var i = 0; i < transformers.length; i++) {
@@ -244,13 +239,27 @@
                 result.push(transformers[i]);
             }
         }
-        
+
         return result;
     }
 
-    $.tags = tags;
-    $.escapeTags = escapeTags;
-    $.addTagTransformer = addTagTransformer;
+    /*
+     * @deprecated
+     */
+    function legacyTags(event, message, atEnabled, localTransformers, disableGlobalTransformers) {
+        var globalRequired = [];
+        if (disableGlobalTransformers === true) {
+            globalRequired.push('local');
+        } else {
+            globalRequired.push('twitch');
+        }
+
+        return tags(event, message, atEnabled, globalRequired, [], localTransformers, null);
+    }
+
+    $.tags = legacyTags;
+    $.escapeTags = escapeTags; // @deprecated export
+    $.addTagTransformer = legacyAddTransformer;
     $.transformers = {
         tags: tags,
         transformer: Transformer,
@@ -260,7 +269,7 @@
         unescapeTags: unescapeTags,
         getTransformers: getTransformers,
         getTransformer: getTransformer,
-        getTransformersByLabel: getTransformersByLabel,
+        getTransformersWithLabel: getTransformersWithLabel,
         getTransformersWithAllLabels: getTransformersWithAllLabels,
         getTransformersWithAnyLabel: getTransformersWithAnyLabel
     };
