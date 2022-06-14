@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import tv.phantombot.PhantomBot;
 
 public class ScriptManager {
 
@@ -38,21 +37,7 @@ public class ScriptManager {
 
         Script script = new Script(scriptFile, fileName);
         scripts.put(scriptFile.toPath().toString(), script);
-        try {
-            script.load();
-        } catch (IOException ex) {
-            if (scriptFile.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to load module: init.js: " + ex.getMessage());
-            } else {
-                com.gmt2001.Console.err.println("Failed to load module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
-            }
-            com.gmt2001.Console.err.printStackTrace(ex);
-            if (!PhantomBot.getReloadScripts()) {
-                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
-                PhantomBot.exitError();
-            }
-            throw ex;
-        }
+        script.load();
     }
 
     /**
@@ -65,20 +50,7 @@ public class ScriptManager {
         }
 
         Script script = scripts.get(scriptFile.toPath().toString());
-        try {
-            script.reload(false);
-        } catch (IOException ex) {
-            if (scriptFile.getPath().endsWith("init.js")) {
-                com.gmt2001.Console.err.println("Failed to reload module: init.js: " + ex.getMessage());
-            } else {
-                com.gmt2001.Console.err.println("Failed to reload module: " + scriptFile.getPath().replace("./scripts/./", "") + ": " + ex.getMessage());
-            }
-            if (!PhantomBot.getReloadScripts()) {
-                com.gmt2001.Console.err.println("Terminating PhantomBot due to Bad JavaScript File");
-                PhantomBot.exitError();
-            }
-            throw new IOException(ex.getMessage());
-        }
+        script.reload(false);
     }
 
     /**
