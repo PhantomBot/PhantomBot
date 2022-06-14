@@ -108,6 +108,8 @@ public final class err {
     public static void printStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             e.printStackTrace(System.err);
+        } else {
+            println(e.getClass().getName() + ": " + e.getMessage());
         }
 
         logStackTrace(e, custom, description, isUncaught);
