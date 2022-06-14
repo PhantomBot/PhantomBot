@@ -86,7 +86,7 @@ public class TwitchAuthorizationCodeFlow {
         return this.refreshTokens(refreshTransaction, bot, api);
     }
 
-    private boolean refreshTokens(Transaction refreshTransaction, boolean bot, boolean api) {
+    private synchronized boolean refreshTokens(Transaction refreshTransaction, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
             boolean botchanged = this.refreshBotOAuth(refreshTransaction);
