@@ -18,6 +18,7 @@
 # /*
 #  * @[|local]transformer functionName
 #  * @formula... (tag[|:type][|=|\|][| var:type...]) description?
+#  * @labels? list of labels
 #  * @customarg...? (name:customArgType) description?
 #  * @notes?... text
 #  * multi-line allowed
@@ -35,7 +36,7 @@
 # Uses Doc-comment definition
 
 # /*
-#  * @usestransformers [global] [local]
+#  * @usestransformers [global] [local] [requires all of:]? labels?
 #  */
 
 import copy
@@ -51,6 +52,7 @@ transformer_template = {}
 transformer_template["script"] = ""
 transformer_template["function"] = ""
 transformer_template["formulas"] = []
+transformer_template["labels"] = ""
 transformer_template["customArgs"] = []
 transformer_template["notes"] = []
 transformer_template["examples"] = []
@@ -67,6 +69,7 @@ usestransformers_hook_template = {}
 usestransformers_hook_template["hook"] = ""
 usestransformers_hook_template["global"] = False
 usestransformers_hook_template["local"] = False
+usestransformers_hook_template["labels"] = ""
 
 # States
 # 0 = Outside multi-line comment block
@@ -128,6 +131,7 @@ def parse_file(fpath, lines):
                     usestransformer_hook["global"] = True
                 if "local" in line:
                     usestransformer_hook["local"] = True
+                usestransformer_hook["labels"] = line.removeprefix("@usestransformers").strip().removeprefix("global").strip().removeprefix("local").strip()
             if state > 1:
                 if state != 2 and state != 5 and line.startswith("@"):
                     if state == 3 or state == 6:
@@ -150,6 +154,8 @@ def parse_file(fpath, lines):
                     else:
                         formula["desc"] = ""
                     transformer["formulas"].append(formula)
+                if line.startswith("@labels"):
+                    transformers["labels"] = line.removeprefix("@labels").strip()
                 if line.startswith("@customarg"):
                     line = line[9:].strip()
                     desc_pos = line.find(") ")
@@ -209,6 +215,9 @@ def output_transformer(transformer, hlevel):
         if len(formula["desc"]) > 0:
             line = line + " - " + formula["desc"]
         lines.append(line + '\n')
+    if len(transformer["labels"]) > 0:
+        lines.append('\n')
+        lines.append("**Labels:** " + transformer["labels"] + '\n')
     if len(transformer["customArgs"]) > 0:
         lines.append('\n')
         lines.append("**Custom Arguments:**" + '\n')
@@ -295,6 +304,9 @@ def output_usestransformer(usestransformer, hlevel):
         else:
             line = line + "No"
         lines.append(line + '\n')
+    if len(hook["labels"]) > 0:
+        lines.append('\n')
+        lines.append("**Labels Used:** " + hook["labels"] + '\n')
     lines.append('\n')
     lines.append("&nbsp;" + '\n')
     lines.append('\n')
