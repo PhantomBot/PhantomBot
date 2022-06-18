@@ -167,6 +167,9 @@
      * @param {Boolean} force
      */
     function loadScriptRecursive(path, silent, force) {
+        if (path === undefined || path === null) {
+            return;
+        }
         var files = $.findFiles('./scripts/' + path, ''),
                 i;
 
