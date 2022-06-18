@@ -734,6 +734,10 @@
     }
 
     function match(str, regex) {
+        if (str === undefined || str === null) {
+            return ''.match(regex);
+        }
+
         regex.lastIndex = 0;
         return str.match(regex);
     }
