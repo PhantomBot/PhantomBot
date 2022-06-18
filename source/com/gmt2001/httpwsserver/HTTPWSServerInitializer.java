@@ -54,6 +54,7 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
         SslContext sslCtx = HTTPWSServer.instance().getSslContext();
         if (sslCtx != null) {
             pipeline.addLast("sslhandler", new HttpOptionalSslHandler(sslCtx));
+            pipeline.addLast(new CatchSslExceptionHandler());
         }
 
         pipeline.addLast(new HttpServerCodec());

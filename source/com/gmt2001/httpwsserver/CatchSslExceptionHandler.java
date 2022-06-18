@@ -16,29 +16,26 @@
  */
 package com.gmt2001.httpwsserver;
 
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.ssl.OptionalSslHandler;
-import io.netty.handler.ssl.SslContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
- * Detects Non-SSL HTTP connections and activates the SSL Redirect handler, when SSL is enabled
  *
  * @author gmt2001
  */
-public class HttpOptionalSslHandler extends OptionalSslHandler {
+public class CatchSslExceptionHandler extends ChannelInboundHandlerAdapter {
 
     /**
-     * Default Constructor
+     * Handles exceptions that are thrown up the stack
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param cause The exception
      */
-    HttpOptionalSslHandler(SslContext sslContext) {
-        super(sslContext);
-    }
-
     @Override
-    protected ChannelHandler newNonSslHandler(ChannelHandlerContext context) {
-        context.pipeline().addBefore("pagehandler", "httpsslredirect", new HttpSslRedirectHandler());
-        context.pipeline().addBefore("wshandler", "wssslerror", new WsSslErrorHandler());
-        return null;
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause.getMessage().contains("no cipher suites in common") || cause.getMessage().contains("unable to find valid certification path")) {
+            HTTPWSServer.instance().generateAutoSsl(true);
+        }
+        ctx.fireExceptionCaught(cause);
     }
 }
