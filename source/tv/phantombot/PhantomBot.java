@@ -1486,11 +1486,23 @@ public final class PhantomBot implements Listener {
     }
 
     public static String getTimeZone() {
-        return CaselessProperties.instance().getProperty("logtimezone", "GMT");
+        String tz = CaselessProperties.instance().getProperty("logtimezone", "GMT");
+
+        if (tz == null || tz.isBlank()) {
+            return "GMT";
+        }
+
+        return tz;
     }
 
     public static ZoneId getTimeZoneId() {
-        return ZoneId.of(getTimeZone());
+        ZoneId zoneId = ZoneId.of(getTimeZone());
+
+        if (zoneId == null) {
+            return ZoneId.systemDefault();
+        }
+
+        return zoneId;
     }
 
     public static boolean isInExitState() {
