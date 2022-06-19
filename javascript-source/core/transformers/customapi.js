@@ -37,7 +37,7 @@
     /*
      * @transformer customapi
      * @formula (customapi url:str) http GET url and output returned text (escaped by default)
-     * @labels twitch discord customapi command
+     * @labels twitch discord command customapi
      * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
      * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
      * @notes this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage
@@ -78,7 +78,7 @@
     /*
      * @transformer customapijson
      * @formula (customapijson url:str specs:str) httpGet url and extract json info according to specs (escaped by default)
-     * @labels twitch discord customapi command
+     * @labels twitch discord command customapi
      * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
      * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
      * @notes the response must be a JSONObject. arrays are only supported with a known index, walking arrays is not supported
@@ -184,8 +184,8 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('customapi', ['twitch', 'discord', 'customapi', 'command'], customapi),
-        new $.transformers.transformer('customapijson', ['twitch', 'discord', 'customapi', 'command'], customapijson)
+        new $.transformers.transformer('customapi', ['twitch', 'discord', 'command', 'customapi'], customapi),
+        new $.transformers.transformer('customapijson', ['twitch', 'discord', 'command', 'customapi'], customapijson)
     ];
 
     $.transformers.addTransformers(transformers);
