@@ -31,12 +31,12 @@
     function randomInt(args) {
         if (!args) {
             return {
-                result: $.jsString($.randRange(1, 100)),
+                result: $.randRange(1, 100),
                 cache: false
             };
         } else if ((match = args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
             return {
-                result: $.jsString($.randRange(parseInt(match[1]), parseInt(match[2]))),
+                result: $.randRange(parseInt(match[1]), parseInt(match[2])),
                 cache: false
             };
         }
@@ -57,11 +57,11 @@
         return function (args, event) {
             var arg = event.getArgs()[n - 1];
             if (!args) {
-                return {result: arg !== undefined ? $.jsString(arg) : ''};
+                return {result: arg !== undefined ? arg : ''};
             } else if ((match = args.match(/^([=\|])(.*)$/))) {
                 if (arg !== undefined) {
                     return {
-                        result: $.jsString(arg),
+                        result: arg,
                         cache: true
                     };
                 }
@@ -85,7 +85,7 @@
     function atSender(args, event) {
         if (!args) {
             return {
-                result: $.jsString($.userPrefix(event.getSender(), true)),
+                result: $.userPrefix(event.getSender(), true),
                 cache: true
             };
         }
@@ -132,7 +132,7 @@
      */
     function baresender(args, event) {
         if (!args) {
-            return {result: $.jsString(event.getSender())};
+            return {result: event.getSender()};
         }
     }
 
@@ -194,7 +194,7 @@
             temp = [];
             for (i in keys) {
                 if (!keys[i].includes(' ')) {
-                    temp.push('!' + keys[i] + ': ' + $.getPoints$.jsString($.inidb.get('pricecom', keys[i])));
+                    temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
                 }
             }
             $.paginateArray(temp, 'NULL' + prefix, ', ', true, event.getSender());
@@ -212,7 +212,7 @@
     function count(args, event) {
         if (!args) {
             $.inidb.incr('commandCount', event.getCommand(), 1);
-            return {result: $.jsString($.inidb.get('commandCount', event.getCommand()))};
+            return {result: $.inidb.get('commandCount', event.getCommand())};
         }
     }
 
@@ -233,7 +233,7 @@
             }
             temp -= Date.parse($.getLocalTime());
             return {
-                result: $.jsString($.getCount$.jsString(temp / 1000, false)),
+                result: $.getCountString(temp / 1000, false),
                 cache: true
             };
         }
@@ -256,7 +256,7 @@
             }
             temp = Date.parse($.getLocalTime()) - temp;
             return {
-                result: $.jsString($.getCount$.jsString(temp / 1000, true)),
+                result: $.getCountString(temp / 1000, true),
                 cache: true
             };
         }
@@ -272,7 +272,7 @@
     function currenttime(args) {
         if ((match = args.match(/^ (.+), (.*)$/))) {
             return {
-                result: $.jsString($.getCurrentLocalTime$.jsString(match[2], match[1])),
+                result: $.getCurrentLocalTimeString(match[2], match[1]),
                 cache: true
             };
         }
@@ -287,7 +287,7 @@
      */
     function echo(args, event) {
         if (!args) {
-            return {result: event.getArguments() ? $.jsString(event.getArguments()) : ''};
+            return {result: event.getArguments() ? event.getArguments() : ''};
         }
     }
 
@@ -375,7 +375,7 @@
                     keywordInfo["count"] = 1;
                 }
                 $.inidb.set('keywords', keyword, JSON.stringify(keywordInfo));
-                return {result: $.jsString(keywordInfo["count"])};
+                return {result: keywordInfo["count"]};
             } else {
                 return {result: $.lang.get('customcommands.keyword.404', keyword)};
             }
@@ -400,7 +400,7 @@
                 temp = 0;
             }
             return {
-                result: $.jsString($.getPoints($.jsString(temp))),
+                result: $.getPoints($.jsString(temp)),
                 cache: true
             };
         }
@@ -415,7 +415,7 @@
      */
     function pointname(args) {
         if (!args) {
-            return {result: $.jsString($.pointNameMultiple)};
+            return {result: $.pointNameMultiple};
         }
     }
 
@@ -433,7 +433,7 @@
     function pointtouser(args, event) {
         temp = '';
         if (event.getArgs().length > 0) {
-            temp = $.js$.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
             temp = event.getSender();
@@ -455,10 +455,10 @@
             var user;
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = $.jsString(event.getSender());
+                user = event.getSender();
             }
             return {
-                result: $.jsString($.getUserPoints(user)),
+                result: $.getUserPoints(user),
                 cache: true
             };
         }
@@ -485,7 +485,7 @@
                 temp = 0;
             }
             return {
-                result: $.jsString($.getPoints$.jsString(temp)),
+                result: $.getPointsString(temp),
                 cache: true
             };
         }
@@ -508,11 +508,11 @@
                 }
 
                 return {
-                    result: $.jsString(name),
+                    result: name,
                     cache: false
                 };
             } catch (ex) {
-                return {result: $.jsString($.username.resolve($.botName))};
+                return {result: $.username.resolve($.botName)};
             }
         }
     }
@@ -528,11 +528,11 @@
         if (!args) {
             try {
                 return {
-                    result: $.jsString($.resolveRank($.randElement($.users))),
+                    result: $.resolveRank($.randElement($.users)),
                     cache: false
                 };
             } catch (ex) {
-                return {result: $.jsString($.resolveRank($.botName))};
+                return {result: $.resolveRank($.botName)};
             }
         }
     }
@@ -579,7 +579,7 @@
     function sender(args, event) {
         if (!args) {
             return {
-                result: $.jsString($.username.resolve(event.getSender())),
+                result: $.username.resolve(event.getSender()),
                 cache: true
             };
         }
@@ -596,7 +596,7 @@
     function senderrank(args, event) {
         if (!args) {
             return {
-                result: $.jsString($.resolveRank(event.getSender())),
+                result: $.resolveRank(event.getSender()),
                 cache: true
             };
         }
@@ -610,7 +610,7 @@
     function senderrankonly(args, event) {
         if (!args) {
             return {
-                result: $.jsString($.getRank(event.getSender())),
+                result: $.getRank(event.getSender()),
                 cache: true
             };
         }
@@ -630,7 +630,7 @@
         cmd = event.getCommand();
         if ($.inidb.HasKey('commandtoken', '', cmd)) {
             return {
-                result: $.inidb.Get$.jsString('commandtoken', '', cmd),
+                result: $.inidb.GetString('commandtoken', '', cmd),
                 cache: true
             };
         } else {
@@ -655,13 +655,13 @@
     function touser(args, event) {
         temp = '';
         if (event.getArgs().length > 0) {
-            temp = $.js$.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
             temp = event.getSender();
         }
         return {
-            result: $.jsString($.username.resolve(temp)),
+            result: $.username.resolve(temp),
             cache: true
         };
     }
@@ -703,11 +703,9 @@
     transformers = {
         '#': randomInt,
         '@sender': atSender,
-        'adminonlyedit': adminonlyedit,
         'age': age,
         'alert': alert,
         'baresender': baresender,
-        'channelname': channelname,
         'code': code,
         'command': command,
         'commandslist': commandslist,
@@ -715,60 +713,27 @@
         'countdown': countdown,
         'countup': countup,
         'currenttime': currenttime,
-        'customapi': customapi,
-        'customapijson': customapijson,
-        'downtime': downtime,
         'echo': echo,
         'encodeurl': encodeurl,
         'encodeurlparam': encodeurlparam,
-        'followage': followage,
-        'followdate': followdate,
-        'follows': follows,
-        'game': game,
-        'gameinfo': gameinfo,
-        'gameonly': gameonly,
-        'gamesplayed': gamesplayed,
         'gettimevar': gettimevar,
         'help': help,
-        'hours': hours,
-        'hoursround': hoursround,
         'keywordcount': keywordcount,
-        'lasttip': lasttip,
-        'offlineonly': offlineonly,
-        'onlineonly': onlineonly,
         'pay': pay,
         'playsound': playsound,
-        'playtime': playtime,
         'pointname': pointname,
         'pointtouser': pointtouser,
         'points': points,
         'price': price,
         'random': random,
         'randomrank': randomrank,
-        'readfile': readfile,
-        'readfilerand': readfilerand,
         'repeat': repeat,
         'sender': sender,
         'senderrank': senderrank,
         'senderrankonly': senderrankonly,
-        'status': status,
-        'subscribers': subscribers,
-        'team_member_followers': team_member_followers,
-        'team_member_game': team_member_game,
-        'team_member_url': team_member_url,
-        'team_members': team_members,
-        'team_name': team_name,
-        'team_random_member': team_random_member,
-        'team_url': team_url,
-        'titleinfo': titleinfo,
         'token': token,
         'touser': touser,
-        'unescape': unescape,
-        'uptime': uptime,
-        'useronly': useronly,
-        'viewers': viewers,
-        'views': views,
-        'writefile': writefile
+        'unescape': unescape
     };
     for (i = 1; i <= 9; i++) {
         transformers[$.jsString(i)] = buildArgs(i);

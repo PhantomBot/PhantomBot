@@ -30,7 +30,7 @@
         if (res.content !== null) {
             return res.content;
         } else {
-            throw res.to$.jsString();
+            throw res.toString();
         }
     }
 
@@ -69,7 +69,7 @@
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
             }
             return {
-                result: $.jsString(response),
+                result: response,
                 cache: false
             };
         }
@@ -177,7 +177,7 @@
             }
 
             return {
-                result: $.jsString(result),
+                result: result,
                 cache: false
             };
         }

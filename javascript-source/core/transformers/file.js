@@ -39,7 +39,7 @@
                 };
             }
             return {
-                result: $.jsString($.readFile(fileName)[0] || ''),
+                result: $.readFile(fileName)[0] || '',
                 cache: true
             };
         }
@@ -59,7 +59,10 @@
                 return {result: $.lang.get('customcommands.file.404', fileName)};
             }
             temp = $.readFile(fileName);
-            return {result: $.jsString($.randElement(temp) || ''), cache: false};
+            return {
+                result: $.randElement(temp) || '',
+                cache: false
+            };
         }
     }
 
@@ -75,7 +78,10 @@
         if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
             fileName = './addons/' + $.replace(match[1], '..', '');
             $.writeToFile(match[3], fileName, match[2] === 'true');
-            return {result: '', cache: false};
+            return {
+                result: '',
+                cache: false
+            };
         }
     }
 

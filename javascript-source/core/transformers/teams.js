@@ -34,7 +34,7 @@
                 teamMember = teamObj.getTeamMember(match[2]);
                 if (teamMember !== null) {
                     return {
-                        result: $.jsString(teamMember.get('followers')),
+                        result: teamMember.getInt('followers'),
                         cache: true
                     };
                 } else {
@@ -68,7 +68,7 @@
                 teamMember = teamObj.getTeamMember(match[2]);
                 if (teamMember !== null) {
                     return {
-                        result: $.jsString(teamMember.get$.jsString('game')),
+                        result: teamMember.getString('game'),
                         cache: true
                     };
                 } else {
@@ -102,7 +102,7 @@
                 teamMember = teamObj.getTeamMember(match[2]);
                 if (teamMember !== null) {
                     return {
-                        result: $.jsString(teamMember.get$.jsString('url')),
+                        result: teamMember.getString('url'),
                         cache: true
                     };
                 } else {
@@ -133,7 +133,7 @@
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
-                    result: $.jsString(teamObj.getTotalMembers()),
+                    result: teamObj.getTotalMembers(),
                     cache: true
                 };
             } else {
@@ -158,7 +158,7 @@
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
-                    result: $.jsString(teamObj.getName()),
+                    result: teamObj.getName(),
                     cache: true
                 };
             } else {
@@ -182,7 +182,7 @@
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
-                    result: $.jsString(teamObj.getRandomMember()),
+                    result: teamObj.getRandomMember(),
                     cache: false
                 };
             } else {
@@ -207,7 +207,7 @@
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
-                    result: $.jsString(teamObj.getUrl()),
+                    result: teamObj.getUrl(),
                     cache: true
                 };
             } else {

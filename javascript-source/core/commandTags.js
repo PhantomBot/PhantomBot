@@ -140,7 +140,7 @@
         }
 
         if (globalTransformerRequiredLabels === undefined || globalTransformerRequiredLabels === null) {
-            globalTransformerRequiredLabels = ['twitch'];
+            globalTransformerRequiredLabels = ['twitch', 'command'];
         }
 
         if (globalTransformerAnyLabels === undefined || globalTransformerAnyLabels === null) {
@@ -172,6 +172,11 @@
 
                 if (thisTagFound) {
                     tagFound = true;
+                    if (transformed.hasOwnProperty('result')) {
+                        transformed.result = $.jsString(transformed.result);
+                    } else {
+                        transformed.result = '';
+                    }
                     if (transformed.hasOwnProperty('cancel') && transformed.cancel) {
                         return null;
                     }
@@ -194,11 +199,8 @@
         }
 
         // custom commands without tags can be directed towards users by mods
-        if (!tagFound
-                && atEnabled
-                && event.getArgs()[0] !== undefined
-                && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
-            return event.getArgs()[0] + ' -> ' + unescapeTags(message);
+        if (!tagFound && atEnabled && event.getArgs()[0] !== undefined && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
+            return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
         }
 
         message = unescapeTags(message);

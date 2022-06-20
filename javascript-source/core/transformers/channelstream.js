@@ -31,7 +31,7 @@
             temp = args.trim();
         }
         return {
-            result: $.jsString($.username.resolve(temp)),
+            result: $.username.resolve(temp),
             cache: true
         };
     }
@@ -45,7 +45,7 @@
     function downtime(args) {
         if (!args) {
             return {
-                result: $.jsString($.getStreamDownTime()),
+                result: $.getStreamDownTime(),
                 cache: true
             };
         }
@@ -75,7 +75,9 @@
                 channel = $.jsString($.channelName);
             }
             $.getFollowAge(event.getSender(), user, channel);
-            return {cancel: true};
+            return {
+                cancel: true
+            };
         }
     }
 
@@ -100,7 +102,7 @@
                 channel = $.jsString($.channelName);
             }
             return {
-                result: $.jsString($.getFollowDate(event.getSender(), user, channel)),
+                result: $.getFollowDate(event.getSender(), user, channel),
                 cache: true
             };
         }
@@ -123,7 +125,7 @@
             temp = args.trim();
         }
         return {
-            result: $.jsString($.getFollows(temp)),
+            result: $.getFollows(temp),
             cache: true
         };
     }
@@ -145,7 +147,7 @@
             temp = args.trim();
         }
         return {
-            result: $.jsString($.getGame(temp)),
+            result: $.getGame(temp),
             cache: true
         };
     }
@@ -200,7 +202,7 @@
                 return {cancel: true};
             }
             return {
-                result: $.jsString($.getGamesPlayed()),
+                result: $.getGamesPlayed(),
                 cache: true
             };
         }
@@ -221,7 +223,7 @@
                 user = $.jsString(event.getSender());
             }
             return {
-                result: $.jsString($.getUserTime(user) / 3600),
+                result: $.getUserTime(user) / 3600,
                 cache: true
             };
         }
@@ -242,7 +244,7 @@
                 user = $.jsString(event.getSender());
             }
             return {
-                result: $.jsString(Math.round($.getUserTime(user) / 360) / 10),
+                result: Math.round($.getUserTime(user) / 360) / 10,
                 cache: true
             };
         }
@@ -258,7 +260,7 @@
         if (!args) {
             if ($.inidb.exists('donations', 'last_donation_message')) {
                 return {
-                    result: $.jsString($.inidb.get('donations', 'last_donation_message')),
+                    result: $.inidb.get('donations', 'last_donation_message'),
                     cache: true
                 };
             } else {
@@ -287,7 +289,7 @@
                 return {cancel: true};
             }
             return {
-                result: $.jsString($.getPlayTime() || ''),
+                result: $.getPlayTime() || '',
                 cache: true
             };
         }
@@ -310,7 +312,7 @@
             temp = args.trim();
         }
         return {
-            result: $.jsString($.getStatus(temp)),
+            result: $.getStatus(temp),
             cache: true
         };
     }
@@ -328,7 +330,7 @@
     function subscribers(args) {
         if (!args) {
             return {
-                result: $.jsString($.getSubscriberCount() + ' '),
+                result: $.getSubscriberCount(),
                 cache: true
             };
         }
@@ -410,7 +412,7 @@
             temp = args.trim();
         }
         return {
-            result: $.jsString($.getViewers(temp)),
+            result: $.getViewers(temp),
             cache: true
         };
     }
@@ -424,7 +426,7 @@
     function views(args) {
         if (!args) {
             return {
-                result: $.jsString($.twitchcache.getViews()),
+                result: $.twitchcache.getViews(),
                 cache: true
             };
         }
