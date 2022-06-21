@@ -46,7 +46,10 @@ import discord4j.gateway.GatewayOptions;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.request.RequestQueueFactory;
+import discord4j.rest.request.RouteMatcher;
 import discord4j.rest.request.RouterOptions;
+import discord4j.rest.response.ResponseFunction;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -58,6 +61,7 @@ import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.retry.Retry;
 import reactor.util.concurrent.Queues;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.util.DiscordUtil;
@@ -135,7 +139,7 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
-            DiscordAPI.builder = DiscordClientBuilder.create(token);
+            DiscordAPI.builder = (DiscordClientBuilder) DiscordClientBuilder.create(token).onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.anyOf(IOException.class)));
             DiscordAPI.client = DiscordAPI.builder.setRequestQueueFactory(RequestQueueFactory.createFromSink(spec -> spec.multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)))).build();
         }
 
