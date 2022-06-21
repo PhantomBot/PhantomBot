@@ -35,7 +35,7 @@
      */
     $.bind('ircChannelJoin', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && onJoin) {
-            addToQueue(event.getSender().toLowerCase());
+            addToQueue(event.getUser().toLowerCase());
         }
     });
 
@@ -44,17 +44,17 @@
      */
     $.bind('ircChannelMessage', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && !onJoin) {
-            addToQueue(event.getUser().toLowerCase());
+            addToQueue(event.getSender().toLowerCase());
         }
     });
 
     function addToQueue(sender){
         var rankStr = $.resolveRank(sender),
-            message = $.getIniDbString('greeting', sender, ''),
+            message = $.getIniDbString('greeting', sender, undefined),
             lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
             now = $.systemTime();
         if (lastUserGreeting + greetingCooldown < now) {
-            if (message) {
+            if (message !== undefined) {
                 greetingQueue.add(message.replace('(name)', rankStr));
                 $.inidb.set('greetingCoolDown', sender, now);
             }
