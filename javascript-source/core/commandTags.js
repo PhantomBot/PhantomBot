@@ -172,7 +172,7 @@
 
                 if (thisTagFound) {
                     tagFound = true;
-                    if (transformed.hasOwnProperty('result')) {
+                    if (transformed.hasOwnProperty('result') && transformed.result !== null) {
                         transformed.result = $.jsString(transformed.result);
                     } else {
                         transformed.result = '';
@@ -354,6 +354,7 @@
             globalRequired.push('local');
         } else {
             globalRequired.push('twitch');
+            globalRequired.push('command');
         }
 
         return tags(event, message, atEnabled, globalRequired, [], localTransformers, null);
