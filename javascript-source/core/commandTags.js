@@ -245,7 +245,7 @@
      * @deprecated
      */
     function legacyAddTransformer(tag, transformer) {
-        addTransformer(new Transformer(tag, [], transformer));
+        addTransformer(new Transformer(tag, ['twitch', 'command'], transformer));
     }
 
     /*
