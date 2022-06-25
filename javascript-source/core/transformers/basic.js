@@ -75,68 +75,6 @@
     }
 
     /*
-     * @transformer atSender
-     * @formula (@sender) '@<Sender's Name>, '
-     * @example Caster: !addcom !hello (@sender) you are awesome!
-     * User: !hello
-     * Bot: @User, you're awesome!
-     * @cached
-     */
-    function atSender(args, event) {
-        if (!args) {
-            return {
-                result: $.userPrefix(event.getSender(), true),
-                cache: true
-            };
-        }
-    }
-
-    /*
-     * @transformer age
-     * @formula (age) outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
-     * @example Caster: !addcom !age (age)
-     * User: !age
-     * Bot: @User, user has been on Twitch since April 19, 2009.
-     *
-     * User: !age User2
-     * Bot: @User, user2 has been on Twitch since December 25, 2010.
-     * @cancels
-     */
-    function age(args, event) {
-        if (!args) {
-            $.getChannelAge(event);
-            return {cancel: true};
-        }
-    }
-
-    /*
-     * @transformer alert
-     * @formula (alert fileName:str) sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
-     * @formula (alert fileName:str, durationSeconds:int) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
-     * @formula (alert fileName:str, durationSeconds:int, volume:float) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
-     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
-     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
-     * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
-     * @example Caster: !addcom !banana (alert banana.gif)
-     */
-    function alert(args) {
-        if ((match = args.match(/^ ([,.\w\W]+)$/))) {
-            $.alertspollssocket.alertImage(match[1]);
-            return {result: '', cache: false};
-        }
-    }
-
-    /*
-     * @transformer baresender
-     * @formula (baresender) the login name of the message's sender
-     */
-    function baresender(args, event) {
-        if (!args) {
-            return {result: event.getSender()};
-        }
-    }
-
-    /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
      * @example Caster: !addcom !code (code 5)
@@ -420,31 +358,6 @@
     }
 
     /*
-     * @transformer pointtouser
-     * @formula (pointtouser) user + ' -> '; uses sender's display name if no other is provided
-     * @example Caster: !addcom !facebook (pointtouser) like my Facebook page!
-     * User: !facebook
-     * Bot: User ->  like my Facebook page!
-     *
-     * User: !facebook User2
-     * Bot: User2 -> like my Facebook  page!
-     * @cached
-     */
-    function pointtouser(args, event) {
-        temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
-        }
-        if (temp.length === 0) {
-            temp = event.getSender();
-        }
-        return {
-            result: $.jsString($.username.resolve(temp)) + ' -> ',
-            cache: true
-        };
-    }
-
-    /*
      * @transformer points
      * @formula (points) points of the sender
      * @formula (points user:str) points of the given user
@@ -569,54 +482,6 @@
     }
 
     /*
-     * @transformer sender
-     * @formula (sender) the sender's display name
-     * @example Caster: !addcom !hello Hello, (sender)!
-     * User: !hello
-     * Bot: Hello, User!
-     * @cached
-     */
-    function sender(args, event) {
-        if (!args) {
-            return {
-                result: $.username.resolve(event.getSender()),
-                cache: true
-            };
-        }
-    }
-
-    /*
-     * @transformer senderrank
-     * @formula (senderrank) the sender's display name, prefixed with their rank
-     * @example Caster: !addcom !poke /me Pokes (senderrank) with a bar of soap.
-     * User: !poke
-     * Bot: /me Pokes Master User with a bar of soap.
-     * @cached
-     */
-    function senderrank(args, event) {
-        if (!args) {
-            return {
-                result: $.resolveRank(event.getSender()),
-                cache: true
-            };
-        }
-    }
-
-    /*
-     * @transformer senderrankonly
-     * @formula (senderrankonly) the sender's rank
-     * @cached
-     */
-    function senderrankonly(args, event) {
-        if (!args) {
-            return {
-                result: $.getRank(event.getSender()),
-                cache: true
-            };
-        }
-    }
-
-    /*
      * @transformer token
      * @formula (token) replaced with the secret token that was set by !tokencom or the panel
      * @example Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=(token)&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
@@ -642,31 +507,6 @@
     }
 
     /*
-     * @transformer touser
-     * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
-     * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
-     * User: !twitter
-     * Bot: User Hey! Follow my Twitter!
-     *
-     * User: !twitter User2
-     * Bot: User2 Hey! Follow my Twitter!
-     * @cached
-     */
-    function touser(args, event) {
-        temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
-        }
-        if (temp.length === 0) {
-            temp = event.getSender();
-        }
-        return {
-            result: $.username.resolve(temp),
-            cache: true
-        };
-    }
-
-    /*
      * @transformer unescape
      * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
      * @raw
@@ -682,30 +522,8 @@
         }
     }
 
-    /*
-     * @transformer playsound
-     * @formula (playsound hook:str) plays a sound hook on the alerts overlay
-     * @formula (playsound hook:str|volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
-     * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
-     * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
-     */
-    function playsound(args) {
-        if ((match = args.match(/^\s([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
-            if (!$.audioHookExists(match[1])) {
-                $.log.error('Could not play audio hook: Audio hook does not exist.');
-                return {result: $.lang.get('customcommands.playsound.404', match[1])};
-            }
-            $.alertspollssocket.triggerAudioPanel(match[1], match[3] !== undefined ? match[3] : -1);
-            return {result: '', cache: false};
-        }
-    }
-
     transformers = {
         '#': randomInt,
-        '@sender': atSender,
-        'age': age,
-        'alert': alert,
-        'baresender': baresender,
         'code': code,
         'command': command,
         'commandslist': commandslist,
@@ -720,19 +538,13 @@
         'help': help,
         'keywordcount': keywordcount,
         'pay': pay,
-        'playsound': playsound,
         'pointname': pointname,
-        'pointtouser': pointtouser,
         'points': points,
         'price': price,
         'random': random,
         'randomrank': randomrank,
         'repeat': repeat,
-        'sender': sender,
-        'senderrank': senderrank,
-        'senderrankonly': senderrankonly,
         'token': token,
-        'touser': touser,
         'unescape': unescape
     };
     for (i = 1; i <= 9; i++) {
