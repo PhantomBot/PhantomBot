@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var keywords = [];
 
@@ -61,7 +63,7 @@
                 var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                 var cmdEvent = new CommandEvent(sender, "keyword_" + json.keyword, event.getMessage(), event.getTags());
                 json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + $.escapeTags(json.keyword) + ')');
-                $.say($.tags(cmdEvent, json.response, false));
+                $.say($.transformers.tags(cmdEvent, json.response, false, ['twitch'], ['command', 'keyword']));
             }
         }
 
@@ -134,7 +136,7 @@
                     response = null;
 
                 for (var i = 1; i < args.length; i++) {
-                    if (keyword == null) {
+                    if (keyword === null) {
                         if (args[i].equalsIgnoreCase('--regex')) {
                             isRegex = true;
                         } else if (args[i].equalsIgnoreCase('--case-sensitive')) {
@@ -148,7 +150,7 @@
                     }
                 }
 
-                if (response == null) {
+                if (response === null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.add.usage'));
                     return;
                 }
