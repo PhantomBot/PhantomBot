@@ -342,7 +342,7 @@ lines.append('\n')
 lines.append("[^cancels]: **Cancels:** If _Yes_, this tag will immediately cancel further parsing and execution of the current command, though the tag itself may still send a message to chat. If _Sometimes_, then some return conditions may cancel execution of the command" + '\n')
 lines.append('\n')
 
-for transformer in sorted(gtransformers, key=lambda x: x.function):
+for transformer in sorted(gtransformers, key=lambda x: x["function"]):
     lines.extend(output_transformer(transformer, 3))
 
 lines = lines[:len(lines) - 3]
