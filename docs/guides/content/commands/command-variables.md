@@ -18,82 +18,15 @@
 
 [^cancels]: **Cancels:** If _Yes_, this tag will immediately cancel further parsing and execution of the current command, though the tag itself may still send a message to chat. If _Sometimes_, then some return conditions may cancel execution of the command
 
-### randomInt
-
-Defined in script: _./javascript-source/core/commandTags.js_
-
-**Formulas:**
-
-- `(#)` - a random integer from 1 to 100, inclusive
-- `(# a:int, b:int)` - a random integer from a to b, inclusive
-
-
-**Example:**
-```text
-Caster: !addcom !lucky Your lucky number is (#)
-User: !lucky
-Bot: Your lucky number is 7
-```
-
-Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
--------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
-
-&nbsp;
-
-### buildArgs
-
-Defined in script: _./javascript-source/core/commandTags.js_
-
-**Formulas:**
-
-- `(n:int)` - the n-th argument (escaped by default)
-- `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
-- `(n:int|default:str)` - the n-th argument, if given, else a provided default value
-
-
-**Example:**
-```text
-Caster: !addcom !love (sender) loves (1).
-User: !love monkeys
-Bot: User loves monkeys.
-```
-
-Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
--------|-----------|----------
-Sometimes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
-
-&nbsp;
-
-### atSender
-
-Defined in script: _./javascript-source/core/commandTags.js_
-
-**Formulas:**
-
-- `(@sender)` - '@<Sender's Name>, '
-
-
-**Example:**
-```text
-Caster: !addcom !hello (@sender) you are awesome!
-User: !hello
-Bot: @User, you're awesome!
-```
-
-Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
--------|-----------|----------
-No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
-
-&nbsp;
-
 ### adminonlyedit
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/meta.js_
 
 **Formulas:**
 
 - `(adminonlyedit)` - returns blank
+
+**Labels:** twitch command meta
 
 
 _NOTE: metatag that prevents anyone but the broadcaster or admins from editing the command_
@@ -112,11 +45,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### age
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(age)` - outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
+
+**Labels:** twitch command user
 
 
 **Example:**
@@ -136,7 +71,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 ### alert
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/alerts.js_
 
 **Formulas:**
 
@@ -145,6 +80,8 @@ Defined in script: _./javascript-source/core/commandTags.js_
 - `(alert fileName:str, durationSeconds:int, volume:float)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
 - `(alert fileName:str, durationSeconds:int, volume:float, css:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
 - `(alert fileName:str, durationSeconds:int, volume:float, css:text, message:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
+
+**Labels:** twitch discord command alerts
 
 
 _NOTE: if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume_
@@ -161,13 +98,39 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### atSender
+
+Defined in script: _./javascript-source/core/transformers/user.js_
+
+**Formulas:**
+
+- `(@sender)` - '@<Sender's Name>, '
+
+**Labels:** twitch command user
+
+
+**Example:**
+```text
+Caster: !addcom !hello (@sender) you are awesome!
+User: !hello
+Bot: @User, you're awesome!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### baresender
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(baresender)` - the login name of the message's sender
+
+**Labels:** twitch command user
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -175,13 +138,42 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### buildArgs
+
+Defined in script: _./javascript-source/core/transformers/basic.js_
+
+**Formulas:**
+
+- `(n:int)` - the n-th argument (escaped by default)
+- `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
+- `(n:int|default:str)` - the n-th argument, if given, else a provided default value
+
+**Labels:** twitch discord command basic
+
+
+**Example:**
+```text
+Caster: !addcom !love (sender) loves (1).
+User: !love monkeys
+Bot: User loves monkeys.
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+Sometimes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### channelname
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(channelname)` - the display name of the Twitch channel
+- `(channelname channel:str)` - the display name of the provided Twitch channel
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -191,11 +183,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### code
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(code length:int)` - random code of the given length composed of a-zA-Z0-9
+
+**Labels:** twitch discord command misc
 
 
 **Example:**
@@ -213,12 +207,14 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### command
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/commands.js_
 
 **Formulas:**
 
 - `(command name:str)` - execute command with given name and pass no args
 - `(command name:str args:str)` - execute command with given name and pass args
+
+**Labels:** twitch command commands
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -228,12 +224,14 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 ### commandslist
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/commands.js_
 
 **Formulas:**
 
 - `(commandslist)` - lists custom commands (paginated)
 - `(commandslist prefix:str)` - lists custom commands (paginated) with a prefix in the output
+
+**Labels:** twitch command commands
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -243,11 +241,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 ### count
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/commands.js_
 
 **Formulas:**
 
 - `(count)` - increases the count of how often this command has been called and output new count
+
+**Labels:** twitch command commands
 
 
 **Example:**
@@ -265,11 +265,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### countdown
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/time.js_
 
 **Formulas:**
 
 - `(countdown datetime:str)` - shows the time remaining until the given datetime
+
+**Labels:** twitch discord command time
 
 
 _NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
@@ -290,11 +292,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### countup
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/time.js_
 
 **Formulas:**
 
 - `(countup datetime:str)` - shows the time elapsed since the given datetime
+
+**Labels:** twitch discord command time
 
 
 _NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
@@ -315,11 +319,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### currenttime
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/time.js_
 
 **Formulas:**
 
 - `(currenttime timezone:str, format:str)` - shows the current date/time in given timezone, using the provided output format
+
+**Labels:** twitch discord command time
 
 
 _NOTE: for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html_
@@ -334,11 +340,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### customapi
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
 - `(customapi url:str)` - http GET url and output returned text (escaped by default)
+
+**Labels:** twitch discord command customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
@@ -363,11 +371,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### customapijson
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
 - `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs (escaped by default)
+
+**Labels:** twitch discord command customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
@@ -394,11 +404,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### downtime
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(downtime)` - how long the channel has been offline
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -408,11 +420,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### echo
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/basic.js_
 
 **Formulas:**
 
 - `(echo)` - all arguments passed to the command
+
+**Labels:** twitch discord command basic
 
 
 **Example:**
@@ -430,11 +444,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### encodeurl
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(encodeurl url:str)` - url encode the given url
+
+**Labels:** twitch discord command misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -444,11 +460,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### encodeurlparam
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(encodeurlparam paramter:str)` - like encodeurl but also ecapes "&", "=", "+", "/", etc.
+
+**Labels:** twitch discord command misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -458,13 +476,15 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### followage
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(followage)` - sends a message denoting how long the sender of command is following this channel
 - `(followage user:str)` - sends a message denoting how long the provided user is following this channel
 - `(followage user:str channel:str)` - sends a message denoting how long the provided user is following the provided channel
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -482,13 +502,15 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
 
 ### followdate
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(followdate)` - the date the sender of this command last followed this channel
 - `(followdate user:str)` - the date the provided user last followed this channel
 - `(followdate user:str channel:str)` - the date the provided user last followed the provided channel
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -498,11 +520,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### follows
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(follows)` - number of follower of this channel
+- `(follows channel:str)` - number of follower of the specified channel
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -520,11 +545,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### game
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(game)` - currently played game
+- `(game channel:str)` - currently played game of the specified channel
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -542,11 +570,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### gameinfo
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(gameinfo)` - similar to (game) but include game time if online
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -564,12 +594,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### gameonly
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/meta.js_
 
 **Formulas:**
 
 - `(gameonly name:str)` - cancels the command if the current game does not exactly match the one provided; multiple games can be provided, separated by |
 - `(gameonly !! name:str)` - cancels the command if the current game exactly matches the one provided; multiple games can be provided, separated by |
+
+**Labels:** twitch command meta
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -579,11 +611,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 ### gamesplayed
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(gamesplayed)` - list games played in current stream, and the approximate uptime when each game was started; if offline, cancels the command
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -601,11 +635,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
 
 ### gettimevar
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/time.js_
 
 **Formulas:**
 
-- `(gettimevar name:str)` - retrieves the specified timevar, set using !settimevar, for use in a (countdown) or (countup) transformer
+- `(gettimevar name:str)` - retrieves the specified timevar, set using !settimevar on Twitch, for use in a (countdown) or (countup) transformer
+
+**Labels:** twitch discord command time
 
 
 **Example:**
@@ -624,12 +660,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### hours
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(hours)` - number of hours sender has spent in chat
 - `(hours user:str)` - number of hours the provided user has spent in chat
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -639,12 +677,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### hoursround
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(hoursround)` - number of hours sender has spent in chat, with the value rounded to the nearest tenth of an hour
 - `(hoursround user:str)` - number of hours the provided user has spent in chat, with the value rounded to the nearest tenth of an hour
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -654,11 +694,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### keywordcount
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(keywordcount keyword:str)` - increase the keyword count for the given keyword and return new count
+
+**Labels:** twitch keyword misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -668,11 +710,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### lasttip
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(lasttip)` - last tip message
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -682,11 +726,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### offlineonly
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/meta.js_
 
 **Formulas:**
 
 - `(offlineonly)` - if the channel is not offline, cancels the command
+
+**Labels:** twitch command meta
 
 
 **Example:**
@@ -702,11 +748,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 ### onlineonly
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/meta.js_
 
 **Formulas:**
 
 - `(onlineonly)` - if the channel is not online, cancels the command
+
+**Labels:** twitch command meta
 
 
 **Example:**
@@ -722,12 +770,14 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 ### pay
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/points.js_
 
 **Formulas:**
 
 - `(pay)` - outputs the number of points the sender has gained by using this command
 - `(pay command:str)` - outputs the number of points the sender would gain if they use the specified command
+
+**Labels:** twitch command points
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -737,12 +787,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### playsound
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/alerts.js_
 
 **Formulas:**
 
 - `(playsound hook:str)` - plays a sound hook on the alerts overlay
 - `(playsound hook:str|volume:float)` - plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
+
+**Labels:** twitch discord command alerts
 
 
 **Example:**
@@ -763,11 +815,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### playtime
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(playtime)` - how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -785,11 +839,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
 
 ### pointname
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/points.js_
 
 **Formulas:**
 
 - `(pointname)` - the plural name of the loyalty points
+
+**Labels:** twitch command points
 
 
 **Example:**
@@ -805,13 +861,32 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### points
+
+Defined in script: _./javascript-source/core/transformers/points.js_
+
+**Formulas:**
+
+- `(points)` - points of the sender
+- `(points user:str)` - points of the given user
+
+**Labels:** twitch command points
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### pointtouser
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(pointtouser)` - user + ' -> '; uses sender's display name if no other is provided
+
+**Labels:** twitch command user
 
 
 **Example:**
@@ -829,29 +904,16 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### points
-
-Defined in script: _./javascript-source/core/commandTags.js_
-
-**Formulas:**
-
-- `(points)` - points of the sender
-- `(points user:str)` - points of the given user
-
-Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
--------|-----------|----------
-No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
-
-&nbsp;
-
 ### price
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/points.js_
 
 **Formulas:**
 
 - `(price)` - the number of points the sender paid to use this command
 - `(price command:str)` - the number of points the sender would pay if they use the specified command
+
+**Labels:** twitch command points
 
 
 **Example:**
@@ -869,11 +931,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### random
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/basic.js_
 
 **Formulas:**
 
 - `(random)` - random user in chat, or the bot's name if chat is empty
+
+**Labels:** twitch command basic
 
 
 **Example:**
@@ -889,13 +953,40 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### randomInt
+
+Defined in script: _./javascript-source/core/transformers/basic.js_
+
+**Formulas:**
+
+- `(#)` - a random integer from 1 to 100, inclusive
+- `(# a:int, b:int)` - a random integer from a to b, inclusive
+
+**Labels:** twitch discord command basic
+
+
+**Example:**
+```text
+Caster: !addcom !lucky Your lucky number is (#)
+User: !lucky
+Bot: Your lucky number is 7
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### randomrank
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/basic.js_
 
 **Formulas:**
 
 - `(randomrank)` - random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
+
+**Labels:** twitch command basic
 
 
 **Example:**
@@ -913,11 +1004,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### readfile
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/file.js_
 
 **Formulas:**
 
 - `(readfile filename:str)` - first line of the specified file
+
+**Labels:** twitch discord command file
 
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
@@ -938,11 +1031,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### readfilerand
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/file.js_
 
 **Formulas:**
 
 - `(readfilerand filename:str)` - random line of the specified file
+
+**Labels:** twitch discord command file
 
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
@@ -955,11 +1050,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### repeat
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/basic.js_
 
 **Formulas:**
 
 - `(repeat n:int, message:str)` - repeat the message n times (copy/paste)
+
+**Labels:** twitch discord command basic
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -969,11 +1066,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### sender
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(sender)` - the sender's display name
+
+**Labels:** twitch command user
 
 
 **Example:**
@@ -991,11 +1090,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### senderrank
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(senderrank)` - the sender's display name, prefixed with their rank
+
+**Labels:** twitch command user
 
 
 **Example:**
@@ -1013,11 +1114,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### senderrankonly
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(senderrankonly)` - the sender's rank
+
+**Labels:** twitch command user
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1027,11 +1130,14 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### status
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(status)` - the current stream title
+- `(status channel:str)` - the current stream title of the specified channel
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -1049,11 +1155,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### subscribers
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(subscribers)` - number of subscribers of this channel
+
+**Labels:** twitch command channel stream
 
 
 _NOTE: only works if the apioauth in botlogin.txt belongs to the broadcaster_
@@ -1074,11 +1182,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_member_followers
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_member_followers team:str, membername:str)` - number of followers of user membername in the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1091,11 +1201,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_member_game
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_member_game team:str, membername:str)` - game user membername in the provided team currently plays
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1108,11 +1220,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_member_url
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_member_url team:str, membername:str)` - url of user membername in the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1125,11 +1239,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_members
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_members team:str)` - number of members in the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1142,11 +1258,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_name
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_name team:str)` - name of the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1159,11 +1277,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### team_random_member
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_random_member team:str)` - random member of the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1176,11 +1296,13 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ### team_url
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/teams.js_
 
 **Formulas:**
 
 - `(team_url team:str)` - url to the provided team
+
+**Labels:** twitch command teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1193,11 +1315,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### titleinfo
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(titleinfo)` - title + uptime if online
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -1215,11 +1339,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### token
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(token)` - replaced with the secret token that was set by !tokencom or the panel
+
+**Labels:** twitch command misc
 
 
 **Example:**
@@ -1239,11 +1365,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### touser
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
 - `(touser)` - display name of the user provided as an argument by the sender; sender's display name if no other is provided
+
+**Labels:** twitch command user
 
 
 **Example:**
@@ -1263,11 +1391,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### unescape
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
 - `(unescape str:str)` - unescape \\ \( \) to \ ( ) respectively
+
+**Labels:** twitch discord command misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1277,11 +1407,14 @@ Yes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### uptime
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(uptime)` - how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
+- `(uptime channel:str)` - how long the specified channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -1299,11 +1432,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
 
 ### useronly
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/meta.js_
 
 **Formulas:**
 
 - `(useronly name:str)` - only allows the given user to use the command; multiple users separated by spaces is allowed; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
+
+**Labels:** twitch command meta
 
 
 _NOTE: use @moderators as one of the user names to allow all moderators and admins_
@@ -1318,11 +1453,14 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 ### viewers
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(viewers)` - number of current viewers
+- `(viewers channel:str)` - number of current viewers for the specified channel
+
+**Labels:** twitch command channel stream
 
 
 **Example:**
@@ -1340,11 +1478,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### views
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 **Formulas:**
 
 - `(views)` - number of total view count for the stream
+
+**Labels:** twitch command channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1354,11 +1494,13 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 ### writefile
 
-Defined in script: _./javascript-source/core/commandTags.js_
+Defined in script: _./javascript-source/core/transformers/file.js_
 
 **Formulas:**
 
 - `(writefile filename:str, append:bool, text:str)` - writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
+
+**Labels:** twitch discord command file
 
 
 _NOTE: files will be placed in the addons folder, or a subfolder therein specified by the filename parameter_
