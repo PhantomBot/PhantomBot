@@ -171,7 +171,7 @@
          */
         if (customCommands[command] !== undefined
                 && !$.inidb.exists('disabledCommands', command)) {
-            var tag = $.tags(event, customCommands[command], true);
+            var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', 'command']);
             if (tag !== null) {
                 $.say(tag);
             }
@@ -449,7 +449,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('customcommands.set.perm.404', action + ' ' + subAction));
                     return;
                 }
-                
+
                 if (isNaN(parseInt(group))) {
                     group = $.getGroupIdByName(group);
                 } else {
