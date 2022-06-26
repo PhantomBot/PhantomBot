@@ -23,18 +23,22 @@
      *
      * function(tagArgs, event, customArgs)
      *
-     * param {string} tagArgs - any arguments provided in the tag itself
+     * param {jsString} tagArgs - any arguments provided in the tag itself
      * * Example: (mytag arg1 arg2 arg3) - tagArgs = 'arg1 arg2 arg3'
      *
-     * param {javaObject[tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as CommandEvent
+     * param {javaObject[T extends tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as a CommandEvent
      *
-     * param {object} customArgs - a js object which can contain arbitrary arguments defined by the caller
+     * param {jsObject} customArgs - a js object which can contain arbitrary arguments defined by the caller
      *
-     * return {object}     {
-     *                         result: string or null // the returned value. The tag being processed will be replaced with this value, if a valid string is returned (including empty string)
-     *                         cancel: boolean // default: false. Set `true` to cancel further tag processing and return null to the caller
-     *                         raw: boolean // default: false. If set to `false`, the value of `result` will be escaped, preventing processing of any tags that may be contained in `result`
-     *                         cache: boolean // default: false. If set to `true` the value of `result` is temporarily cached. This means that processing is not repeated if the exact same tag appears multiple times in the same input message. The cache is erased after the input message is processed
+     * return {jsObject}     {
+     *                         result: {jsString or null}, // default: ''. the returned value. The tag being processed will be replaced with this
+     *                                                     //     value, if a valid string is returned (including empty string)
+     *                         cancel: {boolean},          // default: false. Set `true` to cancel further tag processing and return null to the caller
+     *                         raw: {boolean},             // default: false. If set to `false`, the value of `result` will be escaped, preventing
+     *                                                     //     processing of any tags that may be contained in `result`
+     *                         cache: {boolean}            // default: false. If set to `true` the value of `result` is temporarily cached. This means
+     *                                                     //     that processing is not repeated if the exact same tag appears multiple times in the
+     *                                                     //     same input message. The cache is erased after the input message is processed
      *                     }
      */
 
