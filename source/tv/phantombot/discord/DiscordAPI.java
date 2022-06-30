@@ -139,7 +139,7 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
-            DiscordAPI.builder = (DiscordClientBuilder) DiscordClientBuilder.create(token).onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.anyOf(IOException.class)));
+            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder.create(token).onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.anyOf(IOException.class)));
             DiscordAPI.client = DiscordAPI.builder.setRequestQueueFactory(RequestQueueFactory.createFromSink(spec -> spec.multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)))).build();
         }
 

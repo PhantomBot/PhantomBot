@@ -747,7 +747,7 @@
         try {
             return regex.test(str);
         } catch (e) {
-            if (e.indexOf('Cannot find function test') >= 0) {
+            if (e.message.indexOf('Cannot find function test') >= 0) {
                 return $.javaString(str).contains(regex);
             } else {
                 throw e;

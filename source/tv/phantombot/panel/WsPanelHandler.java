@@ -211,7 +211,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
         JSONStringer jsonObject = new JSONStringer();
         List<String> tempArgs = new LinkedList<>();
-        String[] args = null;
+        String[] args = new String[0];
 
         for (int i = 0; i < jsonArray.length(); i++) {
             tempArgs.add(jsonArray.getString(i));
