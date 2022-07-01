@@ -30,6 +30,12 @@ public final class debug {
     private debug() {
     }
 
+    static String findCallerInfo() {
+        StackTraceElement st = findCaller();
+
+        return "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]";
+    }
+
     static StackTraceElement findCaller() {
         StackTraceElement[] st = Thread.currentThread().getStackTrace();
         for (StackTraceElement st1 : st) {

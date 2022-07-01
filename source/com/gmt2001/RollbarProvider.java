@@ -471,7 +471,7 @@ public final class RollbarProvider implements AutoCloseable {
                     custom = new HashMap<>();
                 }
 
-                custom.put("uncaught", true);
+                custom.put("__uncaught", true);
             }
             this.rollbar.critical(error, custom, description);
         }
@@ -508,7 +508,7 @@ public final class RollbarProvider implements AutoCloseable {
                     custom = new HashMap<>();
                 }
 
-                custom.put("uncaught", true);
+                custom.put("__uncaught", true);
             }
 
             this.rollbar.error(error, custom, description);
