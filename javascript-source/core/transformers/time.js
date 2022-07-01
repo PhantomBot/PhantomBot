@@ -21,7 +21,7 @@
     /*
      * @transformer countdown
      * @formula (countdown datetime:str) shows the time remaining until the given datetime
-     * @labels twitch discord command time
+     * @labels twitch discord command noevent time
      * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
      * @example Caster: !addcom !count Time Left: (countdown December 23 2017 23:59:59 GMT+0200)
      * User: !count
@@ -45,7 +45,7 @@
     /*
      * @transformer countup
      * @formula (countup datetime:str) shows the time elapsed since the given datetime
-     * @labels twitch discord command time
+     * @labels twitch discord command noevent time
      * @notes for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
      * @example Caster: !addcom !ago You missed it by (countup December 23 2017 23:59:59 GMT+0200)
      * User: !ago
@@ -69,7 +69,7 @@
     /*
      * @transformer currenttime
      * @formula (currenttime timezone:str, format:str) shows the current date/time in given timezone, using the provided output format
-     * @labels twitch discord command time
+     * @labels twitch discord command noevent time
      * @notes for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html
      * @notes for information about accepted timezone strings, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/TimeZone.html
      * @cached
@@ -86,7 +86,7 @@
     /*
      * @transformer gettimevar
      * @formula (gettimevar name:str) retrieves the specified timevar, set using !settimevar on Twitch, for use in a (countdown) or (countup) transformer
-     * @labels twitch discord command time
+     * @labels twitch discord command noevent time
      * @example Caster: !settimevar christmas December 25 2017 00:00:00 GMT-0500
      * Caster: !addcom !count Time Left until Christmas: (countdown (gettimevar christmas))
      * User: !count
@@ -108,10 +108,10 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('countdown', ['twitch', 'discord', 'command', 'time'], countdown),
-        new $.transformers.transformer('countup', ['twitch', 'discord', 'command', 'time'], countup),
-        new $.transformers.transformer('currenttime', ['twitch', 'discord', 'command', 'time'], currenttime),
-        new $.transformers.transformer('gettimevar', ['twitch', 'discord', 'command', 'time'], gettimevar)
+        new $.transformers.transformer('countdown', ['twitch', 'discord', 'command', 'noevent', 'time'], countdown),
+        new $.transformers.transformer('countup', ['twitch', 'discord', 'command', 'noevent', 'time'], countup),
+        new $.transformers.transformer('currenttime', ['twitch', 'discord', 'command', 'noevent', 'time'], currenttime),
+        new $.transformers.transformer('gettimevar', ['twitch', 'discord', 'command', 'noevent', 'time'], gettimevar)
     ];
 
     $.transformers.addTransformers(transformers);

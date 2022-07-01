@@ -33,7 +33,7 @@
      * @transformer gameonly
      * @formula (gameonly name:str) cancels the command if the current game does not exactly match the one provided; multiple games can be provided, separated by |
      * @formula (gameonly !! name:str) cancels the command if the current game exactly matches the one provided; multiple games can be provided, separated by |
-     * @labels twitch command meta
+     * @labels twitch command noevent meta
      * @cancels sometimes
      */
     function gameonly(args) {
@@ -130,7 +130,7 @@
 
     var transformers = [
         new $.transformers.transformer('adminonlyedit', ['twitch', 'command', 'meta'], adminonlyedit),
-        new $.transformers.transformer('gameonly', ['twitch', 'command', 'meta'], gameonly),
+        new $.transformers.transformer('gameonly', ['twitch', 'command', 'noevent', 'meta'], gameonly),
         new $.transformers.transformer('offlineonly', ['twitch', 'command', 'meta'], offlineonly),
         new $.transformers.transformer('onlineonly', ['twitch', 'command', 'meta'], onlineonly),
         new $.transformers.transformer('useronly', ['twitch', 'command', 'meta'], useronly)

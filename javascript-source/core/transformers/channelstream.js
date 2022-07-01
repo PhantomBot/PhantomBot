@@ -22,7 +22,7 @@
      * @transformer channelname
      * @formula (channelname) the display name of the Twitch channel
      * @formula (channelname channel:str) the display name of the provided Twitch channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      */
     function channelname(args) {
         if (!args) {
@@ -39,7 +39,7 @@
     /*
      * @transformer downtime
      * @formula (downtime) how long the channel has been offline
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @cached
      */
     function downtime(args) {
@@ -112,7 +112,7 @@
      * @transformer follows
      * @formula (follows) number of follower of this channel
      * @formula (follows channel:str) number of follower of the specified channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !follows We currently have (follows) followers!
      * User: !follows
      * Bot: We currently have 1000 followers!
@@ -134,7 +134,7 @@
      * @transformer game
      * @formula (game) currently played game
      * @formula (game channel:str) currently played game of the specified channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !game (pointtouser) current  game is: (game)
      * User: !game
      * Bot: User -> current game is: Programming
@@ -155,7 +155,7 @@
     /*
      * @transformer gameinfo
      * @formula (gameinfo) similar to (game) but include game time if online
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !game (pointtouser) Current game: (gameinfo).
      * User: !game
      * Bot: User -> Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
@@ -253,7 +253,7 @@
     /*
      * @transformer lasttip
      * @formula (lasttip) last tip message
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @cached
      */
     function lasttip(args) {
@@ -299,7 +299,7 @@
      * @transformer status
      * @formula (status) the current stream title
      * @formula (status channel:str) the current stream title of the specified channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !status (pointtouser) current status is: (status)
      * User: !status
      * Bot: User -> current status is: Fun programming!
@@ -320,7 +320,7 @@
     /*
      * @transformer subscribers
      * @formula (subscribers) number of subscribers of this channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !subs (subscribers) subscribers!
      * User: !subs
      * Bot: 10 subscribers!
@@ -339,7 +339,7 @@
     /*
      * @transformer titleinfo
      * @formula (titleinfo) title + uptime if online
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !title (pointtouser) Current title: (titleinfo).
      * User: !title
      * Bot: User -> Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
@@ -399,7 +399,7 @@
      * @transformer viewers
      * @formula (viewers) number of current viewers
      * @formula (viewers channel:str) number of current viewers for the specified channel
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @example Caster: !addcom !viewers We currently have (viewers) viewers watching us!
      * User: !viewers
      * Bot: We currently have 600 viewers watching us!
@@ -420,7 +420,7 @@
     /*
      * @transformer views
      * @formula (views) number of total view count for the stream
-     * @labels twitch command channel stream
+     * @labels twitch command noevent channel stream
      * @cached
      */
     function views(args) {
@@ -433,24 +433,24 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('channelname', ['twitch', 'command', 'channel', 'stream'], channelname),
-        new $.transformers.transformer('downtime', ['twitch', 'command', 'channel', 'stream'], downtime),
+        new $.transformers.transformer('channelname', ['twitch', 'command', 'noevent', 'channel', 'stream'], channelname),
+        new $.transformers.transformer('downtime', ['twitch', 'command', 'noevent', 'channel', 'stream'], downtime),
         new $.transformers.transformer('followage', ['twitch', 'command', 'channel', 'stream'], followage),
         new $.transformers.transformer('followdate', ['twitch', 'command', 'channel', 'stream'], followdate),
-        new $.transformers.transformer('follows', ['twitch', 'command', 'channel', 'stream'], follows),
-        new $.transformers.transformer('game', ['twitch', 'command', 'channel', 'stream'], game),
-        new $.transformers.transformer('gameinfo', ['twitch', 'command', 'channel', 'stream'], gameinfo),
-        new $.transformers.transformer('gamesplayed', ['twitch', 'command', 'channel', 'stream'], gamesplayed),
+        new $.transformers.transformer('follows', ['twitch', 'command', 'noevent', 'channel', 'stream'], follows),
+        new $.transformers.transformer('game', ['twitch', 'command', 'noevent', 'channel', 'stream'], game),
+        new $.transformers.transformer('gameinfo', ['twitch', 'command', 'noevent', 'channel', 'stream'], gameinfo),
+        new $.transformers.transformer('gamesplayed', ['twitch', 'command', 'noevent', 'channel', 'stream'], gamesplayed),
         new $.transformers.transformer('hours', ['twitch', 'command', 'channel', 'stream'], hours),
         new $.transformers.transformer('hoursround', ['twitch', 'command', 'channel', 'stream'], hoursround),
-        new $.transformers.transformer('lasttip', ['twitch', 'command', 'channel', 'stream'], lasttip),
+        new $.transformers.transformer('lasttip', ['twitch', 'command', 'noevent', 'channel', 'stream'], lasttip),
         new $.transformers.transformer('playtime', ['twitch', 'command', 'channel', 'stream'], playtime),
-        new $.transformers.transformer('status', ['twitch', 'command', 'channel', 'stream'], status),
-        new $.transformers.transformer('subscribers', ['twitch', 'command', 'channel', 'stream'], subscribers),
-        new $.transformers.transformer('titleinfo', ['twitch', 'command', 'channel', 'stream'], titleinfo),
+        new $.transformers.transformer('status', ['twitch', 'command', 'noevent', 'channel', 'stream'], status),
+        new $.transformers.transformer('subscribers', ['twitch', 'command', 'noevent', 'channel', 'stream'], subscribers),
+        new $.transformers.transformer('titleinfo', ['twitch', 'command', 'noevent', 'channel', 'stream'], titleinfo),
         new $.transformers.transformer('uptime', ['twitch', 'command', 'channel', 'stream'], uptime),
-        new $.transformers.transformer('viewers', ['twitch', 'command', 'channel', 'stream'], viewers),
-        new $.transformers.transformer('views', ['twitch', 'command', 'channel', 'stream'], views)
+        new $.transformers.transformer('viewers', ['twitch', 'command', 'channel', 'noevent', 'stream'], viewers),
+        new $.transformers.transformer('views', ['twitch', 'command', 'channel', 'noevent', 'stream'], views)
     ];
 
     $.transformers.addTransformers(transformers);

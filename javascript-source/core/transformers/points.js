@@ -46,7 +46,7 @@
     /*
      * @transformer pointname
      * @formula (pointname) the plural name of the loyalty points
-     * @labels twitch command points
+     * @labels twitch command noevent points
      * @example Caster: !addcom !pointsname (sender) current points name is set to: (pointname)
      * User: !pointsname
      * Bot: User current points name is set to: points
@@ -108,7 +108,7 @@
 
     var transformers = [
         new $.transformers.transformer('pay', ['twitch', 'command', 'points'], pay),
-        new $.transformers.transformer('pointname', ['twitch', 'command', 'points'], pointname),
+        new $.transformers.transformer('pointname', ['twitch', 'command', 'noevent', 'points'], pointname),
         new $.transformers.transformer('points', ['twitch', 'command', 'points'], points),
         new $.transformers.transformer('price', ['twitch', 'command', 'points'], price)
     ];

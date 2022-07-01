@@ -22,7 +22,7 @@
      * @transformer randomInt
      * @formula (#) a random integer from 1 to 100, inclusive
      * @formula (# a:int, b:int) a random integer from a to b, inclusive
-     * @labels twitch discord command basic
+     * @labels twitch discord command noevent basic
      * @example Caster: !addcom !lucky Your lucky number is (#)
      * User: !lucky
      * Bot: Your lucky number is 7
@@ -91,7 +91,7 @@
     /*
      * @transformer random
      * @formula (random) random user in chat, or the bot's name if chat is empty
-     * @labels twitch command basic
+     * @labels twitch command noevent basic
      * @example Caster: !addcom !poke /me pokes (random) with a long wooden stick.
      * User: !poke
      * Bot: /me pokes User2 with a long wooden stick.
@@ -118,7 +118,7 @@
     /*
      * @transformer randomrank
      * @formula (randomrank) random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
-     * @labels twitch command basic
+     * @labels twitch command noevent basic
      * @example Caster: !addcom !poke /me Pokes (randomrank) with a bar of soap.
      * User: !poke
      * Bot: /me Pokes Master User2 with a bar of soap.
@@ -139,7 +139,7 @@
     /*
      * @transformer repeat
      * @formula (repeat n:int, message:str) repeat the message n times (copy/paste)
-     * @labels twitch discord command basic
+     * @labels twitch discord command noevent basic
      * @note the value of n is limited to a maximum of 30
      * @cached
      */
@@ -169,11 +169,11 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('#', ['twitch', 'discord', 'command', 'basic'], randomInt),
+        new $.transformers.transformer('#', ['twitch', 'discord', 'command', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'command', 'basic'], echo),
-        new $.transformers.transformer('random', ['twitch', 'command', 'basic'], random),
-        new $.transformers.transformer('randomrank', ['twitch', 'command', 'basic'], randomrank),
-        new $.transformers.transformer('repeat', ['twitch', 'discord', 'command', 'basic'], repeat)
+        new $.transformers.transformer('random', ['twitch', 'command', 'noevent', 'basic'], random),
+        new $.transformers.transformer('randomrank', ['twitch', 'command', 'noevent', 'basic'], randomrank),
+        new $.transformers.transformer('repeat', ['twitch', 'discord', 'command', 'noevent', 'basic'], repeat)
     ];
     
     for (i = 1; i <= 9; i++) {

@@ -21,7 +21,7 @@
     /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
-     * @labels twitch discord command misc
+     * @labels twitch discord command noevent misc
      * @example Caster: !addcom !code (code 5)
      * User: !code
      * Bot: A1D4f
@@ -46,7 +46,7 @@
     /*
      * @transformer encodeurl
      * @formula (encodeurl url:str) url encode the given url
-     * @labels twitch discord command misc
+     * @labels twitch discord command noevent misc
      * @cached
      */
     function encodeurl(args) {
@@ -61,7 +61,7 @@
     /*
      * @transformer encodeurlparam
      * @formula (encodeurlparam paramter:str) like encodeurl but also ecapes "&", "=", "+", "/", etc.
-     * @labels twitch discord command misc
+     * @labels twitch discord command noevent misc
      * @cached
      */
     function encodeurlparam(args) {
@@ -127,7 +127,7 @@
     /*
      * @transformer unescape
      * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
-     * @labels twitch discord command misc
+     * @labels twitch discord command noevent misc
      * @raw
      * @cached
      */
@@ -142,12 +142,12 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('code', ['twitch', 'discord', 'command', 'misc'], code),
-        new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'command', 'misc'], encodeurl),
-        new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'command', 'misc'], encodeurlparam),
+        new $.transformers.transformer('code', ['twitch', 'discord', 'command', 'noevent', 'misc'], code),
+        new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'command', 'noevent', 'misc'], encodeurl),
+        new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'command', 'noevent', 'misc'], encodeurlparam),
         new $.transformers.transformer('keywordcount', ['twitch', 'keyword', 'misc'], keywordcount),
         new $.transformers.transformer('token', ['twitch', 'command', 'misc'], token),
-        new $.transformers.transformer('unescape', ['twitch', 'discord', 'command', 'misc'], unescape)
+        new $.transformers.transformer('unescape', ['twitch', 'discord', 'command', 'noevent', 'misc'], unescape)
     ];
 
     $.transformers.addTransformers(transformers);
