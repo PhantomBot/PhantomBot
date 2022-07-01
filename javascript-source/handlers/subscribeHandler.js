@@ -127,7 +127,7 @@
          */
         function amount(args, event) {
             return {
-                result: $.jsString(event.getMonths()),
+                result: event.getAmount(),
                 cache: true
             };
         }
@@ -144,8 +144,25 @@
         function customemote(args, event) {
             var emotes = [];
             var emote = customEmote[event.getPlan()];
+            var num = null;
 
-            for (var i = 0; i < event.getMonths(); i++) {
+            try {
+                num = event.getMonths();
+            } catch (e) {
+            }
+
+            if (num === undefined || num === null) {
+                try {
+                    num = event.getAmount();
+                } catch (e) {
+                }
+            }
+
+            if (num === undefined || num === null || num <= 0) {
+                num = 1;
+            }
+
+            for (var i = 0; i < num; i++) {
                 emotes.push(emote);
             }
 
@@ -167,7 +184,7 @@
          */
         function giftreward(args, event, customArgs) {
             return {
-                result: $.jsString(customArgs['giftreward']),
+                result: customArgs['giftreward'],
                 cache: true
             };
         }
@@ -182,7 +199,7 @@
          */
         function months(args, event) {
             return {
-                result: $.jsString(event.getMonths()),
+                result: event.getMonths(),
                 cache: true
             };
         }
@@ -244,17 +261,15 @@
          */
         function reward(args, event, customArgs) {
             return {
-                result: $.jsString(customArgs['reward']),
+                result: customArgs['reward'],
                 cache: true
             };
         }
 
         transformers = {
-            'alert': $.getGlobalTransformer('alert'),
             'customemote': customemote,
             'name': name,
-            'plan': plan,
-            'playsound': $.getGlobalTransformer('playsound')
+            'plan': plan
         };
 
         if (type === types.MASSGIFT || type === types.MASSGIFTANON) {
@@ -282,7 +297,7 @@
 
     /*
      * @event twitchSubscriber
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchSubscriber', function (event) {
         if (subWelcomeToggle === true && announce === true) {
@@ -291,7 +306,7 @@
                     reward = subReward[plan],
                     message = $.jsString(subMessage[plan]);
 
-            message = $.tags(event, message, false, transformers(types.SUB), true, {'reward': reward});
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.SUB), {'reward': reward});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -311,7 +326,7 @@
 
     /*
      * @event twitchReSubscriber
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchReSubscriber', function (event) {
         if (reSubWelcomeToggle === true && announce === true) {
@@ -320,7 +335,7 @@
                     reward = reSubReward[plan],
                     message = $.jsString(reSubMessage[plan]);
 
-            message = $.tags(event, message, false, transformers(types.RESUB), true, {'reward': reward});
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.RESUB), {'reward': reward});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -341,7 +356,7 @@
 
     /*
      * @event twitchSubscriptionGift
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchSubscriptionGift', function (event) {
         if (giftSubWelcomeToggle === true && announce === true) {
@@ -352,7 +367,7 @@
                     giftreward = giftSubReward[plan],
                     message = $.jsString(giftSubMessage[plan]);
 
-            message = $.tags(event, message, false, transformers(types.GIFT), true, {'reward': reward, 'giftreward': giftreward});
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.GIFT), {'reward': reward, 'giftreward': giftreward});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -376,7 +391,7 @@
 
     /*
      * @event twitchMassSubscriptionGifted
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchMassSubscriptionGifted', function (event) {
         if (massGiftSubWelcomeToggle === true && announce === true) {
@@ -385,7 +400,7 @@
                     giftreward = massGiftSubReward[plan] * parseInt(event.getAmount()),
                     message = $.jsString(massGiftSubMessage[plan]);
 
-            message = $.tags(event, message, false, transformers(types.MASSGIFT), true, {'giftreward': giftreward});
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.MASSGIFT), {'giftreward': giftreward});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -399,7 +414,7 @@
 
     /*
      * @event twitchAnonymousSubscriptionGift
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchAnonymousSubscriptionGift', function (event) {
         if (giftAnonSubWelcomeToggle === true && announce === true) {
@@ -408,7 +423,7 @@
                     reward = subReward[plan],
                     message = $.jsString(giftAnonSubMessage[plan]);
 
-            message = $.tags(event, message, false, transformers(types.GIFTANON), true, {'reward': reward});
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.GIFTANON), {'reward': reward});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -428,13 +443,13 @@
 
     /*
      * @event twitchMassAnonymousSubscriptionGifted
-     * @usestransformers local
+     * @usestransformers local global twitch noevent
      */
     $.bind('twitchMassAnonymousSubscriptionGifted', function (event) {
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
             var message = $.jsString(massGiftSubMessage[event.getPlan()]);
 
-            message = $.tags(event, message, false, transformers(types.MASSGIFTANON), true);
+            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.MASSGIFTANON));
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
