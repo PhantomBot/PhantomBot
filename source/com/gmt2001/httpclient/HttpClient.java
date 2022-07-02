@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.resolver.DefaultAddressResolverGroup;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.http.client.HttpClient.RequestSender;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Performs HTTP requests
@@ -61,6 +63,10 @@ public final class HttpClient {
         reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
         if (url.getScheme().equals("https")) {
             client = client.secure();
+        }
+
+        if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
+            client = client.resolver(DefaultAddressResolverGroup.INSTANCE);
         }
 
         client = client.headers(h -> {
