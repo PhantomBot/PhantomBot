@@ -40,6 +40,8 @@ import com.illusionaryone.TwitterAPI;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.TipeeeStreamAPIv1;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -276,6 +278,15 @@ public final class PhantomBot implements Listener {
         return CaselessProperties.instance().getProperty("youtubekey", "").isEmpty();
     }
 
+    public static void setLevel(java.util.logging.Level targetLevel) {
+        java.util.logging.Logger root = java.util.logging.Logger.getLogger("");
+        root.setLevel(targetLevel);
+        for (java.util.logging.Handler handler : root.getHandlers()) {
+            handler.setLevel(targetLevel);
+        }
+        System.out.println("level set: " + targetLevel.getName());
+    }
+
     /**
      * Constructor for PhantomBot object.
      *
@@ -283,6 +294,10 @@ public final class PhantomBot implements Listener {
     public PhantomBot() {
         if (CaselessProperties.instance().getPropertyAsBoolean("reactordebug", false)) {
             Loggers.useVerboseConsoleLoggers();
+        }
+        if (CaselessProperties.instance().getPropertyAsBoolean("internaldebug", false)) {
+            setLevel(java.util.logging.Level.ALL);
+            InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
         }
 
         /* Set the default bot variables */
