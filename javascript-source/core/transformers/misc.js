@@ -21,7 +21,7 @@
     /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
-     * @labels twitch discord command noevent misc
+     * @labels twitch discord noevent misc
      * @example Caster: !addcom !code (code 5)
      * User: !code
      * Bot: A1D4f
@@ -46,7 +46,7 @@
     /*
      * @transformer encodeurl
      * @formula (encodeurl url:str) url encode the given url
-     * @labels twitch discord command noevent misc
+     * @labels twitch discord noevent misc
      * @cached
      */
     function encodeurl(args) {
@@ -61,7 +61,7 @@
     /*
      * @transformer encodeurlparam
      * @formula (encodeurlparam paramter:str) like encodeurl but also ecapes "&", "=", "+", "/", etc.
-     * @labels twitch discord command noevent misc
+     * @labels twitch discord noevent misc
      * @cached
      */
     function encodeurlparam(args) {
@@ -76,7 +76,7 @@
     /*
      * @transformer keywordcount
      * @formula (keywordcount keyword:str) increase the keyword count for the given keyword and return new count
-     * @labels twitch keyword misc
+     * @labels twitch keywordevent misc
      */
     function keywordcount(args) {
         var keyword,
@@ -101,7 +101,7 @@
     /*
      * @transformer token
      * @formula (token) replaced with the secret token that was set by !tokencom or the panel
-     * @labels twitch command misc
+     * @labels twitch commandevent misc
      * @example Caster: !addcom !weather (customapijson http://api.apixu.com/v1/current.json?key=(token)&q=$1 {Weather for} location.name {:} current.condition.text {Temps:} current.temp_f {F} current.temp_c {C})
      * Caster: !tokencom !weather mySecretApiKey
      * User: !weather 80314
@@ -127,7 +127,7 @@
     /*
      * @transformer unescape
      * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
-     * @labels twitch discord command noevent misc
+     * @labels twitch discord noevent misc
      * @raw
      * @cached
      */
@@ -142,12 +142,12 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('code', ['twitch', 'discord', 'command', 'noevent', 'misc'], code),
-        new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'command', 'noevent', 'misc'], encodeurl),
-        new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'command', 'noevent', 'misc'], encodeurlparam),
-        new $.transformers.transformer('keywordcount', ['twitch', 'keyword', 'misc'], keywordcount),
-        new $.transformers.transformer('token', ['twitch', 'command', 'misc'], token),
-        new $.transformers.transformer('unescape', ['twitch', 'discord', 'command', 'noevent', 'misc'], unescape)
+        new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
+        new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
+        new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
+        new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
+        new $.transformers.transformer('token', ['twitch', 'commandevent', 'misc'], token),
+        new $.transformers.transformer('unescape', ['twitch', 'discord', 'noevent', 'misc'], unescape)
     ];
 
     $.transformers.addTransformers(transformers);

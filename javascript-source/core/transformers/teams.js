@@ -21,7 +21,7 @@
     /*
      * @transformer team_member_followers
      * @formula (team_member_followers team:str, membername:str) number of followers of user membername in the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -55,7 +55,7 @@
     /*
      * @transformer team_member_game
      * @formula (team_member_game team:str, membername:str) game user membername in the provided team currently plays
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -89,7 +89,7 @@
     /*
      * @transformer team_member_url
      * @formula (team_member_url team:str, membername:str) url of user membername in the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -123,7 +123,7 @@
     /*
      * @transformer team_members
      * @formula (team_members team:str) number of members in the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -148,7 +148,7 @@
     /*
      * @transformer team_name
      * @formula (team_name team:str) name of the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -173,7 +173,7 @@
     /*
      * @transformer team_random_member
      * @formula (team_random_member team:str) random member of the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      */
     function team_random_member(args) {
@@ -197,7 +197,7 @@
     /*
      * @transformer team_url
      * @formula (team_url team:str) url to the provided team
-     * @labels twitch command noevent teams
+     * @labels twitch noevent teams
      * @notes the team parameter should be the url slug for the team
      * @cached
      */
@@ -220,13 +220,13 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('team_member_followers', ['twitch', 'command', 'noevent', 'teams'], team_member_followers),
-        new $.transformers.transformer('team_member_game', ['twitch', 'command', 'noevent', 'teams'], team_member_game),
-        new $.transformers.transformer('team_member_url', ['twitch', 'command', 'noevent', 'teams'], team_member_url),
-        new $.transformers.transformer('team_members', ['twitch', 'command', 'noevent', 'teams'], team_members),
-        new $.transformers.transformer('team_name', ['twitch', 'command', 'noevent', 'teams'], team_name),
-        new $.transformers.transformer('team_random_member', ['twitch', 'command', 'noevent', 'teams'], team_random_member),
-        new $.transformers.transformer('team_url', ['twitch', 'command', 'noevent', 'teams'], team_url)
+        new $.transformers.transformer('team_member_followers', ['twitch', 'noevent', 'teams'], team_member_followers),
+        new $.transformers.transformer('team_member_game', ['twitch', 'noevent', 'teams'], team_member_game),
+        new $.transformers.transformer('team_member_url', ['twitch', 'noevent', 'teams'], team_member_url),
+        new $.transformers.transformer('team_members', ['twitch', 'noevent', 'teams'], team_members),
+        new $.transformers.transformer('team_name', ['twitch', 'noevent', 'teams'], team_name),
+        new $.transformers.transformer('team_random_member', ['twitch', 'noevent', 'teams'], team_random_member),
+        new $.transformers.transformer('team_url', ['twitch', 'noevent', 'teams'], team_url)
     ];
 
     $.transformers.addTransformers(transformers);

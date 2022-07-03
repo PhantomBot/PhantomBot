@@ -63,7 +63,7 @@
                 var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                 var cmdEvent = new CommandEvent(sender, "keyword_" + json.keyword, event.getMessage(), event.getTags());
                 json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + $.escapeTags(json.keyword) + ')');
-                $.say($.transformers.tags(cmdEvent, json.response, false, ['twitch'], ['command', 'keyword']));
+                $.say($.transformers.tags(cmdEvent, json.response, false, ['twitch', ['commandevent', 'keywordevent']]));
             }
         }
 

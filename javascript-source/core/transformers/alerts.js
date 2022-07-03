@@ -25,7 +25,7 @@
      * @formula (alert fileName:str, durationSeconds:int, volume:float) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
      * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
      * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
-     * @labels twitch discord command noevent alerts
+     * @labels twitch discord noevent alerts
      * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
      * @example Caster: !addcom !banana (alert banana.gif)
      */
@@ -40,7 +40,7 @@
      * @transformer playsound
      * @formula (playsound hook:str) plays a sound hook on the alerts overlay
      * @formula (playsound hook:str|volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
-     * @labels twitch discord command noevent alerts
+     * @labels twitch discord noevent alerts
      * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
      * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
      */
@@ -56,8 +56,8 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('alert', ['twitch', 'discord', 'command', 'noevent', 'alerts'], alert),
-        new $.transformers.transformer('playsound', ['twitch', 'discord', 'command', 'noevent', 'alerts'], playsound)
+        new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alert),
+        new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], playsound)
     ];
 
     $.transformers.addTransformers(transformers);

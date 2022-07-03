@@ -21,14 +21,19 @@
     /*
      * transformer function definition
      *
-     * function(tagArgs, event, customArgs)
+     * function(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels)
      *
      * param {jsString} tagArgs - any arguments provided in the tag itself
      * * Example: (mytag arg1 arg2 arg3) - tagArgs = 'arg1 arg2 arg3'
      *
-     * param {javaObject[T extends tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as a CommandEvent
+     * param {javaObject[T extends tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor,
+     *              such as a CommandEvent
      *
      * param {jsObject} customArgs - a js object which can contain arbitrary arguments defined by the caller
+     *
+     * param {jsArray[jsString]} globalTransformerRequiredLabels - the input to the globalTransformerRequiredLabels argument from $.transformers.tags
+     *
+     * param {jsArray[jsString]} globalTransformerAnyLabels - the input to the globalTransformerAnyLabels argument from $.transformers.tags
      *
      * return {jsObject}     {
      *                         result: {jsString or null}, // default: ''. the returned value. The tag being processed will be replaced with this
@@ -47,7 +52,7 @@
      * @description constructor for an object representing a tag transformer
      * @export $.transformers
      * @param {string} tag - the name of the tag to be matched, triggering this transformer
-     * @param {array[string]} labels - the labels that categorize where this transformer works and what category of function it performs
+     * @param {jsArray[jsString]} labels - the labels that categorize where this transformer works and what category of function it performs
      * @param {function} transformer - the function which performs transformation
      */
     function Transformer(tag, labels, transformer) {
@@ -57,7 +62,8 @@
 
         /*
          * @function hasLabel
-         * @description indicates if the specified label is present in this.labels. Always returns true if undefined, null, or empty string. Always returns true if this.labels is empty
+         * @description indicates if the specified label is present in this.labels. Always returns true if undefined, null, or empty string.
+         *                      Always returns true if this.labels is empty
          * @export Transformer
          * @param {string} label - the label to check
          * @returns {boolean}
@@ -73,9 +79,12 @@
 
         /*
          * @function hasAllLabels
-         * @description indicates if this.labels contains all labels in `labelSet`. Always returns true if length is 0. Always returns true if this.labels is empty
+         * @description indicates if this.labels contains all labels in `labelSet`. Always returns true if length is 0. Always returns true if
+         *                      this.labels is empty
          * @export Transformer
-         * @param {array[string]} labelSet - the set of labels to check
+         * @param {jsArray[jsString]} labelSet - the set of labels to check. Can contain sub-arrays which will create an `or` between all
+         *      possible combinations by using transformer.hasAnyLabel on the sub-array. ex. ['twitch', ['commandevent', 'noevent']] will effectively
+         *      create the check ['twitch', 'commandevent'] || ['twitch', 'noevent']
          * @returns {boolean}
          */
         this.hasAllLabels = function (labelSet) {
@@ -84,7 +93,11 @@
             }
 
             for (var i = 0; i < labelSet.length; i++) {
-                if (!this.hasLabel(labelSet[i])) {
+                if (Array.isArray(labelSet[i])) {
+                    if (!this.hasAnyLabel(labelSet[i])) {
+                        return false;
+                    }
+                } else if (!this.hasLabel(labelSet[i])) {
                     return false;
                 }
             }
@@ -93,10 +106,11 @@
         };
 
         /*
-         * @function hasAllLabels
-         * @description indicates if this.labels contains at least one label in `labelSet`. Always returns true if length is 0. Always returns true if this.labels is empty
+         * @function hasAnyLabel
+         * @description indicates if this.labels contains at least one label in `labelSet`. Always returns true if length is 0. Always returns true
+         *                      if this.labels is empty
          * @export Transformer
-         * @param {array[string]} labelSet - the set of labels to check
+         * @param {jsArray[jsString]} labelSet - the set of labels to check
          * @returns {boolean}
          */
         this.hasAnyLabel = function (labelSet) {
@@ -126,9 +140,13 @@
      * @export $.transformers
      * @param {javaObject[tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as CommandEvent
      * @param {string} message - the input message containing tags to be processed
-     * @param {bool} atEnabled - default false. If set `true`, no tags are found to process, the sender is a moderator, and at least one argument is present, responds with `argument1 -> message`
-     * @param {array[string]} globalTransformerRequiredLabels - default ['twitch']. A set of required labels. Only transformers which have all labels in this set will be processed
-     * @param {array[string]} globalTransformerAnyLabels - default []. A set of labels. Only transformers which have at least one label in this set will be processed
+     * @param {bool} atEnabled - default false. If set `true`, no tags are found to process, the sender is a moderator, and at least one argument is
+     *                              present, responds with `argument1 -> message`
+     * @param {jsArray[jsString]} globalTransformerRequiredLabels - default ['twitch', ['commandevent', 'noevent']]. A set of required labels. Only
+     *                              transformers which have all labels in this set will be processed.
+     *                              A sub-array in a particular position creates an `or` between all possible combinations
+     * @param {jsArray[jsString]} globalTransformerAnyLabels - default []. A set of labels. Only transformers which have at least one label in this set
+     *                              will be processed
      * @param {object[string->function]} localTransformers - a js object of custom transformers defined by the caller
      * @param {object} customArgs - an arbitrary js object containing custom arguments to pass to transformers which support them
      * @return {string or null}
@@ -144,7 +162,7 @@
         }
 
         if (globalTransformerRequiredLabels === undefined || globalTransformerRequiredLabels === null) {
-            globalTransformerRequiredLabels = ['twitch', 'command'];
+            globalTransformerRequiredLabels = ['twitch', ['commandevent', 'noevent']];
         }
 
         if (globalTransformerAnyLabels === undefined || globalTransformerAnyLabels === null) {
@@ -170,7 +188,7 @@
                     thisTagFound = true;
                 } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
                         && transformers[tagName].hasAnyLabel(globalTransformerAnyLabels)
-                        && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs))) {
+                        && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels))) {
                     thisTagFound = true;
                 }
 
@@ -263,7 +281,7 @@
      * @function addTransformers
      * @description adds multiple transformers to the global transformer list
      * @export $.transformers
-     * @param {array[transformer]} transformerSet - an array of transformer objects constructed from $.transformers.transformer
+     * @param {jsArray[transformer]} transformerSet - an array of transformer objects constructed from $.transformers.transformer
      */
     function addTransformers(transformerSet) {
         for (var i = 0; i < transformerSet.length; i++) {
@@ -297,7 +315,7 @@
      * @description returns all transformers which contain the specified label from the global transformer list
      * @export $.transformers
      * @param {string} label - the label to find
-     * @returns {array[transformer]}
+     * @returns {jsArray[transformer]}
      */
     function getTransformersWithLabel(label) {
         var result = [];
@@ -314,8 +332,8 @@
      * @function getTransformersWithAllLabels
      * @description returns all transformers which contain all labels in `labelSet` from the global transformer list
      * @export $.transformers
-     * @param {array[string]} labelSet - the labels to find
-     * @returns {array[transformer]}
+     * @param {jsArray[jsString]} labelSet - the labels to find
+     * @returns {jsArray[transformer]}
      */
     function getTransformersWithAllLabels(labelSet) {
         var result = [];
@@ -332,8 +350,8 @@
      * @function getTransformersWithAnyLabel
      * @description returns all transformers which contain at least one label in `labelSet` from the global transformer list
      * @export $.transformers
-     * @param {array[string]} labelSet - the labels to find
-     * @returns {array[transformer]}
+     * @param {jsArray[jsString]} labelSet - the labels to find
+     * @returns {jsArray[transformer]}
      */
     function getTransformersWithAnyLabel(labelSet) {
         var result = [];
@@ -355,7 +373,7 @@
             globalRequired.push('local');
         } else {
             globalRequired.push('twitch');
-            globalRequired.push('command');
+            globalRequired.push(['commandevent', 'noevent']);
         }
 
         return tags(event, message, atEnabled, globalRequired, [], localTransformers, null);

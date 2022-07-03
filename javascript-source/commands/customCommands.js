@@ -171,7 +171,7 @@
          */
         if (customCommands[command] !== undefined
                 && !$.inidb.exists('disabledCommands', command)) {
-            var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', 'command']);
+            var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', ['commandevent', 'noevent']]);
             if (tag !== null) {
                 $.say(tag);
             }
