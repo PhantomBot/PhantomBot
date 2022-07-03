@@ -60,8 +60,7 @@
         if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
             registerNewPointsCommands(tempPointNameSingle, tempPointNameMultiple, true);
         }
-    }
-    ;
+    };
 
     /**
      * @function registerPointCommands
@@ -120,8 +119,7 @@
         if (newName2 && newName2 !== 'points' && !newCommand) {
             $.unregisterChatCommand(newName2);
         }
-    }
-    ;
+    };
 
     /**
      * @function getUserPoints
@@ -131,8 +129,7 @@
      */
     function getUserPoints(username) {
         return ($.inidb.exists('points', username.toLowerCase()) ? parseInt($.inidb.get('points', username.toLowerCase())) : 0);
-    }
-    ;
+    };
 
     /**
      * @function getPointsString
@@ -145,8 +142,37 @@
             return points + ' ' + pointNameSingle;
         }
         return points + ' ' + pointNameMultiple;
+    };
+
+    function calcPointsGained(username, group, defaultgain, isonline) {
+        var table = 'grouppoints' + (isonline ? '' : 'offline');
+        username = $.jsString(username);
+        group = $.jsString(group);
+        defaultgain = Math.max(defaultgain, 0);
+        var amount = -1;
+
+        if ($.inidb.exists(table, group)) {
+            var candidateAmount = parseInt($.inidb.get(table, group));
+            if (candidateAmount !== null && !isNaN(candidateAmount)) {
+                amount = candidateAmount;
+            }
+        }
+
+        if (group === 'Subscriber' && $.inidb.exists('subplan', username)) {
+            if ($.inidb.exists(table, 'Subscriber' + $.inidb.get('subplan', username))) {
+                var candidateAmount2 = parseInt($.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username)));
+                if (candidateAmount2 !== null && !isNaN(candidateAmount2)) {
+                    amount = candidateAmount2;
+                }
+            }
+        }
+
+        if (amount < 0) {
+            amount = defaultgain;
+        }
+
+        return amount;
     }
-    ;
 
     /**
      * @function runPointsPayout
@@ -183,27 +209,15 @@
                 username = $.users[i].toLowerCase();
                 if (isOnline) {
                     if ($.checkUserPermission(username, undefined, $.PERMISSION.Mod) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub)) {
-                        if (parseInt($.inidb.get('grouppoints', 'Subscriber')) > 0) {
-                            amount = parseInt($.inidb.get('grouppoints', 'Subscriber'));
-                        } else {
-                            amount = onlineGain;
-                        }
+                        amount = calcPointsGained(username, 'Subscriber', onlineGain, true);
                     } else {
-                        if ($.inidb.exists('grouppoints', $.getUserGroupName(username))) {
-                            amount = (parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))) < 0 ? onlineGain : parseInt($.inidb.get('grouppoints', $.getUserGroupName(username))));
-                        }
+                        amount = calcPointsGained(username, $.getUserGroupName(username), onlineGain, true);
                     }
                 } else {
                     if ($.checkUserPermission(username, undefined, $.PERMISSION.Mod) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub)) {
-                        if (parseInt($.inidb.get('grouppointsoffline', 'Subscriber')) > 0) {
-                            amount = parseInt($.inidb.get('grouppointsoffline', 'Subscriber'));
-                        } else {
-                            amount = offlineGain;
-                        }
+                        amount = calcPointsGained(username, 'Subscriber', offlineGain, false);
                     } else {
-                        if ($.inidb.exists('grouppointsoffline', $.getUserGroupName(username))) {
-                            amount = (parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))) < 0 ? offlineGain : parseInt($.inidb.get('grouppointsoffline', $.getUserGroupName(username))));
-                        }
+                        amount = calcPointsGained(username, $.getUserGroupName(username), offlineGain, false);
                     }
                 }
 
@@ -244,8 +258,7 @@
         $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
 
         lastPayout = now;
-    }
-    ;
+    };
 
     /**
      * @function setPenalty
@@ -270,8 +283,7 @@
             time = $.getTimeStringMinutes((time * 6e4) / 1000);
             $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.penalty.set', username, time));
         }
-    }
-    ;
+    };
 
     /**
      * @function getUserPenalty
@@ -284,8 +296,7 @@
             }
         }
         return false;
-    }
-    ;
+    };
 
     /**
      * @function setTempBonus
@@ -313,8 +324,7 @@
         }
 
         $.say($.lang.get('pointsystem.bonus.say', newTime, pointsBonusAmount, pointNameMultiple));
-    }
-    ;
+    };
 
     /**
      * @function giveAll
@@ -333,8 +343,7 @@
 
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
-    }
-    ;
+    };
 
     /**
      * @function takeAll
@@ -392,8 +401,7 @@
         }
 
         return s;
-    }
-    ;
+    };
 
     /*
      * @event ircChannelMessage

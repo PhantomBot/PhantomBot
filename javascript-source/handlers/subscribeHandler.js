@@ -317,6 +317,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
+            $.inidb.set('subplan', subscriber, plan);
 
             if (reward > 0) {
                 $.inidb.incr('points', subscriber, reward);
@@ -347,6 +348,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
             $.writeToFile(subscriber + ': ' + event.getMonths() + ' ', './addons/subscribeHandler/latestResub&Months.txt', false);
             $.inidb.set('streamInfo', 'lastReSub', subscriber);
+            $.inidb.set('subplan', subscriber, plan);
 
             if (reward > 0) {
                 $.inidb.incr('points', subscriber, reward);
@@ -378,6 +380,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
+            $.inidb.set('subplan', subscriber, plan);
 
             if (reward > 0) {
                 $.inidb.incr('points', subscriber, reward);
@@ -434,6 +437,7 @@
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
             $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
             $.inidb.set('streamInfo', 'lastSub', subscriber);
+            $.inidb.set('subplan', subscriber, plan);
 
             if (reward > 0) {
                 $.inidb.incr('points', subscriber, reward);
@@ -475,15 +479,6 @@
             subWelcomeToggle = !subWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', subWelcomeToggle);
             $.say($.whisperPrefix(sender) + (subWelcomeToggle ? $.lang.get('subscribehandler.new.sub.toggle.on') : $.lang.get('subscribehandler.new.sub.toggle.off')));
-        }
-
-        /*
-         * @commandpath primesubwelcometoggle - Enable or disable Twitch Prime subscription alerts.
-         */
-        if (command.equalsIgnoreCase('primesubwelcometoggle')) {
-            primeSubWelcomeToggle = !primeSubWelcomeToggle;
-            $.setIniDbBoolean('subscribeHandler', 'primeSubscriberWelcomeToggle', primeSubWelcomeToggle);
-            $.say($.whisperPrefix(sender) + (primeSubWelcomeToggle ? $.lang.get('subscribehandler.new.primesub.toggle.on') : $.lang.get('subscribehandler.new.primesub.toggle.off')));
         }
 
         /*
@@ -543,20 +538,6 @@
             subMessage = argsString;
             $.setIniDbString('subscribeHandler', 'subscribeMessage', subMessage);
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
-        }
-
-        /*
-         * @commandpath primesubmessage [message] - Set a welcome message for new Twitch Prime subscribers.
-         */
-        if (command.equalsIgnoreCase('primesubmessage')) {
-            if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.usage'));
-                return;
-            }
-
-            primeSubMessage = argsString;
-            $.setIniDbString('subscribeHandler', 'primeSubscribeMessage', primeSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.primesub.msg.set'));
         }
 
         /*
@@ -754,7 +735,6 @@
     $.bind('initReady', function () {
         $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', $.PERMISSION.Admin);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubwelcometoggle', $.PERMISSION.Admin);
@@ -765,7 +745,6 @@
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubreward', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubreward', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'submessage', $.PERMISSION.Admin);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubmessage', $.PERMISSION.Admin);
