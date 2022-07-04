@@ -405,7 +405,7 @@ public final class PhantomBot implements Listener {
             /* Validate the chat OAUTH token. */
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName(), this.getChannelName());
         }
     }
 

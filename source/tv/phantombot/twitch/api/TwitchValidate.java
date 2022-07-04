@@ -291,7 +291,7 @@ public class TwitchValidate {
         }
     }
 
-    public void checkOAuthInconsistencies(String botName) {
+    public void checkOAuthInconsistencies(String botName, String channelName) {
         if (validateA != null && validateA.isAlive()) {
             try {
                 validateA.join(TIMEOUT_TIME);
@@ -321,9 +321,15 @@ public class TwitchValidate {
         } else if (!this.getChatLogin().equalsIgnoreCase(botName)) {
             com.gmt2001.Console.warn.println("CHAT (oauth) is not logged in as " + botName + ". OAuth token may be under the wrong login");
         }
+
+        if (!this.getAPILogin().equalsIgnoreCase(channelName) && this.getChatLogin().equalsIgnoreCase(channelName)) {
+            com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + " but CHAT (oauth) is. OAuth tokens may be reversed");
+        } else if (!this.getAPILogin().equalsIgnoreCase(channelName)) {
+            com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + ". OAuth token may be under the wrong login");
+        }
     }
 
-    public boolean hasOAuthInconsistencies(String botName) {
+    public boolean hasOAuthInconsistencies(String botName, String channelName) {
         if (validateA != null && validateA.isAlive()) {
             try {
                 validateA.join(TIMEOUT_TIME);
@@ -340,8 +346,8 @@ public class TwitchValidate {
             }
         }
 
-        return this.hasAPIScope("chat:edit") && !this.hasChatScope("chat:edit") || !this.hasChatScope("chat:edit") || !this.hasChatScope("channel:moderate")
-                || this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName) || !this.getChatLogin().equalsIgnoreCase(botName);
+        return !this.hasChatScope("chat:edit") || !this.hasChatScope("channel:moderate") || !this.getChatLogin().equalsIgnoreCase(botName)
+                || !this.getAPILogin().equalsIgnoreCase(channelName);
     }
 
     /**

@@ -222,10 +222,10 @@ public class TwitchSession extends MessageQueue {
             }
 
             if (Instant.now().isAfter(this.nextReminder)) {
-                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName()))) {
+                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName()))) {
                     com.gmt2001.Console.warn.println("WARNING: Unable to send last message due to configuration error");
 
-                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName());
+                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName());
 
                     if (!this.isAllowedToSend) {
                         com.gmt2001.Console.warn.println("WARNING: May not be a moderator");
