@@ -472,9 +472,9 @@ public class TwitchPubSub {
          * @param reason The reasons as why the socket closed.
          */
         private void onClose(int code, String reason) {
-            com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
+            com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-            if (!this.hasModerator && !this.hasRedemptions) {
+            if (!this.hasModerator && !this.hasRedemptions && !this.hasStreamupdown && !this.hasFollowing) {
                 com.gmt2001.Console.out.println("Disconnected from Twitch PubSub due to no valid topic subscriptions");
                 return;
             }
