@@ -136,6 +136,7 @@ public class TwitchPubSub {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.backoff.CancelReset();
                     this.shutdown();
                     com.gmt2001.Console.out.println("Delaying next connection (PubSub) attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
                     com.gmt2001.Console.warn.println("Delaying next reconnect (PubSub) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
@@ -545,7 +546,7 @@ public class TwitchPubSub {
                             com.gmt2001.Console.out.println("Connected to Twitch Follow Data Feed");
                         }
                     }
-                    backoff.Reset();
+                    backoff.ResetIn(Duration.ofSeconds(30));
                 } else if (messageObj.has("error") && messageObj.getString("error").length() > 0) {
                     com.gmt2001.Console.err.println("TwitchPubSubWS Error: " + messageObj.getString("error"));
                     return;

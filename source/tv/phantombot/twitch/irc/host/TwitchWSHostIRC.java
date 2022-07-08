@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -122,6 +123,7 @@ public class TwitchWSHostIRC {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.backoff.CancelReset();
                     this.shutdown();
                     com.gmt2001.Console.out.println("Delaying next connection (Host) attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
                     com.gmt2001.Console.warn.println("Delaying next reconnect (Host) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
@@ -330,7 +332,7 @@ public class TwitchWSHostIRC {
 
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                         EventBus.instance().postAsync(new TwitchHostsInitializedEvent());
-                        backoff.Reset();
+                        backoff.ResetIn(Duration.ofSeconds(30));
                     }, 20, TimeUnit.SECONDS);
                 } else {
                     this.connected = false;
