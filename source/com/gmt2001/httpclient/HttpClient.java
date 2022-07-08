@@ -16,12 +16,12 @@
  */
 package com.gmt2001.httpclient;
 
+import com.gmt2001.dns.CompositeAddressResolverGroup;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import io.netty.resolver.DefaultAddressResolverGroup;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -32,7 +32,6 @@ import org.json.JSONObject;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.http.client.HttpClient.RequestSender;
-import tv.phantombot.CaselessProperties;
 
 /**
  * Performs HTTP requests
@@ -65,25 +64,22 @@ public final class HttpClient {
             client = client.secure();
         }
 
-        if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
-            client = client.resolver(DefaultAddressResolverGroup.INSTANCE);
-        }
+        client = client.resolver(CompositeAddressResolverGroup.INSTANCE)
+                .headers(h -> {
+                    h.add(requestHeaders);
 
-        client = client.headers(h -> {
-            h.add(requestHeaders);
+                    if (!h.contains(HttpHeaderNames.USER_AGENT)) {
+                        h.add(HttpHeaderNames.USER_AGENT, DEFAULT_USER_AGENT);
 
-            if (!h.contains(HttpHeaderNames.USER_AGENT)) {
-                h.add(HttpHeaderNames.USER_AGENT, DEFAULT_USER_AGENT);
-
-                if (!h.contains(HttpHeaderNames.CONTENT_LENGTH)) {
-                    if (requestBody != null) {
-                        h.add(HttpHeaderNames.CONTENT_LENGTH, requestBody.getBytes(Charset.forName("UTF-8")).length);
-                    } else {
-                        h.add(HttpHeaderNames.CONTENT_LENGTH, 0);
+                        if (!h.contains(HttpHeaderNames.CONTENT_LENGTH)) {
+                            if (requestBody != null) {
+                                h.add(HttpHeaderNames.CONTENT_LENGTH, requestBody.getBytes(Charset.forName("UTF-8")).length);
+                            } else {
+                                h.add(HttpHeaderNames.CONTENT_LENGTH, 0);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
         String _requestBody = requestBody;
 
