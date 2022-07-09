@@ -215,6 +215,7 @@
                 logFileDate,
                 logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
                 logDirIdx,
+                match,
                 date,
                 rotateDays = $.getIniDbNumber('settings', 'log_rotate_days', 0) * 24 * 60 * 6e4;
 
@@ -228,11 +229,14 @@
         for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
             logFiles = $.findFiles('./logs/' + logDirs[logDirIdx], 'txt');
             for (idx = 0; idx < logFiles.length; idx++) {
-                logFileDate = logFiles[idx].match(/(\d{4}-\d{2}-\d{2})/)[1];
-                date = Packages.java.time.LocalDate.parse(logFileDate);
-                if (date.isBefore(checkDate)) {
-                    $.log.event('Log Rotate: Deleted ./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx]);
-                    $.deleteFile('./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx], true);
+                match = logFiles[idx].match(/(\d{4}-\d{2}-\d{2})/);
+                if (match !== undefined && match !== null && match[1] !== undefined && match[1] !== null) {
+                    logFileDate = match[1];
+                    date = Packages.java.time.LocalDate.parse(logFileDate);
+                    if (date.isBefore(checkDate)) {
+                        $.log.event('Log Rotate: Deleted ./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx]);
+                        $.deleteFile('./logs/' + logDirs[logDirIdx] + '/' + logFiles[idx], true);
+                    }
                 }
             }
         }
@@ -368,7 +372,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./core/logging.js', 'log', $.PERMISSION.Admin);
 
         logRotate();
