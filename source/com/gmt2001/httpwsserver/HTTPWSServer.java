@@ -186,6 +186,10 @@ public final class HTTPWSServer {
         return this.sslEnabled || CaselessProperties.instance().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
+    public boolean isAutoSsl() {
+        return this.autoSSL;
+    }
+
     void generateAutoSsl() {
         this.generateAutoSsl(PhantomBot.instance().getBotName());
     }
@@ -205,6 +209,10 @@ public final class HTTPWSServer {
      * @param forceNew If true, forces a brand new key pair to be generated
      */
     void generateAutoSsl(String botName, boolean forceNew) {
+        if (!this.autoSSL) {
+            return;
+        }
+
         try {
             KeyPair kp = null;
             if (!forceNew) {
