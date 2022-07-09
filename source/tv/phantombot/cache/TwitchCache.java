@@ -64,8 +64,6 @@ public final class TwitchCache implements Runnable {
 
     /* Cached data */
     private boolean isOnline = false;
-    private boolean isOnlinePS = false;
-    private boolean gotOnlineFromPS = false;
     private boolean forcedGameTitleUpdate = false;
     private boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
@@ -77,6 +75,7 @@ public final class TwitchCache implements Runnable {
     private int viewerCount = 0;
     private int views = 0;
     private String displayName;
+    private Instant offlineTimeout = null;
 
     /**
      * Creates an instance for a channel.
@@ -256,12 +255,16 @@ public final class TwitchCache implements Runnable {
 
                 if (!this.isOnline && isOnlinen) {
                     this.isOnline = true;
-                    if (!this.gotOnlineFromPS) {
-                        EventBus.instance().postAsync(new TwitchOnlineEvent());
-                    }
+                    this.offlineTimeout = null;
+                    EventBus.instance().postAsync(new TwitchOnlineEvent());
                     sentTwitchOnlineEvent = true;
                 } else if (this.isOnline && !isOnlinen) {
-                    this.isOnline = false;
+                    if (this.offlineTimeout == null) {
+                        this.offlineTimeout = Instant.now().plusSeconds(30);
+                    } else if (Instant.now().isAfter(this.offlineTimeout)) {
+                        this.offlineTimeout = null;
+                        this.isOnline = false;
+                    }
                     //EventBus.instance().postAsync(new TwitchOfflineEvent());
                 }
 
@@ -283,17 +286,13 @@ public final class TwitchCache implements Runnable {
                     this.previewLink = previewLinkn;
 
                     /* Get the viewer count. */
-                    if (!this.gotOnlineFromPS) {
-                        this.viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
-                    }
+                    this.viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
                 } else {
                     streamUptimeSecondsn = 0L;
                     this.streamUptimeSeconds = streamUptimeSecondsn;
                     this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                     this.streamCreatedAt = "";
-                    if (!this.gotOnlineFromPS) {
-                        this.viewerCount = 0;
-                    }
+                    this.viewerCount = 0;
                 }
             } else {
                 success = false;
@@ -428,11 +427,7 @@ public final class TwitchCache implements Runnable {
      * @return
      */
     public boolean isStreamOnline() {
-        if (!this.gotOnlineFromPS) {
-            return this.isOnline;
-        }
-
-        return this.isOnlinePS;
+        return this.isOnline;
     }
 
     /**
@@ -618,27 +613,9 @@ public final class TwitchCache implements Runnable {
     /**
      * Sets online state
      */
-    public void goOnlinePS() {
-        this.isOnlinePS = true;
-        this.gotOnlineFromPS = true;
-        this.streamUptimeSeconds = 0L;
-    }
-
-    /**
-     * Sets online state
-     */
     public void goOnline() {
         this.isOnline = true;
         this.streamUptimeSeconds = 0L;
-    }
-
-    /**
-     * Sets offline state
-     */
-    public void goOfflinePS() {
-        this.isOnlinePS = false;
-        this.gotOnlineFromPS = true;
-        this.viewerCount = 0;
     }
 
     /**
@@ -671,11 +648,9 @@ public final class TwitchCache implements Runnable {
                     boolean sendingOnline = false;
 
                     if (!isFromPubSubEvent) {
-                        if (!this.gotOnlineFromPS && !this.isOnline) {
+                        if (!this.isOnline) {
                             this.goOnline();
-                            sendingOnline = true;
-                        } else if (this.gotOnlineFromPS && !this.isOnlinePS) {
-                            this.goOnlinePS();
+                            this.offlineTimeout = null;
                             sendingOnline = true;
                         }
 
@@ -691,8 +666,9 @@ public final class TwitchCache implements Runnable {
                     this.previewLink = stream.optString("thumbnail_url", "").replace("{width}", "1920").replace("{height}", "1080");
                 } else {
                     if (!isFromPubSubEvent) {
-                        if (!this.gotOnlineFromPS && this.isOnline) {
+                        if (this.isOnline) {
                             this.goOffline();
+                            this.offlineTimeout = null;
                             EventBus.instance().postAsync(new TwitchOfflineEvent());
                         }
                     }
