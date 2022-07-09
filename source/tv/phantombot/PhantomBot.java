@@ -1526,6 +1526,10 @@ public final class PhantomBot implements Listener {
         return isInExitState;
     }
 
+    public TwitchPubSub getPubSub() {
+        return this.pubSubEdge;
+    }
+
     public void setPubSub(TwitchPubSub pubSub) {
         this.pubSubEdge = pubSub;
     }
