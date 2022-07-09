@@ -16,7 +16,6 @@
  */
 package com.gmt2001.wsclient;
 
-import com.gmt2001.dns.CompositeAddressResolverGroup;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -27,10 +26,12 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.resolver.DefaultAddressResolverGroup;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Provides a WebSocket client
@@ -130,9 +131,13 @@ public class WSClient {
             }
 
             Bootstrap b = new Bootstrap();
-            b.group(this.group)
-                    .resolver(CompositeAddressResolverGroup.INSTANCE)
-                    .channel(NioSocketChannel.class)
+            b.group(this.group);
+
+            if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
+                b.resolver(DefaultAddressResolverGroup.INSTANCE);
+            }
+
+            b.channel(NioSocketChannel.class)
                     .handler(new WSClientInitializer(this));
 
             this.channel = b.connect(this.host, this.port).sync().channel();
