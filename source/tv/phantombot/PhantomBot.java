@@ -405,7 +405,7 @@ public final class PhantomBot implements Listener {
             /* Validate the chat OAUTH token. */
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName(), this.getChannelName());
         }
     }
 
@@ -666,7 +666,9 @@ public final class PhantomBot implements Listener {
      * Method that gets the PhantomBot properties.
      *
      * @return
+     * @deprecated
      */
+    @Deprecated
     public CaselessProperties getProperties() {
         return CaselessProperties.instance();
     }
@@ -1522,6 +1524,10 @@ public final class PhantomBot implements Listener {
 
     public static boolean isInExitState() {
         return isInExitState;
+    }
+
+    public TwitchPubSub getPubSub() {
+        return this.pubSubEdge;
     }
 
     public void setPubSub(TwitchPubSub pubSub) {

@@ -33,7 +33,10 @@ public class CatchSslExceptionHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (cause.getMessage().contains("no cipher suites in common") || cause.getMessage().contains("unable to find valid certification path")) {
+        if (cause.getClass().equals(java.security.cert.CertificateExpiredException.class)
+                || cause.getClass().equals(java.security.cert.CertPathValidatorException.class)
+                || cause.getMessage().contains("no cipher suites in common")
+                || cause.getMessage().contains("unable to find valid certification path")) {
             HTTPWSServer.instance().generateAutoSsl(true);
         }
         ctx.fireExceptionCaught(cause);

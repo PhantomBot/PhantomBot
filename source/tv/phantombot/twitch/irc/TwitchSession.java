@@ -20,6 +20,7 @@ import com.gmt2001.ExponentialBackoff;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -91,7 +92,7 @@ public class TwitchSession extends MessageQueue {
         try {
             if (this.twitchWSIRC.connected()) {
                 this.twitchWSIRC.send(message);
-                this.backoff.Reset();
+                this.backoff.ResetIn(Duration.ofSeconds(30));
             } else {
                 if (!isretry) {
                     try {
@@ -170,6 +171,7 @@ public class TwitchSession extends MessageQueue {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.backoff.CancelReset();
                     this.quitIRC();
                     com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
                     com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
@@ -222,10 +224,10 @@ public class TwitchSession extends MessageQueue {
             }
 
             if (Instant.now().isAfter(this.nextReminder)) {
-                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName()))) {
+                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName()))) {
                     com.gmt2001.Console.warn.println("WARNING: Unable to send last message due to configuration error");
 
-                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName());
+                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName());
 
                     if (!this.isAllowedToSend) {
                         com.gmt2001.Console.warn.println("WARNING: May not be a moderator");
