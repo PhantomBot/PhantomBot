@@ -666,7 +666,9 @@ public final class PhantomBot implements Listener {
      * Method that gets the PhantomBot properties.
      *
      * @return
+     * @deprecated
      */
+    @Deprecated
     public CaselessProperties getProperties() {
         return CaselessProperties.instance();
     }
