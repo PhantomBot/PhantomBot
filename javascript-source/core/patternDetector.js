@@ -131,7 +131,7 @@
             str = message,
             i;
 
-        if (emotes.length() > 0) {
+        if (emotes !== null && emotes.length() > 0) {
             emotes = emotes.replaceAll('[0-9]+:', '').split('/');
             for (i in emotes) {
                 str = str.replace(getWordAt(message, parseInt(emotes[i].split('-')[0])), '');
