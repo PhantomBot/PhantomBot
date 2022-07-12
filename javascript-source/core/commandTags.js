@@ -207,20 +207,7 @@
             return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
         }
 
-        message = unescapeTags(message);
-
-        if (message) {
-            if (message.match('\n')) {
-                var splitMessage = message.split('\n');
-
-                for (var i = 0; i < splitMessage.length && i <= 4; ++i) {
-                    $.say(splitMessage[i]);
-                }
-                return null;
-            }
-        }
-
-        return message;
+        return unescapeTags(message);
     }
 
     /*
