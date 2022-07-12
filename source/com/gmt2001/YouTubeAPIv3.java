@@ -36,6 +36,7 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -251,6 +252,10 @@ public class YouTubeAPIv3 {
     }
 
     public int[] GetVideoLength(String id) throws JSONException {
+        return this.GetVideoLength(id, false);
+    }
+
+    public int[] GetVideoLength(String id, boolean isRetry) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
@@ -277,6 +282,10 @@ public class YouTubeAPIv3 {
                     com.gmt2001.Console.debug.println("Videos API Fail: Length == 0");
                     return new int[]{0, 0, 0};
                 }
+            } else if (j.getInt("_http") == 403 && !isRetry) {
+                com.gmt2001.Console.out.println("Detected 403, trying again in 5 seconds...");
+                Mono.delay(Duration.ofSeconds(5)).block();
+                return this.GetVideoLength(id, true);
             } else {
                 com.gmt2001.Console.debug.println("Videos API Fail: HTTP Code " + j.getInt("_http"));
                 return new int[]{0, 0, 0};
@@ -288,6 +297,10 @@ public class YouTubeAPIv3 {
     }
 
     public int[] GetVideoInfo(String id) throws JSONException {
+        return this.GetVideoInfo(id, false);
+    }
+
+    public int[] GetVideoInfo(String id, boolean isRetry) throws JSONException {
         int licenseRetval = 0;
         int embedRetval = 0;
 
@@ -311,6 +324,10 @@ public class YouTubeAPIv3 {
                 } else {
                     com.gmt2001.Console.debug.println("Videos API Fail: Length == 0");
                 }
+            } else if (jsonObject.getInt("_http") == 403 && !isRetry) {
+                com.gmt2001.Console.out.println("Detected 403, trying again in 5 seconds...");
+                Mono.delay(Duration.ofSeconds(5)).block();
+                return this.GetVideoInfo(id, true);
             } else {
                 com.gmt2001.Console.debug.println("Videos API Fail: HTTP Code " + jsonObject.getInt("_http"));
             }
