@@ -72,7 +72,7 @@ public final class TwitchCache implements Runnable {
     private String streamTitle = "Some Title";
     private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
-    private long streamUptimeSeconds = 0L;
+    private ZonedDateTime streamUptime = null;
     private int viewerCount = 0;
     private int views = 0;
     private String displayName;
@@ -268,9 +268,7 @@ public final class TwitchCache implements Runnable {
                 if (this.isOnline && isOnlinen) {
                     /* Calculate the stream uptime in seconds. */
                     try {
-                        ZonedDateTime currentDate = ZonedDateTime.now();
-                        ZonedDateTime streamCreatedDate = ZonedDateTime.parse(streamObj.getJSONObject("stream").getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        this.streamUptimeSeconds = Duration.between(currentDate, streamCreatedDate).getSeconds();
+                        this.streamUptime = ZonedDateTime.parse(streamObj.getJSONObject("stream").getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (DateTimeParseException | JSONException ex) {
                         success = false;
@@ -284,7 +282,7 @@ public final class TwitchCache implements Runnable {
                     /* Get the viewer count. */
                     this.viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
                 } else if (!this.isOnline && !isOnlinen) {
-                    this.streamUptimeSeconds = 0L;
+                    this.streamUptime = null;
                     this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                     this.streamCreatedAt = "";
                     this.viewerCount = 0;
@@ -443,7 +441,11 @@ public final class TwitchCache implements Runnable {
      * @return
      */
     public long getStreamUptimeSeconds() {
-        return this.streamUptimeSeconds;
+        if (this.streamUptime == null) {
+            return 0L;
+        }
+
+        return Duration.between(ZonedDateTime.now(), this.streamUptime).getSeconds();
     }
 
     /**
@@ -607,19 +609,36 @@ public final class TwitchCache implements Runnable {
 
     /**
      * Sets online state
+     *
+     * @param shouldSendEvent
      */
-    public void goOnline() {
-        this.isOnline = true;
-        this.streamUptimeSeconds = 0L;
+    public void goOnline(boolean shouldSendEvent) {
+        if (!this.isOnline && Instant.now().isAfter(this.offlineTimeout)) {
+            this.isOnline = true;
+            this.streamUptime = ZonedDateTime.now();
+
+            if (shouldSendEvent) {
+                EventBus.instance().postAsync(new TwitchOnlineEvent());
+            }
+        }
     }
 
     /**
      * Sets offline state
+     *
+     * @param shouldSendEvent
      */
-    public void goOffline() {
-        this.isOnline = false;
-        this.viewerCount = 0;
-        this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
+    public void goOffline(boolean shouldSendEvent) {
+        if (this.isOnline) {
+            this.isOnline = false;
+            this.viewerCount = 0;
+            this.streamUptime = null;
+            this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
+
+            if (shouldSendEvent) {
+                EventBus.instance().postAsync(new TwitchOfflineEvent());
+            }
+        }
     }
 
     /**
@@ -645,13 +664,9 @@ public final class TwitchCache implements Runnable {
 
                     if (!isFromPubSubEvent) {
                         if (!this.isOnline) {
-                            this.goOnline();
+                            this.goOnline(true);
                             this.offlineDelay = null;
                             sendingOnline = true;
-                        }
-
-                        if (sendingOnline) {
-                            EventBus.instance().postAsync(new TwitchOnlineEvent());
                         }
                     }
 
@@ -663,9 +678,8 @@ public final class TwitchCache implements Runnable {
                 } else {
                     if (!isFromPubSubEvent) {
                         if (this.isOnline) {
-                            this.goOffline();
+                            this.goOffline(true);
                             this.offlineDelay = null;
-                            EventBus.instance().postAsync(new TwitchOfflineEvent());
                         }
                     }
                 }

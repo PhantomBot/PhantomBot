@@ -26,8 +26,6 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.pubsub.videoplayback.PubSubStreamDownEvent;
 import tv.phantombot.event.pubsub.videoplayback.PubSubStreamUpEvent;
 import tv.phantombot.event.pubsub.videoplayback.PubSubViewCountEvent;
-import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
-import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 
 /**
  * A processor for stream up/down/viewer events from PubSub
@@ -76,16 +74,14 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
                 if (this.isCaster) {
                     Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
                         TwitchCache.instance().syncStreamStatus(true);
-                        EventBus.instance().postAsync(new TwitchOnlineEvent());
-                        TwitchCache.instance().goOnline();
+                        TwitchCache.instance().goOnline(true);
                     }).subscribe();
                 }
                 EventBus.instance().postAsync(new PubSubStreamUpEvent(this.channelId, srvtime, body.getInt("play_delay")));
                 break;
             case "stream-down":
                 if (this.isCaster) {
-                    EventBus.instance().postAsync(new TwitchOfflineEvent());
-                    TwitchCache.instance().goOffline();
+                    TwitchCache.instance().goOffline(true);
                 }
                 EventBus.instance().postAsync(new PubSubStreamDownEvent(this.channelId, srvtime));
                 break;
