@@ -28,10 +28,7 @@ $(run = function() {
         socket.getDBTableValues('get_all_greetings', 'greeting', function(results) {
             let tableData = [];
 
-            helpers.temp.defaultMessage = results[1].value; // The default message is saved in the second entry
-
-            for (let i = 3; i < results.length; i++) {
-                // The first three entries are settings for the greeting system
+            for (let i = 0; i < results.length; i++) {
 
                 tableData.push([
                     i,
@@ -92,12 +89,13 @@ $(run = function() {
                 // Ask the user if the wants to remove the user greeting.
                 helpers.getConfirmDeleteModal('greeting_modal_remove', 'Are you sure you want to remove ' + greetingUser + 's greeting?', true,
                     'You\'ve successfully removed the user greeting with ID ' + greetingUser + '!', function() {
-                    // Delete the user greeting.
-                    socket.sendCommandSync('rm_greeting_cmd', 'greeting removesilent ' + greetingUser, function() {
-                        // Reload the table.
-                        run();
-                    });
-                });
+                        // Delete the user greeting.
+                        socket.sendCommandSync('rm_greeting_cmd', 'greeting removesilent ' + greetingUser, function() {
+                            // Reload the table.
+                            run();
+                        });
+                    }
+                );
             });
 
             // On edit button.
@@ -113,7 +111,7 @@ $(run = function() {
                     // Append User.
                     .append(helpers.getInputGroup('greeting-username', 'text', 'Username', '', greetingUser, 'The user this greeting is for.'))
                     // Append Greeting Message
-                    .append(helpers.getInputGroup('greeting-message', 'text', 'Greeting Message', '', e.greeting, 'The greeting message for ' + greetingUser + '.')), function() {// Callback once we click the save button.
+                    .append(helpers.getInputGroup('greeting-message', 'text', 'Greeting Message', '', e.greeting, 'The greeting message for ' + greetingUser + '.')), function() { // Callback once we click the save button.
                         let greetingUsername = $('#greeting-username'),
                             greetingMessage = $('#greeting-message');
 
@@ -145,7 +143,7 @@ $(run = function() {
 // Function that handlers the loading of events.
 $(function() {
     socket.addListener('greeting_update', function() {
-       run();
+        run();
     });
 
     // Module toggle.
@@ -156,11 +154,11 @@ $(function() {
 
     // Add greeting button.
     $('#add-greeting-button').on('click', function() {
-        /** 
+        /**
          * For some reason using the single keyed getDBValue function does not work here
          * socket.getDBValue('get_default_greeting', 'greeting', 'defaultJoin', function(e) {
          */
-        socket.getDBValues('get_default_greeting', {tables: ['greeting'], keys: ['defaultJoin']}, true, function(e) {
+        socket.getDBValues('get_default_greeting', {tables: ['greetingSettings'], keys: ['defaultJoin']}, true, function(e) {
             helpers.getModal('add-greeting', 'Add User Greeting', 'Save', $('<form/>', {
                 'role': 'form'
             })
@@ -168,10 +166,9 @@ $(function() {
             // Append User.
             .append(helpers.getInputGroup('greeting-username', 'text', 'Username', '', '', 'The user this greeting is for.'))
             // Append Greeting Message
-            .append(helpers.getInputGroup('greeting-message', 'text', 'Greeting Message', e.defaultJoin, undefined, 'The greeting posted after the user has sent their first message and is considered as active.')), function() {// Callback once we click the save button.
+            .append(helpers.getInputGroup('greeting-message', 'text', 'Greeting Message', e.defaultJoin, undefined, 'The greeting posted after the user has sent their first message and is considered as active.')), function() { // Callback once we click the save button.
                 let greetingUsername = $('#greeting-username'),
                     greetingMessage = $('#greeting-message').val() !== '' ? $('#greeting-message').val() : e.defaultJoin;
-                
 
                 // Handle each input to make sure they have a value.
                 switch (false) {
@@ -195,15 +192,21 @@ $(function() {
     // User Greeting settings button.
     $('#greeting-settings-button').on('click', function() {
         socket.getDBValues('alerts_get_greeting_settings', {
-            tables: ['greeting', 'greeting', 'greeting'],
-            keys: ['autoGreetEnabled', 'cooldown', 'defaultJoin']
+            tables: ['greetingSettings', 'greetingSettings', 'greetingSettings', 'greetingSettings', 'greetingSettings'],
+            keys: ['autoGreetEnabled', 'cooldown', 'defaultJoin', 'onJoin', 'userSelfService']
         }, true, function(e) {
             helpers.getModal('greeting-alert', 'Greeting Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
             // Add the toggle for greeting alerts.
             .append(helpers.getDropdownGroup('greeting-toggle', 'Enable Greeting Alerts', (e.autoGreetEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If users should be allowed to set a message for when they join the channel.'))
+                'If users should be greeted.'))
+            // Add the toggle for greeting mode.
+            .append(helpers.getDropdownGroup('on-Join', 'Greeting Mode', (e.onJoin === 'true' ? 'On joining' : 'On first message'), ['On joining', 'On first message'],
+                'If the user greeting should be sent as soon as the user enters the chat or after they send their first message'))
+            // Add the toggle for user Self-Service.
+            .append(helpers.getDropdownGroup('user-self-service', 'User Self-Service ', (e.userSelfService === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If users should be allowed to set their own messages'))
             // Add the input for the greeting reward.
             .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Greeting Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
                 'How long the greeting message per user will be in hours. Minimum is 5 hours.'))
@@ -213,7 +216,9 @@ $(function() {
             function() { // Callback once the user clicks save.
                 let greetingToggle = $('#greeting-toggle').find(':selected').text() === 'Yes',
                     greetingCooldown = $('#greeting-cooldown'),
-                    defaultMessage = $('#greeting-default-message');
+                    defaultMessage = $('#greeting-default-message'),
+                    userSelfService = $('#user-self-service').find(':selected').text() === 'Yes',
+                    onJoin = $('#on-Join').find(':selected').text() === 'On joining';
 
                 // Make sure the user has someone in each box.
                 switch (false) {
@@ -222,9 +227,9 @@ $(function() {
                         break;
                     default:
                         socket.updateDBValues('alerts_update_greeting_settings', {
-                            tables: ['greeting', 'greeting', 'greeting'],
-                            keys: ['autoGreetEnabled', 'cooldown', 'defaultJoin'],
-                            values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5), defaultMessage.val().replace(/"/g, '\'\'')]
+                            tables: ['greetingSettings', 'greetingSettings', 'greetingSettings', 'greetingSettings', 'greetingSettings'],
+                            keys: ['autoGreetEnabled', 'cooldown', 'defaultJoin', 'onJoin', 'userSelfService'],
+                            values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5), defaultMessage.val().replace(/"/g, '\'\''), onJoin, userSelfService]
                         }, function() {
                             socket.sendCommand('alerts_update_greeting_settings_cmd', 'greetingspanelupdate', function() {
                                 // Close the modal.
