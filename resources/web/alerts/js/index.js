@@ -21,6 +21,21 @@ $(function () {
             isDebug = localStorage.getItem('phantombot_alerts_debug') === 'true' || false;
     let queue = [];
 
+    let queueProcessing = false;
+    let playingAudioFiles = [];
+
+    const CONF_ENABLE_FLYING_EMOTES = 'enableFlyingEmotes';
+    const CONF_ENABLE_GIF_ALERTS = 'enableGifAlerts';
+    const CONF_ENABLE_VIDEO_CLIPS = 'enableVideoClips';
+    const CONF_VIDEO_CLIP_VOLUME = 'videoClipVolume';
+    const CONF_GIF_ALERT_VOLUME = 'gifAlertVolume';
+
+    const PROVIDER_TWITCH = 'twitch';
+    const PROVIDER_LOCAL = 'local';
+    const PROVIDER_MAXCDN = 'maxcdn';
+    const PROVIDER_FFZ = 'ffz';
+    const PROVIDER_BTTV = 'bttv';
+
     /*
      * @function Gets a new instance of the websocket.
      *
@@ -184,20 +199,77 @@ $(function () {
     /*
      * @function Handles the queue.
      */
-    function handleQueue() {
-        let event = queue[0];
+    async function handleQueue() {
+        // Do not do anything if the queue is empty
+        if (queueProcessing || queue.length === 0) {
+            return;
+        }
+        queueProcessing = true;
+        // Process the whole queue at once
+        while (queue.length > 0) {
+            let event = queue[0];
+            let ignoreIsPlaying = (event.ignoreIsPlaying !== undefined ? event.ignoreIsPlaying : false);
 
-        if (event !== undefined && isPlaying === false) {
-            printDebug('Processing event ' + JSON.stringify(event));
-
-            isPlaying = true;
-            if (event.alert_image !== undefined) {
-                handleGifAlert(event);
+            if (event === undefined) {
+                console.error('Received event of type undefined. Ignoring.');
+            } else if (event.emoteId !== undefined) {
+                // do not respect isPlaying for emotes
+                handleEmote(event);
+            } else if (event.script !== undefined) {
+                handleMacro(event);
+            } else if (event.stopMedia !== undefined) {
+                handleStopMedia(event);
+            } else if (ignoreIsPlaying || isPlaying === false) {
+                // sleep a bit to reduce the overlap
+                await sleep(100);
+                printDebug('Processing event: ' + JSON.stringify(event));
+                // called method is responsible to reset this
+                isPlaying = true;
+                if (event.type === 'playVideoClip') {
+                    handleVideoClip(event);
+                } else if (event.alert_image !== undefined) {
+                    handleGifAlert(event);
+                } else if (event.audio_panel_hook !== undefined) {
+                    handleAudioHook(event);
+                } else {
+                    printDebug('Received message and don\'t know what to do about it: ' + event);
+                    isPlaying = false;
+                }
             } else {
-                handleAudioHook(event);
+                // Event was not processed because something is already playing
+                // Return to avoid dropping it
+                queueProcessing = false;
+                return;
             }
+            // Remove the event
             queue.splice(0, 1);
         }
+        queueProcessing = false;
+    }
+
+    function handleStopMedia(json) {
+        let stopVideo;
+        let stopAudio;
+        if (json.stopMedia === 'all') {
+            stopVideo = stopAudio = true;
+        } else {
+            stopVideo = json.stopMedia.indexOf('video') >= 0;
+            stopAudio = json.stopMedia.indexOf('audio') >= 0;
+        }
+        if (stopVideo) {
+            let videoFrame = document.getElementById('main-video-clips');
+            while (videoFrame.children.length > 0) {
+                videoFrame.children[0].remove();
+            }
+        }
+        if (stopAudio) {
+            while (playingAudioFiles.length > 0) {
+                playingAudioFiles[0].pause();
+                playingAudioFiles[0].remove();
+                playingAudioFiles.splice(0, 1);
+            }
+        }
+        isPlaying = false;
     }
 
     /*
@@ -234,7 +306,7 @@ $(function () {
         }
 
         if (!found) {
-            printDebug('No audio formats were supported by the browser!', true);
+            printDebug(`Could not find a supported audio file for ${name}.`, true);
         }
 
         if (getOptionSetting('show-debug', 'false') === 'true' && path === undefined) {
@@ -273,12 +345,197 @@ $(function () {
                 audio.currentTime = 0;
                 isPlaying = false;
             });
+            playingAudioFiles.push(audio);
             // Play the audio.
             audio.play().catch(function (err) {
                 console.log(err);
             });
         } else {
             isPlaying = false;
+        }
+    }
+
+    /*
+     * Handles emote messages
+     * @param json
+     * @returns {Promise<void>}
+     */
+    async function handleEmote(json) {
+        let amount = json.amount !== undefined ? json.amount : 1;
+        const animationName = json.animationName || 'flyUp';
+        const duration = json.duration || 10000;
+        const ignoreSleep = json.ignoreSleep || false;
+        for (let i = 0; i < amount; i++) {
+            displayEmote(json['emoteId'], json['provider'], animationName, duration);
+            if(!ignoreSleep) {
+                await sleep(getRandomInt(1, 200));
+            }
+        }
+    }
+
+    function displayEmote(emoteId, provider, animationName, duration) {
+        if (getOptionSetting(CONF_ENABLE_FLYING_EMOTES, 'false') === 'false') {
+            // Feature not enabled, end the function
+            return;
+        }
+
+        // scaling of the emote (by width)
+        const size = 112;
+
+        const browserSafeId = emoteId.replace(/\W/g, '');
+
+        // a pseudo unique id to make sure, the keyframe names won't interfere each other
+        const uniqueId = `${Date.now()}${Math.random().toString(16).substr(2, 8)}`
+
+        let emoteUrl;
+        switch (provider) {
+            case PROVIDER_TWITCH:
+                // Taken from the entry "emotes" on https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
+                emoteUrl = 'https://static-cdn.jtvnw.net/emoticons/v1/' + emoteId + '/3.0';
+                break;
+            case PROVIDER_LOCAL:
+                emoteUrl = '/config/emotes/' + emoteId;
+                break;
+            case PROVIDER_MAXCDN:
+                emoteUrl = `https://twemoji.maxcdn.com/v/latest/svg/${emoteId}.svg`;
+                break;
+            case PROVIDER_BTTV:
+                emoteUrl = `https://cdn.betterttv.net/emote/${emoteId}/3x`;
+                break;
+            case PROVIDER_FFZ:
+                emoteUrl = `https://cdn.frankerfacez.com/emoticon/${emoteId}/4`;
+                break;
+            default:
+                printDebug(`Could not find local emote '${emoteId}'`);
+                return;
+        }
+
+        let emote = document.createElement('img');
+        emote.style.position = 'absolute';
+        emote.src = emoteUrl;
+        emote.width = size;
+        emote.id = `emote-${browserSafeId}-${uniqueId}`;
+        emote.dataset['browserSafeId'] = browserSafeId;
+        emote.dataset['uniqueId'] = uniqueId;
+
+        emote = document.getElementById('main-emotes').appendChild(emote);
+        if (animationName === 'flyUp') {
+            emoteFlyingUp(emote);
+        } else {
+            emoteAnimated(emote, animationName, duration);
+        }
+    }
+
+    function emoteAnimated(emote, animationName, duration) {
+        emote.style.top = getRandomInt(-5, 95) + 'vh';
+        emote.style.left = getRandomInt(-5, 95) + 'vw';
+        emote.classList.add('animatedEmote');
+        emote.classList.add('animate__animated');
+        emote.classList.add('animate__' + animationName);
+        emote.classList.add('animate__infinite');
+
+        setTimeout(() => {
+            emote.remove();
+        }, duration);
+    }
+
+    function emoteFlyingUp(emote) {
+        // How long should the emotes fly over the screen?
+        const displayTime = 12 + Math.random() * 3;
+        // How long should one side-way iteration take
+        const sideWayDuration = 3 + Math.random();
+        // How much distance may the side-way movements take
+        // value is in vw (viewport width) -> screen percentage
+        const sideWayDistance = 3 + getRandomInt(0, 20);
+        // Spawn Range
+        const spawnRange = getRandomInt(0, 80);
+
+        const browserSafeId = emote.dataset['browserSafeId'];
+        const uniqueId = emote.dataset['uniqueId'];
+        const keyFrameFly = `emoteFly-${browserSafeId}-${uniqueId}`;
+        const keyFrameSideways = `emoteSideWays-${browserSafeId}-${uniqueId}`;
+        const keyFrameOpacity = `emoteOpacity-${browserSafeId}-${uniqueId}`;
+
+        let emoteAnimation = new Keyframes(emote);
+
+        Keyframes.define([{
+            name: keyFrameFly,
+            '0%': {transform: 'translate(' + spawnRange + 'vw, 100vh)'},
+            '100%': {transform: 'translate(' + spawnRange + 'vw, 0vh)'}
+        }]);
+
+        Keyframes.define([{
+            name: keyFrameSideways,
+            '0%': {marginLeft: '0'},
+            '100%': {marginLeft: sideWayDistance + 'vw'}
+        }]);
+
+        Keyframes.define([{
+            name: keyFrameOpacity,
+            '0%': {opacity: 0},
+            '40%': {opacity: 1},
+            '80%': {opacity: 1},
+            '90%': {opacity: 0},
+            '100%': {opacity: 0}
+        }]);
+
+        emoteAnimation.play([{
+            name: keyFrameFly,
+            duration: displayTime + 's',
+            timingFunction: 'ease-in'
+        }, {
+            name: keyFrameSideways,
+            duration: sideWayDuration + 's',
+            timingFunction: 'ease-in-out',
+            iterationCount: Math.round(displayTime / sideWayDuration),
+            direction: 'alternate' + (getRandomInt(0, 1) === 0 ? '-reverse' : '')
+        }, {
+            name: keyFrameOpacity,
+            duration: displayTime + 's',
+            timingFunction: 'ease-in'
+        }], {
+            onEnd: (event) => {
+                event.target.remove();
+            }
+        });
+    }
+
+    async function handleVideoClip(json) {
+        if (getOptionSetting(CONF_ENABLE_VIDEO_CLIPS, 'true') !== 'true') {
+            return;
+        }
+        let defaultPath = '/config/clips';
+        let filename = json.filename;
+        let duration = json.duration || -1;
+        let fullscreen = json.fullscreen || false;
+        let volume = getOptionSetting(CONF_VIDEO_CLIP_VOLUME, '0.8');
+
+        let video = document.createElement('video');
+        video.src = `${defaultPath}/${filename}`
+        video.autoplay = false;
+        video.preload = 'auto';
+        video.volume = volume;
+        if (fullscreen) {
+            video.className = 'fullscreen';
+        }
+        let frame = document.getElementById('main-video-clips');
+        frame.append(video);
+
+        video.play().catch(() => {
+            console.error('Failed to play ' + video.src);
+            isPlaying = false;
+        });
+        video.addEventListener('ended', (event) => {
+            isPlaying = false;
+            video.pause();
+            video.remove();
+        });
+        if (duration > 0) {
+            setTimeout(() => {
+                video.pause();
+                video.remove();
+                isPlaying = false;
+            }, duration);
         }
     }
 
@@ -310,11 +567,11 @@ $(function () {
      */
     async function handleGifAlert(json) {
         // Make sure we can allow alerts.
-        if (getOptionSetting('allow-alerts', 'true') === 'true') {
+        if (getOptionSetting(CONF_ENABLE_GIF_ALERTS, 'true') === 'true') {
             let defaultPath = '/config/gif-alerts/',
                     gifData = json.alert_image,
                     gifDuration = 3000,
-                    gifVolume = getOptionSetting('gif-default-volume', '0.8'),
+                    gifVolume = getOptionSetting(CONF_GIF_ALERT_VOLUME, '0.8'),
                     gifFile = '',
                     gifCss = '',
                     gifText = '',
@@ -475,6 +732,42 @@ $(function () {
         } else {
             isPlaying = false;
         }
+    }
+
+    async function handleMacro(json) {
+        printDebug('Playing Macro: ' + json.macroName);
+        for (let i = 0; i < json.script.length; i++) {
+            let element = json.script[i];
+            switch (element.elementType) {
+                case 'clip':
+                    isPlaying = true;
+                    await handleVideoClip(element);
+                    break;
+                case 'emote':
+                    element.emoteId = element.emoteId !== undefined ? element.emoteId.toString() : element.emotetext;
+                    await handleEmote(element);
+                    break;
+                case 'pause':
+                    await sleep(element.duration);
+                    break;
+                case 'sound':
+                    await handleAudioHook({audio_panel_hook: element.filename, duration: element.duration});
+                    break;
+            }
+        }
+        printDebug('Finished playing macro: ' + json.macroName);
+    }
+
+    /**
+     * Generates a random number between the given min and max
+     * @param min the minimum value
+     * @param max the maximum value
+     * @returns {number} a random number
+     */
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     /*
