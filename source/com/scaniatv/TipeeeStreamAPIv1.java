@@ -23,7 +23,7 @@ package com.scaniatv;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
+import java.net.URI;
 import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +59,7 @@ public class TipeeeStreamAPIv1 {
     @SuppressWarnings("UseSpecificCatch")
     private static JSONObject readJsonFromUrl(String endpoint) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
-        HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(endpoint));
+        HttpClientResponse response = HttpClient.get(URI.create(endpoint));
 
         if (response.hasJson()) {
             jsonResult = response.json();

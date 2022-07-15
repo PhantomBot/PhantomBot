@@ -21,11 +21,11 @@ package com.illusionaryone;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import java.net.URI;
 import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +74,7 @@ public class TwitchAlertsAPIv1 {
             headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
         }
 
-        HttpClientResponse response = HttpClient.request(method, HttpUrl.fromUri(APIURL, endpoint), headers, body);
+        HttpClientResponse response = HttpClient.request(method, URI.create(APIURL + endpoint), headers, body);
 
         if (response.hasJson()) {
             jsonResult = response.json();

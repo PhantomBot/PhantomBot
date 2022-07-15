@@ -19,9 +19,9 @@ package tv.phantombot.twitch.api;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -136,7 +136,7 @@ public class TwitchValidate {
         try {
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
             headers.add("Authorization", "OAuth " + oAuthToken);
-            HttpClientResponse response = HttpClient.request(HttpMethod.GET, HttpUrl.fromUri(BASE_URL), headers, null);
+            HttpClientResponse response = HttpClient.request(HttpMethod.GET, URI.create(BASE_URL), headers, null);
 
             responseCode = response.responseCode().code();
 

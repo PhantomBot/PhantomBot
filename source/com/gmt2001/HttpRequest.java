@@ -18,10 +18,9 @@ package com.gmt2001;
 
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
@@ -50,35 +49,21 @@ public final class HttpRequest {
 
     @Deprecated
     public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers, boolean isJson) {
-        try {
-            return getData(type, HttpUrl.fromUri(url), post, headers, isJson);
-        } catch (URISyntaxException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            HttpResponse r = new HttpResponse();
-            r.url = url;
-            r.headers = headers;
-            r.type = type;
-            r.post = post;
-            r.success = false;
-            r.exception = ex.getClass().getSimpleName() + ": " + ex.getMessage();
-            r.rawException = ex;
-            r.httpCode = 0;
-            return r;
-        }
+        return getData(type, URI.create(url), post, headers, isJson);
     }
 
     @Deprecated
-    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, Map<String, String> headers) {
+    public static HttpResponse getData(RequestType type, URI uri, String post, Map<String, String> headers) {
         return getData(type, uri, post, headers, false);
     }
 
     @Deprecated
     @SuppressWarnings("UseSpecificCatch")
-    public static HttpResponse getData(RequestType type, HttpUrl uri, String post, Map<String, String> headers, boolean isJson) {
+    public static HttpResponse getData(RequestType type, URI uri, String post, Map<String, String> headers, boolean isJson) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();
-        r.url = uri.build();
+        r.url = uri.toASCIIString();
         r.headers = headers;
         r.type = type;
         r.post = post;

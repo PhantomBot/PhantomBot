@@ -19,7 +19,6 @@ package com.gmt2001.eventsub;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -39,6 +38,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -488,7 +488,7 @@ public final class EventSub implements HttpRequestHandler {
      * @throws URISyntaxException
      */
     private JSONObject doRequest(HttpMethod type, String queryString, String post) throws IOException, JSONException, URISyntaxException {
-        HttpUrl url = HttpUrl.fromUri(BASE, queryString);
+        URI url = URI.create(BASE + queryString);
         HttpHeaders headers = HttpClient.createHeaders(type, true);
         HttpClientResponse response = HttpClient.request(type, url, headers, post);
         JSONObject jso = response.json();

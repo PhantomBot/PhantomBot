@@ -20,8 +20,7 @@ package com.illusionaryone;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,14 +44,14 @@ public final class GitHubAPIv3 {
         JSONObject jsonResult = new JSONObject();
 
         try {
-            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(BASE_URL, endPoint));
+            HttpClientResponse response = HttpClient.get(URI.create(BASE_URL + endPoint));
             if (isArray) {
                 jsonResult.put("array", new JSONArray(response.responseBody()));
             } else {
                 jsonResult = response.json();
             }
             HttpRequest.generateJSONObject(jsonResult, true, "GET", "", endPoint, response.responseCode().code(), "", "");
-        } catch (URISyntaxException | JSONException ex) {
+        } catch (JSONException ex) {
             HttpRequest.generateJSONObject(jsonResult, false, "GET", "", endPoint, 0, ex.getClass().getSimpleName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
         }
