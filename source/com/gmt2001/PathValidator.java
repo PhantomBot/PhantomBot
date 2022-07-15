@@ -33,7 +33,9 @@ public final class PathValidator {
     private static final String[] VALID_PATHS_SHARED = new String[]{
         "./addons",
         "./config/audio-hooks",
-        "./config/gif-alerts"
+        "./config/gif-alerts",
+        "./config/clips",
+        "./config/emotes"
     };
     private static final String[] VALID_PATHS_SCRIPT = new String[]{
         "./logs",
