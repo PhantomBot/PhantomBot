@@ -18,9 +18,8 @@ package com.gmt2001;
 
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -78,12 +77,7 @@ public final class GamesListUpdater {
         PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
         HttpClientResponse response;
-        try {
-            response = HttpClient.get(HttpUrl.fromUri(BASE_URL, "index.json"));
-        } catch (URISyntaxException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            return;
-        }
+        response = HttpClient.get(URI.create(BASE_URL + "index.json"));
 
         if (!response.isSuccess() || !response.hasJson()) {
             if (force) {
@@ -191,12 +185,7 @@ public final class GamesListUpdater {
 
     private static void UpdateFromIndex(List<String> data, int index, boolean force) {
         HttpClientResponse response;
-        try {
-            response = HttpClient.get(HttpUrl.fromUri(BASE_URL, "data/games" + index + ".json"));
-        } catch (URISyntaxException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            return;
-        }
+        response = HttpClient.get(URI.create(BASE_URL + "data/games" + index + ".json"));
 
         if (!response.isSuccess()) {
             if (force) {

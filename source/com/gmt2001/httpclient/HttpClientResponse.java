@@ -19,6 +19,7 @@ package com.gmt2001.httpclient;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import org.json.JSONObject;
 
@@ -39,7 +40,7 @@ public final class HttpClientResponse {
     private final HttpHeaders requestHeaders;
     private final HttpHeaders responseHeaders;
     private final HttpResponseStatus responseCode;
-    private final HttpUrl url;
+    private final URI url;
 
     /**
      * Constructor
@@ -51,7 +52,7 @@ public final class HttpClientResponse {
      * @param response The response metadata object
      */
     @SuppressWarnings("UseSpecificCatch")
-    protected HttpClientResponse(Exception exception, String requestBody, byte[] responseBody, HttpUrl url,
+    protected HttpClientResponse(Exception exception, String requestBody, byte[] responseBody, URI url,
             reactor.netty.http.client.HttpClientResponse response) {
         this.exception = exception;
         this.isSuccess = response.status().code() > 0 && response.status().code() < 400;
@@ -93,7 +94,7 @@ public final class HttpClientResponse {
      */
     @SuppressWarnings("UseSpecificCatch")
     protected HttpClientResponse(Exception exception, boolean isSuccess, HttpMethod method, String requestBody, byte[] responseBody,
-            HttpHeaders requestHeaders, HttpHeaders responseHeaders, HttpResponseStatus responseCode, HttpUrl url) {
+            HttpHeaders requestHeaders, HttpHeaders responseHeaders, HttpResponseStatus responseCode, URI url) {
         this.exception = exception;
         this.isSuccess = isSuccess;
         this.method = method;
@@ -291,7 +292,7 @@ public final class HttpClientResponse {
      *
      * @return
      */
-    public HttpUrl url() {
+    public URI url() {
         return this.url;
     }
 }

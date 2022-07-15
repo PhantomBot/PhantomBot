@@ -19,10 +19,10 @@ package tv.phantombot.twitch.api;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -232,7 +232,7 @@ public class Helix {
             headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
                     ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
             headers.add("Authorization", "Bearer " + this.oAuthToken);
-            HttpClientResponse response = HttpClient.request(type, HttpUrl.fromUri(BASE_URL, endPoint), headers, data);
+            HttpClientResponse response = HttpClient.request(type, URI.create(BASE_URL + endPoint), headers, data);
 
             responseCode = response.responseCode().code();
 

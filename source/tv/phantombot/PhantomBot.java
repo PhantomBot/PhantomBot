@@ -32,7 +32,6 @@ import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
-import com.gmt2001.httpclient.HttpUrl;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -46,6 +45,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -1327,7 +1327,7 @@ public final class PhantomBot implements Listener {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
                     if (RepoVersion.isNightlyBuild()) {
-                        String latestNightly = HttpClient.get(HttpUrl.fromUri("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
+                        String latestNightly = HttpClient.get(URI.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.dataStore.del("settings", "newrelease_info");
                         } else {
@@ -1368,7 +1368,7 @@ public final class PhantomBot implements Listener {
                             this.dataStore.del("settings", "newrelease_info");
                         }
                     }
-                } catch (URISyntaxException | JSONException ex) {
+                } catch (JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
