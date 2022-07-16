@@ -176,7 +176,7 @@ public class TwitchClientCredentialsFlow {
 
     private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            URI url = URI.create(BASE_URL + path).resolve(HttpClient.createQuery(query));
+            URI url = URI.create(BASE_URL + path + HttpClient.createQuery(query));
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");
