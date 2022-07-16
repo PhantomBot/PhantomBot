@@ -77,7 +77,7 @@
                 while (liveMessages.length > 0) {
                     var message = liveMessages.shift();
                     if (message !== null) {
-                        $.discordAPI.deleteMessage();
+                        $.discordAPI.deleteMessage(message);
                     }
                 }
             }
