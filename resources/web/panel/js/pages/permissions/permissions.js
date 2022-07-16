@@ -151,7 +151,7 @@ $(function() {
         // Append user name.
         .append(helpers.getInputGroup('user-name', 'text', 'Username', 'PhantomBot', '', 'Name of the user to set the permissions on.'))
         // Append the group.
-        .append(helpers.getDropdownGroup('user-permission', 'Permission', helpers.getGroupNameById(6), helpers.getPermGroupNames())),
+        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Regulars', helpers.getPermGroupNames())),
         // callback once the user hits save.
         function() {
             let group = helpers.getGroupIdByName($('#user-permission').find(':selected').text()),
