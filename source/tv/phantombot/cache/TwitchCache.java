@@ -445,7 +445,7 @@ public final class TwitchCache implements Runnable {
             return 0L;
         }
 
-        return Duration.between(ZonedDateTime.now(), this.streamUptime).getSeconds();
+        return Duration.between(this.streamUptime, ZonedDateTime.now()).getSeconds();
     }
 
     /**
