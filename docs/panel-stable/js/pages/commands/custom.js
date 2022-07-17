@@ -327,7 +327,7 @@ $(function () {
         // Append a text box for the command response.
         .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', 'Response example! Use enter for multiple chat lines maximum is 5.'))
         // Append a select option for the command permission.
-        .append(helpers.getDropdownGroup('command-permission', 'User Level', 'Viewers',
+        .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(7),
             helpers.getPermGroupNames()))
         // Add an advance section that can be opened with a button toggle.
         .append($('<div/>', {
