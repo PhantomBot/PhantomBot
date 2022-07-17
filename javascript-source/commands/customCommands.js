@@ -887,10 +887,10 @@
 
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             var args = event.getArgs(),
-                    eventName = args[0] + '',
-                    command = args[1] + '',
-                    commandLower = command.toLowerCase() + '',
-                    extra = args[3] === null ? {} : JSON.parse(args[3]);
+                eventName = args[0] + '',
+                command = args[1] + '',
+                commandLower = command.toLowerCase() + '',
+                extra = (args[3] === null || args[3] === undefined) ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 if (customCommands[commandLower] !== undefined) {
                     delete customCommands[commandLower];
