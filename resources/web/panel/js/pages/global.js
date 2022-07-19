@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Script that handles all of the global things.
 
 $(function () {
@@ -46,8 +48,11 @@ $(function () {
         if (e.code === -3) {
             if (e.success) {
                 $('#restart-bot-btn').removeClass('disabled');
+                $('#restart-bot-btn').attr('title', '');
             } else {
                 $('#restart-bot-btn').addClass('disabled');
+                $('#restart-bot-btn').attr('title', 'Did not detect the \'restartcmd=\' setting, add it to botlogin.txt with the full path to a script that will restart the bot');
+                $('#restart-bot-btn').tooltip();
             }
         } else if (e.success) {
             toastr.success('Restart successful', 'Restart', {timeOut: 3000});
