@@ -203,9 +203,8 @@ public class TwitchWSHostIRC {
                 }
 
                 if (this.connecting) {
-                    this.lastPing = System.currentTimeMillis();
-                    this.lastPong = System.currentTimeMillis();
-                    this.connecting = false;
+                    com.gmt2001.Console.warn.println("Reconnecting since TMI (Host) never sent 001.");
+                    this.twitchWSHostIRC.reconnect();
                     return;
                 }
 
@@ -217,8 +216,7 @@ public class TwitchWSHostIRC {
 
                     // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
                 } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
-                    com.gmt2001.Console.out.println("Closing our connection with Twitch (Host) since no PONG got sent back.");
-                    com.gmt2001.Console.warn.println("Closing our connection with Twitch (Host) since no PONG got sent back.", true);
+                    com.gmt2001.Console.warn.println("Closing our connection with TMI (Host) since no PONG got sent back.");
                     this.twitchWSHostIRC.reconnect();
                 }
             }, 10, 30, TimeUnit.SECONDS);
@@ -263,6 +261,8 @@ public class TwitchWSHostIRC {
             try {
                 com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
                 this.connecting = true;
+                this.lastPing = System.currentTimeMillis();
+                this.lastPong = System.currentTimeMillis();
                 return this.client.connect();
             } catch (IllegalStateException | InterruptedException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -322,6 +322,10 @@ public class TwitchWSHostIRC {
             if (message.startsWith("PONG")) {
                 this.gotPong();
                 return;
+            }
+
+            if (message.contains("001")) {
+                this.connecting = false;
             }
 
             if (message.contains("002")) {

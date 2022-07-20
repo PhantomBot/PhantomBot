@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java */
+
 /**
  * welcomeSystem.js
  *
@@ -53,17 +55,19 @@
                     queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
             lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
 
-            if (!$.inidb.exists('welcome_disabled_users', sender) && lastUserMessage + welcomeCooldown < now) {
-                welcomeLock.lock();
-                try {
-                    queue.add($.username.resolve(sender));
-                } finally {
-                    welcomeLock.unlock();
+            if (!$.inidb.exists('welcome_disabled_users', sender) && !$.inidb.exists('greeting', sender)) {
+                if (lastUserMessage + welcomeCooldown < now) {
+                    welcomeLock.lock();
+                    try {
+                        queue.add($.username.resolve(sender));
+                    } finally {
+                        welcomeLock.unlock();
+                    }
+                    sendUserWelcomes();
                 }
-                sendUserWelcomes();
+                $.inidb.set('greetingCoolDown', sender, now);
             }
         }
-        $.inidb.set('greetingCoolDown', sender, now);
     });
 
     /**
@@ -130,7 +134,7 @@
                     return {result: String(match[1]), cache: true};
                 }
             }
-        }, true)
+        }, true);
     }
 
     /**
@@ -184,7 +188,7 @@
     function sendUserWelcomes() {
         welcomeLock.lock();
         try {
-            if (welcomeTimer == null) {
+            if (welcomeTimer === null) {
                 // no timer is running (implying that no welcome message was sent within
                 // the last 15 seconds. => send the message right away
                 processQueue();
@@ -334,7 +338,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/welcomeSystem.js', 'welcome', $.PERMISSION.Mod);
         $.registerChatSubcommand('welcome', 'cooldown', $.PERMISSION.Admin);
         $.registerChatSubcommand('welcome', 'toggle', $.PERMISSION.Admin);

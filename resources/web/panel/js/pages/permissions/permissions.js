@@ -80,8 +80,8 @@ $(run = function() {
                 { 'width': '45%', 'targets': 0 }
             ],
             'columns': [
-                { 'title': 'User' },
-                { 'title': 'Permission' },
+                { 'title': 'User', 'defaultContent': '<i>null</i>' },
+                { 'title': 'Permission', 'defaultContent': '<i>null</i>' },
                 { 'title': 'Actions' }
             ]
         });

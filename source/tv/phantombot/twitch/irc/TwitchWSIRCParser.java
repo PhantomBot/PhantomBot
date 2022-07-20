@@ -359,6 +359,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param tags The tags attached to the message
      */
     private void onChannelJoined(String unusedMessage, String unusedUsername, Map<String, String> unusedTags) {
+        this.session.got001();
         // Request our tags
         this.send("CAP REQ :twitch.tv/membership");
         this.send("CAP REQ :twitch.tv/commands");
