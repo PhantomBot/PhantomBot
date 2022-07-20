@@ -158,6 +158,10 @@ public class TwitchSession extends MessageQueue {
         return this;
     }
 
+    protected void got001() {
+        this.twitchWSIRC.got001();
+    }
+
     /**
      * Method that handles reconnecting with Twitch.
      */

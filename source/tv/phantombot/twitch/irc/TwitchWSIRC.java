@@ -84,9 +84,8 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             }
 
             if (this.connecting) {
-                this.lastPing = System.currentTimeMillis();
-                this.lastPong = System.currentTimeMillis();
-                this.connecting = false;
+                com.gmt2001.Console.warn.println("Reconnecting since TMI never sent 001.");
+                this.session.reconnect();
                 return;
             }
 
@@ -98,11 +97,14 @@ public class TwitchWSIRC implements WsClientFrameHandler {
 
                 // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
             } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
-                com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
-                com.gmt2001.Console.warn.println("Closing our connection with Twitch since no PONG got sent back.", true);
+                com.gmt2001.Console.warn.println("Closing our connection with TMI since no PONG got sent back.");
                 this.session.reconnect();
             }
         }, 10, 30, TimeUnit.SECONDS);
+    }
+
+    protected void got001() {
+        this.connecting = false;
     }
 
     /**
@@ -124,6 +126,8 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
             this.connected = false;
             this.connecting = true;
+            this.lastPing = System.currentTimeMillis();
+            this.lastPong = System.currentTimeMillis();
             return this.client.connect();
         } catch (IllegalStateException | InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
