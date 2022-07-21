@@ -254,7 +254,7 @@
 
         if (limiter) {
             multiplier = calcBonus(user, event, 1);
-            tmpMax = Math.floor(maxEntries / multiplier);
+            tmpMax = maxEntries / multiplier;
         }
 
         if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
@@ -269,13 +269,17 @@
         }
 
         var bonus = calcBonus(user, event, baseAmount),
-            amount = baseAmount + bonus;
+            amount = baseAmount;
+
+        if (limiter) {
+            amount = Math.round(amount + bonus); //Math.Round because we can be limited by the bit length i.e 1/3 = 0.333333333.....
+        }
 
 
-        if (baseAmount > tmpMax || baseAmount === 0 || baseAmount < 0) {
+        if (amount > maxEntries || baseAmount === 0 || baseAmount < 0) {
             if (msgToggle) {
                 if (limiter) {
-                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount.limiter', tmpMax, multiplier*100));
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount.limiter', Math.ceil(tmpMax), multiplier * 100));
                 } else {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount', maxEntries));
                 }
@@ -283,10 +287,10 @@
             return;
         }
 
-        if (getTickets(user) + baseAmount > tmpMax) {
+        if (getTickets(user) + amount > maxEntries) {
             if (msgToggle) {
                 if (limiter) {
-                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter', tmpMax, multiplier*100, getTickets(user)));
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter', Math.ceil(tmpMax), multiplier * 100, getTickets(user)));
                 } else {
                     $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, getTickets(user)));
                 }
@@ -307,7 +311,7 @@
             totalEntries++;
         }
 
-        totalTickets += amount;
+        totalTickets += baseAmount + bonus;
 
         if (cost !== 0) {
             $.inidb.decr('points', user, (baseAmount * cost));
