@@ -428,6 +428,12 @@
             $.inidb.RemoveKey('greeting', '', 'cooldown');
         }
 
+        $.consoleLn('PhantomBot update 3.6.3 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
+    }
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4')) {
+        $.consoleLn('Starting PhantomBot update 3.6.4 updates...');
         var subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
                 primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
                 reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
@@ -500,7 +506,7 @@
         $.inidb.del('subscribeHandler', 'subPlan3000');
         $.inidb.del('subscribeHandler', 'subPlanPrime');
 
-        $.consoleLn('PhantomBot update 3.6.3 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
+        $.consoleLn('PhantomBot update 3.6.4 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
     }
 })();
