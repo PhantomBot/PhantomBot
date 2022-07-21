@@ -107,8 +107,8 @@ $(function() {
                         { 'width': '45%', 'targets': 0 }
                     ],
                     'columns': [
-                        { 'title': 'Command' },
-                        { 'title': 'User Level' },
+                        { 'title': 'Command', 'defaultContent': '<i>null</i>' },
+                        { 'title': 'User Level', 'defaultContent': '<i>null</i>' },
                         { 'title': 'Status' },
                         { 'title': 'Actions' }
                     ]

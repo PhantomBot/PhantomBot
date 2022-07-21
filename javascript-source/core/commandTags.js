@@ -204,7 +204,17 @@
 
         // custom commands without tags can be directed towards users by mods
         if (!tagFound && atEnabled && event.getArgs()[0] !== undefined && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
-            return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
+            // Split the message into parts
+            var part = message.split(' ');
+            // Check if the command is written in color ('/me ')
+            if (part[0] !== undefined && part[0] === '/me'){
+                //  remove '/me ' if present
+                message = message.replace('/me ', '');
+                //  write '/me ' at the beginning of the message
+                return '/me ' + $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
+            } else {
+                return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
+            }
         }
 
         return unescapeTags(message);

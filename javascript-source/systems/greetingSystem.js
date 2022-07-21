@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java */
+
 /**
  * greetingSystem.js
  *
@@ -23,12 +25,12 @@
  */
 (function () {
     var autoGreetEnabled = $.getSetIniDbBoolean('greetingSettings', 'autoGreetEnabled', false),
-        defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
-        greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
-        /* 6 Hours */
-        greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
-        onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
-        userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
+            defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
+            greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
+            /* 6 Hours */
+            greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+            onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
+            userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
 
     /**
      * @event ircChannelJoin
@@ -48,11 +50,11 @@
         }
     });
 
-    function addToQueue(sender){
+    function addToQueue(sender) {
         var rankStr = $.resolveRank(sender),
-            message = $.getIniDbString('greeting', sender, undefined),
-            lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
-            now = $.systemTime();
+                message = $.getIniDbString('greeting', sender, undefined),
+                lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
+                now = $.systemTime();
         if (lastUserGreeting + greetingCooldown < now) {
             if (message !== undefined) {
                 greetingQueue.add(message.replace('(name)', rankStr));
@@ -97,13 +99,13 @@
      */
     $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0],
-            cooldown,
-            message,
-            username,
-            isSilent;
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0],
+                cooldown,
+                message,
+                username,
+                isSilent;
 
         /**
          * @commandpath greeting - Base command for controlling greetings.
@@ -283,7 +285,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/greetingSystem.js', 'greeting', $.PERMISSION.Regular);
         $.registerChatSubcommand('greeting', 'cooldown', $.PERMISSION.Admin);
         $.registerChatSubcommand('greeting', 'toggle', $.PERMISSION.Admin);
