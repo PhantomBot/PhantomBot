@@ -15,26 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('subscribehandler.auto.sub.mode.interval.set', 'Auto submode interval set! This will only work while the stream is online.');
-$.lang.register('subscribehandler.auto.submode.timer.404', 'The minimum auto submode interval allowed is 30 minutes.');
-$.lang.register('subscribehandler.auto.submode.timer.off', 'Automated subs only mode enabled!');
-$.lang.register('subscribehandler.auto.submode.timer.usage', 'Usage: !autosubmodetimer (interval) - set the interval to 0 to disable.');
 $.lang.register('subscribehandler.new.sub.toggle.off', 'New Subscribers will no longer be welcomed upon subscribing.');
 $.lang.register('subscribehandler.new.sub.toggle.on', 'New Subscribers will now be welcomed upon subscribing.');
-$.lang.register('subscribehandler.resub.msg.set', 'Resubscriber welcome message set!');
+$.lang.register('subscribehandler.resub.msg.set', 'Resubscriber welcome message set for $1!');
 $.lang.register('subscribehandler.giftsub.msg.set', 'Subscriber gift welcome message set!');
 $.lang.register('subscribehandler.giftanonsub.msg.set', 'Anonymous Subscriber gift welcome message set!');
 $.lang.register('subscribehandler.massgiftsub.msg.set', 'Mass Subscriber gift welcome message set!');
 $.lang.register('subscribehandler.anonmassgiftsub.msg.set', 'Anonymous Mass Subscriber gift welcome message set!');
-$.lang.register('subscribehandler.resub.msg.usage', 'Usage: !resubmessage (message)');
+$.lang.register('subscribehandler.resub.msg.usage', 'Usage: !resubmessage [1|2|3|prime|all] (message)');
 $.lang.register('subscribehandler.giftsub.msg.usage', 'Usage: !giftsubmessage (message)');
 $.lang.register('subscribehandler.giftanonsub.msg.usage', 'Usage: !giftanonsubmessage (message)');
 $.lang.register('subscribehandler.massgiftsub.msg.usage', 'Usage: !massgiftsubmessage (message)');
 $.lang.register('subscribehandler.anonmassgiftsub.msg.usage', 'Usage: !massanongiftsubmessage (message)');
-$.lang.register('subscribehandler.resub.msg.noreward.set', 'Resubscriber welcome message set for no rewards!');
-$.lang.register('subscribehandler.giftsub.msg.noreward.set', 'Subscriber gift welcome message set for no rewards!');
-$.lang.register('subscribehandler.resub.msg.noreward.usage', 'Usage: !resubmessage (message)');
-$.lang.register('subscribehandler.giftsub.msg.noreward.usage', 'Usage: !giftsubmessage (message)');
 $.lang.register('subscribehandler.resub.toggle.off', 'Resubscribers will no longer be welcomed upon resubscribing.');
 $.lang.register('subscribehandler.giftsub.toggle.off', 'Subscriber gift will no longer be welcomed upon subscribing.');
 $.lang.register('subscribehandler.massgiftsub.toggle.off', 'Mass Subscriber gift will no longer be welcomed upon subscribing.');
@@ -52,10 +44,8 @@ $.lang.register('subscribehandler.giftsub.reward.set', 'Reward for resubscribing
 $.lang.register('subscribehandler.resub.reward.usage', 'Usage: !resubscribereward (amount)');
 $.lang.register('subscribehandler.giftsub.reward.usage', 'Usage: !giftsubreward (amount)');
 $.lang.register('subscribehandler.sub.count', 'There are currently $1 subscribers!');
-$.lang.register('subscribehandler.sub.msg.set', 'New subscriber welcome message set!');
-$.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage (message)');
-$.lang.register('subscribehandler.sub.msg.noreward.set', 'New subscriber welcome message set for no rewards!');
-$.lang.register('subscribehandler.sub.msg.noreward.usage', 'Usage: !submessage (message)');
+$.lang.register('subscribehandler.sub.msg.set', 'New subscriber welcome message set for $1!');
+$.lang.register('subscribehandler.sub.msg.usage', 'Usage: !submessage [1|2|3|prime|all] (message)');
 $.lang.register('subscribehandler.resubemote.set', 'New resubscriber emote set!');
 $.lang.register('subscribehandler.resubemote.usage', 'Usage: !resubemote (emote name)');
 $.lang.register('subscribehandler.namesubplan.usage', 'Usage: !namesubplan [1|2|3|prime] (name of plan)');

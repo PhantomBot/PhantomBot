@@ -102,6 +102,68 @@
     }
 
     /*
+     * Converts a Twitch plan name (eg. 1000) into a tier name (eg. 1)
+     *
+     * Returns null if plan name is invalid, or if tier is prime when allowPrime is set to false
+     */
+    function planToTier(plan, allowPrime) {
+        plan = $.jsString(plan);
+
+        switch(plan.toLowerCase()) {
+            case '1000':
+                return '1';
+                break;
+            case '2000':
+                return '2';
+                break;
+            case '3000':
+                return '3';
+                break;
+            case 'prime':
+                if (allowPrime !== false) {
+                    return 'Prime';
+                } else {
+                    return null;
+                }
+                break;
+            default:
+                return null;
+                break;
+        }
+    }
+
+    /*
+     * Converts a Twitch tier number (eg. 1) into a plan name (eg. 1000)
+     *
+     * Returns null if tier number is invalid, or if tier is prime when allowPrime is set to false
+     */
+    function tierToPlan(tier, allowPrime) {
+        tier = $.jsString(tier);
+
+        switch(tier.toLowerCase()) {
+            case '1':
+                return '1000';
+                break;
+            case '2':
+                return '2000';
+                break;
+            case '3':
+                return '3000';
+                break;
+            case 'prime':
+                if (allowPrime !== false) {
+                    return 'Prime';
+                } else {
+                    return null;
+                }
+                break;
+            default:
+                return null;
+                break;
+        }
+    }
+
+    /*
      * @function getPlanName
      */
     function getPlanName(plan) {
@@ -527,31 +589,43 @@
         }
 
         /*
-         * @commandpath submessage [message] - Set a welcome message for new subscribers.
+         * @commandpath submessage [1|2|3|prime|all] [message] - Set a welcome message for new subscribers.
          */
         if (command.equalsIgnoreCase('submessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
                 return;
             }
 
-            subMessage = argsString;
-            $.setIniDbString('subscribeHandler', 'subscribeMessage', subMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set'));
+            planId = tierToPlan(args[0]);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                subMessage = createSingleJson(argsString);
+            } else {
+                subMessage[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'subscribeMessage', JSON.stringify(subMessage));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
-         * @commandpath resubmessage [message] - Set a message for resubscribers.
+         * @commandpath resubmessage [1|2|3|prime|all] [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('resubmessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.usage'));
                 return;
             }
 
-            reSubMessage = argsString;
+            planId = tierToPlan(args[0]);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                reSubMessage = createSingleJson(argsString);
+            } else {
+                reSubMessage[planId] = argsString;
+            }
             $.setIniDbString('subscribeHandler', 'reSubscribeMessage', reSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
@@ -569,7 +643,7 @@
         }
 
         /*
-         * @commandpath giftanonsubmessage[message] - Set a message for anonymous gifting alerts.
+         * @commandpath giftanonsubmessage [message] - Set a message for anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubmessage')) {
             if (action === undefined) {
@@ -755,4 +829,8 @@
     });
 
     $.updateSubscribeConfig = updateSubscribeConfig;
+    $.subscription = {
+        planToTier: planToTier,
+        tierToPlan: tierToPlan
+    };
 })();
