@@ -25,21 +25,21 @@
  */
 (function () {
     var welcomeEnabled = $.getSetIniDbBoolean('welcome', 'welcomeEnabled', false),
-            welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
-            welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
-            welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
-            welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
-            welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
-            welcomeTimer = null,
-            // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
-            welcomeLock = new java.util.concurrent.locks.ReentrantLock;
+        welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
+        welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
+        welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
+        welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeTimer = null,
+        // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
+        welcomeLock = new java.util.concurrent.locks.ReentrantLock;
 
     /**
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
         var sender = event.getSender().toLowerCase(),
-                now = $.systemTime();
+            now = $.systemTime();
         if ($.equalsIgnoreCase(sender, $.channelName)) {
             return;
         }
@@ -50,12 +50,17 @@
             return;
         }
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
+            if ($.inidb.exists('greeting', sender) && $.inidb.GetBoolean('greetingSettings', '', 'autoGreetEnabled') && $.bot.isModuleEnabled('./systems/greetingSystem.js')) {
+                return;
+            }
+
             var lastUserMessage = $.getIniDbNumber('greetingCoolDown', sender),
-                    firstTimeChatter = lastUserMessage === undefined,
-                    queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
+                firstTimeChatter = lastUserMessage === undefined,
+                queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
+
             lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
 
-            if (!$.inidb.exists('welcome_disabled_users', sender) && !$.inidb.exists('greeting', sender)) {
+            if (!$.inidb.exists('welcome_disabled_users', sender)) {
                 if (lastUserMessage + welcomeCooldown < now) {
                     welcomeLock.lock();
                     try {
@@ -85,7 +90,7 @@
      */
     function buildMessage(message, names) {
         var match,
-                namesString;
+            namesString;
         if (!names.length || !message) {
             return null;
         }
@@ -213,12 +218,12 @@
      */
     $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                action = args[0],
-                cooldown,
-                username,
-                message;
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0],
+            cooldown,
+            username,
+            message;
 
         /**
          * @commandpath welcome - Base command for controlling welcomes.
