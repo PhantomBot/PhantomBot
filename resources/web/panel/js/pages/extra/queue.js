@@ -125,13 +125,15 @@ $(function () {
     const QUEUE_SCRIPT = './systems/queueSystem.js';
     let canUpdate = true;
 
+    $('#queue-perm').append(helpers.getDropdownGroup('queue-permission', 'User Level', helpers.getGroupNameById(7), helpers.getPermGroupNames()));
+
     /*
      * @function Clears the input boxes of the queue.
      */
     const clearQueueInput = function () {
         $('#queue-title').val('');
         $('#queue-cost, #queue-size').val('0');
-        $('#queue-permission').val('Viewers');
+        $('#queue-permission').val(helpers.getGroupNameById(7));
     };
 
     // Toggle for the module.
