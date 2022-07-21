@@ -690,7 +690,7 @@
             if (isVIP(username)) {
                 setUserGroupById(username, PERMISSION.VIP);
             } else if ($.inidb.exists('preSubGroup', username)) {
-                setUserGroupById( username, $.getIniDbNumber('preSubGroup', username, PERMISSION.Viewer));
+                setUserGroupById(username, $.getIniDbNumber('preSubGroup', username, PERMISSION.Viewer));
                 $.inidb.del('preSubGroup', username);
             } else {
                 setUserGroupById(username, PERMISSION.Viewer);
@@ -1239,7 +1239,7 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + ' (' + groupId + ')'));
-            $.setUserGroupById(username, groupId);
+            setUserGroupById(username, groupId);
             if (groupId <= PERMISSION.Mod) {
                 addModeratorToCache(username);
             } else {
