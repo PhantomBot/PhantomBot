@@ -26,6 +26,7 @@
         msgToggle = $.getSetIniDbBoolean('settings', 'tRaffleMSGToggle', false),
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval', 0),
+        limiter = $.getSetIniDbNumber('settings', 'tRaffleLimiter', false),
         totalEntries = 0,
         totalTickets = 0,
         a = '',
@@ -39,6 +40,8 @@
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
         messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
+        limiter = $.inidb.GetBoolean('settings', '', 'tRaffleLimiter');
+
     }
 
     function checkArgs(user, max, regMulti, subMulti, price, followersOnly) {
@@ -245,11 +248,18 @@
             return;
         }
 
-        var baseAmount;
+        var baseAmount,
+            tmpMax = maxEntries,
+            multiplier = 1;
+
+        if (limiter) {
+            multiplier = calcBonus(user, event, 1);
+            tmpMax = Math.floor(maxEntries / multiplier);
+        }
 
         if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
-            var possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user) / cost) : maxEntries);
-            baseAmount = maxEntries - getTickets(user); //Maximum possible entries that can be bought up to the maxEntries limit
+            var possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user) / cost) : tmpMax);
+            baseAmount = tmpMax - getTickets(user); //Maximum possible entries that can be bought up to the maxEntries limit
             baseAmount = (baseAmount > possibleBuys ? possibleBuys : baseAmount);
         } else if (!isNaN(parseInt(arg)) && parseInt(arg) % 1 === 0) {
             baseAmount = parseInt(arg);
@@ -261,16 +271,25 @@
         var bonus = calcBonus(user, event, baseAmount),
             amount = baseAmount + bonus;
 
-        if (baseAmount > maxEntries || baseAmount === 0 || baseAmount < 0) {
+
+        if (baseAmount > tmpMax || baseAmount === 0 || baseAmount < 0) {
             if (msgToggle) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount', maxEntries));
+                if (limiter) {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount.limiter', tmpMax, multiplier*100));
+                } else {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.only.buy.amount', maxEntries));
+                }
             }
             return;
         }
 
-        if (getTickets(user) + baseAmount > maxEntries) {
+        if (getTickets(user) + baseAmount > tmpMax) {
             if (msgToggle) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, getTickets(user)));
+                if (limiter) {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter', tmpMax, multiplier*100, getTickets(user)));
+                } else {
+                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, getTickets(user)));
+                }
             }
             return;
         }
@@ -473,6 +492,25 @@
             }
 
             /**
+             * @commandpath traffle limitertoggle - Toggles the ticket limiter between only bought tickets mode and bought + bonus tickets mode
+             */
+            if (action.equalsIgnoreCase('limitertoggle')) {
+                if (raffleStatus) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.settings.err.open'));
+                    return;
+                }
+
+                limiter = !limiter;
+                $.inidb.SetBoolean('settings', '', 'tRaffleLimiter', limiter);
+                if (limiter) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.limiter.enabled'));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.limiter.disabled'));
+                }
+                return;
+            }
+
+            /**
              * @commandpath traffle autoannouncemessage [message] - Sets the auto announce message for when a raffle is opened
              */
             if (action.equalsIgnoreCase('autoannouncemessage')) {
@@ -539,6 +577,7 @@
         $.registerChatSubcommand('traffle', 'autoannounceinterval', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'autoannouncemessage', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'messagetoggle', $.PERMISSION.Admin);
+        $.registerChatSubcommand('traffle', 'limitertoggle', $.PERMISSION.Admin);
 
         reopen();
     });
