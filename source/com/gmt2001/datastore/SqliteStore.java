@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteDataSource;
 import org.sqlite.SQLiteErrorCode;
 import org.sqlite.SQLiteException;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
@@ -68,6 +69,30 @@ public final class SqliteStore extends DataStore {
         }
 
         return instance;
+    }
+
+    public static boolean isAvailable() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            return false;
+        }
+
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl("jdbc:sqlite::memory:");
+        try ( Connection connection = dataSource.getConnection()) {
+            try ( Statement statement = connection.createStatement()) {
+                statement.execute("SELECT 1;");
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            if (ex.getCause() != null && ex.getCause().getMessage() != null && ex.getCause().getMessage().contains("No native library found")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private SqliteStore(String configStr) {
