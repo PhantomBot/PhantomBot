@@ -709,60 +709,83 @@
         }
 
         /**
-         * @commandpath subscribereward [points] - Set an award for subscribers.
+         * @commandpath subscribereward [1|2|3|prime|all] [points] - Set an award for subscribers.
          */
         if (command.equalsIgnoreCase('subscribereward')) {
-            if (isNaN(parseInt(action))) {
+            if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.usage'));
                 return;
             }
 
-            subReward = parseInt(action);
-            $.setIniDbNumber('subscribeHandler', 'subscribeReward', subReward);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set'));
-
+            planId = tierToPlan(args[0]);
+            argsString = parseInt(args[1]);
+            if (planId === null) {
+                subReward = createSingleJson(argsString);
+            } else {
+                subReward[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'subscribeReward', JSON.stringify(subReward));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.set', planId === null ? 'all tiers' : planId));
         }
 
         /**
-         * @commandpath resubscribereward [points] - Set an award for resubscribers.
+         * @commandpath resubscribereward [1|2|3|prime|all] [points] - Set an award for resubscribers.
          */
         if (command.equalsIgnoreCase('resubscribereward')) {
-            if (isNaN(parseInt(action))) {
+            if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.usage'));
                 return;
             }
 
-            reSubReward = parseInt(action);
-            $.setIniDbNumber('subscribeHandler', 'reSubscribeReward', reSubReward);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set'));
+            planId = tierToPlan(args[0]);
+            argsString = parseInt(args[1]);
+            if (planId === null) {
+                reSubReward = createSingleJson(argsString);
+            } else {
+                reSubReward[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'reSubscribeReward', JSON.stringify(reSubReward));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.set', planId === null ? 'all tiers' : planId));
         }
 
         /**
-         * @commandpath giftsubreward [points] - Set an award for gifted subs.
+         * @commandpath giftsubreward [1|2|3|all] [points] - Set an award for gifted subs.
          */
         if (command.equalsIgnoreCase('giftsubreward')) {
-            if (isNaN(parseInt(action))) {
+            if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.usage'));
                 return;
             }
 
-            giftSubReward = parseInt(action);
-            $.setIniDbNumber('subscribeHandler', 'giftSubReward', giftSubReward);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.set'));
+            planId = tierToPlan(args[0], false);
+            argsString = parseInt(args[1]);
+            if (planId === null) {
+                giftSubReward = createSingleNPJson(argsString);
+            } else {
+                giftSubReward[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'giftSubReward', JSON.stringify(giftSubReward));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.set', planId === null ? 'all tiers' : planId));
         }
 
         /**
-         * @commandpath massgiftsubreward [points] - Set an award for mass subs. This is a multiplier.
+         * @commandpath massgiftsubreward [1|2|3|all] [points] - Set an award for mass subs. This is multiplied by the number of subs gifted.
          */
         if (command.equalsIgnoreCase('massgiftsubreward')) {
-            if (isNaN(parseInt(action))) {
+            if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.reward.usage'));
                 return;
             }
 
-            massGiftSubReward = parseInt(action);
-            $.setIniDbNumber('subscribeHandler', 'massGiftSubReward', massGiftSubReward);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.reward.set'));
+            planId = tierToPlan(args[0], false);
+            argsString = parseInt(args[1]);
+            if (planId === null) {
+                massGiftSubReward = createSingleNPJson(argsString);
+            } else {
+                massGiftSubReward[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'massGiftSubReward', JSON.stringify(massGiftSubReward));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.reward.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
