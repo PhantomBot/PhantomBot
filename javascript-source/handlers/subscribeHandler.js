@@ -629,59 +629,83 @@
         }
 
         /*
-         * @commandpath giftsubmessage [message] - Set a message for resubscribers.
+         * @commandpath giftsubmessage [1|2|3|all] [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('giftsubmessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.usage'));
                 return;
             }
 
-            giftSubMessage = argsString;
+            planId = tierToPlan(args[0], false);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                giftSubMessage = createSingleNPJson(argsString);
+            } else {
+                giftSubMessage[planId] = argsString;
+            }
             $.setIniDbString('subscribeHandler', 'giftSubMessage', giftSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
-         * @commandpath giftanonsubmessage [message] - Set a message for anonymous gifting alerts.
+         * @commandpath giftanonsubmessage [1|2|3|all] [message] - Set a message for anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubmessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.usage'));
                 return;
             }
 
-            giftAnonSubMessage = argsString;
+            planId = tierToPlan(args[0], false);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                giftAnonSubMessage = createSingleNPJson(argsString);
+            } else {
+                giftAnonSubMessage[planId] = argsString;
+            }
             $.setIniDbString('subscribeHandler', 'giftAnonSubMessage', giftAnonSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
-         * @commandpath massgiftsubmessage [message] - Set a message for gifting alerts.
+         * @commandpath massgiftsubmessage [1|2|3|all] [message] - Set a message for gifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubmessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.usage'));
                 return;
             }
 
-            massGiftSubMessage = argsString;
+            planId = tierToPlan(args[0], false);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                massGiftSubMessage = createSingleNPJson(argsString);
+            } else {
+                massGiftSubMessage[planId] = argsString;
+            }
             $.setIniDbString('subscribeHandler', 'massGiftSubMessage', massGiftSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
-         * @commandpath massanongiftsubmessage [message] - Set a message for mass anonymous gifting alerts.
+         * @commandpath massanongiftsubmessage [1|2|3|all] [message] - Set a message for mass anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('massanongiftsubmessage')) {
-            if (action === undefined) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.usage'));
                 return;
             }
 
-            massAnonGiftSubMessage = argsString;
+            planId = tierToPlan(args[0], false);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                massAnonGiftSubMessage = createSingleNPJson(argsString);
+            } else {
+                massAnonGiftSubMessage[planId] = argsString;
+            }
             $.setIniDbString('subscribeHandler', 'massAnonGiftSubMessage', massAnonGiftSubMessage);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.set'));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
         /**
