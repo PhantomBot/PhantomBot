@@ -253,8 +253,7 @@ public class Helix {
             try {
                 if (responseCode == 204) {
                     returnObject = new JSONObject();
-                    returnObject.put("message", "");
-                    returnObject.put("error", "No Content");
+                    returnObject.put("message", "No Content");
                     returnObject.put("status", 204);
                 } else {
                     returnObject = response.jsonOrThrow();
