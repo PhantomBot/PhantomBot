@@ -107,6 +107,10 @@
      * Returns null if plan name is invalid, or if tier is prime when allowPrime is set to false
      */
     function planToTier(plan, allowPrime) {
+        if (plan === undefined || plan === null) {
+            return null;
+        }
+
         plan = $.jsString(plan);
 
         switch(plan.toLowerCase()) {
@@ -138,6 +142,10 @@
      * Returns null if tier number is invalid, or if tier is prime when allowPrime is set to false
      */
     function tierToPlan(tier, allowPrime) {
+        if (tier === undefined || tier === null) {
+            return null;
+        }
+
         tier = $.jsString(tier);
 
         switch(tier.toLowerCase()) {
@@ -531,7 +539,6 @@
                 command = event.getCommand(),
                 argsString = event.getArguments(),
                 args = event.getArgs(),
-                action = args[0],
                 planId;
 
         /*
@@ -789,64 +796,44 @@
         }
 
         /*
-         * @commandpath resubemote [emote] - The (customemote) tag will be replace with that emote.  The emote will be added the amount of months the user subscribed for.
+         * @commandpath subemote [1|2|3|prime|all] [emote] - The (customemote) tag will be replace with these emotes.  The emotes will be added the amount of months the user subscribed for.
          */
-        if (command.equalsIgnoreCase('resubemote')) {
-            if (action === undefined) {
+        if (command.equalsIgnoreCase('subemote') || command.equalsIgnoreCase('resubemote')) {
+            if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.usage'));
                 return;
             }
 
-            customEmote = action;
-            $.setIniDbString('subscribeHandler', 'resubEmote', customEmote);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set'));
+            planId = tierToPlan(args[0]);
+            argsString = args.splice(1).join(' ');
+            if (planId === null) {
+                customEmote = createSingleJson(argsString);
+            } else {
+                customEmote[planId] = argsString;
+            }
+            $.setIniDbString('subscribeHandler', 'resubEmote', JSON.stringify(customEmote));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set', planId === null ? 'all tiers' : planId));
         }
 
         /*
-         * @commandpath namesubplan [1|2|3|prime] [name of plan] - Name a subscription plan, Twitch provides three tiers.
+         * @commandpath namesubplan [1|2|3|prime] [name of plan] - Name a subscription plan for the (plan) tag, Twitch provides three tiers plus prime.
          */
         if (command.equalsIgnoreCase('namesubplan')) {
-            if (action === undefined) {
+            planId = tierToPlan(args[0]);
+            if (planId === null) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));
                 return;
             }
 
-            action = $.javaString(action);
-
-            if (!action.equals('1') && !action.equals('2') && !action.equals('3') && !action.equalsIgnoreCase('prime')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));
-                return;
-            }
-
-            if (action.equals('1')) {
-                planId = 'subPlan1000';
-            } else if (action.equals('2')) {
-                planId = 'subPlan2000';
-            } else if (action.equals('3')) {
-                planId = 'subPlan3000';
-            } else if (action.equalsIgnoreCase('prime')) {
-                planId = 'subPlanPrime';
-            }
-
-            if (args[1] === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.show', action, $.getIniDbString('subscribeHandler', planId)));
+            if (args.length < 2) {
+                $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.show', args[0], subPlans[planId]));
                 return;
             }
 
             argsString = args.splice(1).join(' ');
-            planId = $.javaString(planId);
-            if (planId.equals('subPlan1000')) {
-                subPlan1000 = argsString;
-            } else if (planId.equals('subPlan2000')) {
-                subPlan2000 = argsString;
-            } else if (planId.equals('subPlan3000')) {
-                subPlan3000 = argsString;
-            } else if (planId.equals('subPlanPrime')) {
-                subPlanPrime = argsString;
-            }
-            $.setIniDbString('subscribeHandler', planId, argsString);
-            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.set', action, argsString));
-            return;
+            subPlans[planId] = argsString;
+            $.setIniDbString('subscribeHandler', 'subPlans', JSON.stringify(subPlans));
+            $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.set', args[0], argsString));
         }
     });
 
@@ -855,7 +842,8 @@
      */
     $.bind('initReady', function () {
         $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', $.PERMISSION.Admin);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'subemote', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', $.PERMISSION.Admin); // @deprecated command name
         $.registerChatCommand('./handlers/subscribeHandler.js', 'resubwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubwelcometoggle', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubwelcometoggle', $.PERMISSION.Admin);

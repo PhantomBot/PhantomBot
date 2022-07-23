@@ -48,8 +48,8 @@ $.lang.register('subscribehandler.resub.reward.usage', 'Usage: !resubscriberewar
 $.lang.register('subscribehandler.giftsub.reward.usage', 'Usage: !giftsubreward [1|2|3|all] (amount)');
 $.lang.register('subscribehandler.massgiftsub.reward.usage', 'Usage: !massgiftsubreward [1|2|3|all] (amount)');
 $.lang.register('subscribehandler.sub.count', 'There are currently $1 subscribers!');
-$.lang.register('subscribehandler.resubemote.set', 'Subscriber emote set!');
-$.lang.register('subscribehandler.resubemote.usage', 'Usage: !resubemote (emote name)');
+$.lang.register('subscribehandler.resubemote.usage', 'Usage: !subemote [1|2|3|prime|all] (emotes)');
+$.lang.register('subscribehandler.resubemote.set', 'Subscriber emote set for $1!');
 $.lang.register('subscribehandler.namesubplan.usage', 'Usage: !namesubplan [1|2|3|prime] (name of plan)');
 $.lang.register('subscribehandler.namesubplan.show', 'The current name for subscription tier $1 is: $2');
 $.lang.register('subscribehandler.namesubplan.set', 'The name for subscription tier $1 was changed to: $2');
