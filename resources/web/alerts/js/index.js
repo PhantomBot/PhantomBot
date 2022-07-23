@@ -428,6 +428,7 @@ $(function () {
                     const audioIsReady = () => {
                         return isReady;
                     };
+
                     audio.load();
                     await promisePoll(() => audioIsReady(), { pollIntervalMs = 250 });
                     audio.volume = gifVolume;
