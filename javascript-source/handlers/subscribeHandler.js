@@ -21,12 +21,12 @@
  * Register new subscribers and unsubscribers in the channel
  */
 (function () {
-    var subMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'subscribeMessage', createDuoJson('(name) just subscribed!', '(name) just subscribed with Twitch Prime!'))),
-            reSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', createSingleJson('(name) just subscribed for (months) months in a row!'))),
-            giftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftSubMessage', createSingleNPJson('(name) just gifted (recipient) a subscription!'))),
-            giftAnonSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson('An anonymous viewer gifted (recipient) a subscription!'))),
-            massGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', createSingleNPJson('(name) just gifted (amount) subscriptions to random users in the channel!'))),
-            massAnonGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson('An anonymous viewer gifted (amount) subscriptions to random viewers!'))),
+    var subMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'subscribeMessage', createDuoJson('(name) just subscribed at (plan)!', '(name) just subscribed with Twitch Prime!'))),
+            reSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'reSubscribeMessage', createSingleJson('(name) just subscribed for (months) months in a row at (plan)!'))),
+            giftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftSubMessage', createSingleNPJson('(name) just gifted (recipient) a (plan) subscription!'))),
+            giftAnonSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson('An anonymous viewer gifted (recipient) a (plan) subscription!'))),
+            massGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massGiftSubMessage', createSingleNPJson('(name) just gifted (amount) (plan) subscriptions to random users in the channel!'))),
+            massAnonGiftSubMessage = JSON.parse($.getSetIniDbString('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson('An anonymous viewer gifted (amount) (plan) subscriptions to random viewers!'))),
             subWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', true),
             reSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', true),
             giftSubWelcomeToggle = $.getSetIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', true),
