@@ -426,6 +426,7 @@
      * @returns {Number}
      */
     function checkUserPermission(username, tags, permission) {
+        $.consoleDebug($.findCaller());
         return getUserGroupId(username, tags) <= permission;
     }
 
@@ -448,7 +449,7 @@
         }
 
         $.consoleDebug('Checking permissions for command: ' + command + ' and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
-        $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username) + '(' + getUserGroupName(username) + ')');
+        $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username, tags) + '(' + getUserGroupName(username, tags) + ')');
         $.consoleDebug('Current VIP id: ' + PERMISSION.VIP + ', Current Sub id: ' + PERMISSION.Sub + ', is VIPSubGroupID swapped: ' + _isSwappedSubscriberVIP);
         $.consoleDebug('isSub?: ' + isSub(username, tags) + ', isVIP?: ' + isVIP(username, tags) + ', isMod?: ' + isMod(username, tags) + ', isAdmin?: ' + isAdmin(username) + ', isDonator?: ' + isDonator(username) + ', isRegular?: ' + isRegular(username) + ' isCaster?: ' + isCaster(username));
 
@@ -479,8 +480,8 @@
      * @param {string} username
      * @returns {string}
      */
-    function getUserGroupName(username) {
-        return getGroupNameById(getUserGroupId(username.toLowerCase()));
+    function getUserGroupName(username, tags) {
+        return getGroupNameById(getUserGroupId(username.toLowerCase(), tags));
     }
 
     /**
