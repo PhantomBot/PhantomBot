@@ -388,7 +388,7 @@ $(function () {
             // p object to hold custom gif alert text and style
             textObj = $('<p/>', {
                 'style': gifCss
-            }).text(gifText);
+            }).html(gifText);
 
             await sleep(1000);
 
