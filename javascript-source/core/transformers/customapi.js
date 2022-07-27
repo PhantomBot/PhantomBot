@@ -27,6 +27,8 @@
     function getCustomAPIValue(url) {
         var res = $.customAPI.get(url);
 
+        $.consoleDebug(res.toString());
+
         if (res.content !== null) {
             return res.content;
         } else {

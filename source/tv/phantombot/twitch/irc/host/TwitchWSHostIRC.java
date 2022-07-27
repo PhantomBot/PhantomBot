@@ -67,6 +67,10 @@ public class TwitchWSHostIRC {
 
     public void setOAuth(String oAuth) {
         this.oAuth = oAuth;
+
+        if (!this.isConnected() || this.twitchWSHostIRCWS.isBadOAuth()) {
+            this.connect();
+        }
     }
 
     /**
@@ -222,6 +226,10 @@ public class TwitchWSHostIRC {
             }, 10, 30, TimeUnit.SECONDS);
         }
 
+        public boolean isBadOAuth() {
+            return this.badOauth;
+        }
+
         /**
          * Updates the last pong timer
          */
@@ -297,8 +305,10 @@ public class TwitchWSHostIRC {
                     com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
                     com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-                    this.connecting = true;
-                    this.twitchWSHostIRC.reconnect();
+                    if (!this.badOauth) {
+                        this.connecting = true;
+                        this.twitchWSHostIRC.reconnect();
+                    }
                 }
             } else {
                 com.gmt2001.Console.out.println("Connection to Twitch WS-IRC (Host) was closed...");
@@ -332,6 +342,7 @@ public class TwitchWSHostIRC {
                 // This is to make sure the caster created the oauth with his channel account and not the bot's.
                 if (message.contains("002 " + this.channelName + " :")) {
                     this.connected = true;
+                    this.badOauth = false;
                     com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
 
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
@@ -339,15 +350,15 @@ public class TwitchWSHostIRC {
                         backoff.ResetIn(Duration.ofSeconds(30));
                     }, 20, TimeUnit.SECONDS);
                 } else {
+                    int idx = message.indexOf("002") + 4;
+                    String connectedUser = message.substring(idx, message.indexOf(" :", idx));
                     this.connected = false;
                     this.badOauth = true;
                     com.gmt2001.Console.out.println("");
                     com.gmt2001.Console.out.println("Wrong API OAuth detected.");
-                    com.gmt2001.Console.out.println("The API OAuth belongs to another account.");
-                    com.gmt2001.Console.out.println("Please obtain new API OAuth with your channel account from the panel");
-                    com.gmt2001.Console.out.println("Now disabling host module.");
+                    com.gmt2001.Console.out.println("The API OAuth belongs to " + connectedUser + ", but the bot is in channel " + this.channelName + ".");
+                    com.gmt2001.Console.out.println("Please obtain new API OAuth with your channel account from the panel to enable Host detection");
                     com.gmt2001.Console.out.println("");
-                    PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                     this.close(1000, "bye");
                 }
                 return;
@@ -355,11 +366,9 @@ public class TwitchWSHostIRC {
 
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && this.badOauth == false) {
                 com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data.");
-                com.gmt2001.Console.out.println("Please obtain new API OAuth from the panel");
-                com.gmt2001.Console.out.println("Now disabling host module.");
+                com.gmt2001.Console.out.println("This API OAuth failed to login to Host TMI.");
+                com.gmt2001.Console.out.println("Please obtain new API OAuth with your channel account from the panel to enable Host detection");
                 com.gmt2001.Console.out.println("");
-                PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                 this.badOauth = true;
                 this.close(1000, "bye");
                 return;

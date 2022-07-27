@@ -19,6 +19,7 @@ package tv.phantombot.twitch.api;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.NotJSONException;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
@@ -196,6 +197,9 @@ public class Helix {
         } catch (Throwable ex) {
             if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
                 com.gmt2001.Console.err.printStackTrace(ex.getCause());
+                if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
+                    com.gmt2001.Console.debug.println(ex.getMessage());
+                }
                 return new JSONObject(ex.getMessage());
             } else {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -246,7 +250,21 @@ public class Helix {
                     response.responseHeaders().getInt("Ratelimit-Remaining", 1),
                     response.responseHeaders().getInt("Ratelimit-Reset", (int) (Instant.now().toEpochMilli() / 1000)) * 1000);
 
-            returnObject = response.jsonOrThrow();
+            try {
+                if (responseCode == 204) {
+                    returnObject = new JSONObject();
+                    returnObject.put("message", "No Content");
+                    returnObject.put("status", 204);
+                } else {
+                    returnObject = response.jsonOrThrow();
+                }
+            } catch (NotJSONException ex) {
+                returnObject = new JSONObject();
+                returnObject.put("message", response.responseBody());
+                returnObject.put("error", "Not JSON");
+                returnObject.put("status", -1);
+                throw ex;
+            }
             // Generate the return object,
             HttpRequest.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
         } catch (Exception ex) {

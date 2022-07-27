@@ -77,6 +77,17 @@
         Packages.com.gmt2001.Console.out.println(java.util.Objects.toString(message));
     }
 
+    function findCaller(force) {
+        if (force !== true && !Packages.tv.phantombot.PhantomBot.getEnableDebugging()) {
+            return;
+        }
+        try {
+            throw new Error();
+        } catch (ex) {
+            return java.util.Objects.toString(ex.stack.split('\n')[2].trim());
+        }
+    }
+
     /*
      * @function consoleDebug
      *
@@ -87,7 +98,7 @@
             try {
                 throw new Error();
             } catch (ex) {
-                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + ex.stack.split('\n')[1].trim() + '] ' + message));
+                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + findCaller() + '] ' + message));
             }
         }
     }
@@ -478,10 +489,10 @@
          */
         $api.on($script, 'command', function (event) {
             var sender = event.getSender(),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                subCommand = $.getSubCommandFromArguments(command, args),
-                isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
+                    command = event.getCommand(),
+                    args = event.getArgs(),
+                    subCommand = $.getSubCommandFromArguments(command, args),
+                    isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
             if (isReady === false && command.equalsIgnoreCase($.botName) && args[0].equalsIgnoreCase('moderate')) {
                 Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
@@ -495,10 +506,10 @@
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
                 var alias = $.getIniDbString('aliases', command),
-                    aliasCommand,
-                    aliasArguments,
-                    subcmd,
-                    parts;
+                        aliasCommand,
+                        aliasArguments,
+                        subcmd,
+                        parts;
 
                 if (alias.indexOf(';') === -1) {
                     parts = alias.split(' ');
@@ -537,15 +548,15 @@
 
             // Check the command cooldown.
             var cooldownDuration,
-                isGlobalCooldown,
-                cooldownCommand = command;
+                    isGlobalCooldown,
+                    cooldownCommand = command;
 
             if (args.length === 1 && $.coolDown.exists(cooldownCommand + ' ' + args[0])) {
                 cooldownCommand += ' ' + args[0];
             }
             if (args.length > 1 && $.coolDown.exists(cooldownCommand + ' ' + args[1])) {
                 cooldownCommand += ' ' + args[1];
-            } 
+            }
 
             [cooldownDuration, isGlobalCooldown] = $.coolDown.get(cooldownCommand, sender, isMod);
 
@@ -554,7 +565,7 @@
                 if ($.getIniDbBoolean('settings', 'coolDownMsgEnabled')) {
                     if (isGlobalCooldown) {
                         $.sayWithTimeout($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.global', command, cooldownDuration), true);
-                        
+
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('init.cooldown.msg.user', command, cooldownDuration));
                     }
@@ -622,15 +633,15 @@
 
             // Check the command cooldown.
             var cooldownDuration,
-                isGlobalCooldown,
-                cooldownCommand = command;
+                    isGlobalCooldown,
+                    cooldownCommand = command;
 
             if (args.length === 1 && $.discord.cooldown.exists(cooldownCommand + ' ' + args[0])) {
                 cooldownCommand += ' ' + args[0];
             }
             if (args.length > 1 && $.discord.cooldown.exists(cooldownCommand + ' ' + args[1])) {
                 cooldownCommand += ' ' + args[1];
-            } 
+            }
 
             [cooldownDuration, isGlobalCooldown] = $.discord.cooldown.get(cooldownCommand, senderId);
 
@@ -703,6 +714,7 @@
     // Export functions to API
     $.consoleLn = consoleLn;
     $.consoleDebug = consoleDebug;
+    $.findCaller = findCaller;
     $.bind = addHook;
     $.unbind = removeHook;
     $.bot = {

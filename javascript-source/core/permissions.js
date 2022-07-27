@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java */
+
 /**
  * permissions.js
  *
@@ -246,11 +248,12 @@
      * @returns {boolean}
      */
     function isMod(username, tags) {
+        $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.get('user-type').length() > 0) { // Broadcaster should be included here.
             return true;
         }
 
-        $.consoleDebug('Used isMod without tags::' + tags);
+        $.consoleDebug('Used isMod without tags');
         return isModNoTags(username);
     }
 
@@ -273,11 +276,12 @@
      * @returns {boolean}
      */
     function isSub(username, tags) {
+        $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.containsKey('subscriber')) {
             return tags.get('subscriber').equals('1');
         }
 
-        $.consoleDebug('Used isSub without tags::' + tags);
+        $.consoleDebug('Used isSub without tags');
         return isSubNoTags(username);
     }
 
@@ -288,6 +292,7 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
+        $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.containsKey('turbo')) {
             return tags.get('turbo').equals('1');
         }
@@ -312,11 +317,12 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
+        $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.containsKey('vip')) {
             return tags.get('vip').equals('1');
         }
 
-        $.consoleDebug('Used isVIP without tags::' + tags);
+        $.consoleDebug('Used isVIP without tags');
         return isVIPNoTags(username);
     }
 
@@ -373,16 +379,6 @@
     }
 
     /**
-     * @deprecated
-     * @function isTwitchSub
-     * @param {String}
-     * @returns {Boolean}
-     */
-    function isTwitchSub(username) {
-        return isSub(username);
-    }
-
-    /**
      * @function getUserGroupId
      * @export $
      * @param {string} username
@@ -430,6 +426,7 @@
      * @returns {Number}
      */
     function checkUserPermission(username, tags, permission) {
+        $.consoleDebug($.findCaller());
         return getUserGroupId(username, tags) <= permission;
     }
 
@@ -443,6 +440,7 @@
      * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
      */
     function permCom(username, command, subcommand, tags) {
+        $.consoleDebug($.findCaller());
         var commandGroup, allowed;
         if (subcommand === '' || subcommand === undefined) {
             commandGroup = $.getCommandGroup(command);
@@ -450,8 +448,8 @@
             commandGroup = $.getSubcommandGroup(command, subcommand);
         }
 
-        $.consoleDebug('Checking permissions for command: ' + command + 'and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
-        $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username) + '(' + getUserGroupName(username) + ')');
+        $.consoleDebug('Checking permissions for command: ' + command + ' and subcommand: ' + subcommand + ' with group/permission level: ' + commandGroup);
+        $.consoleDebug('For user: ' + username + ' with group/permission level: ' + getUserGroupId(username, tags) + '(' + getUserGroupName(username, tags) + ')');
         $.consoleDebug('Current VIP id: ' + PERMISSION.VIP + ', Current Sub id: ' + PERMISSION.Sub + ', is VIPSubGroupID swapped: ' + _isSwappedSubscriberVIP);
         $.consoleDebug('isSub?: ' + isSub(username, tags) + ', isVIP?: ' + isVIP(username, tags) + ', isMod?: ' + isMod(username, tags) + ', isAdmin?: ' + isAdmin(username) + ', isDonator?: ' + isDonator(username) + ', isRegular?: ' + isRegular(username) + ' isCaster?: ' + isCaster(username));
 
@@ -482,8 +480,8 @@
      * @param {string} username
      * @returns {string}
      */
-    function getUserGroupName(username) {
-        return getGroupNameById(getUserGroupId(username.toLowerCase()));
+    function getUserGroupName(username, tags) {
+        return getGroupNameById(getUserGroupId(username.toLowerCase(), tags));
     }
 
     /**
