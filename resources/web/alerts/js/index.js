@@ -415,7 +415,7 @@ $(function () {
                         return isReady;
                     };
                     htmlObj[0].load();
-                    await promisePoll(() => videoIsReady(), { pollIntervalMs = 250 });
+                    await promisePoll(() => videoIsReady(), { pollIntervalMs: 250 });
                 }
                 if (hasAudio) {
                     let isReady = false;
@@ -430,7 +430,7 @@ $(function () {
                     };
 
                     audio.load();
-                    await promisePoll(() => audioIsReady(), { pollIntervalMs = 250 });
+                    await promisePoll(() => audioIsReady(), { pollIntervalMs: 250 });
                     audio.volume = gifVolume;
                 }
                 if (isVideo) {
