@@ -243,6 +243,21 @@
         }
 
         /*
+         * @localtransformer giftmonths
+         * @formula (giftmonths) '<Number of Months Gifted>'
+         * @example Caster: !giftsubmessage 1000 (name) just gifted (giftmonths) months of (plan) to (recipient)! Thank you!
+         * Twitch: User has just gifted a 6 month sub to OtherUser at Tier 1!
+         * Bot: User just gifted 6 months of Tier 1 to OtherUser! Thank you!
+         * @cached
+         */
+        function giftmonths(args, event) {
+            return {
+                result: event.getGiftedMonths(),
+                cache: true
+            };
+        }
+
+        /*
          * @localtransformer giftreward
          * @formula (giftreward) '<Points Reward>'
          * @customarg (giftreward:int) The number of points awarded to the gifter for gifting a sub to someone else
@@ -351,6 +366,7 @@
         }
 
         if (type === types.GIFT || type === types.GIFTANON) {
+            transformers['giftmonths'] = giftmonths;
             transformers['recipient'] = recipient;
         }
 
