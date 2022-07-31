@@ -14,54 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.subscriber;
-
-import tv.phantombot.event.twitch.TwitchEvent;
 
 /**
  *
  * @author Branden
  */
-public class TwitchMassAnonymousSubscriptionGiftedEvent extends TwitchEvent {
-    private final String amount;
-    private final String plan;
-    
+public class TwitchMassAnonymousSubscriptionGiftedEvent extends TwitchMassSubscriptionGiftedEvent {
+
     /**
      * Class constructor.
-     * 
+     *
      * @param amount
-     * @param plan 
+     * @param plan
      */
     public TwitchMassAnonymousSubscriptionGiftedEvent(String amount, String plan) {
-        this.amount = amount;
-        this.plan = plan;
-    }
-    
-    /**
-     * Get the user, which is always anonymous.
-     * 
-     * @return 
-     */
-    public String getUsername() {
-        return "anonymous";
-    }
-    
-    /**
-     * Gets the amount of subs gifted.
-     * 
-     * @return 
-     */
-    public String getAmount() {
-        return amount;
-    }
-    
-    /**
-     * Gets the sub plan.
-     * 
-     * @return 
-     */
-    public String getPlan() {
-        return plan;
+        super("anonymous", amount, plan);
     }
 }
