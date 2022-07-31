@@ -410,6 +410,7 @@ public final class ConsoleEventHandler implements Listener {
             String randomUser = PhantomBot.generateRandomString(10);
             String tier = "1000";
             String months = ((int) (Math.random() * 100.0)) + "";
+            String giftMonths = ((int) (Math.random() * 100.0)) + "";
             if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
                 randomUser = argument[0];
             }
@@ -422,9 +423,13 @@ public final class ConsoleEventHandler implements Listener {
                 months = argument[2];
             }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ")");
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                giftMonths = argument[3];
+            }
 
-            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, months, tier));
+            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ", giftMonths: " + giftMonths + ")");
+
+            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, months, tier, giftMonths));
             return;
         }
 
@@ -453,6 +458,7 @@ public final class ConsoleEventHandler implements Listener {
             String userName = PhantomBot.generateRandomString(8);
             String tier = "1000";
             String months = ((int) (Math.random() * 100.0)) + "";
+            String giftMonths = ((int) (Math.random() * 100.0)) + "";
             if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
                 userName = argument[0];
             }
@@ -464,8 +470,12 @@ public final class ConsoleEventHandler implements Listener {
             if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
                 months = argument[2];
             }
-            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ", months: " + months + ", tier: " + tier + ")");
-            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, months, tier));
+
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                giftMonths = argument[3];
+            }
+            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ", months: " + months + ", tier: " + tier + ", giftMonths: " + giftMonths + ")");
+            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, months, tier, giftMonths));
             return;
         }
 
