@@ -84,8 +84,8 @@
             if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
                 points = $.getUserPoints(sender);
             } else if ($.equalsIgnoreCase(action, "half")){
-                points = Math.floor($.getUserPoints(sender)/2);
-            } else if (isNan(parseInt(action))) {
+                points = Math.floor($.getUserPoints(sender) / 2);
+            } else if (isNaN(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('gambling.usage'));
                 return;
             } else {
