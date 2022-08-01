@@ -23,6 +23,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
     private final String recipient;
     private final String months;
     private final String plan;
+    private final String giftMonths;
 
     /**
      * Class constructor.
@@ -36,6 +37,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.recipient = recipient;
         this.months = null;
         this.plan = plan;
+        this.giftMonths = null;
     }
 
     /**
@@ -51,6 +53,24 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.recipient = recipient;
         this.months = months;
         this.plan = plan;
+        this.giftMonths = null;
+    }
+
+    /**
+     * Class constructor.
+     *
+     * @param username
+     * @param recipient
+     * @param months
+     * @param plan
+     * @param giftMonths
+     */
+    public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan, String giftMonths) {
+        this.username = username;
+        this.recipient = recipient;
+        this.months = months;
+        this.plan = plan;
+        this.giftMonths = giftMonths;
     }
 
     /**
@@ -87,5 +107,14 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
      */
     public String getPlan() {
         return this.plan;
+    }
+    
+    /**
+     * Method that returns the months gifted to recipient, can be 0.
+     *
+     * @return months
+     */
+    public String getGiftMonths() {
+        return (this.giftMonths == null) ? "1" : this.giftMonths;
     }
 }

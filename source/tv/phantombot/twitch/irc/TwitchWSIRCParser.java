@@ -677,9 +677,9 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 }
             } else {
                 if (item.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                    scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan")));
+                    scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan")));
+                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
                 }
             }
         } catch (Exception ex) {

@@ -262,6 +262,7 @@
                 recipient = event.getRecipient(),
                 months = event.getMonths(),
                 tier = event.getPlan(),
+                giftMonths = event.getGiftMonths(),
                 message = giftSubMessage;
 
         if (giftSubWelcomeToggle === true && announce === true) {
@@ -277,8 +278,12 @@
                 message = $.replace(message, '(months)', months);
             }
 
+            if (message.match(/\(giftmonths\)/g)) {
+                message = $.replace(message, '(giftmonths)', giftMonths);
+            }
+
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
+                message = $.replace(message, '(reward)', String(giftSubReward * parseInt(giftMonths)));
             }
 
             if (message.match(/\(plan\)/g)) {
@@ -320,7 +325,7 @@
                 $.inidb.incr('points', recipient, subReward);
             }
             if (giftSubReward > 0) {
-                $.inidb.incr('points', gifter, giftSubReward);
+                $.inidb.incr('points', gifter, giftSubReward * parseInt(giftMonths));
             }
         }
     });
@@ -384,6 +389,7 @@
                 recipient = event.getRecipient(),
                 months = event.getMonths(),
                 tier = event.getPlan(),
+                giftMonths = event.getGiftMonths(),
                 message = giftAnonSubMessage;
 
         if (giftAnonSubWelcomeToggle === true && announce === true) {
@@ -400,7 +406,7 @@
             }
 
             if (message.match(/\(reward\)/g)) {
-                message = $.replace(message, '(reward)', String(subReward));
+                message = $.replace(message, '(reward)', String(subReward * parseInt(giftMonths)));
             }
 
             if (message.match(/\(plan\)/g)) {
