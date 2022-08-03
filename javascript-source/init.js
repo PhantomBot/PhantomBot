@@ -600,6 +600,10 @@
                     senderId = event.getSenderId(),
                     args = event.getArgs();
 
+            if ($.discord === undefined || $.discord === null) {
+                return;
+            }
+
             if ($.discord.commandExists(command) === false && ($.discord.aliasExists(command) === false || $.discord.aliasExists(command) === true && $.discord.commandExists($.discord.getCommandAlias(command)) === false)) {
                 return;
             }
