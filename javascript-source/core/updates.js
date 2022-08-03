@@ -505,6 +505,17 @@
         $.inidb.del('subscribeHandler', 'subPlan2000');
         $.inidb.del('subscribeHandler', 'subPlan3000');
         $.inidb.del('subscribeHandler', 'subPlanPrime');
+        
+        var commands = $.inidb.GetKeyList('tempDisabledCommandScript', ''),
+            i, cmd;
+
+        for (i in commands) {
+            cmd = $.jsString(commands[i]);
+            if (cmd.toLowerCase() !== cmd) {
+                $.inidb.set('tempDisabledCommandScript', cmd.toLowerCase(), $.inidb.get('tempDisabledCommandScript', cmd));
+                $.inidb.del('tempDisabledCommandScript', cmd);
+            }
+        }
 
         $.consoleLn('PhantomBot update 3.6.4 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);

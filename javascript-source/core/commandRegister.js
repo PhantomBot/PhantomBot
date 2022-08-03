@@ -35,6 +35,7 @@
      * @param {Number} groupId
      */
     function registerChatCommand(script, command, groupId) {
+        command = $.jsString(command).toLowerCase();
         // If groupId is undefined set it to 7 (viewer).
         groupId = (groupId === undefined ? $.PERMISSION.Viewer : groupId);
 
@@ -81,6 +82,8 @@
      * @param {Number} groupId
      */
     function registerChatSubcommand(command, subcommand, groupId) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         // If groupId is undefined set it to 7 (viewer).
         groupId = (groupId === undefined ? $.PERMISSION.Viewer : groupId);
 
@@ -102,6 +105,7 @@
      * @param {String} alias
      */
     function registerChatAlias(alias) {
+        alias = $.jsString(alias).toLowerCase();
         if (!aliasExists(alias)) {
             aliases[alias] = true;
         }
@@ -113,6 +117,7 @@
      * @param {String} command
      */
     function unregisterChatCommand(command) {
+        command = $.jsString(command).toLowerCase();
         if (commandExists(command)) {
             delete commands[command];
             delete aliases[command];
@@ -131,6 +136,7 @@
      * @param {String} command
      */
     function tempUnRegisterChatCommand(command) {
+        command = $.jsString(command).toLowerCase();
         $.inidb.set('tempDisabledCommandScript', command, commands[command].script);
         if (commandExists(command)) {
             delete commands[command];
@@ -146,6 +152,8 @@
      * @param {String} subcommand
      */
     function unregisterChatSubcommand(command, subcommand) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         if (subCommandExists(command, subcommand)) {
             delete commands[command].subcommands[subcommand];
         }
@@ -161,6 +169,7 @@
      * @return {String}
      */
     function getCommandScript(command) {
+        command = $.jsString(command).toLowerCase();
         if (commands[command] === undefined) {
             return "Undefined";
         }
@@ -175,6 +184,7 @@
      * @return {Boolean}
      */
     function commandExists(command) {
+        command = $.jsString(command).toLowerCase();
         return (commands[command] !== undefined);
     }
 
@@ -184,6 +194,7 @@
      * @param {String} command
      */
     function aliasExists(alias) {
+        alias = $.jsString(alias).toLowerCase();
         return (aliases[alias] !== undefined);
     }
 
@@ -195,6 +206,8 @@
      * @return {Boolean}
      */
     function subCommandExists(command, subcommand) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         if (commandExists(command)) {
             return (commands[command].subcommands[subcommand] !== undefined);
         }
@@ -208,6 +221,7 @@
      * @return {Number}
      */
     function getCommandGroup(command) {
+        command = $.jsString(command).toLowerCase();
         var groupid = $.PERMISSION.Viewer;
 
         if (commandExists(command)) {
@@ -224,6 +238,7 @@
      * @return {String}
      */
     function getCommandGroupName(command) {
+        command = $.jsString(command).toLowerCase();
         var group = '';
 
         if (commandExists(command)) {
@@ -257,6 +272,8 @@
      * @return {Number}
      */
     function getSubcommandGroup(command, subcommand) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         if (commandExists(command)) {
             if (subCommandExists(command, subcommand)) {
                 return commands[command].subcommands[subcommand].groupId;
@@ -274,6 +291,8 @@
      * @return {String}
      */
     function getSubCommandGroupName(command, subcommand) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         var group = '';
 
         if (subCommandExists(command, subcommand)) {
@@ -306,6 +325,7 @@
      * @param {Number} groupId
      */
     function updateCommandGroup(command, groupId) {
+        command = $.jsString(command).toLowerCase();
         if (commandExists(command)) {
             commands[command].groupId = groupId;
         }
@@ -319,6 +339,8 @@
      * @param {Number} groupId
      */
     function updateSubcommandGroup(command, subcommand, groupId) {
+        command = $.jsString(command).toLowerCase();
+        subcommand = $.jsString(subcommand).toLowerCase();
         if (subCommandExists(command, subcommand)) {
             commands[command].subcommands[subcommand].groupId = groupId;
         }
@@ -331,6 +353,7 @@
      * @param {String[]} args
      */
     function getSubCommandFromArguments(command, args) {
+        command = $.jsString(command).toLowerCase();
         if (!commandExists(command) || args[0] === undefined) {
             return '';
         } else {
