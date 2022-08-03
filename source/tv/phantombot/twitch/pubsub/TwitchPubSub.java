@@ -93,6 +93,10 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
     public void setOAuth(String oAuth) {
         this.twitchPubSubWS.setOAuth(oAuth);
         this.oAuth = oAuth;
+
+        if (!this.twitchPubSubWS.isConnected()) {
+            this.connect();
+        }
     }
 
     private void connect() {
@@ -185,6 +189,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         private long lastPong = System.currentTimeMillis();
         private long lastPing = 0l;
         private boolean connecting = true;
+        private boolean connected = false;
         private final URI uri;
         private final WSClient client;
 
@@ -240,6 +245,10 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
                     this.twitchPubSub.reconnect();
                 }
             }, 10, 30, TimeUnit.SECONDS);
+        }
+
+        public boolean isConnected() {
+            return this.client.connected() && this.connected;
         }
 
         /**
@@ -354,6 +363,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         private void onOpen() {
             com.gmt2001.Console.debug.println("Connected to Twitch PubSub-Edge (SSL) [" + this.uri.getHost() + "]");
             this.twitchPubSub.submit(new PubSubMessage(PubSubMessage.PubSubMessageType.OPEN));
+            this.connected = true;
         }
 
         /**
@@ -366,6 +376,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
             com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
             this.twitchPubSub.submit(new PubSubMessage(PubSubMessage.PubSubMessageType.CLOSE));
+            this.connected = false;
 
             if (!this.hasSubscriptions) {
                 com.gmt2001.Console.out.println("Disconnected from Twitch PubSub due to no valid topic subscriptions");

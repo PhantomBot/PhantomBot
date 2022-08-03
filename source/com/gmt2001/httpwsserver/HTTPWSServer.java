@@ -331,12 +331,16 @@ public final class HTTPWSServer {
      */
     public void close() {
         WebSocketFrameHandler.closeAllWsSessions();
-        ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
+        if (ch != null) {
+            ch.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
+        }
 
         if (ch2 != null) {
             ch2.close().awaitUninterruptibly(5, TimeUnit.SECONDS);
         }
 
-        group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
+        if (group != null) {
+            group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
+        }
     }
 }

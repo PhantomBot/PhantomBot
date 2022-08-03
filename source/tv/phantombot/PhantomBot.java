@@ -350,11 +350,10 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitError();
             }
             /* Convert to MySql */
-            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", "")) && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
+            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", "")) && SqliteStore.isAvailable() && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
-        } else if (CaselessProperties.instance().getProperty("datastore", "sqlite3store").equalsIgnoreCase("h2store")
-                || (CaselessProperties.instance().getProperty("datastore", "sqlite3store").isBlank() && System.getProperty("os.name").toLowerCase().endsWith("bsd"))) {
+        } else if (CaselessProperties.instance().getProperty("datastore", "sqlite3store").equalsIgnoreCase("h2store") || !SqliteStore.isAvailable()) {
             this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
             if (!this.dataStore.CanConnect()) {
@@ -362,7 +361,7 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitError();
             }
 
-            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", "")) && SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
+            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", "")) && SqliteStore.isAvailable() && SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
             }
         } else {

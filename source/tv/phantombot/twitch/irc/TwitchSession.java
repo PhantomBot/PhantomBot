@@ -68,6 +68,10 @@ public class TwitchSession extends MessageQueue {
     public void setOAuth(String oAuth) {
         this.oAuth = oAuth;
         this.twitchWSIRC.setOAuth(oAuth);
+
+        if (!this.twitchWSIRC.connected()) {
+            this.connect();
+        }
     }
 
     /**

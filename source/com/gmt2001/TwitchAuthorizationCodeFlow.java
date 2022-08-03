@@ -208,8 +208,8 @@ public class TwitchAuthorizationCodeFlow {
                 data = "false".getBytes();
             } else {
                 Transaction newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
-                newTransaction.setProperty("clientid", qsd.parameters().get("clientid").get(0));
-                newTransaction.setProperty("clientsecret", qsd.parameters().get("clientsecret").get(0));
+                newTransaction.setProperty("clientid", qsd.parameters().get("clientid").get(0).trim());
+                newTransaction.setProperty("clientsecret", qsd.parameters().get("clientsecret").get(0).trim());
                 newTransaction.commit();
                 data = qsd.parameters().get("clientid").get(0).getBytes();
                 PhantomBot.instance().getAuthFlow().startup(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
