@@ -21,7 +21,7 @@
     /*
      * @transformer atSender
      * @formula (@sender) '@<Sender's Name>, '
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !hello (@sender) you are awesome!
      * User: !hello
      * Bot: @User, you're awesome!
@@ -39,7 +39,7 @@
     /*
      * @transformer age
      * @formula (age) outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !age (age)
      * User: !age
      * Bot: @User, user has been on Twitch since April 19, 2009.
@@ -58,7 +58,7 @@
     /*
      * @transformer baresender
      * @formula (baresender) the login name of the message's sender
-     * @labels twitch command user
+     * @labels twitch commandevent user
      */
     function baresender(args, event) {
         if (!args) {
@@ -69,7 +69,7 @@
     /*
      * @transformer pointtouser
      * @formula (pointtouser) user + ' -> '; uses sender's display name if no other is provided
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !facebook (pointtouser) like my Facebook page!
      * User: !facebook
      * Bot: User ->  like my Facebook page!
@@ -95,7 +95,7 @@
     /*
      * @transformer sender
      * @formula (sender) the sender's display name
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !hello Hello, (sender)!
      * User: !hello
      * Bot: Hello, User!
@@ -113,7 +113,7 @@
     /*
      * @transformer senderrank
      * @formula (senderrank) the sender's display name, prefixed with their rank
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !poke /me Pokes (senderrank) with a bar of soap.
      * User: !poke
      * Bot: /me Pokes Master User with a bar of soap.
@@ -131,7 +131,7 @@
     /*
      * @transformer senderrankonly
      * @formula (senderrankonly) the sender's rank
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @cached
      */
     function senderrankonly(args, event) {
@@ -146,7 +146,7 @@
     /*
      * @transformer touser
      * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
-     * @labels twitch command user
+     * @labels twitch commandevent user
      * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
      * User: !twitter
      * Bot: User Hey! Follow my Twitter!
@@ -170,14 +170,14 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('@sender', ['twitch', 'command', 'user'], atSender),
-        new $.transformers.transformer('age', ['twitch', 'command', 'user'], age),
-        new $.transformers.transformer('baresender', ['twitch', 'command', 'user'], baresender),
-        new $.transformers.transformer('pointtouser', ['twitch', 'command', 'user'], pointtouser),
-        new $.transformers.transformer('sender', ['twitch', 'command', 'user'], sender),
-        new $.transformers.transformer('senderrank', ['twitch', 'command', 'user'], senderrank),
-        new $.transformers.transformer('senderrankonly', ['twitch', 'command', 'user'], senderrankonly),
-        new $.transformers.transformer('touser', ['twitch', 'command', 'user'], touser)
+        new $.transformers.transformer('@sender', ['twitch', 'commandevent', 'user'], atSender),
+        new $.transformers.transformer('age', ['twitch', 'commandevent', 'user'], age),
+        new $.transformers.transformer('baresender', ['twitch', 'commandevent', 'user'], baresender),
+        new $.transformers.transformer('pointtouser', ['twitch', 'commandevent', 'user'], pointtouser),
+        new $.transformers.transformer('sender', ['twitch', 'commandevent', 'user'], sender),
+        new $.transformers.transformer('senderrank', ['twitch', 'commandevent', 'user'], senderrank),
+        new $.transformers.transformer('senderrankonly', ['twitch', 'commandevent', 'user'], senderrankonly),
+        new $.transformers.transformer('touser', ['twitch', 'commandevent', 'user'], touser)
     ];
 
     $.transformers.addTransformers(transformers);

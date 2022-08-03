@@ -22,7 +22,7 @@
      * @transformer pay
      * @formula (pay) outputs the number of points the sender has gained by using this command
      * @formula (pay command:str) outputs the number of points the sender would gain if they use the specified command
-     * @labels twitch command points
+     * @labels twitch commandevent points
      * @cached
      */
     function pay(args, event) {
@@ -46,7 +46,7 @@
     /*
      * @transformer pointname
      * @formula (pointname) the plural name of the loyalty points
-     * @labels twitch command points
+     * @labels twitch noevent points
      * @example Caster: !addcom !pointsname (sender) current points name is set to: (pointname)
      * User: !pointsname
      * Bot: User current points name is set to: points
@@ -61,7 +61,7 @@
      * @transformer points
      * @formula (points) points of the sender
      * @formula (points user:str) points of the given user
-     * @labels twitch command points
+     * @labels twitch commandevent points
      * @cached
      */
     function points(args, event) {
@@ -82,7 +82,7 @@
      * @transformer price
      * @formula (price) the number of points the sender paid to use this command
      * @formula (price command:str) the number of points the sender would pay if they use the specified command
-     * @labels twitch command points
+     * @labels twitch commandevent points
      * @example Caster: !addcom !cost This command costs (price) (pointname)
      * User: !cost
      * Bot: This command costs 10 points
@@ -107,10 +107,10 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('pay', ['twitch', 'command', 'points'], pay),
-        new $.transformers.transformer('pointname', ['twitch', 'command', 'points'], pointname),
-        new $.transformers.transformer('points', ['twitch', 'command', 'points'], points),
-        new $.transformers.transformer('price', ['twitch', 'command', 'points'], price)
+        new $.transformers.transformer('pay', ['twitch', 'commandevent', 'points'], pay),
+        new $.transformers.transformer('pointname', ['twitch', 'noevent', 'points'], pointname),
+        new $.transformers.transformer('points', ['twitch', 'commandevent', 'points'], points),
+        new $.transformers.transformer('price', ['twitch', 'commandevent', 'points'], price)
     ];
 
     $.transformers.addTransformers(transformers);

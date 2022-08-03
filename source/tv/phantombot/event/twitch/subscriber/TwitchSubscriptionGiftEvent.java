@@ -19,11 +19,12 @@ package tv.phantombot.event.twitch.subscriber;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchSubscriptionGiftEvent extends TwitchEvent {
+
     private final String username;
     private final String recipient;
     private final String months;
     private final String plan;
-    private final String giftMonths;
+    private final String giftedMonths;
 
     /**
      * Class constructor.
@@ -37,7 +38,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.recipient = recipient;
         this.months = null;
         this.plan = plan;
-        this.giftMonths = null;
+        this.giftedMonths = null;
     }
 
     /**
@@ -53,7 +54,7 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
         this.recipient = recipient;
         this.months = months;
         this.plan = plan;
-        this.giftMonths = null;
+        this.giftedMonths = null;
     }
 
     /**
@@ -63,14 +64,14 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
      * @param recipient
      * @param months
      * @param plan
-     * @param giftMonths
+     * @param giftedMonths
      */
-    public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan, String giftMonths) {
+    public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan, String giftedMonths) {
         this.username = username;
         this.recipient = recipient;
         this.months = months;
         this.plan = plan;
-        this.giftMonths = giftMonths;
+        this.giftedMonths = giftedMonths;
     }
 
     /**
@@ -101,20 +102,20 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
     }
 
     /**
-     * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
+     * Method that returns the number of months gifted.
+     *
+     * @return months
+     */
+    public String getGiftedMonths() {
+        return (this.giftedMonths == null) ? "1" : this.giftedMonths;
+    }
+
+    /**
+     * Method that returns the subscription plan. (1000, 2000, 3000 and Prime)
      *
      * @return plan
      */
     public String getPlan() {
         return this.plan;
-    }
-    
-    /**
-     * Method that returns the months gifted to recipient, can be 0.
-     *
-     * @return months
-     */
-    public String getGiftMonths() {
-        return (this.giftMonths == null) ? "1" : this.giftMonths;
     }
 }

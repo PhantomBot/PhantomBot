@@ -22,7 +22,7 @@
      * @transformer randomInt
      * @formula (#) a random integer from 1 to 100, inclusive
      * @formula (# a:int, b:int) a random integer from a to b, inclusive
-     * @labels twitch discord command basic
+     * @labels twitch discord noevent basic
      * @example Caster: !addcom !lucky Your lucky number is (#)
      * User: !lucky
      * Bot: Your lucky number is 7
@@ -46,7 +46,7 @@
      * @formula (n:int) the n-th argument (escaped by default)
      * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
      * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
-     * @labels twitch discord command basic
+     * @labels twitch discord commandevent basic
      * @example Caster: !addcom !love (sender) loves (1).
      * User: !love monkeys
      * Bot: User loves monkeys.
@@ -77,7 +77,7 @@
     /*
      * @transformer echo
      * @formula (echo) all arguments passed to the command
-     * @labels twitch discord command basic
+     * @labels twitch discord commandevent basic
      * @example Caster: !addcom !echo (echo)
      * User: !echo test test
      * Bot: test test
@@ -91,7 +91,7 @@
     /*
      * @transformer random
      * @formula (random) random user in chat, or the bot's name if chat is empty
-     * @labels twitch command basic
+     * @labels twitch noevent basic
      * @example Caster: !addcom !poke /me pokes (random) with a long wooden stick.
      * User: !poke
      * Bot: /me pokes User2 with a long wooden stick.
@@ -118,7 +118,7 @@
     /*
      * @transformer randomrank
      * @formula (randomrank) random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
-     * @labels twitch command basic
+     * @labels twitch noevent basic
      * @example Caster: !addcom !poke /me Pokes (randomrank) with a bar of soap.
      * User: !poke
      * Bot: /me Pokes Master User2 with a bar of soap.
@@ -139,7 +139,7 @@
     /*
      * @transformer repeat
      * @formula (repeat n:int, message:str) repeat the message n times (copy/paste)
-     * @labels twitch discord command basic
+     * @labels twitch discord noevent basic
      * @note the value of n is limited to a maximum of 30
      * @cached
      */
@@ -169,15 +169,15 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('#', ['twitch', 'discord', 'command', 'basic'], randomInt),
-        new $.transformers.transformer('echo', ['twitch', 'discord', 'command', 'basic'], echo),
-        new $.transformers.transformer('random', ['twitch', 'command', 'basic'], random),
-        new $.transformers.transformer('randomrank', ['twitch', 'command', 'basic'], randomrank),
-        new $.transformers.transformer('repeat', ['twitch', 'discord', 'command', 'basic'], repeat)
+        new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
+        new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
+        new $.transformers.transformer('random', ['twitch', 'noevent', 'basic'], random),
+        new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),
+        new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat)
     ];
     
     for (i = 1; i <= 9; i++) {
-        transformers.push(new $.transformers.transformer($.jsString(i), ['twitch', 'discord', 'command', 'basic'], buildArgs(i)));
+        transformers.push(new $.transformers.transformer($.jsString(i), ['twitch', 'discord', 'commandevent', 'basic'], buildArgs(i)));
     }
 
     $.transformers.addTransformers(transformers);

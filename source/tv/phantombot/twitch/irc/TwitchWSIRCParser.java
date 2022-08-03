@@ -48,7 +48,6 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
-import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.twitch.irc.chat.utils.SubscriberBulkGifter;
 
 // Create an interface that is used to create event handling methods.
@@ -65,9 +64,6 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     private static TwitchWSIRCParser instance;
     private final ConcurrentMap<String, TwitchWSIRCCommand> parserMap = new ConcurrentHashMap<>(8);
     private final List<String> moderators = new CopyOnWriteArrayList<>();
-    private final ScriptEventManager scriptEventManager = ScriptEventManager.instance();
-    private final UsernameCache usernameCache = UsernameCache.instance();
-    private final EventBus eventBus = EventBus.instance();
     private final ConcurrentMap<String, SubscriberBulkGifter> bulkSubscriberGifters = new ConcurrentHashMap<>();
     private WSClient client;
     private final TwitchSession session;
@@ -344,7 +340,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         // Send the command.
-        scriptEventManager.onEvent(new CommandEvent(username, command, arguments, tags));
+        EventBus.instance().postAsync(new CommandEvent(username, command, arguments, tags));
     }
 
     /**
@@ -372,7 +368,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
 
         // Port the channel joined event.
-        eventBus.postAsync(new IrcJoinCompleteEvent(session));
+        EventBus.instance().postAsync(new IrcJoinCompleteEvent(session));
     }
 
     /**
@@ -393,12 +389,12 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
         // Cache the user's display name and ID.
         if (tags.containsKey("display-name") && tags.containsKey("user-id")) {
-            usernameCache.addUser(username, tags.get("display-name"), tags.get("user-id"));
+            UsernameCache.instance().addUser(username, tags.get("display-name"), tags.get("user-id"));
         }
 
         // Check if the message is a cheer.
         if (tags.containsKey("bits")) {
-            scriptEventManager.onEvent(new TwitchBitsEvent(username, tags.get("bits"), message));
+            EventBus.instance().postAsync(new TwitchBitsEvent(username, tags.get("bits"), message));
         }
 
         // Check if the message is a command.
@@ -407,31 +403,31 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         // Send the moderation event.
-        scriptEventManager.onEvent(new IrcModerationEvent(session, username, message, tags));
-        //eventBus.postAsync(new IrcModerationEvent(session, username, message, tags));
+        EventBus.instance().postAsync(new IrcModerationEvent(session, username, message, tags));
+        //EventBus.instance().postAsync(new IrcModerationEvent(session, username, message, tags));
 
         // Check to see if the user is a channel subscriber.
         if (tags.containsKey("subscriber") && tags.get("subscriber").equals("1")) {
-            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + username + " subscriber", tags));
+            EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + username + " subscriber", tags));
         }
 
         // Check to see if the user is a moderator.
         if (tags.containsKey("user-type")) {
             if (tags.get("user-type").length() > 0) {
                 if (!moderators.contains(username)) {
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
+                    EventBus.instance().postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
                     moderators.add(username);
                 }
             } else {
                 if (moderators.contains(username)) {
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                    EventBus.instance().postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
                     moderators.remove(username);
                 }
             }
         }
 
         // Send the message to the scripts.
-        eventBus.postAsync(new IrcChannelMessageEvent(session, username, message, tags));
+        EventBus.instance().postAsync(new IrcChannelMessageEvent(session, username, message, tags));
 
         // Print the tags for debugging.
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + tags);
@@ -459,7 +455,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         }
 
         // Post the event.
-        eventBus.postAsync(new IrcClearchatEvent(session, username, reason, duration));
+        EventBus.instance().postAsync(new IrcClearchatEvent(session, username, reason, duration));
     }
 
     /**
@@ -471,7 +467,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      */
     private void onWhisper(String message, String username, Map<String, String> tags) {
         // Post the event.
-        eventBus.postAsync(new IrcPrivateMessageEvent(session, username, message, tags));
+        EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, username, message, tags));
         // Show the message in the console.
         com.gmt2001.Console.out.println("[WHISPER] " + username + ": " + message);
     }
@@ -485,7 +481,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      */
     private void onJoin(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
-        eventBus.postAsync(new IrcChannelJoinEvent(session, username));
+        EventBus.instance().postAsync(new IrcChannelJoinEvent(session, username));
         // Show the message in debug mode.
         com.gmt2001.Console.debug.println("User Joined Channel [" + username + " -> " + channelName + "]");
     }
@@ -499,7 +495,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      */
     private void onPart(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
-        eventBus.postAsync(new IrcChannelLeaveEvent(session, username));
+        EventBus.instance().postAsync(new IrcChannelLeaveEvent(session, username));
         // Show the message in debug mode.
         com.gmt2001.Console.debug.println("User Left Channel [" + username + " -> " + channelName + "]");
     }
@@ -553,7 +549,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 PhantomBot.exitError();
                 break;
             default:
-                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
+                EventBus.instance().postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
                 com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
                 break;
         }
@@ -569,13 +565,12 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     private void onUserNotice(String message, String unusedUsername, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             if (tags.get("msg-id").equalsIgnoreCase("resub")) {
-                scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
+                EventBus.instance().postAsync(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
             } else if (tags.get("msg-id").equalsIgnoreCase("sub")) {
                 if (tags.get("msg-param-sub-plan").equalsIgnoreCase("Prime")) {
-                    scriptEventManager.onEvent(new TwitchPrimeSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months")));
-                } else {
-                    scriptEventManager.onEvent(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months"), message));
+                    EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months")));
                 }
+                EventBus.instance().postAsync(new TwitchSubscriberEvent(tags.get("login"), tags.get("msg-param-sub-plan"), tags.get("msg-param-cumulative-months"), message));
             } else if (tags.get("msg-id").equalsIgnoreCase("subgift")) {
                 this.submit(tags);
             } else if (tags.get("msg-id").equalsIgnoreCase("anonsubgift")) {
@@ -590,19 +585,19 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
                 // Send event for this.
                 if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                    scriptEventManager.onEvent(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                    EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                    EventBus.instance().postAsync(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
                 }
             } else if (tags.get("msg-id").equalsIgnoreCase("anonsubmysterygift")) {
                 // Not in use by Twitch as of right now, 2019-01-03, leaving code there though.
                 // See: https://discuss.dev.twitch.tv/t/anonymous-sub-gifting-to-launch-11-15-launch-details/18683
                 bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count")), true));
 
-                scriptEventManager.onEvent(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+                EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
             } else {
                 if (tags.get("msg-id").equalsIgnoreCase("raid")) {
-                    scriptEventManager.onEvent(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));
+                    EventBus.instance().postAsync(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));
                 }
             }
         }
@@ -621,13 +616,13 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         if (tags.containsKey("user-type")) {
             if (tags.get("user-type").length() > 0) {
                 if (!moderators.contains(username)) {
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
+                    EventBus.instance().postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
                     moderators.add(username);
                 }
             } else {
                 if (channelName.equals(username)) {
                     if (!moderators.contains(username)) {
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
+                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(session, username, "O", true));
                         moderators.add(username);
                     }
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
@@ -657,7 +652,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                         // Remove the bot from the moderators list.
                         if (moderators.contains(username)) {
                             moderators.remove(username);
-                            eventBus.postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
+                            EventBus.instance().postAsync(new IrcChannelUserModeEvent(session, username, "O", false));
                         }
                     }
                 }
@@ -677,9 +672,9 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 }
             } else {
                 if (item.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                    scriptEventManager.onEvent(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
+                    EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
                 } else {
-                    scriptEventManager.onEvent(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
+                    EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months")));
                 }
             }
         } catch (Exception ex) {

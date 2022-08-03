@@ -14,20 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.subscriber;
-
-import tv.phantombot.event.twitch.TwitchEvent;
 
 /**
  *
  * @author Branden
  */
-public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
-    private final String recipient;
-    private final String months;
-    private final String plan;
-    private final String giftMonths;
+public class TwitchAnonymousSubscriptionGiftEvent extends TwitchSubscriptionGiftEvent {
 
     /**
      * The class constructor.
@@ -36,10 +29,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
      * @param plan
      */
     public TwitchAnonymousSubscriptionGiftEvent(String recipient, String plan) {
-        this.recipient = recipient;
-        this.months = null;
-        this.plan = plan;
-        this.giftMonths = null;
+        super("anonymous", recipient, null, plan, null);
     }
 
     /**
@@ -50,10 +40,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
      * @param plan
      */
     public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan) {
-        this.recipient = recipient;
-        this.months = months;
-        this.plan = plan;
-        this.giftMonths = null;
+        super("anonymous", recipient, months, plan, null);
     }
 
     /**
@@ -62,57 +49,9 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchEvent {
      * @param recipient
      * @param months
      * @param plan
-     * @param giftMonths
+     * @param giftedMonths
      */
-    public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan, String giftMonths) {
-        this.recipient = recipient;
-        this.months = months;
-        this.plan = plan;
-        this.giftMonths = giftMonths;
-    }
-
-    /**
-     * Method that returns the gifted the subscription.
-     *
-     * @return username
-     */
-    public String getUsername() {
-        return "anonymous";
-    }
-
-    /**
-     * Method that returns the recipient.
-     *
-     * @return recipient
-     */
-    public String getRecipient() {
-        return this.recipient;
-    }
-
-    /**
-     * Method that returns the months, can be 0.
-     *
-     * @return months
-     */
-    public String getMonths() {
-        return (this.months == null) ? "1" : this.months;
-    }
-
-    /**
-     * Method that returns the subcription plan. (1000, 2000, 3000 and Prime)
-     *
-     * @return plan
-     */
-    public String getPlan() {
-        return this.plan;
-    }
-    
-    /**
-     * Method that returns the months, can be 0.
-     *
-     * @return months
-     */
-    public String getGiftMonths() {
-        return (this.giftMonths == null) ? "1" : this.giftMonths;
+    public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan, String giftedMonths) {
+        super("anonymous", recipient, months, plan, giftedMonths);
     }
 }

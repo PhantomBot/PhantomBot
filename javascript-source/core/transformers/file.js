@@ -21,7 +21,7 @@
     /*
      * @transformer readfile
      * @formula (readfile filename:str) first line of the specified file
-     * @labels twitch discord command file
+     * @labels twitch discord noevent file
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
      * @example Caster: !addcom !lastfollow Last follower was (readfile ./followHandler/latestFollower.txt)
      * User: !lastfollow
@@ -48,7 +48,7 @@
     /*
      * @transformer readfilerand
      * @formula (readfilerand filename:str) random line of the specified file
-     * @labels twitch discord command file
+     * @labels twitch discord noevent file
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
      */
     function readfilerand(args) {
@@ -69,7 +69,7 @@
     /*
      * @transformer writefile
      * @formula (writefile filename:str, append:bool, text:str) writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
-     * @labels twitch discord command file
+     * @labels twitch discord noevent file
      * @notes files will be placed in the addons folder, or a subfolder therein specified by the filename parameter
      * @example Caster: !addcom !settxt (writefile test.txt, true, (echo))
      */
@@ -86,9 +86,9 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('readfile', ['twitch', 'discord', 'command', 'file'], readfile),
-        new $.transformers.transformer('readfilerand', ['twitch', 'discord', 'command', 'file'], readfilerand),
-        new $.transformers.transformer('writefile', ['twitch', 'discord', 'command', 'file'], writefile)
+        new $.transformers.transformer('readfile', ['twitch', 'discord', 'noevent', 'file'], readfile),
+        new $.transformers.transformer('readfilerand', ['twitch', 'discord', 'noevent', 'file'], readfilerand),
+        new $.transformers.transformer('writefile', ['twitch', 'discord', 'noevent', 'file'], writefile)
     ];
 
     $.transformers.addTransformers(transformers);

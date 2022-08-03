@@ -24,7 +24,7 @@
      * @transformer command
      * @formula (command name:str) execute command with given name and pass no args
      * @formula (command name:str args:str) execute command with given name and pass args
-     * @labels twitch command commands
+     * @labels twitch commandevent commands
      * @cancels
      */
     function command(args, event) {
@@ -45,7 +45,7 @@
      * @transformer commandslist
      * @formula (commandslist) lists custom commands (paginated)
      * @formula (commandslist prefix:str) lists custom commands (paginated) with a prefix in the output
-     * @labels twitch command commands
+     * @labels twitch commandevent commands
      * @cancels
      */
     function commandslist(args, event) {
@@ -67,7 +67,7 @@
     /*
      * @transformer count
      * @formula (count) increases the count of how often this command has been called and output new count
-     * @labels twitch command commands
+     * @labels twitch commandevent commands
      * @example Caster:  !addcom !spam Chat has been spammed (count) times
      * User: !spam
      * Bot: Chat has been spammed 5050 times.
@@ -82,7 +82,7 @@
     /*
      * @formula help
      * @formula (help message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
-     * @labels twitch command commands
+     * @labels twitch discord commandevent commands
      * @cancels sometimes
      */
     function help(args, event) {
@@ -97,10 +97,10 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('command', ['twitch', 'command', 'commands'], command),
-        new $.transformers.transformer('commandslist', ['twitch', 'command', 'commands'], commandslist),
-        new $.transformers.transformer('count', ['twitch', 'command', 'commands'], count),
-        new $.transformers.transformer('help', ['twitch', 'command', 'commands'], help)
+        new $.transformers.transformer('command', ['twitch', 'commandevent', 'commands'], command),
+        new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
+        new $.transformers.transformer('count', ['twitch', 'commandevent', 'commands'], count),
+        new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help)
     ];
 
     $.transformers.addTransformers(transformers);
