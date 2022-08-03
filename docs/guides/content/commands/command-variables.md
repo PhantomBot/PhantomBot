@@ -26,7 +26,7 @@ Defined in script: _./javascript-source/core/transformers/meta.js_
 
 - `(adminonlyedit)` - returns blank
 
-**Labels:** twitch command meta
+**Labels:** twitch commandevent meta
 
 
 _NOTE: metatag that prevents anyone but the broadcaster or admins from editing the command_
@@ -51,7 +51,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(age)` - outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -81,7 +81,7 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 - `(alert fileName:str, durationSeconds:int, volume:float, css:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
 - `(alert fileName:str, durationSeconds:int, volume:float, css:text, message:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
 
-**Labels:** twitch discord command alerts
+**Labels:** twitch discord noevent alerts
 
 
 _NOTE: if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume_
@@ -106,7 +106,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(@sender)` - '@<Sender's Name>, '
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -130,7 +130,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(baresender)` - the login name of the message's sender
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -148,7 +148,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 - `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
 - `(n:int|default:str)` - the n-th argument, if given, else a provided default value
 
-**Labels:** twitch discord command basic
+**Labels:** twitch discord commandevent basic
 
 
 **Example:**
@@ -173,7 +173,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(channelname)` - the display name of the Twitch channel
 - `(channelname channel:str)` - the display name of the provided Twitch channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -189,7 +189,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(code length:int)` - random code of the given length composed of a-zA-Z0-9
 
-**Labels:** twitch discord command misc
+**Labels:** twitch discord noevent misc
 
 
 **Example:**
@@ -214,7 +214,7 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 - `(command name:str)` - execute command with given name and pass no args
 - `(command name:str args:str)` - execute command with given name and pass args
 
-**Labels:** twitch command commands
+**Labels:** twitch commandevent commands
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -231,7 +231,7 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 - `(commandslist)` - lists custom commands (paginated)
 - `(commandslist prefix:str)` - lists custom commands (paginated) with a prefix in the output
 
-**Labels:** twitch command commands
+**Labels:** twitch commandevent commands
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -247,7 +247,7 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 
 - `(count)` - increases the count of how often this command has been called and output new count
 
-**Labels:** twitch command commands
+**Labels:** twitch commandevent commands
 
 
 **Example:**
@@ -271,7 +271,7 @@ Defined in script: _./javascript-source/core/transformers/time.js_
 
 - `(countdown datetime:str)` - shows the time remaining until the given datetime
 
-**Labels:** twitch discord command time
+**Labels:** twitch discord noevent time
 
 
 _NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
@@ -298,7 +298,7 @@ Defined in script: _./javascript-source/core/transformers/time.js_
 
 - `(countup datetime:str)` - shows the time elapsed since the given datetime
 
-**Labels:** twitch discord command time
+**Labels:** twitch discord noevent time
 
 
 _NOTE: for information about accepted datetime formats, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse_
@@ -325,7 +325,7 @@ Defined in script: _./javascript-source/core/transformers/time.js_
 
 - `(currenttime timezone:str, format:str)` - shows the current date/time in given timezone, using the provided output format
 
-**Labels:** twitch discord command time
+**Labels:** twitch discord noevent time
 
 
 _NOTE: for information about crafting a format string, see https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/SimpleDateFormat.html_
@@ -346,7 +346,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 - `(customapi url:str)` - http GET url and output returned text (escaped by default)
 
-**Labels:** twitch discord command customapi
+**Labels:** twitch discord commandevent customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
@@ -377,7 +377,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 - `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs (escaped by default)
 
-**Labels:** twitch discord command customapi
+**Labels:** twitch discord commandevent customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
@@ -410,7 +410,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(downtime)` - how long the channel has been offline
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -426,7 +426,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 
 - `(echo)` - all arguments passed to the command
 
-**Labels:** twitch discord command basic
+**Labels:** twitch discord commandevent basic
 
 
 **Example:**
@@ -450,7 +450,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(encodeurl url:str)` - url encode the given url
 
-**Labels:** twitch discord command misc
+**Labels:** twitch discord noevent misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -466,7 +466,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(encodeurlparam paramter:str)` - like encodeurl but also ecapes "&", "=", "+", "/", etc.
 
-**Labels:** twitch discord command misc
+**Labels:** twitch discord noevent misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -484,7 +484,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(followage user:str)` - sends a message denoting how long the provided user is following this channel
 - `(followage user:str channel:str)` - sends a message denoting how long the provided user is following the provided channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 
 **Example:**
@@ -510,7 +510,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(followdate user:str)` - the date the provided user last followed this channel
 - `(followdate user:str channel:str)` - the date the provided user last followed the provided channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -527,7 +527,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(follows)` - number of follower of this channel
 - `(follows channel:str)` - number of follower of the specified channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -552,7 +552,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(game)` - currently played game
 - `(game channel:str)` - currently played game of the specified channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -576,7 +576,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(gameinfo)` - similar to (game) but include game time if online
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -601,7 +601,7 @@ Defined in script: _./javascript-source/core/transformers/meta.js_
 - `(gameonly name:str)` - cancels the command if the current game does not exactly match the one provided; multiple games can be provided, separated by |
 - `(gameonly !! name:str)` - cancels the command if the current game exactly matches the one provided; multiple games can be provided, separated by |
 
-**Labels:** twitch command meta
+**Labels:** twitch noevent meta
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -617,7 +617,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(gamesplayed)` - list games played in current stream, and the approximate uptime when each game was started; if offline, cancels the command
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 
 **Example:**
@@ -641,7 +641,7 @@ Defined in script: _./javascript-source/core/transformers/time.js_
 
 - `(gettimevar name:str)` - retrieves the specified timevar, set using !settimevar on Twitch, for use in a (countdown) or (countup) transformer
 
-**Labels:** twitch discord command time
+**Labels:** twitch discord noevent time
 
 
 **Example:**
@@ -667,7 +667,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(hours)` - number of hours sender has spent in chat
 - `(hours user:str)` - number of hours the provided user has spent in chat
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -684,7 +684,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(hoursround)` - number of hours sender has spent in chat, with the value rounded to the nearest tenth of an hour
 - `(hoursround user:str)` - number of hours the provided user has spent in chat, with the value rounded to the nearest tenth of an hour
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -700,7 +700,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(keywordcount keyword:str)` - increase the keyword count for the given keyword and return new count
 
-**Labels:** twitch keyword misc
+**Labels:** twitch keywordevent misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -716,7 +716,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(lasttip)` - last tip message
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -732,7 +732,7 @@ Defined in script: _./javascript-source/core/transformers/meta.js_
 
 - `(offlineonly)` - if the channel is not offline, cancels the command
 
-**Labels:** twitch command meta
+**Labels:** twitch commandevent meta
 
 
 **Example:**
@@ -754,7 +754,7 @@ Defined in script: _./javascript-source/core/transformers/meta.js_
 
 - `(onlineonly)` - if the channel is not online, cancels the command
 
-**Labels:** twitch command meta
+**Labels:** twitch commandevent meta
 
 
 **Example:**
@@ -777,7 +777,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 - `(pay)` - outputs the number of points the sender has gained by using this command
 - `(pay command:str)` - outputs the number of points the sender would gain if they use the specified command
 
-**Labels:** twitch command points
+**Labels:** twitch commandevent points
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -794,7 +794,7 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 - `(playsound hook:str)` - plays a sound hook on the alerts overlay
 - `(playsound hook:str|volume:float)` - plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
 
-**Labels:** twitch discord command alerts
+**Labels:** twitch discord noevent alerts
 
 
 **Example:**
@@ -821,7 +821,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(playtime)` - how long this channel has streamed current game; if offline, sends an error to chat and cancels the command
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 
 **Example:**
@@ -845,7 +845,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 
 - `(pointname)` - the plural name of the loyalty points
 
-**Labels:** twitch command points
+**Labels:** twitch noevent points
 
 
 **Example:**
@@ -870,7 +870,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 - `(points)` - points of the sender
 - `(points user:str)` - points of the given user
 
-**Labels:** twitch command points
+**Labels:** twitch commandevent points
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -886,7 +886,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(pointtouser)` - user + ' -> '; uses sender's display name if no other is provided
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -913,7 +913,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 - `(price)` - the number of points the sender paid to use this command
 - `(price command:str)` - the number of points the sender would pay if they use the specified command
 
-**Labels:** twitch command points
+**Labels:** twitch commandevent points
 
 
 **Example:**
@@ -937,7 +937,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 
 - `(random)` - random user in chat, or the bot's name if chat is empty
 
-**Labels:** twitch command basic
+**Labels:** twitch noevent basic
 
 
 **Example:**
@@ -962,7 +962,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 - `(#)` - a random integer from 1 to 100, inclusive
 - `(# a:int, b:int)` - a random integer from a to b, inclusive
 
-**Labels:** twitch discord command basic
+**Labels:** twitch discord noevent basic
 
 
 **Example:**
@@ -986,7 +986,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 
 - `(randomrank)` - random user in chat, or the bot's name if chat is empty; the chosen user's rank is prefixed
 
-**Labels:** twitch command basic
+**Labels:** twitch noevent basic
 
 
 **Example:**
@@ -1010,7 +1010,7 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 - `(readfile filename:str)` - first line of the specified file
 
-**Labels:** twitch discord command file
+**Labels:** twitch discord noevent file
 
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
@@ -1037,7 +1037,7 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 - `(readfilerand filename:str)` - random line of the specified file
 
-**Labels:** twitch discord command file
+**Labels:** twitch discord noevent file
 
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
@@ -1056,7 +1056,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 
 - `(repeat n:int, message:str)` - repeat the message n times (copy/paste)
 
-**Labels:** twitch discord command basic
+**Labels:** twitch discord noevent basic
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1072,7 +1072,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(sender)` - the sender's display name
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -1096,7 +1096,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(senderrank)` - the sender's display name, prefixed with their rank
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -1120,7 +1120,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(senderrankonly)` - the sender's rank
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1137,7 +1137,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(status)` - the current stream title
 - `(status channel:str)` - the current stream title of the specified channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -1161,7 +1161,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(subscribers)` - number of subscribers of this channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 _NOTE: only works if the apioauth in botlogin.txt belongs to the broadcaster_
@@ -1188,7 +1188,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_member_followers team:str, membername:str)` - number of followers of user membername in the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1207,7 +1207,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_member_game team:str, membername:str)` - game user membername in the provided team currently plays
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1226,7 +1226,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_member_url team:str, membername:str)` - url of user membername in the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1245,7 +1245,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_members team:str)` - number of members in the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1264,7 +1264,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_name team:str)` - name of the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1283,7 +1283,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_random_member team:str)` - random member of the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1302,7 +1302,7 @@ Defined in script: _./javascript-source/core/transformers/teams.js_
 
 - `(team_url team:str)` - url to the provided team
 
-**Labels:** twitch command teams
+**Labels:** twitch noevent teams
 
 
 _NOTE: the team parameter should be the url slug for the team_
@@ -1321,7 +1321,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(titleinfo)` - title + uptime if online
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -1345,7 +1345,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(token)` - replaced with the secret token that was set by !tokencom or the panel
 
-**Labels:** twitch command misc
+**Labels:** twitch commandevent misc
 
 
 **Example:**
@@ -1371,7 +1371,7 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 - `(touser)` - display name of the user provided as an argument by the sender; sender's display name if no other is provided
 
-**Labels:** twitch command user
+**Labels:** twitch commandevent user
 
 
 **Example:**
@@ -1397,7 +1397,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 - `(unescape str:str)` - unescape \\ \( \) to \ ( ) respectively
 
-**Labels:** twitch discord command misc
+**Labels:** twitch discord noevent misc
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1414,7 +1414,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(uptime)` - how long the channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
 - `(uptime channel:str)` - how long the specified channel has been streaming this session; if offline, an error is sent to chat and the command is canceled
 
-**Labels:** twitch command channel stream
+**Labels:** twitch commandevent channel stream
 
 
 **Example:**
@@ -1438,7 +1438,7 @@ Defined in script: _./javascript-source/core/transformers/meta.js_
 
 - `(useronly name:str)` - only allows the given user to use the command; multiple users separated by spaces is allowed; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
 
-**Labels:** twitch command meta
+**Labels:** twitch commandevent meta
 
 
 _NOTE: use @moderators as one of the user names to allow all moderators and admins_
@@ -1460,7 +1460,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(viewers)` - number of current viewers
 - `(viewers channel:str)` - number of current viewers for the specified channel
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 
 **Example:**
@@ -1484,7 +1484,7 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 
 - `(views)` - number of total view count for the stream
 
-**Labels:** twitch command channel stream
+**Labels:** twitch noevent channel stream
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -1500,7 +1500,7 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 - `(writefile filename:str, append:bool, text:str)` - writes the specified text to the provided file; if append is 'true', data is appended to the end of the file, otherwise the file is overwritten
 
-**Labels:** twitch discord command file
+**Labels:** twitch discord noevent file
 
 
 _NOTE: files will be placed in the addons folder, or a subfolder therein specified by the filename parameter_
@@ -1517,6 +1517,225 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 ---
 
+## Local Command Tags
+
+_These command tags are only available in the scripts which defined them_
+
+_Some scripts may also restrict the use of global command tags_
+
+### amount
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(amount)` - The number of subs given by a mass-giftsub event
+
+
+**Example:**
+```text
+Caster: !massgiftsubmessage 1000 (name) just gave away (amount) subs! Thank you!
+Twitch: User has just gifted 20 subs at Tier 1 to the community!
+Bot: User just gave away 20 subs! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### customemote
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(customemote)` - '<The Emote, Repeated Months Times (Max 12)>'
+
+
+**Example:**
+```text
+Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you! (customemote)
+Caster: !subemote 1000 BloodTrail
+Twitch: User has just subscriber at Tier 1! They have been subscribed for 3 months!
+Bot: User just subscribed! They have been subscribed for 3 months! Thank you! BloodTrail BloodTrail BloodTrail
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### giftmonths
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(giftmonths)` - '<Number of Months Gifted>'
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (name) just gifted (giftmonths) months of (plan) to (recipient)! Thank you!
+Twitch: User has just gifted a 6 month sub to OtherUser at Tier 1!
+Bot: User just gifted 6 months of Tier 1 to OtherUser! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### giftreward
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(giftreward)` - '<Points Reward>'
+
+**Custom Arguments:**
+
+- `g (giftreward:int)` - The number of points awarded to the gifter for gifting a sub to someone else
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! (name) gets (giftreward) points! Thank you!
+```
+
+**Example:**
+```text
+Caster: !giftsubreward 1000 25
+Twitch: User has just gifted a sub to OtherUser at Tier 1!
+Bot: OtherUser just received a sub from User! User gets 25 points! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### months
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(months)` - '<Total Months Subscribed>'
+
+
+**Example:**
+```text
+Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you!
+Twitch: User has just subscriber at Tier 1! They have been subscribed for 12 months!
+Bot: User just subscribed! They have been subscribed for 12 months! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### name
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(name)` - For subs/resubs, the subscriber's name. For gift subs, the name of the person gifting the sub
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at Tier 1! Thank you!
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Tier 1! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### plan
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(plan)` - '<Subscription Tier>'
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at (plan)! Thank you!
+Caster: !namesubplan 1000 Friendo Tier
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Friendo Tier! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### recipient
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(recipient)` - The name of the recipient of a gift sub
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! Thank you!
+Twitch: User has just gifted a sub to OtherUser at Tier 1!
+Bot: OtherUser just received a sub from User! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### reward
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(reward)` - '<Points Reward>'
+
+**Custom Arguments:**
+
+- `g (reward:int)` - The number of points awarded for the sub
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at Tier 1! They get (reward) points! Thank you!
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Tier 1! They get 100 points! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+---
+
 ## Transformer Usage
 
 _Indicates whether the hooks in each script use transformers that are global, local, or both_
@@ -1530,3 +1749,49 @@ Defined in script: _./javascript-source/commands/customCommands.js_
 Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch command
+
+&nbsp;
+
+### subscribeHandler.js
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+#### Hook: twitchSubscriber
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+#### Hook: twitchReSubscriber
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+#### Hook: twitchSubscriptionGift
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+#### Hook: twitchMassSubscriptionGifted
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+#### Hook: twitchAnonymousSubscriptionGift
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+#### Hook: twitchMassAnonymousSubscriptionGifted
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** global twitch noevent
