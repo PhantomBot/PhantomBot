@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
 $(function() {
     // Get all module toggles.
@@ -95,7 +97,7 @@ $(function() {
                     default:
                         // Update settings.
                         socket.updateDBValues('alerts_follow_update_settings', {
-                            tables: ['settings', 'settings', 'settings', 'settings',],
+                            tables: ['settings', 'settings', 'settings', 'settings'],
                             keys: ['followToggle', 'followReward', 'followMessage', 'followDelay'],
                             values: [followToggle, followReward.val(), followMessage.val(), followDelay.val()]
                         }, function() {
@@ -113,14 +115,20 @@ $(function() {
 
     // Subscribe handler settings.
     $('#subscribeHandlerSettings').on('click', function() {
+        let tables = [];
+        let keys = [
+            'subscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'giftAnonSubMessage', 'massGiftSubMessage', 'massAnonGiftSubMessage',
+            'subscriberWelcomeToggle', 'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'giftAnonSubWelcomeToggle', 'massGiftSubWelcomeToggle',
+            'massAnonGiftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'massGiftSubReward', 'subEmote', 'subPlans'
+        ];
+        for (let i = 0; i < keys.length; i++) {
+            tables.push('subscribeHandler');
+        }
         socket.getDBValues('alerts_subscribe_get_settings', {
-            tables: ['subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
-            keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
-                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000', 'subPlanPrime',
-                    'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle']
+            tables: tables,
+            keys: keys
         }, true, function(e) {
+            helpers.parseJSONValues(e, keys);
             helpers.getModal('subscribe-alert', 'Subscribe Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
@@ -130,144 +138,239 @@ $(function() {
                 'id': 'accordion'
             })
             // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Subscription Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-1', 'New Subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for normal subscriptions.
-                .append(helpers.getDropdownGroup('sub-toggle', 'Enable Subscription Alerts', (e.subscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone subscribes. This also toggles the reward.'))
+                .append(helpers.getDropdownGroup('sub-toggle', 'Enable New Subscription Alerts', (e.subscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If a message should be said in the channel when someone new subscribes. This also toggles the reward.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('sub-msg', 'text', 'Subscription Message', '', e.subscribeMessage,
-                    'Message said when someone subscribes to the channel. Tags: (name), (alert), (playsound), (plan), and (reward)', false))
+                .append(helpers.getTextAreaGroup('sub-msg-1000', 'text', 'New Subscription Message (Tier 1)', '', e.subscribeMessage['1000'],
+                    'Message said when someone new subscribes to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('sub-msg-2000', 'text', 'New Subscription Message (Tier 2)', '', e.subscribeMessage['2000'],
+                    'Message said when someone new subscribes to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('sub-msg-3000', 'text', 'New Subscription Message (Tier 3)', '', e.subscribeMessage['3000'],
+                    'Message said when someone new subscribes to the channel at Tier 3.', false))
+                .append(helpers.getTextAreaGroup('sub-msg-prime', 'text', 'New Subscription Message (Prime)', '', e.subscribeMessage['Prime'],
+                    'Message said when someone new subscribes to the channel with Prime.', false))
                 // Appen the reward box
-                .append(helpers.getInputGroup('sub-reward', 'number', 'Subscription Reward', '', e.subscribeReward,
-                    'Reward given to the user when they subscribe to the channel or get a gifted subscription, subscribe with Twitch Prime.'))))
-            // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Prime Subscription Settings',  $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for prime subscriptions.
-                .append(helpers.getDropdownGroup('primesub-toggle', 'Enable Prime Subscription Alerts', (e.primeSubscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone subscribes with Twitch Prime. This also toggles the reward.'))
-                // Append message box for the message
-                .append(helpers.getTextAreaGroup('primesub-msg', 'text', 'Prime Subscription Message', '', e.primeSubscribeMessage,
-                    'Message said when someone subscribes to the channel with Twitch Prime. Tags: (name), (alert), (playsound), (plan), and (reward)', false))))
+                .append(helpers.getInputGroup('sub-reward-1000', 'number', 'New Subscription Reward (Tier 1)', '', e.subscribeReward['1000'],
+                    'Points reward given when someone new subscribes to the channel at Tier 1.'))
+                .append(helpers.getInputGroup('sub-reward-2000', 'number', 'New Subscription Reward (Tier 2)', '', e.subscribeReward['2000'],
+                    'Points reward given when someone new subscribes to the channel at Tier 2.'))
+                .append(helpers.getInputGroup('sub-reward-3000', 'number', 'New Subscription Reward (Tier 3)', '', e.subscribeReward['3000'],
+                    'Points reward given when someone new subscribes to the channel at Tier 3.'))
+                .append(helpers.getInputGroup('sub-reward-prime', 'number', 'New Subscription Reward (Prime)', '', e.subscribeReward['Prime'],
+                    'Points reward given when someone new subscribes to the channel with Prime.'))
+            ))
             // Append third collapsible accordion.
             .append(helpers.getCollapsibleAccordion('main-3', 'Re-subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for resubscriptions.
                 .append(helpers.getDropdownGroup('resub-toggle', 'Enable Re-subscription Alerts', (e.reSubscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone resubscribes. This also toggles the reward.'))
+                    'If a message should be said in the channel when someone re-subscribes. This also toggles the reward.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('resub-msg', 'text', 'Re-subscription Message', '', e.reSubscribeMessage,
-                    'Message said when someone resubscribes to the channel. Tags: (name), (alert), (playsound), (plan), (months), (customemote), and (reward)', false))
+                .append(helpers.getTextAreaGroup('resub-msg-1000', 'text', 'Re-subscription Message (Tier 1)', '', e.reSubscribeMessage['1000'],
+                    'Message said when someone re-subscribes to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('resub-msg-2000', 'text', 'Re-subscription Message (Tier 2)', '', e.reSubscribeMessage['2000'],
+                    'Message said when someone re-subscribes to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('resub-msg-3000', 'text', 'Re-subscription Message (Tier 3)', '', e.reSubscribeMessage['3000'],
+                    'Message said when someone re-subscribes to the channel at Tier 3.', false))
+                .append(helpers.getTextAreaGroup('resub-msg-prime', 'text', 'Re-subscription Message (Prime)', '', e.reSubscribeMessage['Prime'],
+                    'Message said when someone re-subscribes to the channel with Prime.', false))
                 // Appen the reward box
-                .append(helpers.getInputGroup('resub-reward', 'number', 'Re-subscription Reward', '', e.reSubscribeReward,
-                    'Reward given to the user when they resubscribe to the channel.'))
-                // Appen the emotes box
-                .append(helpers.getInputGroup('resub-emote', 'text', 'Re-subscription Emote', '', e.resubEmote,
-                    'Emote that will replace (customemote) for the number of months the user has subscribed for.'))))
+                .append(helpers.getInputGroup('resub-reward-1000', 'number', 'Re-subscription Reward (Tier 1)', '', e.reSubscribeReward['1000'],
+                    'Points reward given when someone re-subscribes to the channel at Tier 1.'))
+                .append(helpers.getInputGroup('resub-reward-2000', 'number', 'Re-subscription Reward (Tier 2)', '', e.reSubscribeReward['2000'],
+                    'Points reward given when someone re-subscribes to the channel at Tier 2.'))
+                .append(helpers.getInputGroup('resub-reward-3000', 'number', 'Re-subscription Reward (Tier 3)', '', e.reSubscribeReward['3000'],
+                    'Points reward given when someone re-subscribes to the channel at Tier 3.'))
+                .append(helpers.getInputGroup('resub-reward-prime', 'number', 'Re-subscription Reward (Prime)', '', e.reSubscribeReward['Prime'],
+                    'Points reward given when someone re-subscribes to the channel with Prime.'))
+            ))
             // Append forth collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-4', 'Gifted Subscription Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-4', 'Gift Subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for gifted subscriptions.
-                .append(helpers.getDropdownGroup('gifsub-toggle', 'Enable Gift Subscription Alerts', (e.giftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                .append(helpers.getDropdownGroup('giftsub-toggle', 'Enable Gift Subscription Alerts', (e.giftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                     'If a message should be said in the channel when someone gifts a subscription. This also toggles the reward.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('gifsub-msg', 'text', 'Gift Subscription Message', '', e.giftSubMessage,
-                    'Message said when someone gifts a subscription to the channel. Tags: (name), (alert), (playsound), (recipient), (plan), (months), and (reward)', false))
+                .append(helpers.getTextAreaGroup('giftsub-msg-1000', 'text', 'Gift Subscription Message (Tier 1)', '', e.giftSubMessage['1000'],
+                    'Message said when someone gifts a subscription to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('giftsub-msg-2000', 'text', 'Gift Subscription Message (Tier 2)', '', e.giftSubMessage['2000'],
+                    'Message said when someone gifts a subscription to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('giftsub-msg-3000', 'text', 'Gift Subscription Message (Tier 3)', '', e.giftSubMessage['3000'],
+                    'Message said when someone gifts a subscription to the channel at Tier 3.', false))
                 // Appen the reward box
-                .append(helpers.getInputGroup('gifsub-reward', 'number', 'Gift Subscription Reward', '', e.giftSubReward,
-                    'Reward given to the user who bought the subscription.'))))
-            // Append forth collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-5', 'Mystery Gift Subscription Settings', $('<form/>', {
+                .append(helpers.getInputGroup('giftsub-reward-1000', 'number', 'Gift Subscription Reward (Tier 1)', '', e.giftSubReward['1000'],
+                    'Points reward given to someone who gifts a subscription to the channel at Tier 1.'))
+                .append(helpers.getInputGroup('giftsub-reward-2000', 'number', 'Gift Subscription Reward (Tier 2)', '', e.giftSubReward['2000'],
+                    'Points reward given to someone who gifts a subscription to the channel at Tier 2.'))
+                .append(helpers.getInputGroup('giftsub-reward-3000', 'number', 'Gift Subscription Reward (Tier 3)', '', e.giftSubReward['3000'],
+                    'Points reward given to someone who gifts a subscription to the channel at Tier 3.'))
+            ))
+            // Append fith collapsible accordion.
+            .append(helpers.getCollapsibleAccordion('main-5', 'Anonymous Gift Subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for gifted subscriptions.
-                .append(helpers.getDropdownGroup('mass-gifsub-toggle', 'Enable Mystery Gift Subscription Alerts', (e.massGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone gifts multiple subscriptions. This also toggles the reward.'))
+                .append(helpers.getDropdownGroup('anon-giftsub-toggle', 'Enable Anonymous Gift Subscription Alerts', (e.giftAnonSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If a message should be said in the channel when someone anonymously gifts a subscription.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('mass-gifsub-msg', 'text', 'Mystery Gift Subscription Message', '', e.massGiftSubMessage,
-                    'Message said when someone gifts multiple subscriptions to the channel. Tags: (name), (alert), (playsound), (amount), and (reward)', false))
-                // Appen the reward box
-                .append(helpers.getInputGroup('mass-gifsub-reward', 'number', 'Mystery Gift Subscription Reward', '', e.massGiftSubReward,
-                    'Reward given to the user who bought the subscription. This is a multiplier. (reward * amount gifted)'))))
+                .append(helpers.getTextAreaGroup('anon-giftsub-msg-1000', 'text', 'Anonymous Gift Subscription Message (Tier 1)', '', e.giftAnonSubMessage['1000'],
+                    'Message said when someone anonymously gifts a subscription to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('anon-giftsub-msg-2000', 'text', 'Anonymous Gift Subscription Message (Tier 2)', '', e.giftAnonSubMessage['2000'],
+                    'Message said when someone anonymously gifts a subscription to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('anon-giftsub-msg-3000', 'text', 'Anonymous Gift Subscription Message (Tier 3)', '', e.giftAnonSubMessage['3000'],
+                    'Message said when someone anonymously gifts a subscription to the channel at Tier 3.', false))
+            ))
             // Append sixth collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-6', 'Anonymous Gift Subscription Settings', $('<form/>', {
+            .append(helpers.getCollapsibleAccordion('main-6', 'Mass/Mystery Gift Subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for gifted subscriptions.
-                .append(helpers.getDropdownGroup('anon-gifsub-toggle', 'Enable Anonymous Gift Subscription Alerts', (e.giftAnonSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone gifts an anonymous subscription. This also toggles the reward.'))
+                .append(helpers.getDropdownGroup('mass-giftsub-toggle', 'Enable Mass/Mystery Gift Subscription Alerts', (e.massGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If a message should be said in the channel when someone mass gifts subscriptions. This also toggles the reward.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('anon-gifsub-msg', 'text', 'Anonymous Gift Subscription Message', '', e.giftAnonSubMessage,
-                    'Message said when someone anonymously gifts a subscription to the channel. Tags: (name), (alert), (playsound), (plan), (amount), and (reward)', false))
+                .append(helpers.getTextAreaGroup('mass-giftsub-msg-1000', 'text', 'Mass/Mystery Gift Subscription Message (Tier 1)', '', e.massGiftSubMessage['1000'],
+                    'Message said when someone mass gifts a subscriptions to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('mass-giftsub-msg-2000', 'text', 'Mass/Mystery Gift Subscription Message (Tier 2)', '', e.massGiftSubMessage['2000'],
+                    'Message said when someone mass gifts a subscriptions to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('mass-giftsub-msg-3000', 'text', 'Mass/Mystery Gift Subscription Message (Tier 3)', '', e.massGiftSubMessage['3000'],
+                    'Message said when someone mass gifts a subscriptions to the channel at Tier 3.', false))
                 // Appen the reward box
-                .append(helpers.getInputGroup('anon-gifsub-reward', 'number', 'Anonymous Gift Subscription Reward', '', e.subscribeReward,
-                    'Reward given to the user who the subscription was gifted to. This is the same as the normal subscriptions reward', true))))
-            // Append sixth collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-7', 'Anonymous Mystery Gift Subscription Settings', $('<form/>', {
+                .append(helpers.getInputGroup('mass-giftsub-reward-1000', 'number', 'Mass/Mystery Gift Subscription Reward (Tier 1)', '', e.massGiftSubReward['1000'],
+                    'Points reward given to someone who mass gifts a subscriptions to the channel at Tier 1 (per subscription gifted).'))
+                .append(helpers.getInputGroup('mass-giftsub-reward-2000', 'number', 'Mass/Mystery Gift Subscription Reward (Tier 2)', '', e.massGiftSubReward['2000'],
+                    'Points reward given to someone who mass gifts a subscriptions to the channel at Tier 2 (per subscription gifted).'))
+                .append(helpers.getInputGroup('mass-giftsub-reward-3000', 'number', 'Mass/Mystery Gift Subscription Reward (Tier 3)', '', e.massGiftSubReward['3000'],
+                    'Points reward given to someone who mass gifts a subscriptions to the channel at Tier 3 (per subscription gifted).'))
+            ))
+            // Append seventh collapsible accordion.
+            .append(helpers.getCollapsibleAccordion('main-7', 'Anonymous Mass/Mystery Gift Subscription Settings', $('<form/>', {
                     'role': 'form'
                 })
                 // Add toggle for gifted subscriptions.
-                .append(helpers.getDropdownGroup('anon-mass-gifsub-toggle', 'Enable Anonymous Mystery Gift Subscription Alerts', (e.massAnonGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when an anonymous user gifts multiple subscriptions. This also toggles the reward.'))
+                .append(helpers.getDropdownGroup('anon-mass-giftsub-toggle', 'Enable Anonymous Mass/Mystery Gift Subscription Alerts', (e.massAnonGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    'If a message should be said in the channel when someone anonymously mass gifts subscriptions.'))
                 // Append message box for the message
-                .append(helpers.getTextAreaGroup('anon-mass-gifsub-msg', 'text', 'Anonymous Gift Mystery Subscription Message', '', e.massAnonGiftSubMessage,
-                    'Message said when someone anonymously mass gifts subscriptions to the channel. Tags: (name), and (amount)', false))))
+                .append(helpers.getTextAreaGroup('anon-mass-giftsub-msg-1000', 'text', 'Anonymous Mass/Mystery Gift Subscription Message (Tier 1)', '', e.massAnonGiftSubMessage['1000'],
+                    'Message said when someone anonymously mass gifts a subscriptions to the channel at Tier 1.', false))
+                .append(helpers.getTextAreaGroup('anon-mass-giftsub-msg-2000', 'text', 'Anonymous Mass/Mystery Gift Subscription Message (Tier 2)', '', e.massAnonGiftSubMessage['2000'],
+                    'Message said when someone anonymously mass gifts a subscriptions to the channel at Tier 2.', false))
+                .append(helpers.getTextAreaGroup('anon-mass-giftsub-msg-3000', 'text', 'Anonymous Mass/Mystery Gift Subscription Message (Tier 3)', '', e.massAnonGiftSubMessage['3000'],
+                    'Message said when someone anonymously mass gifts a subscriptions to the channel at Tier 3.', false))
+            ))
             // Tier settings
             .append(helpers.getCollapsibleAccordion('main-8', 'Tier Settings', $('<form/>', {
                     'role': 'form'
                 })
-                // Append first sub plan name
-                .append(helpers.getInputGroup('sub-1000', 'text', 'Subscription Plan Name 1', '', e.subPlan1000, 'Name given to the tier one plan.'))
-                // Append first sub plan name
-                .append(helpers.getInputGroup('sub-2000', 'text', 'Subscription Plan Name 2', '', e.subPlan2000, 'Name given to the tier two plan.'))
-                // Append first sub plan name
-                .append(helpers.getInputGroup('sub-3000', 'text', 'Subscription Plan Name 3', '', e.subPlan3000, 'Name given to the tier three plan.'))
-                // Append first sub plan name
-                .append(helpers.getInputGroup('sub-prime', 'text', 'Subscription Plan Name Prime', '', e.subPlanPrime, 'Name given to the Prime plan.'))
-                ))),
+                // Append sub plan name
+                .append(helpers.getInputGroup('sub-plan-1000', 'text', 'Subscription Plan Name (Tier 1)', '', e.subPlans['1000'], 'Name given to the Tier 1 plan.'))
+                .append(helpers.getInputGroup('sub-plan-2000', 'text', 'Subscription Plan Name (Tier 2)', '', e.subPlans['2000'], 'Name given to the Tier 2 plan.'))
+                .append(helpers.getInputGroup('sub-plan-3000', 'text', 'Subscription Plan Name (Tier 3)', '', e.subPlans['3000'], 'Name given to the Tier 3 plan.'))
+                .append(helpers.getInputGroup('sub-plan-prime', 'text', 'Subscription Plan Name (Prime)', '', e.subPlans['Prime'], 'Name given to the Prime plan.'))
+                // Append the emotes box
+                .append(helpers.getInputGroup('sub-emote-1000', 'text', 'Subscription Emote (Tier 1)', '', e.subEmote['1000'],
+                    'Emote that will replace (customemote) for Tier 1 subscriptions. For individual subscription messages, the emote is repeated for '
+                    + 'the number of months subscribed. For mass subscription messages, the emote is repeated for the number of subscriptions gifted.'))
+                .append(helpers.getInputGroup('sub-emote-2000', 'text', 'Subscription Emote (Tier 2)', '', e.subEmote['2000'],
+                    'Emote that will replace (customemote) for Tier 2 subscriptions. For individual subscription messages, the emote is repeated for '
+                    + 'the number of months subscribed. For mass subscription messages, the emote is repeated for the number of subscriptions gifted.'))
+                .append(helpers.getInputGroup('sub-emote-3000', 'text', 'Subscription Emote (Tier 3)', '', e.subEmote['3000'],
+                    'Emote that will replace (customemote) for Tier 3 subscriptions. For individual subscription messages, the emote is repeated for '
+                    + 'the number of months subscribed. For mass subscription messages, the emote is repeated for the number of subscriptions gifted.'))
+                .append(helpers.getInputGroup('sub-emote-prime', 'text', 'Subscription Emote (Prime)', '', e.subEmote['Prime'],
+                    'Emote that will replace (customemote) for Prime subscriptions. The emote is repeated for the number of months subscribed.'))
+            ))),
             function() { // Callback once the user clicks save.
                 let subToggle = $('#sub-toggle').find(':selected').text() === 'Yes',
-                    subMsg = $('#sub-msg'),
-                    subReward = $('#sub-reward'),
-                    primeSubToggle = $('#primesub-toggle').find(':selected').text() === 'Yes',
-                    primeSubMsg = $('#primesub-msg'),
+                    subMsg1000 = $('#sub-msg-1000'),
+                    subMsg2000 = $('#sub-msg-2000'),
+                    subMsg3000 = $('#sub-msg-3000'),
+                    subMsgPrime = $('#sub-msg-prime'),
+                    subReward1000 = $('#sub-reward-1000'),
+                    subReward2000 = $('#sub-reward-2000'),
+                    subReward3000 = $('#sub-reward-3000'),
+                    subRewardPrime = $('#sub-reward-prime'),
                     reSubToggle = $('#resub-toggle').find(':selected').text() === 'Yes',
-                    reSubMsg = $('#resub-msg'),
-                    reSubReward = $('#resub-reward'),
-                    reSubEmote = $('#resub-emote'),
-                    gifSubToggle = $('#gifsub-toggle').find(':selected').text() === 'Yes',
-                    gifSubMsg = $('#gifsub-msg'),
-                    anonGifSubToggle = $('#anon-gifsub-toggle').find(':selected').text() === 'Yes',
-                    anonGifSubMsg = $('#anon-gifsub-msg'),
-                    gifSubReward = $('#gifsub-reward'),
-                    massGiftSubToggle = $('#mass-gifsub-toggle').find(':selected').text() === 'Yes',
-                    massGiftSubMsg = $('#mass-gifsub-msg'),
-                    anonMassGiftSubToggle = $('#anon-mass-gifsub-toggle').find(':selected').text() === 'Yes',
-                    anonMassGiftSubMsg = $('#anon-mass-gifsub-msg'),
-                    massGiftSubReward = $('#mass-gifsub-reward'),
-                    tierOne = $('#sub-1000'),
-                    tierTwo = $('#sub-2000'),
-                    tierThree = $('#sub-3000'),
-                    tierPrime = $('#sub-prime');
+                    reSubMsg1000 = $('#resub-msg-1000'),
+                    reSubMsg2000 = $('#resub-msg-2000'),
+                    reSubMsg3000 = $('#resub-msg-3000'),
+                    reSubMsgPrime = $('#resub-msg-prime'),
+                    reSubReward1000 = $('#resub-reward-1000'),
+                    reSubReward2000 = $('#resub-reward-2000'),
+                    reSubReward3000 = $('#resub-reward-3000'),
+                    reSubRewardPrime = $('#resub-reward-prime'),
+                    giftSubToggle = $('#giftsub-toggle').find(':selected').text() === 'Yes',
+                    giftSubMsg1000 = $('#giftsub-msg-1000'),
+                    giftSubMsg2000 = $('#giftsub-msg-2000'),
+                    giftSubMsg3000 = $('#giftsub-msg-3000'),
+                    giftSubReward1000 = $('#giftsub-reward-1000'),
+                    giftSubReward2000 = $('#giftsub-reward-2000'),
+                    giftSubReward3000 = $('#giftsub-reward-3000'),
+                    anonGiftSubToggle = $('#anon-giftsub-toggle').find(':selected').text() === 'Yes',
+                    anonGiftSubMsg1000 = $('#anon-giftsub-msg-1000'),
+                    anonGiftSubMsg2000 = $('#anon-giftsub-msg-2000'),
+                    anonGiftSubMsg3000 = $('#anon-giftsub-msg-3000'),
+                    massGiftSubToggle = $('#mass-giftsub-toggle').find(':selected').text() === 'Yes',
+                    massGiftSubMsg1000 = $('#mass-giftsub-msg-1000'),
+                    massGiftSubMsg2000 = $('#mass-giftsub-msg-2000'),
+                    massGiftSubMsg3000 = $('#mass-giftsub-msg-3000'),
+                    massGiftSubReward1000 = $('#mass-giftsub-reward-1000'),
+                    massGiftSubReward2000 = $('#mass-giftsub-reward-2000'),
+                    massGiftSubReward3000 = $('#mass-giftsub-reward-3000'),
+                    anonMassGiftSubToggle = $('#anon-mass-giftsub-toggle').find(':selected').text() === 'Yes',
+                    anonMassGiftSubMsg1000 = $('#anon-mass-gifsub-msg-1000'),
+                    anonMassGiftSubMsg2000 = $('#anon-mass-gifsub-msg-2000'),
+                    anonMassGiftSubMsg3000 = $('#anon-mass-gifsub-msg-3000'),
+                    tierOne = $('#sub-plan-1000'),
+                    tierTwo = $('#sub-plan-2000'),
+                    tierThree = $('#sub-plan-3000'),
+                    tierPrime = $('#sub-plan-prime'),
+                    subEmote1000 = $('#sub-emote-1000'),
+                    subEmote2000 = $('#sub-emote-2000'),
+                    subEmote3000 = $('#sub-emote-3000'),
+                    subEmotePrime = $('#sub-emote-prime');
 
                 // Make sure the user has someone in each box.
                 switch (false) {
-                    case helpers.handleInputString(subMsg):
-                    case helpers.handleInputNumber(subReward, 0):
-                    case helpers.handleInputString(primeSubMsg):
-                    case helpers.handleInputString(reSubMsg):
-                    case helpers.handleInputNumber(reSubReward, 0):
-                    case helpers.handleInputString(gifSubMsg):
-                    case helpers.handleInputString(anonGifSubMsg):
-                    case helpers.handleInputNumber(gifSubReward, 0):
-                    case helpers.handleInputString(massGiftSubMsg):
-                    case helpers.handleInputString(anonMassGiftSubMsg):
-                    case helpers.handleInputNumber(massGiftSubReward, 0):
+                    case helpers.handleInputString(subMsg1000):
+                    case helpers.handleInputString(subMsg2000):
+                    case helpers.handleInputString(subMsg3000):
+                    case helpers.handleInputString(subMsgPrime):
+                    case helpers.handleInputNumber(subReward1000, 0):
+                    case helpers.handleInputNumber(subReward2000, 0):
+                    case helpers.handleInputNumber(subReward3000, 0):
+                    case helpers.handleInputNumber(subRewardPrime, 0):
+                    case helpers.handleInputString(reSubMsg1000):
+                    case helpers.handleInputString(reSubMsg2000):
+                    case helpers.handleInputString(reSubMsg3000):
+                    case helpers.handleInputString(reSubMsgPrime):
+                    case helpers.handleInputNumber(reSubReward1000, 0):
+                    case helpers.handleInputNumber(reSubReward2000, 0):
+                    case helpers.handleInputNumber(reSubReward3000, 0):
+                    case helpers.handleInputNumber(reSubRewardPrime, 0):
+                    case helpers.handleInputString(giftSubMsg1000):
+                    case helpers.handleInputString(giftSubMsg2000):
+                    case helpers.handleInputString(giftSubMsg3000):
+                    case helpers.handleInputNumber(giftSubReward1000, 0):
+                    case helpers.handleInputNumber(giftSubReward2000, 0):
+                    case helpers.handleInputNumber(giftSubReward3000, 0):
+                    case helpers.handleInputString(anonGiftSubMsg1000):
+                    case helpers.handleInputString(anonGiftSubMsg2000):
+                    case helpers.handleInputString(anonGiftSubMsg3000):
+                    case helpers.handleInputString(massGiftSubMsg1000):
+                    case helpers.handleInputString(massGiftSubMsg2000):
+                    case helpers.handleInputString(massGiftSubMsg3000):
+                    case helpers.handleInputNumber(massGiftSubReward1000, 0):
+                    case helpers.handleInputNumber(massGiftSubReward2000, 0):
+                    case helpers.handleInputNumber(massGiftSubReward3000, 0):
+                    case helpers.handleInputString(anonMassGiftSubMsg1000):
+                    case helpers.handleInputString(anonMassGiftSubMsg2000):
+                    case helpers.handleInputString(anonMassGiftSubMsg3000):
                     case helpers.handleInputString(tierOne):
                     case helpers.handleInputString(tierTwo):
                     case helpers.handleInputString(tierThree):
@@ -275,15 +378,23 @@ $(function() {
                         break;
                     default:
                         socket.updateDBValues('alerts_subscribe_update_settings', {
-                            tables: ['subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler',
-                                    'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler', 'subscribeHandler'],
-                            keys: ['subscribeMessage', 'primeSubscribeMessage', 'reSubscribeMessage', 'giftSubMessage', 'subscriberWelcomeToggle', 'primeSubscriberWelcomeToggle',
-                                    'reSubscriberWelcomeToggle', 'giftSubWelcomeToggle', 'subscribeReward', 'reSubscribeReward', 'giftSubReward', 'resubEmote', 'subPlan1000', 'subPlan2000', 'subPlan3000', 'subPlanPrime',
-                                    'massGiftSubWelcomeToggle', 'massGiftSubMessage', 'massGiftSubReward', 'giftAnonSubMessage', 'massAnonGiftSubMessage', 'giftAnonSubWelcomeToggle', 'massAnonGiftSubWelcomeToggle'],
-                            values: [subMsg.val(), primeSubMsg.val(), reSubMsg.val(), gifSubMsg.val(), subToggle, primeSubToggle, reSubToggle, gifSubToggle, subReward.val(), reSubReward.val(),
-                                gifSubReward.val(), reSubEmote.val(), tierOne.val(), tierTwo.val(), tierThree.val(), tierPrime.val(), massGiftSubToggle, massGiftSubMsg.val(), massGiftSubReward.val(),
-                                anonGifSubMsg.val(), anonMassGiftSubMsg.val(), anonGifSubToggle, anonMassGiftSubToggle]
+                            tables: tables,
+                            keys: keys,
+                            values: [
+                                JSON.stringify({'1000': subMsg1000.val(), '2000': subMsg2000.val(), '3000': subMsg3000.val(), 'Prime': subMsgPrime.val()}),
+                                JSON.stringify({'1000': reSubMsg1000.val(), '2000': reSubMsg2000.val(), '3000': reSubMsg3000.val(), 'Prime': reSubMsgPrime.val()}),
+                                JSON.stringify({'1000': giftSubMsg1000.val(), '2000': giftSubMsg2000.val(), '3000': giftSubMsg3000.val()}),
+                                JSON.stringify({'1000': anonGiftSubMsg1000.val(), '2000': anonGiftSubMsg2000.val(), '3000': anonGiftSubMsg3000.val()}),
+                                JSON.stringify({'1000': massGiftSubMsg1000.val(), '2000': massGiftSubMsg2000.val(), '3000': massGiftSubMsg3000.val()}),
+                                JSON.stringify({'1000': anonMassGiftSubMsg1000.val(), '2000': anonMassGiftSubMsg2000.val(), '3000': anonMassGiftSubMsg3000.val()}),
+                                subToggle, reSubToggle, giftSubToggle, anonGiftSubToggle, massGiftSubToggle, anonMassGiftSubToggle,
+                                JSON.stringify({'1000': parseInt(subReward1000.val()), '2000': parseInt(subReward2000.val()), '3000': parseInt(subReward3000.val()), 'Prime': parseInt(subRewardPrime.val())}),
+                                JSON.stringify({'1000': parseInt(reSubReward1000.val()), '2000': parseInt(reSubReward2000.val()), '3000': parseInt(reSubReward3000.val()), 'Prime': parseInt(reSubRewardPrime.val())}),
+                                JSON.stringify({'1000': parseInt(giftSubReward1000.val()), '2000': parseInt(giftSubReward2000.val()), '3000': parseInt(giftSubReward3000.val())}),
+                                JSON.stringify({'1000': parseInt(massGiftSubReward1000.val()), '2000': parseInt(massGiftSubReward2000.val()), '3000': parseInt(massGiftSubReward3000.val())}),
+                                JSON.stringify({'1000': subEmote1000.val(), '2000': subEmote2000.val(), '3000': subEmote3000.val(), 'Prime': subEmotePrime.val()}),
+                                JSON.stringify({'1000': tierOne.val(), '2000': tierTwo.val(), '3000': tierThree.val(), 'Prime': tierPrime.val()})
+                            ]
                         }, function() {
                             socket.sendCommand('alerts_subscribe_update_settings_cmd', 'subscriberpanelupdate', function() {
                                 // Close the modal.
@@ -547,7 +658,7 @@ $(function() {
                 previouslyDisabled[row.key] = true;
             }
             let newDisabledUsers = welcomeDisabled.map(function (name) {
-                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase()
+                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase();
             });
             for (let newDisabledUser of newDisabledUsers) {
                 if (!newDisabledUser) {
@@ -564,7 +675,7 @@ $(function() {
             for (let disabledUser in previouslyDisabled) {
                 if (previouslyDisabled.hasOwnProperty(disabledUser)) {
                     delTables.push('welcome_disabled_users');
-                    delKeys.push(disabledUser)
+                    delKeys.push(disabledUser);
                 }
             }
 
@@ -584,14 +695,14 @@ $(function() {
                 if (delKeys.length) {
                     socket.removeDBValues('alerts_del_welcome_disabled', {
                         tables: delTables,
-                        keys: delKeys,
+                        keys: delKeys
                     }, cb);
                 } else {
                     cb();
                 }
             };
 
-            add(function () { remove(callback) });
+            add(function () { remove(callback); });
         };
 
         socket.getDBValues('alerts_get_welcome_settings', {
@@ -604,7 +715,7 @@ $(function() {
                     disabledUserOptions.push({
                         'name': row.key,
                         'selected': 'true'
-                    })
+                    });
                 }
                 const modal = helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
                     'role': 'form'
@@ -665,7 +776,7 @@ $(function() {
                         return {
                             id: term,
                             text: term
-                        }
+                        };
                     }
                 });
             });
