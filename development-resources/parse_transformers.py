@@ -169,7 +169,7 @@ def parse_file(fpath, lines):
                         customarg["desc"] = line[desc_pos:].strip()
                     else:
                         customarg["desc"] = ""
-                    transformer["customArgs"].append(formula)
+                    transformer["customArgs"].append(customarg)
                 if line.startswith("@notes"):
                     state = state + 1
                     line = line[7:].strip()

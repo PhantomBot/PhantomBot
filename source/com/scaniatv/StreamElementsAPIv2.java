@@ -82,7 +82,7 @@ public class StreamElementsAPIv2 {
      * @param  jwtToken  jwt key that the user added in the bot login.
      */
     public void SetJWT(String token) {
-        jwtToken = token;
+        jwtToken = token.trim();
     }
 
     /*
@@ -91,7 +91,7 @@ public class StreamElementsAPIv2 {
      * @param  id
      */
     public void SetID(String id) {
-        this.id = id;
+        this.id = id.trim();
     }
 
     /*
