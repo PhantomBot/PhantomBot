@@ -795,6 +795,14 @@
         }
     }
 
+    function usernameResolveIgnoreEx(user) {
+        try {
+            return $.username.resolve(user);
+        } catch (ex) {
+            return user;
+        }
+    }
+
     /** Export functions to API */
     $.user = {
         isKnown: isKnown,
@@ -845,4 +853,5 @@
     $.equalsIgnoreCase = equalsIgnoreCase;
     $.javaString = javaString;
     $.jsString = jsString;
+    $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();

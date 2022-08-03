@@ -42,6 +42,15 @@
         timeLevelWarning = $.getIniDbBoolean('timeSettings', 'timeLevelWarning');
     }
 
+    function getZoneId(zone) {
+        try {
+            return Packages.java.time.ZoneId.of(zone);
+        } catch (ex) {
+            $.log.error(ex.message);
+            throw ex.message + ' -> Reference: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZoneId.html';
+        }
+    }
+
     /**
      * @function getCurLocalTimeString
      * @export $
@@ -77,7 +86,11 @@
      */
     function getCurLocalTimeString(format) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        try {
+            return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        } catch (ex) {
+            return ex.message;
+        }
     }
 
     /**
@@ -89,7 +102,11 @@
      */
     function getLocalTimeString(format, utc_secs) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        try {
+            return Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        } catch (ex) {
+            return ex.message;
+        }
     }
 
     /**
@@ -100,7 +117,11 @@
      * @return {String}
      */
     function getCurrentLocalTimeString(format, timeZone) {
-        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(timeZone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        try {
+            return Packages.java.time.ZonedDateTime.now(getZoneId(timeZone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
+        } catch (ex) {
+            return ex.message;
+        }
     }
 
     /**
@@ -112,7 +133,11 @@
      */
     function getLocalTime() {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
-        return Packages.java.time.ZonedDateTime.now(Packages.java.time.ZoneId.of(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
+        try {
+            return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
+        } catch (ex) {
+            return ex.message;
+        }
     }
 
     /**
