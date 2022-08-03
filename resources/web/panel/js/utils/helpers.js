@@ -986,7 +986,7 @@ $(function () {
         socket.getDBTableValues('permissions_get_all_groups', 'groups', function(results){
             permGroups;
             for (let i = 0; i < results.length; i++) {
-                permGroups[i] = results[i].value
+                permGroups[i] = results[i].value;
                 permGroupNames[i] =  i.toString() + ' (' + results[i].value + ')';
             }
         });

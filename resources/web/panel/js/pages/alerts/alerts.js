@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
 $(function() {
     // Get all module toggles.
@@ -95,7 +97,7 @@ $(function() {
                     default:
                         // Update settings.
                         socket.updateDBValues('alerts_follow_update_settings', {
-                            tables: ['settings', 'settings', 'settings', 'settings',],
+                            tables: ['settings', 'settings', 'settings', 'settings'],
                             keys: ['followToggle', 'followReward', 'followMessage', 'followDelay'],
                             values: [followToggle, followReward.val(), followMessage.val(), followDelay.val()]
                         }, function() {
@@ -547,7 +549,7 @@ $(function() {
                 previouslyDisabled[row.key] = true;
             }
             let newDisabledUsers = welcomeDisabled.map(function (name) {
-                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase()
+                return name.replace(/[^a-zA-Z0-9_\n]/g, '').toLowerCase();
             });
             for (let newDisabledUser of newDisabledUsers) {
                 if (!newDisabledUser) {
@@ -564,7 +566,7 @@ $(function() {
             for (let disabledUser in previouslyDisabled) {
                 if (previouslyDisabled.hasOwnProperty(disabledUser)) {
                     delTables.push('welcome_disabled_users');
-                    delKeys.push(disabledUser)
+                    delKeys.push(disabledUser);
                 }
             }
 
@@ -584,14 +586,14 @@ $(function() {
                 if (delKeys.length) {
                     socket.removeDBValues('alerts_del_welcome_disabled', {
                         tables: delTables,
-                        keys: delKeys,
+                        keys: delKeys
                     }, cb);
                 } else {
                     cb();
                 }
             };
 
-            add(function () { remove(callback) });
+            add(function () { remove(callback); });
         };
 
         socket.getDBValues('alerts_get_welcome_settings', {
@@ -604,7 +606,7 @@ $(function() {
                     disabledUserOptions.push({
                         'name': row.key,
                         'selected': 'true'
-                    })
+                    });
                 }
                 const modal = helpers.getModal('welcome-alert', 'Welcome Alert Settings', 'Save', $('<form/>', {
                     'role': 'form'
@@ -665,7 +667,7 @@ $(function() {
                         return {
                             id: term,
                             text: term
-                        }
+                        };
                     }
                 });
             });
