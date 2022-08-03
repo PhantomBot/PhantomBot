@@ -45,7 +45,7 @@ import os
 md_path = "./docs/guides/content/commands/command-variables.md"
 
 gtransformers = []
-ltransformers = []
+ltransformers = {}
 usestransformers = []
 
 transformer_template = {}
@@ -102,7 +102,9 @@ def parse_file(fpath, lines):
             if state >= 2 and state <= 4:
                 gtransformers.append(transformer)
             if state >= 5 and state <= 7:
-                ltransformers.append(transformer)
+                if not transformer["script"] in ltransformers:
+                    ltransformers[transformer["script"]] = []
+                ltransformers[transformer["script"]].append(transformer)
             if state < 8:
                 state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
@@ -157,7 +159,7 @@ def parse_file(fpath, lines):
                 if line.startswith("@labels"):
                     transformer["labels"] = line.removeprefix("@labels").strip()
                 if line.startswith("@customarg"):
-                    line = line[9:].strip()
+                    line = line[11:].strip()
                     desc_pos = line.find(") ")
                     if desc_pos == -1:
                         desc_pos = len(line)
@@ -304,9 +306,9 @@ def output_usestransformer(usestransformer, hlevel):
         else:
             line = line + "No"
         lines.append(line + '\n')
-    if len(hook["labels"]) > 0:
-        lines.append('\n')
-        lines.append("**Labels Used:** " + hook["labels"] + '\n')
+        if len(hook["labels"]) > 0:
+            lines.append('\n')
+            lines.append("**Labels Used:** " + hook["labels"] + '\n')
     lines.append('\n')
     lines.append("&nbsp;" + '\n')
     lines.append('\n')
@@ -357,8 +359,13 @@ if len(ltransformers) > 0:
     lines.append('\n')
     lines.append("_Some scripts may also restrict the use of global command tags_" + '\n')
     lines.append('\n')
-    for transformer in ltransformers:
-        lines.extend(output_transformer(transformer, 3))
+    for script,transformer in dict(sorted(ltransformers, key=lambda x: x["script"])):
+        discord = ""
+        if "/discord/" in script:
+            discord = "discord / "
+        lines.append("### " + discord + script[script.rfind("/") + 1:] + '\n')
+        lines.append('\n')
+        lines.extend(output_transformer(transformer, 4))
     lines = lines[:len(lines) - 3]
 
 if len(usestransformers) > 0:
