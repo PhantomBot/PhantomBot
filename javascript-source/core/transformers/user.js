@@ -87,7 +87,7 @@
             temp = event.getSender();
         }
         return {
-            result: $.jsString($.username.resolve(temp)) + ' -> ',
+            result: $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ',
             cache: true
         };
     }
@@ -104,7 +104,7 @@
     function sender(args, event) {
         if (!args) {
             return {
-                result: $.username.resolve(event.getSender()),
+                result: $.usernameResolveIgnoreEx(event.getSender()),
                 cache: true
             };
         }
@@ -164,7 +164,7 @@
             temp = event.getSender();
         }
         return {
-            result: $.username.resolve(temp),
+            result: $.usernameResolveIgnoreEx(temp),
             cache: true
         };
     }
