@@ -1523,7 +1523,9 @@ _These command tags are only available in the scripts which defined them_
 
 _Some scripts may also restrict the use of global command tags_
 
-### amount
+### subscribeHandler.js
+
+#### amount
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1545,7 +1547,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### customemote
+#### customemote
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1568,7 +1570,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### giftmonths
+#### giftmonths
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1590,7 +1592,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### giftreward
+#### giftreward
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1600,7 +1602,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Custom Arguments:**
 
-- `g (giftreward:int)` - The number of points awarded to the gifter for gifting a sub to someone else
+- `(giftreward:int)` - The number of points awarded to the gifter for gifting a sub to someone else
 
 
 **Example:**
@@ -1621,7 +1623,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### months
+#### months
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1643,7 +1645,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### name
+#### name
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1665,7 +1667,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### plan
+#### plan
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1688,7 +1690,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### recipient
+#### recipient
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1710,7 +1712,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### reward
+#### reward
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
@@ -1720,7 +1722,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Custom Arguments:**
 
-- `g (reward:int)` - The number of points awarded for the sub
+- `(reward:int)` - The number of points awarded for the sub
 
 
 **Example:**
@@ -1750,7 +1752,7 @@ Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | No
 
-**Labels Used:** twitch command
+**Labels Used:** twitch commandevent noevent
 
 &nbsp;
 
@@ -1764,11 +1766,15 @@ Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | Yes
 
+**Labels Used:** global twitch noevent
+
 #### Hook: twitchReSubscriber
 
 Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** global twitch noevent
 
 #### Hook: twitchSubscriptionGift
 
@@ -1776,17 +1782,23 @@ Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | Yes
 
+**Labels Used:** global twitch noevent
+
 #### Hook: twitchMassSubscriptionGifted
 
 Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | Yes
 
+**Labels Used:** global twitch noevent
+
 #### Hook: twitchAnonymousSubscriptionGift
 
 Global&nbsp;&nbsp; | Local
 -------|-------
 Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** global twitch noevent
 
 #### Hook: twitchMassAnonymousSubscriptionGifted
 
@@ -1795,3 +1807,17 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | Yes
 
 **Labels Used:** global twitch noevent
+
+&nbsp;
+
+### keywordHandler.js
+
+Defined in script: _./javascript-source/handlers/keywordHandler.js_
+
+#### Hook: ircChannelMessage
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch commandevent keywordevent noevent
