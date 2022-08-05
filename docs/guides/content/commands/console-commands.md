@@ -158,11 +158,11 @@ giftsubtest (userName) (tier) (months) - Sends a fake gift subscriber events.
 
 &nbsp;
 
-### massanongiftsubtest
+### massanonsubgifttest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-massanongiftsubtest (amount) (tier) - Test a mass anonymous gift subscription.
+massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
 
 &nbsp;
 
