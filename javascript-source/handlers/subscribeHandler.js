@@ -829,7 +829,7 @@
             } else {
                 customEmote[planId] = argsString;
             }
-            $.setIniDbString('subscribeHandler', 'resubEmote', JSON.stringify(customEmote));
+            $.setIniDbString('subscribeHandler', 'subEmote', JSON.stringify(customEmote));
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set', planId === null ? 'all tiers' : planId));
         }
 
