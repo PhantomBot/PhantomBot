@@ -1335,6 +1335,7 @@ $(function () {
     // Does not return anything, the original object will be changed.
     helpers.parseJSONValues = function (obj, keys) {
         for (let key in keys) {
+            key = keys[key];
             if (obj.hasOwnProperty(key)) {
                 try {
                     if (typeof obj[key] === 'string' && obj[key].startsWith('{')) {
