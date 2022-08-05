@@ -359,13 +359,14 @@ if len(ltransformers) > 0:
     lines.append('\n')
     lines.append("_Some scripts may also restrict the use of global command tags_" + '\n')
     lines.append('\n')
-    for script,transformer in dict(sorted(ltransformers.items(), key=lambda x: ("discord / " if "/discord/" in x[0] else "") + x[0][x[0].rfind("/") + 1:])):
+    for script,transformers in dict(sorted(ltransformers.items(), key=lambda x: ("discord / " if "/discord/" in x[0] else "") + x[0][x[0].rfind("/") + 1:])).items():
         discord = ""
         if "/discord/" in script:
             discord = "discord / "
         lines.append("### " + discord + script[script.rfind("/") + 1:] + '\n')
         lines.append('\n')
-        lines.extend(output_transformer(transformer, 4))
+        for transformer in transformers:
+            lines.extend(output_transformer(transformer, 4))
     lines = lines[:len(lines) - 3]
 
 if len(usestransformers) > 0:

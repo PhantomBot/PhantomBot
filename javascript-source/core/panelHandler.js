@@ -164,12 +164,16 @@
      * @event twitchSubscriber
      */
     $.bind('twitchSubscriber', function (event) {
+        var tier = $.subscription.planToTier(event.getPlan(), false);
+        if (tier === null) {
+            return;
+        }
         addObjectToArray('panelData', 'data', 'Subscriber', {
-            'username': event.getSubscriber(),
+            'username': event.getUsername(),
             'date': $.systemTime(),
             'isReSub': false,
             'months': 0,
-            'tier': event.getPlan() / 1000,
+            'tier': tier,
             'message': event.getMessage()
         });
     });
@@ -179,7 +183,7 @@
      */
     $.bind('twitchPrimeSubscriber', function (event) {
         addObjectToArray('panelData', 'data', 'Prime ' + (event.getMonths() > 1 ? 'Re' : '') + 'Subscriber', {
-            'username': event.getSubscriber(),
+            'username': event.getUsername(),
             'date': $.systemTime(),
             'isReSub': false,
             'months': event.getMonths(),
@@ -192,11 +196,11 @@
      */
     $.bind('twitchReSubscriber', function (event) {
         addObjectToArray('panelData', 'data', 'ReSubscriber', {
-            'username': event.getReSubscriber(),
+            'username': event.getUsername(),
             'months': event.getMonths(),
             'date': $.systemTime(),
             'isReSub': true,
-            'tier': event.getPlan() / 1000,
+            'tier': $.subscription.planToTier(event.getPlan()),
             'message': event.getMessage()
         });
     });
@@ -211,7 +215,7 @@
             'months': event.getMonths(),
             'date': $.systemTime(),
             'isReSub': (parseInt(event.getMonths()) > 1),
-            'tier': event.getPlan() / 1000
+            'tier': $.subscription.planToTier(event.getPlan())
         });
     });
 
@@ -223,7 +227,7 @@
             'username': event.getUsername(),
             'amount': event.getAmount(),
             'date': $.systemTime(),
-            'tier': event.getPlan() / 1000
+            'tier': $.subscription.planToTier(event.getPlan())
         });
     });
 
@@ -236,7 +240,7 @@
             'months': event.getMonths(),
             'date': $.systemTime(),
             'isReSub': (parseInt(event.getMonths()) > 1),
-            'tier': event.getPlan() / 1000
+            'tier': $.subscription.planToTier(event.getPlan())
         });
     });
 
@@ -247,7 +251,7 @@
         addObjectToArray('panelData', 'data', 'Anonymous Mass Gifted Subscription', {
             'amount': event.getAmount(),
             'date': $.systemTime(),
-            'tier': event.getPlan() / 1000
+            'tier': $.subscription.planToTier(event.getPlan())
         });
     });
 
