@@ -217,7 +217,7 @@
                 logDirIdx,
                 match,
                 date,
-                rotateDays = $.getIniDbNumber('settings', 'log_rotate_days', 0) * 24 * 60 * 6e4;
+                rotateDays = $.getIniDbNumber('settings', 'log_rotate_days', 0);
 
         if (rotateDays === 0) {
             return;

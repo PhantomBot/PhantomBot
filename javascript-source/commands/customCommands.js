@@ -156,7 +156,7 @@
 
     /*
      * @event command
-     * @usestransformers global twitch command
+     * @usestransformers global twitch commandevent noevent
      */
     $.bind('command', function (event) {
         var sender = event.getSender(),
