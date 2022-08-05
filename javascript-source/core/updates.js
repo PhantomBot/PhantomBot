@@ -444,7 +444,7 @@
                 subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
                 reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
                 giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
-                massGiftSubReward = $.getIniDbString('subscribeHandler', 'massGiftSubReward', 0),
+                massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
                 customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
                 subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
                 subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
