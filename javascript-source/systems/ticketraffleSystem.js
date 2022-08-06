@@ -619,21 +619,6 @@
         $.registerChatSubcommand('traffle', 'messagetoggle', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'limitertoggle', $.PERMISSION.Admin);
 
-        // Since we have to calculate the users bonus tickets, the update has to happen in the script itself
-        if ($.inidb.FileExists('ticketsList')) {
-            var users = $.inidb.GetKeyList('ticketsList', ''),
-                first = $.inidb.get('ticketsList', users[0]);
-
-            if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
-                for (var i = 0; i < users.length; i++) {
-                    var times = $.getIniDbNumber('ticketsList', users[i]),
-                        bonus = calcBonus(users[i], undefined, times);
-
-                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
-                }
-            }
-        }
-
         reopen();
     });
 

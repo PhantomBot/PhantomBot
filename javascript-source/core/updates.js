@@ -505,7 +505,7 @@
         $.inidb.del('subscribeHandler', 'subPlan2000');
         $.inidb.del('subscribeHandler', 'subPlan3000');
         $.inidb.del('subscribeHandler', 'subPlanPrime');
-        
+
         var commands = $.inidb.GetKeyList('tempDisabledCommandScript', ''),
             i, cmd;
 
@@ -516,14 +516,6 @@
                 $.inidb.del('tempDisabledCommandScript', cmd);
             }
         }
-
-        $.consoleLn('PhantomBot update 3.6.4 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
-    }
-
-    /* version 3.6.5 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5')) {
-        $.consoleLn('Starting PhantomBot update 3.6.5 updates...');
 
         if ($.inidb.FileExists('traffleState')) {
             var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
@@ -546,7 +538,35 @@
         $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
         $.inidb.RemoveKey('settings', '', 'traffleLimiter');
 
-        $.consoleLn('PhantomBot update 3.6.5 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.5', true);
+        var calcBonus = function(subTMulti, regTMulti, user, tickets) {
+            var bonus = tickets;
+
+            if ($.isSub(user, null)) {
+                bonus = tickets * subTMulti;
+            } else if ($.isRegular(user)) {
+                bonus = tickets * regTMulti;
+            }
+
+            return Math.round(bonus - tickets);
+        };
+
+        if ($.inidb.FileExists('ticketsList') && $.inidb.HasKey('traffleState', '', 'subTMulti') && $.inidb.HasKey('traffleState', '', 'regTMulti')) {
+            var users = $.inidb.GetKeyList('ticketsList', ''),
+                first = $.inidb.get('ticketsList', users[0]),
+                subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti')),
+                regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
+
+            if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
+                for (var i = 0; i < users.length; i++) {
+                    var times = $.getIniDbNumber('ticketsList', users[i]),
+                        bonus = calcBonus(subTMulti, regTMulti, users[i], times);
+
+                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
+                }
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.6.4 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
     }
 })();
