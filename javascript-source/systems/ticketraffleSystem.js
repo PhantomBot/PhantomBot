@@ -23,10 +23,10 @@
         maxEntries = 0,
         followers = false,
         raffleStatus = false,
-        msgToggle = $.getSetIniDbBoolean('traffleSettings', 'traffleMSGToggle', false),
+        msgToggle = false,
         raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
         messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
-        limiter = $.getSetIniDbNumber('traffleSettings', 'traffleLimiter', false),
+        limiter = false,
         totalEntries = 0,
         totalTickets = 0,
         a = '',
@@ -116,6 +116,8 @@
     }
 
     function reopen() {
+        reloadTRaffle();
+
         if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', '', 'cost') || !$.inidb.HasKey('traffleState', '', 'entries')
                 || !$.inidb.HasKey('traffleState', '', 'subTMulti') || !$.inidb.HasKey('traffleState', '', 'regTMulti') || !$.inidb.HasKey('traffleState', '', 'maxEntries')
                 || !$.inidb.HasKey('traffleState', '', 'followers') || !$.inidb.HasKey('traffleState', '', 'isActive') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')
@@ -252,21 +254,28 @@
 
         var baseAmount,
             tmpMax = maxEntries,
-            multiplier = 1;
+            multiplier = 1,
+            getsBonus = userGetsBonus(user, event),
+            currTickets = getTickets(user),
+            currBonus = getBonusTickets(user);
 
-        if (limiter) {
-            multiplier = calcBonus(user, event, 1);
+        if (limiter && getsBonus) {
+            multiplier = 1 + calcBonus(user, event, 1);
             tmpMax = maxEntries / multiplier;
         }
 
         if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
             var possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user) / cost) : tmpMax);
-            baseAmount = tmpMax - getTickets(user); //Maximum possible entries that can be bought up to the maxEntries limit
+            baseAmount = tmpMax - currTickets; //Maximum possible entries that can be bought up to the maxEntries limit
             baseAmount = (baseAmount > possibleBuys ? possibleBuys : baseAmount);
         } else if (!isNaN(parseInt(arg)) && parseInt(arg) % 1 === 0) {
             baseAmount = parseInt(arg);
         } else {
-            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(user)));
+            if (getsBonus) {
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.ticket.usage.bonus', currTickets, currBonus));
+            } else {
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.ticket.usage', currTickets));
+            }
             return;
         }
 
@@ -274,7 +283,8 @@
             amount = baseAmount;
 
         if (limiter) {
-            amount = Math.round(amount + bonus); //Math.Round because we can be limited by the bit length i.e 1/3 = 0.333333333.....
+            amount = Math.round(baseAmount + bonus); //Math.Round because we can be limited by the bit length i.e 1/3 = 0.333333333.....
+            currTickets += currBonus;
         }
 
 
@@ -289,12 +299,21 @@
             return;
         }
 
-        if (getTickets(user) + amount > maxEntries) {
+
+        if (currTickets + amount > maxEntries) {
             if (msgToggle) {
                 if (limiter) {
-                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter', Math.ceil(tmpMax), multiplier * 100, getTickets(user)));
+                    if (getsBonus) {
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter.bonus', Math.ceil(tmpMax), multiplier * 100, (currTickets - currBonus), currBonus));
+                    } else {
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.limiter', Math.ceil(tmpMax), multiplier * 100, currTickets));
+                    }
                 } else {
-                    $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, getTickets(user)));
+                    if (getsBonus) {
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit.bonus', maxEntries, (currTickets - currBonus), currBonus));
+                    } else {
+                        $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.limit.hit', maxEntries, currTickets));
+                    }
                 }
             }
             return;
@@ -328,7 +347,7 @@
         incr(user.toLowerCase(), baseAmount, bonus);
 
         if (msgToggle) {
-            if (userGetsBonus(user, event)) {
+            if (getsBonus) {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered.bonus', baseAmount, bonus, getTickets(user), getBonusTickets(user)));
             } else {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered', baseAmount, getTickets(user)));

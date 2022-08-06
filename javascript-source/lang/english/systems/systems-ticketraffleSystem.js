@@ -32,7 +32,9 @@ $.lang.register('ticketrafflesystem.winner.multiple.award', 'The winners have be
 $.lang.register('ticketrafflesystem.only.buy.amount', 'You can only buy $1 ticket(s)');
 $.lang.register('ticketrafflesystem.only.buy.amount.limiter', 'You can only buy $1 ticket(s) because you receive a bonus of $2 %');
 $.lang.register('ticketrafflesystem.limit.hit', 'You\'re only allowed to buy a maximum of $1 ticket(s). You currently have $2 tickets.');
-$.lang.register('ticketrafflesystem.limit.hit.limiter', 'You\'re only allowed to buy a maximum of $1 ticket(s) because the you receive a bonus of $2 %. You currently have $3 tickets.');
+$.lang.register('ticketrafflesystem.limit.hit.limiter', 'You\'re only allowed to buy a maximum of $1 ticket(s) because you receive a bonus of $2 %. You currently have $3 tickets.');
+$.lang.register('ticketrafflesystem.limit.hit.bonus', 'You\'re only allowed to buy a maximum of $1 ticket(s). You currently have $2 (+ $3 bonus) tickets.');
+$.lang.register('ticketrafflesystem.limit.hit.limiter.bonus', 'You\'re only allowed to buy a maximum of $1 ticket(s) because the you receive a bonus of $2 %. You currently have $3 (+ $4 bonus) tickets.');
 $.lang.register('ticketrafflesystem.settings.err.open', 'You cannot change this setting while a raffle is open!');
 $.lang.register('ticketrafflesystem.err.not.following', 'You need to be following to enter.');
 $.lang.register('ticketrafflesystem.err.points', 'You don\'t have enough $1 to enter.');
