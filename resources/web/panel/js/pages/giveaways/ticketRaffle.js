@@ -43,8 +43,10 @@ $(run = function () {
                         'html': results[i].key
                     }));
 
+                    let ticketJSON = JSON.parse(results[i].value);
+
                     tr.append($('<td/>', {
-                        'html': results[i].value
+                        'html': (ticketJSON[0] + ' (+' + ticketJSON[1] + ')')
                     }));
 
                     table.append(tr);

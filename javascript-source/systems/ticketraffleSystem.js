@@ -36,6 +36,11 @@
         lastWinners = [],
         hasDrawn = false;
 
+    var POS = {
+        times: 0,
+        bonus: 1
+    };
+
     function reloadTRaffle() {
         msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
         raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
@@ -132,7 +137,7 @@
         raffleStatus = bools[1];
 
         if (raffleStatus === true) {
-            $.inidb.SetBoolean('traffleSettings','' ,'isActive', true);
+            $.inidb.SetBoolean('traffleSettings', '', 'isActive', true);
             if (followers) {
                 a = $.lang.get('ticketrafflesystem.msg.need.to.be.following');
             }
@@ -307,51 +312,61 @@
             }
         }
 
-        if (!$.inidb.exists('entered', user.toLowerCase())) {
-            totalEntries++;
-        }
-
         totalTickets += baseAmount + bonus;
 
         if (cost !== 0) {
             $.inidb.decr('points', user, (baseAmount * cost));
         }
 
-        incr(user.toLowerCase(), baseAmount, event);
+        if (!$.inidb.exists('entered', user.toLowerCase())) {
+            totalEntries++;
+            $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
+            $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
+        }
+
+        if (!(uniqueEntries.includes(user))) {
+            uniqueEntries.push(user);
+        }
+
+        incr(user.toLowerCase(), baseAmount, bonus);
 
         if (msgToggle) {
             if (userGetsBonus(user, event)) {
-                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered.bonus', baseAmount, bonus, getTickets(user), calcBonus(user, event, getTickets(user))));
+                $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered.bonus', baseAmount, bonus, getTickets(user), getBonusTickets(user)));
             } else {
                 $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.entered', baseAmount, getTickets(user)));
             }
         }
     }
 
-    function incr(user, times, event) {
-        if (!$.inidb.exists('entered', user.toLowerCase())) {
-            $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
-            $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
-        }
-
-        $.inidb.incr('ticketsList', user.toLowerCase(), times);
-
-        times = (userGetsBonus(user, event) ? times * calcBonus(user, event, times) : times);
-
-        for (var i = 0; i < times; i++) {
+    function incr(user, times, bonus) {
+        var total = times * bonus;
+        for (var i = 0; i < total; i++) {
             entries.push(user);
         }
 
-        if (!(uniqueEntries.includes(user))) {
-            uniqueEntries.push(user);
+        if ($.inidb.exists('ticketsList', user.toLowerCase())) {
+            var current = JSON.parse($.inidb.get('ticketsList', user.toLowerCase()));
+            times += current[POS.times];
+            bonus += current[POS.bonus];
         }
+
+        $.inidb.set('ticketsList', user.toLowerCase(), JSON.stringify([times, bonus]));
+
     }
 
     function getTickets(user) {
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.GetInteger('ticketsList', '', user.toLowerCase());
+        return $.inidb.get('ticketsList', user.toLowerCase())[POS.times];
+    }
+
+    function getBonusTickets(user) {
+        if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
+            return 0;
+        }
+        return $.inidb.get('ticketsList', user.toLowerCase())[POS.bonus];
     }
 
     function userGetsBonus(user, event) {
@@ -359,9 +374,14 @@
     }
 
     function calcBonus(user, event, tickets) {
+        var tags = undefined;
+        if (event !== undefined) {
+            tags = event.getTags();
+        }
+
         var bonus = tickets;
 
-        if ($.isSub(user, event.getTags())) {
+        if ($.isSub(user, tags)) {
             bonus = tickets * subTMulti;
         } else if ($.isRegular(user)) {
             bonus = tickets * regTMulti;
@@ -526,7 +546,7 @@
                 raffleMessage = argString.replace(action, '').trim();
                 $.inidb.set('settings', 'traffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msg.set', raffleMessage));
-                $.log.event(sender + ' changed the auto annouce message to ' + raffleMessage);
+                $.log.event(sender + ' changed the auto announce message to ' + raffleMessage);
                 return;
             }
 
@@ -542,7 +562,7 @@
                 messageInterval = parseInt(args[1]);
                 $.inidb.set('settings', 'traffleMessageInterval', messageInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msginterval.set', messageInterval));
-                $.log.event(sender + ' changed the auto annouce interval to ' + messageInterval);
+                $.log.event(sender + ' changed the auto announce interval to ' + messageInterval);
                 return;
             }
         }
@@ -555,7 +575,7 @@
                 if (msgToggle && raffleStatus) {
                     if (userGetsBonus(sender, event)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage.bonus', getTickets(sender),
-                            calcBonus(sender, event, getTickets(sender))));
+                            getBonusTickets(sender)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
                     }
@@ -582,6 +602,21 @@
         $.registerChatSubcommand('traffle', 'autoannouncemessage', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'messagetoggle', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'limitertoggle', $.PERMISSION.Admin);
+
+        // Since we have to calculate the users bonus tickets, the update has to happen in the script itself
+        if ($.inidb.FileExists('ticketsList')) {
+            var users = $.inidb.GetKeyList('ticketsList', ''),
+                first = $.inidb.get('ticketsList', users[0]);
+
+            if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
+                for (var i = 0; i < users.length; i++) {
+                    var times = $.getIniDbNumber('ticketsList', users[i]),
+                        bonus = calcBonus(users[i], undefined, times);
+
+                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
+                }
+            }
+        }
 
         reopen();
     });
