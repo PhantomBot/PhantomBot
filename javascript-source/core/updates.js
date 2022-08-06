@@ -520,4 +520,24 @@
         $.consoleLn('PhantomBot update 3.6.4 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
     }
+
+    /* version 3.6.5 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5')) {
+        $.consoleLn('Starting PhantomBot update 3.6.5 updates...');
+
+        if ($.inidb.FileExists('traffleState')) {
+            var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+
+            $.inidb.SetBoolean('traffleState', '', 'followers', bools[0]);
+            $.inidb.RemoveKey('traffleState', '', 'bools');
+
+            if ($.inidb.FileExists('traffleSettings')) {
+                $.inidb.SetBoolean('traffleState', '', 'isActive', $.inidb.GetBoolean('traffleSettings', '', 'isActive'));
+                $.inidb.RemoveFile('traffleSettings');
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.6.5 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.5', true);
+    }
 })();

@@ -111,14 +111,14 @@
         }, 5 * 6e4);
 
         $.log.event(user + ' opened a ticket raffle.');
-        $.inidb.SetBoolean('traffleSettings', '', 'isActive', true);
+        $.inidb.SetBoolean('traffleState', '', 'isActive', raffleStatus);
         saveState();
     }
 
     function reopen() {
         if (!$.inidb.FileExists('traffleState') || !$.inidb.HasKey('traffleState', '', 'cost') || !$.inidb.HasKey('traffleState', '', 'entries')
                 || !$.inidb.HasKey('traffleState', '', 'subTMulti') || !$.inidb.HasKey('traffleState', '', 'regTMulti') || !$.inidb.HasKey('traffleState', '', 'maxEntries')
-                || !$.inidb.HasKey('traffleState', '', 'bools') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')
+                || !$.inidb.HasKey('traffleState', '', 'followers') || !$.inidb.HasKey('traffleState', '', 'isActive') || !$.inidb.HasKey('traffleState', '', 'totalEntries') || !$.inidb.HasKey('traffleState', '', 'totalTickets')
                 || !$.inidb.HasKey('traffleState', '', 'uniqueEntries') || !$.inidb.HasKey('traffleState', '', 'hasDrawn')) {
             return;
         }
@@ -129,15 +129,13 @@
         subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti'));
         regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
         maxEntries = parseInt($.inidb.get('traffleState', 'maxEntries'));
-        var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
         totalEntries = parseInt($.inidb.get('traffleState', 'totalEntries'));
         totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
         hasDrawn = $.inidb.HasKey('traffleState', '', 'uniqueEntries');
-        followers = bools[0];
-        raffleStatus = bools[1];
+        followers = $.inidb.GetBoolean('traffleState', '', 'followers');
+        raffleStatus = $.inidb.GetBoolean('traffleState', '', 'isActive');
 
         if (raffleStatus === true) {
-            $.inidb.SetBoolean('traffleSettings', '', 'isActive', true);
             if (followers) {
                 a = $.lang.get('ticketrafflesystem.msg.need.to.be.following');
             }
@@ -160,7 +158,8 @@
         $.inidb.set('traffleState', 'subTMulti', subTMulti);
         $.inidb.set('traffleState', 'regTMulti', regTMulti);
         $.inidb.set('traffleState', 'maxEntries', maxEntries);
-        $.inidb.set('traffleState', 'bools', JSON.stringify([followers, raffleStatus]));
+        $.inidb.SetBoolean('traffleState', '', 'isActive', raffleStatus);
+        $.inidb.SetBoolean('traffleState', '', 'followers', followers);
         $.inidb.set('traffleState', 'totalEntries', totalEntries);
         $.inidb.set('traffleState', 'totalTickets', totalTickets);
         $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
@@ -171,7 +170,6 @@
         raffleStatus = false;
         clearInterval(interval);
         clearInterval(saveStateInterval);
-        $.inidb.SetBoolean('traffleSettings', '', 'isActive', false);
         saveState();
     }
 
@@ -189,7 +187,6 @@
         totalTickets = 0;
         regTMulti = 1;
         subTMulti = 1;
-        $.inidb.SetBoolean('traffleSettings', '', 'isActive', false);
         saveState();
     }
 

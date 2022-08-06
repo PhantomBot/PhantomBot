@@ -17,7 +17,7 @@
 
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
-        tables: ['modules', 'traffleSettings', 'traffleState'],
+        tables: ['modules', 'traffleState', 'traffleState'],
         keys: ['./systems/ticketraffleSystem.js', 'isActive', 'hasDrawn']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
@@ -220,7 +220,7 @@ $(function () {
             'class': 'fa fa-unlock-alt'
         })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
 
-        $('#traffle-list-title').val("Ticket Raffle List");
+        $('#traffle-list-title').val('Ticket Raffle List');
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function () {
