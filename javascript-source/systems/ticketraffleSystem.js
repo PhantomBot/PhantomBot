@@ -163,7 +163,7 @@
         $.inidb.set('traffleState', 'totalEntries', totalEntries);
         $.inidb.set('traffleState', 'totalTickets', totalTickets);
         $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
-        $.inidb.SetBoolean('traffleState', 'hasDrawn', hasDrawn);
+        $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
     }
 
     function closeRaffle() {
