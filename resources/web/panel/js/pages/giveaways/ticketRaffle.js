@@ -257,10 +257,10 @@ $(function () {
                 'role': 'form'
             })
             // Add toggle for warning messages.
-            .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['tRaffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+            .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
             // Add toggle for the limiter.
-            .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['tRaffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+            .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['traffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'ON: Limit the total amount of tickets (bought tickets + bonus tickets) to the set limit. OFF: Limit only the amount of bought tickets.'))))),
             function () {
                 let raffleTimer = $('#msg-timer'),
