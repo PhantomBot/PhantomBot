@@ -231,8 +231,8 @@ $(function () {
     // Raffle settings button.
     $('#ticket-raffle-settings').on('click', function () {
         socket.getDBValues('get_traffle_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings'],
-            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter']
+            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
         }, true, function (e) {
             helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -274,8 +274,8 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['settings', 'settings', 'settings', 'settings'],
-                            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter'],
+                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
                             values: [warningMsg, raffleMessage.val(), raffleTimer.val(), limiter]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {

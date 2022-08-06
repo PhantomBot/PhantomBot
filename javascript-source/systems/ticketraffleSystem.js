@@ -23,10 +23,10 @@
         maxEntries = 0,
         followers = false,
         raffleStatus = false,
-        msgToggle = $.getSetIniDbBoolean('settings', 'tRaffleMSGToggle', false),
-        raffleMessage = $.getSetIniDbString('settings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
-        messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval', 0),
-        limiter = $.getSetIniDbNumber('settings', 'tRaffleLimiter', false),
+        msgToggle = $.getSetIniDbBoolean('traffleSettings', 'traffleMSGToggle', false),
+        raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
+        messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
+        limiter = $.getSetIniDbNumber('traffleSettings', 'traffleLimiter', false),
         totalEntries = 0,
         totalTickets = 0,
         a = '',
@@ -42,10 +42,10 @@
     };
 
     function reloadTRaffle() {
-        msgToggle = $.getIniDbBoolean('settings', 'tRaffleMSGToggle');
-        raffleMessage = $.getSetIniDbString('settings', 'traffleMessage');
-        messageInterval = $.getSetIniDbNumber('settings', 'traffleMessageInterval');
-        limiter = $.inidb.GetBoolean('settings', '', 'tRaffleLimiter');
+        msgToggle = $.getIniDbBoolean('traffleSettings', 'traffleMSGToggle');
+        raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage');
+        messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval');
+        limiter = $.inidb.GetBoolean('traffleSettings', '', 'traffleLimiter');
 
     }
 
@@ -502,11 +502,11 @@
             if (action.equalsIgnoreCase('messagetoggle')) {
                 if (msgToggle) {
                     msgToggle = false;
-                    $.inidb.set('settings', 'tRaffleMSGToggle', msgToggle);
+                    $.inidb.set('traffleSettings', 'traffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.msg.disabled'));
                 } else {
                     msgToggle = true;
-                    $.inidb.set('settings', 'tRaffleMSGToggle', msgToggle);
+                    $.inidb.set('traffleSettings', 'traffleMSGToggle', msgToggle);
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.msg.enabled'));
                 }
                 return;
@@ -522,7 +522,7 @@
                 }
 
                 limiter = !limiter;
-                $.inidb.SetBoolean('settings', '', 'tRaffleLimiter', limiter);
+                $.inidb.SetBoolean('traffleSettings', '', 'traffleLimiter', limiter);
                 if (limiter) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.limiter.enabled'));
                 } else {
@@ -541,7 +541,7 @@
                 }
 
                 raffleMessage = argString.replace(action, '').trim();
-                $.inidb.set('settings', 'traffleMessage', raffleMessage);
+                $.inidb.set('traffleSettings', 'traffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msg.set', raffleMessage));
                 $.log.event(sender + ' changed the auto announce message to ' + raffleMessage);
                 return;
@@ -557,7 +557,7 @@
                 }
 
                 messageInterval = parseInt(args[1]);
-                $.inidb.set('settings', 'traffleMessageInterval', messageInterval);
+                $.inidb.set('traffleSettings', 'traffleMessageInterval', messageInterval);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.auto.msginterval.set', messageInterval));
                 $.log.event(sender + ' changed the auto announce interval to ' + messageInterval);
                 return;
