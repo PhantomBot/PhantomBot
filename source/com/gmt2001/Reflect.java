@@ -16,13 +16,22 @@
  */
 package com.gmt2001;
 
+import com.sun.management.HotSpotDiagnosticMXBean;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import javax.management.MBeanServer;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.RepoVersion;
 
 /**
  *
@@ -43,7 +52,7 @@ public final class Reflect {
         pkg = pkg.replace('.', '/');
         ClassLoader classLoader = Reflect.class.getClassLoader();
         URL u = Reflect.class.getProtectionDomain().getCodeSource().getLocation();
-        try (JarInputStream jar = new JarInputStream(u.openStream())) {
+        try ( JarInputStream jar = new JarInputStream(u.openStream())) {
             JarEntry e;
             do {
                 e = jar.getNextJarEntry();
@@ -94,5 +103,66 @@ public final class Reflect {
         });
 
         return cl;
+    }
+
+    public static void dumpHeap() {
+        int pid;
+        try {
+            pid = pid();
+        } catch (NumberFormatException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            pid = 0;
+        }
+
+        String timestamp;
+        try {
+            timestamp = Logger.instance().logFileDTTimestamp();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            try {
+                timestamp = Logger.instance().logFileDTTimestamp(ZoneId.of("Z")) + "Z";
+            } catch (Exception ex2) {
+                com.gmt2001.Console.err.printStackTrace(ex2);
+                timestamp = "UNK";
+            }
+        }
+
+        try {
+            String fName = "java_pid" + Integer.toString(pid) + "." + timestamp + ".hprof";
+            String fPath;
+
+            if (RepoVersion.isDocker()) {
+                fPath = Paths.get(PathValidator.getDockerPath(), fName).toString();
+            } else {
+                fPath = Paths.get(GetExecutionPath(), fName).toString();
+            }
+
+            dumpHeap(fPath, true);
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex, false, true);
+        }
+    }
+
+    // https://www.baeldung.com/java-heap-dump-capture
+    public static void dumpHeap(String filePath, boolean live) throws IOException {
+        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(
+                server, "com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
+        mxBean.dumpHeap(filePath, live);
+    }
+
+    public static int pid() throws NumberFormatException {
+        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+        return Integer.parseInt(runtime.getName().split("@")[0]);
+    }
+
+    public static String GetExecutionPath() {
+        try {
+            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toAbsolutePath().toRealPath().toString();
+        } catch (IOException | URISyntaxException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return ".";
     }
 }

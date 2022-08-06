@@ -17,6 +17,7 @@
 package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
+import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAuthorizationCodeFlow;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -32,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -91,7 +91,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
                 p = Paths.get("./web/", path);
             }
 
-            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))) {
+            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;

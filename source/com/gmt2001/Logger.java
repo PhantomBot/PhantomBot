@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,6 +43,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     private Flow.Subscription subscription = null;
     private static final DateTimeFormatter logdatefmt = DateTimeFormatter.ofPattern("MM-dd-yyyy @ HH:mm:ss.SSS z");
     private static final DateTimeFormatter filedatefmt = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter filedatetimefmt = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private ZoneId zoneId;
     private static final Map<LogType, String> LOG_PATHS = Map.of(
             LogType.Output, "./logs/core/",
@@ -173,7 +175,11 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public String logTimestamp() {
-        return ZonedDateTime.now(this.zoneId).format(logdatefmt);
+        return this.logTimestamp(this.zoneId);
+    }
+
+    public String logTimestamp(ZoneId zoneId) {
+        return ZonedDateTime.now(zoneId).format(logdatefmt);
     }
 
     public static DateTimeFormatter getLogFileTimestampFormatter() {
@@ -181,6 +187,18 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     public String logFileTimestamp() {
-        return LocalDate.now(this.zoneId).format(filedatefmt);
+        return this.logFileTimestamp(this.zoneId);
+    }
+
+    public String logFileTimestamp(ZoneId zoneId) {
+        return LocalDate.now(zoneId).format(filedatefmt);
+    }
+
+    public String logFileDTTimestamp() {
+        return this.logFileDTTimestamp(this.zoneId);
+    }
+
+    public String logFileDTTimestamp(ZoneId zoneId) {
+        return LocalDateTime.now(zoneId).format(filedatetimefmt);
     }
 }

@@ -45,6 +45,12 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
             try ( PrintWriter ptrace = new PrintWriter(trace)) {
 
                 e.printStackTrace(ptrace);
+
+                if (e.getClass().getSimpleName().equals("OutOfMemoryError")) {
+                    Reflect.dumpHeap();
+                    com.gmt2001.Console.err.println("OutOfMemoryError: Heap Dump Created");
+                }
+
                 com.gmt2001.Console.err.printStackTrace(e, true);
 
                 String timestamp = Logger.instance().logFileTimestamp();

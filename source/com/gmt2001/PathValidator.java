@@ -22,7 +22,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import tv.phantombot.CaselessProperties;
-import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
 /**
@@ -77,7 +76,7 @@ public final class PathValidator {
 
     public static String getDockerPath() {
         try {
-            Path p = Paths.get(PhantomBot.GetExecutionPath());
+            Path p = Paths.get(Reflect.GetExecutionPath());
             return p.resolveSibling(p.getFileName().toString().concat("_data")).toAbsolutePath().toRealPath().toString();
         } catch (IOException ex) {
             com.gmt2001.Console.debug.printOrLogStackTrace(ex);
@@ -158,7 +157,7 @@ public final class PathValidator {
 
     private static boolean isValidPathInternal(String pathToFile, String[] validPaths) {
         try {
-            String executionPath = PhantomBot.GetExecutionPath();
+            String executionPath = Reflect.GetExecutionPath();
             Path p = Paths.get(pathToFile).toAbsolutePath();
 
             if (CaselessProperties.instance().getPropertyAsBoolean("pathvalidatedebug", false)) {
