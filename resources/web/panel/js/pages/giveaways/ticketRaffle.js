@@ -58,7 +58,7 @@ $(run = function () {
          * @function Loads the raffle winners.
          */
         helpers.temp.loadWinners = function () {
-            socket.getDBValue('get_traffle_list', 'traffleresults', 'winner', function (results) {
+            socket.getDBValue('get_traffle_winner_list', 'traffleresults', 'winner', function (results) {
                 const table = $('#ticket-raffle-table');
 
                 $('#traffle-list-title').text("Ticket Raffle Winners");
