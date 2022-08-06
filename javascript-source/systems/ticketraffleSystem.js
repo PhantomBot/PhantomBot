@@ -356,14 +356,14 @@
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.get('ticketsList', user.toLowerCase())[POS.times];
+        return JSON.parse($.inidb.get('ticketsList', user.toLowerCase()))[POS.times];
     }
 
     function getBonusTickets(user) {
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return $.inidb.get('ticketsList', user.toLowerCase())[POS.bonus];
+        return JSON.parse($.inidb.get('ticketsList', user.toLowerCase()))[POS.bonus];
     }
 
     function userGetsBonus(user, event) {
