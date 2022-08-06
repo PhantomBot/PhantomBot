@@ -331,3 +331,11 @@ twittersetup - Sets up Twitter.
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 ytsetup - Sets up YouTube API Key
+
+&nbsp;
+
+### dumpheap
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+dumpheap - Creates a heap dump
